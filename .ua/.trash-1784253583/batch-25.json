@@ -1,0 +1,125 @@
+{
+  "nodes": [
+    {
+      "id": "file:packages/core/src/i18n/en.ts",
+      "type": "file",
+      "name": "en.ts",
+      "summary": "英文（en）翻译键值映射表，导出符合 I18nKeys 类型的全部英文文案常量对象。",
+      "tags": [
+        "i18n",
+        "translation",
+        "localization",
+        "en"
+      ],
+      "complexity": "complex",
+      "filePath": "packages/core/src/i18n/en.ts"
+    },
+    {
+      "id": "file:packages/core/src/i18n/zh.ts",
+      "type": "file",
+      "name": "zh.ts",
+      "summary": "简体中文（zh）翻译键值映射表，心流纪应用的主要中文文案常量对象。",
+      "tags": [
+        "i18n",
+        "translation",
+        "localization",
+        "zh"
+      ],
+      "complexity": "complex",
+      "filePath": "packages/core/src/i18n/zh.ts"
+    },
+    {
+      "id": "file:packages/core/src/i18n/zh-Hant.ts",
+      "type": "file",
+      "name": "zh-Hant.ts",
+      "summary": "繁体中文（zh-Hant）翻译键值映射表，导出符合 I18nKeys 类型的繁体中文文案常量对象。",
+      "tags": [
+        "i18n",
+        "translation",
+        "localization",
+        "zh-Hant"
+      ],
+      "complexity": "complex",
+      "filePath": "packages/core/src/i18n/zh-Hant.ts"
+    },
+    {
+      "id": "file:packages/core/src/i18n/types.ts",
+      "type": "file",
+      "name": "types.ts",
+      "summary": "定义所有翻译键名的 I18nKeys 接口与 I18nKey 联合类型，是各语言文案字典的结构来源与类型约束。",
+      "tags": [
+        "i18n",
+        "type-definition",
+        "localization",
+        "schema"
+      ],
+      "complexity": "complex",
+      "filePath": "packages/core/src/i18n/types.ts"
+    },
+    {
+      "id": "file:packages/core/src/i18n/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "summary": "i18n 模块入口，聚合三种语言字典并向外提供 getT（按语言取整表）与 t（类型安全单键查找）两个翻译入口函数。",
+      "tags": [
+        "i18n",
+        "localization",
+        "entry",
+        "api"
+      ],
+      "complexity": "simple",
+      "filePath": "packages/core/src/i18n/index.ts"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:packages/core/src/i18n/en.ts",
+      "target": "file:packages/core/src/i18n/types.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/i18n/zh.ts",
+      "target": "file:packages/core/src/i18n/types.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/i18n/zh-Hant.ts",
+      "target": "file:packages/core/src/i18n/types.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/i18n/index.ts",
+      "target": "file:packages/core/src/i18n/en.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/i18n/index.ts",
+      "target": "file:packages/core/src/i18n/types.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/i18n/index.ts",
+      "target": "file:packages/core/src/i18n/zh-Hant.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/i18n/index.ts",
+      "target": "file:packages/core/src/i18n/zh.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    }
+  ]
+}

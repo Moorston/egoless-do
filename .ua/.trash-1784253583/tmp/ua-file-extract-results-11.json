@@ -1,0 +1,6301 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 33,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "packages/core/src/store/createRecycleBinSlice.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 372,
+      "nonEmptyLines": 293,
+      "functions": [
+        {
+          "name": "makeTestStore",
+          "startLine": 14,
+          "endLine": 36,
+          "params": [
+            "initialState"
+          ]
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "set",
+          "callee": "(fn as (s: typeof state) => typeof state)",
+          "lineNumber": 30
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/store/createRecycleBinSlice.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 259,
+      "nonEmptyLines": 224,
+      "functions": [
+        {
+          "name": "createRecycleBinSlice",
+          "startLine": 20,
+          "endLine": 259,
+          "params": [
+            "adapter"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "createRecycleBinSlice",
+          "line": 20,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "addToRecycleBin",
+          "callee": "Date.now",
+          "lineNumber": 25
+        },
+        {
+          "caller": "addToRecycleBin",
+          "callee": "set",
+          "lineNumber": 27
+        },
+        {
+          "caller": "addToRecycleBin",
+          "callee": "adapter.persistSettings('recycleBin', newBin!).catch",
+          "lineNumber": 28
+        },
+        {
+          "caller": "addToRecycleBin",
+          "callee": "adapter.persistSettings",
+          "lineNumber": 28
+        },
+        {
+          "caller": "addToRecycleBin",
+          "callee": "log.error",
+          "lineNumber": 28
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "get",
+          "lineNumber": 32
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "state.recycleBin.find",
+          "lineNumber": 33
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "Date.now",
+          "lineNumber": 48
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "Date.now",
+          "lineNumber": 49
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "get",
+          "lineNumber": 57
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "(state.planItems ?? []).filter",
+          "lineNumber": 58
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "(state.planItemCheckins ?? []).filter",
+          "lineNumber": 59
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "childItems.some",
+          "lineNumber": 60
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "(state.dailyCustomTodos ?? []).filter",
+          "lineNumber": 62
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "(state.dailyTodoHistory ?? []).filter",
+          "lineNumber": 63
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "set",
+          "lineNumber": 67
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "s.recycleBin.filter",
+          "lineNumber": 68
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "((s[targetKey] as Array<{ id: string }>) ?? []).filter",
+          "lineNumber": 69
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "(s.planItems ?? []).map",
+          "lineNumber": 71
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "(s.planItemCheckins ?? []).map",
+          "lineNumber": 74
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "childItems.some",
+          "lineNumber": 75
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "(s.dailyCustomTodos ?? []).map",
+          "lineNumber": 78
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "(s.dailyTodoHistory ?? []).map",
+          "lineNumber": 81
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "adapter.persistSettings('recycleBin', (get().recycleBin ?? []).filter(r => r.id !== id)).catch",
+          "lineNumber": 88
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "adapter.persistSettings",
+          "lineNumber": 88
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "(get().recycleBin ?? []).filter",
+          "lineNumber": 88
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "get",
+          "lineNumber": 88
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "log.error",
+          "lineNumber": 88
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "adapter.persistChange(syncEntity, item.id, restoredData).catch",
+          "lineNumber": 93
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "adapter.persistChange",
+          "lineNumber": 93
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "log.error",
+          "lineNumber": 93
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "adapter.persistChange('planItem', ci.id, { ...ci, deleted: false, updatedAt: now }).catch",
+          "lineNumber": 99
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "adapter.persistChange",
+          "lineNumber": 99
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "log.error",
+          "lineNumber": 99
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "adapter.persistChange('planItemCheckin', cic.id, { ...cic, deleted: false, updatedAt: now }).catch",
+          "lineNumber": 102
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "adapter.persistChange",
+          "lineNumber": 102
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "log.error",
+          "lineNumber": 102
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "adapter.persistChange('dailyCustomTodo', todo.id, { ...todo, deleted: false, updatedAt: now }).catch",
+          "lineNumber": 105
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "adapter.persistChange",
+          "lineNumber": 105
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "log.error",
+          "lineNumber": 105
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "adapter.persistChange('dailyTodoHistory', hist.id, { ...hist, deleted: false, updatedAt: now }).catch",
+          "lineNumber": 108
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "adapter.persistChange",
+          "lineNumber": 108
+        },
+        {
+          "caller": "restoreFromRecycleBin",
+          "callee": "log.error",
+          "lineNumber": 108
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "get().recycleBin.find",
+          "lineNumber": 115
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "get",
+          "lineNumber": 115
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "ops.push",
+          "lineNumber": 121
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "get",
+          "lineNumber": 126
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "(s.planItems ?? []).filter",
+          "lineNumber": 127
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "items.map",
+          "lineNumber": 128
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "(s.planItemCheckins ?? []).filter",
+          "lineNumber": 129
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "checkinIds.has",
+          "lineNumber": 129
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "(s.dailyCustomTodos ?? []).filter",
+          "lineNumber": 130
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "(s.dailyTodoHistory ?? []).filter",
+          "lineNumber": 131
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "ops.push",
+          "lineNumber": 133
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "ops.push",
+          "lineNumber": 134
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "ops.push",
+          "lineNumber": 135
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "ops.push",
+          "lineNumber": 136
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "(s.planItems ?? []).filter",
+          "lineNumber": 138
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "(s.planItemCheckins ?? []).filter",
+          "lineNumber": 139
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "checkinIds.has",
+          "lineNumber": 139
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "(s.dailyCustomTodos ?? []).filter",
+          "lineNumber": 140
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "(s.dailyTodoHistory ?? []).filter",
+          "lineNumber": 141
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "set",
+          "lineNumber": 150
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "s.recycleBin.filter",
+          "lineNumber": 151
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "((s[entityKey] as Array<{ id: string }>) ?? []).filter",
+          "lineNumber": 152
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "adapter.hardDelete(ops).catch",
+          "lineNumber": 157
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "adapter.hardDelete",
+          "lineNumber": 157
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "log.error",
+          "lineNumber": 157
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "adapter.persistSettings('recycleBin', get().recycleBin).catch",
+          "lineNumber": 160
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "adapter.persistSettings",
+          "lineNumber": 160
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "get",
+          "lineNumber": 160
+        },
+        {
+          "caller": "removeFromRecycleBin",
+          "callee": "log.error",
+          "lineNumber": 160
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "get",
+          "lineNumber": 164
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "ops.push",
+          "lineNumber": 173
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "planIds.add",
+          "lineNumber": 174
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "get",
+          "lineNumber": 179
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "(s.planItems ?? []).filter",
+          "lineNumber": 180
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "planIds.has",
+          "lineNumber": 180
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "items2.map",
+          "lineNumber": 181
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "(s.planItemCheckins ?? []).filter",
+          "lineNumber": 182
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "checkinIds.has",
+          "lineNumber": 182
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "(s.dailyCustomTodos ?? []).filter",
+          "lineNumber": 183
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "planIds.has",
+          "lineNumber": 183
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "(s.dailyTodoHistory ?? []).filter",
+          "lineNumber": 184
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "planIds.has",
+          "lineNumber": 184
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "ops.push",
+          "lineNumber": 186
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "ops.push",
+          "lineNumber": 187
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "ops.push",
+          "lineNumber": 188
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "ops.push",
+          "lineNumber": 189
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "set",
+          "lineNumber": 193
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "(s.planItems ?? []).filter",
+          "lineNumber": 196
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "planIds.has",
+          "lineNumber": 196
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "(s.planItemCheckins ?? []).filter",
+          "lineNumber": 197
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "(s.planItems ?? []).find",
+          "lineNumber": 198
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "planIds.has",
+          "lineNumber": 199
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "(s.dailyCustomTodos ?? []).filter",
+          "lineNumber": 201
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "planIds.has",
+          "lineNumber": 201
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "(s.dailyTodoHistory ?? []).filter",
+          "lineNumber": 202
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "planIds.has",
+          "lineNumber": 202
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "adapter.hardDelete(ops).catch",
+          "lineNumber": 207
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "adapter.hardDelete",
+          "lineNumber": 207
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "log.error",
+          "lineNumber": 207
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "adapter.persistSettings('recycleBin', []).catch",
+          "lineNumber": 210
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "adapter.persistSettings",
+          "lineNumber": 210
+        },
+        {
+          "caller": "emptyRecycleBin",
+          "callee": "log.error",
+          "lineNumber": 210
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "Date.now",
+          "lineNumber": 214
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "(get().recycleBin ?? []).filter",
+          "lineNumber": 215
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "get",
+          "lineNumber": 215
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "ops.push",
+          "lineNumber": 224
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "planIds.add",
+          "lineNumber": 225
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "get",
+          "lineNumber": 230
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "(s.planItems ?? []).filter",
+          "lineNumber": 231
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "planIds.has",
+          "lineNumber": 231
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "items.map",
+          "lineNumber": 232
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "ops.push",
+          "lineNumber": 233
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "(s.planItemCheckins ?? []).filter",
+          "lineNumber": 234
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "checkinIds.has",
+          "lineNumber": 234
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "ops.push",
+          "lineNumber": 234
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "(s.dailyCustomTodos ?? []).filter",
+          "lineNumber": 235
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "planIds.has",
+          "lineNumber": 235
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "ops.push",
+          "lineNumber": 235
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "(s.dailyTodoHistory ?? []).filter",
+          "lineNumber": 236
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "planIds.has",
+          "lineNumber": 236
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "ops.push",
+          "lineNumber": 236
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "expired.map",
+          "lineNumber": 240
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "set",
+          "lineNumber": 241
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "s.recycleBin.filter",
+          "lineNumber": 242
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "expiredIds.has",
+          "lineNumber": 242
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "(s.planItems ?? []).filter",
+          "lineNumber": 244
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "planIds.has",
+          "lineNumber": 244
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "(s.planItemCheckins ?? []).filter",
+          "lineNumber": 245
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "(s.planItems ?? []).find",
+          "lineNumber": 246
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "planIds.has",
+          "lineNumber": 247
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "(s.dailyCustomTodos ?? []).filter",
+          "lineNumber": 249
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "planIds.has",
+          "lineNumber": 249
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "(s.dailyTodoHistory ?? []).filter",
+          "lineNumber": 250
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "planIds.has",
+          "lineNumber": 250
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "adapter.hardDelete(ops).catch",
+          "lineNumber": 255
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "adapter.hardDelete",
+          "lineNumber": 255
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "log.error",
+          "lineNumber": 255
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "adapter.persistSettings('recycleBin', get().recycleBin).catch",
+          "lineNumber": 256
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "adapter.persistSettings",
+          "lineNumber": 256
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "get",
+          "lineNumber": 256
+        },
+        {
+          "caller": "cleanupRecycleBin",
+          "callee": "log.error",
+          "lineNumber": 256
+        }
+      ],
+      "metrics": {
+        "importCount": 6,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/store/createReflectionSlice.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 297,
+      "nonEmptyLines": 271,
+      "functions": [
+        {
+          "name": "createReflectionSlice",
+          "startLine": 20,
+          "endLine": 297,
+          "params": [
+            "adapter",
+            "onSync",
+            "onSettingsPersist"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ReflectionSlice",
+          "line": 18,
+          "isDefault": false
+        },
+        {
+          "name": "createReflectionSlice",
+          "line": 20,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "addReflection",
+          "callee": "createReflection",
+          "lineNumber": 31
+        },
+        {
+          "caller": "addReflection",
+          "callee": "set",
+          "lineNumber": 32
+        },
+        {
+          "caller": "addReflection",
+          "callee": "adapter.persistChange('reflection', newReflection.id, newReflection).catch",
+          "lineNumber": 33
+        },
+        {
+          "caller": "addReflection",
+          "callee": "adapter.persistChange",
+          "lineNumber": 33
+        },
+        {
+          "caller": "addReflection",
+          "callee": "log.error",
+          "lineNumber": 33
+        },
+        {
+          "caller": "togglePin",
+          "callee": "set",
+          "lineNumber": 39
+        },
+        {
+          "caller": "togglePin",
+          "callee": "togglePinInList",
+          "lineNumber": 40
+        },
+        {
+          "caller": "togglePin",
+          "callee": "newList.find",
+          "lineNumber": 41
+        },
+        {
+          "caller": "togglePin",
+          "callee": "adapter.persistChange('reflection', id, updated).catch",
+          "lineNumber": 44
+        },
+        {
+          "caller": "togglePin",
+          "callee": "adapter.persistChange",
+          "lineNumber": 44
+        },
+        {
+          "caller": "togglePin",
+          "callee": "log.error",
+          "lineNumber": 44
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "get",
+          "lineNumber": 48
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "(state.reflections ?? []).find",
+          "lineNumber": 49
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "(state.reflectionLinks ?? []).filter(l =>\n        !l.deleted && (l.fromId === id || l.toId === id)\n      ).map",
+          "lineNumber": 53
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "(state.reflectionLinks ?? []).filter",
+          "lineNumber": 53
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "(state.reflectionLinks ?? []).filter",
+          "lineNumber": 56
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "linkIdsToDelete.includes",
+          "lineNumber": 56
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "(state.planItems ?? [])\n        .filter(i => !i.deleted && i.reflectionId === id)\n        .map",
+          "lineNumber": 58
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "(state.planItems ?? [])\n        .filter",
+          "lineNumber": 58
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "set",
+          "lineNumber": 65
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "(s.thoughtTrails ?? []).map",
+          "lineNumber": 66
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "(t.reflectionIds ?? []).includes",
+          "lineNumber": 67
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "(t.reflectionIds ?? []).filter",
+          "lineNumber": 68
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "Date.now",
+          "lineNumber": 68
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "updatedTrails.push",
+          "lineNumber": 69
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "(s.planItems ?? []).map",
+          "lineNumber": 75
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "planItemIdSet.has",
+          "lineNumber": 76
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "Date.now",
+          "lineNumber": 77
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "updatedPlanItems.push",
+          "lineNumber": 78
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "deleteReflectionFromList",
+          "lineNumber": 84
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "(s.reflectionLinks ?? []).map",
+          "lineNumber": 87
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "linkIdsToDelete.includes",
+          "lineNumber": 88
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "Date.now",
+          "lineNumber": 88
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "Date.now",
+          "lineNumber": 90
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "adapter.markDeleted('reflection', id).catch",
+          "lineNumber": 94
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "adapter.markDeleted",
+          "lineNumber": 94
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "log.error",
+          "lineNumber": 94
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "adapter.persistChange('thoughtTrail', t.id, t).catch",
+          "lineNumber": 96
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "adapter.persistChange",
+          "lineNumber": 96
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "log.error",
+          "lineNumber": 96
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "adapter.persistChange('planItem', item.id, item).catch",
+          "lineNumber": 99
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "adapter.persistChange",
+          "lineNumber": 99
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "log.error",
+          "lineNumber": 99
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "adapter.batchDelete(linksToDelete.map(l => ({ entity: 'reflectionLink' as const, id: l.id }))).catch",
+          "lineNumber": 102
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "adapter.batchDelete",
+          "lineNumber": 102
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "linksToDelete.map",
+          "lineNumber": 102
+        },
+        {
+          "caller": "deleteReflection",
+          "callee": "log.error",
+          "lineNumber": 102
+        },
+        {
+          "caller": "updateReflection",
+          "callee": "set",
+          "lineNumber": 108
+        },
+        {
+          "caller": "updateReflection",
+          "callee": "updateReflectionInList",
+          "lineNumber": 109
+        },
+        {
+          "caller": "updateReflection",
+          "callee": "newList.find",
+          "lineNumber": 110
+        },
+        {
+          "caller": "updateReflection",
+          "callee": "adapter.persistChange('reflection', id, updated).catch",
+          "lineNumber": 113
+        },
+        {
+          "caller": "updateReflection",
+          "callee": "adapter.persistChange",
+          "lineNumber": 113
+        },
+        {
+          "caller": "updateReflection",
+          "callee": "log.error",
+          "lineNumber": 113
+        },
+        {
+          "caller": "unlinkReflectionFromPlanItem",
+          "callee": "get().reflections.find",
+          "lineNumber": 117
+        },
+        {
+          "caller": "unlinkReflectionFromPlanItem",
+          "callee": "get",
+          "lineNumber": 117
+        },
+        {
+          "caller": "unlinkReflectionFromPlanItem",
+          "callee": "set",
+          "lineNumber": 123
+        },
+        {
+          "caller": "unlinkReflectionFromPlanItem",
+          "callee": "unlinkReflectionFromPlanItemBiz",
+          "lineNumber": 124
+        },
+        {
+          "caller": "unlinkReflectionFromPlanItem",
+          "callee": "newReflections.find",
+          "lineNumber": 125
+        },
+        {
+          "caller": "unlinkReflectionFromPlanItem",
+          "callee": "(s.planItems ?? []).map",
+          "lineNumber": 127
+        },
+        {
+          "caller": "unlinkReflectionFromPlanItem",
+          "callee": "Date.now",
+          "lineNumber": 128
+        },
+        {
+          "caller": "unlinkReflectionFromPlanItem",
+          "callee": "newPlanItems.find",
+          "lineNumber": 130
+        },
+        {
+          "caller": "unlinkReflectionFromPlanItem",
+          "callee": "adapter.persistChange('reflection', reflectionId, updated).catch",
+          "lineNumber": 135
+        },
+        {
+          "caller": "unlinkReflectionFromPlanItem",
+          "callee": "adapter.persistChange",
+          "lineNumber": 135
+        },
+        {
+          "caller": "unlinkReflectionFromPlanItem",
+          "callee": "log.error",
+          "lineNumber": 135
+        },
+        {
+          "caller": "unlinkReflectionFromPlanItem",
+          "callee": "adapter.persistChange('planItem', updatedItem.id, updatedItem).catch",
+          "lineNumber": 137
+        },
+        {
+          "caller": "unlinkReflectionFromPlanItem",
+          "callee": "adapter.persistChange",
+          "lineNumber": 137
+        },
+        {
+          "caller": "unlinkReflectionFromPlanItem",
+          "callee": "log.error",
+          "lineNumber": 137
+        },
+        {
+          "caller": "setReflectionFilters",
+          "callee": "set",
+          "lineNumber": 143
+        },
+        {
+          "caller": "setReflectionFilters",
+          "callee": "filters",
+          "lineNumber": 143
+        },
+        {
+          "caller": "setReflectionFilters",
+          "callee": "set",
+          "lineNumber": 145
+        },
+        {
+          "caller": "setReflectionFilters",
+          "callee": "onSettingsPersist",
+          "lineNumber": 147
+        },
+        {
+          "caller": "addCustomTag",
+          "callee": "tag.trim",
+          "lineNumber": 157
+        },
+        {
+          "caller": "addCustomTag",
+          "callee": "set",
+          "lineNumber": 158
+        },
+        {
+          "caller": "addCustomTag",
+          "callee": "addCustomItem",
+          "lineNumber": 159
+        },
+        {
+          "caller": "addCustomTag",
+          "callee": "(s.allTagsOrder ?? []).includes",
+          "lineNumber": 160
+        },
+        {
+          "caller": "addCustomTag",
+          "callee": "onSettingsPersist",
+          "lineNumber": 162
+        },
+        {
+          "caller": "removeCustomTag",
+          "callee": "set",
+          "lineNumber": 165
+        },
+        {
+          "caller": "removeCustomTag",
+          "callee": "removeCustomItem",
+          "lineNumber": 166
+        },
+        {
+          "caller": "removeCustomTag",
+          "callee": "(s.allTagsOrder ?? []).filter",
+          "lineNumber": 167
+        },
+        {
+          "caller": "removeCustomTag",
+          "callee": "onSettingsPersist",
+          "lineNumber": 169
+        },
+        {
+          "caller": "updateCustomTag",
+          "callee": "set",
+          "lineNumber": 172
+        },
+        {
+          "caller": "updateCustomTag",
+          "callee": "updateCustomItem",
+          "lineNumber": 173
+        },
+        {
+          "caller": "updateCustomTag",
+          "callee": "(s.allTagsOrder ?? []).map",
+          "lineNumber": 177
+        },
+        {
+          "caller": "updateCustomTag",
+          "callee": "onSettingsPersist",
+          "lineNumber": 181
+        },
+        {
+          "caller": "addCustomMood",
+          "callee": "mood.trim",
+          "lineNumber": 184
+        },
+        {
+          "caller": "addCustomMood",
+          "callee": "set",
+          "lineNumber": 185
+        },
+        {
+          "caller": "addCustomMood",
+          "callee": "addCustomItem",
+          "lineNumber": 186
+        },
+        {
+          "caller": "addCustomMood",
+          "callee": "(s.allMoodsOrder ?? []).includes",
+          "lineNumber": 187
+        },
+        {
+          "caller": "addCustomMood",
+          "callee": "onSettingsPersist",
+          "lineNumber": 189
+        },
+        {
+          "caller": "removeCustomMood",
+          "callee": "set",
+          "lineNumber": 192
+        },
+        {
+          "caller": "removeCustomMood",
+          "callee": "removeCustomItem",
+          "lineNumber": 193
+        },
+        {
+          "caller": "removeCustomMood",
+          "callee": "(s.allMoodsOrder ?? []).filter",
+          "lineNumber": 194
+        },
+        {
+          "caller": "removeCustomMood",
+          "callee": "onSettingsPersist",
+          "lineNumber": 196
+        },
+        {
+          "caller": "updateCustomMood",
+          "callee": "set",
+          "lineNumber": 199
+        },
+        {
+          "caller": "updateCustomMood",
+          "callee": "updateCustomItem",
+          "lineNumber": 200
+        },
+        {
+          "caller": "updateCustomMood",
+          "callee": "(s.allMoodsOrder ?? []).map",
+          "lineNumber": 204
+        },
+        {
+          "caller": "updateCustomMood",
+          "callee": "onSync",
+          "lineNumber": 208
+        },
+        {
+          "caller": "reorderCustomTag",
+          "callee": "set",
+          "lineNumber": 210
+        },
+        {
+          "caller": "reorderCustomTag",
+          "callee": "reorderItem",
+          "lineNumber": 210
+        },
+        {
+          "caller": "reorderCustomTag",
+          "callee": "onSettingsPersist",
+          "lineNumber": 210
+        },
+        {
+          "caller": "reorderCustomMood",
+          "callee": "set",
+          "lineNumber": 211
+        },
+        {
+          "caller": "reorderCustomMood",
+          "callee": "reorderItem",
+          "lineNumber": 211
+        },
+        {
+          "caller": "reorderCustomMood",
+          "callee": "onSettingsPersist",
+          "lineNumber": 211
+        },
+        {
+          "caller": "reorderAllTag",
+          "callee": "set",
+          "lineNumber": 213
+        },
+        {
+          "caller": "reorderAllTag",
+          "callee": "reorderItem",
+          "lineNumber": 218
+        },
+        {
+          "caller": "reorderAllTag",
+          "callee": "onSync",
+          "lineNumber": 220
+        },
+        {
+          "caller": "reorderAllMood",
+          "callee": "set",
+          "lineNumber": 223
+        },
+        {
+          "caller": "reorderAllMood",
+          "callee": "reorderItem",
+          "lineNumber": 228
+        },
+        {
+          "caller": "reorderAllMood",
+          "callee": "onSync",
+          "lineNumber": 230
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "uid",
+          "lineNumber": 237
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "Date.now",
+          "lineNumber": 238
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "set",
+          "lineNumber": 243
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "adapter.persistChange('reflectionLink', id, link).catch",
+          "lineNumber": 244
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "adapter.persistChange",
+          "lineNumber": 244
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "log.error",
+          "lineNumber": 244
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "get().reflectionLinks?.find",
+          "lineNumber": 249
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "get",
+          "lineNumber": 249
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "set",
+          "lineNumber": 252
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "(s.reflectionLinks ?? []).map",
+          "lineNumber": 253
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "Date.now",
+          "lineNumber": 254
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "newList.find",
+          "lineNumber": 256
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "adapter.persistChange('reflectionLink', id, link).catch",
+          "lineNumber": 259
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "adapter.persistChange",
+          "lineNumber": 259
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "log.error",
+          "lineNumber": 259
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "(get().reflectionLinks ?? []).filter",
+          "lineNumber": 263
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "get",
+          "lineNumber": 263
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "(get().reflectionLinks ?? []).filter",
+          "lineNumber": 269
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "get",
+          "lineNumber": 269
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "(get().reflectionLinks ?? []).filter",
+          "lineNumber": 275
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "get",
+          "lineNumber": 275
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "(get().reflectionLinks ?? []).filter",
+          "lineNumber": 281
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "get",
+          "lineNumber": 281
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "set",
+          "lineNumber": 285
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "(s.reflectionLinks ?? []).map",
+          "lineNumber": 286
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "Date.now",
+          "lineNumber": 288
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "adapter.batchDelete(linksToDelete.map(l => ({ entity: 'reflectionLink' as const, id: l.id }))).catch",
+          "lineNumber": 293
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "adapter.batchDelete",
+          "lineNumber": 293
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "linksToDelete.map",
+          "lineNumber": 293
+        },
+        {
+          "caller": "createReflectionSlice",
+          "callee": "log.error",
+          "lineNumber": 293
+        }
+      ],
+      "metrics": {
+        "importCount": 9,
+        "exportCount": 2,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/store/createReviewSlice.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 153,
+      "nonEmptyLines": 129,
+      "functions": [
+        {
+          "name": "createReviewSlice",
+          "startLine": 11,
+          "endLine": 153,
+          "params": [
+            "adapter",
+            "onSync"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "createReviewSlice",
+          "line": 11,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "generateReview",
+          "callee": "get",
+          "lineNumber": 19
+        },
+        {
+          "caller": "generateReview",
+          "callee": "dateStr",
+          "lineNumber": 21
+        },
+        {
+          "caller": "generateReview",
+          "callee": "getWeekRange",
+          "lineNumber": 25
+        },
+        {
+          "caller": "generateReview",
+          "callee": "getMonthRange",
+          "lineNumber": 26
+        },
+        {
+          "caller": "generateReview",
+          "callee": "state.checkinReviews.find",
+          "lineNumber": 29
+        },
+        {
+          "caller": "generateReview",
+          "callee": "calculateReviewData",
+          "lineNumber": 39
+        },
+        {
+          "caller": "generateReview",
+          "callee": "log.info",
+          "lineNumber": 58
+        },
+        {
+          "caller": "generateReview",
+          "callee": "log.info",
+          "lineNumber": 59
+        },
+        {
+          "caller": "generateReview",
+          "callee": "getAIService",
+          "lineNumber": 61
+        },
+        {
+          "caller": "generateReview",
+          "callee": "aiService.generateCheckinReview",
+          "lineNumber": 65
+        },
+        {
+          "caller": "generateReview",
+          "callee": "log.error",
+          "lineNumber": 69
+        },
+        {
+          "caller": "generateReview",
+          "callee": "get",
+          "lineNumber": 75
+        },
+        {
+          "caller": "generateReview",
+          "callee": "Date.now",
+          "lineNumber": 84
+        },
+        {
+          "caller": "generateReview",
+          "callee": "Date.now",
+          "lineNumber": 86
+        },
+        {
+          "caller": "generateReview",
+          "callee": "set",
+          "lineNumber": 91
+        },
+        {
+          "caller": "generateReview",
+          "callee": "latestReviews.filter",
+          "lineNumber": 94
+        },
+        {
+          "caller": "generateReview",
+          "callee": "adapter.persistChange",
+          "lineNumber": 100
+        },
+        {
+          "caller": "generateReview",
+          "callee": "log.error",
+          "lineNumber": 102
+        },
+        {
+          "caller": "generateReview",
+          "callee": "onSync",
+          "lineNumber": 106
+        },
+        {
+          "caller": "getReview",
+          "callee": "get().checkinReviews.find",
+          "lineNumber": 112
+        },
+        {
+          "caller": "getReview",
+          "callee": "get",
+          "lineNumber": 112
+        },
+        {
+          "caller": "getLatestReview",
+          "callee": "get().checkinReviews\n        .filter(r => r.period === period && r.deleted !== true)\n        .sort",
+          "lineNumber": 118
+        },
+        {
+          "caller": "getLatestReview",
+          "callee": "get().checkinReviews\n        .filter",
+          "lineNumber": 118
+        },
+        {
+          "caller": "getLatestReview",
+          "callee": "get",
+          "lineNumber": 118
+        },
+        {
+          "caller": "deleteReview",
+          "callee": "set",
+          "lineNumber": 124
+        },
+        {
+          "caller": "deleteReview",
+          "callee": "state.checkinReviews.map",
+          "lineNumber": 125
+        },
+        {
+          "caller": "deleteReview",
+          "callee": "Date.now",
+          "lineNumber": 126
+        },
+        {
+          "caller": "deleteReview",
+          "callee": "adapter.markDeleted('checkinReview', id).catch",
+          "lineNumber": 130
+        },
+        {
+          "caller": "deleteReview",
+          "callee": "adapter.markDeleted",
+          "lineNumber": 130
+        },
+        {
+          "caller": "deleteReview",
+          "callee": "log.error",
+          "lineNumber": 130
+        },
+        {
+          "caller": "deleteReview",
+          "callee": "onSync",
+          "lineNumber": 131
+        },
+        {
+          "caller": "clearAllReviews",
+          "callee": "get",
+          "lineNumber": 135
+        },
+        {
+          "caller": "clearAllReviews",
+          "callee": "set",
+          "lineNumber": 138
+        },
+        {
+          "caller": "clearAllReviews",
+          "callee": "reviews.map",
+          "lineNumber": 139
+        },
+        {
+          "caller": "clearAllReviews",
+          "callee": "Date.now",
+          "lineNumber": 140
+        },
+        {
+          "caller": "clearAllReviews",
+          "callee": "activeOnly(reviews).map",
+          "lineNumber": 145
+        },
+        {
+          "caller": "clearAllReviews",
+          "callee": "activeOnly",
+          "lineNumber": 145
+        },
+        {
+          "caller": "clearAllReviews",
+          "callee": "adapter.batchDelete(toDelete).catch",
+          "lineNumber": 147
+        },
+        {
+          "caller": "clearAllReviews",
+          "callee": "adapter.batchDelete",
+          "lineNumber": 147
+        },
+        {
+          "caller": "clearAllReviews",
+          "callee": "log.error",
+          "lineNumber": 147
+        },
+        {
+          "caller": "clearAllReviews",
+          "callee": "onSync",
+          "lineNumber": 150
+        }
+      ],
+      "metrics": {
+        "importCount": 7,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/store/createSettingsSlice.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 93,
+      "nonEmptyLines": 82,
+      "functions": [
+        {
+          "name": "createSettingsSlice",
+          "startLine": 27,
+          "endLine": 93,
+          "params": [
+            "onPersist",
+            "onSettingChange",
+            "onAIPersist"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "createSettingsSlice",
+          "line": 27,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "setTheme",
+          "callee": "set",
+          "lineNumber": 39
+        },
+        {
+          "caller": "setTheme",
+          "callee": "onSettingChange",
+          "lineNumber": 39
+        },
+        {
+          "caller": "setTheme",
+          "callee": "onPersist",
+          "lineNumber": 39
+        },
+        {
+          "caller": "setLanguage",
+          "callee": "set",
+          "lineNumber": 40
+        },
+        {
+          "caller": "setLanguage",
+          "callee": "onSettingChange",
+          "lineNumber": 40
+        },
+        {
+          "caller": "setLanguage",
+          "callee": "onPersist",
+          "lineNumber": 40
+        },
+        {
+          "caller": "setRemindEnabled",
+          "callee": "set",
+          "lineNumber": 41
+        },
+        {
+          "caller": "setRemindEnabled",
+          "callee": "onSettingChange",
+          "lineNumber": 41
+        },
+        {
+          "caller": "setRemindEnabled",
+          "callee": "onPersist",
+          "lineNumber": 41
+        },
+        {
+          "caller": "setRemindTime",
+          "callee": "set",
+          "lineNumber": 42
+        },
+        {
+          "caller": "setRemindTime",
+          "callee": "onSettingChange",
+          "lineNumber": 42
+        },
+        {
+          "caller": "setRemindTime",
+          "callee": "onPersist",
+          "lineNumber": 42
+        },
+        {
+          "caller": "setAIMode",
+          "callee": "set",
+          "lineNumber": 49
+        },
+        {
+          "caller": "setAIMode",
+          "callee": "onAIPersist",
+          "lineNumber": 50
+        },
+        {
+          "caller": "addAIModel",
+          "callee": "set",
+          "lineNumber": 54
+        },
+        {
+          "caller": "addAIModel",
+          "callee": "(s.aiModels as ModelConfig[]).some",
+          "lineNumber": 55
+        },
+        {
+          "caller": "addAIModel",
+          "callee": "(s.aiModels as ModelConfig[]).map",
+          "lineNumber": 56
+        },
+        {
+          "caller": "addAIModel",
+          "callee": "onAIPersist",
+          "lineNumber": 59
+        },
+        {
+          "caller": "updateAIModel",
+          "callee": "set",
+          "lineNumber": 63
+        },
+        {
+          "caller": "updateAIModel",
+          "callee": "(s.aiModels as ModelConfig[]).map",
+          "lineNumber": 64
+        },
+        {
+          "caller": "updateAIModel",
+          "callee": "onAIPersist",
+          "lineNumber": 66
+        },
+        {
+          "caller": "removeAIModel",
+          "callee": "set",
+          "lineNumber": 70
+        },
+        {
+          "caller": "removeAIModel",
+          "callee": "(s.aiModels as ModelConfig[]).filter",
+          "lineNumber": 70
+        },
+        {
+          "caller": "removeAIModel",
+          "callee": "onAIPersist",
+          "lineNumber": 71
+        },
+        {
+          "caller": "setDefaultAIModel",
+          "callee": "set",
+          "lineNumber": 76
+        },
+        {
+          "caller": "setDefaultAIModel",
+          "callee": "(s.aiModels as ModelConfig[]).some",
+          "lineNumber": 77
+        },
+        {
+          "caller": "setDefaultAIModel",
+          "callee": "(s.aiModels as ModelConfig[]).map",
+          "lineNumber": 79
+        },
+        {
+          "caller": "setDefaultAIModel",
+          "callee": "onAIPersist",
+          "lineNumber": 81
+        },
+        {
+          "caller": "toggleAIModel",
+          "callee": "set",
+          "lineNumber": 85
+        },
+        {
+          "caller": "toggleAIModel",
+          "callee": "(s.aiModels as ModelConfig[]).map",
+          "lineNumber": 86
+        },
+        {
+          "caller": "toggleAIModel",
+          "callee": "onAIPersist",
+          "lineNumber": 90
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/store/createSleepSlice.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 82,
+      "nonEmptyLines": 76,
+      "functions": [
+        {
+          "name": "uuid",
+          "startLine": 9,
+          "endLine": 14,
+          "params": []
+        },
+        {
+          "name": "createSleepSlice",
+          "startLine": 16,
+          "endLine": 82,
+          "params": [
+            "adapter",
+            "onSync"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "createSleepSlice",
+          "line": 16,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "uuid",
+          "callee": "'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace",
+          "lineNumber": 10
+        },
+        {
+          "caller": "uuid",
+          "callee": "Math.random",
+          "lineNumber": 11
+        },
+        {
+          "caller": "uuid",
+          "callee": "(c === 'x' ? r : (r & 0x3) | 0x8).toString",
+          "lineNumber": 12
+        },
+        {
+          "caller": "getTodaySleep",
+          "callee": "dateStr",
+          "lineNumber": 25
+        },
+        {
+          "caller": "getTodaySleep",
+          "callee": "(get().sleepHistory ?? []).find",
+          "lineNumber": 26
+        },
+        {
+          "caller": "getTodaySleep",
+          "callee": "get",
+          "lineNumber": 26
+        },
+        {
+          "caller": "completeBarrier",
+          "callee": "dateStr",
+          "lineNumber": 30
+        },
+        {
+          "caller": "completeBarrier",
+          "callee": "Date.now",
+          "lineNumber": 31
+        },
+        {
+          "caller": "completeBarrier",
+          "callee": "set",
+          "lineNumber": 33
+        },
+        {
+          "caller": "completeBarrier",
+          "callee": "(s.sleepHistory ?? []).find",
+          "lineNumber": 34
+        },
+        {
+          "caller": "completeBarrier",
+          "callee": "s.sleepHistory.map",
+          "lineNumber": 38
+        },
+        {
+          "caller": "completeBarrier",
+          "callee": "uuid",
+          "lineNumber": 40
+        },
+        {
+          "caller": "completeBarrier",
+          "callee": "adapter.persistChange('sleep', persistEntry.id, persistEntry).catch",
+          "lineNumber": 44
+        },
+        {
+          "caller": "completeBarrier",
+          "callee": "adapter.persistChange",
+          "lineNumber": 44
+        },
+        {
+          "caller": "completeBarrier",
+          "callee": "log.error",
+          "lineNumber": 44
+        },
+        {
+          "caller": "completeBarrier",
+          "callee": "onSync",
+          "lineNumber": 45
+        },
+        {
+          "caller": "saveSleepDiary",
+          "callee": "dateStr",
+          "lineNumber": 49
+        },
+        {
+          "caller": "saveSleepDiary",
+          "callee": "Date.now",
+          "lineNumber": 50
+        },
+        {
+          "caller": "saveSleepDiary",
+          "callee": "set",
+          "lineNumber": 52
+        },
+        {
+          "caller": "saveSleepDiary",
+          "callee": "(s.sleepHistory ?? []).find",
+          "lineNumber": 53
+        },
+        {
+          "caller": "saveSleepDiary",
+          "callee": "Math.round",
+          "lineNumber": 59
+        },
+        {
+          "caller": "saveSleepDiary",
+          "callee": "s.sleepHistory.map",
+          "lineNumber": 62
+        },
+        {
+          "caller": "saveSleepDiary",
+          "callee": "uuid",
+          "lineNumber": 64
+        },
+        {
+          "caller": "saveSleepDiary",
+          "callee": "Math.round",
+          "lineNumber": 68
+        },
+        {
+          "caller": "saveSleepDiary",
+          "callee": "adapter.persistChange('sleep', persistEntry.id, persistEntry).catch",
+          "lineNumber": 73
+        },
+        {
+          "caller": "saveSleepDiary",
+          "callee": "adapter.persistChange",
+          "lineNumber": 73
+        },
+        {
+          "caller": "saveSleepDiary",
+          "callee": "log.error",
+          "lineNumber": 73
+        },
+        {
+          "caller": "saveSleepDiary",
+          "callee": "onSync",
+          "lineNumber": 74
+        },
+        {
+          "caller": "setSleepGoal",
+          "callee": "set",
+          "lineNumber": 78
+        },
+        {
+          "caller": "setSleepGoal",
+          "callee": "adapter.persistSettings('sleepGoal', goal).catch",
+          "lineNumber": 79
+        },
+        {
+          "caller": "setSleepGoal",
+          "callee": "adapter.persistSettings",
+          "lineNumber": 79
+        },
+        {
+          "caller": "setSleepGoal",
+          "callee": "log.error",
+          "lineNumber": 79
+        }
+      ],
+      "metrics": {
+        "importCount": 5,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/store/createSliceErrorSlice.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 21,
+      "nonEmptyLines": 17,
+      "functions": [
+        {
+          "name": "createSliceErrorSlice",
+          "startLine": 7,
+          "endLine": 21,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "createSliceErrorSlice",
+          "line": 7,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "addSliceError",
+          "callee": "set",
+          "lineNumber": 12
+        },
+        {
+          "caller": "addSliceError",
+          "callee": "[...s.sliceErrors, error].slice",
+          "lineNumber": 13
+        },
+        {
+          "caller": "clearSliceErrors",
+          "callee": "set",
+          "lineNumber": 18
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/store/createThoughtTrailSlice.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 208,
+      "nonEmptyLines": 184,
+      "functions": [
+        {
+          "name": "makeTestStore",
+          "startLine": 16,
+          "endLine": 31,
+          "params": [
+            "initialState"
+          ]
+        },
+        {
+          "name": "makeTrail",
+          "startLine": 33,
+          "endLine": 43,
+          "params": [
+            "overrides"
+          ]
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "set",
+          "callee": "fn",
+          "lineNumber": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 0,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/store/createThoughtTrailSlice.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 312,
+      "nonEmptyLines": 281,
+      "functions": [
+        {
+          "name": "createThoughtTrailSlice",
+          "startLine": 11,
+          "endLine": 312,
+          "params": [
+            "adapter",
+            "onSettingsPersist"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "createThoughtTrailSlice",
+          "line": 11,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "uid",
+          "lineNumber": 19
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "Date.now",
+          "lineNumber": 20
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "set",
+          "lineNumber": 35
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(s.reflections ?? []).map",
+          "lineNumber": 36
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "reflectionIds.includes",
+          "lineNumber": 37
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "Date.now",
+          "lineNumber": 38
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "capturedReflections.push",
+          "lineNumber": 39
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange('reflection', r.id, r).catch",
+          "lineNumber": 51
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange",
+          "lineNumber": 51
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "log.error",
+          "lineNumber": 51
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange('thoughtTrail', id, trail).catch",
+          "lineNumber": 54
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange",
+          "lineNumber": 54
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "log.error",
+          "lineNumber": 54
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "set",
+          "lineNumber": 60
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(s.thoughtTrails ?? []).map",
+          "lineNumber": 61
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "Date.now",
+          "lineNumber": 62
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange('thoughtTrail', id, updated).catch",
+          "lineNumber": 66
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange",
+          "lineNumber": 66
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "log.error",
+          "lineNumber": 66
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "Date.now",
+          "lineNumber": 70
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(get().thoughtTrails ?? []).find",
+          "lineNumber": 71
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "get",
+          "lineNumber": 71
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(get().trailNotes ?? []).filter",
+          "lineNumber": 76
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "get",
+          "lineNumber": 76
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(get().planItems ?? [])\n        .filter(i => !i.deleted && i.trailId === id)\n        .map",
+          "lineNumber": 77
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(get().planItems ?? [])\n        .filter",
+          "lineNumber": 77
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "get",
+          "lineNumber": 77
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "set",
+          "lineNumber": 86
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(s.reflections ?? []).map",
+          "lineNumber": 87
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "affectedReflectionIds.includes",
+          "lineNumber": 88
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(r.thoughtTrailIds ?? []).filter",
+          "lineNumber": 89
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "updatedReflections.push",
+          "lineNumber": 90
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(s.planItems ?? []).map",
+          "lineNumber": 95
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "updatedPlanItems.push",
+          "lineNumber": 98
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(s.trailNotes ?? []).map",
+          "lineNumber": 105
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(s.thoughtTrails ?? []).map",
+          "lineNumber": 106
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange('reflection', r.id, r).catch",
+          "lineNumber": 112
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange",
+          "lineNumber": 112
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "log.error",
+          "lineNumber": 112
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.batchDelete([\n        ...notesToDelete.map(n => ({ entity: 'trailNote' as const, id: n.id })),\n        { entity: 'thoughtTrail', id },\n      ]).catch",
+          "lineNumber": 114
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.batchDelete",
+          "lineNumber": 114
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "notesToDelete.map",
+          "lineNumber": 115
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "log.error",
+          "lineNumber": 117
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange('planItem', item.id, item).catch",
+          "lineNumber": 119
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange",
+          "lineNumber": 119
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "log.error",
+          "lineNumber": 119
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(get().thoughtTrails ?? []).find",
+          "lineNumber": 124
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "get",
+          "lineNumber": 124
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(trail.reflectionIds ?? []).includes",
+          "lineNumber": 125
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "set",
+          "lineNumber": 130
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(s.thoughtTrails ?? []).map",
+          "lineNumber": 131
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "Date.now",
+          "lineNumber": 133
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(s.reflections ?? []).map",
+          "lineNumber": 138
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "Date.now",
+          "lineNumber": 140
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange('reflection', reflectionId, updatedReflection).catch",
+          "lineNumber": 144
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange",
+          "lineNumber": 144
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "log.error",
+          "lineNumber": 144
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange('thoughtTrail', trailId, updatedTrail).catch",
+          "lineNumber": 145
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange",
+          "lineNumber": 145
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "log.error",
+          "lineNumber": 145
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "set",
+          "lineNumber": 152
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(s.thoughtTrails ?? []).map",
+          "lineNumber": 153
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(t.reflectionIds ?? []).filter",
+          "lineNumber": 155
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "Date.now",
+          "lineNumber": 155
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(s.reflections ?? []).map",
+          "lineNumber": 160
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(r.thoughtTrailIds ?? []).filter",
+          "lineNumber": 162
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "Date.now",
+          "lineNumber": 162
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange('reflection', reflectionId, updatedReflection).catch",
+          "lineNumber": 166
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange",
+          "lineNumber": 166
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "log.error",
+          "lineNumber": 166
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange('thoughtTrail', trailId, updatedTrail).catch",
+          "lineNumber": 167
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange",
+          "lineNumber": 167
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "log.error",
+          "lineNumber": 167
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "set",
+          "lineNumber": 172
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(s.thoughtTrails ?? []).map",
+          "lineNumber": 173
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "Date.now",
+          "lineNumber": 174
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "newList.find",
+          "lineNumber": 176
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange('thoughtTrail', trailId, trail).catch",
+          "lineNumber": 179
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange",
+          "lineNumber": 179
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "log.error",
+          "lineNumber": 179
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "set",
+          "lineNumber": 184
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(s.thoughtTrails ?? []).map",
+          "lineNumber": 185
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "Date.now",
+          "lineNumber": 186
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "newList.find",
+          "lineNumber": 188
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange('thoughtTrail', trailId, trail).catch",
+          "lineNumber": 191
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange",
+          "lineNumber": 191
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "log.error",
+          "lineNumber": 191
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "set",
+          "lineNumber": 196
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(s.thoughtTrails ?? []).map",
+          "lineNumber": 197
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "Date.now",
+          "lineNumber": 198
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "newList.find",
+          "lineNumber": 200
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange('thoughtTrail', trailId, trail).catch",
+          "lineNumber": 203
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange",
+          "lineNumber": 203
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "log.error",
+          "lineNumber": 203
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "get().createPlanItem",
+          "lineNumber": 208
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "get",
+          "lineNumber": 208
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(get().thoughtTrails ?? []).find",
+          "lineNumber": 215
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "get",
+          "lineNumber": 215
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(get().planItems ?? []).filter",
+          "lineNumber": 217
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "get",
+          "lineNumber": 217
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "linkedIds.has",
+          "lineNumber": 219
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "set",
+          "lineNumber": 228
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "onSettingsPersist",
+          "lineNumber": 231
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "uid",
+          "lineNumber": 237
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "Date.now",
+          "lineNumber": 238
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(get().trailNotes ?? []).filter",
+          "lineNumber": 239
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "get",
+          "lineNumber": 239
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "set",
+          "lineNumber": 255
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(s.thoughtTrails ?? []).map",
+          "lineNumber": 256
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "Date.now",
+          "lineNumber": 258
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "newTrails.find",
+          "lineNumber": 261
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange('thoughtTrail', trailId, updatedTrail).catch",
+          "lineNumber": 265
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange",
+          "lineNumber": 265
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "log.error",
+          "lineNumber": 265
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange('trailNote', note.id, note).catch",
+          "lineNumber": 266
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange",
+          "lineNumber": 266
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "log.error",
+          "lineNumber": 266
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "set",
+          "lineNumber": 272
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(s.trailNotes ?? []).map",
+          "lineNumber": 273
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "Date.now",
+          "lineNumber": 274
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "newList.find",
+          "lineNumber": 276
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange('trailNote', noteId, updatedNote).catch",
+          "lineNumber": 279
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange",
+          "lineNumber": 279
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "log.error",
+          "lineNumber": 279
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(get().trailNotes ?? []).find",
+          "lineNumber": 283
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "get",
+          "lineNumber": 283
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "set",
+          "lineNumber": 287
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(s.thoughtTrails ?? []).map",
+          "lineNumber": 288
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(t.noteIds ?? []).filter",
+          "lineNumber": 290
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "Date.now",
+          "lineNumber": 290
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "newTrails.find",
+          "lineNumber": 293
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(s.trailNotes ?? []).map",
+          "lineNumber": 296
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "Date.now",
+          "lineNumber": 297
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange('thoughtTrail', note.trailId, updatedTrail).catch",
+          "lineNumber": 302
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.persistChange",
+          "lineNumber": 302
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "log.error",
+          "lineNumber": 302
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.markDeleted('trailNote', noteId).catch",
+          "lineNumber": 303
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "adapter.markDeleted",
+          "lineNumber": 303
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "log.error",
+          "lineNumber": 303
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(get().trailNotes ?? [])\n        .filter(n => n.trailId === trailId && !n.deleted)\n        .sort",
+          "lineNumber": 307
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "(get().trailNotes ?? [])\n        .filter",
+          "lineNumber": 307
+        },
+        {
+          "caller": "createThoughtTrailSlice",
+          "callee": "get",
+          "lineNumber": 307
+        }
+      ],
+      "metrics": {
+        "importCount": 8,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/store/createTrailNoteSlice.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 140,
+      "nonEmptyLines": 123,
+      "functions": [
+        {
+          "name": "makeTestStore",
+          "startLine": 16,
+          "endLine": 29,
+          "params": [
+            "initialState"
+          ]
+        },
+        {
+          "name": "makeTrail",
+          "startLine": 31,
+          "endLine": 41,
+          "params": [
+            "overrides"
+          ]
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "set",
+          "callee": "fn",
+          "lineNumber": 23
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 0,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/store/createZhiguanSlice.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 248,
+      "nonEmptyLines": 214,
+      "functions": [
+        {
+          "name": "genId",
+          "startLine": 16,
+          "endLine": 18,
+          "params": []
+        },
+        {
+          "name": "createZhiguanSlice",
+          "startLine": 27,
+          "endLine": 248,
+          "params": [
+            "adapter",
+            "getUserId",
+            "onSync"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "createZhiguanSlice",
+          "line": 27,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "genId",
+          "callee": "Date.now().toString",
+          "lineNumber": 17
+        },
+        {
+          "caller": "genId",
+          "callee": "Date.now",
+          "lineNumber": 17
+        },
+        {
+          "caller": "genId",
+          "callee": "Math.random().toString(36).slice",
+          "lineNumber": 17
+        },
+        {
+          "caller": "genId",
+          "callee": "Math.random().toString",
+          "lineNumber": 17
+        },
+        {
+          "caller": "genId",
+          "callee": "Math.random",
+          "lineNumber": 17
+        },
+        {
+          "caller": "createZhiguanSlice",
+          "callee": "import",
+          "lineNumber": 28
+        },
+        {
+          "caller": "addBreathRecord",
+          "callee": "Date.now",
+          "lineNumber": 38
+        },
+        {
+          "caller": "addBreathRecord",
+          "callee": "Math.random().toString(36).slice",
+          "lineNumber": 38
+        },
+        {
+          "caller": "addBreathRecord",
+          "callee": "Math.random().toString",
+          "lineNumber": 38
+        },
+        {
+          "caller": "addBreathRecord",
+          "callee": "Math.random",
+          "lineNumber": 38
+        },
+        {
+          "caller": "addBreathRecord",
+          "callee": "Date.now",
+          "lineNumber": 40
+        },
+        {
+          "caller": "addBreathRecord",
+          "callee": "set",
+          "lineNumber": 43
+        },
+        {
+          "caller": "addBreathRecord",
+          "callee": "adapter.persistChange('breath', entry.id, entry).catch",
+          "lineNumber": 44
+        },
+        {
+          "caller": "addBreathRecord",
+          "callee": "adapter.persistChange",
+          "lineNumber": 44
+        },
+        {
+          "caller": "addBreathRecord",
+          "callee": "log.error",
+          "lineNumber": 44
+        },
+        {
+          "caller": "addBreathRecord",
+          "callee": "onSync",
+          "lineNumber": 45
+        },
+        {
+          "caller": "removeBreathRecord",
+          "callee": "(get().breathHistory ?? []).find",
+          "lineNumber": 49
+        },
+        {
+          "caller": "removeBreathRecord",
+          "callee": "get",
+          "lineNumber": 49
+        },
+        {
+          "caller": "removeBreathRecord",
+          "callee": "(get() as FullStore).addToRecycleBin",
+          "lineNumber": 51
+        },
+        {
+          "caller": "removeBreathRecord",
+          "callee": "get",
+          "lineNumber": 51
+        },
+        {
+          "caller": "removeBreathRecord",
+          "callee": "set",
+          "lineNumber": 53
+        },
+        {
+          "caller": "removeBreathRecord",
+          "callee": "(s.breathHistory ?? []).map",
+          "lineNumber": 54
+        },
+        {
+          "caller": "removeBreathRecord",
+          "callee": "Date.now",
+          "lineNumber": 55
+        },
+        {
+          "caller": "removeBreathRecord",
+          "callee": "adapter.markDeleted('breath', id).catch",
+          "lineNumber": 58
+        },
+        {
+          "caller": "removeBreathRecord",
+          "callee": "adapter.markDeleted",
+          "lineNumber": 58
+        },
+        {
+          "caller": "removeBreathRecord",
+          "callee": "log.error",
+          "lineNumber": 58
+        },
+        {
+          "caller": "removeBreathRecord",
+          "callee": "onSync",
+          "lineNumber": 59
+        },
+        {
+          "caller": "initDraft",
+          "callee": "set",
+          "lineNumber": 73
+        },
+        {
+          "caller": "updateDraft",
+          "callee": "get",
+          "lineNumber": 88
+        },
+        {
+          "caller": "updateDraft",
+          "callee": "set",
+          "lineNumber": 90
+        },
+        {
+          "caller": "resetDraft",
+          "callee": "set",
+          "lineNumber": 94
+        },
+        {
+          "caller": "startSession",
+          "callee": "get",
+          "lineNumber": 100
+        },
+        {
+          "caller": "startSession",
+          "callee": "genId",
+          "lineNumber": 102
+        },
+        {
+          "caller": "startSession",
+          "callee": "getUserId",
+          "lineNumber": 103
+        },
+        {
+          "caller": "startSession",
+          "callee": "Date.now",
+          "lineNumber": 105
+        },
+        {
+          "caller": "startSession",
+          "callee": "Date.now",
+          "lineNumber": 122
+        },
+        {
+          "caller": "startSession",
+          "callee": "set",
+          "lineNumber": 125
+        },
+        {
+          "caller": "updateSessionDraft",
+          "callee": "get",
+          "lineNumber": 132
+        },
+        {
+          "caller": "updateSessionDraft",
+          "callee": "set",
+          "lineNumber": 134
+        },
+        {
+          "caller": "recordBreathCount",
+          "callee": "get",
+          "lineNumber": 138
+        },
+        {
+          "caller": "recordBreathCount",
+          "callee": "set",
+          "lineNumber": 140
+        },
+        {
+          "caller": "completeSession",
+          "callee": "get",
+          "lineNumber": 165
+        },
+        {
+          "caller": "completeSession",
+          "callee": "Date.now",
+          "lineNumber": 170
+        },
+        {
+          "caller": "completeSession",
+          "callee": "Date.now",
+          "lineNumber": 178
+        },
+        {
+          "caller": "completeSession",
+          "callee": "[...(get().sessions ?? []), finished].filter",
+          "lineNumber": 181
+        },
+        {
+          "caller": "completeSession",
+          "callee": "get",
+          "lineNumber": 181
+        },
+        {
+          "caller": "completeSession",
+          "callee": "set",
+          "lineNumber": 182
+        },
+        {
+          "caller": "completeSession",
+          "callee": "adapter.persistChange('zhiguanSession', finished.id, finished).catch",
+          "lineNumber": 184
+        },
+        {
+          "caller": "completeSession",
+          "callee": "adapter.persistChange",
+          "lineNumber": 184
+        },
+        {
+          "caller": "completeSession",
+          "callee": "log.error",
+          "lineNumber": 184
+        },
+        {
+          "caller": "completeSession",
+          "callee": "onSync",
+          "lineNumber": 185
+        },
+        {
+          "caller": "interruptSession",
+          "callee": "get",
+          "lineNumber": 193
+        },
+        {
+          "caller": "interruptSession",
+          "callee": "Date.now",
+          "lineNumber": 198
+        },
+        {
+          "caller": "interruptSession",
+          "callee": "Date.now",
+          "lineNumber": 204
+        },
+        {
+          "caller": "interruptSession",
+          "callee": "[...(get().sessions ?? []), interrupted].filter",
+          "lineNumber": 206
+        },
+        {
+          "caller": "interruptSession",
+          "callee": "get",
+          "lineNumber": 206
+        },
+        {
+          "caller": "interruptSession",
+          "callee": "set",
+          "lineNumber": 207
+        },
+        {
+          "caller": "interruptSession",
+          "callee": "adapter.persistChange('zhiguanSession', interrupted.id, interrupted).catch",
+          "lineNumber": 208
+        },
+        {
+          "caller": "interruptSession",
+          "callee": "adapter.persistChange",
+          "lineNumber": 208
+        },
+        {
+          "caller": "interruptSession",
+          "callee": "log.error",
+          "lineNumber": 208
+        },
+        {
+          "caller": "deleteSession",
+          "callee": "(get().sessions ?? []).filter",
+          "lineNumber": 215
+        },
+        {
+          "caller": "deleteSession",
+          "callee": "get",
+          "lineNumber": 215
+        },
+        {
+          "caller": "deleteSession",
+          "callee": "set",
+          "lineNumber": 216
+        },
+        {
+          "caller": "deleteSession",
+          "callee": "adapter.markDeleted('zhiguanSession', id).catch",
+          "lineNumber": 217
+        },
+        {
+          "caller": "deleteSession",
+          "callee": "adapter.markDeleted",
+          "lineNumber": 217
+        },
+        {
+          "caller": "deleteSession",
+          "callee": "log.error",
+          "lineNumber": 217
+        },
+        {
+          "caller": "setSessions",
+          "callee": "set",
+          "lineNumber": 223
+        },
+        {
+          "caller": "setSessions",
+          "callee": "sortSessionsByDateDesc",
+          "lineNumber": 223
+        },
+        {
+          "caller": "upsertSession",
+          "callee": "(get().sessions ?? []).some",
+          "lineNumber": 227
+        },
+        {
+          "caller": "upsertSession",
+          "callee": "get",
+          "lineNumber": 227
+        },
+        {
+          "caller": "upsertSession",
+          "callee": "(get().sessions ?? []).map",
+          "lineNumber": 229
+        },
+        {
+          "caller": "upsertSession",
+          "callee": "get",
+          "lineNumber": 229
+        },
+        {
+          "caller": "upsertSession",
+          "callee": "get",
+          "lineNumber": 230
+        },
+        {
+          "caller": "upsertSession",
+          "callee": "set",
+          "lineNumber": 231
+        },
+        {
+          "caller": "upsertSession",
+          "callee": "sortSessionsByDateDesc",
+          "lineNumber": 231
+        },
+        {
+          "caller": "computeStats",
+          "callee": "computeZhiguanStats",
+          "lineNumber": 237
+        },
+        {
+          "caller": "computeStats",
+          "callee": "get",
+          "lineNumber": 237
+        },
+        {
+          "caller": "computeStats",
+          "callee": "set",
+          "lineNumber": 238
+        },
+        {
+          "caller": "setError",
+          "callee": "set",
+          "lineNumber": 245
+        }
+      ],
+      "metrics": {
+        "importCount": 6,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/store/habitSlice.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 88,
+      "nonEmptyLines": 75,
+      "functions": [
+        {
+          "name": "createMockAdapter",
+          "startLine": 13,
+          "endLine": 22,
+          "params": []
+        },
+        {
+          "name": "createMockStore",
+          "startLine": 24,
+          "endLine": 34,
+          "params": [
+            "initial"
+          ]
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn().mockResolvedValue",
+          "lineNumber": 15
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn",
+          "lineNumber": 15
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn().mockResolvedValue",
+          "lineNumber": 16
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn",
+          "lineNumber": 16
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn().mockResolvedValue",
+          "lineNumber": 17
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn",
+          "lineNumber": 17
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn().mockResolvedValue",
+          "lineNumber": 18
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn",
+          "lineNumber": 18
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn().mockResolvedValue",
+          "lineNumber": 19
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn",
+          "lineNumber": 19
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn().mockImplementation",
+          "lineNumber": 20
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn",
+          "lineNumber": 20
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "fn",
+          "lineNumber": 20
+        },
+        {
+          "caller": "createMockStore",
+          "callee": "Object.assign",
+          "lineNumber": 28
+        },
+        {
+          "caller": "createMockStore",
+          "callee": "patch",
+          "lineNumber": 28
+        },
+        {
+          "caller": "createMockStore",
+          "callee": "Object.assign",
+          "lineNumber": 29
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 0,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/store/mergeEngine.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 98,
+      "nonEmptyLines": 90,
+      "functions": [
+        {
+          "name": "buildMergePatch",
+          "startLine": 36,
+          "endLine": 98,
+          "params": [
+            "data",
+            "s"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ENTITY_MERGE_MAP",
+          "line": 9,
+          "isDefault": false
+        },
+        {
+          "name": "buildMergePatch",
+          "line": 36,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "buildMergePatch",
+          "callee": "mergeById(incoming as Record<string, any>[], existing, mergeKey)\n      .filter",
+          "lineNumber": 46
+        },
+        {
+          "caller": "buildMergePatch",
+          "callee": "mergeById",
+          "lineNumber": 46
+        },
+        {
+          "caller": "buildMergePatch",
+          "callee": "mergeById",
+          "lineNumber": 52
+        },
+        {
+          "caller": "buildMergePatch",
+          "callee": "activeOnly",
+          "lineNumber": 53
+        },
+        {
+          "caller": "buildMergePatch",
+          "callee": "(mergedMed as Array<{ durMin?: number; deleted?: boolean }>)\n      .filter(m => !m.deleted).reduce",
+          "lineNumber": 54
+        },
+        {
+          "caller": "buildMergePatch",
+          "callee": "(mergedMed as Array<{ durMin?: number; deleted?: boolean }>)\n      .filter",
+          "lineNumber": 54
+        },
+        {
+          "caller": "buildMergePatch",
+          "callee": "(data.aiConfig as Record<string, unknown>[])\n      .filter((c: Record<string, unknown>) => !c.deleted)\n      .sort",
+          "lineNumber": 60
+        },
+        {
+          "caller": "buildMergePatch",
+          "callee": "(data.aiConfig as Record<string, unknown>[])\n      .filter",
+          "lineNumber": 60
+        },
+        {
+          "caller": "buildMergePatch",
+          "callee": "(data.profile as Record<string, unknown>[])\n      .filter((p: Record<string, unknown>) => !p.deleted)\n      .sort",
+          "lineNumber": 72
+        },
+        {
+          "caller": "buildMergePatch",
+          "callee": "(data.profile as Record<string, unknown>[])\n      .filter",
+          "lineNumber": 72
+        },
+        {
+          "caller": "buildMergePatch",
+          "callee": "JSON.parse",
+          "lineNumber": 78
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 2,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/store/mindSliceTypes.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 31,
+      "nonEmptyLines": 28,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/store/planSlice.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 98,
+      "nonEmptyLines": 83,
+      "functions": [
+        {
+          "name": "createMockAdapter",
+          "startLine": 11,
+          "endLine": 20,
+          "params": []
+        },
+        {
+          "name": "createStore",
+          "startLine": 22,
+          "endLine": 33,
+          "params": [
+            "initial"
+          ]
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn().mockResolvedValue",
+          "lineNumber": 13
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn",
+          "lineNumber": 13
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn().mockResolvedValue",
+          "lineNumber": 14
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn",
+          "lineNumber": 14
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn().mockResolvedValue",
+          "lineNumber": 15
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn",
+          "lineNumber": 15
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn().mockResolvedValue",
+          "lineNumber": 16
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn",
+          "lineNumber": 16
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn().mockResolvedValue",
+          "lineNumber": 17
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn",
+          "lineNumber": 17
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn().mockImplementation",
+          "lineNumber": 18
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "vi.fn",
+          "lineNumber": 18
+        },
+        {
+          "caller": "createMockAdapter",
+          "callee": "fn",
+          "lineNumber": 18
+        },
+        {
+          "caller": "createStore",
+          "callee": "Object.assign",
+          "lineNumber": 29
+        },
+        {
+          "caller": "createStore",
+          "callee": "patch",
+          "lineNumber": 29
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 0,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/store/sliceHelper.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 6,
+      "nonEmptyLines": 5,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/store/types.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 356,
+      "nonEmptyLines": 319,
+      "exports": [
+        {
+          "name": "BodySlice",
+          "line": 24,
+          "isDefault": false
+        },
+        {
+          "name": "PracticeSlice",
+          "line": 26,
+          "isDefault": false
+        },
+        {
+          "name": "MantraSlice",
+          "line": 28,
+          "isDefault": false
+        },
+        {
+          "name": "MindSlice",
+          "line": 30,
+          "isDefault": false
+        },
+        {
+          "name": "ZhiguanSlice",
+          "line": 32,
+          "isDefault": false
+        },
+        {
+          "name": "ExerciseSlice",
+          "line": 34,
+          "isDefault": false
+        },
+        {
+          "name": "MeditationSlice",
+          "line": 36,
+          "isDefault": false
+        },
+        {
+          "name": "FastingSlice",
+          "line": 38,
+          "isDefault": false
+        },
+        {
+          "name": "SettingsSlice",
+          "line": 85,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 15,
+        "exportCount": 9,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/store/zhiguanSliceTypes.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 50,
+      "nonEmptyLines": 40,
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/sync/conflict.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 23,
+      "nonEmptyLines": 22,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/sync/conflict.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 30,
+      "nonEmptyLines": 27,
+      "functions": [
+        {
+          "name": "resolveConflict",
+          "startLine": 20,
+          "endLine": 30,
+          "params": [
+            "{ clientUpdated, serverUpdated, clientDeleted, serverDeleted }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "resolveConflict",
+          "line": 20,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/sync/entities.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 34,
+      "nonEmptyLines": 28,
+      "exports": [
+        {
+          "name": "SYNC_ENTITIES",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "ENTITY_COLLECTION",
+          "line": 23,
+          "isDefault": false
+        },
+        {
+          "name": "ENTITY_ID_FIELD",
+          "line": 26,
+          "isDefault": false
+        },
+        {
+          "name": "ENTITY_STORE_KEY",
+          "line": 29,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 4,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/sync/entitySchemas.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 190,
+      "nonEmptyLines": 172,
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/sync/entitySchemas.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 1213,
+      "nonEmptyLines": 1148,
+      "functions": [
+        {
+          "name": "bool",
+          "startLine": 47,
+          "endLine": 47,
+          "params": [
+            "v"
+          ]
+        },
+        {
+          "name": "parseBytes",
+          "startLine": 49,
+          "endLine": 68,
+          "params": [
+            "v"
+          ]
+        },
+        {
+          "name": "parseDataField",
+          "startLine": 70,
+          "endLine": 76,
+          "params": [
+            "v"
+          ]
+        },
+        {
+          "name": "json",
+          "startLine": 77,
+          "endLine": 82,
+          "params": [
+            "v"
+          ]
+        },
+        {
+          "name": "num",
+          "startLine": 83,
+          "endLine": 83,
+          "params": [
+            "v",
+            "d"
+          ]
+        },
+        {
+          "name": "localDate",
+          "startLine": 84,
+          "endLine": 87,
+          "params": [
+            "ts"
+          ]
+        },
+        {
+          "name": "boolRead",
+          "startLine": 89,
+          "endLine": 89,
+          "params": [
+            "v"
+          ]
+        },
+        {
+          "name": "parseJson",
+          "startLine": 90,
+          "endLine": 95,
+          "params": [
+            "v",
+            "fallback"
+          ]
+        },
+        {
+          "name": "applyType",
+          "startLine": 97,
+          "endLine": 104,
+          "params": [
+            "value",
+            "type"
+          ]
+        },
+        {
+          "name": "applyReadType",
+          "startLine": 106,
+          "endLine": 117,
+          "params": [
+            "value",
+            "type"
+          ]
+        },
+        {
+          "name": "pbField",
+          "startLine": 128,
+          "endLine": 134,
+          "params": [
+            "r",
+            "key"
+          ]
+        },
+        {
+          "name": "resolveFallback",
+          "startLine": 136,
+          "endLine": 142,
+          "params": [
+            "field",
+            "value"
+          ]
+        },
+        {
+          "name": "buildToRow",
+          "startLine": 147,
+          "endLine": 160,
+          "params": [
+            "schema"
+          ]
+        },
+        {
+          "name": "buildServerPayloadToRow",
+          "startLine": 163,
+          "endLine": 183,
+          "params": [
+            "schema"
+          ]
+        },
+        {
+          "name": "buildRowToEntity",
+          "startLine": 186,
+          "endLine": 209,
+          "params": [
+            "schema"
+          ]
+        },
+        {
+          "name": "schemaToEntityMeta",
+          "startLine": 212,
+          "endLine": 219,
+          "params": [
+            "schema"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "pbField",
+          "line": 128,
+          "isDefault": false
+        },
+        {
+          "name": "buildToRow",
+          "line": 147,
+          "isDefault": false
+        },
+        {
+          "name": "buildServerPayloadToRow",
+          "line": 163,
+          "isDefault": false
+        },
+        {
+          "name": "buildRowToEntity",
+          "line": 186,
+          "isDefault": false
+        },
+        {
+          "name": "schemaToEntityMeta",
+          "line": 212,
+          "isDefault": false
+        },
+        {
+          "name": "SCHEMAS",
+          "line": 223,
+          "isDefault": false
+        },
+        {
+          "name": "SCHEMA_REGISTRY",
+          "line": 1198,
+          "isDefault": false
+        },
+        {
+          "name": "SCHEMA_COLLECTION",
+          "line": 1203,
+          "isDefault": false
+        },
+        {
+          "name": "SCHEMA_ID_FIELD",
+          "line": 1208,
+          "isDefault": false
+        },
+        {
+          "name": "ALL_ENTITY_TABLES",
+          "line": 1213,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "parseBytes",
+          "callee": "Array.isArray",
+          "lineNumber": 50
+        },
+        {
+          "caller": "parseBytes",
+          "callee": "v.every",
+          "lineNumber": 53
+        },
+        {
+          "caller": "parseBytes",
+          "callee": "String.fromCharCode",
+          "lineNumber": 60
+        },
+        {
+          "caller": "parseBytes",
+          "callee": "String.fromCharCode",
+          "lineNumber": 61
+        },
+        {
+          "caller": "parseBytes",
+          "callee": "String.fromCharCode",
+          "lineNumber": 62
+        },
+        {
+          "caller": "parseBytes",
+          "callee": "String.fromCodePoint",
+          "lineNumber": 63
+        },
+        {
+          "caller": "parseBytes",
+          "callee": "String.fromCharCode",
+          "lineNumber": 64
+        },
+        {
+          "caller": "parseDataField",
+          "callee": "Array.isArray",
+          "lineNumber": 71
+        },
+        {
+          "caller": "parseDataField",
+          "callee": "JSON.parse",
+          "lineNumber": 72
+        },
+        {
+          "caller": "parseDataField",
+          "callee": "parseBytes",
+          "lineNumber": 73
+        },
+        {
+          "caller": "parseDataField",
+          "callee": "JSON.parse",
+          "lineNumber": 74
+        },
+        {
+          "caller": "json",
+          "callee": "parseBytes",
+          "lineNumber": 79
+        },
+        {
+          "caller": "json",
+          "callee": "JSON.stringify",
+          "lineNumber": 81
+        },
+        {
+          "caller": "localDate",
+          "callee": "d.getFullYear",
+          "lineNumber": 86
+        },
+        {
+          "caller": "localDate",
+          "callee": "String(d.getMonth() + 1).padStart",
+          "lineNumber": 86
+        },
+        {
+          "caller": "localDate",
+          "callee": "String",
+          "lineNumber": 86
+        },
+        {
+          "caller": "localDate",
+          "callee": "d.getMonth",
+          "lineNumber": 86
+        },
+        {
+          "caller": "localDate",
+          "callee": "String(d.getDate()).padStart",
+          "lineNumber": 86
+        },
+        {
+          "caller": "localDate",
+          "callee": "String",
+          "lineNumber": 86
+        },
+        {
+          "caller": "localDate",
+          "callee": "d.getDate",
+          "lineNumber": 86
+        },
+        {
+          "caller": "parseJson",
+          "callee": "JSON.parse",
+          "lineNumber": 91
+        },
+        {
+          "caller": "parseJson",
+          "callee": "parseBytes",
+          "lineNumber": 92
+        },
+        {
+          "caller": "parseJson",
+          "callee": "JSON.parse",
+          "lineNumber": 93
+        },
+        {
+          "caller": "applyType",
+          "callee": "bool",
+          "lineNumber": 99
+        },
+        {
+          "caller": "applyType",
+          "callee": "json",
+          "lineNumber": 100
+        },
+        {
+          "caller": "applyType",
+          "callee": "num",
+          "lineNumber": 101
+        },
+        {
+          "caller": "applyReadType",
+          "callee": "boolRead",
+          "lineNumber": 108
+        },
+        {
+          "caller": "applyReadType",
+          "callee": "parseBytes",
+          "lineNumber": 111
+        },
+        {
+          "caller": "applyReadType",
+          "callee": "JSON.stringify",
+          "lineNumber": 113
+        },
+        {
+          "caller": "resolveFallback",
+          "callee": "(field.fallback as () => unknown)",
+          "lineNumber": 139
+        },
+        {
+          "caller": "buildToRow",
+          "callee": "resolveFallback",
+          "lineNumber": 155
+        },
+        {
+          "caller": "buildToRow",
+          "callee": "applyType",
+          "lineNumber": 156
+        },
+        {
+          "caller": "buildServerPayloadToRow",
+          "callee": "pbField",
+          "lineNumber": 173
+        },
+        {
+          "caller": "buildServerPayloadToRow",
+          "callee": "pbField",
+          "lineNumber": 174
+        },
+        {
+          "caller": "buildServerPayloadToRow",
+          "callee": "resolveFallback",
+          "lineNumber": 178
+        },
+        {
+          "caller": "buildServerPayloadToRow",
+          "callee": "applyType",
+          "lineNumber": 179
+        },
+        {
+          "caller": "buildRowToEntity",
+          "callee": "boolRead",
+          "lineNumber": 194
+        },
+        {
+          "caller": "buildRowToEntity",
+          "callee": "parseJson",
+          "lineNumber": 197
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 10,
+        "functionCount": 16,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/sync/merge.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 38,
+      "nonEmptyLines": 37,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/sync/merge.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 36,
+      "nonEmptyLines": 35,
+      "functions": [
+        {
+          "name": "mergeById",
+          "startLine": 10,
+          "endLine": 36,
+          "params": [
+            "server",
+            "local",
+            "idKey"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "mergeById",
+          "line": 10,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "mergeById",
+          "callee": "server.filter",
+          "lineNumber": 14
+        },
+        {
+          "caller": "mergeById",
+          "callee": "map.set",
+          "lineNumber": 16
+        },
+        {
+          "caller": "mergeById",
+          "callee": "map.get",
+          "lineNumber": 19
+        },
+        {
+          "caller": "mergeById",
+          "callee": "map.set",
+          "lineNumber": 22
+        },
+        {
+          "caller": "mergeById",
+          "callee": "resolveConflict",
+          "lineNumber": 24
+        },
+        {
+          "caller": "mergeById",
+          "callee": "map.set",
+          "lineNumber": 31
+        },
+        {
+          "caller": "mergeById",
+          "callee": "Array.from(map.values()).filter",
+          "lineNumber": 35
+        },
+        {
+          "caller": "mergeById",
+          "callee": "Array.from",
+          "lineNumber": 35
+        },
+        {
+          "caller": "mergeById",
+          "callee": "map.values",
+          "lineNumber": 35
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/sync/types.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 43,
+      "nonEmptyLines": 37,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/types.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 2,
+      "nonEmptyLines": 2,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/types/breath.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 13,
+      "nonEmptyLines": 12,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/types/reflection.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 39,
+      "nonEmptyLines": 35,
+      "exports": [
+        {
+          "name": "DEFAULT_REFLECTION_FILTERS",
+          "line": 35,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/types/thought-trail.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 39,
+      "nonEmptyLines": 35,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/types/trail-note.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 15,
+      "nonEmptyLines": 14,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/utils.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 151,
+      "nonEmptyLines": 142,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/utils.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 574,
+      "nonEmptyLines": 510,
+      "functions": [
+        {
+          "name": "activeOnly",
+          "startLine": 9,
+          "endLine": 11,
+          "params": [
+            "items"
+          ]
+        },
+        {
+          "name": "fmt",
+          "startLine": 13,
+          "endLine": 19,
+          "params": [
+            "s"
+          ]
+        },
+        {
+          "name": "fmtMS",
+          "startLine": 21,
+          "endLine": 26,
+          "params": [
+            "s"
+          ]
+        },
+        {
+          "name": "formatPace",
+          "startLine": 28,
+          "endLine": 33,
+          "params": [
+            "secPerKm"
+          ]
+        },
+        {
+          "name": "dateStr",
+          "startLine": 35,
+          "endLine": 40,
+          "params": [
+            "d"
+          ]
+        },
+        {
+          "name": "parseDateParts",
+          "startLine": 42,
+          "endLine": 45,
+          "params": [
+            "date"
+          ]
+        },
+        {
+          "name": "addDays",
+          "startLine": 47,
+          "endLine": 50,
+          "params": [
+            "date",
+            "n"
+          ]
+        },
+        {
+          "name": "yesterday",
+          "startLine": 52,
+          "endLine": 56,
+          "params": []
+        },
+        {
+          "name": "tomorrow",
+          "startLine": 58,
+          "endLine": 62,
+          "params": []
+        },
+        {
+          "name": "daysInMonth",
+          "startLine": 64,
+          "endLine": 64,
+          "params": [
+            "y",
+            "m"
+          ]
+        },
+        {
+          "name": "_randHex",
+          "startLine": 67,
+          "endLine": 77,
+          "params": []
+        },
+        {
+          "name": "uid",
+          "startLine": 78,
+          "endLine": 78,
+          "params": []
+        },
+        {
+          "name": "computeStreak",
+          "startLine": 81,
+          "endLine": 95,
+          "params": [
+            "checkedDates"
+          ]
+        },
+        {
+          "name": "parseLocalDate",
+          "startLine": 98,
+          "endLine": 101,
+          "params": [
+            "s"
+          ]
+        },
+        {
+          "name": "calculateCheckinStreak",
+          "startLine": 104,
+          "endLine": 144,
+          "params": [
+            "history",
+            "refDate"
+          ]
+        },
+        {
+          "name": "estimateFastingKcal",
+          "startLine": 147,
+          "endLine": 157,
+          "params": [
+            "durationHours",
+            "weight",
+            "gender",
+            "age",
+            "height"
+          ]
+        },
+        {
+          "name": "aggregateWeightData",
+          "startLine": 162,
+          "endLine": 173,
+          "params": [
+            "history",
+            "days"
+          ]
+        },
+        {
+          "name": "aggregateDailyCalories",
+          "startLine": 176,
+          "endLine": 195,
+          "params": [
+            "foodLog",
+            "days"
+          ]
+        },
+        {
+          "name": "aggregateDailyWater",
+          "startLine": 198,
+          "endLine": 221,
+          "params": [
+            "history",
+            "days"
+          ]
+        },
+        {
+          "name": "aggregateWeeklyKm",
+          "startLine": 224,
+          "endLine": 242,
+          "params": [
+            "exerciseLog",
+            "weeks"
+          ]
+        },
+        {
+          "name": "buildHeatmapGrid",
+          "startLine": 245,
+          "endLine": 273,
+          "params": [
+            "history",
+            "weeks"
+          ]
+        },
+        {
+          "name": "detectStreakBreaks",
+          "startLine": 284,
+          "endLine": 319,
+          "params": [
+            "history"
+          ]
+        },
+        {
+          "name": "computeLongestStreak",
+          "startLine": 322,
+          "endLine": 332,
+          "params": [
+            "dates"
+          ]
+        },
+        {
+          "name": "computeCurrentStreak",
+          "startLine": 361,
+          "endLine": 374,
+          "params": [
+            "history"
+          ]
+        },
+        {
+          "name": "computeBreakInsights",
+          "startLine": 377,
+          "endLine": 420,
+          "params": [
+            "breaks",
+            "history"
+          ]
+        },
+        {
+          "name": "computeHypotheticalStreak",
+          "startLine": 423,
+          "endLine": 451,
+          "params": [
+            "breakEntry",
+            "history",
+            "graceHistory",
+            "quota"
+          ]
+        },
+        {
+          "name": "generateEncouragement",
+          "startLine": 454,
+          "endLine": 489,
+          "params": [
+            "breaks",
+            "longestStreak",
+            "totalCheckinDays",
+            "currentStreak",
+            "insight"
+          ]
+        },
+        {
+          "name": "getRecoveryData",
+          "startLine": 492,
+          "endLine": 552,
+          "params": [
+            "checkinHistory",
+            "breaks"
+          ]
+        },
+        {
+          "name": "formatDate",
+          "startLine": 556,
+          "endLine": 559,
+          "params": [
+            "date",
+            "language",
+            "options"
+          ]
+        },
+        {
+          "name": "formatTime",
+          "startLine": 561,
+          "endLine": 564,
+          "params": [
+            "date",
+            "language",
+            "options"
+          ]
+        },
+        {
+          "name": "formatTimestamp",
+          "startLine": 567,
+          "endLine": 574,
+          "params": [
+            "ts",
+            "date"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "MS_PER_HOUR",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "MS_PER_DAY",
+          "line": 5,
+          "isDefault": false
+        },
+        {
+          "name": "MS_PER_WEEK",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "activeOnly",
+          "line": 9,
+          "isDefault": false
+        },
+        {
+          "name": "fmt",
+          "line": 13,
+          "isDefault": false
+        },
+        {
+          "name": "fmtMS",
+          "line": 21,
+          "isDefault": false
+        },
+        {
+          "name": "formatPace",
+          "line": 28,
+          "isDefault": false
+        },
+        {
+          "name": "dateStr",
+          "line": 35,
+          "isDefault": false
+        },
+        {
+          "name": "parseDateParts",
+          "line": 42,
+          "isDefault": false
+        },
+        {
+          "name": "addDays",
+          "line": 47,
+          "isDefault": false
+        },
+        {
+          "name": "yesterday",
+          "line": 52,
+          "isDefault": false
+        },
+        {
+          "name": "tomorrow",
+          "line": 58,
+          "isDefault": false
+        },
+        {
+          "name": "daysInMonth",
+          "line": 64,
+          "isDefault": false
+        },
+        {
+          "name": "uid",
+          "line": 78,
+          "isDefault": false
+        },
+        {
+          "name": "computeStreak",
+          "line": 81,
+          "isDefault": false
+        },
+        {
+          "name": "calculateCheckinStreak",
+          "line": 104,
+          "isDefault": false
+        },
+        {
+          "name": "estimateFastingKcal",
+          "line": 147,
+          "isDefault": false
+        },
+        {
+          "name": "aggregateWeightData",
+          "line": 162,
+          "isDefault": false
+        },
+        {
+          "name": "aggregateDailyCalories",
+          "line": 176,
+          "isDefault": false
+        },
+        {
+          "name": "aggregateDailyWater",
+          "line": 198,
+          "isDefault": false
+        },
+        {
+          "name": "aggregateWeeklyKm",
+          "line": 224,
+          "isDefault": false
+        },
+        {
+          "name": "buildHeatmapGrid",
+          "line": 245,
+          "isDefault": false
+        },
+        {
+          "name": "detectStreakBreaks",
+          "line": 284,
+          "isDefault": false
+        },
+        {
+          "name": "computeLongestStreak",
+          "line": 322,
+          "isDefault": false
+        },
+        {
+          "name": "computeCurrentStreak",
+          "line": 361,
+          "isDefault": false
+        },
+        {
+          "name": "computeBreakInsights",
+          "line": 377,
+          "isDefault": false
+        },
+        {
+          "name": "computeHypotheticalStreak",
+          "line": 423,
+          "isDefault": false
+        },
+        {
+          "name": "generateEncouragement",
+          "line": 454,
+          "isDefault": false
+        },
+        {
+          "name": "getRecoveryData",
+          "line": 492,
+          "isDefault": false
+        },
+        {
+          "name": "formatDate",
+          "line": 556,
+          "isDefault": false
+        },
+        {
+          "name": "formatTime",
+          "line": 561,
+          "isDefault": false
+        },
+        {
+          "name": "formatTimestamp",
+          "line": 567,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "activeOnly",
+          "callee": "items.filter",
+          "lineNumber": 10
+        },
+        {
+          "caller": "fmt",
+          "callee": "Math.max",
+          "lineNumber": 14
+        },
+        {
+          "caller": "fmt",
+          "callee": "Math.floor",
+          "lineNumber": 14
+        },
+        {
+          "caller": "fmt",
+          "callee": "Math.floor",
+          "lineNumber": 15
+        },
+        {
+          "caller": "fmt",
+          "callee": "Math.floor",
+          "lineNumber": 16
+        },
+        {
+          "caller": "fmt",
+          "callee": "String(h).padStart",
+          "lineNumber": 18
+        },
+        {
+          "caller": "fmt",
+          "callee": "String",
+          "lineNumber": 18
+        },
+        {
+          "caller": "fmt",
+          "callee": "String(m).padStart",
+          "lineNumber": 18
+        },
+        {
+          "caller": "fmt",
+          "callee": "String",
+          "lineNumber": 18
+        },
+        {
+          "caller": "fmt",
+          "callee": "String(ss).padStart",
+          "lineNumber": 18
+        },
+        {
+          "caller": "fmt",
+          "callee": "String",
+          "lineNumber": 18
+        },
+        {
+          "caller": "fmtMS",
+          "callee": "Math.max",
+          "lineNumber": 22
+        },
+        {
+          "caller": "fmtMS",
+          "callee": "Math.floor",
+          "lineNumber": 22
+        },
+        {
+          "caller": "fmtMS",
+          "callee": "Math.floor",
+          "lineNumber": 23
+        },
+        {
+          "caller": "fmtMS",
+          "callee": "String(m).padStart",
+          "lineNumber": 25
+        },
+        {
+          "caller": "fmtMS",
+          "callee": "String",
+          "lineNumber": 25
+        },
+        {
+          "caller": "fmtMS",
+          "callee": "String(ss).padStart",
+          "lineNumber": 25
+        },
+        {
+          "caller": "fmtMS",
+          "callee": "String",
+          "lineNumber": 25
+        },
+        {
+          "caller": "formatPace",
+          "callee": "isFinite",
+          "lineNumber": 29
+        },
+        {
+          "caller": "formatPace",
+          "callee": "Math.floor",
+          "lineNumber": 30
+        },
+        {
+          "caller": "formatPace",
+          "callee": "Math.floor",
+          "lineNumber": 31
+        },
+        {
+          "caller": "formatPace",
+          "callee": "String(s).padStart",
+          "lineNumber": 32
+        },
+        {
+          "caller": "formatPace",
+          "callee": "String",
+          "lineNumber": 32
+        },
+        {
+          "caller": "dateStr",
+          "callee": "d.getFullYear",
+          "lineNumber": 36
+        },
+        {
+          "caller": "dateStr",
+          "callee": "String(d.getMonth() + 1).padStart",
+          "lineNumber": 37
+        },
+        {
+          "caller": "dateStr",
+          "callee": "String",
+          "lineNumber": 37
+        },
+        {
+          "caller": "dateStr",
+          "callee": "d.getMonth",
+          "lineNumber": 37
+        },
+        {
+          "caller": "dateStr",
+          "callee": "String(d.getDate()).padStart",
+          "lineNumber": 38
+        },
+        {
+          "caller": "dateStr",
+          "callee": "String",
+          "lineNumber": 38
+        },
+        {
+          "caller": "dateStr",
+          "callee": "d.getDate",
+          "lineNumber": 38
+        },
+        {
+          "caller": "parseDateParts",
+          "callee": "date.split('-').map",
+          "lineNumber": 43
+        },
+        {
+          "caller": "parseDateParts",
+          "callee": "date.split",
+          "lineNumber": 43
+        },
+        {
+          "caller": "addDays",
+          "callee": "parseDateParts",
+          "lineNumber": 48
+        },
+        {
+          "caller": "addDays",
+          "callee": "dateStr",
+          "lineNumber": 49
+        },
+        {
+          "caller": "yesterday",
+          "callee": "d.setDate",
+          "lineNumber": 54
+        },
+        {
+          "caller": "yesterday",
+          "callee": "d.getDate",
+          "lineNumber": 54
+        },
+        {
+          "caller": "yesterday",
+          "callee": "dateStr",
+          "lineNumber": 55
+        },
+        {
+          "caller": "tomorrow",
+          "callee": "d.setDate",
+          "lineNumber": 60
+        },
+        {
+          "caller": "tomorrow",
+          "callee": "d.getDate",
+          "lineNumber": 60
+        },
+        {
+          "caller": "tomorrow",
+          "callee": "dateStr",
+          "lineNumber": 61
+        },
+        {
+          "caller": "daysInMonth",
+          "callee": "new Date(y, m + 1, 0).getDate",
+          "lineNumber": 64
+        },
+        {
+          "caller": "_randHex",
+          "callee": "require",
+          "lineNumber": 73
+        },
+        {
+          "caller": "_randHex",
+          "callee": "cryptoModule.getRandomValues",
+          "lineNumber": 74
+        },
+        {
+          "caller": "_randHex",
+          "callee": "Array.from(buf, b => b.toString(16).padStart(2, '0')).join",
+          "lineNumber": 75
+        },
+        {
+          "caller": "_randHex",
+          "callee": "Array.from",
+          "lineNumber": 75
+        },
+        {
+          "caller": "_randHex",
+          "callee": "b.toString(16).padStart",
+          "lineNumber": 75
+        },
+        {
+          "caller": "_randHex",
+          "callee": "b.toString",
+          "lineNumber": 75
+        },
+        {
+          "caller": "_randHex",
+          "callee": "Math.random().toString(36).slice",
+          "lineNumber": 76
+        },
+        {
+          "caller": "_randHex",
+          "callee": "Math.random().toString",
+          "lineNumber": 76
+        },
+        {
+          "caller": "_randHex",
+          "callee": "Math.random",
+          "lineNumber": 76
+        },
+        {
+          "caller": "uid",
+          "callee": "Date.now().toString",
+          "lineNumber": 78
+        },
+        {
+          "caller": "uid",
+          "callee": "Date.now",
+          "lineNumber": 78
+        },
+        {
+          "caller": "uid",
+          "callee": "(_uidCounter++).toString",
+          "lineNumber": 78
+        },
+        {
+          "caller": "uid",
+          "callee": "_randHex",
+          "lineNumber": 78
+        },
+        {
+          "caller": "computeStreak",
+          "callee": "[...new Set(checkedDates)].sort().reverse",
+          "lineNumber": 83
+        },
+        {
+          "caller": "computeStreak",
+          "callee": "[...new Set(checkedDates)].sort",
+          "lineNumber": 83
+        },
+        {
+          "caller": "computeStreak",
+          "callee": "dateStr",
+          "lineNumber": 84
+        },
+        {
+          "caller": "computeStreak",
+          "callee": "yesterday",
+          "lineNumber": 85
+        },
+        {
+          "caller": "computeStreak",
+          "callee": "parseLocalDate(unique[i - 1]).getTime",
+          "lineNumber": 90
+        },
+        {
+          "caller": "computeStreak",
+          "callee": "parseLocalDate",
+          "lineNumber": 90
+        },
+        {
+          "caller": "computeStreak",
+          "callee": "parseLocalDate(unique[i]).getTime",
+          "lineNumber": 90
+        },
+        {
+          "caller": "computeStreak",
+          "callee": "parseLocalDate",
+          "lineNumber": 90
+        },
+        {
+          "caller": "computeStreak",
+          "callee": "Math.abs",
+          "lineNumber": 91
+        },
+        {
+          "caller": "parseLocalDate",
+          "callee": "s.split('-').map",
+          "lineNumber": 99
+        },
+        {
+          "caller": "parseLocalDate",
+          "callee": "s.split",
+          "lineNumber": 99
+        },
+        {
+          "caller": "calculateCheckinStreak",
+          "callee": "dateStr",
+          "lineNumber": 106
+        },
+        {
+          "caller": "calculateCheckinStreak",
+          "callee": "[...history]\r\n    .filter(e => e.done && !e.deleted && e.date <= ref)\r\n    .sort",
+          "lineNumber": 107
+        },
+        {
+          "caller": "calculateCheckinStreak",
+          "callee": "[...history]\r\n    .filter",
+          "lineNumber": 107
+        },
+        {
+          "caller": "calculateCheckinStreak",
+          "callee": "b.date.localeCompare",
+          "lineNumber": 109
+        },
+        {
+          "caller": "calculateCheckinStreak",
+          "callee": "parseLocalDate",
+          "lineNumber": 113
+        },
+        {
+          "caller": "calculateCheckinStreak",
+          "callee": "d0.setDate",
+          "lineNumber": 114
+        },
+        {
+          "caller": "calculateCheckinStreak",
+          "callee": "d0.getDate",
+          "lineNumber": 114
+        },
+        {
+          "caller": "calculateCheckinStreak",
+          "callee": "dateStr",
+          "lineNumber": 115
+        },
+        {
+          "caller": "calculateCheckinStreak",
+          "callee": "parseLocalDate",
+          "lineNumber": 121
+        },
+        {
+          "caller": "calculateCheckinStreak",
+          "callee": "d.setDate",
+          "lineNumber": 122
+        },
+        {
+          "caller": "calculateCheckinStreak",
+          "callee": "d.getDate",
+          "lineNumber": 122
+        },
+        {
+          "caller": "calculateCheckinStreak",
+          "callee": "dateStr",
+          "lineNumber": 123
+        },
+        {
+          "caller": "calculateCheckinStreak",
+          "callee": "parseLocalDate",
+          "lineNumber": 126
+        },
+        {
+          "caller": "calculateCheckinStreak",
+          "callee": "d.setDate",
+          "lineNumber": 127
+        },
+        {
+          "caller": "calculateCheckinStreak",
+          "callee": "d.getDate",
+          "lineNumber": 127
+        },
+        {
+          "caller": "calculateCheckinStreak",
+          "callee": "dateStr",
+          "lineNumber": 128
+        },
+        {
+          "caller": "calculateCheckinStreak",
+          "callee": "parseLocalDate",
+          "lineNumber": 136
+        },
+        {
+          "caller": "calculateCheckinStreak",
+          "callee": "d.setDate",
+          "lineNumber": 137
+        },
+        {
+          "caller": "calculateCheckinStreak",
+          "callee": "d.getDate",
+          "lineNumber": 137
+        },
+        {
+          "caller": "calculateCheckinStreak",
+          "callee": "dateStr",
+          "lineNumber": 138
+        },
+        {
+          "caller": "estimateFastingKcal",
+          "callee": "Math.round",
+          "lineNumber": 156
+        },
+        {
+          "caller": "aggregateWeightData",
+          "callee": "cutoff.setDate",
+          "lineNumber": 167
+        },
+        {
+          "caller": "aggregateWeightData",
+          "callee": "cutoff.getDate",
+          "lineNumber": 167
+        },
+        {
+          "caller": "aggregateWeightData",
+          "callee": "dateStr",
+          "lineNumber": 168
+        },
+        {
+          "caller": "aggregateWeightData",
+          "callee": "history\r\n    .filter(e => !e.deleted && e.weight != null && e.date >= cutoffStr)\r\n    .sort((a, b) => a.date.localeCompare(b.date))\r\n    .map",
+          "lineNumber": 169
+        },
+        {
+          "caller": "aggregateWeightData",
+          "callee": "history\r\n    .filter(e => !e.deleted && e.weight != null && e.date >= cutoffStr)\r\n    .sort",
+          "lineNumber": 169
+        },
+        {
+          "caller": "aggregateWeightData",
+          "callee": "history\r\n    .filter",
+          "lineNumber": 169
+        },
+        {
+          "caller": "aggregateWeightData",
+          "callee": "a.date.localeCompare",
+          "lineNumber": 171
+        },
+        {
+          "caller": "aggregateWeightData",
+          "callee": "e.date.slice",
+          "lineNumber": 172
+        },
+        {
+          "caller": "aggregateDailyCalories",
+          "callee": "d.setDate",
+          "lineNumber": 183
+        },
+        {
+          "caller": "aggregateDailyCalories",
+          "callee": "d.getDate",
+          "lineNumber": 183
+        },
+        {
+          "caller": "aggregateDailyCalories",
+          "callee": "map.set",
+          "lineNumber": 184
+        },
+        {
+          "caller": "aggregateDailyCalories",
+          "callee": "dateStr",
+          "lineNumber": 184
+        },
+        {
+          "caller": "aggregateDailyCalories",
+          "callee": "dateStr",
+          "lineNumber": 188
+        },
+        {
+          "caller": "aggregateDailyCalories",
+          "callee": "map.has",
+          "lineNumber": 189
+        },
+        {
+          "caller": "aggregateDailyCalories",
+          "callee": "map.set",
+          "lineNumber": 189
+        },
+        {
+          "caller": "aggregateDailyCalories",
+          "callee": "map.get",
+          "lineNumber": 189
+        },
+        {
+          "caller": "aggregateDailyCalories",
+          "callee": "Array.from(map.entries()).map",
+          "lineNumber": 191
+        },
+        {
+          "caller": "aggregateDailyCalories",
+          "callee": "Array.from",
+          "lineNumber": 191
+        },
+        {
+          "caller": "aggregateDailyCalories",
+          "callee": "map.entries",
+          "lineNumber": 191
+        },
+        {
+          "caller": "aggregateDailyCalories",
+          "callee": "k.slice",
+          "lineNumber": 192
+        },
+        {
+          "caller": "aggregateDailyCalories",
+          "callee": "Math.round",
+          "lineNumber": 193
+        },
+        {
+          "caller": "aggregateDailyWater",
+          "callee": "d.setDate",
+          "lineNumber": 205
+        },
+        {
+          "caller": "aggregateDailyWater",
+          "callee": "d.getDate",
+          "lineNumber": 205
+        },
+        {
+          "caller": "aggregateDailyWater",
+          "callee": "map.set",
+          "lineNumber": 206
+        },
+        {
+          "caller": "aggregateDailyWater",
+          "callee": "dateStr",
+          "lineNumber": 206
+        },
+        {
+          "caller": "aggregateDailyWater",
+          "callee": "map.has",
+          "lineNumber": 209
+        },
+        {
+          "caller": "aggregateDailyWater",
+          "callee": "JSON.parse",
+          "lineNumber": 211
+        },
+        {
+          "caller": "aggregateDailyWater",
+          "callee": "map.set",
+          "lineNumber": 213
+        },
+        {
+          "caller": "aggregateDailyWater",
+          "callee": "map.get",
+          "lineNumber": 213
+        },
+        {
+          "caller": "aggregateDailyWater",
+          "callee": "Array.from(map.entries()).map",
+          "lineNumber": 217
+        },
+        {
+          "caller": "aggregateDailyWater",
+          "callee": "Array.from",
+          "lineNumber": 217
+        },
+        {
+          "caller": "aggregateDailyWater",
+          "callee": "map.entries",
+          "lineNumber": 217
+        },
+        {
+          "caller": "aggregateDailyWater",
+          "callee": "k.slice",
+          "lineNumber": 218
+        },
+        {
+          "caller": "aggregateDailyWater",
+          "callee": "Math.round",
+          "lineNumber": 219
+        },
+        {
+          "caller": "aggregateWeeklyKm",
+          "callee": "weekEnd.setDate",
+          "lineNumber": 232
+        },
+        {
+          "caller": "aggregateWeeklyKm",
+          "callee": "weekEnd.getDate",
+          "lineNumber": 232
+        },
+        {
+          "caller": "aggregateWeeklyKm",
+          "callee": "weekStart.setDate",
+          "lineNumber": 234
+        },
+        {
+          "caller": "aggregateWeeklyKm",
+          "callee": "weekStart.getDate",
+          "lineNumber": 234
+        },
+        {
+          "caller": "aggregateWeeklyKm",
+          "callee": "exerciseLog\r\n      .filter(e => !e.deleted && e.timestamp >= weekStart.getTime() && e.timestamp < weekEnd.getTime())\r\n      .reduce",
+          "lineNumber": 235
+        },
+        {
+          "caller": "aggregateWeeklyKm",
+          "callee": "exerciseLog\r\n      .filter",
+          "lineNumber": 235
+        },
+        {
+          "caller": "aggregateWeeklyKm",
+          "callee": "weekStart.getTime",
+          "lineNumber": 236
+        },
+        {
+          "caller": "aggregateWeeklyKm",
+          "callee": "weekEnd.getTime",
+          "lineNumber": 236
+        },
+        {
+          "caller": "aggregateWeeklyKm",
+          "callee": "weekStart.getMonth",
+          "lineNumber": 238
+        },
+        {
+          "caller": "aggregateWeeklyKm",
+          "callee": "weekStart.getDate",
+          "lineNumber": 238
+        },
+        {
+          "caller": "aggregateWeeklyKm",
+          "callee": "result.push",
+          "lineNumber": 239
+        },
+        {
+          "caller": "aggregateWeeklyKm",
+          "callee": "Math.round",
+          "lineNumber": 239
+        },
+        {
+          "caller": "buildHeatmapGrid",
+          "callee": "history.filter(e => e.done && !e.deleted).map",
+          "lineNumber": 249
+        },
+        {
+          "caller": "buildHeatmapGrid",
+          "callee": "history.filter",
+          "lineNumber": 249
+        },
+        {
+          "caller": "buildHeatmapGrid",
+          "callee": "history.filter(e => e.grace && !e.deleted).map",
+          "lineNumber": 250
+        },
+        {
+          "caller": "buildHeatmapGrid",
+          "callee": "history.filter",
+          "lineNumber": 250
+        },
+        {
+          "caller": "buildHeatmapGrid",
+          "callee": "dateStr",
+          "lineNumber": 251
+        },
+        {
+          "caller": "buildHeatmapGrid",
+          "callee": "todayDate.getDay",
+          "lineNumber": 253
+        },
+        {
+          "caller": "buildHeatmapGrid",
+          "callee": "startDate.setDate",
+          "lineNumber": 260
+        },
+        {
+          "caller": "buildHeatmapGrid",
+          "callee": "startDate.getDate",
+          "lineNumber": 260
+        },
+        {
+          "caller": "buildHeatmapGrid",
+          "callee": "cellDate.setDate",
+          "lineNumber": 266
+        },
+        {
+          "caller": "buildHeatmapGrid",
+          "callee": "cellDate.getDate",
+          "lineNumber": 266
+        },
+        {
+          "caller": "buildHeatmapGrid",
+          "callee": "dateStr",
+          "lineNumber": 267
+        },
+        {
+          "caller": "buildHeatmapGrid",
+          "callee": "row.push",
+          "lineNumber": 268
+        },
+        {
+          "caller": "buildHeatmapGrid",
+          "callee": "doneSet.has",
+          "lineNumber": 268
+        },
+        {
+          "caller": "buildHeatmapGrid",
+          "callee": "graceSet.has",
+          "lineNumber": 268
+        },
+        {
+          "caller": "buildHeatmapGrid",
+          "callee": "grid.push",
+          "lineNumber": 270
+        },
+        {
+          "caller": "detectStreakBreaks",
+          "callee": "history.filter(e => e.done && !e.deleted).map(e => e.date).sort",
+          "lineNumber": 287
+        },
+        {
+          "caller": "detectStreakBreaks",
+          "callee": "history.filter(e => e.done && !e.deleted).map",
+          "lineNumber": 287
+        },
+        {
+          "caller": "detectStreakBreaks",
+          "callee": "history.filter",
+          "lineNumber": 287
+        },
+        {
+          "caller": "detectStreakBreaks",
+          "callee": "parseLocalDate(doneDates[i]).getTime",
+          "lineNumber": 295
+        },
+        {
+          "caller": "detectStreakBreaks",
+          "callee": "parseLocalDate",
+          "lineNumber": 295
+        },
+        {
+          "caller": "detectStreakBreaks",
+          "callee": "parseLocalDate(doneDates[i - 1]).getTime",
+          "lineNumber": 295
+        },
+        {
+          "caller": "detectStreakBreaks",
+          "callee": "parseLocalDate",
+          "lineNumber": 295
+        },
+        {
+          "caller": "detectStreakBreaks",
+          "callee": "Math.abs",
+          "lineNumber": 299
+        },
+        {
+          "caller": "detectStreakBreaks",
+          "callee": "parseLocalDate",
+          "lineNumber": 303
+        },
+        {
+          "caller": "detectStreakBreaks",
+          "callee": "breakDate.setDate",
+          "lineNumber": 304
+        },
+        {
+          "caller": "detectStreakBreaks",
+          "callee": "breakDate.getDate",
+          "lineNumber": 304
+        },
+        {
+          "caller": "detectStreakBreaks",
+          "callee": "breaks.push",
+          "lineNumber": 305
+        },
+        {
+          "caller": "detectStreakBreaks",
+          "callee": "dateStr",
+          "lineNumber": 306
+        },
+        {
+          "caller": "detectStreakBreaks",
+          "callee": "breaks.reverse",
+          "lineNumber": 318
+        },
+        {
+          "caller": "computeLongestStreak",
+          "callee": "[...new Set(dates)].sort",
+          "lineNumber": 324
+        },
+        {
+          "caller": "computeLongestStreak",
+          "callee": "parseLocalDate(sorted[i]).getTime",
+          "lineNumber": 327
+        },
+        {
+          "caller": "computeLongestStreak",
+          "callee": "parseLocalDate",
+          "lineNumber": 327
+        },
+        {
+          "caller": "computeLongestStreak",
+          "callee": "parseLocalDate(sorted[i - 1]).getTime",
+          "lineNumber": 327
+        },
+        {
+          "caller": "computeLongestStreak",
+          "callee": "parseLocalDate",
+          "lineNumber": 327
+        },
+        {
+          "caller": "computeLongestStreak",
+          "callee": "Math.abs",
+          "lineNumber": 328
+        },
+        {
+          "caller": "computeLongestStreak",
+          "callee": "Math.max",
+          "lineNumber": 328
+        },
+        {
+          "caller": "computeCurrentStreak",
+          "callee": "history.filter(e => e.done && !e.deleted).map",
+          "lineNumber": 362
+        },
+        {
+          "caller": "computeCurrentStreak",
+          "callee": "history.filter",
+          "lineNumber": 362
+        },
+        {
+          "caller": "computeCurrentStreak",
+          "callee": "doneSet.has",
+          "lineNumber": 366
+        },
+        {
+          "caller": "computeCurrentStreak",
+          "callee": "dateStr",
+          "lineNumber": 366
+        },
+        {
+          "caller": "computeCurrentStreak",
+          "callee": "d.setDate",
+          "lineNumber": 367
+        },
+        {
+          "caller": "computeCurrentStreak",
+          "callee": "d.getDate",
+          "lineNumber": 367
+        },
+        {
+          "caller": "computeCurrentStreak",
+          "callee": "doneSet.has",
+          "lineNumber": 369
+        },
+        {
+          "caller": "computeCurrentStreak",
+          "callee": "dateStr",
+          "lineNumber": 369
+        },
+        {
+          "caller": "computeCurrentStreak",
+          "callee": "d.setDate",
+          "lineNumber": 371
+        },
+        {
+          "caller": "computeCurrentStreak",
+          "callee": "d.getDate",
+          "lineNumber": 371
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "parseLocalDate",
+          "lineNumber": 385
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "d.getDay",
+          "lineNumber": 386
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "d.getMonth",
+          "lineNumber": 388
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "Math.round",
+          "lineNumber": 392
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "breaks.reduce",
+          "lineNumber": 392
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "history.filter(e => e.done && !e.deleted).map(e => e.date).sort",
+          "lineNumber": 396
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "history.filter(e => e.done && !e.deleted).map",
+          "lineNumber": 396
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "history.filter",
+          "lineNumber": 396
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "doneDates.find",
+          "lineNumber": 399
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "parseLocalDate(nextDone).getTime",
+          "lineNumber": 401
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "parseLocalDate",
+          "lineNumber": 401
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "parseLocalDate(b.breakDate).getTime",
+          "lineNumber": 401
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "parseLocalDate",
+          "lineNumber": 401
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "Math.round",
+          "lineNumber": 407
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "now.getFullYear",
+          "lineNumber": 414
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "now.getMonth",
+          "lineNumber": 414
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "d.getFullYear",
+          "lineNumber": 415
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "String(d.getMonth() + 1).padStart",
+          "lineNumber": 415
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "String",
+          "lineNumber": 415
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "d.getMonth",
+          "lineNumber": 415
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "monthlyTrend.push",
+          "lineNumber": 416
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "breaks.filter",
+          "lineNumber": 416
+        },
+        {
+          "caller": "computeBreakInsights",
+          "callee": "b.breakDate.startsWith",
+          "lineNumber": 416
+        },
+        {
+          "caller": "computeHypotheticalStreak",
+          "callee": "breakEntry.breakDate.slice",
+          "lineNumber": 429
+        },
+        {
+          "caller": "computeHypotheticalStreak",
+          "callee": "(graceHistory ?? []).filter",
+          "lineNumber": 430
+        },
+        {
+          "caller": "computeHypotheticalStreak",
+          "callee": "g.date.startsWith",
+          "lineNumber": 431
+        },
+        {
+          "caller": "computeHypotheticalStreak",
+          "callee": "(graceHistory ?? []).some",
+          "lineNumber": 433
+        },
+        {
+          "caller": "computeHypotheticalStreak",
+          "callee": "history.filter(e => e.done && !e.deleted).map",
+          "lineNumber": 441
+        },
+        {
+          "caller": "computeHypotheticalStreak",
+          "callee": "history.filter",
+          "lineNumber": 441
+        },
+        {
+          "caller": "computeHypotheticalStreak",
+          "callee": "parseLocalDate",
+          "lineNumber": 443
+        },
+        {
+          "caller": "computeHypotheticalStreak",
+          "callee": "d.setDate",
+          "lineNumber": 444
+        },
+        {
+          "caller": "computeHypotheticalStreak",
+          "callee": "d.getDate",
+          "lineNumber": 444
+        },
+        {
+          "caller": "computeHypotheticalStreak",
+          "callee": "doneDates.has",
+          "lineNumber": 445
+        },
+        {
+          "caller": "computeHypotheticalStreak",
+          "callee": "dateStr",
+          "lineNumber": 445
+        },
+        {
+          "caller": "computeHypotheticalStreak",
+          "callee": "d.setDate",
+          "lineNumber": 447
+        },
+        {
+          "caller": "computeHypotheticalStreak",
+          "callee": "d.getDate",
+          "lineNumber": 447
+        },
+        {
+          "caller": "generateEncouragement",
+          "callee": "breaks.reduce",
+          "lineNumber": 462
+        },
+        {
+          "caller": "generateEncouragement",
+          "callee": "Math.round",
+          "lineNumber": 465
+        },
+        {
+          "caller": "generateEncouragement",
+          "callee": "msgs.push",
+          "lineNumber": 466
+        },
+        {
+          "caller": "generateEncouragement",
+          "callee": "msgs.push",
+          "lineNumber": 469
+        },
+        {
+          "caller": "generateEncouragement",
+          "callee": "msgs.push",
+          "lineNumber": 475
+        },
+        {
+          "caller": "generateEncouragement",
+          "callee": "msgs.push",
+          "lineNumber": 478
+        },
+        {
+          "caller": "generateEncouragement",
+          "callee": "msgs.push",
+          "lineNumber": 482
+        },
+        {
+          "caller": "generateEncouragement",
+          "callee": "msgs.push",
+          "lineNumber": 485
+        },
+        {
+          "caller": "generateEncouragement",
+          "callee": "msgs.push",
+          "lineNumber": 486
+        },
+        {
+          "caller": "generateEncouragement",
+          "callee": "msgs.slice",
+          "lineNumber": 488
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "computeCurrentStreak",
+          "lineNumber": 496
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "dateStr",
+          "lineNumber": 497
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "d.setDate",
+          "lineNumber": 499
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "d.getDate",
+          "lineNumber": 499
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "dateStr",
+          "lineNumber": 500
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "checkinHistory.some",
+          "lineNumber": 501
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "checkinHistory.some",
+          "lineNumber": 502
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "checkinHistory.some",
+          "lineNumber": 505
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "checkinHistory.filter(c => c.done && !c.deleted).map(c => c.date).sort",
+          "lineNumber": 515
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "checkinHistory.filter(c => c.done && !c.deleted).map",
+          "lineNumber": 515
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "checkinHistory.filter",
+          "lineNumber": 515
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "parseLocalDate",
+          "lineNumber": 518
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "parseLocalDate",
+          "lineNumber": 519
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "Math.floor",
+          "lineNumber": 520
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "lastDoneDate.getTime",
+          "lineNumber": 520
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "lastBreakDate.getTime",
+          "lineNumber": 520
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "checkinHistory.filter(c => c.done && !c.deleted).map(c => c.date).sort",
+          "lineNumber": 527
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "checkinHistory.filter(c => c.done && !c.deleted).map",
+          "lineNumber": 527
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "checkinHistory.filter",
+          "lineNumber": 527
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "Math.floor",
+          "lineNumber": 532
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "Date.now",
+          "lineNumber": 532
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "parseLocalDate(lastDone).getTime",
+          "lineNumber": 532
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "parseLocalDate",
+          "lineNumber": 532
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "parseLocalDate(doneDates[i + 1]).getTime",
+          "lineNumber": 543
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "parseLocalDate",
+          "lineNumber": 543
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "parseLocalDate(doneDates[i]).getTime",
+          "lineNumber": 543
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "parseLocalDate",
+          "lineNumber": 543
+        },
+        {
+          "caller": "getRecoveryData",
+          "callee": "Math.abs",
+          "lineNumber": 544
+        },
+        {
+          "caller": "formatDate",
+          "callee": "date.toLocaleDateString",
+          "lineNumber": 558
+        },
+        {
+          "caller": "formatTime",
+          "callee": "date.toLocaleTimeString",
+          "lineNumber": 563
+        },
+        {
+          "caller": "pad",
+          "callee": "String(n).padStart",
+          "lineNumber": 570
+        },
+        {
+          "caller": "pad",
+          "callee": "String",
+          "lineNumber": 570
+        },
+        {
+          "caller": "formatTimestamp",
+          "callee": "d.getFullYear",
+          "lineNumber": 571
+        },
+        {
+          "caller": "formatTimestamp",
+          "callee": "pad",
+          "lineNumber": 571
+        },
+        {
+          "caller": "formatTimestamp",
+          "callee": "d.getMonth",
+          "lineNumber": 571
+        },
+        {
+          "caller": "formatTimestamp",
+          "callee": "pad",
+          "lineNumber": 571
+        },
+        {
+          "caller": "formatTimestamp",
+          "callee": "d.getDate",
+          "lineNumber": 571
+        },
+        {
+          "caller": "formatTimestamp",
+          "callee": "pad",
+          "lineNumber": 571
+        },
+        {
+          "caller": "formatTimestamp",
+          "callee": "d.getHours",
+          "lineNumber": 571
+        },
+        {
+          "caller": "formatTimestamp",
+          "callee": "pad",
+          "lineNumber": 571
+        },
+        {
+          "caller": "formatTimestamp",
+          "callee": "d.getMinutes",
+          "lineNumber": 571
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 32,
+        "functionCount": 31,
+        "classCount": 0
+      }
+    }
+  ]
+}

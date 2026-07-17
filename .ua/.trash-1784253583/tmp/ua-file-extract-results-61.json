@@ -1,0 +1,1105 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 25,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-12-fix-profile-screen-crash/prd.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 25,
+      "nonEmptyLines": 16,
+      "sections": [
+        {
+          "heading": "修复 ProfileScreen 因 expo-image-picker 导入 createPermissionHook 报错",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Goal",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "根因",
+          "level": 2,
+          "line": 12
+        },
+        {
+          "heading": "修复方案",
+          "level": 2,
+          "line": 16
+        },
+        {
+          "heading": "Acceptance Criteria",
+          "level": 2,
+          "line": 20
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 5
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-12-fix-profile-screen-crash/task.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 26,
+      "nonEmptyLines": 26,
+      "sections": [
+        {
+          "heading": "id",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "title",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "status",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dev_type",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "scope",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "package",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "priority",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "creator",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "assignee",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "createdAt",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "completedAt",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "branch",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "base_branch",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "worktree_path",
+          "level": 1,
+          "line": 17
+        },
+        {
+          "heading": "commit",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "pr_url",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "subtasks",
+          "level": 1,
+          "line": 20
+        },
+        {
+          "heading": "children",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "parent",
+          "level": 1,
+          "line": 22
+        },
+        {
+          "heading": "relatedFiles",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "notes",
+          "level": 1,
+          "line": 24
+        },
+        {
+          "heading": "meta",
+          "level": 1,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/implement.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 2,
+      "nonEmptyLines": 2,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-12-sync-goerror/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 2,
+      "nonEmptyLines": 2,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-12-sync-goerror/implement.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 2,
+      "nonEmptyLines": 2,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/implement.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/prd.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 32,
+      "nonEmptyLines": 25,
+      "sections": [
+        {
+          "heading": "分析 token 过期机制",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Goal",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "分析范围",
+          "level": 2,
+          "line": 6
+        },
+        {
+          "heading": "客户端 (packages/core)",
+          "level": 3,
+          "line": 8
+        },
+        {
+          "heading": "服务端 (infra/docker/api)",
+          "level": 3,
+          "line": 13
+        },
+        {
+          "heading": "初始化流程 (apps/mobile)",
+          "level": 3,
+          "line": 18
+        },
+        {
+          "heading": "分析维度",
+          "level": 2,
+          "line": 21
+        },
+        {
+          "heading": "交付物",
+          "level": 2,
+          "line": 30
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 8
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/task.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 26,
+      "nonEmptyLines": 26,
+      "sections": [
+        {
+          "heading": "id",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "title",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "status",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dev_type",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "scope",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "package",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "priority",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "creator",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "assignee",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "createdAt",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "completedAt",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "branch",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "base_branch",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "worktree_path",
+          "level": 1,
+          "line": 17
+        },
+        {
+          "heading": "commit",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "pr_url",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "subtasks",
+          "level": 1,
+          "line": 20
+        },
+        {
+          "heading": "children",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "parent",
+          "level": 1,
+          "line": 22
+        },
+        {
+          "heading": "relatedFiles",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "notes",
+          "level": 1,
+          "line": 24
+        },
+        {
+          "heading": "meta",
+          "level": 1,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/implement.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/prd.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 29,
+      "nonEmptyLines": 22,
+      "sections": [
+        {
+          "heading": "分析愿景页面布局",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Goal",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "分析范围",
+          "level": 2,
+          "line": 6
+        },
+        {
+          "heading": "VowScreen（愿景列表页）",
+          "level": 3,
+          "line": 8
+        },
+        {
+          "heading": "VisionCard（愿景卡片）",
+          "level": 3,
+          "line": 13
+        },
+        {
+          "heading": "VisionEditModal（编辑弹窗）",
+          "level": 3,
+          "line": 17
+        },
+        {
+          "heading": "交付物",
+          "level": 2,
+          "line": 21
+        },
+        {
+          "heading": "分析方法",
+          "level": 2,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 8
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/task.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 26,
+      "nonEmptyLines": 26,
+      "sections": [
+        {
+          "heading": "id",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "title",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "status",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dev_type",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "scope",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "package",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "priority",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "creator",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "assignee",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "createdAt",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "completedAt",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "branch",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "base_branch",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "worktree_path",
+          "level": 1,
+          "line": 17
+        },
+        {
+          "heading": "commit",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "pr_url",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "subtasks",
+          "level": 1,
+          "line": 20
+        },
+        {
+          "heading": "children",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "parent",
+          "level": 1,
+          "line": 22
+        },
+        {
+          "heading": "relatedFiles",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "notes",
+          "level": 1,
+          "line": 24
+        },
+        {
+          "heading": "meta",
+          "level": 1,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/implement.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/prd.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 19,
+      "nonEmptyLines": 11,
+      "sections": [
+        {
+          "heading": "修复密码验证/epoch/change-password",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Goal",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "Requirements",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Acceptance Criteria",
+          "level": 2,
+          "line": 11
+        },
+        {
+          "heading": "Notes",
+          "level": 2,
+          "line": 15
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 5
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/task.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 26,
+      "nonEmptyLines": 26,
+      "sections": [
+        {
+          "heading": "id",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "title",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "status",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dev_type",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "scope",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "package",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "priority",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "creator",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "assignee",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "createdAt",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "completedAt",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "branch",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "base_branch",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "worktree_path",
+          "level": 1,
+          "line": 17
+        },
+        {
+          "heading": "commit",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "pr_url",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "subtasks",
+          "level": 1,
+          "line": 20
+        },
+        {
+          "heading": "children",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "parent",
+          "level": 1,
+          "line": 22
+        },
+        {
+          "heading": "relatedFiles",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "notes",
+          "level": 1,
+          "line": 24
+        },
+        {
+          "heading": "meta",
+          "level": 1,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/implement.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/prd.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 19,
+      "nonEmptyLines": 11,
+      "sections": [
+        {
+          "heading": "优化愿景新增/编辑页",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Goal",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "Requirements",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Acceptance Criteria",
+          "level": 2,
+          "line": 11
+        },
+        {
+          "heading": "Notes",
+          "level": 2,
+          "line": 15
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 5
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/task.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 26,
+      "nonEmptyLines": 26,
+      "sections": [
+        {
+          "heading": "id",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "title",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "status",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dev_type",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "scope",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "package",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "priority",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "creator",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "assignee",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "createdAt",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "completedAt",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "branch",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "base_branch",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "worktree_path",
+          "level": 1,
+          "line": 17
+        },
+        {
+          "heading": "commit",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "pr_url",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "subtasks",
+          "level": 1,
+          "line": 20
+        },
+        {
+          "heading": "children",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "parent",
+          "level": 1,
+          "line": 22
+        },
+        {
+          "heading": "relatedFiles",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "notes",
+          "level": 1,
+          "line": 24
+        },
+        {
+          "heading": "meta",
+          "level": 1,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/implement.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/prd.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 57,
+      "nonEmptyLines": 45,
+      "sections": [
+        {
+          "heading": "优化发愿新增/编辑页",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Goal",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "已确认的事实（代码库探索）",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "现状",
+          "level": 3,
+          "line": 9
+        },
+        {
+          "heading": "数据结构",
+          "level": 3,
+          "line": 19
+        },
+        {
+          "heading": "Requirements",
+          "level": 2,
+          "line": 29
+        },
+        {
+          "heading": "功能性",
+          "level": 3,
+          "line": 31
+        },
+        {
+          "heading": "非功能性",
+          "level": 3,
+          "line": 37
+        },
+        {
+          "heading": "Acceptance Criteria",
+          "level": 2,
+          "line": 42
+        },
+        {
+          "heading": "Out of Scope",
+          "level": 2,
+          "line": 51
+        },
+        {
+          "heading": "Open Questions",
+          "level": 2,
+          "line": 56
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 11
+      }
+    }
+  ]
+}

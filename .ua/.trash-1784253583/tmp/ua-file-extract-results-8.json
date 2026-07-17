@@ -1,0 +1,6848 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 33,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "packages/core/src/__tests__/performDailyReset.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 207,
+      "nonEmptyLines": 184,
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/ai/ai-service.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 459,
+      "nonEmptyLines": 387,
+      "functions": [
+        {
+          "name": "getAIService",
+          "startLine": 447,
+          "endLine": 455,
+          "params": [
+            "config"
+          ]
+        },
+        {
+          "name": "resetAIService",
+          "startLine": 457,
+          "endLine": 459,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "AIService",
+          "startLine": 16,
+          "endLine": 442,
+          "methods": [
+            "constructor",
+            "initProviders",
+            "getConfig",
+            "getMode",
+            "setMode",
+            "updateConfig",
+            "getModels",
+            "getEnabledModels",
+            "getDefaultModel",
+            "addModel",
+            "updateModel",
+            "removeModel",
+            "setDefaultModel",
+            "testModel",
+            "getCloudProvider",
+            "generateCloud",
+            "detectMood",
+            "suggestTags",
+            "suggestContentExpansion",
+            "generateTrailInsight",
+            "generateTrailReviewGuide",
+            "parseTrailInsight",
+            "generateReviewGuide",
+            "parseReviewGuide",
+            "generateCheckinReview"
+          ],
+          "properties": [
+            "localEngine",
+            "providers",
+            "config"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "AIService",
+          "line": 16,
+          "isDefault": false
+        },
+        {
+          "name": "getAIService",
+          "line": 447,
+          "isDefault": false
+        },
+        {
+          "name": "resetAIService",
+          "line": 457,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "constructor",
+          "callee": "this.initProviders",
+          "lineNumber": 29
+        },
+        {
+          "caller": "initProviders",
+          "callee": "this.providers.set",
+          "lineNumber": 36
+        },
+        {
+          "caller": "initProviders",
+          "callee": "createProvider",
+          "lineNumber": 36
+        },
+        {
+          "caller": "initProviders",
+          "callee": "log.warn",
+          "lineNumber": 38
+        },
+        {
+          "caller": "updateConfig",
+          "callee": "this.providers.clear",
+          "lineNumber": 66
+        },
+        {
+          "caller": "updateConfig",
+          "callee": "this.initProviders",
+          "lineNumber": 67
+        },
+        {
+          "caller": "updateConfig",
+          "callee": "log.debug",
+          "lineNumber": 72
+        },
+        {
+          "caller": "getEnabledModels",
+          "callee": "this.config.models.filter",
+          "lineNumber": 82
+        },
+        {
+          "caller": "getDefaultModel",
+          "callee": "this.config.models.find",
+          "lineNumber": 87
+        },
+        {
+          "caller": "getDefaultModel",
+          "callee": "this.config.models.find",
+          "lineNumber": 88
+        },
+        {
+          "caller": "addModel",
+          "callee": "this.config.models.push",
+          "lineNumber": 94
+        },
+        {
+          "caller": "addModel",
+          "callee": "this.providers.set",
+          "lineNumber": 97
+        },
+        {
+          "caller": "addModel",
+          "callee": "createProvider",
+          "lineNumber": 97
+        },
+        {
+          "caller": "addModel",
+          "callee": "log.warn",
+          "lineNumber": 99
+        },
+        {
+          "caller": "updateModel",
+          "callee": "this.config.models.findIndex",
+          "lineNumber": 106
+        },
+        {
+          "caller": "updateModel",
+          "callee": "this.providers.set",
+          "lineNumber": 114
+        },
+        {
+          "caller": "updateModel",
+          "callee": "createProvider",
+          "lineNumber": 114
+        },
+        {
+          "caller": "updateModel",
+          "callee": "log.warn",
+          "lineNumber": 116
+        },
+        {
+          "caller": "updateModel",
+          "callee": "this.providers.delete",
+          "lineNumber": 119
+        },
+        {
+          "caller": "removeModel",
+          "callee": "this.config.models.filter",
+          "lineNumber": 127
+        },
+        {
+          "caller": "removeModel",
+          "callee": "this.providers.delete",
+          "lineNumber": 128
+        },
+        {
+          "caller": "setDefaultModel",
+          "callee": "this.config.models.forEach",
+          "lineNumber": 133
+        },
+        {
+          "caller": "testModel",
+          "callee": "this.config.models.find",
+          "lineNumber": 140
+        },
+        {
+          "caller": "testModel",
+          "callee": "testConnection",
+          "lineNumber": 142
+        },
+        {
+          "caller": "getCloudProvider",
+          "callee": "this.providers.get",
+          "lineNumber": 149
+        },
+        {
+          "caller": "getCloudProvider",
+          "callee": "this.getDefaultModel",
+          "lineNumber": 154
+        },
+        {
+          "caller": "getCloudProvider",
+          "callee": "this.providers.get",
+          "lineNumber": 156
+        },
+        {
+          "caller": "getCloudProvider",
+          "callee": "this.providers.values",
+          "lineNumber": 161
+        },
+        {
+          "caller": "generateCloud",
+          "callee": "log.debug",
+          "lineNumber": 170
+        },
+        {
+          "caller": "generateCloud",
+          "callee": "log.debug",
+          "lineNumber": 171
+        },
+        {
+          "caller": "generateCloud",
+          "callee": "log.debug",
+          "lineNumber": 172
+        },
+        {
+          "caller": "generateCloud",
+          "callee": "Array.from",
+          "lineNumber": 172
+        },
+        {
+          "caller": "generateCloud",
+          "callee": "this.providers.keys",
+          "lineNumber": 172
+        },
+        {
+          "caller": "generateCloud",
+          "callee": "this.getCloudProvider",
+          "lineNumber": 174
+        },
+        {
+          "caller": "generateCloud",
+          "callee": "log.debug",
+          "lineNumber": 177
+        },
+        {
+          "caller": "generateCloud",
+          "callee": "log.debug",
+          "lineNumber": 178
+        },
+        {
+          "caller": "generateCloud",
+          "callee": "this.config.models.map",
+          "lineNumber": 178
+        },
+        {
+          "caller": "generateCloud",
+          "callee": "log.debug",
+          "lineNumber": 186
+        },
+        {
+          "caller": "generateCloud",
+          "callee": "provider.generate",
+          "lineNumber": 189
+        },
+        {
+          "caller": "generateCloud",
+          "callee": "log.debug",
+          "lineNumber": 190
+        },
+        {
+          "caller": "generateCloud",
+          "callee": "log.error",
+          "lineNumber": 197
+        },
+        {
+          "caller": "detectMood",
+          "callee": "this.localEngine.detectMood",
+          "lineNumber": 210
+        },
+        {
+          "caller": "suggestTags",
+          "callee": "this.localEngine.suggestTags",
+          "lineNumber": 215
+        },
+        {
+          "caller": "suggestContentExpansion",
+          "callee": "this.localEngine.suggestContentExpansion",
+          "lineNumber": 220
+        },
+        {
+          "caller": "generateTrailInsight",
+          "callee": "this.localEngine.generateTrailInsight",
+          "lineNumber": 228
+        },
+        {
+          "caller": "generateTrailInsight",
+          "callee": "options.trailNotes.map((n, i) =>\n          `[反思${i + 1}${n.source === 'guided' ? '(引导式)' : '(自由)'}] ${n.guidedQuestion ? `引导问题：${n.guidedQuestion}\\n` : ''}${n.content}`\n        ).join",
+          "lineNumber": 235
+        },
+        {
+          "caller": "generateTrailInsight",
+          "callee": "options.trailNotes.map",
+          "lineNumber": 235
+        },
+        {
+          "caller": "generateTrailInsight",
+          "callee": "reflections.map((r, i) => `${i + 1}. [${r.mood}] ${r.content}`).join",
+          "lineNumber": 243
+        },
+        {
+          "caller": "generateTrailInsight",
+          "callee": "reflections.map",
+          "lineNumber": 243
+        },
+        {
+          "caller": "generateTrailInsight",
+          "callee": "this.generateCloud",
+          "lineNumber": 251
+        },
+        {
+          "caller": "generateTrailInsight",
+          "callee": "this.parseTrailInsight",
+          "lineNumber": 258
+        },
+        {
+          "caller": "generateTrailReviewGuide",
+          "callee": "items.map(r => {\n  const date = new Date(r.timestamp).toLocaleDateString();\n  const type = r.kind === 'note' ? '[反思]' : '[感念]';\n  return `${date} ${type} ${r.mood ? `[${r.mood}]` : ''} ${r.content}`;\n}).join",
+          "lineNumber": 285
+        },
+        {
+          "caller": "generateTrailReviewGuide",
+          "callee": "items.map",
+          "lineNumber": 285
+        },
+        {
+          "caller": "generateTrailReviewGuide",
+          "callee": "new Date(r.timestamp).toLocaleDateString",
+          "lineNumber": 286
+        },
+        {
+          "caller": "generateTrailReviewGuide",
+          "callee": "this.generateCloud",
+          "lineNumber": 296
+        },
+        {
+          "caller": "generateTrailReviewGuide",
+          "callee": "this.parseReviewGuide",
+          "lineNumber": 303
+        },
+        {
+          "caller": "parseTrailInsight",
+          "callee": "aiResult.split('\\n').filter",
+          "lineNumber": 311
+        },
+        {
+          "caller": "parseTrailInsight",
+          "callee": "aiResult.split",
+          "lineNumber": 311
+        },
+        {
+          "caller": "parseTrailInsight",
+          "callee": "l.trim",
+          "lineNumber": 311
+        },
+        {
+          "caller": "parseTrailInsight",
+          "callee": "lines.filter(l => l.match(/^\\d+\\./)).map(l => l.replace(/^\\d+\\.\\s*/, '')).slice",
+          "lineNumber": 313
+        },
+        {
+          "caller": "parseTrailInsight",
+          "callee": "lines.filter(l => l.match(/^\\d+\\./)).map",
+          "lineNumber": 313
+        },
+        {
+          "caller": "parseTrailInsight",
+          "callee": "lines.filter",
+          "lineNumber": 313
+        },
+        {
+          "caller": "parseTrailInsight",
+          "callee": "l.match",
+          "lineNumber": 313
+        },
+        {
+          "caller": "parseTrailInsight",
+          "callee": "l.replace",
+          "lineNumber": 313
+        },
+        {
+          "caller": "parseTrailInsight",
+          "callee": "lines.findIndex",
+          "lineNumber": 317
+        },
+        {
+          "caller": "parseTrailInsight",
+          "callee": "/转折|关键|节点/.test",
+          "lineNumber": 317
+        },
+        {
+          "caller": "parseTrailInsight",
+          "callee": "/^\\d+\\./.test",
+          "lineNumber": 320
+        },
+        {
+          "caller": "parseTrailInsight",
+          "callee": "turningPoints.push",
+          "lineNumber": 320
+        },
+        {
+          "caller": "parseTrailInsight",
+          "callee": "lines[i].replace",
+          "lineNumber": 320
+        },
+        {
+          "caller": "parseTrailInsight",
+          "callee": "lines[i].trim",
+          "lineNumber": 321
+        },
+        {
+          "caller": "parseTrailInsight",
+          "callee": "/[：:]$/.test",
+          "lineNumber": 321
+        },
+        {
+          "caller": "parseTrailInsight",
+          "callee": "lines.findIndex",
+          "lineNumber": 327
+        },
+        {
+          "caller": "parseTrailInsight",
+          "callee": "/建议|推荐|可以/.test",
+          "lineNumber": 327
+        },
+        {
+          "caller": "parseTrailInsight",
+          "callee": "/^\\d+\\./.test",
+          "lineNumber": 330
+        },
+        {
+          "caller": "parseTrailInsight",
+          "callee": "suggestions.push",
+          "lineNumber": 330
+        },
+        {
+          "caller": "parseTrailInsight",
+          "callee": "lines[i].replace",
+          "lineNumber": 330
+        },
+        {
+          "caller": "parseTrailInsight",
+          "callee": "lines[i].trim",
+          "lineNumber": 331
+        },
+        {
+          "caller": "parseTrailInsight",
+          "callee": "/[：:]$/.test",
+          "lineNumber": 331
+        },
+        {
+          "caller": "generateReviewGuide",
+          "callee": "weekReflections.map(r => `[${new Date(r.timestamp).toLocaleDateString()}] ${r.content}`).join",
+          "lineNumber": 363
+        },
+        {
+          "caller": "generateReviewGuide",
+          "callee": "weekReflections.map",
+          "lineNumber": 363
+        },
+        {
+          "caller": "generateReviewGuide",
+          "callee": "new Date(r.timestamp).toLocaleDateString",
+          "lineNumber": 363
+        },
+        {
+          "caller": "generateReviewGuide",
+          "callee": "this.generateCloud",
+          "lineNumber": 370
+        },
+        {
+          "caller": "generateReviewGuide",
+          "callee": "this.parseReviewGuide",
+          "lineNumber": 376
+        },
+        {
+          "caller": "parseReviewGuide",
+          "callee": "aiResult.split('\\n').filter",
+          "lineNumber": 384
+        },
+        {
+          "caller": "parseReviewGuide",
+          "callee": "aiResult.split",
+          "lineNumber": 384
+        },
+        {
+          "caller": "parseReviewGuide",
+          "callee": "l.trim",
+          "lineNumber": 384
+        },
+        {
+          "caller": "parseReviewGuide",
+          "callee": "lines.filter(l => l.match(/^\\d+\\./)).map(l => l.replace(/^\\d+\\.\\s*/, '')).slice",
+          "lineNumber": 385
+        },
+        {
+          "caller": "parseReviewGuide",
+          "callee": "lines.filter(l => l.match(/^\\d+\\./)).map",
+          "lineNumber": 385
+        },
+        {
+          "caller": "parseReviewGuide",
+          "callee": "lines.filter",
+          "lineNumber": 385
+        },
+        {
+          "caller": "parseReviewGuide",
+          "callee": "l.match",
+          "lineNumber": 385
+        },
+        {
+          "caller": "parseReviewGuide",
+          "callee": "l.replace",
+          "lineNumber": 385
+        },
+        {
+          "caller": "parseReviewGuide",
+          "callee": "lines.filter(l => l.match(/^[-•]/)).map(l => l.replace(/^[-•]\\s*/, '')).slice",
+          "lineNumber": 386
+        },
+        {
+          "caller": "parseReviewGuide",
+          "callee": "lines.filter(l => l.match(/^[-•]/)).map",
+          "lineNumber": 386
+        },
+        {
+          "caller": "parseReviewGuide",
+          "callee": "lines.filter",
+          "lineNumber": 386
+        },
+        {
+          "caller": "parseReviewGuide",
+          "callee": "l.match",
+          "lineNumber": 386
+        },
+        {
+          "caller": "parseReviewGuide",
+          "callee": "l.replace",
+          "lineNumber": 386
+        },
+        {
+          "caller": "generateCheckinReview",
+          "callee": "log.debug",
+          "lineNumber": 409
+        },
+        {
+          "caller": "generateCheckinReview",
+          "callee": "log.debug",
+          "lineNumber": 410
+        },
+        {
+          "caller": "generateCheckinReview",
+          "callee": "log.debug",
+          "lineNumber": 411
+        },
+        {
+          "caller": "generateCheckinReview",
+          "callee": "log.debug",
+          "lineNumber": 412
+        },
+        {
+          "caller": "generateCheckinReview",
+          "callee": "this.getEnabledModels",
+          "lineNumber": 412
+        },
+        {
+          "caller": "generateCheckinReview",
+          "callee": "log.debug",
+          "lineNumber": 413
+        },
+        {
+          "caller": "generateCheckinReview",
+          "callee": "this.getDefaultModel",
+          "lineNumber": 413
+        },
+        {
+          "caller": "generateCheckinReview",
+          "callee": "log.debug",
+          "lineNumber": 416
+        },
+        {
+          "caller": "generateCheckinReview",
+          "callee": "buildReviewPrompt",
+          "lineNumber": 420
+        },
+        {
+          "caller": "generateCheckinReview",
+          "callee": "log.debug",
+          "lineNumber": 421
+        },
+        {
+          "caller": "generateCheckinReview",
+          "callee": "this.generateCloud",
+          "lineNumber": 423
+        },
+        {
+          "caller": "generateCheckinReview",
+          "callee": "log.debug",
+          "lineNumber": 428
+        },
+        {
+          "caller": "generateCheckinReview",
+          "callee": "log.error",
+          "lineNumber": 430
+        },
+        {
+          "caller": "generateCheckinReview",
+          "callee": "parseReviewAIResponse",
+          "lineNumber": 434
+        },
+        {
+          "caller": "generateCheckinReview",
+          "callee": "log.debug",
+          "lineNumber": 435
+        },
+        {
+          "caller": "generateCheckinReview",
+          "callee": "log.debug",
+          "lineNumber": 439
+        },
+        {
+          "caller": "getAIService",
+          "callee": "instance.updateConfig",
+          "lineNumber": 452
+        }
+      ],
+      "metrics": {
+        "importCount": 6,
+        "exportCount": 3,
+        "functionCount": 2,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "packages/core/src/ai/cloud-providers.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 97,
+      "nonEmptyLines": 83,
+      "functions": [
+        {
+          "name": "createProvider",
+          "startLine": 76,
+          "endLine": 78,
+          "params": [
+            "config"
+          ]
+        },
+        {
+          "name": "testConnection",
+          "startLine": 81,
+          "endLine": 97,
+          "params": [
+            "config"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "OpenAICompatibleProvider",
+          "startLine": 13,
+          "endLine": 73,
+          "methods": [
+            "constructor",
+            "name",
+            "generate"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "OpenAICompatibleProvider",
+          "line": 13,
+          "isDefault": false
+        },
+        {
+          "name": "createProvider",
+          "line": 76,
+          "isDefault": false
+        },
+        {
+          "name": "testConnection",
+          "line": 81,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "generate",
+          "callee": "baseUrl.includes",
+          "lineNumber": 22
+        },
+        {
+          "caller": "generate",
+          "callee": "baseUrl.includes",
+          "lineNumber": 22
+        },
+        {
+          "caller": "generate",
+          "callee": "baseUrl.replace",
+          "lineNumber": 35
+        },
+        {
+          "caller": "generate",
+          "callee": "fetch",
+          "lineNumber": 37
+        },
+        {
+          "caller": "generate",
+          "callee": "JSON.stringify",
+          "lineNumber": 41
+        },
+        {
+          "caller": "generate",
+          "callee": "response.text",
+          "lineNumber": 53
+        },
+        {
+          "caller": "generate",
+          "callee": "response.json",
+          "lineNumber": 59
+        },
+        {
+          "caller": "generate",
+          "callee": "log.debug",
+          "lineNumber": 67
+        },
+        {
+          "caller": "generate",
+          "callee": "content?.slice",
+          "lineNumber": 67
+        },
+        {
+          "caller": "generate",
+          "callee": "JSON.stringify(data).slice",
+          "lineNumber": 69
+        },
+        {
+          "caller": "generate",
+          "callee": "JSON.stringify",
+          "lineNumber": 69
+        },
+        {
+          "caller": "testConnection",
+          "callee": "Date.now",
+          "lineNumber": 82
+        },
+        {
+          "caller": "testConnection",
+          "callee": "createProvider",
+          "lineNumber": 84
+        },
+        {
+          "caller": "testConnection",
+          "callee": "provider.generate",
+          "lineNumber": 85
+        },
+        {
+          "caller": "testConnection",
+          "callee": "Date.now",
+          "lineNumber": 88
+        },
+        {
+          "caller": "testConnection",
+          "callee": "Date.now",
+          "lineNumber": 94
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 3,
+        "functionCount": 2,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "packages/core/src/ai/context-reminder.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 194,
+      "nonEmptyLines": 168,
+      "functions": [
+        {
+          "name": "detectMoodPatterns",
+          "startLine": 16,
+          "endLine": 60,
+          "params": [
+            "reflections"
+          ]
+        },
+        {
+          "name": "detectHabitRisks",
+          "startLine": 63,
+          "endLine": 107,
+          "params": [
+            "habits"
+          ]
+        },
+        {
+          "name": "detectStreakRisks",
+          "startLine": 110,
+          "endLine": 147,
+          "params": [
+            "checkinHistory"
+          ]
+        },
+        {
+          "name": "detectReflectionGaps",
+          "startLine": 150,
+          "endLine": 176,
+          "params": [
+            "reflections"
+          ]
+        },
+        {
+          "name": "getAllContextReminders",
+          "startLine": 179,
+          "endLine": 194,
+          "params": [
+            "reflections",
+            "habits",
+            "checkinHistory"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "detectMoodPatterns",
+          "line": 16,
+          "isDefault": false
+        },
+        {
+          "name": "detectHabitRisks",
+          "line": 63,
+          "isDefault": false
+        },
+        {
+          "name": "detectStreakRisks",
+          "line": 110,
+          "isDefault": false
+        },
+        {
+          "name": "detectReflectionGaps",
+          "line": 150,
+          "isDefault": false
+        },
+        {
+          "name": "getAllContextReminders",
+          "line": 179,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "detectMoodPatterns",
+          "callee": "reflections\n    .filter(r => !r.deleted)\n    .sort((a, b) => b.timestamp - a.timestamp)\n    .slice",
+          "lineNumber": 18
+        },
+        {
+          "caller": "detectMoodPatterns",
+          "callee": "reflections\n    .filter(r => !r.deleted)\n    .sort",
+          "lineNumber": 18
+        },
+        {
+          "caller": "detectMoodPatterns",
+          "callee": "reflections\n    .filter",
+          "lineNumber": 18
+        },
+        {
+          "caller": "detectMoodPatterns",
+          "callee": "recentReflections.slice(0, 5).map",
+          "lineNumber": 26
+        },
+        {
+          "caller": "detectMoodPatterns",
+          "callee": "recentReflections.slice",
+          "lineNumber": 26
+        },
+        {
+          "caller": "detectMoodPatterns",
+          "callee": "recentMoods.every",
+          "lineNumber": 28
+        },
+        {
+          "caller": "detectMoodPatterns",
+          "callee": "negativeMoods.includes",
+          "lineNumber": 28
+        },
+        {
+          "caller": "detectMoodPatterns",
+          "callee": "reminders.push",
+          "lineNumber": 31
+        },
+        {
+          "caller": "detectMoodPatterns",
+          "callee": "Date.now",
+          "lineNumber": 38
+        },
+        {
+          "caller": "detectMoodPatterns",
+          "callee": "recentReflections.slice(0, 5).filter",
+          "lineNumber": 43
+        },
+        {
+          "caller": "detectMoodPatterns",
+          "callee": "recentReflections.slice",
+          "lineNumber": 43
+        },
+        {
+          "caller": "detectMoodPatterns",
+          "callee": "reminders.push",
+          "lineNumber": 48
+        },
+        {
+          "caller": "detectMoodPatterns",
+          "callee": "Date.now",
+          "lineNumber": 55
+        },
+        {
+          "caller": "detectHabitRisks",
+          "callee": "dateStr",
+          "lineNumber": 65
+        },
+        {
+          "caller": "detectHabitRisks",
+          "callee": "habits.filter(h => !h.deleted && h.status === 'inProgress').forEach",
+          "lineNumber": 67
+        },
+        {
+          "caller": "detectHabitRisks",
+          "callee": "habits.filter",
+          "lineNumber": 67
+        },
+        {
+          "caller": "detectHabitRisks",
+          "callee": "[...(habit.checkedDates ?? [])].sort",
+          "lineNumber": 68
+        },
+        {
+          "caller": "parseLocal",
+          "callee": "s.split('-').map",
+          "lineNumber": 73
+        },
+        {
+          "caller": "parseLocal",
+          "callee": "s.split",
+          "lineNumber": 73
+        },
+        {
+          "caller": "detectHabitRisks",
+          "callee": "parseLocal",
+          "lineNumber": 74
+        },
+        {
+          "caller": "detectHabitRisks",
+          "callee": "parseLocal",
+          "lineNumber": 75
+        },
+        {
+          "caller": "detectHabitRisks",
+          "callee": "Math.floor",
+          "lineNumber": 76
+        },
+        {
+          "caller": "detectHabitRisks",
+          "callee": "todayDate.getTime",
+          "lineNumber": 76
+        },
+        {
+          "caller": "detectHabitRisks",
+          "callee": "lastDate.getTime",
+          "lineNumber": 76
+        },
+        {
+          "caller": "detectHabitRisks",
+          "callee": "reminders.push",
+          "lineNumber": 79
+        },
+        {
+          "caller": "detectHabitRisks",
+          "callee": "Date.now",
+          "lineNumber": 86
+        },
+        {
+          "caller": "detectHabitRisks",
+          "callee": "reminders.push",
+          "lineNumber": 94
+        },
+        {
+          "caller": "detectHabitRisks",
+          "callee": "Date.now",
+          "lineNumber": 101
+        },
+        {
+          "caller": "detectStreakRisks",
+          "callee": "dateStr",
+          "lineNumber": 112
+        },
+        {
+          "caller": "detectStreakRisks",
+          "callee": "dateStr",
+          "lineNumber": 113
+        },
+        {
+          "caller": "detectStreakRisks",
+          "callee": "Date.now",
+          "lineNumber": 113
+        },
+        {
+          "caller": "detectStreakRisks",
+          "callee": "checkinHistory.find",
+          "lineNumber": 115
+        },
+        {
+          "caller": "detectStreakRisks",
+          "callee": "checkinHistory.find",
+          "lineNumber": 116
+        },
+        {
+          "caller": "detectStreakRisks",
+          "callee": "new Date().getHours",
+          "lineNumber": 120
+        },
+        {
+          "caller": "detectStreakRisks",
+          "callee": "reminders.push",
+          "lineNumber": 122
+        },
+        {
+          "caller": "detectStreakRisks",
+          "callee": "Date.now",
+          "lineNumber": 129
+        },
+        {
+          "caller": "detectStreakRisks",
+          "callee": "reminders.push",
+          "lineNumber": 136
+        },
+        {
+          "caller": "detectStreakRisks",
+          "callee": "Date.now",
+          "lineNumber": 142
+        },
+        {
+          "caller": "detectReflectionGaps",
+          "callee": "reflections\n    .filter(r => !r.deleted)\n    .sort",
+          "lineNumber": 152
+        },
+        {
+          "caller": "detectReflectionGaps",
+          "callee": "reflections\n    .filter",
+          "lineNumber": 152
+        },
+        {
+          "caller": "detectReflectionGaps",
+          "callee": "Math.floor",
+          "lineNumber": 159
+        },
+        {
+          "caller": "detectReflectionGaps",
+          "callee": "Date.now",
+          "lineNumber": 160
+        },
+        {
+          "caller": "detectReflectionGaps",
+          "callee": "reminders.push",
+          "lineNumber": 164
+        },
+        {
+          "caller": "detectReflectionGaps",
+          "callee": "Date.now",
+          "lineNumber": 171
+        },
+        {
+          "caller": "getAllContextReminders",
+          "callee": "detectMoodPatterns",
+          "lineNumber": 185
+        },
+        {
+          "caller": "getAllContextReminders",
+          "callee": "detectHabitRisks",
+          "lineNumber": 186
+        },
+        {
+          "caller": "getAllContextReminders",
+          "callee": "detectStreakRisks",
+          "lineNumber": 187
+        },
+        {
+          "caller": "getAllContextReminders",
+          "callee": "detectReflectionGaps",
+          "lineNumber": 188
+        },
+        {
+          "caller": "getAllContextReminders",
+          "callee": "reminders.sort",
+          "lineNumber": 193
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 5,
+        "functionCount": 5,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/ai/insight-profile.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 89,
+      "nonEmptyLines": 79,
+      "functions": [
+        {
+          "name": "makeReflection",
+          "startLine": 8,
+          "endLine": 14,
+          "params": [
+            "overrides"
+          ]
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "makeReflection",
+          "callee": "Date.now",
+          "lineNumber": 11
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 0,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/ai/insight-profile.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 267,
+      "nonEmptyLines": 228,
+      "functions": [
+        {
+          "name": "computeLocalInsights",
+          "startLine": 58,
+          "endLine": 84,
+          "params": [
+            "reflections",
+            "timeRange"
+          ]
+        },
+        {
+          "name": "computeStreakDays",
+          "startLine": 88,
+          "endLine": 111,
+          "params": [
+            "reflections",
+            "maxDays"
+          ]
+        },
+        {
+          "name": "computeHotTags",
+          "startLine": 115,
+          "endLine": 150,
+          "params": [
+            "current",
+            "prev"
+          ]
+        },
+        {
+          "name": "computeMoodDistribution",
+          "startLine": 154,
+          "endLine": 169,
+          "params": [
+            "current"
+          ]
+        },
+        {
+          "name": "generateInsightProfile",
+          "startLine": 177,
+          "endLine": 218,
+          "params": [
+            "reflections",
+            "timeRange"
+          ]
+        },
+        {
+          "name": "parseInsightResponse",
+          "startLine": 220,
+          "endLine": 267,
+          "params": [
+            "raw",
+            "reflections"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "computeLocalInsights",
+          "line": 58,
+          "isDefault": false
+        },
+        {
+          "name": "generateInsightProfile",
+          "line": 177,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "computeLocalInsights",
+          "callee": "Date.now",
+          "lineNumber": 62
+        },
+        {
+          "caller": "computeLocalInsights",
+          "callee": "reflections.filter",
+          "lineNumber": 67
+        },
+        {
+          "caller": "computeLocalInsights",
+          "callee": "reflections.filter",
+          "lineNumber": 68
+        },
+        {
+          "caller": "computeLocalInsights",
+          "callee": "[...active].sort",
+          "lineNumber": 70
+        },
+        {
+          "caller": "computeLocalInsights",
+          "callee": "computeStreakDays",
+          "lineNumber": 76
+        },
+        {
+          "caller": "computeLocalInsights",
+          "callee": "Math.round",
+          "lineNumber": 77
+        },
+        {
+          "caller": "computeLocalInsights",
+          "callee": "computeHotTags",
+          "lineNumber": 78
+        },
+        {
+          "caller": "computeLocalInsights",
+          "callee": "computeMoodDistribution",
+          "lineNumber": 79
+        },
+        {
+          "caller": "computeStreakDays",
+          "callee": "activeOnly",
+          "lineNumber": 89
+        },
+        {
+          "caller": "computeStreakDays",
+          "callee": "today.setHours",
+          "lineNumber": 93
+        },
+        {
+          "caller": "computeStreakDays",
+          "callee": "dateSet.add",
+          "lineNumber": 97
+        },
+        {
+          "caller": "computeStreakDays",
+          "callee": "dateStr",
+          "lineNumber": 97
+        },
+        {
+          "caller": "computeStreakDays",
+          "callee": "d.setDate",
+          "lineNumber": 103
+        },
+        {
+          "caller": "computeStreakDays",
+          "callee": "d.getDate",
+          "lineNumber": 103
+        },
+        {
+          "caller": "computeStreakDays",
+          "callee": "dateSet.has",
+          "lineNumber": 104
+        },
+        {
+          "caller": "computeStreakDays",
+          "callee": "dateStr",
+          "lineNumber": 104
+        },
+        {
+          "caller": "computeHotTags",
+          "callee": "tagCounts.get",
+          "lineNumber": 119
+        },
+        {
+          "caller": "computeHotTags",
+          "callee": "entry.ids.push",
+          "lineNumber": 121
+        },
+        {
+          "caller": "computeHotTags",
+          "callee": "tagCounts.set",
+          "lineNumber": 122
+        },
+        {
+          "caller": "computeHotTags",
+          "callee": "prevTagCounts.set",
+          "lineNumber": 129
+        },
+        {
+          "caller": "computeHotTags",
+          "callee": "prevTagCounts.get",
+          "lineNumber": 129
+        },
+        {
+          "caller": "computeHotTags",
+          "callee": "[...tagCounts.entries()]\n    .map(([tag, { count, ids }]) => {\n      const prevCount = prevTagCounts.get(tag) ?? 0;\n      let trend: HotTag['trend'] = 'stable';\n      if (count > prevCount) trend = 'rising';\n      else if (count < prevCount) trend = 'declining';\n      return {\n        tag,\n        count,\n        percentage: Math.round((count / total) * 100),\n        trend,\n        sampleReflectionIds: ids,\n      };\n    })\n    .sort((a, b) => b.count - a.count)\n    .slice",
+          "lineNumber": 134
+        },
+        {
+          "caller": "computeHotTags",
+          "callee": "[...tagCounts.entries()]\n    .map(([tag, { count, ids }]) => {\n      const prevCount = prevTagCounts.get(tag) ?? 0;\n      let trend: HotTag['trend'] = 'stable';\n      if (count > prevCount) trend = 'rising';\n      else if (count < prevCount) trend = 'declining';\n      return {\n        tag,\n        count,\n        percentage: Math.round((count / total) * 100),\n        trend,\n        sampleReflectionIds: ids,\n      };\n    })\n    .sort",
+          "lineNumber": 134
+        },
+        {
+          "caller": "computeHotTags",
+          "callee": "[...tagCounts.entries()]\n    .map",
+          "lineNumber": 134
+        },
+        {
+          "caller": "computeHotTags",
+          "callee": "tagCounts.entries",
+          "lineNumber": 134
+        },
+        {
+          "caller": "computeHotTags",
+          "callee": "prevTagCounts.get",
+          "lineNumber": 136
+        },
+        {
+          "caller": "computeHotTags",
+          "callee": "Math.round",
+          "lineNumber": 143
+        },
+        {
+          "caller": "computeMoodDistribution",
+          "callee": "moodCounts.set",
+          "lineNumber": 157
+        },
+        {
+          "caller": "computeMoodDistribution",
+          "callee": "moodCounts.get",
+          "lineNumber": 157
+        },
+        {
+          "caller": "computeMoodDistribution",
+          "callee": "[...moodCounts.entries()]\n    .map(([mood, count]) => ({\n      mood,\n      icon: getMoodIcon(mood),\n      count,\n      percentage: Math.round((count / total) * 100),\n    }))\n    .sort",
+          "lineNumber": 161
+        },
+        {
+          "caller": "computeMoodDistribution",
+          "callee": "[...moodCounts.entries()]\n    .map",
+          "lineNumber": 161
+        },
+        {
+          "caller": "computeMoodDistribution",
+          "callee": "moodCounts.entries",
+          "lineNumber": 161
+        },
+        {
+          "caller": "computeMoodDistribution",
+          "callee": "getMoodIcon",
+          "lineNumber": 164
+        },
+        {
+          "caller": "computeMoodDistribution",
+          "callee": "Math.round",
+          "lineNumber": 166
+        },
+        {
+          "caller": "generateInsightProfile",
+          "callee": "isAIRecommendAvailable",
+          "lineNumber": 181
+        },
+        {
+          "caller": "generateInsightProfile",
+          "callee": "Date.now",
+          "lineNumber": 184
+        },
+        {
+          "caller": "generateInsightProfile",
+          "callee": "reflections\n    .filter(r => !r.deleted && r.timestamp >= cutoff)\n    .sort((a, b) => b.timestamp - a.timestamp)\n    .slice",
+          "lineNumber": 185
+        },
+        {
+          "caller": "generateInsightProfile",
+          "callee": "reflections\n    .filter(r => !r.deleted && r.timestamp >= cutoff)\n    .sort",
+          "lineNumber": 185
+        },
+        {
+          "caller": "generateInsightProfile",
+          "callee": "reflections\n    .filter",
+          "lineNumber": 185
+        },
+        {
+          "caller": "generateInsightProfile",
+          "callee": "active.map",
+          "lineNumber": 192
+        },
+        {
+          "caller": "generateInsightProfile",
+          "callee": "buildReflectionSummary",
+          "lineNumber": 192
+        },
+        {
+          "caller": "generateInsightProfile",
+          "callee": "summaries.map((s, i) => `[${i}] ${s}`).join",
+          "lineNumber": 193
+        },
+        {
+          "caller": "generateInsightProfile",
+          "callee": "summaries.map",
+          "lineNumber": 193
+        },
+        {
+          "caller": "generateInsightProfile",
+          "callee": "getAIService",
+          "lineNumber": 198
+        },
+        {
+          "caller": "generateInsightProfile",
+          "callee": "setTimeout",
+          "lineNumber": 200
+        },
+        {
+          "caller": "generateInsightProfile",
+          "callee": "controller.abort",
+          "lineNumber": 200
+        },
+        {
+          "caller": "generateInsightProfile",
+          "callee": "service.generateCloud",
+          "lineNumber": 203
+        },
+        {
+          "caller": "generateInsightProfile",
+          "callee": "clearTimeout",
+          "lineNumber": 209
+        },
+        {
+          "caller": "generateInsightProfile",
+          "callee": "parseInsightResponse",
+          "lineNumber": 213
+        },
+        {
+          "caller": "generateInsightProfile",
+          "callee": "log.error",
+          "lineNumber": 215
+        },
+        {
+          "caller": "parseInsightResponse",
+          "callee": "extractJSON",
+          "lineNumber": 225
+        },
+        {
+          "caller": "parseInsightResponse",
+          "callee": "JSON.parse",
+          "lineNumber": 228
+        },
+        {
+          "caller": "parseInsightResponse",
+          "callee": "repairJSON",
+          "lineNumber": 231
+        },
+        {
+          "caller": "parseInsightResponse",
+          "callee": "JSON.parse",
+          "lineNumber": 232
+        },
+        {
+          "caller": "parseInsightResponse",
+          "callee": "Array.isArray",
+          "lineNumber": 239
+        },
+        {
+          "caller": "parseInsightResponse",
+          "callee": "topicsRaw\n      .filter((t) => {\n        const item = t as Record<string, unknown>;\n        return item && (item.word || item.keyword || item.theme) && (typeof item.count === 'number' || typeof item.frequency === 'number');\n      })\n      .map((t) => {\n        const item = t as Record<string, unknown>;\n        return {\n        word: String(item.word || item.keyword || item.theme || ''),\n        count: Number(item.count || item.frequency || 0),\n        category: String(item.category || item.type || item.tag || ''),\n        sampleReflectionIds: (Array.isArray(item.reflectionIndices) ? item.reflectionIndices as number[] : [])\n          .filter((i: number) => i >= 0 && i < reflections.length)\n          .map((i: number) => reflections[i].id),\n        aiReason: item.reason ? String(item.reason) : undefined,\n      };\n      })\n      .filter(t => t.word)\n      .slice",
+          "lineNumber": 243
+        },
+        {
+          "caller": "parseInsightResponse",
+          "callee": "topicsRaw\n      .filter((t) => {\n        const item = t as Record<string, unknown>;\n        return item && (item.word || item.keyword || item.theme) && (typeof item.count === 'number' || typeof item.frequency === 'number');\n      })\n      .map((t) => {\n        const item = t as Record<string, unknown>;\n        return {\n        word: String(item.word || item.keyword || item.theme || ''),\n        count: Number(item.count || item.frequency || 0),\n        category: String(item.category || item.type || item.tag || ''),\n        sampleReflectionIds: (Array.isArray(item.reflectionIndices) ? item.reflectionIndices as number[] : [])\n          .filter((i: number) => i >= 0 && i < reflections.length)\n          .map((i: number) => reflections[i].id),\n        aiReason: item.reason ? String(item.reason) : undefined,\n      };\n      })\n      .filter",
+          "lineNumber": 243
+        },
+        {
+          "caller": "parseInsightResponse",
+          "callee": "topicsRaw\n      .filter((t) => {\n        const item = t as Record<string, unknown>;\n        return item && (item.word || item.keyword || item.theme) && (typeof item.count === 'number' || typeof item.frequency === 'number');\n      })\n      .map",
+          "lineNumber": 243
+        },
+        {
+          "caller": "parseInsightResponse",
+          "callee": "topicsRaw\n      .filter",
+          "lineNumber": 243
+        },
+        {
+          "caller": "parseInsightResponse",
+          "callee": "String",
+          "lineNumber": 251
+        },
+        {
+          "caller": "parseInsightResponse",
+          "callee": "Number",
+          "lineNumber": 252
+        },
+        {
+          "caller": "parseInsightResponse",
+          "callee": "String",
+          "lineNumber": 253
+        },
+        {
+          "caller": "parseInsightResponse",
+          "callee": "(Array.isArray(item.reflectionIndices) ? item.reflectionIndices as number[] : [])\n          .filter((i: number) => i >= 0 && i < reflections.length)\n          .map",
+          "lineNumber": 254
+        },
+        {
+          "caller": "parseInsightResponse",
+          "callee": "(Array.isArray(item.reflectionIndices) ? item.reflectionIndices as number[] : [])\n          .filter",
+          "lineNumber": 254
+        },
+        {
+          "caller": "parseInsightResponse",
+          "callee": "Array.isArray",
+          "lineNumber": 254
+        },
+        {
+          "caller": "parseInsightResponse",
+          "callee": "String",
+          "lineNumber": 257
+        }
+      ],
+      "metrics": {
+        "importCount": 9,
+        "exportCount": 2,
+        "functionCount": 6,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/ai/json-utils.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 110,
+      "nonEmptyLines": 91,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/ai/json-utils.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 96,
+      "nonEmptyLines": 89,
+      "functions": [
+        {
+          "name": "extractJSON",
+          "startLine": 12,
+          "endLine": 24,
+          "params": [
+            "raw"
+          ]
+        },
+        {
+          "name": "findLastBalancedJSON",
+          "startLine": 30,
+          "endLine": 57,
+          "params": [
+            "text",
+            "open",
+            "close"
+          ]
+        },
+        {
+          "name": "repairJSON",
+          "startLine": 64,
+          "endLine": 96,
+          "params": [
+            "str"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "extractJSON",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "findLastBalancedJSON",
+          "line": 30,
+          "isDefault": false
+        },
+        {
+          "name": "repairJSON",
+          "line": 64,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "extractJSON",
+          "callee": "raw.match",
+          "lineNumber": 13
+        },
+        {
+          "caller": "extractJSON",
+          "callee": "codeBlockMatch[1].trim",
+          "lineNumber": 14
+        },
+        {
+          "caller": "extractJSON",
+          "callee": "findLastBalancedJSON",
+          "lineNumber": 17
+        },
+        {
+          "caller": "extractJSON",
+          "callee": "findLastBalancedJSON",
+          "lineNumber": 20
+        },
+        {
+          "caller": "extractJSON",
+          "callee": "raw.trim",
+          "lineNumber": 23
+        },
+        {
+          "caller": "findLastBalancedJSON",
+          "callee": "text.slice",
+          "lineNumber": 45
+        },
+        {
+          "caller": "findLastBalancedJSON",
+          "callee": "JSON.parse",
+          "lineNumber": 47
+        },
+        {
+          "caller": "repairJSON",
+          "callee": "str.trim",
+          "lineNumber": 65
+        },
+        {
+          "caller": "repairJSON",
+          "callee": "s.slice",
+          "lineNumber": 78
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 3,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/ai/local-engine.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 185,
+      "nonEmptyLines": 157,
+      "classes": [
+        {
+          "name": "LocalAIEngine",
+          "startLine": 52,
+          "endLine": 185,
+          "methods": [
+            "detectMood",
+            "suggestTags",
+            "suggestContentExpansion",
+            "generateTrailInsight",
+            "extractKeyPoints",
+            "findTurningPoints",
+            "generateSuggestions"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "LocalAIEngine",
+          "line": 52,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "detectMood",
+          "callee": "Object.entries",
+          "lineNumber": 56
+        },
+        {
+          "caller": "detectMood",
+          "callee": "content.includes",
+          "lineNumber": 57
+        },
+        {
+          "caller": "detectMood",
+          "callee": "results.push",
+          "lineNumber": 58
+        },
+        {
+          "caller": "detectMood",
+          "callee": "results.sort",
+          "lineNumber": 66
+        },
+        {
+          "caller": "detectMood",
+          "callee": "[...new Set(results.map(r => r.mood))].slice",
+          "lineNumber": 71
+        },
+        {
+          "caller": "detectMood",
+          "callee": "results.map",
+          "lineNumber": 71
+        },
+        {
+          "caller": "suggestTags",
+          "callee": "content.toLowerCase",
+          "lineNumber": 77
+        },
+        {
+          "caller": "suggestTags",
+          "callee": "tag.replace('#', '').toLowerCase",
+          "lineNumber": 80
+        },
+        {
+          "caller": "suggestTags",
+          "callee": "tag.replace",
+          "lineNumber": 80
+        },
+        {
+          "caller": "suggestTags",
+          "callee": "contentLower.includes",
+          "lineNumber": 81
+        },
+        {
+          "caller": "suggestTags",
+          "callee": "suggestions.push",
+          "lineNumber": 82
+        },
+        {
+          "caller": "suggestTags",
+          "callee": "Object.entries",
+          "lineNumber": 86
+        },
+        {
+          "caller": "suggestTags",
+          "callee": "contentLower.includes",
+          "lineNumber": 87
+        },
+        {
+          "caller": "suggestTags",
+          "callee": "suggestions.find",
+          "lineNumber": 89
+        },
+        {
+          "caller": "suggestTags",
+          "callee": "suggestions.push",
+          "lineNumber": 90
+        },
+        {
+          "caller": "suggestTags",
+          "callee": "suggestions.slice",
+          "lineNumber": 96
+        },
+        {
+          "caller": "suggestContentExpansion",
+          "callee": "suggestions.push",
+          "lineNumber": 103
+        },
+        {
+          "caller": "suggestContentExpansion",
+          "callee": "suggestions.push",
+          "lineNumber": 104
+        },
+        {
+          "caller": "suggestContentExpansion",
+          "callee": "Object.entries",
+          "lineNumber": 107
+        },
+        {
+          "caller": "suggestContentExpansion",
+          "callee": "content.includes",
+          "lineNumber": 109
+        },
+        {
+          "caller": "suggestContentExpansion",
+          "callee": "suggestions.push",
+          "lineNumber": 111
+        },
+        {
+          "caller": "suggestContentExpansion",
+          "callee": "suggestions.push",
+          "lineNumber": 112
+        },
+        {
+          "caller": "suggestContentExpansion",
+          "callee": "suggestions.push",
+          "lineNumber": 113
+        },
+        {
+          "caller": "suggestContentExpansion",
+          "callee": "suggestions.push",
+          "lineNumber": 114
+        },
+        {
+          "caller": "suggestContentExpansion",
+          "callee": "suggestions.push",
+          "lineNumber": 115
+        },
+        {
+          "caller": "suggestContentExpansion",
+          "callee": "[...new Set(suggestions)].slice",
+          "lineNumber": 122
+        },
+        {
+          "caller": "generateTrailInsight",
+          "callee": "reflections.map",
+          "lineNumber": 126
+        },
+        {
+          "caller": "generateTrailInsight",
+          "callee": "moods.filter",
+          "lineNumber": 127
+        },
+        {
+          "caller": "generateTrailInsight",
+          "callee": "this.extractKeyPoints",
+          "lineNumber": 131
+        },
+        {
+          "caller": "generateTrailInsight",
+          "callee": "reflections.map",
+          "lineNumber": 131
+        },
+        {
+          "caller": "generateTrailInsight",
+          "callee": "this.findTurningPoints",
+          "lineNumber": 132
+        },
+        {
+          "caller": "generateTrailInsight",
+          "callee": "this.generateSuggestions",
+          "lineNumber": 133
+        },
+        {
+          "caller": "extractKeyPoints",
+          "callee": "Object.values",
+          "lineNumber": 141
+        },
+        {
+          "caller": "extractKeyPoints",
+          "callee": "content.includes",
+          "lineNumber": 143
+        },
+        {
+          "caller": "extractKeyPoints",
+          "callee": "content.split",
+          "lineNumber": 144
+        },
+        {
+          "caller": "extractKeyPoints",
+          "callee": "sentence.includes",
+          "lineNumber": 146
+        },
+        {
+          "caller": "extractKeyPoints",
+          "callee": "keyPoints.push",
+          "lineNumber": 147
+        },
+        {
+          "caller": "extractKeyPoints",
+          "callee": "sentence.trim",
+          "lineNumber": 147
+        },
+        {
+          "caller": "extractKeyPoints",
+          "callee": "[...new Set(keyPoints)].slice",
+          "lineNumber": 156
+        },
+        {
+          "caller": "findTurningPoints",
+          "callee": "turningPoints.push",
+          "lineNumber": 164
+        },
+        {
+          "caller": "findTurningPoints",
+          "callee": "turningPoints.slice",
+          "lineNumber": 168
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "suggestions.push",
+          "lineNumber": 176
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "suggestions.push",
+          "lineNumber": 180
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "packages/core/src/ai/personalized-suggestions.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 259,
+      "nonEmptyLines": 230,
+      "functions": [
+        {
+          "name": "generateMoodSuggestions",
+          "startLine": 19,
+          "endLine": 67,
+          "params": [
+            "reflections",
+            "patterns"
+          ]
+        },
+        {
+          "name": "generateHabitSuggestions",
+          "startLine": 70,
+          "endLine": 122,
+          "params": [
+            "habits",
+            "reflections"
+          ]
+        },
+        {
+          "name": "generateRiskBasedSuggestions",
+          "startLine": 125,
+          "endLine": 174,
+          "params": [
+            "risks"
+          ]
+        },
+        {
+          "name": "generateTimeBasedSuggestions",
+          "startLine": 177,
+          "endLine": 233,
+          "params": [
+            "reflections",
+            "checkinHistory"
+          ]
+        },
+        {
+          "name": "getAllPersonalizedSuggestions",
+          "startLine": 236,
+          "endLine": 259,
+          "params": [
+            "reflections",
+            "habits",
+            "plans",
+            "checkinHistory",
+            "patterns",
+            "risks"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "generateMoodSuggestions",
+          "line": 19,
+          "isDefault": false
+        },
+        {
+          "name": "generateHabitSuggestions",
+          "line": 70,
+          "isDefault": false
+        },
+        {
+          "name": "generateRiskBasedSuggestions",
+          "line": 125,
+          "isDefault": false
+        },
+        {
+          "name": "generateTimeBasedSuggestions",
+          "line": 177,
+          "isDefault": false
+        },
+        {
+          "name": "getAllPersonalizedSuggestions",
+          "line": 236,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "generateMoodSuggestions",
+          "callee": "patterns.find",
+          "lineNumber": 26
+        },
+        {
+          "caller": "generateMoodSuggestions",
+          "callee": "p.name.includes",
+          "lineNumber": 26
+        },
+        {
+          "caller": "generateMoodSuggestions",
+          "callee": "suggestions.push",
+          "lineNumber": 28
+        },
+        {
+          "caller": "generateMoodSuggestions",
+          "callee": "anxietyPattern.reflections.slice",
+          "lineNumber": 35
+        },
+        {
+          "caller": "generateMoodSuggestions",
+          "callee": "Date.now",
+          "lineNumber": 36
+        },
+        {
+          "caller": "generateMoodSuggestions",
+          "callee": "suggestions.push",
+          "lineNumber": 39
+        },
+        {
+          "caller": "generateMoodSuggestions",
+          "callee": "anxietyPattern.reflections.slice",
+          "lineNumber": 46
+        },
+        {
+          "caller": "generateMoodSuggestions",
+          "callee": "Date.now",
+          "lineNumber": 47
+        },
+        {
+          "caller": "generateMoodSuggestions",
+          "callee": "patterns.find",
+          "lineNumber": 52
+        },
+        {
+          "caller": "generateMoodSuggestions",
+          "callee": "suggestions.push",
+          "lineNumber": 54
+        },
+        {
+          "caller": "generateMoodSuggestions",
+          "callee": "Date.now",
+          "lineNumber": 62
+        },
+        {
+          "caller": "generateHabitSuggestions",
+          "callee": "habits.filter",
+          "lineNumber": 77
+        },
+        {
+          "caller": "generateHabitSuggestions",
+          "callee": "activeHabits.forEach",
+          "lineNumber": 79
+        },
+        {
+          "caller": "generateHabitSuggestions",
+          "callee": "suggestions.push",
+          "lineNumber": 84
+        },
+        {
+          "caller": "generateHabitSuggestions",
+          "callee": "Date.now",
+          "lineNumber": 92
+        },
+        {
+          "caller": "generateHabitSuggestions",
+          "callee": "reflections.filter",
+          "lineNumber": 97
+        },
+        {
+          "caller": "generateHabitSuggestions",
+          "callee": "(r.tags ?? []).some",
+          "lineNumber": 98
+        },
+        {
+          "caller": "generateHabitSuggestions",
+          "callee": "t.includes",
+          "lineNumber": 98
+        },
+        {
+          "caller": "generateHabitSuggestions",
+          "callee": "relatedReflections.filter",
+          "lineNumber": 102
+        },
+        {
+          "caller": "generateHabitSuggestions",
+          "callee": "['开心', '平静', '感恩'].includes",
+          "lineNumber": 103
+        },
+        {
+          "caller": "generateHabitSuggestions",
+          "callee": "suggestions.push",
+          "lineNumber": 107
+        },
+        {
+          "caller": "generateHabitSuggestions",
+          "callee": "relatedReflections.slice(0, 3).map",
+          "lineNumber": 114
+        },
+        {
+          "caller": "generateHabitSuggestions",
+          "callee": "relatedReflections.slice",
+          "lineNumber": 114
+        },
+        {
+          "caller": "generateHabitSuggestions",
+          "callee": "Date.now",
+          "lineNumber": 115
+        },
+        {
+          "caller": "generateRiskBasedSuggestions",
+          "callee": "risks.forEach",
+          "lineNumber": 130
+        },
+        {
+          "caller": "generateRiskBasedSuggestions",
+          "callee": "suggestions.push",
+          "lineNumber": 133
+        },
+        {
+          "caller": "generateRiskBasedSuggestions",
+          "callee": "Date.now",
+          "lineNumber": 141
+        },
+        {
+          "caller": "generateRiskBasedSuggestions",
+          "callee": "suggestions.push",
+          "lineNumber": 146
+        },
+        {
+          "caller": "generateRiskBasedSuggestions",
+          "callee": "Date.now",
+          "lineNumber": 154
+        },
+        {
+          "caller": "generateRiskBasedSuggestions",
+          "callee": "suggestions.push",
+          "lineNumber": 159
+        },
+        {
+          "caller": "generateRiskBasedSuggestions",
+          "callee": "Date.now",
+          "lineNumber": 167
+        },
+        {
+          "caller": "generateTimeBasedSuggestions",
+          "callee": "today.getDay",
+          "lineNumber": 183
+        },
+        {
+          "caller": "generateTimeBasedSuggestions",
+          "callee": "today.getHours",
+          "lineNumber": 184
+        },
+        {
+          "caller": "generateTimeBasedSuggestions",
+          "callee": "reflections.filter",
+          "lineNumber": 188
+        },
+        {
+          "caller": "generateTimeBasedSuggestions",
+          "callee": "new Date(r.timestamp).getDay",
+          "lineNumber": 189
+        },
+        {
+          "caller": "generateTimeBasedSuggestions",
+          "callee": "weekendReflections.map",
+          "lineNumber": 194
+        },
+        {
+          "caller": "generateTimeBasedSuggestions",
+          "callee": "weekendMoods.filter",
+          "lineNumber": 195
+        },
+        {
+          "caller": "generateTimeBasedSuggestions",
+          "callee": "['开心', '平静'].includes",
+          "lineNumber": 195
+        },
+        {
+          "caller": "generateTimeBasedSuggestions",
+          "callee": "suggestions.push",
+          "lineNumber": 198
+        },
+        {
+          "caller": "generateTimeBasedSuggestions",
+          "callee": "Date.now",
+          "lineNumber": 206
+        },
+        {
+          "caller": "generateTimeBasedSuggestions",
+          "callee": "checkinHistory.find",
+          "lineNumber": 214
+        },
+        {
+          "caller": "generateTimeBasedSuggestions",
+          "callee": "dateStr",
+          "lineNumber": 215
+        },
+        {
+          "caller": "generateTimeBasedSuggestions",
+          "callee": "suggestions.push",
+          "lineNumber": 219
+        },
+        {
+          "caller": "generateTimeBasedSuggestions",
+          "callee": "Date.now",
+          "lineNumber": 227
+        },
+        {
+          "caller": "getAllPersonalizedSuggestions",
+          "callee": "generateMoodSuggestions",
+          "lineNumber": 245
+        },
+        {
+          "caller": "getAllPersonalizedSuggestions",
+          "callee": "generateHabitSuggestions",
+          "lineNumber": 246
+        },
+        {
+          "caller": "getAllPersonalizedSuggestions",
+          "callee": "generateRiskBasedSuggestions",
+          "lineNumber": 247
+        },
+        {
+          "caller": "getAllPersonalizedSuggestions",
+          "callee": "generateTimeBasedSuggestions",
+          "lineNumber": 248
+        },
+        {
+          "caller": "getAllPersonalizedSuggestions",
+          "callee": "suggestions.filter",
+          "lineNumber": 252
+        },
+        {
+          "caller": "getAllPersonalizedSuggestions",
+          "callee": "arr.findIndex",
+          "lineNumber": 253
+        },
+        {
+          "caller": "getAllPersonalizedSuggestions",
+          "callee": "uniqueSuggestions.sort",
+          "lineNumber": 258
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 5,
+        "functionCount": 5,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/ai/rag/cache.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 94,
+      "nonEmptyLines": 77,
+      "functions": [
+        {
+          "name": "generateCacheKey",
+          "startLine": 70,
+          "endLine": 75,
+          "params": [
+            "query",
+            "fingerprintOrIds"
+          ]
+        },
+        {
+          "name": "simpleHash",
+          "startLine": 81,
+          "endLine": 94,
+          "params": [
+            "str"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "AICache",
+          "startLine": 11,
+          "endLine": 62,
+          "methods": [
+            "constructor",
+            "get",
+            "set",
+            "has",
+            "clear",
+            "delete",
+            "size"
+          ],
+          "properties": [
+            "store",
+            "ttl",
+            "maxSize"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "AICache",
+          "line": 11,
+          "isDefault": false
+        },
+        {
+          "name": "generateCacheKey",
+          "line": 70,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "get",
+          "callee": "this.store.get",
+          "lineNumber": 22
+        },
+        {
+          "caller": "get",
+          "callee": "Date.now",
+          "lineNumber": 26
+        },
+        {
+          "caller": "get",
+          "callee": "this.store.delete",
+          "lineNumber": 27
+        },
+        {
+          "caller": "set",
+          "callee": "this.store.delete",
+          "lineNumber": 36
+        },
+        {
+          "caller": "set",
+          "callee": "this.store.keys().next",
+          "lineNumber": 40
+        },
+        {
+          "caller": "set",
+          "callee": "this.store.keys",
+          "lineNumber": 40
+        },
+        {
+          "caller": "set",
+          "callee": "this.store.delete",
+          "lineNumber": 41
+        },
+        {
+          "caller": "set",
+          "callee": "this.store.set",
+          "lineNumber": 44
+        },
+        {
+          "caller": "set",
+          "callee": "Date.now",
+          "lineNumber": 44
+        },
+        {
+          "caller": "has",
+          "callee": "this.get",
+          "lineNumber": 48
+        },
+        {
+          "caller": "clear",
+          "callee": "this.store.clear",
+          "lineNumber": 52
+        },
+        {
+          "caller": "delete",
+          "callee": "this.store.delete",
+          "lineNumber": 56
+        },
+        {
+          "caller": "generateCacheKey",
+          "callee": "[...fingerprintOrIds].sort().join",
+          "lineNumber": 73
+        },
+        {
+          "caller": "generateCacheKey",
+          "callee": "[...fingerprintOrIds].sort",
+          "lineNumber": 73
+        },
+        {
+          "caller": "generateCacheKey",
+          "callee": "simpleHash",
+          "lineNumber": 74
+        },
+        {
+          "caller": "simpleHash",
+          "callee": "str.charCodeAt",
+          "lineNumber": 86
+        },
+        {
+          "caller": "simpleHash",
+          "callee": "BigInt",
+          "lineNumber": 92
+        },
+        {
+          "caller": "simpleHash",
+          "callee": "BigInt",
+          "lineNumber": 92
+        },
+        {
+          "caller": "simpleHash",
+          "callee": "combined.toString(16).padStart(16, '0').slice",
+          "lineNumber": 93
+        },
+        {
+          "caller": "simpleHash",
+          "callee": "combined.toString(16).padStart",
+          "lineNumber": 93
+        },
+        {
+          "caller": "simpleHash",
+          "callee": "combined.toString",
+          "lineNumber": 93
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "packages/core/src/ai/rag/indexer.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 45,
+      "nonEmptyLines": 42,
+      "functions": [
+        {
+          "name": "buildIndex",
+          "startLine": 20,
+          "endLine": 34,
+          "params": [
+            "reflections"
+          ]
+        },
+        {
+          "name": "extractKeywords",
+          "startLine": 39,
+          "endLine": 45,
+          "params": [
+            "text"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "buildIndex",
+          "line": 20,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "buildIndex",
+          "callee": "reflections\n    .filter(r => !r.deleted)\n    .map",
+          "lineNumber": 21
+        },
+        {
+          "caller": "buildIndex",
+          "callee": "reflections\n    .filter",
+          "lineNumber": 21
+        },
+        {
+          "caller": "buildIndex",
+          "callee": "r.content.toLowerCase",
+          "lineNumber": 26
+        },
+        {
+          "caller": "buildIndex",
+          "callee": "extractKeywords",
+          "lineNumber": 27
+        },
+        {
+          "caller": "buildIndex",
+          "callee": "(r.mood ?? '').toLowerCase",
+          "lineNumber": 29
+        },
+        {
+          "caller": "buildIndex",
+          "callee": "(r.tags ?? []).map",
+          "lineNumber": 31
+        },
+        {
+          "caller": "buildIndex",
+          "callee": "t.toLowerCase",
+          "lineNumber": 31
+        },
+        {
+          "caller": "extractKeywords",
+          "callee": "text.replace",
+          "lineNumber": 41
+        },
+        {
+          "caller": "extractKeywords",
+          "callee": "cleaned.split(/\\s+/).filter",
+          "lineNumber": 42
+        },
+        {
+          "caller": "extractKeywords",
+          "callee": "cleaned.split",
+          "lineNumber": 42
+        },
+        {
+          "caller": "extractKeywords",
+          "callee": "words.map",
+          "lineNumber": 44
+        },
+        {
+          "caller": "extractKeywords",
+          "callee": "w.toLowerCase",
+          "lineNumber": 44
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/ai/rag/prompt-builder.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 79,
+      "nonEmptyLines": 67,
+      "functions": [
+        {
+          "name": "formatReflectionSummary",
+          "startLine": 12,
+          "endLine": 23,
+          "params": [
+            "item",
+            "language"
+          ]
+        },
+        {
+          "name": "buildRecommendPrompt",
+          "startLine": 28,
+          "endLine": 48,
+          "params": [
+            "query",
+            "reflections"
+          ]
+        },
+        {
+          "name": "buildQueryParsePrompt",
+          "startLine": 53,
+          "endLine": 79,
+          "params": [
+            "input",
+            "reflections",
+            "history"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "formatReflectionSummary",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "buildRecommendPrompt",
+          "line": 28,
+          "isDefault": false
+        },
+        {
+          "name": "buildQueryParsePrompt",
+          "line": 53,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "formatReflectionSummary",
+          "callee": "formatDate",
+          "lineNumber": 13
+        },
+        {
+          "caller": "formatReflectionSummary",
+          "callee": "item.content.slice",
+          "lineNumber": 19
+        },
+        {
+          "caller": "formatReflectionSummary",
+          "callee": "item.tags.join",
+          "lineNumber": 21
+        },
+        {
+          "caller": "buildRecommendPrompt",
+          "callee": "reflections\n    .slice(0, 5)\n    .map((r, i) => `[${i}] ${formatReflectionSummary(r)}`)\n    .join",
+          "lineNumber": 32
+        },
+        {
+          "caller": "buildRecommendPrompt",
+          "callee": "reflections\n    .slice(0, 5)\n    .map",
+          "lineNumber": 32
+        },
+        {
+          "caller": "buildRecommendPrompt",
+          "callee": "reflections\n    .slice",
+          "lineNumber": 32
+        },
+        {
+          "caller": "buildRecommendPrompt",
+          "callee": "formatReflectionSummary",
+          "lineNumber": 34
+        },
+        {
+          "caller": "buildRecommendPrompt",
+          "callee": "prompt.slice",
+          "lineNumber": 44
+        },
+        {
+          "caller": "buildQueryParsePrompt",
+          "callee": "reflections\n    .slice(0, 5)\n    .map((r, i) => `[${i}] ${formatReflectionSummary(r)}`)\n    .join",
+          "lineNumber": 60
+        },
+        {
+          "caller": "buildQueryParsePrompt",
+          "callee": "reflections\n    .slice(0, 5)\n    .map",
+          "lineNumber": 60
+        },
+        {
+          "caller": "buildQueryParsePrompt",
+          "callee": "reflections\n    .slice",
+          "lineNumber": 60
+        },
+        {
+          "caller": "buildQueryParsePrompt",
+          "callee": "formatReflectionSummary",
+          "lineNumber": 62
+        },
+        {
+          "caller": "buildQueryParsePrompt",
+          "callee": "history.join",
+          "lineNumber": 66
+        },
+        {
+          "caller": "buildQueryParsePrompt",
+          "callee": "prompt.slice",
+          "lineNumber": 75
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 3,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/ai/rag/retriever.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 194,
+      "nonEmptyLines": 172,
+      "functions": [
+        {
+          "name": "makeIndex",
+          "startLine": 6,
+          "endLine": 19,
+          "params": [
+            "overrides"
+          ]
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "makeIndex",
+          "callee": "Date.now",
+          "lineNumber": 16
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 0,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/ai/rag/retriever.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 222,
+      "nonEmptyLines": 201,
+      "functions": [
+        {
+          "name": "findSubstringMains",
+          "startLine": 71,
+          "endLine": 77,
+          "params": [
+            "term"
+          ]
+        },
+        {
+          "name": "expandTerms",
+          "startLine": 82,
+          "endLine": 107,
+          "params": [
+            "terms"
+          ]
+        },
+        {
+          "name": "retrieveTopK",
+          "startLine": 112,
+          "endLine": 148,
+          "params": [
+            "query",
+            "index",
+            "k"
+          ]
+        },
+        {
+          "name": "calcKeywordScore",
+          "startLine": 153,
+          "endLine": 165,
+          "params": [
+            "terms",
+            "item"
+          ]
+        },
+        {
+          "name": "calcSynonymScore",
+          "startLine": 170,
+          "endLine": 183,
+          "params": [
+            "expandedTerms",
+            "item"
+          ]
+        },
+        {
+          "name": "calcMoodScore",
+          "startLine": 188,
+          "endLine": 199,
+          "params": [
+            "terms",
+            "item"
+          ]
+        },
+        {
+          "name": "calcTimeScore",
+          "startLine": 204,
+          "endLine": 208,
+          "params": [
+            "timestamp",
+            "now"
+          ]
+        },
+        {
+          "name": "calcTagScore",
+          "startLine": 213,
+          "endLine": 222,
+          "params": [
+            "terms",
+            "item"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "SYNONYM_MAP",
+          "line": 22,
+          "isDefault": false
+        },
+        {
+          "name": "expandTerms",
+          "line": 82,
+          "isDefault": false
+        },
+        {
+          "name": "retrieveTopK",
+          "line": 112,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "findSubstringMains",
+          "callee": "SUBSTRING_TO_MAINS.get",
+          "lineNumber": 73
+        },
+        {
+          "caller": "expandTerms",
+          "callee": "expanded.add",
+          "lineNumber": 88
+        },
+        {
+          "caller": "expandTerms",
+          "callee": "expanded.add",
+          "lineNumber": 89
+        },
+        {
+          "caller": "expandTerms",
+          "callee": "expanded.add",
+          "lineNumber": 93
+        },
+        {
+          "caller": "expandTerms",
+          "callee": "findSubstringMains",
+          "lineNumber": 97
+        },
+        {
+          "caller": "expandTerms",
+          "callee": "expanded.add",
+          "lineNumber": 100
+        },
+        {
+          "caller": "expandTerms",
+          "callee": "expanded.add",
+          "lineNumber": 101
+        },
+        {
+          "caller": "expandTerms",
+          "callee": "Array.from",
+          "lineNumber": 106
+        },
+        {
+          "caller": "retrieveTopK",
+          "callee": "query.trim",
+          "lineNumber": 117
+        },
+        {
+          "caller": "retrieveTopK",
+          "callee": "query.toLowerCase().split(/\\s+/).filter",
+          "lineNumber": 119
+        },
+        {
+          "caller": "retrieveTopK",
+          "callee": "query.toLowerCase().split",
+          "lineNumber": 119
+        },
+        {
+          "caller": "retrieveTopK",
+          "callee": "query.toLowerCase",
+          "lineNumber": 119
+        },
+        {
+          "caller": "retrieveTopK",
+          "callee": "expandTerms",
+          "lineNumber": 123
+        },
+        {
+          "caller": "retrieveTopK",
+          "callee": "Date.now",
+          "lineNumber": 125
+        },
+        {
+          "caller": "retrieveTopK",
+          "callee": "index.map",
+          "lineNumber": 127
+        },
+        {
+          "caller": "retrieveTopK",
+          "callee": "calcKeywordScore",
+          "lineNumber": 128
+        },
+        {
+          "caller": "retrieveTopK",
+          "callee": "calcSynonymScore",
+          "lineNumber": 129
+        },
+        {
+          "caller": "retrieveTopK",
+          "callee": "calcMoodScore",
+          "lineNumber": 130
+        },
+        {
+          "caller": "retrieveTopK",
+          "callee": "calcTimeScore",
+          "lineNumber": 131
+        },
+        {
+          "caller": "retrieveTopK",
+          "callee": "calcTagScore",
+          "lineNumber": 132
+        },
+        {
+          "caller": "retrieveTopK",
+          "callee": "scored\n    .filter(s => s.score > 0)\n    .sort((a, b) => b.score - a.score)\n    .slice",
+          "lineNumber": 144
+        },
+        {
+          "caller": "retrieveTopK",
+          "callee": "scored\n    .filter(s => s.score > 0)\n    .sort",
+          "lineNumber": 144
+        },
+        {
+          "caller": "retrieveTopK",
+          "callee": "scored\n    .filter",
+          "lineNumber": 144
+        },
+        {
+          "caller": "calcKeywordScore",
+          "callee": "item.contentLower.includes",
+          "lineNumber": 157
+        },
+        {
+          "caller": "calcKeywordScore",
+          "callee": "item.tagsLower.some",
+          "lineNumber": 158
+        },
+        {
+          "caller": "calcKeywordScore",
+          "callee": "t.includes",
+          "lineNumber": 158
+        },
+        {
+          "caller": "calcKeywordScore",
+          "callee": "item.moodLower.includes",
+          "lineNumber": 159
+        },
+        {
+          "caller": "calcSynonymScore",
+          "callee": "item.contentLower.includes",
+          "lineNumber": 174
+        },
+        {
+          "caller": "calcSynonymScore",
+          "callee": "item.tagsLower.some",
+          "lineNumber": 175
+        },
+        {
+          "caller": "calcSynonymScore",
+          "callee": "t.includes",
+          "lineNumber": 175
+        },
+        {
+          "caller": "calcSynonymScore",
+          "callee": "item.moodLower.includes",
+          "lineNumber": 176
+        },
+        {
+          "caller": "calcSynonymScore",
+          "callee": "Math.min",
+          "lineNumber": 182
+        },
+        {
+          "caller": "calcSynonymScore",
+          "callee": "Math.max",
+          "lineNumber": 182
+        },
+        {
+          "caller": "calcSynonymScore",
+          "callee": "Math.min",
+          "lineNumber": 182
+        },
+        {
+          "caller": "calcMoodScore",
+          "callee": "item.moodLower.includes",
+          "lineNumber": 191
+        },
+        {
+          "caller": "calcMoodScore",
+          "callee": "item.moodLower.includes",
+          "lineNumber": 194
+        },
+        {
+          "caller": "calcMoodScore",
+          "callee": "SYNONYM_MAP[main]?.some",
+          "lineNumber": 194
+        },
+        {
+          "caller": "calcMoodScore",
+          "callee": "item.moodLower.includes",
+          "lineNumber": 194
+        },
+        {
+          "caller": "calcTimeScore",
+          "callee": "Math.exp",
+          "lineNumber": 207
+        },
+        {
+          "caller": "calcTagScore",
+          "callee": "item.tagsLower.some",
+          "lineNumber": 217
+        },
+        {
+          "caller": "calcTagScore",
+          "callee": "t.includes",
+          "lineNumber": 217
+        },
+        {
+          "caller": "calcTagScore",
+          "callee": "term.includes",
+          "lineNumber": 217
+        },
+        {
+          "caller": "calcTagScore",
+          "callee": "Math.min",
+          "lineNumber": 221
+        },
+        {
+          "caller": "calcTagScore",
+          "callee": "Math.max",
+          "lineNumber": 221
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 3,
+        "functionCount": 8,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/ai/risk-warning.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 159,
+      "nonEmptyLines": 139,
+      "functions": [
+        {
+          "name": "makeHabit",
+          "startLine": 15,
+          "endLine": 21,
+          "params": [
+            "overrides"
+          ]
+        },
+        {
+          "name": "makePlan",
+          "startLine": 23,
+          "endLine": 30,
+          "params": [
+            "overrides"
+          ]
+        },
+        {
+          "name": "makeReflection",
+          "startLine": 32,
+          "endLine": 38,
+          "params": [
+            "overrides"
+          ]
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "makeHabit",
+          "callee": "Date.now",
+          "lineNumber": 18
+        },
+        {
+          "caller": "makePlan",
+          "callee": "Date.now",
+          "lineNumber": 27
+        },
+        {
+          "caller": "makeReflection",
+          "callee": "Date.now",
+          "lineNumber": 35
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 0,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/ai/risk-warning.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 232,
+      "nonEmptyLines": 199,
+      "functions": [
+        {
+          "name": "detectHabitAbandonRisk",
+          "startLine": 17,
+          "endLine": 68,
+          "params": [
+            "habits"
+          ]
+        },
+        {
+          "name": "detectPlanDelayRisk",
+          "startLine": 71,
+          "endLine": 121,
+          "params": [
+            "plans"
+          ]
+        },
+        {
+          "name": "detectStreakBreakRisk",
+          "startLine": 124,
+          "endLine": 173,
+          "params": [
+            "checkinHistory"
+          ]
+        },
+        {
+          "name": "detectMoodDeclineRisk",
+          "startLine": 176,
+          "endLine": 213,
+          "params": [
+            "reflections"
+          ]
+        },
+        {
+          "name": "getAllRiskWarnings",
+          "startLine": 216,
+          "endLine": 232,
+          "params": [
+            "habits",
+            "plans",
+            "checkinHistory",
+            "reflections"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "detectHabitAbandonRisk",
+          "line": 17,
+          "isDefault": false
+        },
+        {
+          "name": "detectPlanDelayRisk",
+          "line": 71,
+          "isDefault": false
+        },
+        {
+          "name": "detectStreakBreakRisk",
+          "line": 124,
+          "isDefault": false
+        },
+        {
+          "name": "detectMoodDeclineRisk",
+          "line": 176,
+          "isDefault": false
+        },
+        {
+          "name": "getAllRiskWarnings",
+          "line": 216,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "detectHabitAbandonRisk",
+          "callee": "dateStr",
+          "lineNumber": 19
+        },
+        {
+          "caller": "detectHabitAbandonRisk",
+          "callee": "habits.filter(h => !h.deleted && h.status === 'inProgress').forEach",
+          "lineNumber": 21
+        },
+        {
+          "caller": "detectHabitAbandonRisk",
+          "callee": "habits.filter",
+          "lineNumber": 21
+        },
+        {
+          "caller": "detectHabitAbandonRisk",
+          "callee": "[...(habit.checkedDates ?? [])].sort",
+          "lineNumber": 22
+        },
+        {
+          "caller": "parseLocal",
+          "callee": "s.split('-').map",
+          "lineNumber": 27
+        },
+        {
+          "caller": "parseLocal",
+          "callee": "s.split",
+          "lineNumber": 27
+        },
+        {
+          "caller": "detectHabitAbandonRisk",
+          "callee": "parseLocal",
+          "lineNumber": 28
+        },
+        {
+          "caller": "detectHabitAbandonRisk",
+          "callee": "parseLocal",
+          "lineNumber": 29
+        },
+        {
+          "caller": "detectHabitAbandonRisk",
+          "callee": "Math.floor",
+          "lineNumber": 30
+        },
+        {
+          "caller": "detectHabitAbandonRisk",
+          "callee": "todayDate.getTime",
+          "lineNumber": 30
+        },
+        {
+          "caller": "detectHabitAbandonRisk",
+          "callee": "lastDate.getTime",
+          "lineNumber": 30
+        },
+        {
+          "caller": "detectHabitAbandonRisk",
+          "callee": "warnings.push",
+          "lineNumber": 34
+        },
+        {
+          "caller": "detectHabitAbandonRisk",
+          "callee": "Date.now",
+          "lineNumber": 42
+        },
+        {
+          "caller": "detectHabitAbandonRisk",
+          "callee": "checkedDates.filter",
+          "lineNumber": 48
+        },
+        {
+          "caller": "detectHabitAbandonRisk",
+          "callee": "Math.floor",
+          "lineNumber": 49
+        },
+        {
+          "caller": "detectHabitAbandonRisk",
+          "callee": "todayDate.getTime",
+          "lineNumber": 49
+        },
+        {
+          "caller": "detectHabitAbandonRisk",
+          "callee": "parseLocal(d).getTime",
+          "lineNumber": 49
+        },
+        {
+          "caller": "detectHabitAbandonRisk",
+          "callee": "parseLocal",
+          "lineNumber": 49
+        },
+        {
+          "caller": "detectHabitAbandonRisk",
+          "callee": "warnings.push",
+          "lineNumber": 54
+        },
+        {
+          "caller": "detectHabitAbandonRisk",
+          "callee": "Math.round",
+          "lineNumber": 59
+        },
+        {
+          "caller": "detectHabitAbandonRisk",
+          "callee": "Date.now",
+          "lineNumber": 62
+        },
+        {
+          "caller": "detectPlanDelayRisk",
+          "callee": "dateStr",
+          "lineNumber": 73
+        },
+        {
+          "caller": "parseLocal",
+          "callee": "s.split('-').map",
+          "lineNumber": 75
+        },
+        {
+          "caller": "parseLocal",
+          "callee": "s.split",
+          "lineNumber": 75
+        },
+        {
+          "caller": "detectPlanDelayRisk",
+          "callee": "plans.filter(p => !p.deleted && p.status === 'in_progress').forEach",
+          "lineNumber": 77
+        },
+        {
+          "caller": "detectPlanDelayRisk",
+          "callee": "plans.filter",
+          "lineNumber": 77
+        },
+        {
+          "caller": "detectPlanDelayRisk",
+          "callee": "parseLocal",
+          "lineNumber": 78
+        },
+        {
+          "caller": "detectPlanDelayRisk",
+          "callee": "parseLocal",
+          "lineNumber": 79
+        },
+        {
+          "caller": "detectPlanDelayRisk",
+          "callee": "parseLocal",
+          "lineNumber": 80
+        },
+        {
+          "caller": "detectPlanDelayRisk",
+          "callee": "Math.floor",
+          "lineNumber": 82
+        },
+        {
+          "caller": "detectPlanDelayRisk",
+          "callee": "endDate.getTime",
+          "lineNumber": 82
+        },
+        {
+          "caller": "detectPlanDelayRisk",
+          "callee": "startDate.getTime",
+          "lineNumber": 82
+        },
+        {
+          "caller": "detectPlanDelayRisk",
+          "callee": "Math.floor",
+          "lineNumber": 83
+        },
+        {
+          "caller": "detectPlanDelayRisk",
+          "callee": "todayDate.getTime",
+          "lineNumber": 83
+        },
+        {
+          "caller": "detectPlanDelayRisk",
+          "callee": "startDate.getTime",
+          "lineNumber": 83
+        },
+        {
+          "caller": "detectPlanDelayRisk",
+          "callee": "Math.min",
+          "lineNumber": 87
+        },
+        {
+          "caller": "detectPlanDelayRisk",
+          "callee": "warnings.push",
+          "lineNumber": 92
+        },
+        {
+          "caller": "detectPlanDelayRisk",
+          "callee": "Math.round",
+          "lineNumber": 97
+        },
+        {
+          "caller": "detectPlanDelayRisk",
+          "callee": "Date.now",
+          "lineNumber": 100
+        },
+        {
+          "caller": "detectPlanDelayRisk",
+          "callee": "Math.floor",
+          "lineNumber": 105
+        },
+        {
+          "caller": "detectPlanDelayRisk",
+          "callee": "endDate.getTime",
+          "lineNumber": 105
+        },
+        {
+          "caller": "detectPlanDelayRisk",
+          "callee": "todayDate.getTime",
+          "lineNumber": 105
+        },
+        {
+          "caller": "detectPlanDelayRisk",
+          "callee": "warnings.push",
+          "lineNumber": 107
+        },
+        {
+          "caller": "detectPlanDelayRisk",
+          "callee": "Date.now",
+          "lineNumber": 115
+        },
+        {
+          "caller": "detectStreakBreakRisk",
+          "callee": "dateStr",
+          "lineNumber": 126
+        },
+        {
+          "caller": "detectStreakBreakRisk",
+          "callee": "yesterdayDate.setDate",
+          "lineNumber": 128
+        },
+        {
+          "caller": "detectStreakBreakRisk",
+          "callee": "yesterdayDate.getDate",
+          "lineNumber": 128
+        },
+        {
+          "caller": "detectStreakBreakRisk",
+          "callee": "dateStr",
+          "lineNumber": 129
+        },
+        {
+          "caller": "detectStreakBreakRisk",
+          "callee": "checkinHistory.find",
+          "lineNumber": 131
+        },
+        {
+          "caller": "detectStreakBreakRisk",
+          "callee": "checkinHistory.find",
+          "lineNumber": 132
+        },
+        {
+          "caller": "detectStreakBreakRisk",
+          "callee": "[...new Set(checkinHistory\n    .filter(c => c.done && !c.deleted)\n    .map(c => c.date))]\n    .sort()\n    .reverse",
+          "lineNumber": 136
+        },
+        {
+          "caller": "detectStreakBreakRisk",
+          "callee": "[...new Set(checkinHistory\n    .filter(c => c.done && !c.deleted)\n    .map(c => c.date))]\n    .sort",
+          "lineNumber": 136
+        },
+        {
+          "caller": "detectStreakBreakRisk",
+          "callee": "checkinHistory\n    .filter(c => c.done && !c.deleted)\n    .map",
+          "lineNumber": 136
+        },
+        {
+          "caller": "detectStreakBreakRisk",
+          "callee": "checkinHistory\n    .filter",
+          "lineNumber": 136
+        },
+        {
+          "caller": "detectStreakBreakRisk",
+          "callee": "prev.getTime",
+          "lineNumber": 147
+        },
+        {
+          "caller": "detectStreakBreakRisk",
+          "callee": "curr.getTime",
+          "lineNumber": 147
+        },
+        {
+          "caller": "detectStreakBreakRisk",
+          "callee": "Math.abs",
+          "lineNumber": 148
+        },
+        {
+          "caller": "detectStreakBreakRisk",
+          "callee": "new Date().getHours",
+          "lineNumber": 158
+        },
+        {
+          "caller": "detectStreakBreakRisk",
+          "callee": "warnings.push",
+          "lineNumber": 160
+        },
+        {
+          "caller": "detectStreakBreakRisk",
+          "callee": "Date.now",
+          "lineNumber": 167
+        },
+        {
+          "caller": "detectMoodDeclineRisk",
+          "callee": "reflections\n    .filter(r => !r.deleted)\n    .sort((a, b) => b.timestamp - a.timestamp)\n    .slice",
+          "lineNumber": 179
+        },
+        {
+          "caller": "detectMoodDeclineRisk",
+          "callee": "reflections\n    .filter(r => !r.deleted)\n    .sort",
+          "lineNumber": 179
+        },
+        {
+          "caller": "detectMoodDeclineRisk",
+          "callee": "reflections\n    .filter",
+          "lineNumber": 179
+        },
+        {
+          "caller": "detectMoodDeclineRisk",
+          "callee": "recentReflections.slice(0, 5).map",
+          "lineNumber": 194
+        },
+        {
+          "caller": "detectMoodDeclineRisk",
+          "callee": "recentReflections.slice",
+          "lineNumber": 194
+        },
+        {
+          "caller": "detectMoodDeclineRisk",
+          "callee": "recentScores.reduce",
+          "lineNumber": 195
+        },
+        {
+          "caller": "detectMoodDeclineRisk",
+          "callee": "recentScores.every",
+          "lineNumber": 198
+        },
+        {
+          "caller": "detectMoodDeclineRisk",
+          "callee": "warnings.push",
+          "lineNumber": 201
+        },
+        {
+          "caller": "detectMoodDeclineRisk",
+          "callee": "Date.now",
+          "lineNumber": 208
+        },
+        {
+          "caller": "getAllRiskWarnings",
+          "callee": "detectHabitAbandonRisk",
+          "lineNumber": 223
+        },
+        {
+          "caller": "getAllRiskWarnings",
+          "callee": "detectPlanDelayRisk",
+          "lineNumber": 224
+        },
+        {
+          "caller": "getAllRiskWarnings",
+          "callee": "detectStreakBreakRisk",
+          "lineNumber": 225
+        },
+        {
+          "caller": "getAllRiskWarnings",
+          "callee": "detectMoodDeclineRisk",
+          "lineNumber": 226
+        },
+        {
+          "caller": "getAllRiskWarnings",
+          "callee": "warnings.sort",
+          "lineNumber": 231
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 5,
+        "functionCount": 5,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/ai/thought-patterns.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 119,
+      "nonEmptyLines": 107,
+      "functions": [
+        {
+          "name": "makeReflection",
+          "startLine": 13,
+          "endLine": 19,
+          "params": [
+            "overrides"
+          ]
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "makeReflection",
+          "callee": "Date.now",
+          "lineNumber": 16
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 0,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/ai/thought-patterns.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 289,
+      "nonEmptyLines": 252,
+      "functions": [
+        {
+          "name": "detectMoodSequencePatterns",
+          "startLine": 45,
+          "endLine": 90,
+          "params": [
+            "reflections"
+          ]
+        },
+        {
+          "name": "detectTagPatterns",
+          "startLine": 93,
+          "endLine": 130,
+          "params": [
+            "reflections"
+          ]
+        },
+        {
+          "name": "detectTimePatterns",
+          "startLine": 133,
+          "endLine": 173,
+          "params": [
+            "reflections"
+          ]
+        },
+        {
+          "name": "detectKeywordPatterns",
+          "startLine": 176,
+          "endLine": 219,
+          "params": [
+            "reflections"
+          ]
+        },
+        {
+          "name": "detectGrowthPatterns",
+          "startLine": 222,
+          "endLine": 275,
+          "params": [
+            "reflections"
+          ]
+        },
+        {
+          "name": "getAllThoughtPatterns",
+          "startLine": 278,
+          "endLine": 289,
+          "params": [
+            "reflections"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "detectMoodSequencePatterns",
+          "line": 45,
+          "isDefault": false
+        },
+        {
+          "name": "detectTagPatterns",
+          "line": 93,
+          "isDefault": false
+        },
+        {
+          "name": "detectTimePatterns",
+          "line": 133,
+          "isDefault": false
+        },
+        {
+          "name": "detectKeywordPatterns",
+          "line": 176,
+          "isDefault": false
+        },
+        {
+          "name": "detectGrowthPatterns",
+          "line": 222,
+          "isDefault": false
+        },
+        {
+          "name": "getAllThoughtPatterns",
+          "line": 278,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "detectMoodSequencePatterns",
+          "callee": "reflections\n    .filter(r => !r.deleted)\n    .sort",
+          "lineNumber": 47
+        },
+        {
+          "caller": "detectMoodSequencePatterns",
+          "callee": "reflections\n    .filter",
+          "lineNumber": 47
+        },
+        {
+          "caller": "detectMoodSequencePatterns",
+          "callee": "sortedReflections.map",
+          "lineNumber": 54
+        },
+        {
+          "caller": "detectMoodSequencePatterns",
+          "callee": "Object.entries",
+          "lineNumber": 57
+        },
+        {
+          "caller": "detectMoodSequencePatterns",
+          "callee": "moodSequence.slice",
+          "lineNumber": 63
+        },
+        {
+          "caller": "detectMoodSequencePatterns",
+          "callee": "window.every",
+          "lineNumber": 64
+        },
+        {
+          "caller": "detectMoodSequencePatterns",
+          "callee": "matchedReflections.push",
+          "lineNumber": 71
+        },
+        {
+          "caller": "detectMoodSequencePatterns",
+          "callee": "sortedReflections.slice(i, i + seqLen).map",
+          "lineNumber": 71
+        },
+        {
+          "caller": "detectMoodSequencePatterns",
+          "callee": "sortedReflections.slice",
+          "lineNumber": 71
+        },
+        {
+          "caller": "detectMoodSequencePatterns",
+          "callee": "patterns.push",
+          "lineNumber": 76
+        },
+        {
+          "caller": "detectMoodSequencePatterns",
+          "callee": "Math.min",
+          "lineNumber": 83
+        },
+        {
+          "caller": "detectMoodSequencePatterns",
+          "callee": "Date.now",
+          "lineNumber": 84
+        },
+        {
+          "caller": "detectTagPatterns",
+          "callee": "activeOnly",
+          "lineNumber": 95
+        },
+        {
+          "caller": "detectTagPatterns",
+          "callee": "sortedReflections.forEach",
+          "lineNumber": 99
+        },
+        {
+          "caller": "detectTagPatterns",
+          "callee": "r.tags.forEach",
+          "lineNumber": 100
+        },
+        {
+          "caller": "detectTagPatterns",
+          "callee": "tagGroups.get",
+          "lineNumber": 101
+        },
+        {
+          "caller": "detectTagPatterns",
+          "callee": "group.push",
+          "lineNumber": 102
+        },
+        {
+          "caller": "detectTagPatterns",
+          "callee": "tagGroups.set",
+          "lineNumber": 103
+        },
+        {
+          "caller": "detectTagPatterns",
+          "callee": "tagGroups.forEach",
+          "lineNumber": 108
+        },
+        {
+          "caller": "detectTagPatterns",
+          "callee": "group.map",
+          "lineNumber": 111
+        },
+        {
+          "caller": "detectTagPatterns",
+          "callee": "patterns.push",
+          "lineNumber": 115
+        },
+        {
+          "caller": "detectTagPatterns",
+          "callee": "group.map",
+          "lineNumber": 120
+        },
+        {
+          "caller": "detectTagPatterns",
+          "callee": "Date.now",
+          "lineNumber": 123
+        },
+        {
+          "caller": "detectTimePatterns",
+          "callee": "activeOnly",
+          "lineNumber": 135
+        },
+        {
+          "caller": "detectTimePatterns",
+          "callee": "sortedReflections.forEach",
+          "lineNumber": 139
+        },
+        {
+          "caller": "detectTimePatterns",
+          "callee": "new Date(r.timestamp).getHours",
+          "lineNumber": 140
+        },
+        {
+          "caller": "detectTimePatterns",
+          "callee": "hourGroups.get",
+          "lineNumber": 141
+        },
+        {
+          "caller": "detectTimePatterns",
+          "callee": "group.push",
+          "lineNumber": 142
+        },
+        {
+          "caller": "detectTimePatterns",
+          "callee": "hourGroups.set",
+          "lineNumber": 143
+        },
+        {
+          "caller": "detectTimePatterns",
+          "callee": "hourGroups.forEach",
+          "lineNumber": 147
+        },
+        {
+          "caller": "detectTimePatterns",
+          "callee": "group.forEach",
+          "lineNumber": 150
+        },
+        {
+          "caller": "detectTimePatterns",
+          "callee": "moodCounts.set",
+          "lineNumber": 151
+        },
+        {
+          "caller": "detectTimePatterns",
+          "callee": "moodCounts.get",
+          "lineNumber": 151
+        },
+        {
+          "caller": "detectTimePatterns",
+          "callee": "[...moodCounts.entries()].sort",
+          "lineNumber": 154
+        },
+        {
+          "caller": "detectTimePatterns",
+          "callee": "moodCounts.entries",
+          "lineNumber": 154
+        },
+        {
+          "caller": "detectTimePatterns",
+          "callee": "patterns.push",
+          "lineNumber": 158
+        },
+        {
+          "caller": "detectTimePatterns",
+          "callee": "group.map",
+          "lineNumber": 163
+        },
+        {
+          "caller": "detectTimePatterns",
+          "callee": "Date.now",
+          "lineNumber": 166
+        },
+        {
+          "caller": "detectKeywordPatterns",
+          "callee": "activeOnly",
+          "lineNumber": 178
+        },
+        {
+          "caller": "detectKeywordPatterns",
+          "callee": "keywords.forEach",
+          "lineNumber": 192
+        },
+        {
+          "caller": "detectKeywordPatterns",
+          "callee": "sortedReflections.filter",
+          "lineNumber": 193
+        },
+        {
+          "caller": "detectKeywordPatterns",
+          "callee": "r.content.includes",
+          "lineNumber": 193
+        },
+        {
+          "caller": "detectKeywordPatterns",
+          "callee": "matchedReflections.forEach",
+          "lineNumber": 198
+        },
+        {
+          "caller": "detectKeywordPatterns",
+          "callee": "moodCounts.set",
+          "lineNumber": 199
+        },
+        {
+          "caller": "detectKeywordPatterns",
+          "callee": "moodCounts.get",
+          "lineNumber": 199
+        },
+        {
+          "caller": "detectKeywordPatterns",
+          "callee": "[...moodCounts.entries()].sort",
+          "lineNumber": 202
+        },
+        {
+          "caller": "detectKeywordPatterns",
+          "callee": "moodCounts.entries",
+          "lineNumber": 202
+        },
+        {
+          "caller": "detectKeywordPatterns",
+          "callee": "patterns.push",
+          "lineNumber": 205
+        },
+        {
+          "caller": "detectKeywordPatterns",
+          "callee": "matchedReflections.map",
+          "lineNumber": 210
+        },
+        {
+          "caller": "detectKeywordPatterns",
+          "callee": "Date.now",
+          "lineNumber": 213
+        },
+        {
+          "caller": "detectGrowthPatterns",
+          "callee": "activeOnly(reflections).forEach",
+          "lineNumber": 227
+        },
+        {
+          "caller": "detectGrowthPatterns",
+          "callee": "activeOnly",
+          "lineNumber": 227
+        },
+        {
+          "caller": "detectGrowthPatterns",
+          "callee": "weekStart.getDay",
+          "lineNumber": 229
+        },
+        {
+          "caller": "detectGrowthPatterns",
+          "callee": "weekStart.setDate",
+          "lineNumber": 230
+        },
+        {
+          "caller": "detectGrowthPatterns",
+          "callee": "weekStart.getDate",
+          "lineNumber": 230
+        },
+        {
+          "caller": "detectGrowthPatterns",
+          "callee": "dateStr",
+          "lineNumber": 231
+        },
+        {
+          "caller": "detectGrowthPatterns",
+          "callee": "weeklyGroups.get",
+          "lineNumber": 232
+        },
+        {
+          "caller": "detectGrowthPatterns",
+          "callee": "group.push",
+          "lineNumber": 233
+        },
+        {
+          "caller": "detectGrowthPatterns",
+          "callee": "weeklyGroups.set",
+          "lineNumber": 234
+        },
+        {
+          "caller": "detectGrowthPatterns",
+          "callee": "weeklyGroups.forEach",
+          "lineNumber": 247
+        },
+        {
+          "caller": "detectGrowthPatterns",
+          "callee": "group.map",
+          "lineNumber": 248
+        },
+        {
+          "caller": "detectGrowthPatterns",
+          "callee": "scores.reduce",
+          "lineNumber": 249
+        },
+        {
+          "caller": "detectGrowthPatterns",
+          "callee": "weeklyScores.push",
+          "lineNumber": 250
+        },
+        {
+          "caller": "detectGrowthPatterns",
+          "callee": "weeklyScores.sort",
+          "lineNumber": 255
+        },
+        {
+          "caller": "detectGrowthPatterns",
+          "callee": "a.week.localeCompare",
+          "lineNumber": 255
+        },
+        {
+          "caller": "detectGrowthPatterns",
+          "callee": "sorted.slice(-3).every",
+          "lineNumber": 256
+        },
+        {
+          "caller": "detectGrowthPatterns",
+          "callee": "sorted.slice",
+          "lineNumber": 256
+        },
+        {
+          "caller": "detectGrowthPatterns",
+          "callee": "patterns.push",
+          "lineNumber": 261
+        },
+        {
+          "caller": "detectGrowthPatterns",
+          "callee": "Date.now",
+          "lineNumber": 269
+        },
+        {
+          "caller": "getAllThoughtPatterns",
+          "callee": "detectMoodSequencePatterns",
+          "lineNumber": 280
+        },
+        {
+          "caller": "getAllThoughtPatterns",
+          "callee": "detectTagPatterns",
+          "lineNumber": 281
+        },
+        {
+          "caller": "getAllThoughtPatterns",
+          "callee": "detectTimePatterns",
+          "lineNumber": 282
+        },
+        {
+          "caller": "getAllThoughtPatterns",
+          "callee": "detectKeywordPatterns",
+          "lineNumber": 283
+        },
+        {
+          "caller": "getAllThoughtPatterns",
+          "callee": "detectGrowthPatterns",
+          "lineNumber": 284
+        },
+        {
+          "caller": "getAllThoughtPatterns",
+          "callee": "patterns.sort",
+          "lineNumber": 288
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 6,
+        "functionCount": 6,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/ai/trail-recommender.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 570,
+      "nonEmptyLines": 482,
+      "functions": [
+        {
+          "name": "clearAICaches",
+          "startLine": 61,
+          "endLine": 66,
+          "params": []
+        },
+        {
+          "name": "withAbortTimeout",
+          "startLine": 88,
+          "endLine": 119,
+          "params": [
+            "fn",
+            "ms",
+            "externalSignal"
+          ]
+        },
+        {
+          "name": "batchedAIGenerate",
+          "startLine": 133,
+          "endLine": 206,
+          "params": [
+            "items",
+            "buildPrompt",
+            "systemPrompt",
+            "options"
+          ]
+        },
+        {
+          "name": "recommendTrailsViaAI",
+          "startLine": 210,
+          "endLine": 269,
+          "params": [
+            "reflections",
+            "query",
+            "options"
+          ]
+        },
+        {
+          "name": "matchReflectionsToTopic",
+          "startLine": 273,
+          "endLine": 330,
+          "params": [
+            "reflections",
+            "topic",
+            "options"
+          ]
+        },
+        {
+          "name": "semanticSearchReflections",
+          "startLine": 336,
+          "endLine": 408,
+          "params": [
+            "reflections",
+            "query",
+            "options"
+          ]
+        },
+        {
+          "name": "parseSmartQuery",
+          "startLine": 419,
+          "endLine": 475,
+          "params": [
+            "reflections",
+            "input",
+            "history",
+            "options"
+          ]
+        },
+        {
+          "name": "isAIRecommendAvailable",
+          "startLine": 479,
+          "endLine": 487,
+          "params": []
+        },
+        {
+          "name": "parseAIRecommendations",
+          "startLine": 491,
+          "endLine": 513,
+          "params": [
+            "raw",
+            "maxIndex"
+          ]
+        },
+        {
+          "name": "parseAIMatchResults",
+          "startLine": 515,
+          "endLine": 535,
+          "params": [
+            "raw",
+            "maxIndex"
+          ]
+        },
+        {
+          "name": "parseSmartQueryResult",
+          "startLine": 537,
+          "endLine": 570,
+          "params": [
+            "raw",
+            "input"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "clearAICaches",
+          "line": 61,
+          "isDefault": false
+        },
+        {
+          "name": "recommendTrailsViaAI",
+          "line": 210,
+          "isDefault": false
+        },
+        {
+          "name": "matchReflectionsToTopic",
+          "line": 273,
+          "isDefault": false
+        },
+        {
+          "name": "semanticSearchReflections",
+          "line": 336,
+          "isDefault": false
+        },
+        {
+          "name": "parseSmartQuery",
+          "line": 419,
+          "isDefault": false
+        },
+        {
+          "name": "isAIRecommendAvailable",
+          "line": 479,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "clearAICaches",
+          "callee": "recommendCache.clear",
+          "lineNumber": 62
+        },
+        {
+          "caller": "clearAICaches",
+          "callee": "matchCache.clear",
+          "lineNumber": 63
+        },
+        {
+          "caller": "clearAICaches",
+          "callee": "queryCache.clear",
+          "lineNumber": 64
+        },
+        {
+          "caller": "clearAICaches",
+          "callee": "semanticCache.clear",
+          "lineNumber": 65
+        },
+        {
+          "caller": "onExternalAbort",
+          "callee": "controller.abort",
+          "lineNumber": 98
+        },
+        {
+          "caller": "withAbortTimeout",
+          "callee": "externalSignal.addEventListener",
+          "lineNumber": 100
+        },
+        {
+          "caller": "withAbortTimeout",
+          "callee": "setTimeout",
+          "lineNumber": 103
+        },
+        {
+          "caller": "withAbortTimeout",
+          "callee": "controller.abort",
+          "lineNumber": 103
+        },
+        {
+          "caller": "withAbortTimeout",
+          "callee": "fn",
+          "lineNumber": 106
+        },
+        {
+          "caller": "withAbortTimeout",
+          "callee": "clearTimeout",
+          "lineNumber": 114
+        },
+        {
+          "caller": "withAbortTimeout",
+          "callee": "externalSignal.removeEventListener",
+          "lineNumber": 116
+        },
+        {
+          "caller": "batchedAIGenerate",
+          "callee": "getAIService",
+          "lineNumber": 146
+        },
+        {
+          "caller": "batchedAIGenerate",
+          "callee": "buildPrompt",
+          "lineNumber": 155
+        },
+        {
+          "caller": "batchedAIGenerate",
+          "callee": "log.debug",
+          "lineNumber": 159
+        },
+        {
+          "caller": "batchedAIGenerate",
+          "callee": "withAbortTimeout",
+          "lineNumber": 160
+        },
+        {
+          "caller": "batchedAIGenerate",
+          "callee": "service.generateCloud",
+          "lineNumber": 161
+        },
+        {
+          "caller": "batchedAIGenerate",
+          "callee": "batches.push",
+          "lineNumber": 173
+        },
+        {
+          "caller": "batchedAIGenerate",
+          "callee": "items.slice",
+          "lineNumber": 173
+        },
+        {
+          "caller": "batchedAIGenerate",
+          "callee": "log.debug",
+          "lineNumber": 175
+        },
+        {
+          "caller": "batchedAIGenerate",
+          "callee": "batches.map",
+          "lineNumber": 177
+        },
+        {
+          "caller": "batchedAIGenerate",
+          "callee": "buildPrompt",
+          "lineNumber": 178
+        },
+        {
+          "caller": "batchedAIGenerate",
+          "callee": "log.debug",
+          "lineNumber": 179
+        },
+        {
+          "caller": "batchedAIGenerate",
+          "callee": "withAbortTimeout",
+          "lineNumber": 180
+        },
+        {
+          "caller": "batchedAIGenerate",
+          "callee": "service.generateCloud",
+          "lineNumber": 181
+        },
+        {
+          "caller": "batchedAIGenerate",
+          "callee": "Promise.allSettled",
+          "lineNumber": 189
+        },
+        {
+          "caller": "batchedAIGenerate",
+          "callee": "outputs.push",
+          "lineNumber": 196
+        },
+        {
+          "caller": "batchedAIGenerate",
+          "callee": "log.warn",
+          "lineNumber": 198
+        },
+        {
+          "caller": "batchedAIGenerate",
+          "callee": "log.warn",
+          "lineNumber": 201
+        },
+        {
+          "caller": "batchedAIGenerate",
+          "callee": "log.debug",
+          "lineNumber": 204
+        },
+        {
+          "caller": "recommendTrailsViaAI",
+          "callee": "getAIService",
+          "lineNumber": 215
+        },
+        {
+          "caller": "recommendTrailsViaAI",
+          "callee": "service.getConfig",
+          "lineNumber": 216
+        },
+        {
+          "caller": "recommendTrailsViaAI",
+          "callee": "service.getDefaultModel",
+          "lineNumber": 219
+        },
+        {
+          "caller": "recommendTrailsViaAI",
+          "callee": "activeOnly",
+          "lineNumber": 223
+        },
+        {
+          "caller": "recommendTrailsViaAI",
+          "callee": "Math.max",
+          "lineNumber": 226
+        },
+        {
+          "caller": "recommendTrailsViaAI",
+          "callee": "validReflections.map",
+          "lineNumber": 226
+        },
+        {
+          "caller": "recommendTrailsViaAI",
+          "callee": "generateCacheKey",
+          "lineNumber": 227
+        },
+        {
+          "caller": "recommendTrailsViaAI",
+          "callee": "recommendCache.get",
+          "lineNumber": 228
+        },
+        {
+          "caller": "recommendTrailsViaAI",
+          "callee": "buildIndex",
+          "lineNumber": 231
+        },
+        {
+          "caller": "recommendTrailsViaAI",
+          "callee": "retrieveTopK",
+          "lineNumber": 232
+        },
+        {
+          "caller": "recommendTrailsViaAI",
+          "callee": "topK.map",
+          "lineNumber": 235
+        },
+        {
+          "caller": "recommendTrailsViaAI",
+          "callee": "index.slice",
+          "lineNumber": 236
+        },
+        {
+          "caller": "recommendTrailsViaAI",
+          "callee": "batchedAIGenerate",
+          "lineNumber": 239
+        },
+        {
+          "caller": "recommendTrailsViaAI",
+          "callee": "buildRecommendPrompt",
+          "lineNumber": 241
+        },
+        {
+          "caller": "recommendTrailsViaAI",
+          "callee": "Math.min",
+          "lineNumber": 252
+        },
+        {
+          "caller": "recommendTrailsViaAI",
+          "callee": "parseAIRecommendations",
+          "lineNumber": 253
+        },
+        {
+          "caller": "recommendTrailsViaAI",
+          "callee": "allParsed.push",
+          "lineNumber": 255
+        },
+        {
+          "caller": "recommendTrailsViaAI",
+          "callee": "rec.reflectionIndices.map",
+          "lineNumber": 257
+        },
+        {
+          "caller": "recommendTrailsViaAI",
+          "callee": "allParsed.slice",
+          "lineNumber": 262
+        },
+        {
+          "caller": "recommendTrailsViaAI",
+          "callee": "recommendCache.set",
+          "lineNumber": 263
+        },
+        {
+          "caller": "recommendTrailsViaAI",
+          "callee": "log.error",
+          "lineNumber": 266
+        },
+        {
+          "caller": "matchReflectionsToTopic",
+          "callee": "getAIService",
+          "lineNumber": 278
+        },
+        {
+          "caller": "matchReflectionsToTopic",
+          "callee": "service.getConfig",
+          "lineNumber": 279
+        },
+        {
+          "caller": "matchReflectionsToTopic",
+          "callee": "service.getDefaultModel",
+          "lineNumber": 281
+        },
+        {
+          "caller": "matchReflectionsToTopic",
+          "callee": "activeOnly",
+          "lineNumber": 285
+        },
+        {
+          "caller": "matchReflectionsToTopic",
+          "callee": "Math.max",
+          "lineNumber": 288
+        },
+        {
+          "caller": "matchReflectionsToTopic",
+          "callee": "validReflections.map",
+          "lineNumber": 288
+        },
+        {
+          "caller": "matchReflectionsToTopic",
+          "callee": "generateCacheKey",
+          "lineNumber": 289
+        },
+        {
+          "caller": "matchReflectionsToTopic",
+          "callee": "matchCache.get",
+          "lineNumber": 290
+        },
+        {
+          "caller": "matchReflectionsToTopic",
+          "callee": "buildIndex",
+          "lineNumber": 293
+        },
+        {
+          "caller": "matchReflectionsToTopic",
+          "callee": "retrieveTopK",
+          "lineNumber": 294
+        },
+        {
+          "caller": "matchReflectionsToTopic",
+          "callee": "topK.map",
+          "lineNumber": 297
+        },
+        {
+          "caller": "matchReflectionsToTopic",
+          "callee": "index.slice",
+          "lineNumber": 298
+        },
+        {
+          "caller": "matchReflectionsToTopic",
+          "callee": "batchedAIGenerate",
+          "lineNumber": 301
+        },
+        {
+          "caller": "matchReflectionsToTopic",
+          "callee": "buildRecommendPrompt",
+          "lineNumber": 303
+        },
+        {
+          "caller": "matchReflectionsToTopic",
+          "callee": "Math.min",
+          "lineNumber": 313
+        },
+        {
+          "caller": "matchReflectionsToTopic",
+          "callee": "parseAIMatchResults",
+          "lineNumber": 314
+        },
+        {
+          "caller": "matchReflectionsToTopic",
+          "callee": "allParsed.push",
+          "lineNumber": 316
+        },
+        {
+          "caller": "matchReflectionsToTopic",
+          "callee": "matchCache.set",
+          "lineNumber": 324
+        },
+        {
+          "caller": "matchReflectionsToTopic",
+          "callee": "log.error",
+          "lineNumber": 327
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "getAIService",
+          "lineNumber": 341
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "service.getConfig",
+          "lineNumber": 342
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "log.debug",
+          "lineNumber": 344
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "service.getDefaultModel",
+          "lineNumber": 344
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "service.getDefaultModel",
+          "lineNumber": 346
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "log.debug",
+          "lineNumber": 347
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "activeOnly",
+          "lineNumber": 351
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "Math.max",
+          "lineNumber": 354
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "validReflections.map",
+          "lineNumber": 354
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "generateCacheKey",
+          "lineNumber": 355
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "semanticCache.get",
+          "lineNumber": 356
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "buildIndex",
+          "lineNumber": 359
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "retrieveTopK",
+          "lineNumber": 360
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "log.debug",
+          "lineNumber": 361
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "topK.map",
+          "lineNumber": 364
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "index.slice",
+          "lineNumber": 365
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "batchedAIGenerate",
+          "lineNumber": 368
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "batch\n          .map((r, i) => {\n            const content = r.content.length > 60 ? r.content.slice(0, 60) + '...' : r.content;\n            const mood = r.mood ? ` ${r.mood}` : '';\n            return `[${i}]${mood} ${content}`;\n          })\n          .join",
+          "lineNumber": 371
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "batch\n          .map",
+          "lineNumber": 371
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "r.content.slice",
+          "lineNumber": 373
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "Math.min",
+          "lineNumber": 390
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "parseAIMatchResults",
+          "lineNumber": 391
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "allMatches.push",
+          "lineNumber": 393
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "log.debug",
+          "lineNumber": 401
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "semanticCache.set",
+          "lineNumber": 402
+        },
+        {
+          "caller": "semanticSearchReflections",
+          "callee": "log.error",
+          "lineNumber": 405
+        },
+        {
+          "caller": "parseSmartQuery",
+          "callee": "getAIService",
+          "lineNumber": 425
+        },
+        {
+          "caller": "parseSmartQuery",
+          "callee": "service.getConfig",
+          "lineNumber": 426
+        },
+        {
+          "caller": "parseSmartQuery",
+          "callee": "service.getDefaultModel",
+          "lineNumber": 427
+        },
+        {
+          "caller": "parseSmartQuery",
+          "callee": "activeOnly",
+          "lineNumber": 433
+        },
+        {
+          "caller": "parseSmartQuery",
+          "callee": "Math.max",
+          "lineNumber": 438
+        },
+        {
+          "caller": "parseSmartQuery",
+          "callee": "validReflections.map",
+          "lineNumber": 438
+        },
+        {
+          "caller": "parseSmartQuery",
+          "callee": "generateCacheKey",
+          "lineNumber": 439
+        },
+        {
+          "caller": "parseSmartQuery",
+          "callee": "queryCache.get",
+          "lineNumber": 440
+        },
+        {
+          "caller": "parseSmartQuery",
+          "callee": "buildIndex",
+          "lineNumber": 443
+        },
+        {
+          "caller": "parseSmartQuery",
+          "callee": "retrieveTopK",
+          "lineNumber": 444
+        },
+        {
+          "caller": "parseSmartQuery",
+          "callee": "topK.map",
+          "lineNumber": 447
+        },
+        {
+          "caller": "parseSmartQuery",
+          "callee": "index.slice",
+          "lineNumber": 448
+        },
+        {
+          "caller": "parseSmartQuery",
+          "callee": "buildQueryParsePrompt",
+          "lineNumber": 450
+        },
+        {
+          "caller": "parseSmartQuery",
+          "callee": "withAbortTimeout",
+          "lineNumber": 453
+        },
+        {
+          "caller": "parseSmartQuery",
+          "callee": "service.generateCloud",
+          "lineNumber": 454
+        },
+        {
+          "caller": "parseSmartQuery",
+          "callee": "parseSmartQueryResult",
+          "lineNumber": 468
+        },
+        {
+          "caller": "parseSmartQuery",
+          "callee": "queryCache.set",
+          "lineNumber": 469
+        },
+        {
+          "caller": "parseSmartQuery",
+          "callee": "log.error",
+          "lineNumber": 472
+        },
+        {
+          "caller": "isAIRecommendAvailable",
+          "callee": "getAIService",
+          "lineNumber": 481
+        },
+        {
+          "caller": "isAIRecommendAvailable",
+          "callee": "service.getConfig",
+          "lineNumber": 482
+        },
+        {
+          "caller": "isAIRecommendAvailable",
+          "callee": "service.getDefaultModel",
+          "lineNumber": 483
+        },
+        {
+          "caller": "parseAIRecommendations",
+          "callee": "extractJSON",
+          "lineNumber": 493
+        },
+        {
+          "caller": "parseAIRecommendations",
+          "callee": "JSON.parse",
+          "lineNumber": 494
+        },
+        {
+          "caller": "parseAIRecommendations",
+          "callee": "Array.isArray",
+          "lineNumber": 495
+        },
+        {
+          "caller": "parseAIRecommendations",
+          "callee": "(arr as Array<Record<string, unknown>>)\n      .filter((item) =>\n        item.name && item.description && Array.isArray(item.reflectionIndices)\n      )\n      .map((item) => ({\n        name: String(item.name),\n        description: String(item.description),\n        reflectionIndices: (item.reflectionIndices as number[])\n          .filter((i: number) => i >= 0 && i < maxIndex),\n        confidence: typeof item.confidence === 'number' ? item.confidence : 0.5,\n      }))\n      .filter(r => r.reflectionIndices.length >= 2)\n      .slice",
+          "lineNumber": 497
+        },
+        {
+          "caller": "parseAIRecommendations",
+          "callee": "(arr as Array<Record<string, unknown>>)\n      .filter((item) =>\n        item.name && item.description && Array.isArray(item.reflectionIndices)\n      )\n      .map((item) => ({\n        name: String(item.name),\n        description: String(item.description),\n        reflectionIndices: (item.reflectionIndices as number[])\n          .filter((i: number) => i >= 0 && i < maxIndex),\n        confidence: typeof item.confidence === 'number' ? item.confidence : 0.5,\n      }))\n      .filter",
+          "lineNumber": 497
+        },
+        {
+          "caller": "parseAIRecommendations",
+          "callee": "(arr as Array<Record<string, unknown>>)\n      .filter((item) =>\n        item.name && item.description && Array.isArray(item.reflectionIndices)\n      )\n      .map",
+          "lineNumber": 497
+        },
+        {
+          "caller": "parseAIRecommendations",
+          "callee": "(arr as Array<Record<string, unknown>>)\n      .filter",
+          "lineNumber": 497
+        },
+        {
+          "caller": "parseAIRecommendations",
+          "callee": "Array.isArray",
+          "lineNumber": 499
+        },
+        {
+          "caller": "parseAIRecommendations",
+          "callee": "String",
+          "lineNumber": 502
+        },
+        {
+          "caller": "parseAIRecommendations",
+          "callee": "String",
+          "lineNumber": 503
+        },
+        {
+          "caller": "parseAIRecommendations",
+          "callee": "(item.reflectionIndices as number[])\n          .filter",
+          "lineNumber": 504
+        },
+        {
+          "caller": "parseAIMatchResults",
+          "callee": "extractJSON",
+          "lineNumber": 517
+        },
+        {
+          "caller": "parseAIMatchResults",
+          "callee": "JSON.parse",
+          "lineNumber": 518
+        },
+        {
+          "caller": "parseAIMatchResults",
+          "callee": "Array.isArray",
+          "lineNumber": 519
+        },
+        {
+          "caller": "parseAIMatchResults",
+          "callee": "(arr as Array<Record<string, unknown>>)\n      .filter((item) =>\n        typeof item.reflectionIndex === 'number' && item.reason\n      )\n      .map((item) => ({\n        reflectionIndex: item.reflectionIndex as number,\n        reason: String(item.reason),\n        relevance: typeof item.relevance === 'number' ? item.relevance : 0.5,\n      }))\n      .filter(r => r.reflectionIndex >= 0 && r.reflectionIndex < maxIndex)\n      .sort",
+          "lineNumber": 521
+        },
+        {
+          "caller": "parseAIMatchResults",
+          "callee": "(arr as Array<Record<string, unknown>>)\n      .filter((item) =>\n        typeof item.reflectionIndex === 'number' && item.reason\n      )\n      .map((item) => ({\n        reflectionIndex: item.reflectionIndex as number,\n        reason: String(item.reason),\n        relevance: typeof item.relevance === 'number' ? item.relevance : 0.5,\n      }))\n      .filter",
+          "lineNumber": 521
+        },
+        {
+          "caller": "parseAIMatchResults",
+          "callee": "(arr as Array<Record<string, unknown>>)\n      .filter((item) =>\n        typeof item.reflectionIndex === 'number' && item.reason\n      )\n      .map",
+          "lineNumber": 521
+        },
+        {
+          "caller": "parseAIMatchResults",
+          "callee": "(arr as Array<Record<string, unknown>>)\n      .filter",
+          "lineNumber": 521
+        },
+        {
+          "caller": "parseAIMatchResults",
+          "callee": "String",
+          "lineNumber": 527
+        },
+        {
+          "caller": "parseSmartQueryResult",
+          "callee": "extractJSON",
+          "lineNumber": 539
+        },
+        {
+          "caller": "parseSmartQueryResult",
+          "callee": "JSON.parse",
+          "lineNumber": 540
+        },
+        {
+          "caller": "parseSmartQueryResult",
+          "callee": "validTimeRanges.includes",
+          "lineNumber": 548
+        },
+        {
+          "caller": "parseSmartQueryResult",
+          "callee": "Array.isArray",
+          "lineNumber": 551
+        },
+        {
+          "caller": "parseSmartQueryResult",
+          "callee": "filtersObj.tags.filter",
+          "lineNumber": 552
+        },
+        {
+          "caller": "parseSmartQueryResult",
+          "callee": "Array.isArray",
+          "lineNumber": 554
+        },
+        {
+          "caller": "parseSmartQueryResult",
+          "callee": "filtersObj.moods.filter",
+          "lineNumber": 555
+        },
+        {
+          "caller": "parseSmartQueryResult",
+          "callee": "Array.isArray",
+          "lineNumber": 557
+        },
+        {
+          "caller": "parseSmartQueryResult",
+          "callee": "filtersObj.keywords.filter",
+          "lineNumber": 558
+        },
+        {
+          "caller": "parseSmartQueryResult",
+          "callee": "validIntents.includes",
+          "lineNumber": 562
+        }
+      ],
+      "metrics": {
+        "importCount": 11,
+        "exportCount": 6,
+        "functionCount": 11,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/ai/types.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 133,
+      "nonEmptyLines": 120,
+      "exports": [
+        {
+          "name": "PROVIDER_TEMPLATES",
+          "line": 90,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/auth.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 680,
+      "nonEmptyLines": 548,
+      "functions": [
+        {
+          "name": "makeOkResponse",
+          "startLine": 51,
+          "endLine": 58,
+          "params": [
+            "data"
+          ]
+        },
+        {
+          "name": "makeErrorResponse",
+          "startLine": 60,
+          "endLine": 67,
+          "params": [
+            "status",
+            "body"
+          ]
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "makeOkResponse",
+          "callee": "Promise.resolve",
+          "lineNumber": 55
+        },
+        {
+          "caller": "makeOkResponse",
+          "callee": "JSON.stringify",
+          "lineNumber": 55
+        },
+        {
+          "caller": "makeOkResponse",
+          "callee": "Promise.resolve",
+          "lineNumber": 56
+        },
+        {
+          "caller": "makeErrorResponse",
+          "callee": "Promise.resolve",
+          "lineNumber": 64
+        },
+        {
+          "caller": "makeErrorResponse",
+          "callee": "JSON.stringify",
+          "lineNumber": 64
+        },
+        {
+          "caller": "makeErrorResponse",
+          "callee": "Promise.resolve",
+          "lineNumber": 65
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 0,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/auth.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 239,
+      "nonEmptyLines": 213,
+      "functions": [
+        {
+          "name": "setApiBase",
+          "startLine": 25,
+          "endLine": 27,
+          "params": [
+            "base"
+          ]
+        },
+        {
+          "name": "setSyncApiBase",
+          "startLine": 29,
+          "endLine": 31,
+          "params": [
+            "base"
+          ]
+        },
+        {
+          "name": "getSyncBase",
+          "startLine": 33,
+          "endLine": 35,
+          "params": []
+        },
+        {
+          "name": "getSyncUrl",
+          "startLine": 37,
+          "endLine": 39,
+          "params": []
+        },
+        {
+          "name": "validatePassword",
+          "startLine": 52,
+          "endLine": 60,
+          "params": [
+            "pwd"
+          ]
+        },
+        {
+          "name": "apiRegister",
+          "startLine": 63,
+          "endLine": 70,
+          "params": [
+            "email",
+            "password",
+            "name",
+            "code"
+          ]
+        },
+        {
+          "name": "apiSendCode",
+          "startLine": 73,
+          "endLine": 80,
+          "params": [
+            "email",
+            "type"
+          ]
+        },
+        {
+          "name": "apiCheckEmail",
+          "startLine": 83,
+          "endLine": 90,
+          "params": [
+            "email"
+          ]
+        },
+        {
+          "name": "apiLogin",
+          "startLine": 93,
+          "endLine": 100,
+          "params": [
+            "email",
+            "password"
+          ]
+        },
+        {
+          "name": "apiWechatLogin",
+          "startLine": 103,
+          "endLine": 110,
+          "params": [
+            "code"
+          ]
+        },
+        {
+          "name": "apiRefreshToken",
+          "startLine": 113,
+          "endLine": 120,
+          "params": [
+            "refreshToken",
+            "token"
+          ]
+        },
+        {
+          "name": "apiGetMe",
+          "startLine": 123,
+          "endLine": 128,
+          "params": [
+            "token"
+          ]
+        },
+        {
+          "name": "apiLogout",
+          "startLine": 131,
+          "endLine": 141,
+          "params": [
+            "token",
+            "refreshToken"
+          ]
+        },
+        {
+          "name": "apiResetPassword",
+          "startLine": 144,
+          "endLine": 151,
+          "params": [
+            "email",
+            "code",
+            "password"
+          ]
+        },
+        {
+          "name": "apiChangePassword",
+          "startLine": 154,
+          "endLine": 161,
+          "params": [
+            "token",
+            "currentPassword",
+            "newPassword"
+          ]
+        },
+        {
+          "name": "apiSyncPush",
+          "startLine": 164,
+          "endLine": 173,
+          "params": [
+            "token",
+            "_lastSyncAt",
+            "changes",
+            "userId",
+            "signal"
+          ]
+        },
+        {
+          "name": "apiSyncPullPost",
+          "startLine": 176,
+          "endLine": 184,
+          "params": [
+            "token",
+            "body",
+            "userId"
+          ]
+        },
+        {
+          "name": "apiSyncPull",
+          "startLine": 187,
+          "endLine": 194,
+          "params": [
+            "token",
+            "userId",
+            "since"
+          ]
+        },
+        {
+          "name": "apiSyncCheck",
+          "startLine": 197,
+          "endLine": 203,
+          "params": [
+            "token",
+            "since",
+            "userId"
+          ]
+        },
+        {
+          "name": "apiSyncPullEntity",
+          "startLine": 215,
+          "endLine": 239,
+          "params": [
+            "token",
+            "entity",
+            "page",
+            "pageSize",
+            "userId"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "setApiBase",
+          "line": 25,
+          "isDefault": false
+        },
+        {
+          "name": "setSyncApiBase",
+          "line": 29,
+          "isDefault": false
+        },
+        {
+          "name": "getSyncUrl",
+          "line": 37,
+          "isDefault": false
+        },
+        {
+          "name": "validatePassword",
+          "line": 52,
+          "isDefault": false
+        },
+        {
+          "name": "apiRegister",
+          "line": 63,
+          "isDefault": false
+        },
+        {
+          "name": "apiSendCode",
+          "line": 73,
+          "isDefault": false
+        },
+        {
+          "name": "apiCheckEmail",
+          "line": 83,
+          "isDefault": false
+        },
+        {
+          "name": "apiLogin",
+          "line": 93,
+          "isDefault": false
+        },
+        {
+          "name": "apiWechatLogin",
+          "line": 103,
+          "isDefault": false
+        },
+        {
+          "name": "apiRefreshToken",
+          "line": 113,
+          "isDefault": false
+        },
+        {
+          "name": "apiGetMe",
+          "line": 123,
+          "isDefault": false
+        },
+        {
+          "name": "apiLogout",
+          "line": 131,
+          "isDefault": false
+        },
+        {
+          "name": "apiResetPassword",
+          "line": 144,
+          "isDefault": false
+        },
+        {
+          "name": "apiChangePassword",
+          "line": 154,
+          "isDefault": false
+        },
+        {
+          "name": "apiSyncPush",
+          "line": 164,
+          "isDefault": false
+        },
+        {
+          "name": "apiSyncPullPost",
+          "line": 176,
+          "isDefault": false
+        },
+        {
+          "name": "apiSyncPull",
+          "line": 187,
+          "isDefault": false
+        },
+        {
+          "name": "apiSyncCheck",
+          "line": 197,
+          "isDefault": false
+        },
+        {
+          "name": "apiSyncPullEntity",
+          "line": 215,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "setApiBase",
+          "callee": "base.replace",
+          "lineNumber": 26
+        },
+        {
+          "caller": "setSyncApiBase",
+          "callee": "base.replace",
+          "lineNumber": 30
+        },
+        {
+          "caller": "getSyncUrl",
+          "callee": "getSyncBase",
+          "lineNumber": 38
+        },
+        {
+          "caller": "validatePassword",
+          "callee": "/[a-zA-Z]/.test",
+          "lineNumber": 55
+        },
+        {
+          "caller": "validatePassword",
+          "callee": "/[0-9]/.test",
+          "lineNumber": 56
+        },
+        {
+          "caller": "validatePassword",
+          "callee": "/[^a-zA-Z0-9]/.test",
+          "lineNumber": 57
+        },
+        {
+          "caller": "validatePassword",
+          "callee": "COMMON_PASSWORDS.some",
+          "lineNumber": 58
+        },
+        {
+          "caller": "validatePassword",
+          "callee": "pwd.toLowerCase().includes",
+          "lineNumber": 58
+        },
+        {
+          "caller": "validatePassword",
+          "callee": "pwd.toLowerCase",
+          "lineNumber": 58
+        },
+        {
+          "caller": "apiRegister",
+          "callee": "fetchWithTimeout",
+          "lineNumber": 64
+        },
+        {
+          "caller": "apiRegister",
+          "callee": "buildHeaders",
+          "lineNumber": 66
+        },
+        {
+          "caller": "apiRegister",
+          "callee": "JSON.stringify",
+          "lineNumber": 67
+        },
+        {
+          "caller": "apiRegister",
+          "callee": "handleJsonResponse",
+          "lineNumber": 69
+        },
+        {
+          "caller": "apiSendCode",
+          "callee": "fetchWithTimeout",
+          "lineNumber": 74
+        },
+        {
+          "caller": "apiSendCode",
+          "callee": "buildHeaders",
+          "lineNumber": 76
+        },
+        {
+          "caller": "apiSendCode",
+          "callee": "JSON.stringify",
+          "lineNumber": 77
+        },
+        {
+          "caller": "apiSendCode",
+          "callee": "handleJsonResponse",
+          "lineNumber": 79
+        },
+        {
+          "caller": "apiCheckEmail",
+          "callee": "fetchWithTimeout",
+          "lineNumber": 84
+        },
+        {
+          "caller": "apiCheckEmail",
+          "callee": "buildHeaders",
+          "lineNumber": 86
+        },
+        {
+          "caller": "apiCheckEmail",
+          "callee": "JSON.stringify",
+          "lineNumber": 87
+        },
+        {
+          "caller": "apiCheckEmail",
+          "callee": "handleJsonResponse",
+          "lineNumber": 89
+        },
+        {
+          "caller": "apiLogin",
+          "callee": "fetchWithTimeout",
+          "lineNumber": 94
+        },
+        {
+          "caller": "apiLogin",
+          "callee": "buildHeaders",
+          "lineNumber": 96
+        },
+        {
+          "caller": "apiLogin",
+          "callee": "JSON.stringify",
+          "lineNumber": 97
+        },
+        {
+          "caller": "apiLogin",
+          "callee": "handleJsonResponse",
+          "lineNumber": 99
+        },
+        {
+          "caller": "apiWechatLogin",
+          "callee": "fetchWithTimeout",
+          "lineNumber": 104
+        },
+        {
+          "caller": "apiWechatLogin",
+          "callee": "buildHeaders",
+          "lineNumber": 106
+        },
+        {
+          "caller": "apiWechatLogin",
+          "callee": "JSON.stringify",
+          "lineNumber": 107
+        },
+        {
+          "caller": "apiWechatLogin",
+          "callee": "handleJsonResponse",
+          "lineNumber": 109
+        },
+        {
+          "caller": "apiRefreshToken",
+          "callee": "fetchWithTimeout",
+          "lineNumber": 114
+        },
+        {
+          "caller": "apiRefreshToken",
+          "callee": "buildHeaders",
+          "lineNumber": 116
+        },
+        {
+          "caller": "apiRefreshToken",
+          "callee": "JSON.stringify",
+          "lineNumber": 117
+        },
+        {
+          "caller": "apiRefreshToken",
+          "callee": "handleJsonResponse",
+          "lineNumber": 119
+        },
+        {
+          "caller": "apiGetMe",
+          "callee": "fetchWithTimeout",
+          "lineNumber": 124
+        },
+        {
+          "caller": "apiGetMe",
+          "callee": "buildHeaders",
+          "lineNumber": 125
+        },
+        {
+          "caller": "apiGetMe",
+          "callee": "handleJsonResponse",
+          "lineNumber": 127
+        },
+        {
+          "caller": "apiLogout",
+          "callee": "fetchWithTimeout",
+          "lineNumber": 132
+        },
+        {
+          "caller": "apiLogout",
+          "callee": "buildHeaders",
+          "lineNumber": 134
+        },
+        {
+          "caller": "apiLogout",
+          "callee": "JSON.stringify",
+          "lineNumber": 135
+        },
+        {
+          "caller": "apiLogout",
+          "callee": "res.text",
+          "lineNumber": 138
+        },
+        {
+          "caller": "apiLogout",
+          "callee": "log.error",
+          "lineNumber": 139
+        },
+        {
+          "caller": "apiResetPassword",
+          "callee": "fetchWithTimeout",
+          "lineNumber": 145
+        },
+        {
+          "caller": "apiResetPassword",
+          "callee": "buildHeaders",
+          "lineNumber": 147
+        },
+        {
+          "caller": "apiResetPassword",
+          "callee": "JSON.stringify",
+          "lineNumber": 148
+        },
+        {
+          "caller": "apiResetPassword",
+          "callee": "handleJsonResponse",
+          "lineNumber": 150
+        },
+        {
+          "caller": "apiChangePassword",
+          "callee": "fetchWithTimeout",
+          "lineNumber": 155
+        },
+        {
+          "caller": "apiChangePassword",
+          "callee": "buildHeaders",
+          "lineNumber": 157
+        },
+        {
+          "caller": "apiChangePassword",
+          "callee": "JSON.stringify",
+          "lineNumber": 158
+        },
+        {
+          "caller": "apiChangePassword",
+          "callee": "handleJsonResponse",
+          "lineNumber": 160
+        },
+        {
+          "caller": "apiSyncPush",
+          "callee": "fetchWithTimeout",
+          "lineNumber": 165
+        },
+        {
+          "caller": "apiSyncPush",
+          "callee": "getSyncBase",
+          "lineNumber": 165
+        },
+        {
+          "caller": "apiSyncPush",
+          "callee": "buildHeaders",
+          "lineNumber": 167
+        },
+        {
+          "caller": "apiSyncPush",
+          "callee": "JSON.stringify",
+          "lineNumber": 168
+        },
+        {
+          "caller": "apiSyncPush",
+          "callee": "await handleJsonResponse",
+          "lineNumber": 171
+        },
+        {
+          "caller": "apiSyncPullPost",
+          "callee": "fetchWithTimeout",
+          "lineNumber": 177
+        },
+        {
+          "caller": "apiSyncPullPost",
+          "callee": "getSyncBase",
+          "lineNumber": 177
+        },
+        {
+          "caller": "apiSyncPullPost",
+          "callee": "buildHeaders",
+          "lineNumber": 179
+        },
+        {
+          "caller": "apiSyncPullPost",
+          "callee": "JSON.stringify",
+          "lineNumber": 180
+        },
+        {
+          "caller": "apiSyncPullPost",
+          "callee": "await handleJsonResponse",
+          "lineNumber": 182
+        },
+        {
+          "caller": "apiSyncPull",
+          "callee": "fetchWithTimeout",
+          "lineNumber": 189
+        },
+        {
+          "caller": "apiSyncPull",
+          "callee": "getSyncBase",
+          "lineNumber": 189
+        },
+        {
+          "caller": "apiSyncPull",
+          "callee": "buildHeaders",
+          "lineNumber": 191
+        },
+        {
+          "caller": "apiSyncPull",
+          "callee": "handleJsonResponse",
+          "lineNumber": 193
+        },
+        {
+          "caller": "apiSyncCheck",
+          "callee": "fetchWithTimeout",
+          "lineNumber": 198
+        },
+        {
+          "caller": "apiSyncCheck",
+          "callee": "getSyncBase",
+          "lineNumber": 198
+        },
+        {
+          "caller": "apiSyncCheck",
+          "callee": "buildHeaders",
+          "lineNumber": 200
+        },
+        {
+          "caller": "apiSyncCheck",
+          "callee": "handleJsonResponse",
+          "lineNumber": 202
+        },
+        {
+          "caller": "apiSyncPullEntity",
+          "callee": "fetchWithTimeout",
+          "lineNumber": 217
+        },
+        {
+          "caller": "apiSyncPullEntity",
+          "callee": "getSyncBase",
+          "lineNumber": 217
+        },
+        {
+          "caller": "apiSyncPullEntity",
+          "callee": "buildHeaders",
+          "lineNumber": 219
+        },
+        {
+          "caller": "apiSyncPullEntity",
+          "callee": "JSON.stringify",
+          "lineNumber": 220
+        },
+        {
+          "caller": "apiSyncPullEntity",
+          "callee": "await handleJsonResponse",
+          "lineNumber": 222
+        },
+        {
+          "caller": "apiSyncPullEntity",
+          "callee": "log.debug",
+          "lineNumber": 230
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 19,
+        "functionCount": 20,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/body.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 116,
+      "nonEmptyLines": 96,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/body.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 358,
+      "nonEmptyLines": 322,
+      "functions": [
+        {
+          "name": "calcBMI",
+          "startLine": 5,
+          "endLine": 9,
+          "params": [
+            "weight",
+            "heightCm"
+          ]
+        },
+        {
+          "name": "calcBMR",
+          "startLine": 11,
+          "endLine": 16,
+          "params": [
+            "weight",
+            "heightCm",
+            "age",
+            "gender"
+          ]
+        },
+        {
+          "name": "calcGoalProgress",
+          "startLine": 18,
+          "endLine": 28,
+          "params": [
+            "current",
+            "target",
+            "initial"
+          ]
+        },
+        {
+          "name": "recommendStrategy",
+          "startLine": 30,
+          "endLine": 37,
+          "params": [
+            "bodyTags"
+          ]
+        },
+        {
+          "name": "createBodyGoal",
+          "startLine": 39,
+          "endLine": 60,
+          "params": [
+            "partial"
+          ]
+        },
+        {
+          "name": "createBodyPlan",
+          "startLine": 62,
+          "endLine": 79,
+          "params": [
+            "partial"
+          ]
+        },
+        {
+          "name": "createWeightRecord",
+          "startLine": 81,
+          "endLine": 94,
+          "params": [
+            "partial"
+          ]
+        },
+        {
+          "name": "createBodyCheckin",
+          "startLine": 96,
+          "endLine": 117,
+          "params": [
+            "partial"
+          ]
+        },
+        {
+          "name": "computePRs",
+          "startLine": 134,
+          "endLine": 155,
+          "params": [
+            "exerciseLog"
+          ]
+        },
+        {
+          "name": "computeMuscleGroupStats",
+          "startLine": 170,
+          "endLine": 195,
+          "params": [
+            "exerciseLog",
+            "exerciseLibrary"
+          ]
+        },
+        {
+          "name": "computeMonthFrequency",
+          "startLine": 211,
+          "endLine": 241,
+          "params": [
+            "exerciseLog",
+            "yearMonth"
+          ]
+        },
+        {
+          "name": "generateSuggestions",
+          "startLine": 256,
+          "endLine": 358,
+          "params": [
+            "exerciseLog",
+            "bodyCheckins",
+            "activePlan"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "calcBMI",
+          "line": 5,
+          "isDefault": false
+        },
+        {
+          "name": "calcBMR",
+          "line": 11,
+          "isDefault": false
+        },
+        {
+          "name": "calcGoalProgress",
+          "line": 18,
+          "isDefault": false
+        },
+        {
+          "name": "recommendStrategy",
+          "line": 30,
+          "isDefault": false
+        },
+        {
+          "name": "createBodyGoal",
+          "line": 39,
+          "isDefault": false
+        },
+        {
+          "name": "createBodyPlan",
+          "line": 62,
+          "isDefault": false
+        },
+        {
+          "name": "createWeightRecord",
+          "line": 81,
+          "isDefault": false
+        },
+        {
+          "name": "createBodyCheckin",
+          "line": 96,
+          "isDefault": false
+        },
+        {
+          "name": "computePRs",
+          "line": 134,
+          "isDefault": false
+        },
+        {
+          "name": "computeMuscleGroupStats",
+          "line": 170,
+          "isDefault": false
+        },
+        {
+          "name": "computeMonthFrequency",
+          "line": 211,
+          "isDefault": false
+        },
+        {
+          "name": "generateSuggestions",
+          "line": 256,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "calcBMI",
+          "callee": "Math.round",
+          "lineNumber": 8
+        },
+        {
+          "caller": "calcBMR",
+          "callee": "Math.round",
+          "lineNumber": 15
+        },
+        {
+          "caller": "calcGoalProgress",
+          "callee": "Math.abs",
+          "lineNumber": 24
+        },
+        {
+          "caller": "calcGoalProgress",
+          "callee": "Math.abs",
+          "lineNumber": 26
+        },
+        {
+          "caller": "calcGoalProgress",
+          "callee": "Math.min",
+          "lineNumber": 27
+        },
+        {
+          "caller": "calcGoalProgress",
+          "callee": "Math.round",
+          "lineNumber": 27
+        },
+        {
+          "caller": "recommendStrategy",
+          "callee": "tagSet.has",
+          "lineNumber": 32
+        },
+        {
+          "caller": "recommendStrategy",
+          "callee": "tagSet.has",
+          "lineNumber": 32
+        },
+        {
+          "caller": "recommendStrategy",
+          "callee": "tagSet.has",
+          "lineNumber": 32
+        },
+        {
+          "caller": "recommendStrategy",
+          "callee": "tagSet.has",
+          "lineNumber": 32
+        },
+        {
+          "caller": "recommendStrategy",
+          "callee": "tagSet.has",
+          "lineNumber": 33
+        },
+        {
+          "caller": "recommendStrategy",
+          "callee": "tagSet.has",
+          "lineNumber": 34
+        },
+        {
+          "caller": "recommendStrategy",
+          "callee": "tagSet.has",
+          "lineNumber": 34
+        },
+        {
+          "caller": "recommendStrategy",
+          "callee": "tagSet.has",
+          "lineNumber": 35
+        },
+        {
+          "caller": "recommendStrategy",
+          "callee": "tagSet.has",
+          "lineNumber": 35
+        },
+        {
+          "caller": "recommendStrategy",
+          "callee": "tagSet.has",
+          "lineNumber": 35
+        },
+        {
+          "caller": "createBodyGoal",
+          "callee": "uid",
+          "lineNumber": 49
+        },
+        {
+          "caller": "createBodyGoal",
+          "callee": "Date.now",
+          "lineNumber": 57
+        },
+        {
+          "caller": "createBodyPlan",
+          "callee": "uid",
+          "lineNumber": 70
+        },
+        {
+          "caller": "createBodyPlan",
+          "callee": "Date.now",
+          "lineNumber": 76
+        },
+        {
+          "caller": "createWeightRecord",
+          "callee": "uid",
+          "lineNumber": 87
+        },
+        {
+          "caller": "createWeightRecord",
+          "callee": "Date.now",
+          "lineNumber": 91
+        },
+        {
+          "caller": "createBodyCheckin",
+          "callee": "uid",
+          "lineNumber": 106
+        },
+        {
+          "caller": "createBodyCheckin",
+          "callee": "Date.now",
+          "lineNumber": 114
+        },
+        {
+          "caller": "computePRs",
+          "callee": "new Date(e.timestamp).toISOString().slice",
+          "lineNumber": 138
+        },
+        {
+          "caller": "computePRs",
+          "callee": "new Date(e.timestamp).toISOString",
+          "lineNumber": 138
+        },
+        {
+          "caller": "computePRs",
+          "callee": "map.get",
+          "lineNumber": 139
+        },
+        {
+          "caller": "computePRs",
+          "callee": "map.set",
+          "lineNumber": 152
+        },
+        {
+          "caller": "computePRs",
+          "callee": "Array.from",
+          "lineNumber": 154
+        },
+        {
+          "caller": "computePRs",
+          "callee": "map.values",
+          "lineNumber": 154
+        },
+        {
+          "caller": "computeMuscleGroupStats",
+          "callee": "new Date(entry.timestamp).toISOString().slice",
+          "lineNumber": 178
+        },
+        {
+          "caller": "computeMuscleGroupStats",
+          "callee": "new Date(entry.timestamp).toISOString",
+          "lineNumber": 178
+        },
+        {
+          "caller": "computeMuscleGroupStats",
+          "callee": "exerciseLibrary.find",
+          "lineNumber": 179
+        },
+        {
+          "caller": "computeMuscleGroupStats",
+          "callee": "stats.get",
+          "lineNumber": 185
+        },
+        {
+          "caller": "computeMuscleGroupStats",
+          "callee": "stats.set",
+          "lineNumber": 188
+        },
+        {
+          "caller": "computeMuscleGroupStats",
+          "callee": "Array.from(stats.entries())\n    .map(([muscle, data]) => ({ muscle, ...data }))\n    .sort",
+          "lineNumber": 192
+        },
+        {
+          "caller": "computeMuscleGroupStats",
+          "callee": "Array.from(stats.entries())\n    .map",
+          "lineNumber": 192
+        },
+        {
+          "caller": "computeMuscleGroupStats",
+          "callee": "Array.from",
+          "lineNumber": 192
+        },
+        {
+          "caller": "computeMuscleGroupStats",
+          "callee": "stats.entries",
+          "lineNumber": 192
+        },
+        {
+          "caller": "computeMonthFrequency",
+          "callee": "yearMonth.split('-').map",
+          "lineNumber": 216
+        },
+        {
+          "caller": "computeMonthFrequency",
+          "callee": "yearMonth.split",
+          "lineNumber": 216
+        },
+        {
+          "caller": "computeMonthFrequency",
+          "callee": "new Date(year, month, 0).getDate",
+          "lineNumber": 217
+        },
+        {
+          "caller": "computeMonthFrequency",
+          "callee": "new Date(entry.timestamp).toISOString().slice",
+          "lineNumber": 223
+        },
+        {
+          "caller": "computeMonthFrequency",
+          "callee": "new Date(entry.timestamp).toISOString",
+          "lineNumber": 223
+        },
+        {
+          "caller": "computeMonthFrequency",
+          "callee": "date.startsWith",
+          "lineNumber": 224
+        },
+        {
+          "caller": "computeMonthFrequency",
+          "callee": "byDate.get",
+          "lineNumber": 225
+        },
+        {
+          "caller": "computeMonthFrequency",
+          "callee": "Math.round",
+          "lineNumber": 227
+        },
+        {
+          "caller": "computeMonthFrequency",
+          "callee": "byDate.set",
+          "lineNumber": 228
+        },
+        {
+          "caller": "computeMonthFrequency",
+          "callee": "String(d).padStart",
+          "lineNumber": 234
+        },
+        {
+          "caller": "computeMonthFrequency",
+          "callee": "String",
+          "lineNumber": 234
+        },
+        {
+          "caller": "computeMonthFrequency",
+          "callee": "byDate.get",
+          "lineNumber": 235
+        },
+        {
+          "caller": "computeMonthFrequency",
+          "callee": "result.push",
+          "lineNumber": 238
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "Date.now",
+          "lineNumber": 262
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "new Date(now).toISOString().slice",
+          "lineNumber": 264
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "new Date(now).toISOString",
+          "lineNumber": 264
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "exerciseLog\n    .filter(e => !e.deleted && (now - e.timestamp) < 30 * DAY)\n    .sort",
+          "lineNumber": 267
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "exerciseLog\n    .filter",
+          "lineNumber": 267
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "checkDate.toISOString().slice",
+          "lineNumber": 274
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "checkDate.toISOString",
+          "lineNumber": 274
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "recentLogs.some",
+          "lineNumber": 275
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "new Date(e.timestamp).toISOString().slice",
+          "lineNumber": 275
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "new Date(e.timestamp).toISOString",
+          "lineNumber": 275
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "checkDate.setDate",
+          "lineNumber": 281
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "checkDate.getDate",
+          "lineNumber": 281
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "suggestions.push",
+          "lineNumber": 285
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "suggestions.push",
+          "lineNumber": 291
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "bodyCheckins\n    .filter(c => !c.deleted)\n    .sort((a, b) => b.date.localeCompare(a.date))\n    .slice",
+          "lineNumber": 299
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "bodyCheckins\n    .filter(c => !c.deleted)\n    .sort",
+          "lineNumber": 299
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "bodyCheckins\n    .filter",
+          "lineNumber": 299
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "b.date.localeCompare",
+          "lineNumber": 301
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "recentCheckins.reduce",
+          "lineNumber": 305
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "suggestions.push",
+          "lineNumber": 307
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "recentCheckins.some",
+          "lineNumber": 316
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "suggestions.push",
+          "lineNumber": 318
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "Math.ceil",
+          "lineNumber": 327
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "new Date(activePlan.endDate).getTime",
+          "lineNumber": 327
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "suggestions.push",
+          "lineNumber": 329
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "suggestions.push",
+          "lineNumber": 335
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "weekStart.setDate",
+          "lineNumber": 345
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "weekStart.getDate",
+          "lineNumber": 345
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "weekStart.getDay",
+          "lineNumber": 345
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "recentLogs.filter",
+          "lineNumber": 346
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "weekStart.getTime",
+          "lineNumber": 346
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "new Date().getDay",
+          "lineNumber": 347
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "suggestions.push",
+          "lineNumber": 348
+        },
+        {
+          "caller": "generateSuggestions",
+          "callee": "suggestions.sort",
+          "lineNumber": 357
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 12,
+        "functionCount": 12,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/checkin.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 66,
+      "nonEmptyLines": 64,
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/checkin.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 154,
+      "nonEmptyLines": 137,
+      "functions": [
+        {
+          "name": "getIncompleteItems",
+          "startLine": 23,
+          "endLine": 48,
+          "params": [
+            "params"
+          ]
+        },
+        {
+          "name": "getFoodLogByDate",
+          "startLine": 51,
+          "endLine": 53,
+          "params": [
+            "foodLog",
+            "date"
+          ]
+        },
+        {
+          "name": "computeLongestStreakFromHistory",
+          "startLine": 55,
+          "endLine": 57,
+          "params": [
+            "history"
+          ]
+        },
+        {
+          "name": "getStatsForDate",
+          "startLine": 60,
+          "endLine": 69,
+          "params": [
+            "history",
+            "date"
+          ]
+        },
+        {
+          "name": "submitCheckinEntry",
+          "startLine": 71,
+          "endLine": 91,
+          "params": [
+            "history",
+            "done",
+            "note",
+            "dateOverride",
+            "weight",
+            "grace"
+          ]
+        },
+        {
+          "name": "parseCheckinNote",
+          "startLine": 108,
+          "endLine": 154,
+          "params": [
+            "raw"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "INCOMPLETE_REASONS",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "getIncompleteItems",
+          "line": 23,
+          "isDefault": false
+        },
+        {
+          "name": "getFoodLogByDate",
+          "line": 51,
+          "isDefault": false
+        },
+        {
+          "name": "computeLongestStreakFromHistory",
+          "line": 55,
+          "isDefault": false
+        },
+        {
+          "name": "getStatsForDate",
+          "line": 60,
+          "isDefault": false
+        },
+        {
+          "name": "submitCheckinEntry",
+          "line": 71,
+          "isDefault": false
+        },
+        {
+          "name": "parseCheckinNote",
+          "line": 108,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getIncompleteItems",
+          "callee": "h.checkedDates?.includes",
+          "lineNumber": 34
+        },
+        {
+          "caller": "getIncompleteItems",
+          "callee": "result.push",
+          "lineNumber": 35
+        },
+        {
+          "caller": "getIncompleteItems",
+          "callee": "planItemCheckins.find",
+          "lineNumber": 41
+        },
+        {
+          "caller": "getIncompleteItems",
+          "callee": "result.push",
+          "lineNumber": 43
+        },
+        {
+          "caller": "getFoodLogByDate",
+          "callee": "(foodLog ?? []).filter",
+          "lineNumber": 52
+        },
+        {
+          "caller": "getFoodLogByDate",
+          "callee": "dateStr",
+          "lineNumber": 52
+        },
+        {
+          "caller": "computeLongestStreakFromHistory",
+          "callee": "computeLongestStreakRaw",
+          "lineNumber": 56
+        },
+        {
+          "caller": "computeLongestStreakFromHistory",
+          "callee": "history.filter(c => c.done && !c.deleted).map",
+          "lineNumber": 56
+        },
+        {
+          "caller": "computeLongestStreakFromHistory",
+          "callee": "history.filter",
+          "lineNumber": 56
+        },
+        {
+          "caller": "getStatsForDate",
+          "callee": "history.find",
+          "lineNumber": 61
+        },
+        {
+          "caller": "getStatsForDate",
+          "callee": "history.filter",
+          "lineNumber": 65
+        },
+        {
+          "caller": "getStatsForDate",
+          "callee": "calculateCheckinStreak",
+          "lineNumber": 67
+        },
+        {
+          "caller": "submitCheckinEntry",
+          "callee": "dateStr",
+          "lineNumber": 79
+        },
+        {
+          "caller": "submitCheckinEntry",
+          "callee": "history.filter",
+          "lineNumber": 80
+        },
+        {
+          "caller": "submitCheckinEntry",
+          "callee": "Date.now",
+          "lineNumber": 84
+        },
+        {
+          "caller": "submitCheckinEntry",
+          "callee": "Date.now",
+          "lineNumber": 84
+        },
+        {
+          "caller": "submitCheckinEntry",
+          "callee": "calculateCheckinStreak",
+          "lineNumber": 87
+        },
+        {
+          "caller": "submitCheckinEntry",
+          "callee": "newHistory.filter",
+          "lineNumber": 88
+        },
+        {
+          "caller": "parseCheckinNote",
+          "callee": "JSON.parse",
+          "lineNumber": 112
+        },
+        {
+          "caller": "parseCheckinNote",
+          "callee": "raw.startsWith",
+          "lineNumber": 130
+        },
+        {
+          "caller": "parseCheckinNote",
+          "callee": "console.warn",
+          "lineNumber": 131
+        },
+        {
+          "caller": "parseCheckinNote",
+          "callee": "raw.slice",
+          "lineNumber": 131
+        },
+        {
+          "caller": "parseCheckinNote",
+          "callee": "raw.split",
+          "lineNumber": 136
+        },
+        {
+          "caller": "parseCheckinNote",
+          "callee": "Object.keys(EMOJI_TO_KEY).find",
+          "lineNumber": 143
+        },
+        {
+          "caller": "parseCheckinNote",
+          "callee": "Object.keys",
+          "lineNumber": 143
+        },
+        {
+          "caller": "parseCheckinNote",
+          "callee": "p.startsWith",
+          "lineNumber": 143
+        },
+        {
+          "caller": "parseCheckinNote",
+          "callee": "practices.push",
+          "lineNumber": 145
+        },
+        {
+          "caller": "parseCheckinNote",
+          "callee": "p.startsWith",
+          "lineNumber": 146
+        },
+        {
+          "caller": "parseCheckinNote",
+          "callee": "customs.push",
+          "lineNumber": 147
+        },
+        {
+          "caller": "parseCheckinNote",
+          "callee": "p.slice",
+          "lineNumber": 147
+        },
+        {
+          "caller": "parseCheckinNote",
+          "callee": "noteParts.push",
+          "lineNumber": 149
+        },
+        {
+          "caller": "parseCheckinNote",
+          "callee": "noteParts.join",
+          "lineNumber": 153
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 7,
+        "functionCount": 6,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/dateChangeDetection.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 25,
+      "nonEmptyLines": 21,
+      "functions": [
+        {
+          "name": "createDateChangeDetector",
+          "startLine": 8,
+          "endLine": 25,
+          "params": [
+            "onDateChange"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "createDateChangeDetector",
+          "line": 8,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "createDateChangeDetector",
+          "callee": "dateStr",
+          "lineNumber": 11
+        },
+        {
+          "caller": "check",
+          "callee": "dateStr",
+          "lineNumber": 14
+        },
+        {
+          "caller": "check",
+          "callee": "onDateChange",
+          "lineNumber": 18
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/exercise.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 37,
+      "nonEmptyLines": 35,
+      "functions": [
+        {
+          "name": "makeExercise",
+          "startLine": 5,
+          "endLine": 8,
+          "params": [
+            "overrides"
+          ]
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 0,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/exercise.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 7,
+      "nonEmptyLines": 6,
+      "functions": [
+        {
+          "name": "deleteExerciseFromList",
+          "startLine": 4,
+          "endLine": 7,
+          "params": [
+            "exerciseLog",
+            "id"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "deleteExerciseFromList",
+          "line": 4,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "deleteExerciseFromList",
+          "callee": "Date.now",
+          "lineNumber": 5
+        },
+        {
+          "caller": "deleteExerciseFromList",
+          "callee": "exerciseLog.map",
+          "lineNumber": 6
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/fasting.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 71,
+      "nonEmptyLines": 67,
+      "functions": [
+        {
+          "name": "makeFasting",
+          "startLine": 5,
+          "endLine": 8,
+          "params": [
+            "overrides"
+          ]
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "makeFasting",
+          "callee": "Date.now",
+          "lineNumber": 6
+        },
+        {
+          "caller": "makeFasting",
+          "callee": "Date.now",
+          "lineNumber": 7
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 0,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/fasting.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 39,
+      "nonEmptyLines": 36,
+      "functions": [
+        {
+          "name": "startFastingSession",
+          "startLine": 6,
+          "endLine": 9,
+          "params": [
+            "activeFasting",
+            "hours"
+          ]
+        },
+        {
+          "name": "stopFastingSession",
+          "startLine": 19,
+          "endLine": 39,
+          "params": [
+            "activeFasting",
+            "opts"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "startFastingSession",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "stopFastingSession",
+          "line": 19,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "startFastingSession",
+          "callee": "createFastingSession",
+          "lineNumber": 8
+        },
+        {
+          "caller": "stopFastingSession",
+          "callee": "Date.now",
+          "lineNumber": 23
+        },
+        {
+          "caller": "stopFastingSession",
+          "callee": "Math.max",
+          "lineNumber": 24
+        },
+        {
+          "caller": "stopFastingSession",
+          "callee": "estimateFastingKcal",
+          "lineNumber": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/food.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 38,
+      "nonEmptyLines": 36,
+      "functions": [
+        {
+          "name": "makeFood",
+          "startLine": 5,
+          "endLine": 8,
+          "params": [
+            "overrides"
+          ]
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 0,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,2409 @@
+{
+  "nodes": [
+    {
+      "id": "file:apps/mobile/src/features/reflections/trails/LinkReflectionModal.tsx",
+      "type": "file",
+      "name": "LinkReflectionModal.tsx",
+      "filePath": "apps/mobile/src/features/reflections/trails/LinkReflectionModal.tsx",
+      "summary": "感念关联弹窗，允许用户选择关联类型（引发/演进/转折/回应/相关）将当前感念与历史感念建立联系，并附加备注。",
+      "tags": [
+        "trail",
+        "modal",
+        "reflection",
+        "link"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/trails/LinkReflectionModal.tsx:LinkReflectionModal",
+      "type": "function",
+      "name": "LinkReflectionModal",
+      "filePath": "apps/mobile/src/features/reflections/trails/LinkReflectionModal.tsx",
+      "lineRange": [
+        25,
+        178
+      ],
+      "summary": "感念关联弹窗主组件，管理关联类型选择、目标感念选择与备注输入。 trail",
+      "tags": [
+        "modal"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/trails/MindTrailEntryCard.tsx",
+      "type": "file",
+      "name": "MindTrailEntryCard.tsx",
+      "filePath": "apps/mobile/src/features/reflections/trails/MindTrailEntryCard.tsx",
+      "summary": "感念心迹入口卡片组件，展示当前脉络数量并作为进入心迹主页的入口，使用 React.memo 优化渲染。",
+      "tags": [
+        "trail",
+        "ui-component",
+        "entry-card"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/trails/MindTrailEntryCard.tsx:MindTrailEntryCard",
+      "type": "function",
+      "name": "MindTrailEntryCard",
+      "filePath": "apps/mobile/src/features/reflections/trails/MindTrailEntryCard.tsx",
+      "lineRange": [
+        14,
+        65
+      ],
+      "summary": "心迹入口卡片，展示脉络数量并提供进入心迹主页的入口。 trail",
+      "tags": [
+        "ui-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/trails/MindTrailScreen.tsx",
+      "type": "file",
+      "name": "MindTrailScreen.tsx",
+      "filePath": "apps/mobile/src/features/reflections/trails/MindTrailScreen.tsx",
+      "summary": "感念心迹主页，集成 AI 推荐脉络、智能查询、手动创建脉络以及忽略推荐模式的学习与持久化等核心功能。",
+      "tags": [
+        "trail",
+        "ai",
+        "smart-query",
+        "recommendation",
+        "screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/trails/MindTrailScreen.tsx:MindTrailScreen",
+      "type": "function",
+      "name": "MindTrailScreen",
+      "filePath": "apps/mobile/src/features/reflections/trails/MindTrailScreen.tsx",
+      "lineRange": [
+        27,
+        661
+      ],
+      "summary": "心迹主页主组件，集成 AI 推荐、智能查询与创建脉络等核心逻辑。 trail ai",
+      "tags": [
+        "screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/trails/QuickCreateTrailScreen.tsx",
+      "type": "file",
+      "name": "QuickCreateTrailScreen.tsx",
+      "filePath": "apps/mobile/src/features/reflections/trails/QuickCreateTrailScreen.tsx",
+      "summary": "快速创建脉络页，支持按时间范围/标签/情绪筛选感念、多选感念、AI 分析流与洞察面板，最终串联生成新脉络。",
+      "tags": [
+        "trail",
+        "ai",
+        "selection",
+        "screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/trails/QuickCreateTrailScreen.tsx:QuickCreateTrailScreen",
+      "type": "function",
+      "name": "QuickCreateTrailScreen",
+      "filePath": "apps/mobile/src/features/reflections/trails/QuickCreateTrailScreen.tsx",
+      "lineRange": [
+        36,
+        731
+      ],
+      "summary": "快速创建主组件，支持筛选、多选感念与 AI 分析后生成脉络。 trail ai",
+      "tags": [
+        "screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/trails/ReflectionCheckItem.tsx",
+      "type": "file",
+      "name": "ReflectionCheckItem.tsx",
+      "filePath": "apps/mobile/src/features/reflections/trails/ReflectionCheckItem.tsx",
+      "summary": "感念多选列表项组件，展示日期、情绪、标签与内容摘要，带勾选状态，用于快速创建脉络的感念选择。",
+      "tags": [
+        "trail",
+        "ui-component",
+        "check-item"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/trails/RelatedTrailsSection.tsx",
+      "type": "file",
+      "name": "RelatedTrailsSection.tsx",
+      "filePath": "apps/mobile/src/features/reflections/trails/RelatedTrailsSection.tsx",
+      "summary": "相关脉络区块组件，按相似度百分比展示与当前脉络相关的其他脉络，点击可跳转。",
+      "tags": [
+        "trail",
+        "ui-component",
+        "related"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/trails/RelatedTrailsSection.tsx:RelatedTrailsSection",
+      "type": "function",
+      "name": "RelatedTrailsSection",
+      "filePath": "apps/mobile/src/features/reflections/trails/RelatedTrailsSection.tsx",
+      "lineRange": [
+        18,
+        51
+      ],
+      "summary": "相关脉络区块，按相似度展示可跳转的相关脉络列表。 trail",
+      "tags": [
+        "ui-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/trails/ReviewAIPanel.tsx",
+      "type": "file",
+      "name": "ReviewAIPanel.tsx",
+      "filePath": "apps/mobile/src/features/reflections/trails/ReviewAIPanel.tsx",
+      "summary": "回顾 AI 面板，提供洞察与复盘两个子 Tab，支持生成、展开/折叠以及引导写笔记等功能。",
+      "tags": [
+        "trail",
+        "ai",
+        "review",
+        "panel"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/trails/ReviewAIPanel.tsx:ReviewAIPanel",
+      "type": "function",
+      "name": "ReviewAIPanel",
+      "filePath": "apps/mobile/src/features/reflections/trails/ReviewAIPanel.tsx",
+      "lineRange": [
+        21,
+        367
+      ],
+      "summary": "AI 回顾面板，提供洞察与复盘双 Tab 及生成/引导写笔记功能。 trail ai",
+      "tags": [
+        "panel"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/trails/SmartQueryPanel.tsx",
+      "type": "file",
+      "name": "SmartQueryPanel.tsx",
+      "filePath": "apps/mobile/src/features/reflections/trails/SmartQueryPanel.tsx",
+      "summary": "智能查询面板组件，展示解析中的加载态、智能提问气泡、查询结果与快速创建脉络入口。",
+      "tags": [
+        "trail",
+        "smart-query",
+        "panel"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/trails/SmartQueryPanel.tsx:SmartQueryPanel",
+      "type": "function",
+      "name": "SmartQueryPanel",
+      "filePath": "apps/mobile/src/features/reflections/trails/SmartQueryPanel.tsx",
+      "lineRange": [
+        23,
+        95
+      ],
+      "summary": "智能查询面板，展示解析态、提问气泡与查询结果。 trail smart-query",
+      "tags": [
+        "panel"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+      "type": "file",
+      "name": "ThoughtTrailDetailScreen.tsx",
+      "filePath": "apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+      "summary": "思想脉络详情页，展示脉络时间线、笔记、计划任务、相关脉络与 AI 回顾面板，支持编辑名称/描述与删除等操作。",
+      "tags": [
+        "trail",
+        "detail",
+        "review",
+        "timeline",
+        "screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx:ThoughtTrailDetailScreen",
+      "type": "function",
+      "name": "ThoughtTrailDetailScreen",
+      "filePath": "apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+      "lineRange": [
+        30,
+        364
+      ],
+      "summary": "脉络详情主组件，展示时间线、笔记、计划与 AI 回顾面板。 trail detail",
+      "tags": [
+        "screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/trails/TrailOverviewCard.tsx",
+      "type": "file",
+      "name": "TrailOverviewCard.tsx",
+      "filePath": "apps/mobile/src/features/reflections/trails/TrailOverviewCard.tsx",
+      "summary": "脉络概览卡片，展示感念数、笔记数、日期跨度与情绪变化趋势，数据为空时自动隐藏。",
+      "tags": [
+        "trail",
+        "ui-component",
+        "overview"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/trails/TrailPickerModal.tsx",
+      "type": "file",
+      "name": "TrailPickerModal.tsx",
+      "filePath": "apps/mobile/src/features/reflections/trails/TrailPickerModal.tsx",
+      "summary": "脉络选择弹窗，展示所有脉络及其统计，支持将某条感念加入/移出脉络，或新建脉络。",
+      "tags": [
+        "trail",
+        "modal",
+        "picker"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/trails/TrailPickerModal.tsx:TrailPickerModal",
+      "type": "function",
+      "name": "TrailPickerModal",
+      "filePath": "apps/mobile/src/features/reflections/trails/TrailPickerModal.tsx",
+      "lineRange": [
+        22,
+        129
+      ],
+      "summary": "脉络选择弹窗，支持将感念加入/移出脉络或新建脉络。 trail",
+      "tags": [
+        "modal"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/trails/TrailSuggestionBanner.tsx",
+      "type": "file",
+      "name": "TrailSuggestionBanner.tsx",
+      "filePath": "apps/mobile/src/features/reflections/trails/TrailSuggestionBanner.tsx",
+      "summary": "脉络推荐横幅，基于近 30 天感念计算推荐脉络并支持忽略，用户点击可跳转创建。",
+      "tags": [
+        "trail",
+        "recommendation",
+        "banner"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/trails/TrailSuggestionBanner.tsx:TrailSuggestionBanner",
+      "type": "function",
+      "name": "TrailSuggestionBanner",
+      "filePath": "apps/mobile/src/features/reflections/trails/TrailSuggestionBanner.tsx",
+      "lineRange": [
+        19,
+        124
+      ],
+      "summary": "脉络推荐横幅，基于近期感念计算推荐并支持忽略。 trail",
+      "tags": [
+        "recommendation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/trails/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "apps/mobile/src/features/reflections/trails/index.ts",
+      "summary": "感念心迹模块桶文件（barrel），统一导出心迹相关屏幕、模态框与子组件。",
+      "tags": [
+        "trail",
+        "barrel",
+        "exports"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/settings/AISettingsScreen.tsx",
+      "type": "file",
+      "name": "AISettingsScreen.tsx",
+      "filePath": "apps/mobile/src/features/settings/AISettingsScreen.tsx",
+      "summary": "AI 设置页，管理多模型配置（增删改、设默认、启用/禁用、连接测试），以及本地/云端/混合模式切换。",
+      "tags": [
+        "settings",
+        "ai",
+        "model-config",
+        "screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/settings/AISettingsScreen.tsx:AISettingsScreen",
+      "type": "function",
+      "name": "AISettingsScreen",
+      "filePath": "apps/mobile/src/features/settings/AISettingsScreen.tsx",
+      "lineRange": [
+        12,
+        524
+      ],
+      "summary": "AI 设置主组件，管理多模型配置与运行模式切换。 settings ai",
+      "tags": [
+        "screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/settings/PrivacyPolicyScreen.tsx",
+      "type": "file",
+      "name": "PrivacyPolicyScreen.tsx",
+      "filePath": "apps/mobile/src/features/settings/PrivacyPolicyScreen.tsx",
+      "summary": "隐私政策展示页，以分区文本形式呈现应用隐私条款，属于静态内容屏幕。",
+      "tags": [
+        "settings",
+        "privacy",
+        "screen"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/settings/PrivacyPolicyScreen.tsx:PrivacyPolicyScreen",
+      "type": "function",
+      "name": "PrivacyPolicyScreen",
+      "filePath": "apps/mobile/src/features/settings/PrivacyPolicyScreen.tsx",
+      "lineRange": [
+        9,
+        40
+      ],
+      "summary": "隐私政策静态展示页。 settings",
+      "tags": [
+        "privacy"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/settings/ProfileScreen.tsx",
+      "type": "file",
+      "name": "ProfileScreen.tsx",
+      "filePath": "apps/mobile/src/features/settings/ProfileScreen.tsx",
+      "summary": "个人资料页，展示用户信息、修行数据摘要，并提供进入 AI 设置、回收站等入口。",
+      "tags": [
+        "settings",
+        "profile",
+        "screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/settings/ProfileScreen.tsx:ProfileScreen",
+      "type": "function",
+      "name": "ProfileScreen",
+      "filePath": "apps/mobile/src/features/settings/ProfileScreen.tsx",
+      "lineRange": [
+        25,
+        634
+      ],
+      "summary": "个人资料主组件，展示用户信息与修行数据摘要。 settings profile",
+      "tags": [
+        "screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/settings/RecycleBinScreen.tsx",
+      "type": "file",
+      "name": "RecycleBinScreen.tsx",
+      "filePath": "apps/mobile/src/features/settings/RecycleBinScreen.tsx",
+      "summary": "回收站页，列出已删除项目并支持恢复，显示剩余保留天数倒计时。",
+      "tags": [
+        "settings",
+        "recycle-bin",
+        "screen"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/settings/RecycleBinScreen.tsx:getItemName",
+      "type": "function",
+      "name": "getItemName",
+      "filePath": "apps/mobile/src/features/settings/RecycleBinScreen.tsx",
+      "lineRange": [
+        36,
+        47
+      ],
+      "summary": "回收站辅助函数，根据条目类型提取展示名称。 settings",
+      "tags": [
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/settings/RecycleBinScreen.tsx:RecycleBinScreen",
+      "type": "function",
+      "name": "RecycleBinScreen",
+      "filePath": "apps/mobile/src/features/settings/RecycleBinScreen.tsx",
+      "lineRange": [
+        54,
+        172
+      ],
+      "summary": "回收站主组件，列出已删除项目并支持恢复。 settings recycle-bin",
+      "tags": [
+        "screen"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/settings/SettingsScreen.tsx",
+      "type": "file",
+      "name": "SettingsScreen.tsx",
+      "filePath": "apps/mobile/src/features/settings/SettingsScreen.tsx",
+      "summary": "设置主页，集成提醒时间、同步冲突、通知、账户等多项设置入口与功能开关。",
+      "tags": [
+        "settings",
+        "screen",
+        "notifications"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/settings/SettingsScreen.tsx:SettingsScreen",
+      "type": "function",
+      "name": "SettingsScreen",
+      "filePath": "apps/mobile/src/features/settings/SettingsScreen.tsx",
+      "lineRange": [
+        34,
+        555
+      ],
+      "summary": "设置主页主组件，集成提醒、同步、通知等多项设置。 settings",
+      "tags": [
+        "screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/shared/components/MalaRing.tsx",
+      "type": "file",
+      "name": "MalaRing.tsx",
+      "filePath": "apps/mobile/src/features/shared/components/MalaRing.tsx",
+      "summary": "念珠环形可视化组件，按 beadCount 均匀分布珠子并高亮已完成数量，支持中心标签。",
+      "tags": [
+        "shared",
+        "ui-component",
+        "visualization"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/shared/components/MalaRing.tsx:MalaRing",
+      "type": "function",
+      "name": "MalaRing",
+      "filePath": "apps/mobile/src/features/shared/components/MalaRing.tsx",
+      "lineRange": [
+        41,
+        137
+      ],
+      "summary": "念珠环形可视化组件，均匀分布珠子并高亮已完成数量。 shared",
+      "tags": [
+        "ui-component"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/shared/hooks/useAudioCache.ts",
+      "type": "file",
+      "name": "useAudioCache.ts",
+      "filePath": "apps/mobile/src/features/shared/hooks/useAudioCache.ts",
+      "summary": "音频缓存 hook，基于 expo-file-system 实现音频文件的本地下载、目录管理与缓存状态追踪。",
+      "tags": [
+        "shared",
+        "audio",
+        "custom-hook",
+        "cache"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/shared/hooks/useAudioCache.ts:useAudioCache",
+      "type": "function",
+      "name": "useAudioCache",
+      "filePath": "apps/mobile/src/features/shared/hooks/useAudioCache.ts",
+      "lineRange": [
+        26,
+        108
+      ],
+      "summary": "音频缓存 hook，实现本地下载与缓存状态追踪。 shared audio",
+      "tags": [
+        "custom-hook"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/shared/utils/lazyModule.ts",
+      "type": "file",
+      "name": "lazyModule.ts",
+      "filePath": "apps/mobile/src/features/shared/utils/lazyModule.ts",
+      "summary": "懒加载模块工具，通过 require 动态加载与错误日志封装，创建单模块与批量模块的懒加载器。",
+      "tags": [
+        "shared",
+        "lazy-load",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/shared/utils/lazyModule.ts:createLazyModule",
+      "type": "function",
+      "name": "createLazyModule",
+      "filePath": "apps/mobile/src/features/shared/utils/lazyModule.ts",
+      "lineRange": [
+        22,
+        35
+      ],
+      "summary": "创建单个懒加载模块，封装 require 与错误日志。 shared lazy-load",
+      "tags": [
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/shared/utils/lazyModule.ts:createLazyModules",
+      "type": "function",
+      "name": "createLazyModules",
+      "filePath": "apps/mobile/src/features/shared/utils/lazyModule.ts",
+      "lineRange": [
+        49,
+        57
+      ],
+      "summary": "批量创建懒加载模块映射。 shared lazy-load",
+      "tags": [
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sleep/DiaryModal.tsx",
+      "type": "file",
+      "name": "DiaryModal.tsx",
+      "filePath": "apps/mobile/src/features/sleep/DiaryModal.tsx",
+      "summary": "睡眠日记弹窗，录入就寝/起床时间、睡眠质量、身/心/灵状态与备注，并持久化到 store。",
+      "tags": [
+        "sleep",
+        "modal",
+        "diary"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sleep/DiaryModal.tsx:parseHHMM",
+      "type": "function",
+      "name": "parseHHMM",
+      "filePath": "apps/mobile/src/features/sleep/DiaryModal.tsx",
+      "lineRange": [
+        22,
+        31
+      ],
+      "summary": "parseHHMM 函数",
+      "tags": [
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sleep/DiaryModal.tsx:DiaryModal",
+      "type": "function",
+      "name": "DiaryModal",
+      "filePath": "apps/mobile/src/features/sleep/DiaryModal.tsx",
+      "lineRange": [
+        46,
+        391
+      ],
+      "summary": "睡眠日记弹窗主组件，录入睡眠时间、质量与状态。 sleep",
+      "tags": [
+        "modal"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sleep/SleepEngine.tsx",
+      "type": "file",
+      "name": "SleepEngine.tsx",
+      "filePath": "apps/mobile/src/features/sleep/SleepEngine.tsx",
+      "summary": "睡眠引擎主屏幕，协调入睡屏障、感恩、报告等阶段，管理睡眠周期计时与通知调度。",
+      "tags": [
+        "sleep",
+        "engine",
+        "screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sleep/SleepEngine.tsx:SleepEngine",
+      "type": "function",
+      "name": "SleepEngine",
+      "filePath": "apps/mobile/src/features/sleep/SleepEngine.tsx",
+      "lineRange": [
+        25,
+        342
+      ],
+      "summary": "睡眠引擎主组件，协调入睡屏障到报告的各阶段。 sleep engine",
+      "tags": [
+        "screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sleep/SleepHistoryPage.tsx",
+      "type": "file",
+      "name": "SleepHistoryPage.tsx",
+      "filePath": "apps/mobile/src/features/sleep/SleepHistoryPage.tsx",
+      "summary": "睡眠历史页，提供统计卡片、热力图、详情弹窗与连续天数计算，含多个内部子组件。",
+      "tags": [
+        "sleep",
+        "history",
+        "stats",
+        "screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sleep/SleepHistoryPage.tsx:calcStreak",
+      "type": "function",
+      "name": "calcStreak",
+      "filePath": "apps/mobile/src/features/sleep/SleepHistoryPage.tsx",
+      "lineRange": [
+        34,
+        49
+      ],
+      "summary": "计算睡眠连续天数的辅助函数。 sleep",
+      "tags": [
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sleep/SleepHistoryPage.tsx:StatsCard",
+      "type": "function",
+      "name": "StatsCard",
+      "filePath": "apps/mobile/src/features/sleep/SleepHistoryPage.tsx",
+      "lineRange": [
+        64,
+        115
+      ],
+      "summary": "睡眠统计卡片子组件，展示平均时长、质量等聚合指标。 sleep",
+      "tags": [
+        "stats"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sleep/SleepHistoryPage.tsx:Heatmap",
+      "type": "function",
+      "name": "Heatmap",
+      "filePath": "apps/mobile/src/features/sleep/SleepHistoryPage.tsx",
+      "lineRange": [
+        118,
+        182
+      ],
+      "summary": "睡眠热力图子组件，按日历格展示每日睡眠时长分布。 sleep",
+      "tags": [
+        "stats"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sleep/SleepHistoryPage.tsx:DetailModal",
+      "type": "function",
+      "name": "DetailModal",
+      "filePath": "apps/mobile/src/features/sleep/SleepHistoryPage.tsx",
+      "lineRange": [
+        185,
+        332
+      ],
+      "summary": "睡眠详情弹窗子组件，展示单条睡眠记录详情并支持删除。 sleep",
+      "tags": [
+        "modal"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sleep/SleepHistoryPage.tsx:SleepHistoryPage",
+      "type": "function",
+      "name": "SleepHistoryPage",
+      "filePath": "apps/mobile/src/features/sleep/SleepHistoryPage.tsx",
+      "lineRange": [
+        347,
+        497
+      ],
+      "summary": "睡眠历史主组件，聚合统计、热力图与详情弹窗。 sleep history",
+      "tags": [
+        "screen"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sleep/SleepHistoryPage.tsx:mkStyles",
+      "type": "function",
+      "name": "mkStyles",
+      "filePath": "apps/mobile/src/features/sleep/SleepHistoryPage.tsx",
+      "lineRange": [
+        499,
+        940
+      ],
+      "summary": "睡眠历史页样式生成函数，返回主题化的 StyleSheet 对象。 sleep",
+      "tags": [
+        "styles"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sleep/SleepScreen.tsx",
+      "type": "file",
+      "name": "SleepScreen.tsx",
+      "filePath": "apps/mobile/src/features/sleep/SleepScreen.tsx",
+      "summary": "睡眠模块入口屏幕，仅作标题占位与导航入口，属于轻量级容器组件。",
+      "tags": [
+        "sleep",
+        "screen",
+        "entry"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sleep/SleepScreen.tsx:SleepScreen",
+      "type": "function",
+      "name": "SleepScreen",
+      "filePath": "apps/mobile/src/features/sleep/SleepScreen.tsx",
+      "lineRange": [
+        12,
+        24
+      ],
+      "summary": "睡眠模块入口容器组件。 sleep",
+      "tags": [
+        "screen"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sleep/hooks/useBarrierTimer.ts",
+      "type": "file",
+      "name": "useBarrierTimer.ts",
+      "filePath": "apps/mobile/src/features/sleep/hooks/useBarrierTimer.ts",
+      "summary": "入睡屏障计时 hook，管理多阶段练习倒计时、完成状态与阶段切换逻辑。",
+      "tags": [
+        "sleep",
+        "custom-hook",
+        "timer",
+        "barrier"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sleep/hooks/useBarrierTimer.ts:useBarrierTimer",
+      "type": "function",
+      "name": "useBarrierTimer",
+      "filePath": "apps/mobile/src/features/sleep/hooks/useBarrierTimer.ts",
+      "lineRange": [
+        47,
+        230
+      ],
+      "summary": "入睡屏障计时 hook，管理多阶段倒计时与阶段切换。 sleep custom-hook",
+      "tags": [
+        "timer"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sleep/pages/SleepBarrierPage.tsx",
+      "type": "file",
+      "name": "SleepBarrierPage.tsx",
+      "filePath": "apps/mobile/src/features/sleep/pages/SleepBarrierPage.tsx",
+      "summary": "入睡屏障练习页，展示呼吸/冥想/持咒/阅读选项与倒计时动画，引导用户完成睡前仪式。",
+      "tags": [
+        "sleep",
+        "barrier",
+        "screen"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sleep/pages/SleepBarrierPage.tsx:SleepBarrierPage",
+      "type": "function",
+      "name": "SleepBarrierPage",
+      "filePath": "apps/mobile/src/features/sleep/pages/SleepBarrierPage.tsx",
+      "lineRange": [
+        64,
+        126
+      ],
+      "summary": "入睡屏障练习页，展示睡前仪式选项与倒计时动画。 sleep barrier",
+      "tags": [
+        "screen"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sleep/pages/SleepGratitudePage.tsx",
+      "type": "file",
+      "name": "SleepGratitudePage.tsx",
+      "filePath": "apps/mobile/src/features/sleep/pages/SleepGratitudePage.tsx",
+      "summary": "睡眠感恩页，让用户对今日事项进行感恩记录，并选择睡眠质量星级。",
+      "tags": [
+        "sleep",
+        "gratitude",
+        "screen"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sleep/pages/SleepGratitudePage.tsx:SleepGratitudePage",
+      "type": "function",
+      "name": "SleepGratitudePage",
+      "filePath": "apps/mobile/src/features/sleep/pages/SleepGratitudePage.tsx",
+      "lineRange": [
+        63,
+        129
+      ],
+      "summary": "睡眠感恩页，记录感恩事项与质量星级。 sleep gratitude",
+      "tags": [
+        "screen"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sleep/pages/SleepReportPage.tsx",
+      "type": "file",
+      "name": "SleepReportPage.tsx",
+      "filePath": "apps/mobile/src/features/sleep/pages/SleepReportPage.tsx",
+      "summary": "睡眠报告页，汇总本次睡眠时长、质量评分与感恩记录，展示完成总结。",
+      "tags": [
+        "sleep",
+        "report",
+        "screen"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sleep/pages/SleepReportPage.tsx:SleepReportPage",
+      "type": "function",
+      "name": "SleepReportPage",
+      "filePath": "apps/mobile/src/features/sleep/pages/SleepReportPage.tsx",
+      "lineRange": [
+        71,
+        157
+      ],
+      "summary": "睡眠报告页，汇总睡眠时长、质量评分与感恩记录。 sleep report",
+      "tags": [
+        "screen"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sleep/sleepStyles.ts",
+      "type": "file",
+      "name": "sleepStyles.ts",
+      "filePath": "apps/mobile/src/features/sleep/sleepStyles.ts",
+      "summary": "睡眠模块共享样式文件，集中定义睡眠相关组件的 StyleSheet 样式对象。",
+      "tags": [
+        "sleep",
+        "styles",
+        "shared"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sleep/useSleepNotifications.ts",
+      "type": "file",
+      "name": "useSleepNotifications.ts",
+      "filePath": "apps/mobile/src/features/sleep/useSleepNotifications.ts",
+      "summary": "睡眠通知 hook，封装 expo-notifications 权限请求与睡前提醒调度逻辑。",
+      "tags": [
+        "sleep",
+        "custom-hook",
+        "notifications"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sleep/useSleepNotifications.ts:getNotifications",
+      "type": "function",
+      "name": "getNotifications",
+      "filePath": "apps/mobile/src/features/sleep/useSleepNotifications.ts",
+      "lineRange": [
+        13,
+        30
+      ],
+      "summary": "动态导入 expo-notifications 并返回通知 API 的辅助函数。 sleep notifications",
+      "tags": [
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sleep/useSleepNotifications.ts:useSleepNotifications",
+      "type": "function",
+      "name": "useSleepNotifications",
+      "filePath": "apps/mobile/src/features/sleep/useSleepNotifications.ts",
+      "lineRange": [
+        32,
+        193
+      ],
+      "summary": "睡眠通知 hook，封装权限请求与睡前提醒调度。 sleep custom-hook",
+      "tags": [
+        "notifications"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/stats/StatsScreen.tsx",
+      "type": "file",
+      "name": "StatsScreen.tsx",
+      "filePath": "apps/mobile/src/features/stats/StatsScreen.tsx",
+      "summary": "统计页，利用 BarChart/LineChart/CalendarGrid 等图表组件展示运动、修行等多维度数据。",
+      "tags": [
+        "stats",
+        "charts",
+        "screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/stats/StatsScreen.tsx:StatsScreen",
+      "type": "function",
+      "name": "StatsScreen",
+      "filePath": "apps/mobile/src/features/stats/StatsScreen.tsx",
+      "lineRange": [
+        37,
+        451
+      ],
+      "summary": "统计主组件，利用图表展示运动、修行等多维度数据。 stats charts",
+      "tags": [
+        "screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sutra/SutraHistoryScreen.tsx",
+      "type": "file",
+      "name": "SutraHistoryScreen.tsx",
+      "filePath": "apps/mobile/src/features/sutra/SutraHistoryScreen.tsx",
+      "summary": "经文历史页，按日期聚合展示诵经记录，支持按天查看累计次数与详细条目。",
+      "tags": [
+        "sutra",
+        "history",
+        "screen"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sutra/SutraHistoryScreen.tsx:SutraHistoryScreen",
+      "type": "function",
+      "name": "SutraHistoryScreen",
+      "filePath": "apps/mobile/src/features/sutra/SutraHistoryScreen.tsx",
+      "lineRange": [
+        23,
+        229
+      ],
+      "summary": "经文历史主组件，按日期聚合展示诵经记录。 sutra history",
+      "tags": [
+        "screen"
+      ],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/LinkReflectionModal.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/LinkReflectionModal.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/LinkReflectionModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/LinkReflectionModal.tsx",
+      "target": "function:apps/mobile/src/features/reflections/trails/LinkReflectionModal.tsx:LinkReflectionModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/LinkReflectionModal.tsx",
+      "target": "function:apps/mobile/src/features/reflections/trails/LinkReflectionModal.tsx:LinkReflectionModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/MindTrailEntryCard.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/MindTrailEntryCard.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/MindTrailEntryCard.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/MindTrailEntryCard.tsx",
+      "target": "function:apps/mobile/src/features/reflections/trails/MindTrailEntryCard.tsx:MindTrailEntryCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/MindTrailScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/MindTrailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/insights/RecommendCard.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/MindTrailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/trails/CreateThoughtTrailModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/MindTrailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/trails/SmartQueryPanel.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/MindTrailScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/MindTrailScreen.tsx",
+      "target": "file:apps/mobile/src/store/safeAsyncStorage.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/MindTrailScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/MindTrailScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/MindTrailScreen.tsx",
+      "target": "function:apps/mobile/src/features/reflections/trails/MindTrailScreen.tsx:MindTrailScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/MindTrailScreen.tsx",
+      "target": "function:apps/mobile/src/features/reflections/trails/MindTrailScreen.tsx:MindTrailScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/QuickCreateTrailScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/QuickCreateTrailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/core/FilterTags.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/QuickCreateTrailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/QuickCreateTrailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/QuickCreateTrailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/insights/InsightPanel.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/QuickCreateTrailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/insights/SmartQueryBubble.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/QuickCreateTrailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/shared/SelectionSummary.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/QuickCreateTrailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/trails/ReflectionCheckItem.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/QuickCreateTrailScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/QuickCreateTrailScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/QuickCreateTrailScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/QuickCreateTrailScreen.tsx",
+      "target": "function:apps/mobile/src/features/reflections/trails/QuickCreateTrailScreen.tsx:QuickCreateTrailScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/QuickCreateTrailScreen.tsx",
+      "target": "function:apps/mobile/src/features/reflections/trails/QuickCreateTrailScreen.tsx:QuickCreateTrailScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ReflectionCheckItem.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ReflectionCheckItem.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/RelatedTrailsSection.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/RelatedTrailsSection.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/RelatedTrailsSection.tsx",
+      "target": "function:apps/mobile/src/features/reflections/trails/RelatedTrailsSection.tsx:RelatedTrailsSection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/RelatedTrailsSection.tsx",
+      "target": "function:apps/mobile/src/features/reflections/trails/RelatedTrailsSection.tsx:RelatedTrailsSection",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ReviewAIPanel.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ReviewAIPanel.tsx",
+      "target": "file:apps/mobile/src/features/reflections/shared/SegmentBar.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ReviewAIPanel.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ReviewAIPanel.tsx",
+      "target": "function:apps/mobile/src/features/reflections/trails/ReviewAIPanel.tsx:ReviewAIPanel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ReviewAIPanel.tsx",
+      "target": "function:apps/mobile/src/features/reflections/trails/ReviewAIPanel.tsx:ReviewAIPanel",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/SmartQueryPanel.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/SmartQueryPanel.tsx",
+      "target": "file:apps/mobile/src/features/reflections/insights/SmartQueryBubble.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/SmartQueryPanel.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/SmartQueryPanel.tsx",
+      "target": "function:apps/mobile/src/features/reflections/trails/SmartQueryPanel.tsx:SmartQueryPanel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/SmartQueryPanel.tsx",
+      "target": "function:apps/mobile/src/features/reflections/trails/SmartQueryPanel.tsx:SmartQueryPanel",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/core/AddReflectionFAB.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/core/CreatePlanFromTrailModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/core/PlanTasksSection.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/hooks/useTrailActions.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/hooks/useTrailAI.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/hooks/useTrailData.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/review/EditNoteModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/review/ReviewNoteCard.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/review/WriteNoteModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/shared/SegmentBar.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/shared/SelectReflectionModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/timeline/TimelineList.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/trails/RelatedTrailsSection.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+      "target": "file:apps/mobile/src/features/reflections/trails/ReviewAIPanel.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+      "target": "function:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx:ThoughtTrailDetailScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+      "target": "function:apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx:ThoughtTrailDetailScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/TrailOverviewCard.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/TrailOverviewCard.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/TrailPickerModal.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/TrailPickerModal.tsx",
+      "target": "file:apps/mobile/src/features/reflections/trails/CreateThoughtTrailModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/TrailPickerModal.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/TrailPickerModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/TrailPickerModal.tsx",
+      "target": "function:apps/mobile/src/features/reflections/trails/TrailPickerModal.tsx:TrailPickerModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/TrailPickerModal.tsx",
+      "target": "function:apps/mobile/src/features/reflections/trails/TrailPickerModal.tsx:TrailPickerModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/TrailSuggestionBanner.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/TrailSuggestionBanner.tsx",
+      "target": "file:apps/mobile/src/navigation/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/TrailSuggestionBanner.tsx",
+      "target": "file:apps/mobile/src/store/safeAsyncStorage.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/TrailSuggestionBanner.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/TrailSuggestionBanner.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/TrailSuggestionBanner.tsx",
+      "target": "function:apps/mobile/src/features/reflections/trails/TrailSuggestionBanner.tsx:TrailSuggestionBanner",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/TrailSuggestionBanner.tsx",
+      "target": "function:apps/mobile/src/features/reflections/trails/TrailSuggestionBanner.tsx:TrailSuggestionBanner",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/AISettingsScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/AISettingsScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/AISettingsScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/AISettingsScreen.tsx",
+      "target": "function:apps/mobile/src/features/settings/AISettingsScreen.tsx:AISettingsScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/AISettingsScreen.tsx",
+      "target": "function:apps/mobile/src/features/settings/AISettingsScreen.tsx:AISettingsScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/PrivacyPolicyScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/PrivacyPolicyScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/PrivacyPolicyScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/PrivacyPolicyScreen.tsx",
+      "target": "function:apps/mobile/src/features/settings/PrivacyPolicyScreen.tsx:PrivacyPolicyScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/PrivacyPolicyScreen.tsx",
+      "target": "function:apps/mobile/src/features/settings/PrivacyPolicyScreen.tsx:PrivacyPolicyScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/ProfileScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/ProfileScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/ProfileScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/ProfileScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/ProfileScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/ProfileScreen.tsx",
+      "target": "function:apps/mobile/src/features/settings/ProfileScreen.tsx:ProfileScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/ProfileScreen.tsx",
+      "target": "function:apps/mobile/src/features/settings/ProfileScreen.tsx:ProfileScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/RecycleBinScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/RecycleBinScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/RecycleBinScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/RecycleBinScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/RecycleBinScreen.tsx",
+      "target": "function:apps/mobile/src/features/settings/RecycleBinScreen.tsx:getItemName",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/RecycleBinScreen.tsx",
+      "target": "function:apps/mobile/src/features/settings/RecycleBinScreen.tsx:RecycleBinScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/RecycleBinScreen.tsx",
+      "target": "function:apps/mobile/src/features/settings/RecycleBinScreen.tsx:RecycleBinScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/SettingsScreen.tsx",
+      "target": "file:apps/mobile/src/components/SyncConflictPanel.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/SettingsScreen.tsx",
+      "target": "file:apps/mobile/src/components/TimePickerModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/SettingsScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/SettingsScreen.tsx",
+      "target": "file:apps/mobile/src/features/notifications/NotificationService.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/SettingsScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/SettingsScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/SettingsScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/SettingsScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/SettingsScreen.tsx",
+      "target": "function:apps/mobile/src/features/settings/SettingsScreen.tsx:SettingsScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/settings/SettingsScreen.tsx",
+      "target": "function:apps/mobile/src/features/settings/SettingsScreen.tsx:SettingsScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/shared/components/MalaRing.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/shared/components/MalaRing.tsx",
+      "target": "function:apps/mobile/src/features/shared/components/MalaRing.tsx:MalaRing",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/shared/components/MalaRing.tsx",
+      "target": "function:apps/mobile/src/features/shared/components/MalaRing.tsx:MalaRing",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/shared/hooks/useAudioCache.ts",
+      "target": "function:apps/mobile/src/features/shared/hooks/useAudioCache.ts:useAudioCache",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/shared/hooks/useAudioCache.ts",
+      "target": "function:apps/mobile/src/features/shared/hooks/useAudioCache.ts:useAudioCache",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/shared/utils/lazyModule.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/shared/utils/lazyModule.ts",
+      "target": "function:apps/mobile/src/features/shared/utils/lazyModule.ts:createLazyModule",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/shared/utils/lazyModule.ts",
+      "target": "function:apps/mobile/src/features/shared/utils/lazyModule.ts:createLazyModule",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/shared/utils/lazyModule.ts",
+      "target": "function:apps/mobile/src/features/shared/utils/lazyModule.ts:createLazyModules",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/shared/utils/lazyModule.ts",
+      "target": "function:apps/mobile/src/features/shared/utils/lazyModule.ts:createLazyModules",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/DiaryModal.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/DiaryModal.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/DiaryModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/DiaryModal.tsx",
+      "target": "function:apps/mobile/src/features/sleep/DiaryModal.tsx:parseHHMM",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/DiaryModal.tsx",
+      "target": "function:apps/mobile/src/features/sleep/DiaryModal.tsx:DiaryModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/DiaryModal.tsx",
+      "target": "function:apps/mobile/src/features/sleep/DiaryModal.tsx:DiaryModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepEngine.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepEngine.tsx",
+      "target": "file:apps/mobile/src/features/sleep/DiaryModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepEngine.tsx",
+      "target": "file:apps/mobile/src/features/sleep/hooks/useBarrierTimer.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepEngine.tsx",
+      "target": "file:apps/mobile/src/features/sleep/pages/SleepBarrierPage.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepEngine.tsx",
+      "target": "file:apps/mobile/src/features/sleep/pages/SleepGratitudePage.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepEngine.tsx",
+      "target": "file:apps/mobile/src/features/sleep/pages/SleepReportPage.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepEngine.tsx",
+      "target": "file:apps/mobile/src/features/sleep/sleepStyles.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepEngine.tsx",
+      "target": "file:apps/mobile/src/features/sleep/useSleepNotifications.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepEngine.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepEngine.tsx",
+      "target": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepEngine.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepEngine.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepEngine.tsx",
+      "target": "function:apps/mobile/src/features/sleep/SleepEngine.tsx:SleepEngine",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepEngine.tsx",
+      "target": "function:apps/mobile/src/features/sleep/SleepEngine.tsx:SleepEngine",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepHistoryPage.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepHistoryPage.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepHistoryPage.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepHistoryPage.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/sleep/SleepHistoryPage.tsx:calcStreak",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/sleep/SleepHistoryPage.tsx:StatsCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/sleep/SleepHistoryPage.tsx:Heatmap",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/sleep/SleepHistoryPage.tsx:DetailModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/sleep/SleepHistoryPage.tsx:SleepHistoryPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/sleep/SleepHistoryPage.tsx:SleepHistoryPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/sleep/SleepHistoryPage.tsx:mkStyles",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepScreen.tsx",
+      "target": "function:apps/mobile/src/features/sleep/SleepScreen.tsx:SleepScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/SleepScreen.tsx",
+      "target": "function:apps/mobile/src/features/sleep/SleepScreen.tsx:SleepScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/hooks/useBarrierTimer.ts",
+      "target": "function:apps/mobile/src/features/sleep/hooks/useBarrierTimer.ts:useBarrierTimer",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/hooks/useBarrierTimer.ts",
+      "target": "function:apps/mobile/src/features/sleep/hooks/useBarrierTimer.ts:useBarrierTimer",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/pages/SleepBarrierPage.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/pages/SleepBarrierPage.tsx",
+      "target": "file:apps/mobile/src/features/sleep/sleepStyles.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/pages/SleepBarrierPage.tsx",
+      "target": "function:apps/mobile/src/features/sleep/pages/SleepBarrierPage.tsx:SleepBarrierPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/pages/SleepBarrierPage.tsx",
+      "target": "function:apps/mobile/src/features/sleep/pages/SleepBarrierPage.tsx:SleepBarrierPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/pages/SleepGratitudePage.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/pages/SleepGratitudePage.tsx",
+      "target": "file:apps/mobile/src/features/sleep/sleepStyles.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/pages/SleepGratitudePage.tsx",
+      "target": "function:apps/mobile/src/features/sleep/pages/SleepGratitudePage.tsx:SleepGratitudePage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/pages/SleepGratitudePage.tsx",
+      "target": "function:apps/mobile/src/features/sleep/pages/SleepGratitudePage.tsx:SleepGratitudePage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/pages/SleepReportPage.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/pages/SleepReportPage.tsx",
+      "target": "file:apps/mobile/src/features/sleep/sleepStyles.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/pages/SleepReportPage.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/pages/SleepReportPage.tsx",
+      "target": "function:apps/mobile/src/features/sleep/pages/SleepReportPage.tsx:SleepReportPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/pages/SleepReportPage.tsx",
+      "target": "function:apps/mobile/src/features/sleep/pages/SleepReportPage.tsx:SleepReportPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/sleepStyles.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/useSleepNotifications.ts",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/useSleepNotifications.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/useSleepNotifications.ts",
+      "target": "function:apps/mobile/src/features/sleep/useSleepNotifications.ts:getNotifications",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/useSleepNotifications.ts",
+      "target": "function:apps/mobile/src/features/sleep/useSleepNotifications.ts:useSleepNotifications",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sleep/useSleepNotifications.ts",
+      "target": "function:apps/mobile/src/features/sleep/useSleepNotifications.ts:useSleepNotifications",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/stats/StatsScreen.tsx",
+      "target": "file:apps/mobile/src/components/charts/BarChart.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/stats/StatsScreen.tsx",
+      "target": "file:apps/mobile/src/components/charts/CalendarGrid.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/stats/StatsScreen.tsx",
+      "target": "file:apps/mobile/src/components/charts/LineChart.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/stats/StatsScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/stats/StatsScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/stats/StatsScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/stats/StatsScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/stats/StatsScreen.tsx",
+      "target": "function:apps/mobile/src/features/stats/StatsScreen.tsx:StatsScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/stats/StatsScreen.tsx",
+      "target": "function:apps/mobile/src/features/stats/StatsScreen.tsx:StatsScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sutra/SutraHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sutra/SutraHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sutra/SutraHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sutra/SutraHistoryScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sutra/SutraHistoryScreen.tsx",
+      "target": "function:apps/mobile/src/features/sutra/SutraHistoryScreen.tsx:SutraHistoryScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sutra/SutraHistoryScreen.tsx",
+      "target": "function:apps/mobile/src/features/sutra/SutraHistoryScreen.tsx:SutraHistoryScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:apps/mobile/src/features/sleep/SleepEngine.tsx:SleepEngine",
+      "target": "function:apps/mobile/src/features/sleep/useSleepNotifications.ts:useSleepNotifications",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:apps/mobile/src/features/sleep/SleepEngine.tsx:SleepEngine",
+      "target": "function:apps/mobile/src/features/sleep/hooks/useBarrierTimer.ts:useBarrierTimer",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ]
+}

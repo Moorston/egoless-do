@@ -3,9 +3,12 @@ const baseConfig = require('../../packages/config/eslint.base');
 module.exports = {
   root: true,
   ...baseConfig,
-  plugins: [...(baseConfig.plugins || []), 'react-hooks'],
+  plugins: [...(baseConfig.plugins || []), 'react-hooks', 'local'],
   rules: {
     ...baseConfig.rules,
+    // ── iOS Text strings rule: prevent raw numbers in <Text> ──
+    // TODO: upgrade to 'error' once all pre-existing violations are fixed
+    'local/no-raw-number-in-text': 'warn',
     '@typescript-eslint/no-var-requires': 'off',
     'no-empty': ['error', { allowEmptyCatch: true }],
     'react-hooks/rules-of-hooks': 'error',
@@ -34,4 +37,13 @@ module.exports = {
       },
     ],
   },
+  overrides: [
+    ...(baseConfig.overrides || []),
+    {
+      files: ['**/*.test.ts', '**/*.test.tsx', '**/__tests__/**'],
+      rules: {
+        'local/no-raw-number-in-text': 'warn',
+      },
+    },
+  ],
 };

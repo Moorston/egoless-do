@@ -1,0 +1,128 @@
+============================================================
+FILE: _archive/web-legacy/src/app/(auth)/login/page.tsx  (101l)
+  IMPORTS: ["import { useState } from 'react';", "import { useRouter } from 'next/navigation';", "import Link from 'next/link';", "import { useWebStore } from '../../../store/useWebStore';", "import { apiCheckEmail, FONT_BODY, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION } from '@egoless-do/core';"]
+  fns: ['LoginPage(10-89)']
+============================================================
+FILE: _archive/web-legacy/src/app/(auth)/register/page.tsx  (178l)
+  IMPORTS: ["import { useState, useRef, useCallback, useEffect } from 'react';", "import { useRouter } from 'next/navigation';", "import Link from 'next/link';", "import { useWebStore } from '../../../store/useWebStore';", "import { apiSendCode, apiCheckEmail, validatePassword, FONT_BODY, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION, FONT_SUB } from '@egoless-do/core';", "import { Check, X } from 'lucide-react';"]
+  fns: ['RegisterPage(11-155)']
+============================================================
+FILE: _archive/web-legacy/src/components/AmapContainer.tsx  (58l)
+  IMPORTS: ["import { useEffect, useRef } from 'react';", "import { loadAMap } from '../lib/amapLoader';", "import { createLogger } from '@egoless-do/core';"]
+  fns: ['AmapContainer(17-58)']
+============================================================
+FILE: _archive/web-legacy/src/components/AppHeader.tsx  (42l)
+  IMPORTS: ["import { THEMES, t, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, dateStr, yesterday, isGraceAvailable } from '@egoless-do/core';", "import { useWebStore } from '../store/useWebStore';", "import { Flame, Shield } from 'lucide-react';"]
+  fns: ['AppHeader(7-42)']
+============================================================
+FILE: _archive/web-legacy/src/components/AppShell.tsx  (284l)
+  IMPORTS: ["import React, { useState, useRef, useCallback, useEffect } from 'react';", "import dynamic from 'next/dynamic';", "import { useRouter } from 'next/navigation';", "import { useWebStore } from '../store/useWebStore';", "import { THEMES, t, setPocketbaseUrl, FONT_BODY, FONT_SUB, FONT_CLOSE, createLogger } from '@egoless-do/core';", "import { useReminder } from './useReminder';", "import { ErrorBoundary, useResponsive } from './helpers';", 'import {', "import { OverlayContext, useOverlayState } from './useOverlay';", "import AppHeader from './AppHeader';", "import HeaderTabs from './HeaderTabs';", "import BottomNav from './BottomNav';", "import StarfieldBackground from './StarfieldBackground';", "import HomeTab from './HomeTab';", "import FastingTab from './FastingTab';", "import MeditateTab from './MeditateTab';", "import ExerciseTab from './ExerciseTab';", "import SettingsTab from './SettingsTab';"]
+  fns: ['AppShell(58-212)', 'OverlayWrapper(214-238)', 'FabButton(240-284)']
+============================================================
+FILE: _archive/web-legacy/src/components/BottomNav.tsx  (46l)
+  IMPORTS: ["import { THEMES, t, FONT_BODY } from '@egoless-do/core';", "import { useWebStore } from '../store/useWebStore';"]
+  fns: ['BottomNav(14-46)']
+============================================================
+FILE: _archive/web-legacy/src/components/CheckinDetailPage.tsx  (196l)
+  IMPORTS: ["import { useMemo } from 'react';", "import { THEMES, COLORS, calculateCheckinStreak, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_BACK, FONT_STAT_SECTION, formatTime, parseCheckinNote, INCOMPLETE_REASONS } from '@egoless-do/core';", "import type { CheckinEntry } from '@egoless-do/core';", "import { useT } from './helpers';", "import { useWebStore } from '../store/useWebStore';", "import { ChevronLeft, CheckCircle2, PenLine, Star, Circle, Check, PersonStanding, BookOpen, Hand, Droplets, Utensils, AlertTriangle } from 'lucide-react';"]
+  fns: ['CheckinDetailPage(10-196)']
+============================================================
+FILE: _archive/web-legacy/src/components/CheckinPage.tsx  (493l)
+  IMPORTS: ["import { useState, useMemo, useCallback } from 'react';", "import { COLORS, dateStr, getTodayFoodLog, getActivePlan, getTodayItems, getTodayCustomTodos, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BACK, FONT_BADGE, getIncompleteItems, INCOMPLETE_REASONS } from '@egoless-do/core';", "import type { CheckinEntry } from '@egoless-do/core';", "import { RowItem, Checkbox, useTheme, useT, inp } from './helpers';", "import { useWebStore } from '../store/useWebStore';", "import { ChevronLeft, Utensils, PersonStanding, Star, ClipboardList, CheckCircle2, Circle, X, Check, Pencil, Droplets, Scale, Sparkles, Shield } from 'lucide-react';"]
+  fns: ['parseExistingNote(10-28)', 'CheckinPage(30-493)']
+============================================================
+FILE: _archive/web-legacy/src/components/CheckinStatsModal.tsx  (153l)
+  IMPORTS: ["import { useMemo } from 'react';", "import { useTheme, useT, cs } from './helpers';", "import CalendarGrid from './charts/CalendarGrid';", "import { useWebStore } from '../store/useWebStore';", "import { useShallow } from 'zustand/react/shallow';", "import { X } from 'lucide-react';", "import { FONT_BODY, FONT_SUB, FONT_TITLE, computeLongestStreak, INCOMPLETE_REASONS, parseCheckinNote } from '@egoless-do/core';", "import type { CheckinEntry } from '@egoless-do/core';"]
+  fns: ['CheckinStatsModal(17-153)']
+============================================================
+FILE: _archive/web-legacy/src/components/DateRangePickerModal.tsx  (222l)
+  IMPORTS: ["import { useState, useEffect } from 'react';", "import { dateStr, FONT_TITLE, FONT_SUB, FONT_BODY, FONT_BUTTON } from '@egoless-do/core';", "import { useT } from './helpers';", "import { useWebStore } from '../store/useWebStore';", "import { THEMES } from '@egoless-do/core';", "import { ChevronLeft, ChevronRight } from 'lucide-react';"]
+  fns: ['parseDate(22-27)', 'daysInMonth(29-32)', 'DateRangePickerModal(34-222)']
+============================================================
+FILE: _archive/web-legacy/src/components/ExerciseHistoryPage.tsx  (294l)
+  IMPORTS: ["import { useState, useMemo, useEffect, useRef } from 'react';", "import { THEMES, COLORS, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_STAT_CARD, FONT_STAT_SECTION, getSportType, formatPace, createLogger } from '@egoless-do/core';", "import type { ExerciseEntry } from '@egoless-do/core';", "import { useWebStore } from '../store/useWebStore';", "import { useT } from './helpers';", "import { loadAMap } from '../lib/amapLoader';", "import { ChevronLeft, X } from 'lucide-react';"]
+  fns: ['DetailCard(13-98)', 'ExerciseHistoryPage(100-294)']
+============================================================
+FILE: _archive/web-legacy/src/components/ExerciseTab.tsx  (213l)
+  IMPORTS: ["import { useState, useMemo } from 'react';", "import { SPORT_GROUPS, THEMES, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, FONT_CLOSE, FONT_BACK, formatPace } from '@egoless-do/core';", "import type { SportItem } from '@egoless-do/core';", "import { useT, LinkWorldBtn } from './helpers';", "import { useWebStore } from '../store/useWebStore';", "import { useOverlay } from './useOverlay';", "import { Footprints, PersonStanding, Bike, Dumbbell, ChevronRight, ChevronDown, X } from 'lucide-react';"]
+  fns: ['ExerciseTab(12-213)']
+============================================================
+FILE: _archive/web-legacy/src/components/FastHistoryPage.tsx  (108l)
+  IMPORTS: ["import { useMemo } from 'react';", "import { THEMES, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_TITLE, FONT_BACK, COLORS } from '@egoless-do/core';", "import { useWebStore } from '../store/useWebStore';", "import { useT } from './helpers';", "import { ChevronLeft } from 'lucide-react';"]
+  fns: ['FastHistoryPage(9-108)']
+============================================================
+FILE: _archive/web-legacy/src/components/FastingTab.tsx  (256l)
+  IMPORTS: ["import { useState, useEffect, useRef, useMemo, useCallback } from 'react';", "import { COLORS, WARM_CORAL, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_STAT_CARD, dateStr, createLogger } from '@egoless-do/core';", "import { useTheme, useT, cs, LinkWorldBtn, useCachedStyle } from './helpers';", "import { useWebStore } from '../store/useWebStore';", "import { useShallow } from 'zustand/react/shallow';", "import { useOverlay } from './useOverlay';", "import { Hourglass, Clock, Flame, Trophy, Timer, Scale, AlertTriangle, ChevronRight, Check } from 'lucide-react';"]
+  fns: ['FastingTab(13-256)']
+============================================================
+FILE: _archive/web-legacy/src/components/FoodLogPage.tsx  (286l)
+  IMPORTS: ["import { useState, useMemo, useCallback } from 'react';", "import { THEMES, COLORS, FOOD_PRESETS, getTodayFoodLog, dateStr, FONT_TITLE, FONT_SUB, FONT_BACK, FONT_STAT_CARD, FONT_BODY, FONT_BUTTON, FONT_HERO, FONT_STAT_SECTION, FONT_CLOSE, FONT_BADGE, FONT_LABEL, FONT_EMPTY } from '@egoless-do/core';", "import { useT } from './helpers';", "import { useWebStore } from '../store/useWebStore';", "import { useFoodSearch, FOOD_ICON_MAP } from './useFoodSearch';", "import { ChevronLeft, ChevronDown, ChevronRight, X, Star } from 'lucide-react';"]
+  fns: ['FoodLogPage(10-286)']
+============================================================
+FILE: _archive/web-legacy/src/components/GlobalMapPage.tsx  (309l)
+  IMPORTS: ["import { useState, useCallback, useMemo } from 'react';", "import { GLOBAL_USERS, FONT_TITLE, FONT_SUB, FONT_BACK, FONT_STAT_CARD, FONT_BODY, FONT_BUTTON, FONT_STAT_SECTION } from '@egoless-do/core';", "import { useT, useTheme } from './helpers';", "import AmapContainer from './AmapContainer';", "import { Globe, X, Trophy, ChevronLeft, Flame } from 'lucide-react';"]
+  fns: ['hashSeed(10-14)', 'GlobalMapPage(16-203)', 'LeaderboardPage(206-309)']
+============================================================
+FILE: _archive/web-legacy/src/components/GracePage.tsx  (220l)
+  IMPORTS: ["import { useState, useMemo, useCallback } from 'react';", "import { THEMES, COLORS, yesterday, dateStr, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_BACK, FONT_TINY, getMonthGraceCount, getRemainingGrace, isGraceAvailable } from '@egoless-do/core';", "import { useT } from './helpers';", "import { useWebStore } from '../store/useWebStore';", "import { useOverlay } from './useOverlay';", "import { ChevronLeft, CheckCircle2, Shield, ShieldCheck, Clock, Calendar, Settings } from 'lucide-react';"]
+  fns: ['GracePage(10-220)']
+============================================================
+FILE: _archive/web-legacy/src/components/HabitsTab.tsx  (332l)
+  IMPORTS: ["import { useState, useMemo, useEffect } from 'react';", "import { COLORS, tomorrow, daysInMonth, dateStr, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_CLOSE, FONT_HERO } from '@egoless-do/core';", "import type { Habit } from '@egoless-do/core';", "import { Toggle, useTheme, useT, cs, inp } from './helpers';", "import { useWebStore } from '../store/useWebStore';", "import { Target, Pencil, Trash2, X, ChevronLeft, ChevronRight, CheckCircle, Bell, BellOff } from 'lucide-react';"]
+  fns: ['HabitsTab(10-269)', 'HabitCalendarModal(271-332)']
+============================================================
+FILE: _archive/web-legacy/src/components/HeaderTabs.tsx  (52l)
+  IMPORTS: ["import { Home, ClipboardList, Target, Sparkles } from 'lucide-react';", "import { FONT_BODY } from '@egoless-do/core';", "import { useTheme, useT } from './helpers';"]
+  fns: ['HeaderTabs(14-52)']
+============================================================
+FILE: _archive/web-legacy/src/components/HistoryPage.tsx  (169l)
+  IMPORTS: ["import { useMemo } from 'react';", "import { THEMES, COLORS, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_EMPTY, parseCheckinNote } from '@egoless-do/core';", "import { useT } from './helpers';", "import { useWebStore } from '../store/useWebStore';", "import { useOverlay } from './useOverlay';", "import { ChevronLeft, Shield } from 'lucide-react';"]
+  fns: ['HistoryPage(13-169)']
+============================================================
+FILE: _archive/web-legacy/src/components/HomeTab.tsx  (485l)
+  IMPORTS: ["import { useState, useMemo, useCallback, useEffect } from 'react';", "import { COLORS, cardAccent, cardTextColor, dateStr, yesterday, getTodayFoodLog, getRecentFoods, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_HERO, FONT_CLOSE, FONT_EMPTY, FONT_STAT_SECTION, computeLongestStreak } from '@egoless-do/core';", "import type { CheckinEntry } from '@egoless-do/core';", "import { useTheme, useT, cs, inp, useCachedStyle } from './helpers';", "import { useWebStore } from '../store/useWebStore';", "import { useShallow } from 'zustand/react/shallow';", "import { useOverlay } from './useOverlay';", "import { useFoodSearch, FOOD_ICON_MAP } from './useFoodSearch';", "import { CalendarCheck, Trophy, Zap, Utensils, Scale, Droplets, Pencil, Check, ClipboardList, Shield, X, BarChart3 } from 'lucide-react';", "import CheckinStatsModal from './CheckinStatsModal';"]
+  fns: ['HomeTab(19-485)']
+============================================================
+FILE: _archive/web-legacy/src/components/ItemHeatmap.tsx  (125l)
+  IMPORTS: ["import { memo, useMemo, useState, useRef, useEffect } from 'react';", "import { COLORS, dateStr, FONT_SUB } from '@egoless-do/core';", "import type { PlanItem, PlanItemCheckin } from '@egoless-do/core';"]
+  fns: []
+============================================================
+FILE: _archive/web-legacy/src/components/ManagerPanelShared.tsx  (75l)
+  IMPORTS: ["import { useState, useEffect, useRef, useCallback } from 'react';", "import { COLORS, FONT_BODY } from '@egoless-do/core';", "import { useTheme, useT } from './helpers';"]
+  fns: ['ConfirmDialog(8-22)', 'useWebDragReorder(25-75)']
+============================================================
+FILE: _archive/web-legacy/src/components/MedHistoryPage.tsx  (107l)
+  IMPORTS: ["import { useMemo } from 'react';", "import { THEMES, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_TITLE, FONT_BACK } from '@egoless-do/core';", "import { useWebStore } from '../store/useWebStore';", "import { useT } from './helpers';", "import { ChevronLeft } from 'lucide-react';"]
+  fns: ['MedHistoryPage(9-107)']
+============================================================
+FILE: _archive/web-legacy/src/components/MeditateTab.tsx  (295l)
+  IMPORTS: ["import { useState, useEffect, useRef, useCallback, useMemo } from 'react';", "import { useTheme, useT, cs, LinkWorldBtn, useCachedStyle } from './helpers';", "import { useWebStore } from '../store/useWebStore';", "import { getTodayMedMinutes, dateStr, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, createLogger } from '@egoless-do/core';", "import { useOverlay } from './useOverlay';", "import { CircleDot, Music, ChevronRight } from 'lucide-react';"]
+  fns: ['useAudio(12-83)', 'MeditateTab(85-295)']
+============================================================
+FILE: _archive/web-legacy/src/components/MoodManagerPanel.tsx  (172l)
+  IMPORTS: ["import React, { useState, useMemo, useCallback } from 'react';", "import { MOODS, COLORS, ensureOrderContains, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_CLOSE } from '@egoless-do/core';", "import { useTheme, useT } from './helpers';", "import { useWebStore } from '../store/useWebStore';", "import { X, Check, Pencil, Trash2, ChevronUp, ChevronDown, GripVertical } from 'lucide-react';", "import { ConfirmDialog, useWebDragReorder } from './ManagerPanelShared';"]
+  fns: []
+============================================================
+FILE: _archive/web-legacy/src/components/PlanCreatePage.tsx  (572l)
+  IMPORTS: ["import { useState, useMemo, useEffect, useCallback } from 'react';", "import { THEMES, COLORS, canEditPlan, isPlanActive, dateStr, validatePlanForm, createNewItem, canEditPlanItem, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_ERROR, createLogger } from '@egoless-do/core';", "import type { ItemForm, PlanItemLink, CheckinFrequency } from '@egoless-do/core';", "import { LINK_OPTIONS, PRIORITY_OPTIONS, FREQUENCY_OPTIONS, createDefaultFrequency } from '@egoless-do/core';", "import { useT, cs, inp } from './helpers';", "import { useWebStore } from '../store/useWebStore';", "import { ChevronLeft, ChevronRight } from 'lucide-react';", "import DateRangePickerModal from './DateRangePickerModal';"]
+  fns: ['FrequencyInput(14-52)', 'PlanCreatePage(54-572)']
+============================================================
+FILE: _archive/web-legacy/src/components/PlanDetailContent.tsx  (778l)
+  IMPORTS: ["import { useMemo, useState, useRef, useEffect, memo } from 'react';", "import { THEMES, COLORS, LINK_COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, dateStr, createDateChangeDetector, PLAN_STATUS_COLORS, statusToI18nKey, computeItemProgress, getFrequencySummary } from '@egoless-do/core';", "import type { Plan, PlanItem, PlanItemCheckin, PlanStatus, PlanItemLink } from '@egoless-do/core';", "import { useDailyTodo } from './useDailyTodo';", "import { useT, cs } from './helpers';", "import { useOverlay } from './useOverlay';", "import { useWebStore } from '../store/useWebStore';", "import { ChevronLeft, Check, ChevronDown, ChevronRight, ClipboardList, Pencil, CircleCheck, Play, Pause, XCircle, Trash2, CheckCircle2, Plus, Repeat, BarChart2 } from 'lucide-react';", "import { ItemHeatmap } from './ItemHeatmap';"]
+  fns: ['PlanDetailContent(171-778)']
+============================================================
+FILE: _archive/web-legacy/src/components/PlanDetailPage.tsx  (16l)
+  IMPORTS: ["import { THEMES } from '@egoless-do/core';", "import { useWebStore } from '../store/useWebStore';", "import PlanDetailContent from './PlanDetailContent';"]
+  fns: ['PlanDetailPage(7-16)']
+============================================================
+FILE: _archive/web-legacy/src/components/PlanHistoryPage.tsx  (62l)
+  IMPORTS: ["import { useMemo } from 'react';", "import { THEMES, PLAN_STATUS_COLORS, statusToI18nKey, getHistoryPlans, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_STAT_CARD, FONT_STAT_SECTION } from '@egoless-do/core';", "import type { Plan } from '@egoless-do/core';", "import { useT, cs } from './helpers';", "import { useWebStore } from '../store/useWebStore';", "import { useOverlay } from './useOverlay';", "import { ChevronLeft, ChevronRight, ClipboardList } from 'lucide-react';"]
+  fns: ['PlanHistoryPage(11-62)']
+============================================================
+FILE: _archive/web-legacy/src/components/PlanTab.tsx  (52l)
+  IMPORTS: ["import { useMemo, useEffect } from 'react';", "import { THEMES, COLORS, getActivePlan, FONT_BODY, FONT_BUTTON, FONT_HERO } from '@egoless-do/core';", "import { useT, cs } from './helpers';", "import { useWebStore } from '../store/useWebStore';", "import { useOverlay } from './useOverlay';", "import { ClipboardList } from 'lucide-react';", "import PlanDetailContent from './PlanDetailContent';"]
+  fns: ['PlanTab(11-52)']
+============================================================
+FILE: _archive/web-legacy/src/components/PlanTodoListModal.tsx  (108l)
+  IMPORTS: ["import { useMemo } from 'react';", "import { THEMES, COLORS, getTodayItems, getActivePlan, getTodoItemStatus, computeDailyTodoStats, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_CLOSE, FONT_STAT_CARD, dateStr } from '@egoless-do/core';", "import { useT, cs } from './helpers';", "import { useWebStore } from '../store/useWebStore';", "import { X, CheckCircle2, Check } from 'lucide-react';"]
+  fns: ['PlanTodoListModal(9-108)']

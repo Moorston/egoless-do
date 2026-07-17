@@ -1,0 +1,3139 @@
+{
+  "nodes": [
+    {
+      "id": "file:infra/docker/api/src/account-lockout.ts",
+      "type": "file",
+      "name": "account-lockout.ts",
+      "filePath": "infra/docker/api/src/account-lockout.ts",
+      "summary": "账户安全锁：isAccountLocked/recordLoginAttempt/cleanupExpiredLockouts/initAccountLockoutCollection 防爆破，含邮箱维度锁。",
+      "tags": [
+        "api",
+        "auth",
+        "security",
+        "lockout"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/account-lockout.ts:withEmailLock",
+      "type": "function",
+      "name": "withEmailLock",
+      "filePath": "infra/docker/api/src/account-lockout.ts",
+      "lineRange": [
+        17,
+        32
+      ],
+      "summary": "邮箱维度的登录尝试限流包装。",
+      "tags": [
+        "util"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/account-lockout.ts:isAccountLocked",
+      "type": "function",
+      "name": "isAccountLocked",
+      "filePath": "infra/docker/api/src/account-lockout.ts",
+      "lineRange": [
+        47,
+        77
+      ],
+      "summary": "检查账户是否被临时锁定。",
+      "tags": [
+        "security",
+        "lockout"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/account-lockout.ts:recordLoginAttempt",
+      "type": "function",
+      "name": "recordLoginAttempt",
+      "filePath": "infra/docker/api/src/account-lockout.ts",
+      "lineRange": [
+        82,
+        84
+      ],
+      "summary": "recordLoginAttempt：record/Login/Attempt",
+      "tags": [
+        "util"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/account-lockout.ts:recordLoginAttemptLocked",
+      "type": "function",
+      "name": "recordLoginAttemptLocked",
+      "filePath": "infra/docker/api/src/account-lockout.ts",
+      "lineRange": [
+        86,
+        155
+      ],
+      "summary": "记录登录尝试并在阈值后锁定。",
+      "tags": [
+        "security",
+        "lockout"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/account-lockout.ts:cleanupExpiredLockouts",
+      "type": "function",
+      "name": "cleanupExpiredLockouts",
+      "filePath": "infra/docker/api/src/account-lockout.ts",
+      "lineRange": [
+        160,
+        196
+      ],
+      "summary": "清理过期锁记录。",
+      "tags": [
+        "lockout",
+        "cleanup"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/account-lockout.ts:initAccountLockoutCollection",
+      "type": "function",
+      "name": "initAccountLockoutCollection",
+      "filePath": "infra/docker/api/src/account-lockout.ts",
+      "lineRange": [
+        201,
+        236
+      ],
+      "summary": "初始化锁集合 schema。",
+      "tags": [
+        "pocketbase",
+        "init"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/account-lockout.ts:getRemainingLockoutTime",
+      "type": "function",
+      "name": "getRemainingLockoutTime",
+      "filePath": "infra/docker/api/src/account-lockout.ts",
+      "lineRange": [
+        241,
+        244
+      ],
+      "summary": "getRemainingLockoutTime：get/Remaining/Lockout/Time",
+      "tags": [
+        "util"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/audit-log.ts",
+      "type": "file",
+      "name": "audit-log.ts",
+      "filePath": "infra/docker/api/src/audit-log.ts",
+      "summary": "审计日志：logAuditEvent/getUserAuditLogs/getRecentSecurityEvents/cleanupExpiredAuditLogs/initAuditLogCollection+extractClientInfo。",
+      "tags": [
+        "api",
+        "security",
+        "audit"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/audit-log.ts:logAuditEvent",
+      "type": "function",
+      "name": "logAuditEvent",
+      "filePath": "infra/docker/api/src/audit-log.ts",
+      "lineRange": [
+        46,
+        63
+      ],
+      "summary": "记录安全审计事件。",
+      "tags": [
+        "audit",
+        "security"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/audit-log.ts:getUserAuditLogs",
+      "type": "function",
+      "name": "getUserAuditLogs",
+      "filePath": "infra/docker/api/src/audit-log.ts",
+      "lineRange": [
+        68,
+        95
+      ],
+      "summary": "按用户查询审计日志。",
+      "tags": [
+        "audit",
+        "query"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/audit-log.ts:getRecentSecurityEvents",
+      "type": "function",
+      "name": "getRecentSecurityEvents",
+      "filePath": "infra/docker/api/src/audit-log.ts",
+      "lineRange": [
+        100,
+        127
+      ],
+      "summary": "查询近期安全事件。",
+      "tags": [
+        "audit",
+        "security"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/audit-log.ts:cleanupExpiredAuditLogs",
+      "type": "function",
+      "name": "cleanupExpiredAuditLogs",
+      "filePath": "infra/docker/api/src/audit-log.ts",
+      "lineRange": [
+        132,
+        156
+      ],
+      "summary": "清理过期审计日志。",
+      "tags": [
+        "audit",
+        "cleanup"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/audit-log.ts:initAuditLogCollection",
+      "type": "function",
+      "name": "initAuditLogCollection",
+      "filePath": "infra/docker/api/src/audit-log.ts",
+      "lineRange": [
+        161,
+        198
+      ],
+      "summary": "初始化审计集合 schema。",
+      "tags": [
+        "pocketbase",
+        "init"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/audit-log.ts:extractClientInfo",
+      "type": "function",
+      "name": "extractClientInfo",
+      "filePath": "infra/docker/api/src/audit-log.ts",
+      "lineRange": [
+        203,
+        209
+      ],
+      "summary": "提取客户端 IP/UA 信息。",
+      "tags": [
+        "audit",
+        "util"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/auth-middleware.ts",
+      "type": "file",
+      "name": "auth-middleware.ts",
+      "filePath": "infra/docker/api/src/auth-middleware.ts",
+      "summary": "认证中间件：verifyAuth(JWT 解析/黑名单校验)、sanitizeError、validatePassword、base64UrlDecode/jwtExp。",
+      "tags": [
+        "api",
+        "auth",
+        "middleware",
+        "jwt"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/auth-middleware.ts:jwtPayload",
+      "type": "function",
+      "name": "jwtPayload",
+      "filePath": "infra/docker/api/src/auth-middleware.ts",
+      "lineRange": [
+        10,
+        18
+      ],
+      "summary": "解析 JWT payload(base64url)。",
+      "tags": [
+        "jwt",
+        "auth"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/auth-middleware.ts:jwtExp",
+      "type": "function",
+      "name": "jwtExp",
+      "filePath": "infra/docker/api/src/auth-middleware.ts",
+      "lineRange": [
+        20,
+        23
+      ],
+      "summary": "jwtExp：jwt/Exp",
+      "tags": [
+        "util"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/auth-middleware.ts:isBlacklisted",
+      "type": "function",
+      "name": "isBlacklisted",
+      "filePath": "infra/docker/api/src/auth-middleware.ts",
+      "lineRange": [
+        28,
+        30
+      ],
+      "summary": "isBlacklisted：is/Blacklisted",
+      "tags": [
+        "util"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/auth-middleware.ts:verifyAuth",
+      "type": "function",
+      "name": "verifyAuth",
+      "filePath": "infra/docker/api/src/auth-middleware.ts",
+      "lineRange": [
+        40,
+        125
+      ],
+      "summary": "校验 Authorization 头并解析 user。",
+      "tags": [
+        "auth",
+        "middleware"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/auth-middleware.ts:sanitizeError",
+      "type": "function",
+      "name": "sanitizeError",
+      "filePath": "infra/docker/api/src/auth-middleware.ts",
+      "lineRange": [
+        128,
+        133
+      ],
+      "summary": "脱敏错误信息。",
+      "tags": [
+        "security",
+        "error"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/auth-middleware.ts:validatePassword",
+      "type": "function",
+      "name": "validatePassword",
+      "filePath": "infra/docker/api/src/auth-middleware.ts",
+      "lineRange": [
+        150,
+        158
+      ],
+      "summary": "校验密码强度。",
+      "tags": [
+        "auth",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/auth/change-password.ts",
+      "type": "file",
+      "name": "change-password.ts",
+      "filePath": "infra/docker/api/src/auth/change-password.ts",
+      "summary": "修改密码路由：校验旧密码、validatePassword、blacklistToken、revokeAllRefreshTokens。",
+      "tags": [
+        "api",
+        "auth",
+        "route",
+        "password"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/auth/check-email.ts",
+      "type": "file",
+      "name": "check-email.ts",
+      "filePath": "infra/docker/api/src/auth/check-email.ts",
+      "summary": "检查邮箱路由：escapeFilter 查询邮箱是否注册+邮箱维度限流(checkEmailRateLimit)。",
+      "tags": [
+        "api",
+        "auth",
+        "route",
+        "check-email"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/auth/login.ts",
+      "type": "file",
+      "name": "login.ts",
+      "filePath": "infra/docker/api/src/auth/login.ts",
+      "summary": "登录路由：rateLimit+lockout(isAccountLocked/recordLoginAttempt)+logAuditEvent+generateRefreshToken。",
+      "tags": [
+        "api",
+        "auth",
+        "route",
+        "login"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/auth/logout.ts",
+      "type": "file",
+      "name": "logout.ts",
+      "filePath": "infra/docker/api/src/auth/logout.ts",
+      "summary": "注销路由：verifyAuth+blacklistToken+revokeRefreshToken+logAuditEvent。",
+      "tags": [
+        "api",
+        "auth",
+        "route",
+        "logout"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/auth/me.ts",
+      "type": "file",
+      "name": "me.ts",
+      "filePath": "infra/docker/api/src/auth/me.ts",
+      "summary": "当前用户路由：verifyAuth+getPb 查询用户信息。",
+      "tags": [
+        "api",
+        "auth",
+        "route",
+        "me"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/auth/mfa.ts",
+      "type": "file",
+      "name": "mfa.ts",
+      "filePath": "infra/docker/api/src/auth/mfa.ts",
+      "summary": "MFA 路由：桥接 mfa.ts 的 enable/disable/verifyMFACode，logAuditEvent。",
+      "tags": [
+        "api",
+        "auth",
+        "route",
+        "mfa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/auth/rbac.ts",
+      "type": "file",
+      "name": "rbac.ts",
+      "filePath": "infra/docker/api/src/auth/rbac.ts",
+      "summary": "角色路由：桥接 rbac.ts getUserRole/setUserRole/hasPermission，logAuditEvent。",
+      "tags": [
+        "api",
+        "auth",
+        "route",
+        "rbac"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/auth/refresh.ts",
+      "type": "file",
+      "name": "refresh.ts",
+      "filePath": "infra/docker/api/src/auth/refresh.ts",
+      "summary": "刷新令牌路由：validateAndRevokeRefreshToken+refreshRateLimit+createRefreshToken。",
+      "tags": [
+        "api",
+        "auth",
+        "route",
+        "refresh"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/auth/register.ts",
+      "type": "file",
+      "name": "register.ts",
+      "filePath": "infra/docker/api/src/auth/register.ts",
+      "summary": "注册路由：验证码(verification-code)+validatePassword+crypto+generateRefreshToken+logAuditEvent+registerRateLimit。",
+      "tags": [
+        "api",
+        "auth",
+        "route",
+        "register"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/auth/reset-password.ts",
+      "type": "file",
+      "name": "reset-password.ts",
+      "filePath": "infra/docker/api/src/auth/reset-password.ts",
+      "summary": "重置密码路由：验证码+validatePassword+blacklistToken+revokeAllRefreshTokens。",
+      "tags": [
+        "api",
+        "auth",
+        "route",
+        "reset-password"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/auth/send-code.ts",
+      "type": "file",
+      "name": "send-code.ts",
+      "filePath": "infra/docker/api/src/auth/send-code.ts",
+      "summary": "发送验证码路由：nodemailer 发邮件+saveVerificationCode+canSendCode+generateCode/getTransporter。",
+      "tags": [
+        "api",
+        "auth",
+        "route",
+        "send-code"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/auth/send-code.ts:getTransporter",
+      "type": "function",
+      "name": "getTransporter",
+      "filePath": "infra/docker/api/src/auth/send-code.ts",
+      "lineRange": [
+        18,
+        31
+      ],
+      "summary": "构建 nodemailer SMTP transport。",
+      "tags": [
+        "email",
+        "nodemailer"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/auth/wechat.ts",
+      "type": "file",
+      "name": "wechat.ts",
+      "filePath": "infra/docker/api/src/auth/wechat.ts",
+      "summary": "微信登录路由：code→session+escapeFilter+generateRefreshToken+wechatRateLimit+wechatPassword。",
+      "tags": [
+        "api",
+        "auth",
+        "route",
+        "wechat"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/config.ts",
+      "type": "file",
+      "name": "config.ts",
+      "filePath": "infra/docker/api/src/config.ts",
+      "summary": "服务配置：dotenv 加载 + env/envRequired/getInternalSecret。",
+      "tags": [
+        "api",
+        "config",
+        "env"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/config.ts:getInternalSecret",
+      "type": "function",
+      "name": "getInternalSecret",
+      "filePath": "infra/docker/api/src/config.ts",
+      "lineRange": [
+        85,
+        88
+      ],
+      "summary": "读取内部服务密钥。",
+      "tags": [
+        "config",
+        "secret"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/errors.ts",
+      "type": "file",
+      "name": "errors.ts",
+      "filePath": "infra/docker/api/src/errors.ts",
+      "summary": "错误工具：errMessage/errStatus 构造统一错误响应。",
+      "tags": [
+        "api",
+        "error",
+        "util"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/errors.ts:errMessage",
+      "type": "function",
+      "name": "errMessage",
+      "filePath": "infra/docker/api/src/errors.ts",
+      "lineRange": [
+        5,
+        9
+      ],
+      "summary": "构造错误消息体。",
+      "tags": [
+        "error",
+        "util"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/errors.ts:errStatus",
+      "type": "function",
+      "name": "errStatus",
+      "filePath": "infra/docker/api/src/errors.ts",
+      "lineRange": [
+        12,
+        18
+      ],
+      "summary": "构造带状态码的错误响应。",
+      "tags": [
+        "error",
+        "util"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "infra/docker/api/src/index.ts",
+      "summary": "API 入口：Hono 服务装配 cors+rate-limit+12 个 auth 路由+init*Collection。",
+      "tags": [
+        "api",
+        "entry",
+        "hono"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/mfa.ts",
+      "type": "file",
+      "name": "mfa.ts",
+      "filePath": "infra/docker/api/src/mfa.ts",
+      "summary": "MFA 服务：TOTP(generateMFASecret/generateTOTP/verifyTOTP)+generateBackupCodes+enable/disable/verifyMFACode/initMFACollection+bcrypt。",
+      "tags": [
+        "api",
+        "auth",
+        "mfa",
+        "totp"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/mfa.ts:generateMFASecret",
+      "type": "function",
+      "name": "generateMFASecret",
+      "filePath": "infra/docker/api/src/mfa.ts",
+      "lineRange": [
+        24,
+        26
+      ],
+      "summary": "生成 MFA 密钥。",
+      "tags": [
+        "mfa",
+        "totp"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/mfa.ts:generateTOTP",
+      "type": "function",
+      "name": "generateTOTP",
+      "filePath": "infra/docker/api/src/mfa.ts",
+      "lineRange": [
+        31,
+        49
+      ],
+      "summary": "生成当前 TOTP 码。",
+      "tags": [
+        "mfa",
+        "totp"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/mfa.ts:verifyTOTP",
+      "type": "function",
+      "name": "verifyTOTP",
+      "filePath": "infra/docker/api/src/mfa.ts",
+      "lineRange": [
+        54,
+        82
+      ],
+      "summary": "校验 TOTP 码(含窗口)。",
+      "tags": [
+        "mfa",
+        "totp"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/mfa.ts:generateBackupCodes",
+      "type": "function",
+      "name": "generateBackupCodes",
+      "filePath": "infra/docker/api/src/mfa.ts",
+      "lineRange": [
+        87,
+        93
+      ],
+      "summary": "生成一次性备用码。",
+      "tags": [
+        "mfa",
+        "backup"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/mfa.ts:isMFAEnabled",
+      "type": "function",
+      "name": "isMFAEnabled",
+      "filePath": "infra/docker/api/src/mfa.ts",
+      "lineRange": [
+        98,
+        110
+      ],
+      "summary": "isMFAEnabled：is/M/F/A/Enabled",
+      "tags": [
+        "util"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/mfa.ts:getMFAConfig",
+      "type": "function",
+      "name": "getMFAConfig",
+      "filePath": "infra/docker/api/src/mfa.ts",
+      "lineRange": [
+        115,
+        135
+      ],
+      "summary": "getMFAConfig：get/M/F/A/Config",
+      "tags": [
+        "util"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/mfa.ts:enableMFA",
+      "type": "function",
+      "name": "enableMFA",
+      "filePath": "infra/docker/api/src/mfa.ts",
+      "lineRange": [
+        140,
+        184
+      ],
+      "summary": "启用 MFA 并保存配置。",
+      "tags": [
+        "mfa",
+        "enable"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/mfa.ts:disableMFA",
+      "type": "function",
+      "name": "disableMFA",
+      "filePath": "infra/docker/api/src/mfa.ts",
+      "lineRange": [
+        189,
+        205
+      ],
+      "summary": "关闭 MFA。",
+      "tags": [
+        "mfa",
+        "disable"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/mfa.ts:verifyMFACode",
+      "type": "function",
+      "name": "verifyMFACode",
+      "filePath": "infra/docker/api/src/mfa.ts",
+      "lineRange": [
+        210,
+        244
+      ],
+      "summary": "校验 TOTP 或备用码。",
+      "tags": [
+        "mfa",
+        "verify"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/mfa.ts:initMFACollection",
+      "type": "function",
+      "name": "initMFACollection",
+      "filePath": "infra/docker/api/src/mfa.ts",
+      "lineRange": [
+        249,
+        284
+      ],
+      "summary": "初始化 MFA 集合 schema。",
+      "tags": [
+        "pocketbase",
+        "init"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:infra/docker/api/src/monitoring.ts",
+      "type": "file",
+      "name": "monitoring.ts",
+      "filePath": "infra/docker/api/src/monitoring.ts",
+      "summary": "监控路由：Hono 健康检查/指标端点。",
+      "tags": [
+        "api",
+        "monitoring",
+        "hono"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/pb.ts",
+      "type": "file",
+      "name": "pb.ts",
+      "filePath": "infra/docker/api/src/pb.ts",
+      "summary": "PocketBase 客户端：getPb/authenticateAdmin/getAdminPb+escapeFilter。",
+      "tags": [
+        "api",
+        "pocketbase",
+        "client"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/pb.ts:getPb",
+      "type": "function",
+      "name": "getPb",
+      "filePath": "infra/docker/api/src/pb.ts",
+      "lineRange": [
+        8,
+        12
+      ],
+      "summary": "创建 PocketBase 客户端。",
+      "tags": [
+        "pocketbase",
+        "client"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/pb.ts:authenticateAdmin",
+      "type": "function",
+      "name": "authenticateAdmin",
+      "filePath": "infra/docker/api/src/pb.ts",
+      "lineRange": [
+        20,
+        31
+      ],
+      "summary": "管理员认证 PB。",
+      "tags": [
+        "pocketbase",
+        "admin"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/pb.ts:getAdminPb",
+      "type": "function",
+      "name": "getAdminPb",
+      "filePath": "infra/docker/api/src/pb.ts",
+      "lineRange": [
+        33,
+        59
+      ],
+      "summary": "获取已认证管理员客户端。",
+      "tags": [
+        "pocketbase",
+        "admin"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/pb.ts:escapeFilter",
+      "type": "function",
+      "name": "escapeFilter",
+      "filePath": "infra/docker/api/src/pb.ts",
+      "lineRange": [
+        62,
+        70
+      ],
+      "summary": "转义 PB filter 字符串防注入。",
+      "tags": [
+        "pocketbase",
+        "security"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/plan.ts",
+      "type": "file",
+      "name": "plan.ts",
+      "filePath": "infra/docker/api/src/plan.ts",
+      "summary": "计划邮件通知路由：verifyAuth+nodemailer+escapeHtml+getTransporter+adminPb。",
+      "tags": [
+        "api",
+        "plan",
+        "email"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/plan.ts:getTransporter",
+      "type": "function",
+      "name": "getTransporter",
+      "filePath": "infra/docker/api/src/plan.ts",
+      "lineRange": [
+        15,
+        28
+      ],
+      "summary": "构建 SMTP transport。",
+      "tags": [
+        "email",
+        "nodemailer"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/push.ts",
+      "type": "file",
+      "name": "push.ts",
+      "filePath": "infra/docker/api/src/push.ts",
+      "summary": "推送路由：verifyAuth+Expo Push(sendExpoPush)+rateLimit。",
+      "tags": [
+        "api",
+        "push",
+        "expo"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/push.ts:sendExpoPush",
+      "type": "function",
+      "name": "sendExpoPush",
+      "filePath": "infra/docker/api/src/push.ts",
+      "lineRange": [
+        215,
+        275
+      ],
+      "summary": "调用 Expo Push API 发送通知。",
+      "tags": [
+        "push",
+        "expo"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:infra/docker/api/src/rate-limit.ts",
+      "type": "file",
+      "name": "rate-limit.ts",
+      "filePath": "infra/docker/api/src/rate-limit.ts",
+      "summary": "限流服务：内存+持久化(fs)双维度 createRateLimiter/getClientIp/createPBRateLimiter/cleanupExpiredRateLimits。",
+      "tags": [
+        "api",
+        "rate-limit",
+        "security"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/rate-limit.ts:savePersistedState",
+      "type": "function",
+      "name": "savePersistedState",
+      "filePath": "infra/docker/api/src/rate-limit.ts",
+      "lineRange": [
+        43,
+        60
+      ],
+      "summary": "savePersistedState：save/Persisted/State",
+      "tags": [
+        "util"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/rate-limit.ts:initPersistence",
+      "type": "function",
+      "name": "initPersistence",
+      "filePath": "infra/docker/api/src/rate-limit.ts",
+      "lineRange": [
+        63,
+        76
+      ],
+      "summary": "initPersistence：init/Persistence",
+      "tags": [
+        "util"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/rate-limit.ts:createRateLimiter",
+      "type": "function",
+      "name": "createRateLimiter",
+      "filePath": "infra/docker/api/src/rate-limit.ts",
+      "lineRange": [
+        80,
+        115
+      ],
+      "summary": "创建内存限流中间件(滑动窗口)。",
+      "tags": [
+        "rate-limit",
+        "security"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/rate-limit.ts:getClientIp",
+      "type": "function",
+      "name": "getClientIp",
+      "filePath": "infra/docker/api/src/rate-limit.ts",
+      "lineRange": [
+        131,
+        137
+      ],
+      "summary": "提取客户端 IP。",
+      "tags": [
+        "rate-limit",
+        "util"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/rate-limit.ts:createPBRateLimiter",
+      "type": "function",
+      "name": "createPBRateLimiter",
+      "filePath": "infra/docker/api/src/rate-limit.ts",
+      "lineRange": [
+        154,
+        207
+      ],
+      "summary": "创建基于 PB 的分布式限流。",
+      "tags": [
+        "rate-limit",
+        "pocketbase"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/rate-limit.ts:cleanupExpiredRateLimits",
+      "type": "function",
+      "name": "cleanupExpiredRateLimits",
+      "filePath": "infra/docker/api/src/rate-limit.ts",
+      "lineRange": [
+        209,
+        233
+      ],
+      "summary": "清理过期限流记录。",
+      "tags": [
+        "rate-limit",
+        "cleanup"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:infra/docker/api/src/rbac.ts",
+      "type": "file",
+      "name": "rbac.ts",
+      "filePath": "infra/docker/api/src/rbac.ts",
+      "summary": "RBAC 服务：角色权限 getUserRole/setUserRole/hasPermission/hasAnyPermission/getUserPermissions+initRBACCollection。",
+      "tags": [
+        "api",
+        "rbac",
+        "security"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/rbac.ts:getUserRole",
+      "type": "function",
+      "name": "getUserRole",
+      "filePath": "infra/docker/api/src/rbac.ts",
+      "lineRange": [
+        74,
+        86
+      ],
+      "summary": "读取用户角色。",
+      "tags": [
+        "rbac",
+        "security"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/rbac.ts:setUserRole",
+      "type": "function",
+      "name": "setUserRole",
+      "filePath": "infra/docker/api/src/rbac.ts",
+      "lineRange": [
+        91,
+        125
+      ],
+      "summary": "设置用户角色。",
+      "tags": [
+        "rbac",
+        "security"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/rbac.ts:hasPermission",
+      "type": "function",
+      "name": "hasPermission",
+      "filePath": "infra/docker/api/src/rbac.ts",
+      "lineRange": [
+        130,
+        134
+      ],
+      "summary": "判断单项权限。",
+      "tags": [
+        "rbac",
+        "permission"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/rbac.ts:hasAnyPermission",
+      "type": "function",
+      "name": "hasAnyPermission",
+      "filePath": "infra/docker/api/src/rbac.ts",
+      "lineRange": [
+        139,
+        143
+      ],
+      "summary": "判断任一权限。",
+      "tags": [
+        "rbac",
+        "permission"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/rbac.ts:getUserPermissions",
+      "type": "function",
+      "name": "getUserPermissions",
+      "filePath": "infra/docker/api/src/rbac.ts",
+      "lineRange": [
+        148,
+        151
+      ],
+      "summary": "列出用户全部权限。",
+      "tags": [
+        "rbac",
+        "permission"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/rbac.ts:initRBACCollection",
+      "type": "function",
+      "name": "initRBACCollection",
+      "filePath": "infra/docker/api/src/rbac.ts",
+      "lineRange": [
+        156,
+        189
+      ],
+      "summary": "初始化 RBAC 集合 schema。",
+      "tags": [
+        "pocketbase",
+        "init"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:infra/docker/api/src/setup.ts",
+      "type": "file",
+      "name": "setup.ts",
+      "filePath": "infra/docker/api/src/setup.ts",
+      "summary": "初始化/Setup 路由：HMAC signature(crypto)+timingSafeEqual+verifyPbSetupHook+getPb。",
+      "tags": [
+        "api",
+        "setup",
+        "security"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/token-blacklist.ts",
+      "type": "file",
+      "name": "token-blacklist.ts",
+      "filePath": "infra/docker/api/src/token-blacklist.ts",
+      "summary": "令牌黑名单：isTokenBlacklisted/blacklistToken/cleanupExpiredTokens/initTokenBlacklistCollection。",
+      "tags": [
+        "api",
+        "auth",
+        "token",
+        "security"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/token-blacklist.ts:isTokenBlacklisted",
+      "type": "function",
+      "name": "isTokenBlacklisted",
+      "filePath": "infra/docker/api/src/token-blacklist.ts",
+      "lineRange": [
+        21,
+        43
+      ],
+      "summary": "校验 JWT 是否在黑名单。",
+      "tags": [
+        "token",
+        "security"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/token-blacklist.ts:blacklistToken",
+      "type": "function",
+      "name": "blacklistToken",
+      "filePath": "infra/docker/api/src/token-blacklist.ts",
+      "lineRange": [
+        48,
+        60
+      ],
+      "summary": "将 JWT 加入黑名单。",
+      "tags": [
+        "token",
+        "security"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/token-blacklist.ts:cleanupExpiredTokens",
+      "type": "function",
+      "name": "cleanupExpiredTokens",
+      "filePath": "infra/docker/api/src/token-blacklist.ts",
+      "lineRange": [
+        65,
+        96
+      ],
+      "summary": "清理过期黑名单记录。",
+      "tags": [
+        "token",
+        "cleanup"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/token-blacklist.ts:initTokenBlacklistCollection",
+      "type": "function",
+      "name": "initTokenBlacklistCollection",
+      "filePath": "infra/docker/api/src/token-blacklist.ts",
+      "lineRange": [
+        102,
+        134
+      ],
+      "summary": "初始化黑名单集合 schema。",
+      "tags": [
+        "pocketbase",
+        "init"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "type": "file",
+      "name": "token-refresh-rotation.ts",
+      "filePath": "infra/docker/api/src/token-refresh-rotation.ts",
+      "summary": "刷新令牌轮换：generateNonce/generateRefreshToken/createRefreshToken/validateAndRevokeRefreshToken/validateRefreshToken/revokeRefreshToken/revokeAllUserRefreshTokens/cleanupExpiredRefreshTokens/initRefreshTokenCollection+randomBytes。",
+      "tags": [
+        "api",
+        "auth",
+        "token",
+        "rotation"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:infra/docker/api/src/token-refresh-rotation.ts:generateRefreshToken",
+      "type": "function",
+      "name": "generateRefreshToken",
+      "filePath": "infra/docker/api/src/token-refresh-rotation.ts",
+      "lineRange": [
+        29,
+        31
+      ],
+      "summary": "生成加密随机 refresh token。",
+      "tags": [
+        "token",
+        "crypto"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/token-refresh-rotation.ts:createRefreshToken",
+      "type": "function",
+      "name": "createRefreshToken",
+      "filePath": "infra/docker/api/src/token-refresh-rotation.ts",
+      "lineRange": [
+        46,
+        60
+      ],
+      "summary": "为用户创建并存储 refresh token。",
+      "tags": [
+        "token",
+        "create"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/token-refresh-rotation.ts:validateAndRevokeRefreshToken",
+      "type": "function",
+      "name": "validateAndRevokeRefreshToken",
+      "filePath": "infra/docker/api/src/token-refresh-rotation.ts",
+      "lineRange": [
+        73,
+        120
+      ],
+      "summary": "校验并单次消费 refresh token。",
+      "tags": [
+        "token",
+        "rotation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/token-refresh-rotation.ts:validateRefreshToken",
+      "type": "function",
+      "name": "validateRefreshToken",
+      "filePath": "infra/docker/api/src/token-refresh-rotation.ts",
+      "lineRange": [
+        126,
+        138
+      ],
+      "summary": "validateRefreshToken：validate/Refresh/Token",
+      "tags": [
+        "util"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/token-refresh-rotation.ts:revokeRefreshToken",
+      "type": "function",
+      "name": "revokeRefreshToken",
+      "filePath": "infra/docker/api/src/token-refresh-rotation.ts",
+      "lineRange": [
+        143,
+        158
+      ],
+      "summary": "撤销指定 refresh token。",
+      "tags": [
+        "token",
+        "revoke"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/token-refresh-rotation.ts:revokeAllUserRefreshTokens",
+      "type": "function",
+      "name": "revokeAllUserRefreshTokens",
+      "filePath": "infra/docker/api/src/token-refresh-rotation.ts",
+      "lineRange": [
+        164,
+        200
+      ],
+      "summary": "撤销用户全部 refresh token。",
+      "tags": [
+        "token",
+        "revoke"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/token-refresh-rotation.ts:cleanupExpiredRefreshTokens",
+      "type": "function",
+      "name": "cleanupExpiredRefreshTokens",
+      "filePath": "infra/docker/api/src/token-refresh-rotation.ts",
+      "lineRange": [
+        205,
+        226
+      ],
+      "summary": "清理过期 refresh token。",
+      "tags": [
+        "token",
+        "cleanup"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/token-refresh-rotation.ts:initRefreshTokenCollection",
+      "type": "function",
+      "name": "initRefreshTokenCollection",
+      "filePath": "infra/docker/api/src/token-refresh-rotation.ts",
+      "lineRange": [
+        231,
+        266
+      ],
+      "summary": "初始化 refresh 集合 schema。",
+      "tags": [
+        "pocketbase",
+        "init"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:infra/docker/api/src/verification-code.ts",
+      "type": "file",
+      "name": "verification-code.ts",
+      "filePath": "infra/docker/api/src/verification-code.ts",
+      "summary": "验证码服务：save/get/delete/canSendCode/cleanupExpiredCodes/initVerificationCodeCollection。",
+      "tags": [
+        "api",
+        "auth",
+        "verification"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/verification-code.ts:saveVerificationCode",
+      "type": "function",
+      "name": "saveVerificationCode",
+      "filePath": "infra/docker/api/src/verification-code.ts",
+      "lineRange": [
+        20,
+        42
+      ],
+      "summary": "保存验证码(含 TTL)。",
+      "tags": [
+        "verification",
+        "create"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/verification-code.ts:getVerificationCode",
+      "type": "function",
+      "name": "getVerificationCode",
+      "filePath": "infra/docker/api/src/verification-code.ts",
+      "lineRange": [
+        47,
+        65
+      ],
+      "summary": "读取并校验验证码。",
+      "tags": [
+        "verification",
+        "query"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/verification-code.ts:deleteVerificationCode",
+      "type": "function",
+      "name": "deleteVerificationCode",
+      "filePath": "infra/docker/api/src/verification-code.ts",
+      "lineRange": [
+        70,
+        82
+      ],
+      "summary": "删除已用验证码。",
+      "tags": [
+        "verification",
+        "delete"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/verification-code.ts:cleanupExpiredCodes",
+      "type": "function",
+      "name": "cleanupExpiredCodes",
+      "filePath": "infra/docker/api/src/verification-code.ts",
+      "lineRange": [
+        87,
+        108
+      ],
+      "summary": "清理过期验证码。",
+      "tags": [
+        "verification",
+        "cleanup"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:infra/docker/api/src/verification-code.ts:canSendCode",
+      "type": "function",
+      "name": "canSendCode",
+      "filePath": "infra/docker/api/src/verification-code.ts",
+      "lineRange": [
+        113,
+        126
+      ],
+      "summary": "判断是否可重发(频率限制)。",
+      "tags": [
+        "verification",
+        "rate"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:infra/docker/api/src/verification-code.ts:initVerificationCodeCollection",
+      "type": "function",
+      "name": "initVerificationCodeCollection",
+      "filePath": "infra/docker/api/src/verification-code.ts",
+      "lineRange": [
+        132,
+        165
+      ],
+      "summary": "初始化验证码集合 schema。",
+      "tags": [
+        "pocketbase",
+        "init"
+      ],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:infra/docker/api/src/account-lockout.ts",
+      "target": "function:infra/docker/api/src/account-lockout.ts:withEmailLock",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/account-lockout.ts",
+      "target": "function:infra/docker/api/src/account-lockout.ts:isAccountLocked",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/account-lockout.ts",
+      "target": "function:infra/docker/api/src/account-lockout.ts:isAccountLocked",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/account-lockout.ts",
+      "target": "function:infra/docker/api/src/account-lockout.ts:recordLoginAttempt",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/account-lockout.ts",
+      "target": "function:infra/docker/api/src/account-lockout.ts:recordLoginAttempt",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/account-lockout.ts",
+      "target": "function:infra/docker/api/src/account-lockout.ts:recordLoginAttemptLocked",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/account-lockout.ts",
+      "target": "function:infra/docker/api/src/account-lockout.ts:cleanupExpiredLockouts",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/account-lockout.ts",
+      "target": "function:infra/docker/api/src/account-lockout.ts:cleanupExpiredLockouts",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/account-lockout.ts",
+      "target": "function:infra/docker/api/src/account-lockout.ts:initAccountLockoutCollection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/account-lockout.ts",
+      "target": "function:infra/docker/api/src/account-lockout.ts:initAccountLockoutCollection",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/account-lockout.ts",
+      "target": "function:infra/docker/api/src/account-lockout.ts:getRemainingLockoutTime",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/account-lockout.ts",
+      "target": "function:infra/docker/api/src/account-lockout.ts:getRemainingLockoutTime",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/audit-log.ts",
+      "target": "function:infra/docker/api/src/audit-log.ts:logAuditEvent",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/audit-log.ts",
+      "target": "function:infra/docker/api/src/audit-log.ts:logAuditEvent",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/audit-log.ts",
+      "target": "function:infra/docker/api/src/audit-log.ts:getUserAuditLogs",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/audit-log.ts",
+      "target": "function:infra/docker/api/src/audit-log.ts:getUserAuditLogs",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/audit-log.ts",
+      "target": "function:infra/docker/api/src/audit-log.ts:getRecentSecurityEvents",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/audit-log.ts",
+      "target": "function:infra/docker/api/src/audit-log.ts:getRecentSecurityEvents",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/audit-log.ts",
+      "target": "function:infra/docker/api/src/audit-log.ts:cleanupExpiredAuditLogs",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/audit-log.ts",
+      "target": "function:infra/docker/api/src/audit-log.ts:cleanupExpiredAuditLogs",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/audit-log.ts",
+      "target": "function:infra/docker/api/src/audit-log.ts:initAuditLogCollection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/audit-log.ts",
+      "target": "function:infra/docker/api/src/audit-log.ts:initAuditLogCollection",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/audit-log.ts",
+      "target": "function:infra/docker/api/src/audit-log.ts:extractClientInfo",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/audit-log.ts",
+      "target": "function:infra/docker/api/src/audit-log.ts:extractClientInfo",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/auth-middleware.ts",
+      "target": "function:infra/docker/api/src/auth-middleware.ts:jwtPayload",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/auth-middleware.ts",
+      "target": "function:infra/docker/api/src/auth-middleware.ts:jwtPayload",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/auth-middleware.ts",
+      "target": "function:infra/docker/api/src/auth-middleware.ts:jwtExp",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/auth-middleware.ts",
+      "target": "function:infra/docker/api/src/auth-middleware.ts:jwtExp",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/auth-middleware.ts",
+      "target": "function:infra/docker/api/src/auth-middleware.ts:isBlacklisted",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/auth-middleware.ts",
+      "target": "function:infra/docker/api/src/auth-middleware.ts:isBlacklisted",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/auth-middleware.ts",
+      "target": "function:infra/docker/api/src/auth-middleware.ts:verifyAuth",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/auth-middleware.ts",
+      "target": "function:infra/docker/api/src/auth-middleware.ts:verifyAuth",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/auth-middleware.ts",
+      "target": "function:infra/docker/api/src/auth-middleware.ts:sanitizeError",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/auth-middleware.ts",
+      "target": "function:infra/docker/api/src/auth-middleware.ts:sanitizeError",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/auth-middleware.ts",
+      "target": "function:infra/docker/api/src/auth-middleware.ts:validatePassword",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/auth-middleware.ts",
+      "target": "function:infra/docker/api/src/auth-middleware.ts:validatePassword",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/send-code.ts",
+      "target": "function:infra/docker/api/src/auth/send-code.ts:getTransporter",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/config.ts",
+      "target": "function:infra/docker/api/src/config.ts:getInternalSecret",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/config.ts",
+      "target": "function:infra/docker/api/src/config.ts:getInternalSecret",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/errors.ts",
+      "target": "function:infra/docker/api/src/errors.ts:errMessage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/errors.ts",
+      "target": "function:infra/docker/api/src/errors.ts:errMessage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/errors.ts",
+      "target": "function:infra/docker/api/src/errors.ts:errStatus",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/errors.ts",
+      "target": "function:infra/docker/api/src/errors.ts:errStatus",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/mfa.ts",
+      "target": "function:infra/docker/api/src/mfa.ts:generateMFASecret",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/mfa.ts",
+      "target": "function:infra/docker/api/src/mfa.ts:generateMFASecret",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/mfa.ts",
+      "target": "function:infra/docker/api/src/mfa.ts:generateTOTP",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/mfa.ts",
+      "target": "function:infra/docker/api/src/mfa.ts:generateTOTP",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/mfa.ts",
+      "target": "function:infra/docker/api/src/mfa.ts:verifyTOTP",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/mfa.ts",
+      "target": "function:infra/docker/api/src/mfa.ts:verifyTOTP",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/mfa.ts",
+      "target": "function:infra/docker/api/src/mfa.ts:generateBackupCodes",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/mfa.ts",
+      "target": "function:infra/docker/api/src/mfa.ts:generateBackupCodes",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/mfa.ts",
+      "target": "function:infra/docker/api/src/mfa.ts:isMFAEnabled",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/mfa.ts",
+      "target": "function:infra/docker/api/src/mfa.ts:isMFAEnabled",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/mfa.ts",
+      "target": "function:infra/docker/api/src/mfa.ts:getMFAConfig",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/mfa.ts",
+      "target": "function:infra/docker/api/src/mfa.ts:getMFAConfig",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/mfa.ts",
+      "target": "function:infra/docker/api/src/mfa.ts:enableMFA",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/mfa.ts",
+      "target": "function:infra/docker/api/src/mfa.ts:enableMFA",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/mfa.ts",
+      "target": "function:infra/docker/api/src/mfa.ts:disableMFA",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/mfa.ts",
+      "target": "function:infra/docker/api/src/mfa.ts:disableMFA",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/mfa.ts",
+      "target": "function:infra/docker/api/src/mfa.ts:verifyMFACode",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/mfa.ts",
+      "target": "function:infra/docker/api/src/mfa.ts:verifyMFACode",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/mfa.ts",
+      "target": "function:infra/docker/api/src/mfa.ts:initMFACollection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/mfa.ts",
+      "target": "function:infra/docker/api/src/mfa.ts:initMFACollection",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/pb.ts",
+      "target": "function:infra/docker/api/src/pb.ts:getPb",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/pb.ts",
+      "target": "function:infra/docker/api/src/pb.ts:getPb",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/pb.ts",
+      "target": "function:infra/docker/api/src/pb.ts:authenticateAdmin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/pb.ts",
+      "target": "function:infra/docker/api/src/pb.ts:getAdminPb",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/pb.ts",
+      "target": "function:infra/docker/api/src/pb.ts:getAdminPb",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/pb.ts",
+      "target": "function:infra/docker/api/src/pb.ts:escapeFilter",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/pb.ts",
+      "target": "function:infra/docker/api/src/pb.ts:escapeFilter",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/plan.ts",
+      "target": "function:infra/docker/api/src/plan.ts:getTransporter",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/push.ts",
+      "target": "function:infra/docker/api/src/push.ts:sendExpoPush",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/rate-limit.ts",
+      "target": "function:infra/docker/api/src/rate-limit.ts:savePersistedState",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/rate-limit.ts",
+      "target": "function:infra/docker/api/src/rate-limit.ts:initPersistence",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/rate-limit.ts",
+      "target": "function:infra/docker/api/src/rate-limit.ts:createRateLimiter",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/rate-limit.ts",
+      "target": "function:infra/docker/api/src/rate-limit.ts:createRateLimiter",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/rate-limit.ts",
+      "target": "function:infra/docker/api/src/rate-limit.ts:getClientIp",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/rate-limit.ts",
+      "target": "function:infra/docker/api/src/rate-limit.ts:getClientIp",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/rate-limit.ts",
+      "target": "function:infra/docker/api/src/rate-limit.ts:createPBRateLimiter",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/rate-limit.ts",
+      "target": "function:infra/docker/api/src/rate-limit.ts:createPBRateLimiter",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/rate-limit.ts",
+      "target": "function:infra/docker/api/src/rate-limit.ts:cleanupExpiredRateLimits",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/rate-limit.ts",
+      "target": "function:infra/docker/api/src/rate-limit.ts:cleanupExpiredRateLimits",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/rbac.ts",
+      "target": "function:infra/docker/api/src/rbac.ts:getUserRole",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/rbac.ts",
+      "target": "function:infra/docker/api/src/rbac.ts:getUserRole",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/rbac.ts",
+      "target": "function:infra/docker/api/src/rbac.ts:setUserRole",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/rbac.ts",
+      "target": "function:infra/docker/api/src/rbac.ts:setUserRole",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/rbac.ts",
+      "target": "function:infra/docker/api/src/rbac.ts:hasPermission",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/rbac.ts",
+      "target": "function:infra/docker/api/src/rbac.ts:hasPermission",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/rbac.ts",
+      "target": "function:infra/docker/api/src/rbac.ts:hasAnyPermission",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/rbac.ts",
+      "target": "function:infra/docker/api/src/rbac.ts:hasAnyPermission",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/rbac.ts",
+      "target": "function:infra/docker/api/src/rbac.ts:getUserPermissions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/rbac.ts",
+      "target": "function:infra/docker/api/src/rbac.ts:getUserPermissions",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/rbac.ts",
+      "target": "function:infra/docker/api/src/rbac.ts:initRBACCollection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/rbac.ts",
+      "target": "function:infra/docker/api/src/rbac.ts:initRBACCollection",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/token-blacklist.ts",
+      "target": "function:infra/docker/api/src/token-blacklist.ts:isTokenBlacklisted",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/token-blacklist.ts",
+      "target": "function:infra/docker/api/src/token-blacklist.ts:isTokenBlacklisted",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/token-blacklist.ts",
+      "target": "function:infra/docker/api/src/token-blacklist.ts:blacklistToken",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/token-blacklist.ts",
+      "target": "function:infra/docker/api/src/token-blacklist.ts:blacklistToken",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/token-blacklist.ts",
+      "target": "function:infra/docker/api/src/token-blacklist.ts:cleanupExpiredTokens",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/token-blacklist.ts",
+      "target": "function:infra/docker/api/src/token-blacklist.ts:cleanupExpiredTokens",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/token-blacklist.ts",
+      "target": "function:infra/docker/api/src/token-blacklist.ts:initTokenBlacklistCollection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/token-blacklist.ts",
+      "target": "function:infra/docker/api/src/token-blacklist.ts:initTokenBlacklistCollection",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "target": "function:infra/docker/api/src/token-refresh-rotation.ts:generateRefreshToken",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "target": "function:infra/docker/api/src/token-refresh-rotation.ts:generateRefreshToken",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "target": "function:infra/docker/api/src/token-refresh-rotation.ts:createRefreshToken",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "target": "function:infra/docker/api/src/token-refresh-rotation.ts:createRefreshToken",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "target": "function:infra/docker/api/src/token-refresh-rotation.ts:validateAndRevokeRefreshToken",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "target": "function:infra/docker/api/src/token-refresh-rotation.ts:validateAndRevokeRefreshToken",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "target": "function:infra/docker/api/src/token-refresh-rotation.ts:validateRefreshToken",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "target": "function:infra/docker/api/src/token-refresh-rotation.ts:validateRefreshToken",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "target": "function:infra/docker/api/src/token-refresh-rotation.ts:revokeRefreshToken",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "target": "function:infra/docker/api/src/token-refresh-rotation.ts:revokeRefreshToken",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "target": "function:infra/docker/api/src/token-refresh-rotation.ts:revokeAllUserRefreshTokens",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "target": "function:infra/docker/api/src/token-refresh-rotation.ts:revokeAllUserRefreshTokens",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "target": "function:infra/docker/api/src/token-refresh-rotation.ts:cleanupExpiredRefreshTokens",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "target": "function:infra/docker/api/src/token-refresh-rotation.ts:cleanupExpiredRefreshTokens",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "target": "function:infra/docker/api/src/token-refresh-rotation.ts:initRefreshTokenCollection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "target": "function:infra/docker/api/src/token-refresh-rotation.ts:initRefreshTokenCollection",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/verification-code.ts",
+      "target": "function:infra/docker/api/src/verification-code.ts:saveVerificationCode",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/verification-code.ts",
+      "target": "function:infra/docker/api/src/verification-code.ts:saveVerificationCode",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/verification-code.ts",
+      "target": "function:infra/docker/api/src/verification-code.ts:getVerificationCode",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/verification-code.ts",
+      "target": "function:infra/docker/api/src/verification-code.ts:getVerificationCode",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/verification-code.ts",
+      "target": "function:infra/docker/api/src/verification-code.ts:deleteVerificationCode",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/verification-code.ts",
+      "target": "function:infra/docker/api/src/verification-code.ts:deleteVerificationCode",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/verification-code.ts",
+      "target": "function:infra/docker/api/src/verification-code.ts:cleanupExpiredCodes",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/verification-code.ts",
+      "target": "function:infra/docker/api/src/verification-code.ts:cleanupExpiredCodes",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/verification-code.ts",
+      "target": "function:infra/docker/api/src/verification-code.ts:canSendCode",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/verification-code.ts",
+      "target": "function:infra/docker/api/src/verification-code.ts:canSendCode",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/verification-code.ts",
+      "target": "function:infra/docker/api/src/verification-code.ts:initVerificationCodeCollection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:infra/docker/api/src/verification-code.ts",
+      "target": "function:infra/docker/api/src/verification-code.ts:initVerificationCodeCollection",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:infra/docker/api/src/account-lockout.ts",
+      "target": "file:infra/docker/api/src/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/account-lockout.ts",
+      "target": "file:infra/docker/api/src/pb.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/audit-log.ts",
+      "target": "file:infra/docker/api/src/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/audit-log.ts",
+      "target": "file:infra/docker/api/src/pb.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth-middleware.ts",
+      "target": "file:infra/docker/api/src/token-blacklist.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/change-password.ts",
+      "target": "file:infra/docker/api/src/auth-middleware.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/change-password.ts",
+      "target": "file:infra/docker/api/src/pb.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/change-password.ts",
+      "target": "file:infra/docker/api/src/rate-limit.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/change-password.ts",
+      "target": "file:infra/docker/api/src/token-blacklist.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/change-password.ts",
+      "target": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/check-email.ts",
+      "target": "file:infra/docker/api/src/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/check-email.ts",
+      "target": "file:infra/docker/api/src/pb.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/check-email.ts",
+      "target": "file:infra/docker/api/src/rate-limit.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/login.ts",
+      "target": "file:infra/docker/api/src/account-lockout.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/login.ts",
+      "target": "file:infra/docker/api/src/audit-log.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/login.ts",
+      "target": "file:infra/docker/api/src/pb.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/login.ts",
+      "target": "file:infra/docker/api/src/rate-limit.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/login.ts",
+      "target": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/logout.ts",
+      "target": "file:infra/docker/api/src/audit-log.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/logout.ts",
+      "target": "file:infra/docker/api/src/auth-middleware.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/logout.ts",
+      "target": "file:infra/docker/api/src/rate-limit.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/logout.ts",
+      "target": "file:infra/docker/api/src/token-blacklist.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/logout.ts",
+      "target": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/me.ts",
+      "target": "file:infra/docker/api/src/auth-middleware.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/me.ts",
+      "target": "file:infra/docker/api/src/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/me.ts",
+      "target": "file:infra/docker/api/src/pb.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/me.ts",
+      "target": "file:infra/docker/api/src/rate-limit.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/mfa.ts",
+      "target": "file:infra/docker/api/src/audit-log.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/mfa.ts",
+      "target": "file:infra/docker/api/src/auth-middleware.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/mfa.ts",
+      "target": "file:infra/docker/api/src/mfa.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/rbac.ts",
+      "target": "file:infra/docker/api/src/audit-log.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/rbac.ts",
+      "target": "file:infra/docker/api/src/auth-middleware.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/rbac.ts",
+      "target": "file:infra/docker/api/src/rbac.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/refresh.ts",
+      "target": "file:infra/docker/api/src/config.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/refresh.ts",
+      "target": "file:infra/docker/api/src/rate-limit.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/refresh.ts",
+      "target": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/register.ts",
+      "target": "file:infra/docker/api/src/audit-log.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/register.ts",
+      "target": "file:infra/docker/api/src/auth-middleware.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/register.ts",
+      "target": "file:infra/docker/api/src/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/register.ts",
+      "target": "file:infra/docker/api/src/pb.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/register.ts",
+      "target": "file:infra/docker/api/src/rate-limit.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/register.ts",
+      "target": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/register.ts",
+      "target": "file:infra/docker/api/src/verification-code.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/reset-password.ts",
+      "target": "file:infra/docker/api/src/auth-middleware.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/reset-password.ts",
+      "target": "file:infra/docker/api/src/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/reset-password.ts",
+      "target": "file:infra/docker/api/src/pb.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/reset-password.ts",
+      "target": "file:infra/docker/api/src/rate-limit.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/reset-password.ts",
+      "target": "file:infra/docker/api/src/token-blacklist.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/reset-password.ts",
+      "target": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/reset-password.ts",
+      "target": "file:infra/docker/api/src/verification-code.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/send-code.ts",
+      "target": "file:infra/docker/api/src/config.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/send-code.ts",
+      "target": "file:infra/docker/api/src/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/send-code.ts",
+      "target": "file:infra/docker/api/src/pb.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/send-code.ts",
+      "target": "file:infra/docker/api/src/rate-limit.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/send-code.ts",
+      "target": "file:infra/docker/api/src/verification-code.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/wechat.ts",
+      "target": "file:infra/docker/api/src/auth-middleware.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/wechat.ts",
+      "target": "file:infra/docker/api/src/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/wechat.ts",
+      "target": "file:infra/docker/api/src/pb.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/wechat.ts",
+      "target": "file:infra/docker/api/src/rate-limit.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/auth/wechat.ts",
+      "target": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/account-lockout.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/audit-log.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/auth/change-password.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/auth/check-email.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/auth/login.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/auth/logout.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/auth/me.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/auth/mfa.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/auth/rbac.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/auth/refresh.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/auth/register.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/auth/reset-password.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/auth/send-code.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/auth/wechat.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/config.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/mfa.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/monitoring.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/plan.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/push.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/rbac.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/setup.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/token-blacklist.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/index.ts",
+      "target": "file:infra/docker/api/src/verification-code.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/mfa.ts",
+      "target": "file:infra/docker/api/src/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/mfa.ts",
+      "target": "file:infra/docker/api/src/pb.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/plan.ts",
+      "target": "file:infra/docker/api/src/auth-middleware.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/plan.ts",
+      "target": "file:infra/docker/api/src/config.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/plan.ts",
+      "target": "file:infra/docker/api/src/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/plan.ts",
+      "target": "file:infra/docker/api/src/pb.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/plan.ts",
+      "target": "file:infra/docker/api/src/rate-limit.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/push.ts",
+      "target": "file:infra/docker/api/src/auth-middleware.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/push.ts",
+      "target": "file:infra/docker/api/src/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/push.ts",
+      "target": "file:infra/docker/api/src/pb.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/push.ts",
+      "target": "file:infra/docker/api/src/rate-limit.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/rbac.ts",
+      "target": "file:infra/docker/api/src/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/rbac.ts",
+      "target": "file:infra/docker/api/src/pb.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/setup.ts",
+      "target": "file:infra/docker/api/src/pb.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/setup.ts",
+      "target": "file:infra/docker/api/src/rate-limit.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/token-blacklist.ts",
+      "target": "file:infra/docker/api/src/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/token-blacklist.ts",
+      "target": "file:infra/docker/api/src/pb.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "target": "file:infra/docker/api/src/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/token-refresh-rotation.ts",
+      "target": "file:infra/docker/api/src/pb.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/verification-code.ts",
+      "target": "file:infra/docker/api/src/errors.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:infra/docker/api/src/verification-code.ts",
+      "target": "file:infra/docker/api/src/pb.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    }
+  ]
+}

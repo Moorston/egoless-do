@@ -1,0 +1,528 @@
+[
+  {
+    "path": "packages/core/src/zod/index.ts",
+    "resolved": "packages\\core\\src\\zod\\index.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 2,
+    "totalLines": 2,
+    "nonEmpty": 2,
+    "funcs": [],
+    "classes": [],
+    "exports": [],
+    "callGraph": [],
+    "imports": [],
+    "headerComments": [
+      "─── Zod schema exports ──────────────────────────────────────────"
+    ],
+    "firstLines": "// ─── Zod schema exports ──────────────────────────────────────────\nexport * from './schemas';\n"
+  },
+  {
+    "path": "packages/core/src/zod/schemas.test.ts",
+    "resolved": "packages\\core\\src\\zod\\schemas.test.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 145,
+    "totalLines": 145,
+    "nonEmpty": 127,
+    "funcs": [],
+    "classes": [],
+    "exports": [],
+    "callGraph": [],
+    "imports": [
+      "packages/core/src/zod/schemas.ts"
+    ],
+    "headerComments": [],
+    "firstLines": "import { describe, it, expect } from 'vitest';\nimport {\n  CheckinEntrySchema,\n  HabitSchema,\n  ReflectionSchema,\n  FastingSessionSchema,"
+  },
+  {
+    "path": "packages/core/src/zod/schemas.ts",
+    "resolved": "packages\\core\\src\\zod\\schemas.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 178,
+    "totalLines": 178,
+    "nonEmpty": 149,
+    "funcs": [
+      {
+        "name": "safeParse",
+        "params": [
+          "schema",
+          "data"
+        ],
+        "start": 153,
+        "end": 159
+      },
+      {
+        "name": "validate",
+        "params": [
+          "schema",
+          "data"
+        ],
+        "start": 162,
+        "end": 167
+      },
+      {
+        "name": "validateRows",
+        "params": [
+          "schema",
+          "rows"
+        ],
+        "start": 170,
+        "end": 178
+      }
+    ],
+    "classes": [],
+    "exports": [
+      "AuthUserSchema",
+      "AuthResponseSchema",
+      "TokenResponseSchema",
+      "SyncableSchema",
+      "CheckinEntrySchema",
+      "HabitSchema",
+      "ReflectionSchema",
+      "FastingSessionSchema",
+      "FoodEntrySchema",
+      "ExerciseEntrySchema",
+      "PlanSchema",
+      "SleepEntrySchema",
+      "ThoughtTrailSchema",
+      "UserProfileSchema",
+      "RecycleBinItemSchema",
+      "SyncPullDataSchema",
+      "AuthSettingsSchema",
+      "AppSettingsSchema",
+      "safeParse",
+      "validate",
+      "validateRows"
+    ],
+    "callGraph": [
+      "safeParse->schema.safeParse@157",
+      "validate->schema.parse@166",
+      "validateRows->rows\n    .map(row => schema.safeParse(row))\n    .filter((result): result is { success: true; data: z.infer<T> } => result.success)\n    .map@174",
+      "validateRows->rows\n    .map(row => schema.safeParse(row))\n    .filter@174",
+      "validateRows->rows\n    .map@174",
+      "validateRows->schema.safeParse@175"
+    ],
+    "imports": [],
+    "headerComments": [
+      "─── Zod schemas for runtime type validation ────────────────────",
+      "Used for validating network data (API responses, sync payloads).",
+      "Import from '@egoless-do/core' or '@egoless-do/core/zod'."
+    ],
+    "firstLines": "// ─── Zod schemas for runtime type validation ────────────────────\n// Used for validating network data (API responses, sync payloads).\n// Import from '@egoless-do/core' or '@egoless-do/core/zod'.\n\nimport { z } from 'zod';\n"
+  },
+  {
+    "path": "packages/core/tsconfig.json",
+    "resolved": "packages\\core\\tsconfig.json",
+    "language": "json",
+    "fileCategory": "config",
+    "sizeLines": 17,
+    "totalLines": 17,
+    "nonEmpty": 17,
+    "funcs": [],
+    "classes": [],
+    "exports": [],
+    "callGraph": [],
+    "imports": [],
+    "headerComments": [],
+    "firstLines": "{\n  \"extends\": \"../config/tsconfig.base.json\",\n  \"compilerOptions\": {\n    \"target\": \"ES2020\",\n    \"module\": \"CommonJS\",\n    \"moduleResolution\": \"node\","
+  },
+  {
+    "path": "packages/core/vitest.config.ts",
+    "resolved": "packages\\core\\vitest.config.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 8,
+    "totalLines": 8,
+    "nonEmpty": 7,
+    "funcs": [],
+    "classes": [],
+    "exports": [],
+    "callGraph": [],
+    "imports": [],
+    "headerComments": [],
+    "firstLines": "import { defineConfig } from 'vitest/config';\n\nexport default defineConfig({\n  test: {\n    include: ['src/**/*.test.ts'],\n    globals: true,"
+  },
+  {
+    "path": "patches/expo-audio@57.0.0.patch",
+    "resolved": "patches\\expo-audio@57.0.0.patch",
+    "language": "patch",
+    "fileCategory": "code",
+    "sizeLines": 22,
+    "totalLines": 22,
+    "nonEmpty": 22,
+    "funcs": [],
+    "classes": [],
+    "exports": [],
+    "callGraph": [],
+    "imports": [],
+    "headerComments": [],
+    "firstLines": "diff --git a/build/ExpoAudio.js b/build/ExpoAudio.js\nindex 977ef78d69ddfa720f7897ee8f6392be9f33d988..4ee5701749a19aed8afbcc6c805584795afc6d84 100644\n--- a/build/ExpoAudio.js\n+++ b/build/ExpoAudio.js\n@@ -75,7 +75,7 @@ export function useAudioPlayer(source = null, options = {}) {\n     const initialSource = useMemo(() => {"
+  },
+  {
+    "path": "patches/expo-image-picker@57.0.2.patch",
+    "resolved": "patches\\expo-image-picker@57.0.2.patch",
+    "language": "patch",
+    "fileCategory": "code",
+    "sizeLines": 15,
+    "totalLines": 16,
+    "nonEmpty": 15,
+    "funcs": [],
+    "classes": [],
+    "exports": [],
+    "callGraph": [],
+    "imports": [],
+    "headerComments": [],
+    "firstLines": "diff --git a/src/ImagePicker.ts b/src/ImagePicker.ts\nindex abc123..def456 100644\n--- a/src/ImagePicker.ts\n+++ b/src/ImagePicker.ts\n@@ -1,10 +1,10 @@\n import {"
+  },
+  {
+    "path": "scripts/cleanup_all_ghosts.mjs",
+    "resolved": "scripts\\cleanup_all_ghosts.mjs",
+    "language": "javascript",
+    "fileCategory": "code",
+    "sizeLines": 249,
+    "totalLines": 249,
+    "nonEmpty": 208,
+    "funcs": [
+      {
+        "name": "decodeUtf8",
+        "params": [
+          "arr"
+        ],
+        "start": 22,
+        "end": 33
+      },
+      {
+        "name": "parseData",
+        "params": [
+          "data"
+        ],
+        "start": 36,
+        "end": 43
+      },
+      {
+        "name": "main",
+        "params": [],
+        "start": 183,
+        "end": 247
+      }
+    ],
+    "classes": [],
+    "exports": [],
+    "callGraph": [
+      "decodeUtf8->String.fromCharCode@26",
+      "decodeUtf8->String.fromCharCode@27",
+      "decodeUtf8->String.fromCharCode@28",
+      "decodeUtf8->String.fromCodePoint@29",
+      "decodeUtf8->String.fromCharCode@30",
+      "parseData->Array.isArray@37",
+      "parseData->JSON.parse@38",
+      "parseData->Array.isArray@39",
+      "parseData->data.every@39",
+      "parseData->JSON.parse@40",
+      "parseData->decodeUtf8@40",
+      "main->console.log@184",
+      "main->fetch@185",
+      "main->JSON.stringify@188",
+      "main->console.error@191",
+      "main->authRes.text@191",
+      "main->process.exit@192",
+      "main->authRes.json@194",
+      "main->console.log@195",
+      "main->fetch@209",
+      "main->console.error@210",
+      "main->res.json@211",
+      "main->parseData@213",
+      "main->check@214",
+      "main->ghostIds.push@215",
+      "main->ghostInfos.push@223",
+      "main->console.log@231",
+      "main->console.log@233",
+      "main->fetch@237",
+      "main->console.error@239",
+      "main->console.log@242",
+      "main->console.log@246"
+    ],
+    "imports": [],
+    "headerComments": [],
+    "firstLines": "#!/usr/bin/env node\n/**\n * Cleanup ghost entries (deleted=true OR unparseable data) from ALL PocketBase sync collections.\n * Run: node scripts/cleanup_all_ghosts.mjs\n *\n * Ghost types:"
+  },
+  {
+    "path": "scripts/cleanup_completed_plans.mjs",
+    "resolved": "scripts\\cleanup_completed_plans.mjs",
+    "language": "javascript",
+    "fileCategory": "code",
+    "sizeLines": 212,
+    "totalLines": 213,
+    "nonEmpty": 185,
+    "funcs": [
+      {
+        "name": "decodeUtf8",
+        "params": [
+          "arr"
+        ],
+        "start": 25,
+        "end": 36
+      },
+      {
+        "name": "parseData",
+        "params": [
+          "data"
+        ],
+        "start": 39,
+        "end": 46
+      },
+      {
+        "name": "fetchAll",
+        "params": [
+          "headers",
+          "coll",
+          "filter"
+        ],
+        "start": 49,
+        "end": 63
+      },
+      {
+        "name": "deleteRecord",
+        "params": [
+          "headers",
+          "coll",
+          "id"
+        ],
+        "start": 66,
+        "end": 69
+      },
+      {
+        "name": "main",
+        "params": [],
+        "start": 71,
+        "end": 211
+      }
+    ],
+    "classes": [],
+    "exports": [],
+    "callGraph": [
+      "decodeUtf8->String.fromCharCode@29",
+      "decodeUtf8->String.fromCharCode@30",
+      "decodeUtf8->String.fromCharCode@31",
+      "decodeUtf8->String.fromCodePoint@32",
+      "decodeUtf8->String.fromCharCode@33",
+      "parseData->Array.isArray@40",
+      "parseData->JSON.parse@41",
+      "parseData->Array.isArray@42",
+      "parseData->data.every@42",
+      "parseData->JSON.parse@43",
+      "parseData->decodeUtf8@43",
+      "fetchAll->encodeURIComponent@54",
+      "fetchAll->fetch@55",
+      "fetchAll->console.error@56",
+      "fetchAll->res.json@57",
+      "fetchAll->items.push@58",
+      "deleteRecord->fetch@67",
+      "main->console.log@72",
+      "main->fetch@73",
+      "main->JSON.stringify@76",
+      "main->console.error@79",
+      "main->authRes.text@79",
+      "main->process.exit@80",
+      "main->authRes.json@82",
+      "main->console.log@84",
+      "main->console.log@87",
+      "main->fetchAll@88",
+      "main->parseData@92",
+      "main->completedPlans.push@94",
+      "main->console.log@99",
+      "main->console.log@103",
+      "main->console.log@105",
+      "main->completedPlans.map@108",
+      "main->completedPlans.map@109",
+      "main->console.log@112",
+      "main->fetchAll@113",
+      "main->parseData@117",
+      "main->planIdSet.has@119",
+      "main->planItemsToDelete.push@120",
+      "main->planItemsToDelete.map@124",
+      "main->console.log@126",
+      "main->deleteRecord@129",
+      "main->console.log@131",
+      "main->console.log@134",
+      "main->fetchAll@135",
+      "main->parseData@139",
+      "main->planItemIdSet.has@141",
+      "main->checkinsToDelete.push@142",
+      "main->console.log@146",
+      "main->deleteRecord@149",
+      "main->console.log@151",
+      "main->console.log@154",
+      "main->fetchAll@155",
+      "main->parseData@159",
+      "main->planIdSet.has@161",
+      "main->todosToDelete.push@162",
+      "main->console.log@166",
+      "main->deleteRecord@169",
+      "main->console.log@171",
+      "main->console.log@174",
+      "main->fetchAll@175",
+      "main->parseData@179",
+      "main->planIdSet.has@181",
+      "main->historyToDelete.push@182",
+      "main->console.log@186",
+      "main->deleteRecord@189",
+      "main->console.log@191",
+      "main->console.log@194",
+      "main->deleteRecord@197",
+      "main->console.log@199",
+      "main->console.log@203",
+      "main->console.log@204",
+      "main->console.log@205",
+      "main->console.log@206",
+      "main->console.log@207",
+      "main->console.log@208",
+      "main->console.log@209",
+      "main->console.log@210"
+    ],
+    "imports": [],
+    "headerComments": [],
+    "firstLines": "#!/usr/bin/env node\n/**\n * Delete completed plans and all their associated data from PocketBase.\n *\n * Cascade:\n *   plans (status=completed)"
+  },
+  {
+    "path": "scripts/cleanup_ghost_foods.mjs",
+    "resolved": "scripts\\cleanup_ghost_foods.mjs",
+    "language": "javascript",
+    "fileCategory": "code",
+    "sizeLines": 99,
+    "totalLines": 99,
+    "nonEmpty": 85,
+    "funcs": [
+      {
+        "name": "decodeUtf8",
+        "params": [
+          "arr"
+        ],
+        "start": 18,
+        "end": 29
+      },
+      {
+        "name": "parseData",
+        "params": [
+          "data"
+        ],
+        "start": 32,
+        "end": 39
+      },
+      {
+        "name": "main",
+        "params": [],
+        "start": 41,
+        "end": 97
+      }
+    ],
+    "classes": [],
+    "exports": [],
+    "callGraph": [
+      "decodeUtf8->String.fromCharCode@22",
+      "decodeUtf8->String.fromCharCode@23",
+      "decodeUtf8->String.fromCharCode@24",
+      "decodeUtf8->String.fromCodePoint@25",
+      "decodeUtf8->String.fromCharCode@26",
+      "parseData->Array.isArray@33",
+      "parseData->JSON.parse@34",
+      "parseData->Array.isArray@35",
+      "parseData->JSON.parse@36",
+      "parseData->decodeUtf8@36",
+      "main->console.log@42",
+      "main->fetch@43",
+      "main->JSON.stringify@46",
+      "main->console.error@49",
+      "main->authRes.text@49",
+      "main->process.exit@50",
+      "main->authRes.json@52",
+      "main->console.log@53",
+      "main->fetch@63",
+      "main->console.error@64",
+      "main->res.json@65",
+      "main->allItems.push@66",
+      "main->console.log@71",
+      "main->parseData@76",
+      "main->ghostIds.push@78",
+      "main->console.log@79",
+      "main->console.log@84",
+      "main->console.log@88",
+      "main->fetch@91",
+      "main->console.error@93",
+      "main->console.log@96"
+    ],
+    "imports": [],
+    "headerComments": [],
+    "firstLines": "#!/usr/bin/env node\n/**\n * Cleanup ghost food entries (empty name) from PocketBase server.\n * Handles data stored as byte array (char codes) or JSON string.\n * Run: node scripts/cleanup_ghost_foods.mjs\n */"
+  },
+  {
+    "path": "scripts/clear-business-data.sh",
+    "resolved": "scripts\\clear-business-data.sh",
+    "language": "shell",
+    "fileCategory": "script",
+    "sizeLines": 117,
+    "totalLines": 117,
+    "nonEmpty": 101,
+    "funcs": [],
+    "classes": [],
+    "exports": [],
+    "callGraph": [],
+    "imports": [],
+    "headerComments": [],
+    "firstLines": "#!/bin/bash\n# ─── 清空 PocketBase 业务数据脚本 ───────────────────────────────\n# 保留系统/配置数据：user_profiles, push_tokens, ai_configs, custom_wuxing_maps\n# 清空所有业务数据\n\nset -e"
+  },
+  {
+    "path": "scripts/clear-business-data.sql",
+    "resolved": "scripts\\clear-business-data.sql",
+    "language": "sql",
+    "fileCategory": "data",
+    "sizeLines": 85,
+    "totalLines": 85,
+    "nonEmpty": 81,
+    "funcs": [],
+    "classes": [],
+    "exports": [],
+    "callGraph": [],
+    "imports": [],
+    "headerComments": [],
+    "firstLines": "-- ─── 清空 PocketBase 业务数据 ───────────────────────────────────\n-- 保留系统/配置数据：user_profiles, push_tokens, ai_configs, custom_wuxing_maps\n-- 清空所有业务数据\n\n-- 开始事务\nBEGIN TRANSACTION;"
+  },
+  {
+    "path": "setup.ts",
+    "resolved": "setup.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 23,
+    "totalLines": 23,
+    "nonEmpty": 20,
+    "funcs": [],
+    "classes": [],
+    "exports": [],
+    "callGraph": [],
+    "imports": [],
+    "headerComments": [
+      "─── Test setup ───────────────────────────────────────────────────",
+      "Global test configuration and mocks.",
+      "@ts-expect-error — React Native global not available in test env"
+    ],
+    "firstLines": "// ─── Test setup ───────────────────────────────────────────────────\n// Global test configuration and mocks.\n\n// @ts-expect-error — React Native global not available in test env\nglobalThis.__DEV__ = false;\n"
+  },
+  {
+    "path": "vitest.config.ts",
+    "resolved": "vitest.config.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 21,
+    "totalLines": 21,
+    "nonEmpty": 20,
+    "funcs": [],
+    "classes": [],
+    "exports": [],
+    "callGraph": [],
+    "imports": [],
+    "headerComments": [],
+    "firstLines": "import { defineConfig } from 'vitest/config';\r\nimport path from 'path';\r\n\r\nexport default defineConfig({\r\n  test: {\r\n    globals: true,\r"
+  }
+]

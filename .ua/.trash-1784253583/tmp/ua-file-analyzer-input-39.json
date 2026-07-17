@@ -1,0 +1,35 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/design.md",
+      "language": "markdown",
+      "sizeLines": 148,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/implement.md",
+      "language": "markdown",
+      "sizeLines": 135,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/prd.md",
+      "language": "markdown",
+      "sizeLines": 133,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/task.json",
+      "language": "json",
+      "sizeLines": 25,
+      "fileCategory": "config"
+    }
+  ],
+  "batchImportData": {
+    ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/design.md": [],
+    ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/implement.md": [],
+    ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/task.json": []
+  }
+}

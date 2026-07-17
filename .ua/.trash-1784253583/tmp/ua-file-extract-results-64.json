@@ -1,0 +1,781 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 25,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp",
+      "language": "webp",
+      "fileCategory": "code",
+      "totalLines": 28,
+      "nonEmptyLines": 28,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/values-night/colors.xml",
+      "language": "xml",
+      "fileCategory": "config",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/gradle/wrapper/gradle-wrapper.jar",
+      "language": "jar",
+      "fileCategory": "code",
+      "totalLines": 158,
+      "nonEmptyLines": 156,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/gradle/wrapper/gradle-wrapper.properties",
+      "language": "properties",
+      "fileCategory": "config",
+      "totalLines": 7,
+      "nonEmptyLines": 7,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/gradlew",
+      "language": "unknown",
+      "fileCategory": "code",
+      "totalLines": 251,
+      "nonEmptyLines": 223,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/babel.config.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 9,
+      "nonEmptyLines": 9,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/ios/.xcode.env",
+      "language": "config",
+      "fileCategory": "config",
+      "totalLines": 11,
+      "nonEmptyLines": 10,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "definitionCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/ios/app.xcodeproj/project.pbxproj",
+      "language": "pbxproj",
+      "fileCategory": "code",
+      "totalLines": 436,
+      "nonEmptyLines": 425,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/ios/app.xcodeproj/xcshareddata/xcschemes/app.xcscheme",
+      "language": "xcscheme",
+      "fileCategory": "code",
+      "totalLines": 88,
+      "nonEmptyLines": 88,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/ios/app/app-Bridging-Header.h",
+      "language": "c",
+      "fileCategory": "code",
+      "totalLines": 3,
+      "nonEmptyLines": 3,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/ios/app/app.entitlements",
+      "language": "entitlements",
+      "fileCategory": "code",
+      "totalLines": 8,
+      "nonEmptyLines": 8,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/ios/app/AppDelegate.swift",
+      "language": "swift",
+      "fileCategory": "code",
+      "totalLines": 70,
+      "nonEmptyLines": 59,
+      "functions": [
+        {
+          "name": "application",
+          "startLine": 12,
+          "endLine": 33,
+          "params": [
+            "application",
+            "launchOptions"
+          ]
+        },
+        {
+          "name": "application",
+          "startLine": 36,
+          "endLine": 42,
+          "params": [
+            "app",
+            "url",
+            "options"
+          ]
+        },
+        {
+          "name": "application",
+          "startLine": 45,
+          "endLine": 52,
+          "params": [
+            "application",
+            "userActivity",
+            "restorationHandler"
+          ]
+        },
+        {
+          "name": "sourceURL",
+          "startLine": 58,
+          "endLine": 61,
+          "params": [
+            "bridge"
+          ]
+        },
+        {
+          "name": "bundleURL",
+          "startLine": 63,
+          "endLine": 69,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "AppDelegate",
+          "startLine": 5,
+          "endLine": 53,
+          "methods": [
+            "application",
+            "application",
+            "application"
+          ],
+          "properties": [
+            "window",
+            "reactNativeDelegate",
+            "reactNativeFactory"
+          ]
+        },
+        {
+          "name": "ReactNativeDelegate",
+          "startLine": 55,
+          "endLine": 70,
+          "methods": [
+            "sourceURL",
+            "bundleURL"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "window",
+          "line": 7,
+          "isDefault": false
+        },
+        {
+          "name": "reactNativeDelegate",
+          "line": 9,
+          "isDefault": false
+        },
+        {
+          "name": "reactNativeFactory",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "application",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "application",
+          "line": 36,
+          "isDefault": false
+        },
+        {
+          "name": "application",
+          "line": 45,
+          "isDefault": false
+        },
+        {
+          "name": "AppDelegate",
+          "line": 5,
+          "isDefault": false
+        },
+        {
+          "name": "sourceURL",
+          "line": 58,
+          "isDefault": false
+        },
+        {
+          "name": "bundleURL",
+          "line": 63,
+          "isDefault": false
+        },
+        {
+          "name": "ReactNativeDelegate",
+          "line": 55,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "application",
+          "callee": "ReactNativeDelegate",
+          "lineNumber": 16
+        },
+        {
+          "caller": "application",
+          "callee": "ExpoReactNativeFactory",
+          "lineNumber": 17
+        },
+        {
+          "caller": "application",
+          "callee": "RCTAppDependencyProvider",
+          "lineNumber": 18
+        },
+        {
+          "caller": "application",
+          "callee": "bindReactNativeFactory",
+          "lineNumber": 22
+        },
+        {
+          "caller": "application",
+          "callee": "UIWindow",
+          "lineNumber": 25
+        },
+        {
+          "caller": "application",
+          "callee": "startReactNative",
+          "lineNumber": 26
+        },
+        {
+          "caller": "application",
+          "callee": "super.application",
+          "lineNumber": 32
+        },
+        {
+          "caller": "application",
+          "callee": "super.application",
+          "lineNumber": 41
+        },
+        {
+          "caller": "application",
+          "callee": "RCTLinkingManager.application",
+          "lineNumber": 41
+        },
+        {
+          "caller": "application",
+          "callee": "RCTLinkingManager.application",
+          "lineNumber": 50
+        },
+        {
+          "caller": "application",
+          "callee": "super.application",
+          "lineNumber": 51
+        },
+        {
+          "caller": "sourceURL",
+          "callee": "bundleURL",
+          "lineNumber": 60
+        },
+        {
+          "caller": "bundleURL",
+          "callee": "RCTBundleURLProvider.sharedSettings().jsBundleURL",
+          "lineNumber": 65
+        },
+        {
+          "caller": "bundleURL",
+          "callee": "RCTBundleURLProvider.sharedSettings",
+          "lineNumber": 65
+        },
+        {
+          "caller": "bundleURL",
+          "callee": "Bundle.main.url",
+          "lineNumber": 67
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 10,
+        "functionCount": 5,
+        "classCount": 2
+      }
+    },
+    {
+      "path": "apps/mobile/ios/app/Images.xcassets/AppIcon.appiconset/Contents.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 14,
+      "nonEmptyLines": 14,
+      "sections": [
+        {
+          "heading": "images",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "info",
+          "level": 1,
+          "line": 10
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 2
+      }
+    },
+    {
+      "path": "apps/mobile/ios/app/Images.xcassets/Contents.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 6,
+      "nonEmptyLines": 6,
+      "sections": [
+        {
+          "heading": "info",
+          "level": 1,
+          "line": 2
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 1
+      }
+    },
+    {
+      "path": "apps/mobile/ios/app/Images.xcassets/SplashScreenBackground.colorset/Contents.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 20,
+      "nonEmptyLines": 20,
+      "sections": [
+        {
+          "heading": "colors",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "info",
+          "level": 1,
+          "line": 16
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 2
+      }
+    },
+    {
+      "path": "apps/mobile/ios/app/Images.xcassets/SplashScreenLegacy.imageset/Contents.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 23,
+      "nonEmptyLines": 23,
+      "sections": [
+        {
+          "heading": "images",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "info",
+          "level": 1,
+          "line": 19
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 2
+      }
+    },
+    {
+      "path": "apps/mobile/ios/app/Info.plist",
+      "language": "xml",
+      "fileCategory": "config",
+      "totalLines": 94,
+      "nonEmptyLines": 94,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/ios/app/SplashScreen.storyboard",
+      "language": "storyboard",
+      "fileCategory": "code",
+      "totalLines": 48,
+      "nonEmptyLines": 48,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/ios/app/Supporting/Expo.plist",
+      "language": "xml",
+      "fileCategory": "config",
+      "totalLines": 12,
+      "nonEmptyLines": 12,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/ios/Podfile",
+      "language": "unknown",
+      "fileCategory": "code",
+      "totalLines": 63,
+      "nonEmptyLines": 52,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/ios/Podfile.properties.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 4,
+      "nonEmptyLines": 4,
+      "sections": [
+        {
+          "heading": "expo.jsEngine",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "EX_DEV_CLIENT_NETWORK_INSPECTOR",
+          "level": 1,
+          "line": 3
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 2
+      }
+    },
+    {
+      "path": "apps/mobile/metro.config.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 43,
+      "nonEmptyLines": 35,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/__tests__/helpers/syncMocks.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 136,
+      "nonEmptyLines": 120,
+      "functions": [
+        {
+          "name": "createMockDb",
+          "startLine": 9,
+          "endLine": 19,
+          "params": []
+        },
+        {
+          "name": "createMockRowMappers",
+          "startLine": 27,
+          "endLine": 69,
+          "params": []
+        },
+        {
+          "name": "createMockSyncProgressStore",
+          "startLine": 73,
+          "endLine": 95,
+          "params": []
+        },
+        {
+          "name": "createMockStateStore",
+          "startLine": 99,
+          "endLine": 114,
+          "params": []
+        },
+        {
+          "name": "createMockApiSyncPullEntity",
+          "startLine": 118,
+          "endLine": 124,
+          "params": []
+        },
+        {
+          "name": "createAllSyncMocks",
+          "startLine": 128,
+          "endLine": 136,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "createMockDb",
+          "line": 9,
+          "isDefault": false
+        },
+        {
+          "name": "createMockRowMappers",
+          "line": 27,
+          "isDefault": false
+        },
+        {
+          "name": "createMockSyncProgressStore",
+          "line": 73,
+          "isDefault": false
+        },
+        {
+          "name": "createMockStateStore",
+          "line": 99,
+          "isDefault": false
+        },
+        {
+          "name": "createMockApiSyncPullEntity",
+          "line": 118,
+          "isDefault": false
+        },
+        {
+          "name": "createAllSyncMocks",
+          "line": 128,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "createMockDb",
+          "callee": "vi.fn().mockResolvedValue",
+          "lineNumber": 11
+        },
+        {
+          "caller": "createMockDb",
+          "callee": "vi.fn",
+          "lineNumber": 11
+        },
+        {
+          "caller": "createMockDb",
+          "callee": "vi.fn().mockResolvedValue",
+          "lineNumber": 12
+        },
+        {
+          "caller": "createMockDb",
+          "callee": "vi.fn",
+          "lineNumber": 12
+        },
+        {
+          "caller": "createMockDb",
+          "callee": "vi.fn().mockResolvedValue",
+          "lineNumber": 13
+        },
+        {
+          "caller": "createMockDb",
+          "callee": "vi.fn",
+          "lineNumber": 13
+        },
+        {
+          "caller": "createMockDb",
+          "callee": "vi.fn().mockResolvedValue",
+          "lineNumber": 14
+        },
+        {
+          "caller": "createMockDb",
+          "callee": "vi.fn",
+          "lineNumber": 14
+        },
+        {
+          "caller": "createMockDb",
+          "callee": "vi.fn().mockReturnValue",
+          "lineNumber": 15
+        },
+        {
+          "caller": "createMockDb",
+          "callee": "vi.fn",
+          "lineNumber": 15
+        },
+        {
+          "caller": "createMockDb",
+          "callee": "vi.fn().mockReturnValue",
+          "lineNumber": 16
+        },
+        {
+          "caller": "createMockDb",
+          "callee": "vi.fn",
+          "lineNumber": 16
+        },
+        {
+          "caller": "createMockDb",
+          "callee": "vi.fn().mockReturnValue",
+          "lineNumber": 17
+        },
+        {
+          "caller": "createMockDb",
+          "callee": "vi.fn",
+          "lineNumber": 17
+        },
+        {
+          "caller": "createMockSyncProgressStore",
+          "callee": "vi.fn",
+          "lineNumber": 77
+        },
+        {
+          "caller": "createMockSyncProgressStore",
+          "callee": "store.get",
+          "lineNumber": 77
+        },
+        {
+          "caller": "createMockSyncProgressStore",
+          "callee": "vi.fn",
+          "lineNumber": 78
+        },
+        {
+          "caller": "createMockSyncProgressStore",
+          "callee": "store.get",
+          "lineNumber": 79
+        },
+        {
+          "caller": "createMockSyncProgressStore",
+          "callee": "store.set",
+          "lineNumber": 80
+        },
+        {
+          "caller": "_setProgress",
+          "callee": "store.set",
+          "lineNumber": 84
+        },
+        {
+          "caller": "_getAll",
+          "callee": "Object.fromEntries",
+          "lineNumber": 88
+        },
+        {
+          "caller": "_clear",
+          "callee": "store.clear",
+          "lineNumber": 92
+        },
+        {
+          "caller": "createMockStateStore",
+          "callee": "vi.fn",
+          "lineNumber": 103
+        },
+        {
+          "caller": "createMockStateStore",
+          "callee": "store.get",
+          "lineNumber": 103
+        },
+        {
+          "caller": "createMockStateStore",
+          "callee": "vi.fn",
+          "lineNumber": 104
+        },
+        {
+          "caller": "createMockStateStore",
+          "callee": "store.set",
+          "lineNumber": 105
+        },
+        {
+          "caller": "_set",
+          "callee": "store.set",
+          "lineNumber": 108
+        },
+        {
+          "caller": "_get",
+          "callee": "store.get",
+          "lineNumber": 110
+        },
+        {
+          "caller": "_clear",
+          "callee": "store.clear",
+          "lineNumber": 112
+        },
+        {
+          "caller": "createMockApiSyncPullEntity",
+          "callee": "vi.fn",
+          "lineNumber": 119
+        },
+        {
+          "caller": "createAllSyncMocks",
+          "callee": "createMockDb",
+          "lineNumber": 130
+        },
+        {
+          "caller": "createAllSyncMocks",
+          "callee": "createMockRowMappers",
+          "lineNumber": 131
+        },
+        {
+          "caller": "createAllSyncMocks",
+          "callee": "createMockSyncProgressStore",
+          "lineNumber": 132
+        },
+        {
+          "caller": "createAllSyncMocks",
+          "callee": "createMockStateStore",
+          "lineNumber": 133
+        },
+        {
+          "caller": "createAllSyncMocks",
+          "callee": "createMockApiSyncPullEntity",
+          "lineNumber": 134
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 6,
+        "functionCount": 6,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/__tests__/integration.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 180,
+      "nonEmptyLines": 159,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/__tests__/performance.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 86,
+      "nonEmptyLines": 71,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    }
+  ]
+}

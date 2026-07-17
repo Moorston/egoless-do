@@ -1,0 +1,184 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": "apps/mobile/src/features/global-pulse/hooks/useGlobalTick.test.ts",
+      "language": "typescript",
+      "sizeLines": 126,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/home/index.ts",
+      "language": "typescript",
+      "sizeLines": 14,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/practice/hooks/useConversation.ts",
+      "language": "typescript",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/core/index.ts",
+      "language": "typescript",
+      "sizeLines": 19,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/hooks/index.ts",
+      "language": "typescript",
+      "sizeLines": 6,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.test.ts",
+      "language": "typescript",
+      "sizeLines": 116,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/hooks/useReflections.test.ts",
+      "language": "typescript",
+      "sizeLines": 81,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/hooks/useSearchHistory.test.ts",
+      "language": "typescript",
+      "sizeLines": 201,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/index.ts",
+      "language": "typescript",
+      "sizeLines": 8,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/insights/index.ts",
+      "language": "typescript",
+      "sizeLines": 11,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/review/index.ts",
+      "language": "typescript",
+      "sizeLines": 6,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/shared/index.ts",
+      "language": "typescript",
+      "sizeLines": 6,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/timeline/index.ts",
+      "language": "typescript",
+      "sizeLines": 4,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/sync/useSync.test.ts",
+      "language": "typescript",
+      "sizeLines": 105,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/hooks/usePagination.test.ts",
+      "language": "typescript",
+      "sizeLines": 75,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/store/initApp.test.ts",
+      "language": "typescript",
+      "sizeLines": 162,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/store/uiStore.test.ts",
+      "language": "typescript",
+      "sizeLines": 118,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/store/uiStore.ts",
+      "language": "typescript",
+      "sizeLines": 87,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/theme/index.ts",
+      "language": "typescript",
+      "sizeLines": 2,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/vitest.config.ts",
+      "language": "typescript",
+      "sizeLines": 18,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_data_backup/types.d.ts",
+      "language": "typescript",
+      "sizeLines": 20489,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_hooks/auth.pb.js",
+      "language": "javascript",
+      "sizeLines": 47,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_hooks/init.pb.js",
+      "language": "javascript",
+      "sizeLines": 8,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_hooks/main.pb.js",
+      "language": "javascript",
+      "sizeLines": 241,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_hooks/sync_push_pull.pb.js",
+      "language": "javascript",
+      "sizeLines": 271,
+      "fileCategory": "code"
+    }
+  ],
+  "batchImportData": {
+    "apps/mobile/src/features/global-pulse/hooks/useGlobalTick.test.ts": [],
+    "apps/mobile/src/features/home/index.ts": [],
+    "apps/mobile/src/features/practice/hooks/useConversation.ts": [],
+    "apps/mobile/src/features/reflections/core/index.ts": [],
+    "apps/mobile/src/features/reflections/hooks/index.ts": [],
+    "apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.test.ts": [],
+    "apps/mobile/src/features/reflections/hooks/useReflections.test.ts": [],
+    "apps/mobile/src/features/reflections/hooks/useSearchHistory.test.ts": [],
+    "apps/mobile/src/features/reflections/index.ts": [],
+    "apps/mobile/src/features/reflections/insights/index.ts": [],
+    "apps/mobile/src/features/reflections/review/index.ts": [],
+    "apps/mobile/src/features/reflections/shared/index.ts": [],
+    "apps/mobile/src/features/reflections/timeline/index.ts": [],
+    "apps/mobile/src/features/sync/useSync.test.ts": [],
+    "apps/mobile/src/hooks/usePagination.test.ts": [],
+    "apps/mobile/src/store/initApp.test.ts": [],
+    "apps/mobile/src/store/uiStore.test.ts": [
+      "apps/mobile/src/store/uiStore.ts"
+    ],
+    "apps/mobile/src/store/uiStore.ts": [],
+    "apps/mobile/src/theme/index.ts": [],
+    "apps/mobile/vitest.config.ts": [],
+    "backend/pb_data_backup/types.d.ts": [],
+    "backend/pb_hooks/auth.pb.js": [],
+    "backend/pb_hooks/init.pb.js": [],
+    "backend/pb_hooks/main.pb.js": [],
+    "backend/pb_hooks/sync_push_pull.pb.js": []
+  }
+}

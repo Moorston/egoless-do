@@ -1,0 +1,2759 @@
+{
+  "nodes": [
+    {
+      "id": "file:apps/mobile/src/features/home/components/DelayedReminder.tsx",
+      "type": "file",
+      "name": "DelayedReminder.tsx",
+      "filePath": "apps/mobile/src/features/home/components/DelayedReminder.tsx",
+      "summary": "首页模块的UI 组件\"DelayedReminder\"。主导出\"DelayedReminder\"。轻量实现。",
+      "tags": [
+        "首页",
+        "聚合",
+        "组件"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/components/DelayedReminder.tsx:DelayedReminder",
+      "type": "function",
+      "name": "DelayedReminder",
+      "filePath": "apps/mobile/src/features/home/components/DelayedReminder.tsx",
+      "lineRange": [
+        16,
+        40
+      ],
+      "summary": "首页的提醒组件\"DelayedReminder\"，用于展示延时/恩典等提醒交互。",
+      "tags": [
+        "组件",
+        "首页",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/components/GraceReminder.tsx",
+      "type": "file",
+      "name": "GraceReminder.tsx",
+      "filePath": "apps/mobile/src/features/home/components/GraceReminder.tsx",
+      "summary": "首页模块的UI 组件\"GraceReminder\"。主导出\"GraceReminder\"。轻量实现。",
+      "tags": [
+        "首页",
+        "聚合",
+        "组件"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/components/GraceReminder.tsx:GraceReminder",
+      "type": "function",
+      "name": "GraceReminder",
+      "filePath": "apps/mobile/src/features/home/components/GraceReminder.tsx",
+      "lineRange": [
+        13,
+        34
+      ],
+      "summary": "首页的提醒组件\"GraceReminder\"，用于展示延时/恩典等提醒交互。",
+      "tags": [
+        "组件",
+        "首页",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/components/HomeBubble.tsx",
+      "type": "file",
+      "name": "HomeBubble.tsx",
+      "filePath": "apps/mobile/src/features/home/components/HomeBubble.tsx",
+      "summary": "首页模块的UI 组件\"HomeBubble\"。轻量实现。",
+      "tags": [
+        "首页",
+        "聚合",
+        "组件"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/components/HomeFoodSection.tsx",
+      "type": "file",
+      "name": "HomeFoodSection.tsx",
+      "filePath": "apps/mobile/src/features/home/components/HomeFoodSection.tsx",
+      "summary": "首页模块的UI 组件\"HomeFoodSection\"。中等规模。",
+      "tags": [
+        "首页",
+        "聚合",
+        "组件"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/components/HomePlanSection.tsx",
+      "type": "file",
+      "name": "HomePlanSection.tsx",
+      "filePath": "apps/mobile/src/features/home/components/HomePlanSection.tsx",
+      "summary": "首页模块的UI 组件\"HomePlanSection\"。轻量实现。",
+      "tags": [
+        "首页",
+        "聚合",
+        "组件"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/components/ReviewView.tsx",
+      "type": "file",
+      "name": "ReviewView.tsx",
+      "filePath": "apps/mobile/src/features/home/components/ReviewView.tsx",
+      "summary": "首页模块的UI 组件\"ReviewView\"。主导出\"ReviewView\"。规模较大，承载较丰富的交互与样式逻辑。",
+      "tags": [
+        "首页",
+        "聚合",
+        "组件",
+        "大规模组件"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/components/ReviewView.tsx:ReviewView",
+      "type": "function",
+      "name": "ReviewView",
+      "filePath": "apps/mobile/src/features/home/components/ReviewView.tsx",
+      "lineRange": [
+        22,
+        581
+      ],
+      "summary": "首页的\"ReviewView\"功能。",
+      "tags": [
+        "组件",
+        "首页",
+        "导出函数"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/components/ReviewView.tsx:createStyles",
+      "type": "function",
+      "name": "createStyles",
+      "filePath": "apps/mobile/src/features/home/components/ReviewView.tsx",
+      "lineRange": [
+        589,
+        693
+      ],
+      "summary": "首页的\"createStyles\"，承担创建职责。",
+      "tags": [
+        "组件",
+        "首页",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/hooks/useDateNavigation.test.ts",
+      "type": "file",
+      "name": "useDateNavigation.test.ts",
+      "filePath": "apps/mobile/src/features/home/hooks/useDateNavigation.test.ts",
+      "summary": "首页模块的单元测试文件（renderHook），通过用例校验相关逻辑，保障模块行为稳定。",
+      "tags": [
+        "首页",
+        "聚合",
+        "测试",
+        "钩子"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/hooks/useDateNavigation.test.ts:renderHook",
+      "type": "function",
+      "name": "renderHook",
+      "filePath": "apps/mobile/src/features/home/hooks/useDateNavigation.test.ts",
+      "lineRange": [
+        24,
+        50
+      ],
+      "summary": "首页的\"renderHook\"，承担渲染职责。",
+      "tags": [
+        "测试",
+        "首页",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/hooks/useDateNavigation.ts",
+      "type": "file",
+      "name": "useDateNavigation.ts",
+      "filePath": "apps/mobile/src/features/home/hooks/useDateNavigation.ts",
+      "summary": "首页模块的自定义 Hook\"useDateNavigation\"，封装可复用的响应式状态与副作用逻辑，供多个组件消费。",
+      "tags": [
+        "首页",
+        "聚合",
+        "自定义Hook",
+        "钩子"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/hooks/useDateNavigation.ts:useDateNavigation",
+      "type": "function",
+      "name": "useDateNavigation",
+      "filePath": "apps/mobile/src/features/home/hooks/useDateNavigation.ts",
+      "lineRange": [
+        5,
+        37
+      ],
+      "summary": "\"useDateNavigation\"是首页的自定义 Hook，管理钩子相关的响应式状态与副作用逻辑。",
+      "tags": [
+        "自定义Hook",
+        "首页",
+        "钩子"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/screens/CheckinDetailScreen.tsx",
+      "type": "file",
+      "name": "CheckinDetailScreen.tsx",
+      "filePath": "apps/mobile/src/features/home/screens/CheckinDetailScreen.tsx",
+      "summary": "首页模块的页面\"CheckinDetailScreen\"。主导出\"CheckinDetailScreen\"。中等规模。",
+      "tags": [
+        "首页",
+        "聚合",
+        "页面",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/screens/CheckinDetailScreen.tsx:CheckinDetailScreen",
+      "type": "function",
+      "name": "CheckinDetailScreen",
+      "filePath": "apps/mobile/src/features/home/screens/CheckinDetailScreen.tsx",
+      "lineRange": [
+        47,
+        258
+      ],
+      "summary": "首页的页面组件\"CheckinDetailScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "页面",
+        "首页",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/screens/CheckinHistoryScreen.tsx",
+      "type": "file",
+      "name": "CheckinHistoryScreen.tsx",
+      "filePath": "apps/mobile/src/features/home/screens/CheckinHistoryScreen.tsx",
+      "summary": "首页模块的页面\"CheckinHistoryScreen\"。主导出\"CheckinHistoryScreen\"。中等规模。",
+      "tags": [
+        "首页",
+        "聚合",
+        "页面",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/screens/CheckinHistoryScreen.tsx:CheckinHistoryScreen",
+      "type": "function",
+      "name": "CheckinHistoryScreen",
+      "filePath": "apps/mobile/src/features/home/screens/CheckinHistoryScreen.tsx",
+      "lineRange": [
+        70,
+        297
+      ],
+      "summary": "首页的页面组件\"CheckinHistoryScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "页面",
+        "首页",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/screens/DayCheckinScreen.tsx",
+      "type": "file",
+      "name": "DayCheckinScreen.tsx",
+      "filePath": "apps/mobile/src/features/home/screens/DayCheckinScreen.tsx",
+      "summary": "首页模块的页面\"DayCheckinScreen\"。主导出\"DayCheckinScreen\"。规模较大，承载较丰富的交互与样式逻辑。",
+      "tags": [
+        "首页",
+        "聚合",
+        "页面",
+        "页面入口",
+        "大规模组件"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/screens/DayCheckinScreen.tsx:DayCheckinScreen",
+      "type": "function",
+      "name": "DayCheckinScreen",
+      "filePath": "apps/mobile/src/features/home/screens/DayCheckinScreen.tsx",
+      "lineRange": [
+        30,
+        437
+      ],
+      "summary": "首页的页面组件\"DayCheckinScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "页面",
+        "首页",
+        "页面入口"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/screens/FoodLogPage.tsx",
+      "type": "file",
+      "name": "FoodLogPage.tsx",
+      "filePath": "apps/mobile/src/features/home/screens/FoodLogPage.tsx",
+      "summary": "首页模块的页面\"FoodLogPage\"。主导出\"FoodLogPage\"。中等规模。",
+      "tags": [
+        "首页",
+        "聚合",
+        "页面",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/screens/FoodLogPage.tsx:FoodLogPage",
+      "type": "function",
+      "name": "FoodLogPage",
+      "filePath": "apps/mobile/src/features/home/screens/FoodLogPage.tsx",
+      "lineRange": [
+        13,
+        161
+      ],
+      "summary": "首页的页面组件\"FoodLogPage\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "页面",
+        "首页",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/screens/GlobalPulseScreen.tsx",
+      "type": "file",
+      "name": "GlobalPulseScreen.tsx",
+      "filePath": "apps/mobile/src/features/home/screens/GlobalPulseScreen.tsx",
+      "summary": "首页模块的页面\"GlobalPulseScreen\"。主导出\"GlobalPulseScreen\"。轻量实现。",
+      "tags": [
+        "首页",
+        "聚合",
+        "页面",
+        "页面入口"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/screens/GlobalPulseScreen.tsx:GlobalPulseScreen",
+      "type": "function",
+      "name": "GlobalPulseScreen",
+      "filePath": "apps/mobile/src/features/home/screens/GlobalPulseScreen.tsx",
+      "lineRange": [
+        19,
+        34
+      ],
+      "summary": "首页的页面组件\"GlobalPulseScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "页面",
+        "首页",
+        "页面入口"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/screens/GracePage.tsx",
+      "type": "file",
+      "name": "GracePage.tsx",
+      "filePath": "apps/mobile/src/features/home/screens/GracePage.tsx",
+      "summary": "首页模块的页面\"GracePage\"。主导出\"GracePage\"。中等规模。",
+      "tags": [
+        "首页",
+        "聚合",
+        "页面",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/screens/GracePage.tsx:GracePage",
+      "type": "function",
+      "name": "GracePage",
+      "filePath": "apps/mobile/src/features/home/screens/GracePage.tsx",
+      "lineRange": [
+        12,
+        250
+      ],
+      "summary": "首页的页面组件\"GracePage\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "页面",
+        "首页",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/screens/HomeScreen.tsx",
+      "type": "file",
+      "name": "HomeScreen.tsx",
+      "filePath": "apps/mobile/src/features/home/screens/HomeScreen.tsx",
+      "summary": "首页模块的页面\"HomeScreen\"。主导出\"HomeScreen\"。规模较大，承载较丰富的交互与样式逻辑。",
+      "tags": [
+        "首页",
+        "聚合",
+        "页面",
+        "页面入口",
+        "大规模组件"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/screens/HomeScreen.tsx:HomeScreen",
+      "type": "function",
+      "name": "HomeScreen",
+      "filePath": "apps/mobile/src/features/home/screens/HomeScreen.tsx",
+      "lineRange": [
+        44,
+        810
+      ],
+      "summary": "首页的页面组件\"HomeScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "页面",
+        "首页",
+        "页面入口"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/screens/ReviewDetailScreen.tsx",
+      "type": "file",
+      "name": "ReviewDetailScreen.tsx",
+      "filePath": "apps/mobile/src/features/home/screens/ReviewDetailScreen.tsx",
+      "summary": "首页模块的页面\"ReviewDetailScreen\"。主导出\"ReviewDetailScreen\"。中等规模。",
+      "tags": [
+        "首页",
+        "聚合",
+        "页面",
+        "页面入口"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/screens/ReviewDetailScreen.tsx:ReviewDetailScreen",
+      "type": "function",
+      "name": "ReviewDetailScreen",
+      "filePath": "apps/mobile/src/features/home/screens/ReviewDetailScreen.tsx",
+      "lineRange": [
+        20,
+        337
+      ],
+      "summary": "首页的页面组件\"ReviewDetailScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "页面",
+        "首页",
+        "页面入口"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/screens/ReviewHistoryScreen.tsx",
+      "type": "file",
+      "name": "ReviewHistoryScreen.tsx",
+      "filePath": "apps/mobile/src/features/home/screens/ReviewHistoryScreen.tsx",
+      "summary": "首页模块的页面\"ReviewHistoryScreen\"。主导出\"ReviewHistoryScreen\"。中等规模。",
+      "tags": [
+        "首页",
+        "聚合",
+        "页面",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/screens/ReviewHistoryScreen.tsx:ReviewHistoryScreen",
+      "type": "function",
+      "name": "ReviewHistoryScreen",
+      "filePath": "apps/mobile/src/features/home/screens/ReviewHistoryScreen.tsx",
+      "lineRange": [
+        13,
+        184
+      ],
+      "summary": "首页的页面组件\"ReviewHistoryScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "页面",
+        "首页",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/screens/StreakBreakScreen.tsx",
+      "type": "file",
+      "name": "StreakBreakScreen.tsx",
+      "filePath": "apps/mobile/src/features/home/screens/StreakBreakScreen.tsx",
+      "summary": "首页模块的页面\"StreakBreakScreen\"。主导出\"StreakBreakScreen\"。中等规模。",
+      "tags": [
+        "首页",
+        "聚合",
+        "页面",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/screens/StreakBreakScreen.tsx:StreakBreakScreen",
+      "type": "function",
+      "name": "StreakBreakScreen",
+      "filePath": "apps/mobile/src/features/home/screens/StreakBreakScreen.tsx",
+      "lineRange": [
+        15,
+        236
+      ],
+      "summary": "首页的页面组件\"StreakBreakScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "页面",
+        "首页",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/screens/StreakBreakScreen.tsx:MiniBarChart",
+      "type": "function",
+      "name": "MiniBarChart",
+      "filePath": "apps/mobile/src/features/home/screens/StreakBreakScreen.tsx",
+      "lineRange": [
+        238,
+        262
+      ],
+      "summary": "首页的图表组件\"MiniBarChart\"，将数据以可视化图形呈现。",
+      "tags": [
+        "页面",
+        "首页",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/mantra/MantraEngine.tsx",
+      "type": "file",
+      "name": "MantraEngine.tsx",
+      "filePath": "apps/mobile/src/features/mantra/MantraEngine.tsx",
+      "summary": "持咒模块的功能模块\"MantraEngine\"。主导出\"MantraEngine\"。中等规模。",
+      "tags": [
+        "持咒",
+        "修行",
+        "功能"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/mantra/MantraEngine.tsx:MantraEngine",
+      "type": "function",
+      "name": "MantraEngine",
+      "filePath": "apps/mobile/src/features/mantra/MantraEngine.tsx",
+      "lineRange": [
+        32,
+        246
+      ],
+      "summary": "持咒的核心服务/引擎\"MantraEngine\"，封装领域逻辑与流程控制。",
+      "tags": [
+        "功能",
+        "持咒",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/mantra/MantraHistoryScreen.tsx",
+      "type": "file",
+      "name": "MantraHistoryScreen.tsx",
+      "filePath": "apps/mobile/src/features/mantra/MantraHistoryScreen.tsx",
+      "summary": "持咒模块的功能模块\"MantraHistoryScreen\"。主导出\"MantraHistoryScreen\"。规模较大，承载较丰富的交互与样式逻辑。",
+      "tags": [
+        "持咒",
+        "修行",
+        "功能",
+        "页面入口",
+        "大规模组件"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/mantra/MantraHistoryScreen.tsx:MantraHistoryScreen",
+      "type": "function",
+      "name": "MantraHistoryScreen",
+      "filePath": "apps/mobile/src/features/mantra/MantraHistoryScreen.tsx",
+      "lineRange": [
+        12,
+        319
+      ],
+      "summary": "持咒的页面组件\"MantraHistoryScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "持咒",
+        "页面入口"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/mantra/MantraScreen.tsx",
+      "type": "file",
+      "name": "MantraScreen.tsx",
+      "filePath": "apps/mobile/src/features/mantra/MantraScreen.tsx",
+      "summary": "持咒模块的功能模块\"MantraScreen\"。主导出\"MantraScreen\"。轻量实现。",
+      "tags": [
+        "持咒",
+        "修行",
+        "功能",
+        "页面入口"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/mantra/MantraScreen.tsx:MantraScreen",
+      "type": "function",
+      "name": "MantraScreen",
+      "filePath": "apps/mobile/src/features/mantra/MantraScreen.tsx",
+      "lineRange": [
+        12,
+        24
+      ],
+      "summary": "持咒的页面组件\"MantraScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "持咒",
+        "页面入口"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/mantra/hooks/useMantraTimer.ts",
+      "type": "file",
+      "name": "useMantraTimer.ts",
+      "filePath": "apps/mobile/src/features/mantra/hooks/useMantraTimer.ts",
+      "summary": "持咒模块的自定义 Hook\"useMantraTimer\"，封装可复用的响应式状态与副作用逻辑，供多个组件消费。",
+      "tags": [
+        "持咒",
+        "修行",
+        "自定义Hook",
+        "钩子"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/mantra/hooks/useMantraTimer.ts:useMantraTimer",
+      "type": "function",
+      "name": "useMantraTimer",
+      "filePath": "apps/mobile/src/features/mantra/hooks/useMantraTimer.ts",
+      "lineRange": [
+        48,
+        253
+      ],
+      "summary": "\"useMantraTimer\"是持咒的自定义 Hook，管理钩子相关的响应式状态与副作用逻辑。",
+      "tags": [
+        "自定义Hook",
+        "持咒",
+        "钩子"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/mantra/pages/MantraActivePage.tsx",
+      "type": "file",
+      "name": "MantraActivePage.tsx",
+      "filePath": "apps/mobile/src/features/mantra/pages/MantraActivePage.tsx",
+      "summary": "持咒模块的子页面\"MantraActivePage\"。主导出\"MantraActivePage\"。轻量实现。",
+      "tags": [
+        "持咒",
+        "修行",
+        "子页面",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/mantra/pages/MantraActivePage.tsx:MantraActivePage",
+      "type": "function",
+      "name": "MantraActivePage",
+      "filePath": "apps/mobile/src/features/mantra/pages/MantraActivePage.tsx",
+      "lineRange": [
+        69,
+        150
+      ],
+      "summary": "持咒的页面组件\"MantraActivePage\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "子页面",
+        "持咒",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/mantra/pages/MantraReportPage.tsx",
+      "type": "file",
+      "name": "MantraReportPage.tsx",
+      "filePath": "apps/mobile/src/features/mantra/pages/MantraReportPage.tsx",
+      "summary": "持咒模块的子页面\"MantraReportPage\"。主导出\"MantraReportPage\"。中等规模。",
+      "tags": [
+        "持咒",
+        "修行",
+        "子页面",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/mantra/pages/MantraReportPage.tsx:MantraReportPage",
+      "type": "function",
+      "name": "MantraReportPage",
+      "filePath": "apps/mobile/src/features/mantra/pages/MantraReportPage.tsx",
+      "lineRange": [
+        99,
+        191
+      ],
+      "summary": "持咒的页面组件\"MantraReportPage\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "子页面",
+        "持咒",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/mantra/pages/MantraSelectPage.tsx",
+      "type": "file",
+      "name": "MantraSelectPage.tsx",
+      "filePath": "apps/mobile/src/features/mantra/pages/MantraSelectPage.tsx",
+      "summary": "持咒模块的子页面\"MantraSelectPage\"。主导出\"MantraSelectPage\"。中等规模。",
+      "tags": [
+        "持咒",
+        "修行",
+        "子页面",
+        "页面入口"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/mantra/pages/MantraSelectPage.tsx:MantraSelectPage",
+      "type": "function",
+      "name": "MantraSelectPage",
+      "filePath": "apps/mobile/src/features/mantra/pages/MantraSelectPage.tsx",
+      "lineRange": [
+        69,
+        240
+      ],
+      "summary": "持咒的页面组件\"MantraSelectPage\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "子页面",
+        "持咒",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/mantra/pages/MantraStartPage.tsx",
+      "type": "file",
+      "name": "MantraStartPage.tsx",
+      "filePath": "apps/mobile/src/features/mantra/pages/MantraStartPage.tsx",
+      "summary": "持咒模块的子页面\"MantraStartPage\"。主导出\"MantraStartPage\"。轻量实现。",
+      "tags": [
+        "持咒",
+        "修行",
+        "子页面",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/mantra/pages/MantraStartPage.tsx:MantraStartPage",
+      "type": "function",
+      "name": "MantraStartPage",
+      "filePath": "apps/mobile/src/features/mantra/pages/MantraStartPage.tsx",
+      "lineRange": [
+        60,
+        144
+      ],
+      "summary": "持咒的页面组件\"MantraStartPage\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "子页面",
+        "持咒",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/mantra/useMantraAudio.ts",
+      "type": "file",
+      "name": "useMantraAudio.ts",
+      "filePath": "apps/mobile/src/features/mantra/useMantraAudio.ts",
+      "summary": "持咒模块的自定义 Hook\"useMantraAudio\"，封装可复用的响应式状态与副作用逻辑，供多个组件消费。",
+      "tags": [
+        "持咒",
+        "修行",
+        "自定义Hook",
+        "钩子"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/mantra/useMantraAudio.ts:useMantraAudio",
+      "type": "function",
+      "name": "useMantraAudio",
+      "filePath": "apps/mobile/src/features/mantra/useMantraAudio.ts",
+      "lineRange": [
+        14,
+        90
+      ],
+      "summary": "\"useMantraAudio\"是持咒的自定义 Hook，管理钩子相关的响应式状态与副作用逻辑。",
+      "tags": [
+        "自定义Hook",
+        "持咒",
+        "钩子"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/meditation/MedHistoryPage.tsx",
+      "type": "file",
+      "name": "MedHistoryPage.tsx",
+      "filePath": "apps/mobile/src/features/meditation/MedHistoryPage.tsx",
+      "summary": "冥想模块的功能模块\"MedCalendarScreen\"。主导出\"MedCalendarScreen\"。共导出 2 项，规模较大，承载较丰富的交互与样式逻辑。",
+      "tags": [
+        "冥想",
+        "静坐",
+        "功能",
+        "页面入口",
+        "大规模组件"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/meditation/MedHistoryPage.tsx:calcStreak",
+      "type": "function",
+      "name": "calcStreak",
+      "filePath": "apps/mobile/src/features/meditation/MedHistoryPage.tsx",
+      "lineRange": [
+        33,
+        48
+      ],
+      "summary": "工具函数\"calcStreak\"，负责计算与转换。",
+      "tags": [
+        "功能",
+        "冥想",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/meditation/MedHistoryPage.tsx:StatsCard",
+      "type": "function",
+      "name": "StatsCard",
+      "filePath": "apps/mobile/src/features/meditation/MedHistoryPage.tsx",
+      "lineRange": [
+        58,
+        88
+      ],
+      "summary": "冥想的卡片组件\"StatsCard\"，汇总展示单项数据与关键指标。",
+      "tags": [
+        "功能",
+        "冥想",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/meditation/MedHistoryPage.tsx:Heatmap",
+      "type": "function",
+      "name": "Heatmap",
+      "filePath": "apps/mobile/src/features/meditation/MedHistoryPage.tsx",
+      "lineRange": [
+        91,
+        129
+      ],
+      "summary": "冥想的\"Heatmap\"功能。",
+      "tags": [
+        "功能",
+        "冥想",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/meditation/MedHistoryPage.tsx:MedCalendarScreen",
+      "type": "function",
+      "name": "MedCalendarScreen",
+      "filePath": "apps/mobile/src/features/meditation/MedHistoryPage.tsx",
+      "lineRange": [
+        132,
+        188
+      ],
+      "summary": "冥想的页面组件\"MedCalendarScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "冥想",
+        "页面入口"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/meditation/MedHistoryPage.tsx:DetailModal",
+      "type": "function",
+      "name": "DetailModal",
+      "filePath": "apps/mobile/src/features/meditation/MedHistoryPage.tsx",
+      "lineRange": [
+        191,
+        259
+      ],
+      "summary": "冥想的弹窗组件\"DetailModal\"，承载模态交互。",
+      "tags": [
+        "功能",
+        "冥想",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/meditation/MedHistoryPage.tsx:MedHistoryPage",
+      "type": "function",
+      "name": "MedHistoryPage",
+      "filePath": "apps/mobile/src/features/meditation/MedHistoryPage.tsx",
+      "lineRange": [
+        274,
+        412
+      ],
+      "summary": "冥想的页面组件\"MedHistoryPage\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "冥想",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/mind/MindScreen.tsx",
+      "type": "file",
+      "name": "MindScreen.tsx",
+      "filePath": "apps/mobile/src/features/mind/MindScreen.tsx",
+      "summary": "正念模块的功能模块\"MindScreen\"。主导出\"MindScreen\"。规模较大，承载较丰富的交互与样式逻辑。",
+      "tags": [
+        "正念",
+        "思维",
+        "功能",
+        "页面入口",
+        "大规模组件"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/mind/MindScreen.tsx:MindScreen",
+      "type": "function",
+      "name": "MindScreen",
+      "filePath": "apps/mobile/src/features/mind/MindScreen.tsx",
+      "lineRange": [
+        51,
+        593
+      ],
+      "summary": "正念的页面组件\"MindScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "正念",
+        "页面入口"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/notifications/NotificationService.ts",
+      "type": "file",
+      "name": "NotificationService.ts",
+      "filePath": "apps/mobile/src/features/notifications/NotificationService.ts",
+      "summary": "通知模块的服务封装\"requestNotificationPermission\"，集中处理平台 API 调用、异步 I/O 与错误处理。",
+      "tags": [
+        "通知",
+        "提醒",
+        "服务"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/notifications/NotificationService.ts:ensureHandler",
+      "type": "function",
+      "name": "ensureHandler",
+      "filePath": "apps/mobile/src/features/notifications/NotificationService.ts",
+      "lineRange": [
+        8,
+        22
+      ],
+      "summary": "通知的\"ensureHandler\"，承担确保职责。",
+      "tags": [
+        "服务",
+        "通知",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/notifications/NotificationService.ts:requestNotificationPermission",
+      "type": "function",
+      "name": "requestNotificationPermission",
+      "filePath": "apps/mobile/src/features/notifications/NotificationService.ts",
+      "lineRange": [
+        24,
+        36
+      ],
+      "summary": "通知的\"requestNotificationPermission\"，承担请求职责。",
+      "tags": [
+        "服务",
+        "通知",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/notifications/NotificationService.ts:scheduleDailyReminder",
+      "type": "function",
+      "name": "scheduleDailyReminder",
+      "filePath": "apps/mobile/src/features/notifications/NotificationService.ts",
+      "lineRange": [
+        38,
+        53
+      ],
+      "summary": "通知的提醒组件\"scheduleDailyReminder\"，用于展示延时/恩典等提醒交互。",
+      "tags": [
+        "服务",
+        "通知",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/notifications/NotificationService.ts:scheduleHabitReminder",
+      "type": "function",
+      "name": "scheduleHabitReminder",
+      "filePath": "apps/mobile/src/features/notifications/NotificationService.ts",
+      "lineRange": [
+        66,
+        82
+      ],
+      "summary": "通知的提醒组件\"scheduleHabitReminder\"，用于展示延时/恩典等提醒交互。",
+      "tags": [
+        "服务",
+        "通知",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/notifications/NotificationService.ts:rescheduleAllHabitReminders",
+      "type": "function",
+      "name": "rescheduleAllHabitReminders",
+      "filePath": "apps/mobile/src/features/notifications/NotificationService.ts",
+      "lineRange": [
+        84,
+        116
+      ],
+      "summary": "通知的\"rescheduleAllHabitReminders\"功能。",
+      "tags": [
+        "服务",
+        "通知",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/notifications/NotificationService.ts:cancelAllReminders",
+      "type": "function",
+      "name": "cancelAllReminders",
+      "filePath": "apps/mobile/src/features/notifications/NotificationService.ts",
+      "lineRange": [
+        118,
+        122
+      ],
+      "summary": "通知的\"cancelAllReminders\"，承担取消职责。",
+      "tags": [
+        "服务",
+        "通知",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/plan/PlanCreateScreen.tsx",
+      "type": "file",
+      "name": "PlanCreateScreen.tsx",
+      "filePath": "apps/mobile/src/features/plan/PlanCreateScreen.tsx",
+      "summary": "计划模块的功能模块\"PlanCreateScreen\"。主导出\"PlanCreateScreen\"。规模较大，承载较丰富的交互与样式逻辑。",
+      "tags": [
+        "计划",
+        "管理",
+        "功能",
+        "页面入口",
+        "大规模组件"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/plan/PlanCreateScreen.tsx:FrequencyNumberInput",
+      "type": "function",
+      "name": "FrequencyNumberInput",
+      "filePath": "apps/mobile/src/features/plan/PlanCreateScreen.tsx",
+      "lineRange": [
+        22,
+        41
+      ],
+      "summary": "计划的\"FrequencyNumberInput\"功能。",
+      "tags": [
+        "功能",
+        "计划",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/plan/PlanCreateScreen.tsx:PlanCreateScreen",
+      "type": "function",
+      "name": "PlanCreateScreen",
+      "filePath": "apps/mobile/src/features/plan/PlanCreateScreen.tsx",
+      "lineRange": [
+        43,
+        762
+      ],
+      "summary": "计划的页面组件\"PlanCreateScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "计划",
+        "页面入口"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/plan/PlanDetailContent.tsx",
+      "type": "file",
+      "name": "PlanDetailContent.tsx",
+      "filePath": "apps/mobile/src/features/plan/PlanDetailContent.tsx",
+      "summary": "计划模块的功能模块\"PlanDetailContent\"。主导出\"PlanDetailContent\"。规模较大，承载较丰富的交互与样式逻辑。",
+      "tags": [
+        "计划",
+        "管理",
+        "功能",
+        "大规模组件"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/plan/PlanDetailContent.tsx:PlanDetailContent",
+      "type": "function",
+      "name": "PlanDetailContent",
+      "filePath": "apps/mobile/src/features/plan/PlanDetailContent.tsx",
+      "lineRange": [
+        20,
+        887
+      ],
+      "summary": "计划的\"PlanDetailContent\"功能。",
+      "tags": [
+        "功能",
+        "计划",
+        "导出函数"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/plan/PlanDetailScreen.tsx",
+      "type": "file",
+      "name": "PlanDetailScreen.tsx",
+      "filePath": "apps/mobile/src/features/plan/PlanDetailScreen.tsx",
+      "summary": "计划模块的功能模块\"PlanDetailScreen\"。主导出\"PlanDetailScreen\"。轻量实现。",
+      "tags": [
+        "计划",
+        "管理",
+        "功能",
+        "页面入口"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/plan/PlanDetailScreen.tsx:PlanDetailScreen",
+      "type": "function",
+      "name": "PlanDetailScreen",
+      "filePath": "apps/mobile/src/features/plan/PlanDetailScreen.tsx",
+      "lineRange": [
+        18,
+        61
+      ],
+      "summary": "计划的页面组件\"PlanDetailScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "计划",
+        "页面入口"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:apps/mobile/src/features/home/components/DelayedReminder.tsx",
+      "target": "function:apps/mobile/src/features/home/components/DelayedReminder.tsx:DelayedReminder",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/DelayedReminder.tsx",
+      "target": "function:apps/mobile/src/features/home/components/DelayedReminder.tsx:DelayedReminder",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/GraceReminder.tsx",
+      "target": "function:apps/mobile/src/features/home/components/GraceReminder.tsx:GraceReminder",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/GraceReminder.tsx",
+      "target": "function:apps/mobile/src/features/home/components/GraceReminder.tsx:GraceReminder",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/ReviewView.tsx",
+      "target": "function:apps/mobile/src/features/home/components/ReviewView.tsx:ReviewView",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/ReviewView.tsx",
+      "target": "function:apps/mobile/src/features/home/components/ReviewView.tsx:ReviewView",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/ReviewView.tsx",
+      "target": "function:apps/mobile/src/features/home/components/ReviewView.tsx:createStyles",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/hooks/useDateNavigation.test.ts",
+      "target": "function:apps/mobile/src/features/home/hooks/useDateNavigation.test.ts:renderHook",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/hooks/useDateNavigation.ts",
+      "target": "function:apps/mobile/src/features/home/hooks/useDateNavigation.ts:useDateNavigation",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/hooks/useDateNavigation.ts",
+      "target": "function:apps/mobile/src/features/home/hooks/useDateNavigation.ts:useDateNavigation",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/CheckinDetailScreen.tsx",
+      "target": "function:apps/mobile/src/features/home/screens/CheckinDetailScreen.tsx:CheckinDetailScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/CheckinDetailScreen.tsx",
+      "target": "function:apps/mobile/src/features/home/screens/CheckinDetailScreen.tsx:CheckinDetailScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/CheckinHistoryScreen.tsx",
+      "target": "function:apps/mobile/src/features/home/screens/CheckinHistoryScreen.tsx:CheckinHistoryScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/CheckinHistoryScreen.tsx",
+      "target": "function:apps/mobile/src/features/home/screens/CheckinHistoryScreen.tsx:CheckinHistoryScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/DayCheckinScreen.tsx",
+      "target": "function:apps/mobile/src/features/home/screens/DayCheckinScreen.tsx:DayCheckinScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/DayCheckinScreen.tsx",
+      "target": "function:apps/mobile/src/features/home/screens/DayCheckinScreen.tsx:DayCheckinScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/FoodLogPage.tsx",
+      "target": "function:apps/mobile/src/features/home/screens/FoodLogPage.tsx:FoodLogPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/FoodLogPage.tsx",
+      "target": "function:apps/mobile/src/features/home/screens/FoodLogPage.tsx:FoodLogPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/GlobalPulseScreen.tsx",
+      "target": "function:apps/mobile/src/features/home/screens/GlobalPulseScreen.tsx:GlobalPulseScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/GlobalPulseScreen.tsx",
+      "target": "function:apps/mobile/src/features/home/screens/GlobalPulseScreen.tsx:GlobalPulseScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/GracePage.tsx",
+      "target": "function:apps/mobile/src/features/home/screens/GracePage.tsx:GracePage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/GracePage.tsx",
+      "target": "function:apps/mobile/src/features/home/screens/GracePage.tsx:GracePage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/HomeScreen.tsx",
+      "target": "function:apps/mobile/src/features/home/screens/HomeScreen.tsx:HomeScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/HomeScreen.tsx",
+      "target": "function:apps/mobile/src/features/home/screens/HomeScreen.tsx:HomeScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/ReviewDetailScreen.tsx",
+      "target": "function:apps/mobile/src/features/home/screens/ReviewDetailScreen.tsx:ReviewDetailScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/ReviewDetailScreen.tsx",
+      "target": "function:apps/mobile/src/features/home/screens/ReviewDetailScreen.tsx:ReviewDetailScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/ReviewHistoryScreen.tsx",
+      "target": "function:apps/mobile/src/features/home/screens/ReviewHistoryScreen.tsx:ReviewHistoryScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/ReviewHistoryScreen.tsx",
+      "target": "function:apps/mobile/src/features/home/screens/ReviewHistoryScreen.tsx:ReviewHistoryScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/StreakBreakScreen.tsx",
+      "target": "function:apps/mobile/src/features/home/screens/StreakBreakScreen.tsx:StreakBreakScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/StreakBreakScreen.tsx",
+      "target": "function:apps/mobile/src/features/home/screens/StreakBreakScreen.tsx:StreakBreakScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/StreakBreakScreen.tsx",
+      "target": "function:apps/mobile/src/features/home/screens/StreakBreakScreen.tsx:MiniBarChart",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraEngine.tsx",
+      "target": "function:apps/mobile/src/features/mantra/MantraEngine.tsx:MantraEngine",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraEngine.tsx",
+      "target": "function:apps/mobile/src/features/mantra/MantraEngine.tsx:MantraEngine",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraHistoryScreen.tsx",
+      "target": "function:apps/mobile/src/features/mantra/MantraHistoryScreen.tsx:MantraHistoryScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraHistoryScreen.tsx",
+      "target": "function:apps/mobile/src/features/mantra/MantraHistoryScreen.tsx:MantraHistoryScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraScreen.tsx",
+      "target": "function:apps/mobile/src/features/mantra/MantraScreen.tsx:MantraScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraScreen.tsx",
+      "target": "function:apps/mobile/src/features/mantra/MantraScreen.tsx:MantraScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/hooks/useMantraTimer.ts",
+      "target": "function:apps/mobile/src/features/mantra/hooks/useMantraTimer.ts:useMantraTimer",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/hooks/useMantraTimer.ts",
+      "target": "function:apps/mobile/src/features/mantra/hooks/useMantraTimer.ts:useMantraTimer",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/pages/MantraActivePage.tsx",
+      "target": "function:apps/mobile/src/features/mantra/pages/MantraActivePage.tsx:MantraActivePage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/pages/MantraActivePage.tsx",
+      "target": "function:apps/mobile/src/features/mantra/pages/MantraActivePage.tsx:MantraActivePage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/pages/MantraReportPage.tsx",
+      "target": "function:apps/mobile/src/features/mantra/pages/MantraReportPage.tsx:MantraReportPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/pages/MantraReportPage.tsx",
+      "target": "function:apps/mobile/src/features/mantra/pages/MantraReportPage.tsx:MantraReportPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/pages/MantraSelectPage.tsx",
+      "target": "function:apps/mobile/src/features/mantra/pages/MantraSelectPage.tsx:MantraSelectPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/pages/MantraSelectPage.tsx",
+      "target": "function:apps/mobile/src/features/mantra/pages/MantraSelectPage.tsx:MantraSelectPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/pages/MantraStartPage.tsx",
+      "target": "function:apps/mobile/src/features/mantra/pages/MantraStartPage.tsx:MantraStartPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/pages/MantraStartPage.tsx",
+      "target": "function:apps/mobile/src/features/mantra/pages/MantraStartPage.tsx:MantraStartPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/useMantraAudio.ts",
+      "target": "function:apps/mobile/src/features/mantra/useMantraAudio.ts:useMantraAudio",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/useMantraAudio.ts",
+      "target": "function:apps/mobile/src/features/mantra/useMantraAudio.ts:useMantraAudio",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MedHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/meditation/MedHistoryPage.tsx:calcStreak",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MedHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/meditation/MedHistoryPage.tsx:StatsCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MedHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/meditation/MedHistoryPage.tsx:Heatmap",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MedHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/meditation/MedHistoryPage.tsx:MedCalendarScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MedHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/meditation/MedHistoryPage.tsx:MedCalendarScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MedHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/meditation/MedHistoryPage.tsx:DetailModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MedHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/meditation/MedHistoryPage.tsx:MedHistoryPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MedHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/meditation/MedHistoryPage.tsx:MedHistoryPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/mind/MindScreen.tsx",
+      "target": "function:apps/mobile/src/features/mind/MindScreen.tsx:MindScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/mind/MindScreen.tsx",
+      "target": "function:apps/mobile/src/features/mind/MindScreen.tsx:MindScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/notifications/NotificationService.ts",
+      "target": "function:apps/mobile/src/features/notifications/NotificationService.ts:ensureHandler",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/notifications/NotificationService.ts",
+      "target": "function:apps/mobile/src/features/notifications/NotificationService.ts:requestNotificationPermission",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/notifications/NotificationService.ts",
+      "target": "function:apps/mobile/src/features/notifications/NotificationService.ts:requestNotificationPermission",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/notifications/NotificationService.ts",
+      "target": "function:apps/mobile/src/features/notifications/NotificationService.ts:scheduleDailyReminder",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/notifications/NotificationService.ts",
+      "target": "function:apps/mobile/src/features/notifications/NotificationService.ts:scheduleDailyReminder",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/notifications/NotificationService.ts",
+      "target": "function:apps/mobile/src/features/notifications/NotificationService.ts:scheduleHabitReminder",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/notifications/NotificationService.ts",
+      "target": "function:apps/mobile/src/features/notifications/NotificationService.ts:scheduleHabitReminder",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/notifications/NotificationService.ts",
+      "target": "function:apps/mobile/src/features/notifications/NotificationService.ts:rescheduleAllHabitReminders",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/notifications/NotificationService.ts",
+      "target": "function:apps/mobile/src/features/notifications/NotificationService.ts:rescheduleAllHabitReminders",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/notifications/NotificationService.ts",
+      "target": "function:apps/mobile/src/features/notifications/NotificationService.ts:cancelAllReminders",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/notifications/NotificationService.ts",
+      "target": "function:apps/mobile/src/features/notifications/NotificationService.ts:cancelAllReminders",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanCreateScreen.tsx",
+      "target": "function:apps/mobile/src/features/plan/PlanCreateScreen.tsx:FrequencyNumberInput",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanCreateScreen.tsx",
+      "target": "function:apps/mobile/src/features/plan/PlanCreateScreen.tsx:PlanCreateScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanCreateScreen.tsx",
+      "target": "function:apps/mobile/src/features/plan/PlanCreateScreen.tsx:PlanCreateScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanDetailContent.tsx",
+      "target": "function:apps/mobile/src/features/plan/PlanDetailContent.tsx:PlanDetailContent",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanDetailContent.tsx",
+      "target": "function:apps/mobile/src/features/plan/PlanDetailContent.tsx:PlanDetailContent",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanDetailScreen.tsx",
+      "target": "function:apps/mobile/src/features/plan/PlanDetailScreen.tsx:PlanDetailScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanDetailScreen.tsx",
+      "target": "function:apps/mobile/src/features/plan/PlanDetailScreen.tsx:PlanDetailScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/DelayedReminder.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/DelayedReminder.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/GraceReminder.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/GraceReminder.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/HomeBubble.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/HomeBubble.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/HomeFoodSection.tsx",
+      "target": "file:apps/mobile/src/components/AddFoodModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/HomeFoodSection.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/HomeFoodSection.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/HomePlanSection.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/HomePlanSection.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/ReviewView.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/ReviewView.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/ReviewView.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/ReviewView.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/hooks/useDateNavigation.test.ts",
+      "target": "file:apps/mobile/src/features/home/hooks/useDateNavigation.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/hooks/useDateNavigation.test.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/hooks/useDateNavigation.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/CheckinDetailScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/CheckinDetailScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/CheckinDetailScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/CheckinDetailScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/CheckinHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/CheckinHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/features/home/components/ReviewView.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/CheckinHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/hooks/usePagination.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/CheckinHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/CheckinHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/CheckinHistoryScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/DayCheckinScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/DayCheckinScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/DayCheckinScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/DayCheckinScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/FoodLogPage.tsx",
+      "target": "file:apps/mobile/src/components/AddFoodModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/FoodLogPage.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/FoodLogPage.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/FoodLogPage.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/FoodLogPage.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/GlobalPulseScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/GlobalPulseScreen.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/GlobalPulseScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/GracePage.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/GracePage.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/GracePage.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/GracePage.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/HomeScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/HomeScreen.tsx",
+      "target": "file:apps/mobile/src/features/home/components/Banner.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/HomeScreen.tsx",
+      "target": "file:apps/mobile/src/features/home/components/CheckinStatsModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/HomeScreen.tsx",
+      "target": "file:apps/mobile/src/features/home/components/DateBar.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/HomeScreen.tsx",
+      "target": "file:apps/mobile/src/features/home/components/DelayedReminder.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/HomeScreen.tsx",
+      "target": "file:apps/mobile/src/features/home/components/GraceReminder.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/HomeScreen.tsx",
+      "target": "file:apps/mobile/src/features/home/components/HomeBubble.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/HomeScreen.tsx",
+      "target": "file:apps/mobile/src/features/home/components/HomeFoodSection.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/HomeScreen.tsx",
+      "target": "file:apps/mobile/src/features/home/components/HomePlanSection.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/HomeScreen.tsx",
+      "target": "file:apps/mobile/src/features/home/hooks/useDateNavigation.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/HomeScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/HomeScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/HomeScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/useAppNavigation.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/HomeScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/HomeScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/ReviewDetailScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/ReviewDetailScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/ReviewDetailScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/ReviewDetailScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/ReviewHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/ReviewHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/ReviewHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/ReviewHistoryScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/StreakBreakScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/StreakBreakScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/StreakBreakScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/screens/StreakBreakScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraEngine.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraEngine.tsx",
+      "target": "file:apps/mobile/src/features/mantra/hooks/useMantraTimer.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraEngine.tsx",
+      "target": "file:apps/mobile/src/features/mantra/pages/MantraActivePage.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraEngine.tsx",
+      "target": "file:apps/mobile/src/features/mantra/pages/MantraReportPage.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraEngine.tsx",
+      "target": "file:apps/mobile/src/features/mantra/pages/MantraSelectPage.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraEngine.tsx",
+      "target": "file:apps/mobile/src/features/mantra/pages/MantraStartPage.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraEngine.tsx",
+      "target": "file:apps/mobile/src/features/mantra/useMantraAudio.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraEngine.tsx",
+      "target": "file:apps/mobile/src/features/shared/hooks/useAudioCache.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraEngine.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraEngine.tsx",
+      "target": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraEngine.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraEngine.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraHistoryScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/MantraScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/hooks/useMantraTimer.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/pages/MantraActivePage.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/pages/MantraActivePage.tsx",
+      "target": "file:apps/mobile/src/features/shared/components/MalaRing.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/pages/MantraActivePage.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/pages/MantraReportPage.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/pages/MantraReportPage.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/pages/MantraSelectPage.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/pages/MantraSelectPage.tsx",
+      "target": "file:apps/mobile/src/navigation/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/pages/MantraSelectPage.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/pages/MantraStartPage.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/pages/MantraStartPage.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mantra/useMantraAudio.ts",
+      "target": "file:apps/mobile/src/features/shared/hooks/useAudioCache.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MedHistoryPage.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MedHistoryPage.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MedHistoryPage.tsx",
+      "target": "file:apps/mobile/src/navigation/useAppNavigation.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MedHistoryPage.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MedHistoryPage.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mind/MindScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mind/MindScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mind/MindScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mind/MindScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/mind/MindScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/notifications/NotificationService.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanCreateScreen.tsx",
+      "target": "file:apps/mobile/src/components/DatePickerModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanCreateScreen.tsx",
+      "target": "file:apps/mobile/src/components/DateRangePickerModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanCreateScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanCreateScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanCreateScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanCreateScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanCreateScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanDetailContent.tsx",
+      "target": "file:apps/mobile/src/components/PlanCountdown.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanDetailContent.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanDetailContent.tsx",
+      "target": "file:apps/mobile/src/features/plan/components/Heatmap.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanDetailContent.tsx",
+      "target": "file:apps/mobile/src/features/plan/components/ItemHeatmap.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanDetailContent.tsx",
+      "target": "file:apps/mobile/src/features/plan/components/LinkBadge.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanDetailContent.tsx",
+      "target": "file:apps/mobile/src/features/plan/components/ProgressRing.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanDetailContent.tsx",
+      "target": "file:apps/mobile/src/features/plan/components/StatusBadge.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanDetailContent.tsx",
+      "target": "file:apps/mobile/src/features/plan/useDailyTodo.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanDetailContent.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanDetailContent.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanDetailContent.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanDetailScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanDetailScreen.tsx",
+      "target": "file:apps/mobile/src/features/plan/PlanDetailContent.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanDetailScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanDetailScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanDetailScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanDetailScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:apps/mobile/src/features/home/components/ReviewView.tsx:ReviewView",
+      "target": "function:apps/mobile/src/features/home/components/ReviewView.tsx:createStyles",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:apps/mobile/src/features/meditation/MedHistoryPage.tsx:StatsCard",
+      "target": "function:apps/mobile/src/features/meditation/MedHistoryPage.tsx:calcStreak",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:apps/mobile/src/features/meditation/MedHistoryPage.tsx:MedCalendarScreen",
+      "target": "function:apps/mobile/src/features/meditation/MedHistoryPage.tsx:calcStreak",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:apps/mobile/src/features/notifications/NotificationService.ts:requestNotificationPermission",
+      "target": "function:apps/mobile/src/features/notifications/NotificationService.ts:ensureHandler",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:apps/mobile/src/features/notifications/NotificationService.ts:scheduleDailyReminder",
+      "target": "function:apps/mobile/src/features/notifications/NotificationService.ts:ensureHandler",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:apps/mobile/src/features/notifications/NotificationService.ts:scheduleHabitReminder",
+      "target": "function:apps/mobile/src/features/notifications/NotificationService.ts:ensureHandler",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:apps/mobile/src/features/notifications/NotificationService.ts:rescheduleAllHabitReminders",
+      "target": "function:apps/mobile/src/features/notifications/NotificationService.ts:ensureHandler",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:apps/mobile/src/features/notifications/NotificationService.ts:rescheduleAllHabitReminders",
+      "target": "function:apps/mobile/src/features/notifications/NotificationService.ts:scheduleDailyReminder",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:apps/mobile/src/features/notifications/NotificationService.ts:cancelAllReminders",
+      "target": "function:apps/mobile/src/features/notifications/NotificationService.ts:ensureHandler",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ]
+}

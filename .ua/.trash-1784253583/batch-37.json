@@ -1,0 +1,146 @@
+{
+  "nodes": [
+    {
+      "id": "document:.trellis/spec/mobile/frontend/component-guidelines.md",
+      "type": "document",
+      "name": "component-guidelines.md",
+      "filePath": ".trellis/spec/mobile/frontend/component-guidelines.md",
+      "summary": "组件规范，定义 Screen 组件模式、共享组件模式、禁止模式与 UI 基础组件使用示例。",
+      "tags": [
+        "documentation",
+        "mobile",
+        "component-guidelines",
+        "react-native"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/spec/mobile/frontend/directory-structure.md",
+      "type": "document",
+      "name": "directory-structure.md",
+      "filePath": ".trellis/spec/mobile/frontend/directory-structure.md",
+      "summary": "目录结构规范，说明移动端模块组织、文件布局与命名约定。",
+      "tags": [
+        "documentation",
+        "mobile",
+        "directory-structure",
+        "naming-conventions"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/spec/mobile/frontend/hook-guidelines.md",
+      "type": "document",
+      "name": "hook-guidelines.md",
+      "filePath": ".trellis/spec/mobile/frontend/hook-guidelines.md",
+      "summary": "Hook 规范，定义自定义 Hook 的命名/位置、副作用 Hook（Expo SDK 封装）、导航 Hook、Hook 组合与错误处理规则。",
+      "tags": [
+        "documentation",
+        "mobile",
+        "hook-guidelines",
+        "react-native"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/spec/mobile/frontend/index.md",
+      "type": "document",
+      "name": "index.md",
+      "filePath": ".trellis/spec/mobile/frontend/index.md",
+      "summary": "移动端前端开发指南总览页，列出各辅助指南的完成状态与填写方法。",
+      "tags": [
+        "documentation",
+        "mobile",
+        "index",
+        "guidelines"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/spec/mobile/frontend/quality-guidelines.md",
+      "type": "document",
+      "name": "quality-guidelines.md",
+      "filePath": ".trellis/spec/mobile/frontend/quality-guidelines.md",
+      "summary": "质量规范，列出架构/React/i18n/数据同步等禁止模式，以及 Store 读取、Slice 动作、错误日志、测试等必需模式与提交前检查清单。",
+      "tags": [
+        "documentation",
+        "mobile",
+        "quality-guidelines",
+        "forbidden-patterns"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:.trellis/spec/mobile/frontend/state-management.md",
+      "type": "document",
+      "name": "state-management.md",
+      "filePath": ".trellis/spec/mobile/frontend/state-management.md",
+      "summary": "状态管理规范，说明 Zustand 切片 + SQLite 适配器架构、selector 规则、持久化配置、离线同步周期与禁止模式。",
+      "tags": [
+        "documentation",
+        "mobile",
+        "state-management",
+        "zustand"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:.trellis/spec/mobile/frontend/type-safety.md",
+      "type": "document",
+      "name": "type-safety.md",
+      "filePath": ".trellis/spec/mobile/frontend/type-safety.md",
+      "summary": "类型安全规范，定义类型位置、类型导入、类型区分、类型收窄、泛型模式与禁止模式。",
+      "tags": [
+        "documentation",
+        "mobile",
+        "type-safety",
+        "typescript"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:.trellis/spec/mobile/frontend/index.md",
+      "target": "document:.trellis/spec/mobile/frontend/component-guidelines.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/mobile/frontend/index.md",
+      "target": "document:.trellis/spec/mobile/frontend/directory-structure.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/mobile/frontend/index.md",
+      "target": "document:.trellis/spec/mobile/frontend/hook-guidelines.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/mobile/frontend/index.md",
+      "target": "document:.trellis/spec/mobile/frontend/quality-guidelines.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/mobile/frontend/index.md",
+      "target": "document:.trellis/spec/mobile/frontend/state-management.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/mobile/frontend/index.md",
+      "target": "document:.trellis/spec/mobile/frontend/type-safety.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

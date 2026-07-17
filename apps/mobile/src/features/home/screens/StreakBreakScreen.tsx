@@ -173,7 +173,7 @@ export default function StreakBreakScreen() {
           padding: 16, marginBottom: 12, flexDirection: 'row', gap: 16,
         }}>
           <View style={styles.flexCenter}>
-            <Text style={styles.redBreakCount}>{breaks.length}</Text>
+            <Text style={styles.redBreakCount}>{String(breaks.length)}</Text>
             <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 4 }}>{T('streakBreakTotal')}</Text>
           </View>
           <View style={{ width: 1, backgroundColor: TH.border }} />

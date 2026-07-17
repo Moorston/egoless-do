@@ -1,0 +1,1483 @@
+{
+  "nodes": [
+    {
+      "id": "file:packages/core/src/business/coordinateFuzzing.ts",
+      "type": "file",
+      "name": "coordinateFuzzing.ts",
+      "filePath": "packages/core/src/business/coordinateFuzzing.ts",
+      "summary": "地理位置模糊算法：基于 secret key 的哈希种子确定性偏移，含经纬度换算、Haversine 距离计算。",
+      "tags": [
+        "business",
+        "geolocation",
+        "privacy",
+        "algorithm"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/business/customLists.ts",
+      "type": "file",
+      "name": "customLists.ts",
+      "filePath": "packages/core/src/business/customLists.ts",
+      "summary": "自定义标签/心情列表纯函数操作：增删、更新、重排序与必含项校验。",
+      "tags": [
+        "business",
+        "list-utility",
+        "pure-function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/business/dateUtils.test.ts",
+      "type": "file",
+      "name": "dateUtils.test.ts",
+      "filePath": "packages/core/src/business/dateUtils.test.ts",
+      "summary": "formatDateBar 日期格式化函数的单元测试。",
+      "tags": [
+        "business",
+        "date",
+        "test"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/business/dateUtils.ts",
+      "type": "file",
+      "name": "dateUtils.ts",
+      "filePath": "packages/core/src/business/dateUtils.ts",
+      "summary": "HomeScreen 日期工具：WEEKDAYS 常量与 formatDateBar 格式化日期栏显示。",
+      "tags": [
+        "business",
+        "date",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/business/precepts.ts",
+      "type": "file",
+      "name": "precepts.ts",
+      "filePath": "packages/core/src/business/precepts.ts",
+      "summary": "持戒预设配置与查询：PRECEPT_AVOID/PRACTICE 预设集及习惯名前缀识别、显示名、类型判定。",
+      "tags": [
+        "business",
+        "precepts",
+        "meditation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/business/sleep.ts",
+      "type": "file",
+      "name": "sleep.ts",
+      "filePath": "packages/core/src/business/sleep.ts",
+      "summary": "睡眠与中医十二时辰工具：BODY_CLOCK、当前/下一睡眠时段、时长格式化与质量评级/emoji。",
+      "tags": [
+        "business",
+        "sleep",
+        "body-clock"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/business/zhiguanConstants.ts",
+      "type": "file",
+      "name": "zhiguanConstants.ts",
+      "filePath": "packages/core/src/business/zhiguanConstants.ts",
+      "summary": "止观修行元数据常量：呼吸模式、发愿模板、内观引导方法表，供 store 与前端 UI 共用。",
+      "tags": [
+        "business",
+        "zhiguan",
+        "meditation",
+        "constant"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/business/zhiguanCountingRound.ts",
+      "type": "file",
+      "name": "zhiguanCountingRound.ts",
+      "filePath": "packages/core/src/business/zhiguanCountingRound.ts",
+      "summary": "止观计数轮纯逻辑：呼吸通知、轮次计算与轮次状态重置（无 React 依赖便于单测）。",
+      "tags": [
+        "business",
+        "zhiguan",
+        "pure-function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/business/zhiguanTimer.ts",
+      "type": "file",
+      "name": "zhiguanTimer.ts",
+      "filePath": "packages/core/src/business/zhiguanTimer.ts",
+      "summary": "止观计时器纯函数：已用时长、暂停累积、秒数格式化与闭幕倒计时判定。",
+      "tags": [
+        "business",
+        "zhiguan",
+        "timer",
+        "pure-function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/constants/music.ts",
+      "type": "file",
+      "name": "music.ts",
+      "filePath": "packages/core/src/constants/music.ts",
+      "summary": "内置音乐常量：BUILTIN_TRACKS、音乐分类、用户音乐存储键、分类元数据与音轨视觉配置。",
+      "tags": [
+        "constant",
+        "music",
+        "media"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/constants/sutraTexts.ts",
+      "type": "file",
+      "name": "sutraTexts.ts",
+      "filePath": "packages/core/src/constants/sutraTexts.ts",
+      "summary": "7 部核心经文全文常量与 getSutraText 查询函数，支撑诵经模块内容展示。",
+      "tags": [
+        "constant",
+        "sutra",
+        "meditation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/data/DataGateway.test.ts",
+      "type": "file",
+      "name": "DataGateway.test.ts",
+      "filePath": "packages/core/src/data/DataGateway.test.ts",
+      "summary": "NoopData 网关契约测试，验证平台无关数据访问接口行为。",
+      "tags": [
+        "data",
+        "test",
+        "gateway"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/data/DataGateway.ts",
+      "type": "file",
+      "name": "DataGateway.ts",
+      "filePath": "packages/core/src/data/DataGateway.ts",
+      "summary": "统一数据网关接口 NoopDataGateway：定义 get/list/upsert/delete 四种操作的契约抽象。",
+      "tags": [
+        "data",
+        "gateway",
+        "interface",
+        "architecture"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/data/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "packages/core/src/data/index.ts",
+      "summary": "data 模块 barrel 文件，重导出数据网关相关类型与实现。",
+      "tags": [
+        "data",
+        "barrel",
+        "exports"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/i18n.ts",
+      "type": "file",
+      "name": "i18n.ts",
+      "filePath": "packages/core/src/i18n.ts",
+      "summary": "i18n 向后兼容重导出：汇聚 zh/en/zhHant 翻译字典、translations、getT 与 t 函数。",
+      "tags": [
+        "i18n",
+        "barrel",
+        "localization"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/icons.ts",
+      "type": "file",
+      "name": "icons.ts",
+      "filePath": "packages/core/src/icons.ts",
+      "summary": "Lucide 图标名称字符串映射（TAB/ACTION/FEATURE/FOOD），core 不依赖 lucide，仅存储名称供各端渲染映射。",
+      "tags": [
+        "icons",
+        "ui",
+        "cross-platform"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/pocketbase.ts",
+      "type": "file",
+      "name": "pocketbase.ts",
+      "filePath": "packages/core/src/pocketbase.ts",
+      "summary": "PocketBase 客户端单例：setPocketbaseUrl 初始化与 getPb 获取共享实例。",
+      "tags": [
+        "pocketbase",
+        "client",
+        "singleton"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "packages/core/src/store/index.ts",
+      "summary": "Store 大 barrel 导出：StorageAdapter、SyncDataMap 与所有 slice（Auth/Habit/Reflection/Plan/Food/Checkin/...）。",
+      "tags": [
+        "store",
+        "barrel",
+        "exports",
+        "zustand"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/storageAdapter.ts",
+      "type": "file",
+      "name": "storageAdapter.ts",
+      "filePath": "packages/core/src/store/storageAdapter.ts",
+      "summary": "StorageAdapter 与 SyncDataMap 类型重导出，平台无关存储适配器的类型定义入口。",
+      "tags": [
+        "store",
+        "storage",
+        "interface",
+        "types"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/sync/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "packages/core/src/sync/index.ts",
+      "summary": "sync 模块 barrel 文件，重导出同步引擎与协议相关符号。",
+      "tags": [
+        "sync",
+        "barrel",
+        "exports"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/types/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "packages/core/src/types/index.ts",
+      "summary": "types 模块 barrel，重导出核心层全部类型定义。",
+      "tags": [
+        "types",
+        "barrel",
+        "exports"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/types/music.ts",
+      "type": "file",
+      "name": "music.ts",
+      "filePath": "packages/core/src/types/music.ts",
+      "summary": "音乐与音轨类型定义，供 constants/music.ts 引用。",
+      "tags": [
+        "types",
+        "music",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/typography.ts",
+      "type": "file",
+      "name": "typography.ts",
+      "filePath": "packages/core/src/typography.ts",
+      "summary": "统一字体大小层级：configureFontScale 全局缩放配置、scaleFontSize 与各 FONT_* 预设字号常量，跨端视觉一致。",
+      "tags": [
+        "typography",
+        "ui",
+        "cross-platform",
+        "style"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/utils/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "packages/core/src/utils/index.ts",
+      "summary": "utils 模块 barrel 文件，重导出核心工具函数集合。",
+      "tags": [
+        "utils",
+        "barrel",
+        "exports"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/utils/transform.ts",
+      "type": "file",
+      "name": "transform.ts",
+      "filePath": "packages/core/src/utils/transform.ts",
+      "summary": "数据格式转换工具：camelCase/snake_case 互转及对象键批量转换，用于 API 数据兼容。",
+      "tags": [
+        "utils",
+        "transform",
+        "serialization",
+        "string"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/coordinateFuzzing.ts:fuzzCoordinate",
+      "type": "function",
+      "name": "fuzzCoordinate",
+      "filePath": "packages/core/src/business/coordinateFuzzing.ts",
+      "lineRange": [
+        57,
+        87
+      ],
+      "summary": "基于哈希种子的确定性坐标模糊，将真实坐标偏移约数十米以保护隐私（含 lat/lng 地球曲率换算）。",
+      "tags": [
+        "business",
+        "geolocation",
+        "privacy",
+        "algorithm",
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/business/coordinateFuzzing.ts:isValidCoordinate",
+      "type": "function",
+      "name": "isValidCoordinate",
+      "filePath": "packages/core/src/business/coordinateFuzzing.ts",
+      "lineRange": [
+        92,
+        94
+      ],
+      "summary": "校验经纬度数值是否在合法范围（-90~90, -180~180）。",
+      "tags": [
+        "business",
+        "geolocation",
+        "privacy",
+        "algorithm",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/coordinateFuzzing.ts:calculateDistance",
+      "type": "function",
+      "name": "calculateDistance",
+      "filePath": "packages/core/src/business/coordinateFuzzing.ts",
+      "lineRange": [
+        99,
+        112
+      ],
+      "summary": "Haversine 公式计算两点间球面距离（米）。",
+      "tags": [
+        "business",
+        "geolocation",
+        "privacy",
+        "algorithm",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/customLists.ts:addCustomItem",
+      "type": "function",
+      "name": "addCustomItem",
+      "filePath": "packages/core/src/business/customLists.ts",
+      "lineRange": [
+        3,
+        6
+      ],
+      "summary": "向自定义列表追加去重项（去除首尾空格后加入）。",
+      "tags": [
+        "business",
+        "list-utility",
+        "pure-function",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/customLists.ts:removeCustomItem",
+      "type": "function",
+      "name": "removeCustomItem",
+      "filePath": "packages/core/src/business/customLists.ts",
+      "lineRange": [
+        8,
+        10
+      ],
+      "summary": "从自定义列表中过滤移除指定项。",
+      "tags": [
+        "business",
+        "list-utility",
+        "pure-function",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/customLists.ts:updateCustomItem",
+      "type": "function",
+      "name": "updateCustomItem",
+      "filePath": "packages/core/src/business/customLists.ts",
+      "lineRange": [
+        12,
+        16
+      ],
+      "summary": "更新自定义列表中指定项的内容并去重。",
+      "tags": [
+        "business",
+        "list-utility",
+        "pure-function",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/customLists.ts:reorderItem",
+      "type": "function",
+      "name": "reorderItem",
+      "filePath": "packages/core/src/business/customLists.ts",
+      "lineRange": [
+        18,
+        26
+      ],
+      "summary": "通过两次 splice 将列表项从 fromIndex 移动到 toIndex。",
+      "tags": [
+        "business",
+        "list-utility",
+        "pure-function",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/customLists.ts:ensureOrderContains",
+      "type": "function",
+      "name": "ensureOrderContains",
+      "filePath": "packages/core/src/business/customLists.ts",
+      "lineRange": [
+        28,
+        34
+      ],
+      "summary": "校验顺序列表包含所有必含项，返回缺失项清单。",
+      "tags": [
+        "business",
+        "list-utility",
+        "pure-function",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/dateUtils.ts:formatDateBar",
+      "type": "function",
+      "name": "formatDateBar",
+      "filePath": "packages/core/src/business/dateUtils.ts",
+      "lineRange": [
+        5,
+        12
+      ],
+      "summary": "格式化日期栏字符串，当天显示“今天”翻译，否则显示月·日与星期。",
+      "tags": [
+        "business",
+        "date",
+        "utility",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/precepts.ts:isPreceptHabit",
+      "type": "function",
+      "name": "isPreceptHabit",
+      "filePath": "packages/core/src/business/precepts.ts",
+      "lineRange": [
+        39,
+        41
+      ],
+      "summary": "判断习惯名是否以持戒/实践前缀开头，归类为戒律习惯。",
+      "tags": [
+        "business",
+        "precepts",
+        "meditation",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/precepts.ts:getPreceptDisplayName",
+      "type": "function",
+      "name": "getPreceptDisplayName",
+      "filePath": "packages/core/src/business/precepts.ts",
+      "lineRange": [
+        44,
+        46
+      ],
+      "summary": "去除持戒/实践前缀，返回戒律习惯的显示名称。",
+      "tags": [
+        "business",
+        "precepts",
+        "meditation",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/precepts.ts:getPreceptType",
+      "type": "function",
+      "name": "getPreceptType",
+      "filePath": "packages/core/src/business/precepts.ts",
+      "lineRange": [
+        49,
+        53
+      ],
+      "summary": "根据前缀判定戒律类型为“持”还是“实践”。",
+      "tags": [
+        "business",
+        "precepts",
+        "meditation",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/sleep.ts:getCurrentPeriod",
+      "type": "function",
+      "name": "getCurrentPeriod",
+      "filePath": "packages/core/src/business/sleep.ts",
+      "lineRange": [
+        31,
+        43
+      ],
+      "summary": "根据当前小时返回所处中医十二时辰时段对象。",
+      "tags": [
+        "business",
+        "sleep",
+        "body-clock",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/sleep.ts:getNextSleepPeriod",
+      "type": "function",
+      "name": "getNextSleepPeriod",
+      "filePath": "packages/core/src/business/sleep.ts",
+      "lineRange": [
+        46,
+        59
+      ],
+      "summary": "返回当前时段的下一个十二时辰时段（循环）。",
+      "tags": [
+        "business",
+        "sleep",
+        "body-clock",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/sleep.ts:formatSleepDuration",
+      "type": "function",
+      "name": "formatSleepDuration",
+      "filePath": "packages/core/src/business/sleep.ts",
+      "lineRange": [
+        62,
+        69
+      ],
+      "summary": "将睡眠分钟数格式化为“X小时Y分”字符串。",
+      "tags": [
+        "business",
+        "sleep",
+        "body-clock",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/sleep.ts:sleepQualityLevel",
+      "type": "function",
+      "name": "sleepQualityLevel",
+      "filePath": "packages/core/src/business/sleep.ts",
+      "lineRange": [
+        72,
+        77
+      ],
+      "summary": "根据睡眠时长（分钟）划分睡眠质量等级（如不足/正常/充足）。",
+      "tags": [
+        "business",
+        "sleep",
+        "body-clock",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/sleep.ts:qualityEmoji",
+      "type": "function",
+      "name": "qualityEmoji",
+      "filePath": "packages/core/src/business/sleep.ts",
+      "lineRange": [
+        80,
+        88
+      ],
+      "summary": "根据睡眠质量等级返回对应 emoji 图标。",
+      "tags": [
+        "business",
+        "sleep",
+        "body-clock",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/zhiguanCountingRound.ts:notifyBreath",
+      "type": "function",
+      "name": "notifyBreath",
+      "filePath": "packages/core/src/business/zhiguanCountingRound.ts",
+      "lineRange": [
+        17,
+        34
+      ],
+      "summary": "处理一次呼吸通知，更新计数轮状态（计数/周数/阵列）。",
+      "tags": [
+        "business",
+        "zhiguan",
+        "pure-function",
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/business/zhiguanCountingRound.ts:computeRounds",
+      "type": "function",
+      "name": "computeRounds",
+      "filePath": "packages/core/src/business/zhiguanCountingRound.ts",
+      "lineRange": [
+        37,
+        44
+      ],
+      "summary": "根据总呼吸次数计算完整轮次与剩余次数。",
+      "tags": [
+        "business",
+        "zhiguan",
+        "pure-function",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/zhiguanCountingRound.ts:resetRound",
+      "type": "function",
+      "name": "resetRound",
+      "filePath": "packages/core/src/business/zhiguanCountingRound.ts",
+      "lineRange": [
+        46,
+        48
+      ],
+      "summary": "重置计数轮状态为初始值。",
+      "tags": [
+        "business",
+        "zhiguan",
+        "pure-function",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/zhiguanTimer.ts:calcElapsed",
+      "type": "function",
+      "name": "calcElapsed",
+      "filePath": "packages/core/src/business/zhiguanTimer.ts",
+      "lineRange": [
+        2,
+        4
+      ],
+      "summary": "根据起始时间、已暂停时长与当前时钟计算实际已用秒数。",
+      "tags": [
+        "business",
+        "zhiguan",
+        "timer",
+        "pure-function",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/zhiguanTimer.ts:accumulatePause",
+      "type": "function",
+      "name": "accumulatePause",
+      "filePath": "packages/core/src/business/zhiguanTimer.ts",
+      "lineRange": [
+        7,
+        9
+      ],
+      "summary": "累加一段暂停时间到 pausedElapsed。",
+      "tags": [
+        "business",
+        "zhiguan",
+        "timer",
+        "pure-function",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/zhiguanTimer.ts:formatSec",
+      "type": "function",
+      "name": "formatSec",
+      "filePath": "packages/core/src/business/zhiguanTimer.ts",
+      "lineRange": [
+        12,
+        16
+      ],
+      "summary": "将总秒数格式化为 MM:SS 字符串。",
+      "tags": [
+        "business",
+        "zhiguan",
+        "timer",
+        "pure-function",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/zhiguanTimer.ts:isInClosingCountdown",
+      "type": "function",
+      "name": "isInClosingCountdown",
+      "filePath": "packages/core/src/business/zhiguanTimer.ts",
+      "lineRange": [
+        19,
+        24
+      ],
+      "summary": "判断是否进入闭幕倒计时阶段（已用时长接近目标）。",
+      "tags": [
+        "business",
+        "zhiguan",
+        "timer",
+        "pure-function",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/constants/sutraTexts.ts:getSutraText",
+      "type": "function",
+      "name": "getSutraText",
+      "filePath": "packages/core/src/constants/sutraTexts.ts",
+      "lineRange": [
+        130,
+        133
+      ],
+      "summary": "根据键名查询并返回对应经文全文常量。",
+      "tags": [
+        "constant",
+        "sutra",
+        "meditation",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:packages/core/src/data/DataGateway.ts:NoopDataGateway",
+      "type": "class",
+      "name": "NoopDataGateway",
+      "filePath": "packages/core/src/data/DataGateway.ts",
+      "lineRange": [
+        0,
+        0
+      ],
+      "summary": "平台无关数据网关的 no-op 实现，提供 get/list/upsert/delete 四种契约方法（测试/占位用）。",
+      "tags": [
+        "data",
+        "gateway",
+        "interface",
+        "architecture",
+        "class"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/pocketbase.ts:setPocketbaseUrl",
+      "type": "function",
+      "name": "setPocketbaseUrl",
+      "filePath": "packages/core/src/pocketbase.ts",
+      "lineRange": [
+        7,
+        9
+      ],
+      "summary": "设置 PocketBase 客户端的服务器 URL 并（重建）单例。",
+      "tags": [
+        "pocketbase",
+        "client",
+        "singleton",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/pocketbase.ts:getPb",
+      "type": "function",
+      "name": "getPb",
+      "filePath": "packages/core/src/pocketbase.ts",
+      "lineRange": [
+        11,
+        14
+      ],
+      "summary": "获取共享的 PocketBase 客户端单例实例。",
+      "tags": [
+        "pocketbase",
+        "client",
+        "singleton",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/typography.ts:configureFontScale",
+      "type": "function",
+      "name": "configureFontScale",
+      "filePath": "packages/core/src/typography.ts",
+      "lineRange": [
+        54,
+        56
+      ],
+      "summary": "配置全局字体缩放因子（用于跨端字号统一）。",
+      "tags": [
+        "typography",
+        "ui",
+        "cross-platform",
+        "style",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils/transform.ts:toCamelCase",
+      "type": "function",
+      "name": "toCamelCase",
+      "filePath": "packages/core/src/utils/transform.ts",
+      "lineRange": [
+        7,
+        9
+      ],
+      "summary": "将 snake_case 字符串转换为 camelCase。",
+      "tags": [
+        "utils",
+        "transform",
+        "serialization",
+        "string",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils/transform.ts:toSnakeCase",
+      "type": "function",
+      "name": "toSnakeCase",
+      "filePath": "packages/core/src/utils/transform.ts",
+      "lineRange": [
+        14,
+        19
+      ],
+      "summary": "将 camelCase 字符串转换为 snake_case（含连续大写处理）。",
+      "tags": [
+        "utils",
+        "transform",
+        "serialization",
+        "string",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils/transform.ts:transformKeys",
+      "type": "function",
+      "name": "transformKeys",
+      "filePath": "packages/core/src/utils/transform.ts",
+      "lineRange": [
+        22,
+        37
+      ],
+      "summary": "按给定键转换函数批量转换对象所有键（递归处理数组与嵌套对象）。",
+      "tags": [
+        "utils",
+        "transform",
+        "serialization",
+        "string",
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/utils/transform.ts:keysToCamel",
+      "type": "function",
+      "name": "keysToCamel",
+      "filePath": "packages/core/src/utils/transform.ts",
+      "lineRange": [
+        42,
+        44
+      ],
+      "summary": "批量将对象的 snake_case 键转换为 camelCase。",
+      "tags": [
+        "utils",
+        "transform",
+        "serialization",
+        "string",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils/transform.ts:keysToSnake",
+      "type": "function",
+      "name": "keysToSnake",
+      "filePath": "packages/core/src/utils/transform.ts",
+      "lineRange": [
+        49,
+        51
+      ],
+      "summary": "批量将对象的 camelCase 键转换为 snake_case。",
+      "tags": [
+        "utils",
+        "transform",
+        "serialization",
+        "string",
+        "function"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:packages/core/src/business/coordinateFuzzing.ts",
+      "target": "function:packages/core/src/business/coordinateFuzzing.ts:fuzzCoordinate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/coordinateFuzzing.ts",
+      "target": "function:packages/core/src/business/coordinateFuzzing.ts:fuzzCoordinate",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/coordinateFuzzing.ts",
+      "target": "function:packages/core/src/business/coordinateFuzzing.ts:isValidCoordinate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/coordinateFuzzing.ts",
+      "target": "function:packages/core/src/business/coordinateFuzzing.ts:isValidCoordinate",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/coordinateFuzzing.ts",
+      "target": "function:packages/core/src/business/coordinateFuzzing.ts:calculateDistance",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/coordinateFuzzing.ts",
+      "target": "function:packages/core/src/business/coordinateFuzzing.ts:calculateDistance",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/customLists.ts",
+      "target": "function:packages/core/src/business/customLists.ts:addCustomItem",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/customLists.ts",
+      "target": "function:packages/core/src/business/customLists.ts:addCustomItem",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/customLists.ts",
+      "target": "function:packages/core/src/business/customLists.ts:removeCustomItem",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/customLists.ts",
+      "target": "function:packages/core/src/business/customLists.ts:removeCustomItem",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/customLists.ts",
+      "target": "function:packages/core/src/business/customLists.ts:updateCustomItem",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/customLists.ts",
+      "target": "function:packages/core/src/business/customLists.ts:updateCustomItem",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/customLists.ts",
+      "target": "function:packages/core/src/business/customLists.ts:reorderItem",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/customLists.ts",
+      "target": "function:packages/core/src/business/customLists.ts:reorderItem",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/customLists.ts",
+      "target": "function:packages/core/src/business/customLists.ts:ensureOrderContains",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/customLists.ts",
+      "target": "function:packages/core/src/business/customLists.ts:ensureOrderContains",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/dateUtils.ts",
+      "target": "function:packages/core/src/business/dateUtils.ts:formatDateBar",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/dateUtils.ts",
+      "target": "function:packages/core/src/business/dateUtils.ts:formatDateBar",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/precepts.ts",
+      "target": "function:packages/core/src/business/precepts.ts:isPreceptHabit",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/precepts.ts",
+      "target": "function:packages/core/src/business/precepts.ts:isPreceptHabit",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/precepts.ts",
+      "target": "function:packages/core/src/business/precepts.ts:getPreceptDisplayName",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/precepts.ts",
+      "target": "function:packages/core/src/business/precepts.ts:getPreceptDisplayName",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/precepts.ts",
+      "target": "function:packages/core/src/business/precepts.ts:getPreceptType",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/precepts.ts",
+      "target": "function:packages/core/src/business/precepts.ts:getPreceptType",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/sleep.ts",
+      "target": "function:packages/core/src/business/sleep.ts:getCurrentPeriod",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/sleep.ts",
+      "target": "function:packages/core/src/business/sleep.ts:getCurrentPeriod",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/sleep.ts",
+      "target": "function:packages/core/src/business/sleep.ts:getNextSleepPeriod",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/sleep.ts",
+      "target": "function:packages/core/src/business/sleep.ts:getNextSleepPeriod",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/sleep.ts",
+      "target": "function:packages/core/src/business/sleep.ts:formatSleepDuration",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/sleep.ts",
+      "target": "function:packages/core/src/business/sleep.ts:formatSleepDuration",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/sleep.ts",
+      "target": "function:packages/core/src/business/sleep.ts:sleepQualityLevel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/sleep.ts",
+      "target": "function:packages/core/src/business/sleep.ts:sleepQualityLevel",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/sleep.ts",
+      "target": "function:packages/core/src/business/sleep.ts:qualityEmoji",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/sleep.ts",
+      "target": "function:packages/core/src/business/sleep.ts:qualityEmoji",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/zhiguanCountingRound.ts",
+      "target": "function:packages/core/src/business/zhiguanCountingRound.ts:notifyBreath",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/zhiguanCountingRound.ts",
+      "target": "function:packages/core/src/business/zhiguanCountingRound.ts:notifyBreath",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/zhiguanCountingRound.ts",
+      "target": "function:packages/core/src/business/zhiguanCountingRound.ts:computeRounds",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/zhiguanCountingRound.ts",
+      "target": "function:packages/core/src/business/zhiguanCountingRound.ts:computeRounds",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/zhiguanCountingRound.ts",
+      "target": "function:packages/core/src/business/zhiguanCountingRound.ts:resetRound",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/zhiguanCountingRound.ts",
+      "target": "function:packages/core/src/business/zhiguanCountingRound.ts:resetRound",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/zhiguanTimer.ts",
+      "target": "function:packages/core/src/business/zhiguanTimer.ts:calcElapsed",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/zhiguanTimer.ts",
+      "target": "function:packages/core/src/business/zhiguanTimer.ts:calcElapsed",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/zhiguanTimer.ts",
+      "target": "function:packages/core/src/business/zhiguanTimer.ts:accumulatePause",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/zhiguanTimer.ts",
+      "target": "function:packages/core/src/business/zhiguanTimer.ts:accumulatePause",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/zhiguanTimer.ts",
+      "target": "function:packages/core/src/business/zhiguanTimer.ts:formatSec",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/zhiguanTimer.ts",
+      "target": "function:packages/core/src/business/zhiguanTimer.ts:formatSec",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/zhiguanTimer.ts",
+      "target": "function:packages/core/src/business/zhiguanTimer.ts:isInClosingCountdown",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/zhiguanTimer.ts",
+      "target": "function:packages/core/src/business/zhiguanTimer.ts:isInClosingCountdown",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/constants/sutraTexts.ts",
+      "target": "function:packages/core/src/constants/sutraTexts.ts:getSutraText",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/constants/sutraTexts.ts",
+      "target": "function:packages/core/src/constants/sutraTexts.ts:getSutraText",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/data/DataGateway.ts",
+      "target": "class:packages/core/src/data/DataGateway.ts:NoopDataGateway",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/data/DataGateway.ts",
+      "target": "class:packages/core/src/data/DataGateway.ts:NoopDataGateway",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/pocketbase.ts",
+      "target": "function:packages/core/src/pocketbase.ts:setPocketbaseUrl",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/pocketbase.ts",
+      "target": "function:packages/core/src/pocketbase.ts:setPocketbaseUrl",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/pocketbase.ts",
+      "target": "function:packages/core/src/pocketbase.ts:getPb",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/pocketbase.ts",
+      "target": "function:packages/core/src/pocketbase.ts:getPb",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/typography.ts",
+      "target": "function:packages/core/src/typography.ts:configureFontScale",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/typography.ts",
+      "target": "function:packages/core/src/typography.ts:configureFontScale",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils/transform.ts",
+      "target": "function:packages/core/src/utils/transform.ts:toCamelCase",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/utils/transform.ts",
+      "target": "function:packages/core/src/utils/transform.ts:toCamelCase",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils/transform.ts",
+      "target": "function:packages/core/src/utils/transform.ts:toSnakeCase",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/utils/transform.ts",
+      "target": "function:packages/core/src/utils/transform.ts:toSnakeCase",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils/transform.ts",
+      "target": "function:packages/core/src/utils/transform.ts:transformKeys",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/utils/transform.ts",
+      "target": "function:packages/core/src/utils/transform.ts:keysToCamel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/utils/transform.ts",
+      "target": "function:packages/core/src/utils/transform.ts:keysToCamel",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils/transform.ts",
+      "target": "function:packages/core/src/utils/transform.ts:keysToSnake",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/utils/transform.ts",
+      "target": "function:packages/core/src/utils/transform.ts:keysToSnake",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/dateUtils.test.ts",
+      "target": "file:packages/core/src/business/dateUtils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/dateUtils.ts",
+      "target": "file:packages/core/src/business/dateUtils.test.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:packages/core/src/constants/music.ts",
+      "target": "file:packages/core/src/types/music.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/data/DataGateway.test.ts",
+      "target": "file:packages/core/src/data/DataGateway.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/data/DataGateway.ts",
+      "target": "file:packages/core/src/data/DataGateway.test.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "function:packages/core/src/utils/transform.ts:keysToCamel",
+      "target": "function:packages/core/src/utils/transform.ts:transformKeys",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/utils/transform.ts:keysToSnake",
+      "target": "function:packages/core/src/utils/transform.ts:transformKeys",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ]
+}

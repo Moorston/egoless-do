@@ -1,0 +1,2524 @@
+{
+  "nodes": [
+    {
+      "id": "file:packages/core/src/store/createRecycleBinSlice.test.ts",
+      "type": "file",
+      "name": "createRecycleBinSlice.test.ts",
+      "filePath": "packages/core/src/store/createRecycleBinSlice.test.ts",
+      "summary": "回收站 slice 的单元测试，覆盖 addToRecycleBin/restoreFromRecycleBin/removeFromRecycleBin/emptyRecycleBin/cleanupRecycleBin 及计划实体的级联恢复与硬删除逻辑。",
+      "tags": [
+        "test",
+        "store",
+        "slice",
+        "recycle-bin"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/store/createRecycleBinSlice.test.ts:makeTestStore",
+      "type": "function",
+      "name": "makeTestStore",
+      "filePath": "packages/core/src/store/createRecycleBinSlice.test.ts",
+      "lineRange": [
+        14,
+        36
+      ],
+      "summary": "构建用于测试的模拟 store 实例。",
+      "tags": [
+        "test",
+        "helper"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/createRecycleBinSlice.ts",
+      "type": "file",
+      "name": "createRecycleBinSlice.ts",
+      "filePath": "packages/core/src/store/createRecycleBinSlice.ts",
+      "summary": "回收站 slice 工厂：实现软删除恢复机制。支持 7 种实体类型，提供加入回收站、恢复、永久删除(级联删除计划子项 planItem/checkin/todo/todoHistory)、清空与 7 天过期自动清理。",
+      "tags": [
+        "store",
+        "slice",
+        "recycle-bin",
+        "soft-delete",
+        "cascade"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/store/createRecycleBinSlice.ts:createRecycleBinSlice",
+      "type": "function",
+      "name": "createRecycleBinSlice",
+      "filePath": "packages/core/src/store/createRecycleBinSlice.ts",
+      "lineRange": [
+        20,
+        259
+      ],
+      "summary": "创建回收站 slice，返回 Zustand slice creator，委托 writeBatcher 持久化并触发同步。",
+      "tags": [
+        "slice-factory",
+        "store"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:packages/core/src/store/createReflectionSlice.ts",
+      "type": "file",
+      "name": "createReflectionSlice.ts",
+      "filePath": "packages/core/src/store/createReflectionSlice.ts",
+      "summary": "感念(Reflection) slice 工厂：管理感念 CRUD、置顶、标签/心情自定义与排序、感念关联(reflectionLink)的创建与删除，删除时级联解绑 thoughtTrail/planItem/link。",
+      "tags": [
+        "store",
+        "slice",
+        "reflection",
+        "tag",
+        "mood"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/store/createReflectionSlice.ts:createReflectionSlice",
+      "type": "function",
+      "name": "createReflectionSlice",
+      "filePath": "packages/core/src/store/createReflectionSlice.ts",
+      "lineRange": [
+        20,
+        297
+      ],
+      "summary": "创建感念 slice，委托纯业务函数(reflections/business)处理列表变换，同步到 SQLite。",
+      "tags": [
+        "slice-factory",
+        "reflection"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:packages/core/src/store/createReviewSlice.ts",
+      "type": "file",
+      "name": "createReviewSlice.ts",
+      "filePath": "packages/core/src/store/createReviewSlice.ts",
+      "summary": "打卡复盘(Review) slice 工厂：按周/月生成复盘数据，调用 AI 服务生成摘要/亮点/改进建议，支持按日期范围查找最新复盘与批量删除。",
+      "tags": [
+        "store",
+        "slice",
+        "review",
+        "ai",
+        "checkin"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/store/createReviewSlice.ts:createReviewSlice",
+      "type": "function",
+      "name": "createReviewSlice",
+      "filePath": "packages/core/src/store/createReviewSlice.ts",
+      "lineRange": [
+        11,
+        153
+      ],
+      "summary": "创建复盘 slice；generateReview 计算周期数据并调用 getAIService 生成 AI 文案，避免 await 覆盖。",
+      "tags": [
+        "slice-factory",
+        "review",
+        "ai"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/store/createSettingsSlice.ts",
+      "type": "file",
+      "name": "createSettingsSlice.ts",
+      "filePath": "packages/core/src/store/createSettingsSlice.ts",
+      "summary": "设置 slice 工厂：管理主题、语言、提醒开关/时间，以及 AI 模式与多模型配置(增删改设默认/切换启用)。",
+      "tags": [
+        "store",
+        "slice",
+        "settings",
+        "theme",
+        "ai"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/store/createSettingsSlice.ts:createSettingsSlice",
+      "type": "function",
+      "name": "createSettingsSlice",
+      "filePath": "packages/core/src/store/createSettingsSlice.ts",
+      "lineRange": [
+        27,
+        93
+      ],
+      "summary": "创建设置 slice，触发 onPersist/onSettingChange/onAIPersist 三类回调以持久化到 SQLite。",
+      "tags": [
+        "slice-factory",
+        "settings"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/store/createSleepSlice.ts",
+      "type": "file",
+      "name": "createSleepSlice.ts",
+      "filePath": "packages/core/src/store/createSleepSlice.ts",
+      "summary": "睡眠 slice 工厂：管理睡眠日记(入睡/醒来/跨午夜时长计算)、就寝障碍打卡(barrierDone)与睡眠目标设置。",
+      "tags": [
+        "store",
+        "slice",
+        "sleep",
+        "diary"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/store/createSleepSlice.ts:createSleepSlice",
+      "type": "function",
+      "name": "createSleepSlice",
+      "filePath": "packages/core/src/store/createSleepSlice.ts",
+      "lineRange": [
+        16,
+        82
+      ],
+      "summary": "创建睡眠 slice；saveSleepDiary 自动根据 bedtimeAt/wakeAt 计算 durationMin 并修正跨午夜差值。",
+      "tags": [
+        "slice-factory",
+        "sleep"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/store/createSliceErrorSlice.ts",
+      "type": "file",
+      "name": "createSliceErrorSlice.ts",
+      "filePath": "packages/core/src/store/createSliceErrorSlice.ts",
+      "summary": "Slice 级错误追踪 slice：环形缓冲保留最近 20 条持久化失败记录，提供 addSliceError/clearSliceErrors。",
+      "tags": [
+        "store",
+        "slice",
+        "error-handling"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/store/createSliceErrorSlice.ts:createSliceErrorSlice",
+      "type": "function",
+      "name": "createSliceErrorSlice",
+      "filePath": "packages/core/src/store/createSliceErrorSlice.ts",
+      "lineRange": [
+        7,
+        21
+      ],
+      "summary": "创建 slice 错误状态，最多保留 MAX_SLICE_ERRORS=20 条错误。",
+      "tags": [
+        "slice-factory",
+        "error"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/createThoughtTrailSlice.test.ts",
+      "type": "file",
+      "name": "createThoughtTrailSlice.test.ts",
+      "filePath": "packages/core/src/store/createThoughtTrailSlice.test.ts",
+      "summary": "思维轨迹 slice 单元测试，验证轨迹创建、添加/移除感念与笔记的级联持久化逻辑。",
+      "tags": [
+        "test",
+        "store",
+        "slice",
+        "thought-trail"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/store/createThoughtTrailSlice.test.ts:makeTestStore",
+      "type": "function",
+      "name": "makeTestStore",
+      "filePath": "packages/core/src/store/createThoughtTrailSlice.test.ts",
+      "lineRange": [
+        16,
+        31
+      ],
+      "summary": "构建用于测试的模拟 store 实例。",
+      "tags": [
+        "test",
+        "helper"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/store/createThoughtTrailSlice.test.ts:makeTrail",
+      "type": "function",
+      "name": "makeTrail",
+      "filePath": "packages/core/src/store/createThoughtTrailSlice.test.ts",
+      "lineRange": [
+        33,
+        43
+      ],
+      "summary": "构造测试用思维轨迹对象。",
+      "tags": [
+        "test",
+        "fixture"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/createThoughtTrailSlice.ts",
+      "type": "file",
+      "name": "createThoughtTrailSlice.ts",
+      "filePath": "packages/core/src/store/createThoughtTrailSlice.ts",
+      "summary": "思维轨迹(ThoughtTrail) slice 工厂：管理轨迹 CRUD、轨迹内感念增删(双向绑定 thoughtTrailIds)、轨迹笔记(trailNote)CRUD、AI 摘要/缓存、推荐忽略模式。",
+      "tags": [
+        "store",
+        "slice",
+        "thought-trail",
+        "note",
+        "ai"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/store/createThoughtTrailSlice.ts:createThoughtTrailSlice",
+      "type": "function",
+      "name": "createThoughtTrailSlice",
+      "filePath": "packages/core/src/store/createThoughtTrailSlice.ts",
+      "lineRange": [
+        11,
+        312
+      ],
+      "summary": "创建思维轨迹 slice；删除轨迹时级联软删除笔记、解绑感念与 planItem。",
+      "tags": [
+        "slice-factory",
+        "thought-trail"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:packages/core/src/store/createTrailNoteSlice.test.ts",
+      "type": "file",
+      "name": "createTrailNoteSlice.test.ts",
+      "filePath": "packages/core/src/store/createTrailNoteSlice.test.ts",
+      "summary": "轨迹笔记 slice 单元测试，验证笔记的添加/更新/删除与所属轨迹 noteIds 同步。",
+      "tags": [
+        "test",
+        "store",
+        "slice",
+        "trail-note"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/store/createTrailNoteSlice.test.ts:makeTestStore",
+      "type": "function",
+      "name": "makeTestStore",
+      "filePath": "packages/core/src/store/createTrailNoteSlice.test.ts",
+      "lineRange": [
+        16,
+        29
+      ],
+      "summary": "构建用于测试的模拟 store 实例。",
+      "tags": [
+        "test",
+        "helper"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/store/createTrailNoteSlice.test.ts:makeTrail",
+      "type": "function",
+      "name": "makeTrail",
+      "filePath": "packages/core/src/store/createTrailNoteSlice.test.ts",
+      "lineRange": [
+        31,
+        41
+      ],
+      "summary": "构造测试用思维轨迹对象。",
+      "tags": [
+        "test",
+        "fixture"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/createZhiguanSlice.ts",
+      "type": "file",
+      "name": "createZhiguanSlice.ts",
+      "filePath": "packages/core/src/store/createZhiguanSlice.ts",
+      "summary": "止观禅修(Zhiguan) slice 工厂：管理呼吸记录、坐禅草稿(draft)、session 生命周期(init/start/complete/interrupt/delete)与统计 computeStats。",
+      "tags": [
+        "store",
+        "slice",
+        "zhiguan",
+        "meditation",
+        "breath"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/store/createZhiguanSlice.ts:createZhiguanSlice",
+      "type": "function",
+      "name": "createZhiguanSlice",
+      "filePath": "packages/core/src/store/createZhiguanSlice.ts",
+      "lineRange": [
+        27,
+        248
+      ],
+      "summary": "创建止观 slice；含五盖、定慧比例、八触、回向等禅修字段与 userId 关联。",
+      "tags": [
+        "slice-factory",
+        "zhiguan"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:packages/core/src/store/habitSlice.test.ts",
+      "type": "file",
+      "name": "habitSlice.test.ts",
+      "filePath": "packages/core/src/store/habitSlice.test.ts",
+      "summary": "习惯 slice 单元测试，验证打卡(checkinHabit)与状态机转换逻辑。",
+      "tags": [
+        "test",
+        "store",
+        "slice",
+        "habit"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/store/habitSlice.test.ts:createMockStore",
+      "type": "function",
+      "name": "createMockStore",
+      "filePath": "packages/core/src/store/habitSlice.test.ts",
+      "lineRange": [
+        24,
+        34
+      ],
+      "summary": "构建用于习惯测试的模拟 store。",
+      "tags": [
+        "test",
+        "helper"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/mergeEngine.ts",
+      "type": "file",
+      "name": "mergeEngine.ts",
+      "filePath": "packages/core/src/store/mergeEngine.ts",
+      "summary": "同步合并引擎：ENTITY_MERGE_MAP 定义 24 个 syncKey→storeKey 映射；buildMergePatch 将服务端数据合入本地状态，特殊处理 meditation(totalMedMinutes)、aiConfig(取最新)、profile(字段拆分+时间戳覆盖)。",
+      "tags": [
+        "sync",
+        "merge",
+        "store"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/store/mergeEngine.ts:buildMergePatch",
+      "type": "function",
+      "name": "buildMergePatch",
+      "filePath": "packages/core/src/store/mergeEngine.ts",
+      "lineRange": [
+        36,
+        98
+      ],
+      "summary": "按 ENTITY_MERGE_MAP 逐个实体调用 mergeById，过滤 deleted，合并特殊实体。",
+      "tags": [
+        "sync",
+        "merge"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/store/mindSliceTypes.ts",
+      "type": "file",
+      "name": "mindSliceTypes.ts",
+      "filePath": "packages/core/src/store/mindSliceTypes.ts",
+      "summary": "Mind slice 类型定义文件：声明 MindSlice 接口（感念与思维相关状态），集中导出供 types.ts 聚合。",
+      "tags": [
+        "store",
+        "type-definition",
+        "slice"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/planSlice.test.ts",
+      "type": "file",
+      "name": "planSlice.test.ts",
+      "filePath": "packages/core/src/store/planSlice.test.ts",
+      "summary": "计划 slice 单元测试，验证计划与计划任务的创建、状态流转与打卡逻辑。",
+      "tags": [
+        "test",
+        "store",
+        "slice",
+        "plan"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/store/planSlice.test.ts:createStore",
+      "type": "function",
+      "name": "createStore",
+      "filePath": "packages/core/src/store/planSlice.test.ts",
+      "lineRange": [
+        22,
+        33
+      ],
+      "summary": "构建用于计划测试的模拟 store。",
+      "tags": [
+        "test",
+        "helper"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "file",
+      "name": "sliceHelper.ts",
+      "filePath": "packages/core/src/store/sliceHelper.ts",
+      "summary": "Slice 工厂辅助类型：定义 SliceCreator<R> 函数签名，统一 Zustand slice 工厂类型。",
+      "tags": [
+        "store",
+        "type-definition",
+        "helper"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/types.ts",
+      "type": "file",
+      "name": "types.ts",
+      "filePath": "packages/core/src/store/types.ts",
+      "summary": "Store 单一真相源：聚合所有 slice 接口(Habit/Reflection/Plan/RecycleBin/ThoughtTrail/Review/Profile/Settings/Sleep/Diet/Practice 等)，定义 FullStore、StorageAdapter、SyncDataMap。",
+      "tags": [
+        "store",
+        "type-definition",
+        "slice",
+        "adapter"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:packages/core/src/store/zhiguanSliceTypes.ts",
+      "type": "file",
+      "name": "zhiguanSliceTypes.ts",
+      "filePath": "packages/core/src/store/zhiguanSliceTypes.ts",
+      "summary": "止观 slice 类型定义：声明 ZhiguanSlice 接口（sessions/draft/currentSession/stats），引用 breath 类型。",
+      "tags": [
+        "store",
+        "type-definition",
+        "zhiguan",
+        "slice"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/sync/conflict.test.ts",
+      "type": "file",
+      "name": "conflict.test.ts",
+      "filePath": "packages/core/src/sync/conflict.test.ts",
+      "summary": "冲突解决纯函数单元测试，覆盖 updatedAt 比较、平局、deleted 优先级等分支。",
+      "tags": [
+        "test",
+        "sync",
+        "conflict"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/sync/conflict.ts",
+      "type": "file",
+      "name": "conflict.ts",
+      "filePath": "packages/core/src/sync/conflict.ts",
+      "summary": "纯函数冲突解决：以 server 为权威，按 updatedAt 决定胜出方；deleted>存活，平局 server 胜。",
+      "tags": [
+        "sync",
+        "conflict",
+        "pure-function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/sync/conflict.ts:resolveConflict",
+      "type": "function",
+      "name": "resolveConflict",
+      "filePath": "packages/core/src/sync/conflict.ts",
+      "lineRange": [
+        20,
+        30
+      ],
+      "summary": "根据 client/server 的 updatedAt 与 deleted 标志决定冲突胜出方。",
+      "tags": [
+        "conflict",
+        "sync"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/sync/entities.ts",
+      "type": "file",
+      "name": "entities.ts",
+      "filePath": "packages/core/src/sync/entities.ts",
+      "summary": "同步实体配置：导出 40 个 SyncEntity 与 ENTITY_COLLECTION/ENTITY_ID_FIELD/ENTITY_STORE_KEY，数据派生自 entitySchemas 的 SCHEMAS。",
+      "tags": [
+        "sync",
+        "entity",
+        "config"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/sync/entitySchemas.test.ts",
+      "type": "file",
+      "name": "entitySchemas.test.ts",
+      "filePath": "packages/core/src/sync/entitySchemas.test.ts",
+      "summary": "实体 Schema 单元测试，验证 toRow/serverPayloadToRow/rowToEntity 的类型转换与字节数组解析。",
+      "tags": [
+        "test",
+        "sync",
+        "schema"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/sync/entitySchemas.ts",
+      "type": "file",
+      "name": "entitySchemas.ts",
+      "filePath": "packages/core/src/sync/entitySchemas.ts",
+      "summary": "统一实体 Schema 注册表(单一真相源)：定义 40 个实体的 sqlite/pocketbase/fields 映射，导出 buildToRow/buildServerPayloadToRow/buildRowToEntity/schemaToEntityMeta 构建器与字节数组/JSON 解析工具。",
+      "tags": [
+        "sync",
+        "schema",
+        "entity",
+        "sqlite",
+        "pocketbase"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/sync/entitySchemas.ts:parseBytes",
+      "type": "function",
+      "name": "parseBytes",
+      "filePath": "packages/core/src/sync/entitySchemas.ts",
+      "lineRange": [
+        49,
+        68
+      ],
+      "summary": "将 PocketBase 字节数组(UTF-8)解码为字符串，处理多字节/中文。",
+      "tags": [
+        "bytes",
+        "decode"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/sync/entitySchemas.ts:applyReadType",
+      "type": "function",
+      "name": "applyReadType",
+      "filePath": "packages/core/src/sync/entitySchemas.ts",
+      "lineRange": [
+        106,
+        117
+      ],
+      "summary": "读取时按 FieldType 还原 bool/json 类型。",
+      "tags": [
+        "schema",
+        "type"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/sync/entitySchemas.ts:pbField",
+      "type": "function",
+      "name": "pbField",
+      "filePath": "packages/core/src/sync/entitySchemas.ts",
+      "lineRange": [
+        128,
+        134
+      ],
+      "summary": "从 PB 记录取值，支持顶层字段与 nested data 回退。",
+      "tags": [
+        "pocketbase",
+        "field"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/sync/entitySchemas.ts:buildToRow",
+      "type": "function",
+      "name": "buildToRow",
+      "filePath": "packages/core/src/sync/entitySchemas.ts",
+      "lineRange": [
+        147,
+        160
+      ],
+      "summary": "生成 entity→SQLite 行转换函数，按字段类型做 bool/json/num 转换。",
+      "tags": [
+        "schema",
+        "mapper"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/sync/entitySchemas.ts:buildServerPayloadToRow",
+      "type": "function",
+      "name": "buildServerPayloadToRow",
+      "filePath": "packages/core/src/sync/entitySchemas.ts",
+      "lineRange": [
+        163,
+        183
+      ],
+      "summary": "生成服务端 payload→SQLite 行转换，支持 nested data、required 校验与 deleted 强制置 0。",
+      "tags": [
+        "schema",
+        "mapper"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/sync/entitySchemas.ts:buildRowToEntity",
+      "type": "function",
+      "name": "buildRowToEntity",
+      "filePath": "packages/core/src/sync/entitySchemas.ts",
+      "lineRange": [
+        186,
+        209
+      ],
+      "summary": "生成 SQLite 行→实体转换函数，按字段类型反序列化 JSON/bool/num。",
+      "tags": [
+        "schema",
+        "mapper"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/sync/entitySchemas.ts:schemaToEntityMeta",
+      "type": "function",
+      "name": "schemaToEntityMeta",
+      "filePath": "packages/core/src/sync/entitySchemas.ts",
+      "lineRange": [
+        212,
+        219
+      ],
+      "summary": "从 schema 导出 EntityMeta(collection/localPk/remotePk/softDelete)。",
+      "tags": [
+        "schema",
+        "meta"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/sync/merge.test.ts",
+      "type": "file",
+      "name": "merge.test.ts",
+      "filePath": "packages/core/src/sync/merge.test.ts",
+      "summary": "mergeById 单元测试，验证服务端/本地数组合并、去重与软删除保留语义。",
+      "tags": [
+        "test",
+        "sync",
+        "merge"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/sync/merge.ts",
+      "type": "file",
+      "name": "merge.ts",
+      "filePath": "packages/core/src/sync/merge.ts",
+      "summary": "同步合并工具：mergeById 按 idKey 合并服务端与本地数组，保留本地 soft-delete，基于 resolveConflict 决定胜出方。",
+      "tags": [
+        "sync",
+        "merge",
+        "dedup"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/sync/merge.ts:mergeById",
+      "type": "function",
+      "name": "mergeById",
+      "filePath": "packages/core/src/sync/merge.ts",
+      "lineRange": [
+        10,
+        36
+      ],
+      "summary": "符合 SyncConflict-free 的合并：dedup 后按 updatedAt 覆盖且本地 deleted 不可被服务端复活。",
+      "tags": [
+        "merge",
+        "sync"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/sync/types.ts",
+      "type": "file",
+      "name": "types.ts",
+      "filePath": "packages/core/src/sync/types.ts",
+      "summary": "同步共享类型：SyncChange/SyncPushResponseItem/SyncPushResult/SyncPullResult/SyncCheckResult。",
+      "tags": [
+        "sync",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/types.ts",
+      "type": "file",
+      "name": "types.ts",
+      "filePath": "packages/core/src/types.ts",
+      "summary": "核心共享类型入口：聚合导出所有领域类型(约 30 个)与公共/MS_PER_* 常量，供 core 全层引用。",
+      "tags": [
+        "type-definition",
+        "shared",
+        "domain"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/types/breath.ts",
+      "type": "file",
+      "name": "breath.ts",
+      "filePath": "packages/core/src/types/breath.ts",
+      "summary": "呼吸(Breathing)实体类型：BreathingRecord 接口定义(呼吸练习记录字段)。",
+      "tags": [
+        "type-definition",
+        "domain",
+        "breath"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/types/reflection.ts",
+      "type": "file",
+      "name": "reflection.ts",
+      "filePath": "packages/core/src/types/reflection.ts",
+      "summary": "感念实体类型：MindReflection 接口与 DEFAULT_REFLECTION_FILTERS 默认过滤配置。",
+      "tags": [
+        "type-definition",
+        "domain",
+        "reflection"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/types/thought-trail.ts",
+      "type": "file",
+      "name": "thought-trail.ts",
+      "filePath": "packages/core/src/types/thought-trail.ts",
+      "summary": "思维轨迹实体类型：ThoughtTrail/TrailInsightCache/TrailReviewCache 接口定义。",
+      "tags": [
+        "type-definition",
+        "domain",
+        "thought-trail"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/types/trail-note.ts",
+      "type": "file",
+      "name": "trail-note.ts",
+      "filePath": "packages/core/src/types/trail-note.ts",
+      "summary": "轨迹笔记实体类型：TrailNote 接口定义(含 content/tags/mood/source/guidedQuestion)。",
+      "tags": [
+        "type-definition",
+        "domain",
+        "trail-note"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/utils.test.ts",
+      "type": "file",
+      "name": "utils.test.ts",
+      "filePath": "packages/core/src/utils.test.ts",
+      "summary": "核心工具函数单元测试，覆盖 streak 计算、热量估算、数据聚合与 streak 断裂检测。",
+      "tags": [
+        "test",
+        "utils",
+        "pure-function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/utils.ts",
+      "type": "file",
+      "name": "utils.ts",
+      "filePath": "packages/core/src/utils.ts",
+      "summary": "核心纯工具库：时间常量与格式(fmt/fmtMS/formatPace/dateStr/addDays/yesterday)、习惯打卡与饮食/体重/喝水/周跑量聚合、热力图网格、streak 断裂检测与恢复洞察、UID 生成。",
+      "tags": [
+        "utils",
+        "pure-function",
+        "date",
+        "streak",
+        "aggregate"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:activeOnly",
+      "type": "function",
+      "name": "activeOnly",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        9,
+        11
+      ],
+      "summary": "过滤掉软删除(deleted=true)的记录。",
+      "tags": [
+        "filter",
+        "soft-delete"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:fmt",
+      "type": "function",
+      "name": "fmt",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        13,
+        19
+      ],
+      "summary": "将秒数格式化为 HH:MM:SS 字符串。",
+      "tags": [
+        "format",
+        "time"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:fmtMS",
+      "type": "function",
+      "name": "fmtMS",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        21,
+        26
+      ],
+      "summary": "将秒数格式化为 MM:SS 字符串。",
+      "tags": [
+        "format",
+        "time"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:formatPace",
+      "type": "function",
+      "name": "formatPace",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        28,
+        33
+      ],
+      "summary": "将每公里秒数格式化为配速 m:s。",
+      "tags": [
+        "format",
+        "pace"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:dateStr",
+      "type": "function",
+      "name": "dateStr",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        35,
+        40
+      ],
+      "summary": "将 Date 格式化为 YYYY-MM-DD(本地时间)。",
+      "tags": [
+        "date",
+        "format"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:parseDateParts",
+      "type": "function",
+      "name": "parseDateParts",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        42,
+        45
+      ],
+      "summary": "解析 YYYY-MM-DD 为 [year, monthIndex, day] 元组。",
+      "tags": [
+        "date",
+        "parse"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:addDays",
+      "type": "function",
+      "name": "addDays",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        47,
+        50
+      ],
+      "summary": "对日期字符串加/减 N 天并返回新日期字符串。",
+      "tags": [
+        "date",
+        "arithmetic"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:yesterday",
+      "type": "function",
+      "name": "yesterday",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        52,
+        56
+      ],
+      "summary": "返回昨天的 YYYY-MM-DD 字符串。",
+      "tags": [
+        "date"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:tomorrow",
+      "type": "function",
+      "name": "tomorrow",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        58,
+        62
+      ],
+      "summary": "返回明天的 YYYY-MM-DD 字符串。",
+      "tags": [
+        "date"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:daysInMonth",
+      "type": "function",
+      "name": "daysInMonth",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        64,
+        64
+      ],
+      "summary": "返回指定年月的天数。",
+      "tags": [
+        "date"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:_randHex",
+      "type": "function",
+      "name": "_randHex",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        67,
+        77
+      ],
+      "summary": "生成 8 字节随机十六进制串(crypto.getRandomValues 优先)。",
+      "tags": [
+        "random",
+        "uid"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:uid",
+      "type": "function",
+      "name": "uid",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        78,
+        78
+      ],
+      "summary": "生成唯一 ID：时间戳+计数器+随机 hex。",
+      "tags": [
+        "uid",
+        "util"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:computeStreak",
+      "type": "function",
+      "name": "computeStreak",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        81,
+        95
+      ],
+      "summary": "根据已打卡日期数组计算当前连续 streak，要求最近日期为今天/昨天。",
+      "tags": [
+        "streak",
+        "date"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:calculateCheckinStreak",
+      "type": "function",
+      "name": "calculateCheckinStreak",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        104,
+        144
+      ],
+      "summary": "基于打卡历史计算 streak，允许参考日前一天的容差。",
+      "tags": [
+        "streak",
+        "date"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:estimateFastingKcal",
+      "type": "function",
+      "name": "estimateFastingKcal",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        147,
+        157
+      ],
+      "summary": "基于 BMR 公式估算禁食期间消耗热量(kcal)。",
+      "tags": [
+        "fasting",
+        "formula"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:aggregateWeightData",
+      "type": "function",
+      "name": "aggregateWeightData",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        162,
+        173
+      ],
+      "summary": "聚合最近 N 天体重视图数据。",
+      "tags": [
+        "aggregate",
+        "weight"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:aggregateDailyCalories",
+      "type": "function",
+      "name": "aggregateDailyCalories",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        176,
+        195
+      ],
+      "summary": "聚合最近 N 天每日热量。",
+      "tags": [
+        "aggregate",
+        "calories"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:aggregateDailyWater",
+      "type": "function",
+      "name": "aggregateDailyWater",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        198,
+        221
+      ],
+      "summary": "聚合最近 N 天每日饮水量(从 note JSON 解析)。",
+      "tags": [
+        "aggregate",
+        "water"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:aggregateWeeklyKm",
+      "type": "function",
+      "name": "aggregateWeeklyKm",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        224,
+        242
+      ],
+      "summary": "聚合最近 N 周每周跑量。",
+      "tags": [
+        "aggregate",
+        "exercise"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:buildHeatmapGrid",
+      "type": "function",
+      "name": "buildHeatmapGrid",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        245,
+        273
+      ],
+      "summary": "构建打卡热力图网格(周一为行首)，含 done/grace/isToday 标记。",
+      "tags": [
+        "heatmap",
+        "aggregate"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:detectStreakBreaks",
+      "type": "function",
+      "name": "detectStreakBreaks",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        284,
+        319
+      ],
+      "summary": "检测打卡连续中断(≥2 连缺)并返回断点列表(新→旧)。",
+      "tags": [
+        "streak",
+        "insights"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:computeLongestStreak",
+      "type": "function",
+      "name": "computeLongestStreak",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        322,
+        332
+      ],
+      "summary": "计算历史最长连续天数。",
+      "tags": [
+        "streak"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:computeCurrentStreak",
+      "type": "function",
+      "name": "computeCurrentStreak",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        361,
+        374
+      ],
+      "summary": "计算当前连续天数(从最新日期起)。",
+      "tags": [
+        "streak"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:computeBreakInsights",
+      "type": "function",
+      "name": "computeBreakInsights",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        377,
+        420
+      ],
+      "summary": "计算 streak 断裂洞察(周/月分布、平均恢复天数、月度趋势)。",
+      "tags": [
+        "streak",
+        "insights"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:computeHypotheticalStreak",
+      "type": "function",
+      "name": "computeHypotheticalStreak",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        423,
+        451
+      ],
+      "summary": ":计算若今天打卡的假设连续天数。",
+      "tags": [
+        "streak",
+        "hypothetical"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:generateEncouragement",
+      "type": "function",
+      "name": "generateEncouragement",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        454,
+        489
+      ],
+      "summary": ":根据恢复状态生成鼓励文案(含 i18n 键)。",
+      "tags": [
+        "encouragement",
+        "i18n"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:getRecoveryData",
+      "type": "function",
+      "name": "getRecoveryData",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        492,
+        552
+      ],
+      "summary": ":计算恢复状态(active/just_broke/at_risk/long_absence)。",
+      "tags": [
+        "streak",
+        "recovery"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:formatDate",
+      "type": "function",
+      "name": "formatDate",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        556,
+        559
+      ],
+      "summary": ":按语言环境格式化日期显示。",
+      "tags": [
+        "date",
+        "i18n"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:formatTime",
+      "type": "function",
+      "name": "formatTime",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        561,
+        564
+      ],
+      "summary": ":按语言环境格式化时间显示。",
+      "tags": [
+        "time",
+        "i18n"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/utils.ts:formatTimestamp",
+      "type": "function",
+      "name": "formatTimestamp",
+      "filePath": "packages/core/src/utils.ts",
+      "lineRange": [
+        567,
+        574
+      ],
+      "summary": ":按语言环境格式化时间戳显示。",
+      "tags": [
+        "date",
+        "i18n"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:packages/core/src/store/createRecycleBinSlice.test.ts",
+      "target": "function:packages/core/src/store/createRecycleBinSlice.test.ts:makeTestStore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/store/createRecycleBinSlice.ts",
+      "target": "function:packages/core/src/store/createRecycleBinSlice.ts:createRecycleBinSlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/store/createRecycleBinSlice.ts",
+      "target": "function:packages/core/src/store/createRecycleBinSlice.ts:createRecycleBinSlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createReflectionSlice.ts",
+      "target": "function:packages/core/src/store/createReflectionSlice.ts:createReflectionSlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/store/createReflectionSlice.ts",
+      "target": "function:packages/core/src/store/createReflectionSlice.ts:createReflectionSlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createReviewSlice.ts",
+      "target": "function:packages/core/src/store/createReviewSlice.ts:createReviewSlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/store/createReviewSlice.ts",
+      "target": "function:packages/core/src/store/createReviewSlice.ts:createReviewSlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createSettingsSlice.ts",
+      "target": "function:packages/core/src/store/createSettingsSlice.ts:createSettingsSlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/store/createSettingsSlice.ts",
+      "target": "function:packages/core/src/store/createSettingsSlice.ts:createSettingsSlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createSleepSlice.ts",
+      "target": "function:packages/core/src/store/createSleepSlice.ts:createSleepSlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/store/createSleepSlice.ts",
+      "target": "function:packages/core/src/store/createSleepSlice.ts:createSleepSlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createSliceErrorSlice.ts",
+      "target": "function:packages/core/src/store/createSliceErrorSlice.ts:createSliceErrorSlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/store/createSliceErrorSlice.ts",
+      "target": "function:packages/core/src/store/createSliceErrorSlice.ts:createSliceErrorSlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createThoughtTrailSlice.test.ts",
+      "target": "function:packages/core/src/store/createThoughtTrailSlice.test.ts:makeTestStore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/store/createThoughtTrailSlice.test.ts",
+      "target": "function:packages/core/src/store/createThoughtTrailSlice.test.ts:makeTrail",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/store/createThoughtTrailSlice.ts",
+      "target": "function:packages/core/src/store/createThoughtTrailSlice.ts:createThoughtTrailSlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/store/createThoughtTrailSlice.ts",
+      "target": "function:packages/core/src/store/createThoughtTrailSlice.ts:createThoughtTrailSlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createTrailNoteSlice.test.ts",
+      "target": "function:packages/core/src/store/createTrailNoteSlice.test.ts:makeTestStore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/store/createTrailNoteSlice.test.ts",
+      "target": "function:packages/core/src/store/createTrailNoteSlice.test.ts:makeTrail",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/store/createZhiguanSlice.ts",
+      "target": "function:packages/core/src/store/createZhiguanSlice.ts:createZhiguanSlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/store/createZhiguanSlice.ts",
+      "target": "function:packages/core/src/store/createZhiguanSlice.ts:createZhiguanSlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/habitSlice.test.ts",
+      "target": "function:packages/core/src/store/habitSlice.test.ts:createMockStore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/store/mergeEngine.ts",
+      "target": "function:packages/core/src/store/mergeEngine.ts:buildMergePatch",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/store/mergeEngine.ts",
+      "target": "function:packages/core/src/store/mergeEngine.ts:buildMergePatch",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/planSlice.test.ts",
+      "target": "function:packages/core/src/store/planSlice.test.ts:createStore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/sync/conflict.ts",
+      "target": "function:packages/core/src/sync/conflict.ts:resolveConflict",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/sync/conflict.ts",
+      "target": "function:packages/core/src/sync/conflict.ts:resolveConflict",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/sync/entitySchemas.ts",
+      "target": "function:packages/core/src/sync/entitySchemas.ts:parseBytes",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/sync/entitySchemas.ts",
+      "target": "function:packages/core/src/sync/entitySchemas.ts:applyReadType",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/sync/entitySchemas.ts",
+      "target": "function:packages/core/src/sync/entitySchemas.ts:pbField",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/sync/entitySchemas.ts",
+      "target": "function:packages/core/src/sync/entitySchemas.ts:pbField",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/sync/entitySchemas.ts",
+      "target": "function:packages/core/src/sync/entitySchemas.ts:buildToRow",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/sync/entitySchemas.ts",
+      "target": "function:packages/core/src/sync/entitySchemas.ts:buildToRow",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/sync/entitySchemas.ts",
+      "target": "function:packages/core/src/sync/entitySchemas.ts:buildServerPayloadToRow",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/sync/entitySchemas.ts",
+      "target": "function:packages/core/src/sync/entitySchemas.ts:buildServerPayloadToRow",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/sync/entitySchemas.ts",
+      "target": "function:packages/core/src/sync/entitySchemas.ts:buildRowToEntity",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/sync/entitySchemas.ts",
+      "target": "function:packages/core/src/sync/entitySchemas.ts:buildRowToEntity",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/sync/entitySchemas.ts",
+      "target": "function:packages/core/src/sync/entitySchemas.ts:schemaToEntityMeta",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/sync/entitySchemas.ts",
+      "target": "function:packages/core/src/sync/entitySchemas.ts:schemaToEntityMeta",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/sync/merge.ts",
+      "target": "function:packages/core/src/sync/merge.ts:mergeById",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/sync/merge.ts",
+      "target": "function:packages/core/src/sync/merge.ts:mergeById",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:activeOnly",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:activeOnly",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:fmt",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:fmt",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:fmtMS",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:fmtMS",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:formatPace",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:formatPace",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:dateStr",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:dateStr",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:parseDateParts",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:parseDateParts",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:addDays",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:addDays",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:yesterday",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:yesterday",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:tomorrow",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:tomorrow",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:daysInMonth",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:daysInMonth",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:_randHex",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:uid",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:uid",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:computeStreak",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:computeStreak",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:calculateCheckinStreak",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:calculateCheckinStreak",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:estimateFastingKcal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:estimateFastingKcal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:aggregateWeightData",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:aggregateWeightData",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:aggregateDailyCalories",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:aggregateDailyCalories",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:aggregateDailyWater",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:aggregateDailyWater",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:aggregateWeeklyKm",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:aggregateWeeklyKm",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:buildHeatmapGrid",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:buildHeatmapGrid",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:detectStreakBreaks",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:detectStreakBreaks",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:computeLongestStreak",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:computeLongestStreak",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:computeCurrentStreak",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:computeCurrentStreak",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:computeBreakInsights",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:computeBreakInsights",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:computeHypotheticalStreak",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:computeHypotheticalStreak",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:generateEncouragement",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:generateEncouragement",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:getRecoveryData",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:getRecoveryData",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:formatDate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:formatDate",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:formatTime",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:formatTime",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:formatTimestamp",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/utils.ts",
+      "target": "function:packages/core/src/utils.ts:formatTimestamp",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createRecycleBinSlice.test.ts",
+      "target": "file:packages/core/src/store/createRecycleBinSlice.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createRecycleBinSlice.test.ts",
+      "target": "file:packages/core/src/store/createRecycleBinSlice.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:packages/core/src/store/createRecycleBinSlice.ts",
+      "target": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createRecycleBinSlice.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createRecycleBinSlice.ts",
+      "target": "file:packages/core/src/sync/entities.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createRecycleBinSlice.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createRecycleBinSlice.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createReflectionSlice.ts",
+      "target": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createReflectionSlice.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createReflectionSlice.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createReflectionSlice.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createReviewSlice.ts",
+      "target": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createReviewSlice.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createReviewSlice.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createReviewSlice.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createSettingsSlice.ts",
+      "target": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createSettingsSlice.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createSleepSlice.ts",
+      "target": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createSleepSlice.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createSleepSlice.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createSleepSlice.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createSliceErrorSlice.ts",
+      "target": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createSliceErrorSlice.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createThoughtTrailSlice.test.ts",
+      "target": "file:packages/core/src/store/createThoughtTrailSlice.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createThoughtTrailSlice.test.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createThoughtTrailSlice.test.ts",
+      "target": "file:packages/core/src/types/thought-trail.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createThoughtTrailSlice.test.ts",
+      "target": "file:packages/core/src/store/createThoughtTrailSlice.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:packages/core/src/store/createThoughtTrailSlice.ts",
+      "target": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createThoughtTrailSlice.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createThoughtTrailSlice.ts",
+      "target": "file:packages/core/src/types/reflection.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createThoughtTrailSlice.ts",
+      "target": "file:packages/core/src/types/thought-trail.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createThoughtTrailSlice.ts",
+      "target": "file:packages/core/src/types/trail-note.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createThoughtTrailSlice.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createTrailNoteSlice.test.ts",
+      "target": "file:packages/core/src/store/createThoughtTrailSlice.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createTrailNoteSlice.test.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createTrailNoteSlice.test.ts",
+      "target": "file:packages/core/src/types/thought-trail.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createTrailNoteSlice.test.ts",
+      "target": "file:packages/core/src/store/createThoughtTrailSlice.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:packages/core/src/store/createZhiguanSlice.ts",
+      "target": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createZhiguanSlice.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createZhiguanSlice.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createZhiguanSlice.ts",
+      "target": "file:packages/core/src/types/breath.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/habitSlice.test.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/habitSlice.test.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:packages/core/src/store/mergeEngine.ts",
+      "target": "file:packages/core/src/sync/entities.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/mergeEngine.ts",
+      "target": "file:packages/core/src/sync/merge.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/mergeEngine.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/mindSliceTypes.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/planSlice.test.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/planSlice.test.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:packages/core/src/store/sliceHelper.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/types.ts",
+      "target": "file:packages/core/src/store/createSettingsSlice.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/types.ts",
+      "target": "file:packages/core/src/store/mindSliceTypes.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/types.ts",
+      "target": "file:packages/core/src/store/zhiguanSliceTypes.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/types.ts",
+      "target": "file:packages/core/src/sync/entities.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/types.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/zhiguanSliceTypes.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/zhiguanSliceTypes.ts",
+      "target": "file:packages/core/src/types/breath.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/sync/conflict.test.ts",
+      "target": "file:packages/core/src/sync/conflict.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/sync/conflict.test.ts",
+      "target": "file:packages/core/src/sync/conflict.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:packages/core/src/sync/entities.ts",
+      "target": "file:packages/core/src/sync/entitySchemas.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/sync/entitySchemas.test.ts",
+      "target": "file:packages/core/src/sync/entities.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/sync/entitySchemas.test.ts",
+      "target": "file:packages/core/src/sync/entitySchemas.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/sync/entitySchemas.test.ts",
+      "target": "file:packages/core/src/sync/entities.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:packages/core/src/sync/entitySchemas.ts",
+      "target": "file:packages/core/src/sync/entities.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/sync/merge.test.ts",
+      "target": "file:packages/core/src/sync/merge.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/sync/merge.test.ts",
+      "target": "file:packages/core/src/sync/merge.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:packages/core/src/sync/merge.ts",
+      "target": "file:packages/core/src/sync/conflict.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/sync/types.ts",
+      "target": "file:packages/core/src/sync/entities.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/utils.test.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/utils.test.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

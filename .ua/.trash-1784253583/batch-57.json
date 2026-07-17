@@ -1,0 +1,801 @@
+{
+  "nodes": [
+    {
+      "id": "file:.github/dependabot.yml",
+      "type": "config",
+      "name": "dependabot.yml",
+      "filePath": ".github/dependabot.yml",
+      "summary": "GitHub Dependabot 自动更新配置，定义 npm/pnpm 依赖与 GitHub Actions 的周期版本升级策略。",
+      "tags": [
+        "config",
+        "dependabot",
+        "dependencies",
+        "automation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.gitmodules",
+      "type": "config",
+      "name": ".gitmodules",
+      "filePath": ".gitmodules",
+      "summary": "Git 子模块定义文件（当前未配置任何子模块，为空清单）。",
+      "tags": [
+        "config",
+        "git",
+        "submodules"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.npmrc",
+      "type": "config",
+      "name": ".npmrc",
+      "filePath": ".npmrc",
+      "summary": "pnpm/npm 注册表配置文件，设定包管理行为（如严格对等依赖、hoist 策略等）。",
+      "tags": [
+        "config",
+        "npm",
+        "pnpm"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/.version",
+      "type": "config",
+      "name": ".version",
+      "filePath": ".trellis/.version",
+      "summary": "Trellis 工具的版本锁文件，记录当前使用的 Trellis 版本号。",
+      "tags": [
+        "config",
+        "trellis",
+        "version"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/agents/check.md",
+      "type": "document",
+      "name": "check.md",
+      "filePath": ".trellis/agents/check.md",
+      "summary": "Trellis Check Agent 指令：由 channel runtime 派生，对未提交 diff 按任务产物和规范审查、自修复并报告。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "agent",
+        "code-review"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/agents/implement.md",
+      "type": "document",
+      "name": "implement.md",
+      "filePath": ".trellis/agents/implement.md",
+      "summary": "Trellis Implement Agent 指令：按计划产物执行具体编码任务，遵照设计/实现文档落地功能。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "agent",
+        "implementation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/plans/auth-proxy-extraction.md",
+      "type": "document",
+      "name": "auth-proxy-extraction.md",
+      "filePath": ".trellis/plans/auth-proxy-extraction.md",
+      "summary": "认证代理提取（auth-proxy-extraction）计划文档，规划将鉴权逻辑抽取为独立代理/模块的方案与阶段。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "plan",
+        "auth"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/scripts/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": ".trellis/scripts/__init__.py",
+      "summary": "Trellis scripts 包的 Python 初始化文件（空），将 scripts 目录标记为包。",
+      "tags": [
+        "trellis",
+        "python",
+        "init"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/scripts/common/cli_adapter.py",
+      "type": "file",
+      "name": "cli_adapter.py",
+      "filePath": ".trellis/scripts/common/cli_adapter.py",
+      "summary": "多平台 CLI 适配器：抽象 Claude Code/OpenCode/Cursor/iFlow/Codex 等 16+ AI 编码 CLI 工具差异，提供统一 agent 名/命令/目录映射。",
+      "tags": [
+        "trellis",
+        "python",
+        "cli",
+        "multi-platform"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:.trellis/scripts/common/cli_adapter.py:get_cli_adapter",
+      "type": "function",
+      "name": "get_cli_adapter",
+      "filePath": ".trellis/scripts/common/cli_adapter.py",
+      "lineRange": [
+        637,
+        679
+      ],
+      "summary": "工厂函数：按平台名返回 CLIAdapter，兼容 windsurf 已弃用别名并校验支持列表。",
+      "tags": [
+        "cli",
+        "factory"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/cli_adapter.py:_has_other_platform_dir",
+      "type": "function",
+      "name": "_has_other_platform_dir",
+      "filePath": ".trellis/scripts/common/cli_adapter.py",
+      "lineRange": [
+        709,
+        715
+      ],
+      "summary": "检测项目根是否已存在其他平台的配置目录，辅助平台推断。",
+      "tags": [
+        "cli",
+        "detect"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/cli_adapter.py:detect_platform",
+      "type": "function",
+      "name": "detect_platform",
+      "filePath": ".trellis/scripts/common/cli_adapter.py",
+      "lineRange": [
+        718,
+        873
+      ],
+      "summary": "自动检测项目所用 CLI 平台，遍历配置目录依据特征判定并返回 Platform。",
+      "tags": [
+        "cli",
+        "detect",
+        "platform"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/cli_adapter.py:get_cli_adapter_auto",
+      "type": "function",
+      "name": "get_cli_adapter_auto",
+      "filePath": ".trellis/scripts/common/cli_adapter.py",
+      "lineRange": [
+        876,
+        886
+      ],
+      "summary": "自动检测项目平台并返回对应 CLIAdapter 的便捷入口。",
+      "tags": [
+        "cli",
+        "factory",
+        "auto"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:.trellis/scripts/common/cli_adapter.py:CLIAdapter",
+      "type": "class",
+      "name": "CLIAdapter",
+      "filePath": ".trellis/scripts/common/cli_adapter.py",
+      "lineRange": [
+        63,
+        629
+      ],
+      "summary": "dataclass 适配器，按 platform 提供 agent name、config 目录、命令构建、session 等差异化方法（20+ 成员）。",
+      "tags": [
+        "cli",
+        "adapter",
+        "multi-platform"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:.trellis/scripts/hooks/linear_sync.py",
+      "type": "file",
+      "name": "linear_sync.py",
+      "filePath": ".trellis/scripts/hooks/linear_sync.py",
+      "summary": "Linear 同步钩子：在 Trellis 任务 create/start/archive 生命周期事件时，通过 linearis CLI 同步状态到 Linear。",
+      "tags": [
+        "trellis",
+        "python",
+        "linear",
+        "hook"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:.trellis/scripts/hooks/linear_sync.py:_load_config",
+      "type": "function",
+      "name": "_load_config",
+      "filePath": ".trellis/scripts/hooks/linear_sync.py",
+      "lineRange": [
+        48,
+        62
+      ],
+      "summary": "从 .trellis/hooks.local.json 加载本地钩子配置（team/project/assignees）。",
+      "tags": [
+        "linear",
+        "config"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/hooks/linear_sync.py:_read_task",
+      "type": "function",
+      "name": "_read_task",
+      "filePath": ".trellis/scripts/hooks/linear_sync.py",
+      "lineRange": [
+        75,
+        81
+      ],
+      "summary": "读取 TASK_JSON_PATH 指向的 task.json 内容。",
+      "tags": [
+        "linear",
+        "task"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/hooks/linear_sync.py:_write_task",
+      "type": "function",
+      "name": "_write_task",
+      "filePath": ".trellis/scripts/hooks/linear_sync.py",
+      "lineRange": [
+        84,
+        87
+      ],
+      "summary": "将任务数据写回 task.json 文件。",
+      "tags": [
+        "linear",
+        "task"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/hooks/linear_sync.py:_linearis",
+      "type": "function",
+      "name": "_linearis",
+      "filePath": ".trellis/scripts/hooks/linear_sync.py",
+      "lineRange": [
+        90,
+        104
+      ],
+      "summary": "封装 linearis CLI 子进程调用，错误时退出。",
+      "tags": [
+        "linear",
+        "cli"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/hooks/linear_sync.py:_get_linear_issue",
+      "type": "function",
+      "name": "_get_linear_issue",
+      "filePath": ".trellis/scripts/hooks/linear_sync.py",
+      "lineRange": [
+        107,
+        111
+      ],
+      "summary": "查询 Linear 中关联当前 task 的 issue。",
+      "tags": [
+        "linear",
+        "query"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/hooks/linear_sync.py:cmd_create",
+      "type": "function",
+      "name": "cmd_create",
+      "filePath": ".trellis/scripts/hooks/linear_sync.py",
+      "lineRange": [
+        117,
+        158
+      ],
+      "summary": "create 命令：在 Linear 创建对应 issue 并回写到 task。",
+      "tags": [
+        "linear",
+        "create"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/hooks/linear_sync.py:cmd_start",
+      "type": "function",
+      "name": "cmd_start",
+      "filePath": ".trellis/scripts/hooks/linear_sync.py",
+      "lineRange": [
+        161,
+        168
+      ],
+      "summary": "start 命令：将 Linear issue 状态推进到 In Progress。",
+      "tags": [
+        "linear",
+        "workflow"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/hooks/linear_sync.py:cmd_archive",
+      "type": "function",
+      "name": "cmd_archive",
+      "filePath": ".trellis/scripts/hooks/linear_sync.py",
+      "lineRange": [
+        171,
+        177
+      ],
+      "summary": "archive 命令：将 Linear issue 标记完成/归档。",
+      "tags": [
+        "linear",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/hooks/linear_sync.py:cmd_sync",
+      "type": "function",
+      "name": "cmd_sync",
+      "filePath": ".trellis/scripts/hooks/linear_sync.py",
+      "lineRange": [
+        180,
+        197
+      ],
+      "summary": "sync 命令：根据 task 状态与解决状态映射同步 Linear issue。",
+      "tags": [
+        "linear",
+        "sync"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/hooks/linear_sync.py:_resolve_parent_linear_issue",
+      "type": "function",
+      "name": "_resolve_parent_linear_issue",
+      "filePath": ".trellis/scripts/hooks/linear_sync.py",
+      "lineRange": [
+        203,
+        224
+      ],
+      "summary": "解析任务关联的父 Linear issue（归属 team/project）。",
+      "tags": [
+        "linear",
+        "resolve"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/00-bootstrap-guidelines/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/00-bootstrap-guidelines/prd.md",
+      "summary": "Trellis 归档任务「Bootstrap Guidelines」的需求文档（prd.md）。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "prd",
+        "archive"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/00-bootstrap-guidelines/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/00-bootstrap-guidelines/task.json",
+      "summary": "Trellis 归档任务「Bootstrap Guidelines」的元数据（task.json）：id、标题、状态、优先级。",
+      "tags": [
+        "config",
+        "trellis",
+        "task",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-03-bugfix-comprehensive/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-03-bugfix-comprehensive/check.jsonl",
+      "summary": "Trellis 归档任务「修复全面扫描发现的24个bug」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-03-bugfix-comprehensive/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-03-bugfix-comprehensive/implement.jsonl",
+      "summary": "Trellis 归档任务「修复全面扫描发现的24个bug」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-03-bugfix-comprehensive/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-03-bugfix-comprehensive/prd.md",
+      "summary": "Trellis 归档任务「修复全面扫描发现的24个bug」的需求文档（prd.md）。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "prd",
+        "archive"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-03-bugfix-comprehensive/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-03-bugfix-comprehensive/task.json",
+      "summary": "Trellis 归档任务「修复全面扫描发现的24个bug」的元数据（task.json）：id、标题、状态、优先级。",
+      "tags": [
+        "config",
+        "trellis",
+        "task",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-03-habits-page-optimization/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/check.jsonl",
+      "summary": "Trellis 归档任务「分析并优化习惯页功能和代码」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-03-habits-page-optimization/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/implement.jsonl",
+      "summary": "Trellis 归档任务「分析并优化习惯页功能和代码」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-03-sync-pull-audit/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-03-sync-pull-audit/check.jsonl",
+      "summary": "Trellis 归档任务「深度审查数据同步拉取架构和数据模型一致性」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-03-sync-pull-audit/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-03-sync-pull-audit/implement.jsonl",
+      "summary": "Trellis 归档任务「深度审查数据同步拉取架构和数据模型一致性」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-05-engine-class-refactor/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-05-engine-class-refactor/check.jsonl",
+      "summary": "Trellis 归档任务「Engine 类拆分：SleepEngine / BreathingEngine / MantraEngine」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-05-engine-class-refactor/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-05-engine-class-refactor/implement.jsonl",
+      "summary": "Trellis 归档任务「Engine 类拆分：SleepEngine / BreathingEngine / MantraEngine」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-05-engine-class-refactor/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-05-engine-class-refactor/prd.md",
+      "summary": "Trellis 归档任务「Engine 类拆分：SleepEngine / BreathingEngine / MantraEngine」的需求文档（prd.md）。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "prd",
+        "archive"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-05-engine-class-refactor/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-05-engine-class-refactor/task.json",
+      "summary": "Trellis 归档任务「Engine 类拆分：SleepEngine / BreathingEngine / MantraEngine」的元数据（task.json）：id、标题、状态、优先级。",
+      "tags": [
+        "config",
+        "trellis",
+        "task",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-06-fix-remaining-ts-errors/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-06-fix-remaining-ts-errors/check.jsonl",
+      "summary": "Trellis 归档任务「修复剩余 174 个预存 TypeScript 错误」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:.trellis/scripts/common/cli_adapter.py",
+      "target": "function:.trellis/scripts/common/cli_adapter.py:get_cli_adapter",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/cli_adapter.py",
+      "target": "function:.trellis/scripts/common/cli_adapter.py:get_cli_adapter",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/cli_adapter.py",
+      "target": "function:.trellis/scripts/common/cli_adapter.py:_has_other_platform_dir",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/cli_adapter.py",
+      "target": "function:.trellis/scripts/common/cli_adapter.py:_has_other_platform_dir",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/cli_adapter.py",
+      "target": "function:.trellis/scripts/common/cli_adapter.py:detect_platform",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/cli_adapter.py",
+      "target": "function:.trellis/scripts/common/cli_adapter.py:detect_platform",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/cli_adapter.py",
+      "target": "function:.trellis/scripts/common/cli_adapter.py:get_cli_adapter_auto",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/cli_adapter.py",
+      "target": "function:.trellis/scripts/common/cli_adapter.py:get_cli_adapter_auto",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/cli_adapter.py",
+      "target": "class:.trellis/scripts/common/cli_adapter.py:CLIAdapter",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/cli_adapter.py",
+      "target": "class:.trellis/scripts/common/cli_adapter.py:CLIAdapter",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/hooks/linear_sync.py",
+      "target": "function:.trellis/scripts/hooks/linear_sync.py:_load_config",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/hooks/linear_sync.py",
+      "target": "function:.trellis/scripts/hooks/linear_sync.py:_load_config",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/hooks/linear_sync.py",
+      "target": "function:.trellis/scripts/hooks/linear_sync.py:_read_task",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/hooks/linear_sync.py",
+      "target": "function:.trellis/scripts/hooks/linear_sync.py:_read_task",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/hooks/linear_sync.py",
+      "target": "function:.trellis/scripts/hooks/linear_sync.py:_write_task",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/hooks/linear_sync.py",
+      "target": "function:.trellis/scripts/hooks/linear_sync.py:_write_task",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/hooks/linear_sync.py",
+      "target": "function:.trellis/scripts/hooks/linear_sync.py:_linearis",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/hooks/linear_sync.py",
+      "target": "function:.trellis/scripts/hooks/linear_sync.py:_linearis",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/hooks/linear_sync.py",
+      "target": "function:.trellis/scripts/hooks/linear_sync.py:_get_linear_issue",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/hooks/linear_sync.py",
+      "target": "function:.trellis/scripts/hooks/linear_sync.py:_get_linear_issue",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/hooks/linear_sync.py",
+      "target": "function:.trellis/scripts/hooks/linear_sync.py:cmd_create",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/hooks/linear_sync.py",
+      "target": "function:.trellis/scripts/hooks/linear_sync.py:cmd_create",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/hooks/linear_sync.py",
+      "target": "function:.trellis/scripts/hooks/linear_sync.py:cmd_start",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/hooks/linear_sync.py",
+      "target": "function:.trellis/scripts/hooks/linear_sync.py:cmd_start",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/hooks/linear_sync.py",
+      "target": "function:.trellis/scripts/hooks/linear_sync.py:cmd_archive",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/hooks/linear_sync.py",
+      "target": "function:.trellis/scripts/hooks/linear_sync.py:cmd_archive",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/hooks/linear_sync.py",
+      "target": "function:.trellis/scripts/hooks/linear_sync.py:cmd_sync",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/hooks/linear_sync.py",
+      "target": "function:.trellis/scripts/hooks/linear_sync.py:cmd_sync",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/hooks/linear_sync.py",
+      "target": "function:.trellis/scripts/hooks/linear_sync.py:_resolve_parent_linear_issue",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/hooks/linear_sync.py",
+      "target": "function:.trellis/scripts/hooks/linear_sync.py:_resolve_parent_linear_issue",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ]
+}

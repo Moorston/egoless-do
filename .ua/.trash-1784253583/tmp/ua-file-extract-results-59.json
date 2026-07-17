@@ -1,0 +1,1238 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 25,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-09-platform-audit/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-09-platform-audit/implement.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-09-platform-audit/prd.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 27,
+      "nonEmptyLines": 19,
+      "sections": [
+        {
+          "heading": "平台兼容性审查",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Goal",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "Requirements",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Acceptance Criteria",
+          "level": 2,
+          "line": 17
+        },
+        {
+          "heading": "Scope",
+          "level": 2,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 5
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-09-platform-audit/task.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 26,
+      "nonEmptyLines": 26,
+      "sections": [
+        {
+          "heading": "id",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "title",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "status",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dev_type",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "scope",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "package",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "priority",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "creator",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "assignee",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "createdAt",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "completedAt",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "branch",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "base_branch",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "worktree_path",
+          "level": 1,
+          "line": 17
+        },
+        {
+          "heading": "commit",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "pr_url",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "subtasks",
+          "level": 1,
+          "line": 20
+        },
+        {
+          "heading": "children",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "parent",
+          "level": 1,
+          "line": 22
+        },
+        {
+          "heading": "relatedFiles",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "notes",
+          "level": 1,
+          "line": 24
+        },
+        {
+          "heading": "meta",
+          "level": 1,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-09-round2-audit-fixes/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-09-round2-audit-fixes/implement.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-09-round2-audit-fixes/prd.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 57,
+      "nonEmptyLines": 49,
+      "sections": [
+        {
+          "heading": "Fix round 2 audit — 36 issues across sync, store, core, security",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Goal",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "Requirements",
+          "level": 2,
+          "line": 6
+        },
+        {
+          "heading": "批次 A — 安全修复（CRITICAL + HIGH）",
+          "level": 3,
+          "line": 8
+        },
+        {
+          "heading": "批次 B — Sync 引擎修复（HIGH + MEDIUM）",
+          "level": 3,
+          "line": 17
+        },
+        {
+          "heading": "批次 C — Store 一致性修复（HIGH）",
+          "level": 3,
+          "line": 28
+        },
+        {
+          "heading": "批次 D — 低风险修复（MEDIUM + LOW）",
+          "level": 3,
+          "line": 37
+        },
+        {
+          "heading": "约束",
+          "level": 2,
+          "line": 47
+        },
+        {
+          "heading": "Acceptance Criteria",
+          "level": 2,
+          "line": 53
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 9
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-09-round2-audit-fixes/task.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 26,
+      "nonEmptyLines": 26,
+      "sections": [
+        {
+          "heading": "id",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "title",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "status",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dev_type",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "scope",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "package",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "priority",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "creator",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "assignee",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "createdAt",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "completedAt",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "branch",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "base_branch",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "worktree_path",
+          "level": 1,
+          "line": 17
+        },
+        {
+          "heading": "commit",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "pr_url",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "subtasks",
+          "level": 1,
+          "line": 20
+        },
+        {
+          "heading": "children",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "parent",
+          "level": 1,
+          "line": 22
+        },
+        {
+          "heading": "relatedFiles",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "notes",
+          "level": 1,
+          "line": 24
+        },
+        {
+          "heading": "meta",
+          "level": 1,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-10-arch-m1m2m3-refactor/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-10-arch-m1m2m3-refactor/implement.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-10-arch-m1m2m3-refactor/prd.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 28,
+      "nonEmptyLines": 22,
+      "sections": [
+        {
+          "heading": "架构重构 M1-M3: CheckinSlice拆分/Settings统一/错误状态",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "背景",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "M3: 切片错误状态缺失",
+          "level": 2,
+          "line": 6
+        },
+        {
+          "heading": "M1: CheckinSlice 职责拆分",
+          "level": 2,
+          "line": 11
+        },
+        {
+          "heading": "M2: Settings 双写路径统一",
+          "level": 2,
+          "line": 17
+        },
+        {
+          "heading": "约束",
+          "level": 2,
+          "line": 22
+        },
+        {
+          "heading": "验收标准",
+          "level": 2,
+          "line": 26
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 7
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-10-arch-m1m2m3-refactor/task.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 26,
+      "nonEmptyLines": 26,
+      "sections": [
+        {
+          "heading": "id",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "title",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "status",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dev_type",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "scope",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "package",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "priority",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "creator",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "assignee",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "createdAt",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "completedAt",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "branch",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "base_branch",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "worktree_path",
+          "level": 1,
+          "line": 17
+        },
+        {
+          "heading": "commit",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "pr_url",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "subtasks",
+          "level": 1,
+          "line": 20
+        },
+        {
+          "heading": "children",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "parent",
+          "level": 1,
+          "line": 22
+        },
+        {
+          "heading": "relatedFiles",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "notes",
+          "level": 1,
+          "line": 24
+        },
+        {
+          "heading": "meta",
+          "level": 1,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-10-arch-refactor-deferred/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-10-arch-refactor-deferred/implement.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-10-arch-refactor-deferred/prd.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 27,
+      "nonEmptyLines": 21,
+      "sections": [
+        {
+          "heading": "架构重构 — CheckinSlice拆分/Settings统一/错误状态",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "背景",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "M1: CheckinSlice 职责拆分",
+          "level": 2,
+          "line": 6
+        },
+        {
+          "heading": "M2: Settings 双写路径统一",
+          "level": 2,
+          "line": 16
+        },
+        {
+          "heading": "M3: 切片错误状态缺失",
+          "level": 2,
+          "line": 20
+        },
+        {
+          "heading": "验收标准",
+          "level": 2,
+          "line": 24
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 6
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-10-arch-refactor-deferred/task.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 26,
+      "nonEmptyLines": 26,
+      "sections": [
+        {
+          "heading": "id",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "title",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "status",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dev_type",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "scope",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "package",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "priority",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "creator",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "assignee",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "createdAt",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "completedAt",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "branch",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "base_branch",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "worktree_path",
+          "level": 1,
+          "line": 17
+        },
+        {
+          "heading": "commit",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "pr_url",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "subtasks",
+          "level": 1,
+          "line": 20
+        },
+        {
+          "heading": "children",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "parent",
+          "level": 1,
+          "line": 22
+        },
+        {
+          "heading": "relatedFiles",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "notes",
+          "level": 1,
+          "line": 24
+        },
+        {
+          "heading": "meta",
+          "level": 1,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-10-architecture-analysis/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-10-architecture-analysis/implement.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-10-architecture-analysis/prd.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 59,
+      "nonEmptyLines": 45,
+      "sections": [
+        {
+          "heading": "项目架构分析",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Goal",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "Requirements",
+          "level": 2,
+          "line": 6
+        },
+        {
+          "heading": "分析维度",
+          "level": 3,
+          "line": 8
+        },
+        {
+          "heading": "输出",
+          "level": 2,
+          "line": 49
+        },
+        {
+          "heading": "Acceptance Criteria",
+          "level": 2,
+          "line": 55
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 6
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-10-architecture-analysis/task.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 26,
+      "nonEmptyLines": 26,
+      "sections": [
+        {
+          "heading": "id",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "title",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "status",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dev_type",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "scope",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "package",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "priority",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "creator",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "assignee",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "createdAt",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "completedAt",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "branch",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "base_branch",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "worktree_path",
+          "level": 1,
+          "line": 17
+        },
+        {
+          "heading": "commit",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "pr_url",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "subtasks",
+          "level": 1,
+          "line": 20
+        },
+        {
+          "heading": "children",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "parent",
+          "level": 1,
+          "line": 22
+        },
+        {
+          "heading": "relatedFiles",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "notes",
+          "level": 1,
+          "line": 24
+        },
+        {
+          "heading": "meta",
+          "level": 1,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-10-architecture-deep-analysis/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-10-architecture-deep-analysis/implement.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-10-architecture-deep-analysis/prd.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 40,
+      "nonEmptyLines": 31,
+      "sections": [
+        {
+          "heading": "架构深度分析 Section 2-6",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Goal",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "分析维度",
+          "level": 2,
+          "line": 6
+        },
+        {
+          "heading": "Section 2: 数据流",
+          "level": 3,
+          "line": 8
+        },
+        {
+          "heading": "Section 3: 状态管理",
+          "level": 3,
+          "line": 13
+        },
+        {
+          "heading": "Section 4: 认证架构",
+          "level": 3,
+          "line": 18
+        },
+        {
+          "heading": "Section 5: 安全架构",
+          "level": 3,
+          "line": 23
+        },
+        {
+          "heading": "Section 6: 部署架构",
+          "level": 3,
+          "line": 28
+        },
+        {
+          "heading": "产出",
+          "level": 2,
+          "line": 33
+        },
+        {
+          "heading": "验收标准",
+          "level": 2,
+          "line": 36
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 10
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-10-architecture-deep-analysis/task.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 26,
+      "nonEmptyLines": 26,
+      "sections": [
+        {
+          "heading": "id",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "title",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "status",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dev_type",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "scope",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "package",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "priority",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "creator",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "assignee",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "createdAt",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "completedAt",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "branch",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "base_branch",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "worktree_path",
+          "level": 1,
+          "line": 17
+        },
+        {
+          "heading": "commit",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "pr_url",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "subtasks",
+          "level": 1,
+          "line": 20
+        },
+        {
+          "heading": "children",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "parent",
+          "level": 1,
+          "line": 22
+        },
+        {
+          "heading": "relatedFiles",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "notes",
+          "level": 1,
+          "line": 24
+        },
+        {
+          "heading": "meta",
+          "level": 1,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-10-architecture-improvements/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    }
+  ]
+}

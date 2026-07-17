@@ -56,10 +56,10 @@ export default function FoodLogPage() {
         <Card style={styles.todayCard}>
           <Text style={{ color:TH.sub, fontSize:FONT_BODY(), marginBottom:8 }}>{T('foodTodayKcal')}</Text>
           <View style={styles.todayRow}>
-            <Text style={{ fontSize:FONT_STAT_SECTION(), fontWeight:'800', color:P }}>{totalCal}</Text>
+            <Text style={{ fontSize:FONT_STAT_SECTION(), fontWeight:'800', color:P }}>{String(totalCal)}</Text>
             <Text style={{ fontSize:FONT_BACK(), color:TH.sub }}>/ {calGoal}</Text>
           </View>
-          <Text style={[styles.remainingText, { color: totalCal > calGoal ? COLORS.RED : COLORS.GREEN, fontSize:FONT_BODY() }]}>{T('foodRemaining')}: {Math.max(0, calGoal - totalCal)} kcal</Text>
+          <Text style={[styles.remainingText, { color: totalCal > calGoal ? COLORS.RED : COLORS.GREEN, fontSize:FONT_BODY() }]}>{T('foodRemaining')}: {String(Math.max(0, calGoal - totalCal))} kcal</Text>
         </Card>
 
         <Card>
@@ -74,7 +74,7 @@ export default function FoodLogPage() {
                     <Text style={{ fontWeight:'600', fontSize:FONT_BODY(), color:TH.text }}>{f.name}</Text>
                     {f.note ? <Text style={{ fontSize:FONT_SUB(), color:TH.sub }}>{f.note}</Text> : null}
                   </View>
-                  <Text style={[styles.boldText, { color:P }]}>{f.calories ?? 0} kcal</Text>
+                  <Text style={[styles.boldText, { color:P }]}>{String(f.calories ?? 0)} kcal</Text>
                 </View>
               ))
             );
@@ -106,7 +106,7 @@ export default function FoodLogPage() {
                     { value: String(totalHistoryCal), label: 'kcal' },
                   ].map(st => (
                     <View key={st.label} style={styles.statItem}>
-                      <Text style={{ fontSize:FONT_STAT_CARD(), fontWeight:'800', color:P }}>{st.value}</Text>
+                      <Text style={{ fontSize:FONT_STAT_CARD(), fontWeight:'800', color:P }}>{String(st.value)}</Text>
                       <Text style={{ fontSize:FONT_SUB(), color:TH.sub, marginTop:2 }}>{st.label}</Text>
                     </View>
                   ))}
@@ -137,7 +137,7 @@ export default function FoodLogPage() {
                                 {f.note ? <Text style={{ fontSize:FONT_SUB(), color:TH.sub, marginLeft:8 }}>{f.note}</Text> : null}
                               </View>
                               <View style={styles.calorieRow}>
-                                <Text style={{ fontWeight:'700', color:P, fontSize:FONT_BODY() }}>{f.calories ?? 0} kcal</Text>
+                                <Text style={{ fontWeight:'700', color:P, fontSize:FONT_BODY() }}>{String(f.calories ?? 0)} kcal</Text>
                                 <TouchableOpacity onPress={() => confirmDelete(f.id)} style={styles.deleteButton}>
                                   <X size={18} color="rgba(255,255,255,.7)" />
                                 </TouchableOpacity>

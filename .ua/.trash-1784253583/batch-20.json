@@ -1,0 +1,1551 @@
+{
+  "nodes": [
+    {
+      "id": "file:apps/mobile/src/components/AnimatedMusicIcon.tsx",
+      "type": "file",
+      "name": "AnimatedMusicIcon.tsx",
+      "filePath": "apps/mobile/src/components/AnimatedMusicIcon.tsx",
+      "summary": "动画音乐图标组件。",
+      "tags": [
+        "music",
+        "icon",
+        "animation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/components/MeditationMusicBar.tsx",
+      "type": "file",
+      "name": "MeditationMusicBar.tsx",
+      "filePath": "apps/mobile/src/components/MeditationMusicBar.tsx",
+      "summary": "冥想音乐控制条组件，含封面与播放控制。",
+      "tags": [
+        "music",
+        "meditation",
+        "component"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "type": "file",
+      "name": "SportPage.tsx",
+      "filePath": "apps/mobile/src/features/exercise/SportPage.tsx",
+      "summary": "运动主页面，整合计时、GPS、组数、目标与多种运动布局。",
+      "tags": [
+        "exercise",
+        "sport",
+        "screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/hooks/useExerciseAudio.ts",
+      "type": "file",
+      "name": "useExerciseAudio.ts",
+      "filePath": "apps/mobile/src/features/exercise/hooks/useExerciseAudio.ts",
+      "summary": "运动语音播报hook。",
+      "tags": [
+        "exercise",
+        "audio",
+        "hook"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/hooks/useExerciseGps.ts",
+      "type": "file",
+      "name": "useExerciseGps.ts",
+      "filePath": "apps/mobile/src/features/exercise/hooks/useExerciseGps.ts",
+      "summary": "运动GPS定位hook（定位/权限/距离计算）。",
+      "tags": [
+        "exercise",
+        "gps",
+        "hook"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/hooks/useExerciseRest.ts",
+      "type": "file",
+      "name": "useExerciseRest.ts",
+      "filePath": "apps/mobile/src/features/exercise/hooks/useExerciseRest.ts",
+      "summary": "运动休息计时hook。",
+      "tags": [
+        "exercise",
+        "rest",
+        "hook"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/hooks/useExerciseSets.ts",
+      "type": "file",
+      "name": "useExerciseSets.ts",
+      "filePath": "apps/mobile/src/features/exercise/hooks/useExerciseSets.ts",
+      "summary": "运动组数管理hook。",
+      "tags": [
+        "exercise",
+        "sets",
+        "hook"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/hooks/useExerciseTargets.ts",
+      "type": "file",
+      "name": "useExerciseTargets.ts",
+      "filePath": "apps/mobile/src/features/exercise/hooks/useExerciseTargets.ts",
+      "summary": "运动目标追踪hook。",
+      "tags": [
+        "exercise",
+        "targets",
+        "hook"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/hooks/useExerciseTimer.ts",
+      "type": "file",
+      "name": "useExerciseTimer.ts",
+      "filePath": "apps/mobile/src/features/exercise/hooks/useExerciseTimer.ts",
+      "summary": "运动计时hook。",
+      "tags": [
+        "exercise",
+        "timer",
+        "hook"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/layouts/EnduranceActive.tsx",
+      "type": "file",
+      "name": "EnduranceActive.tsx",
+      "filePath": "apps/mobile/src/features/exercise/layouts/EnduranceActive.tsx",
+      "summary": "耐力运动进行中的布局组件。",
+      "tags": [
+        "exercise",
+        "endurance",
+        "layout"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/layouts/GpsActive.tsx",
+      "type": "file",
+      "name": "GpsActive.tsx",
+      "filePath": "apps/mobile/src/features/exercise/layouts/GpsActive.tsx",
+      "summary": "GPS运动进行中的布局组件。",
+      "tags": [
+        "exercise",
+        "gps",
+        "layout"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/layouts/MeditativeActive.tsx",
+      "type": "file",
+      "name": "MeditativeActive.tsx",
+      "filePath": "apps/mobile/src/features/exercise/layouts/MeditativeActive.tsx",
+      "summary": "冥想式运动进行中的布局组件。",
+      "tags": [
+        "exercise",
+        "meditative",
+        "layout"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/layouts/StrengthActive.tsx",
+      "type": "file",
+      "name": "StrengthActive.tsx",
+      "filePath": "apps/mobile/src/features/exercise/layouts/StrengthActive.tsx",
+      "summary": "力量训练进行中的布局组件。",
+      "tags": [
+        "exercise",
+        "strength",
+        "layout"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/layouts/types.ts",
+      "type": "file",
+      "name": "types.ts",
+      "filePath": "apps/mobile/src/features/exercise/layouts/types.ts",
+      "summary": "运动布局公共类型定义。",
+      "tags": [
+        "exercise",
+        "layout",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/pages/CountdownPage.tsx",
+      "type": "file",
+      "name": "CountdownPage.tsx",
+      "filePath": "apps/mobile/src/features/exercise/pages/CountdownPage.tsx",
+      "summary": "运动倒计时页面。",
+      "tags": [
+        "exercise",
+        "countdown",
+        "page"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/pages/PausedPage.tsx",
+      "type": "file",
+      "name": "PausedPage.tsx",
+      "filePath": "apps/mobile/src/features/exercise/pages/PausedPage.tsx",
+      "summary": "运动暂停页面。",
+      "tags": [
+        "exercise",
+        "paused",
+        "page"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/pages/PrepPage.tsx",
+      "type": "file",
+      "name": "PrepPage.tsx",
+      "filePath": "apps/mobile/src/features/exercise/pages/PrepPage.tsx",
+      "summary": "运动准备页面，含目标/组数配置。",
+      "tags": [
+        "exercise",
+        "prep",
+        "page"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/pages/ReportPage.tsx",
+      "type": "file",
+      "name": "ReportPage.tsx",
+      "filePath": "apps/mobile/src/features/exercise/pages/ReportPage.tsx",
+      "summary": "运动报告页面，展示训练结果。",
+      "tags": [
+        "exercise",
+        "report",
+        "page"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/pages/types.ts",
+      "type": "file",
+      "name": "types.ts",
+      "filePath": "apps/mobile/src/features/exercise/pages/types.ts",
+      "summary": "运动页面公共类型定义。",
+      "tags": [
+        "exercise",
+        "page",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/shared/CelebrationOverlay.tsx",
+      "type": "file",
+      "name": "CelebrationOverlay.tsx",
+      "filePath": "apps/mobile/src/features/exercise/shared/CelebrationOverlay.tsx",
+      "summary": "运动达成庆祝浮层组件。",
+      "tags": [
+        "exercise",
+        "celebration",
+        "overlay"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/shared/EmbeddedRest.tsx",
+      "type": "file",
+      "name": "EmbeddedRest.tsx",
+      "filePath": "apps/mobile/src/features/exercise/shared/EmbeddedRest.tsx",
+      "summary": "内嵌休息组件。",
+      "tags": [
+        "exercise",
+        "rest",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/shared/ExerciseTopBar.tsx",
+      "type": "file",
+      "name": "ExerciseTopBar.tsx",
+      "filePath": "apps/mobile/src/features/exercise/shared/ExerciseTopBar.tsx",
+      "summary": "运动顶部栏组件。",
+      "tags": [
+        "exercise",
+        "topbar",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/shared/RestOverlay.tsx",
+      "type": "file",
+      "name": "RestOverlay.tsx",
+      "filePath": "apps/mobile/src/features/exercise/shared/RestOverlay.tsx",
+      "summary": "休息浮层组件。",
+      "tags": [
+        "exercise",
+        "rest",
+        "overlay"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/components/ActiveInsightBar.tsx",
+      "type": "file",
+      "name": "ActiveInsightBar.tsx",
+      "filePath": "apps/mobile/src/features/global-pulse/components/ActiveInsightBar.tsx",
+      "summary": "Global Pulse活跃洞察栏组件。",
+      "tags": [
+        "global-pulse",
+        "insight",
+        "bar"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/AnimatedMusicIcon.tsx:AnimatedMusicIcon",
+      "type": "function",
+      "name": "AnimatedMusicIcon",
+      "filePath": "apps/mobile/src/components/AnimatedMusicIcon.tsx",
+      "lineRange": [
+        11,
+        58
+      ],
+      "summary": "AnimatedMusicIcon 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/MeditationMusicBar.tsx:CoverIcon",
+      "type": "function",
+      "name": "CoverIcon",
+      "filePath": "apps/mobile/src/components/MeditationMusicBar.tsx",
+      "lineRange": [
+        33,
+        55
+      ],
+      "summary": "CoverIcon 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/MeditationMusicBar.tsx:MeditationMusicBar",
+      "type": "function",
+      "name": "MeditationMusicBar",
+      "filePath": "apps/mobile/src/components/MeditationMusicBar.tsx",
+      "lineRange": [
+        57,
+        111
+      ],
+      "summary": "MeditationMusicBar 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/SportPage.tsx:SportPage",
+      "type": "function",
+      "name": "SportPage",
+      "filePath": "apps/mobile/src/features/exercise/SportPage.tsx",
+      "lineRange": [
+        51,
+        561
+      ],
+      "summary": "运动主页面实现。",
+      "tags": [
+        "exercise",
+        "sport"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/hooks/useExerciseAudio.ts:useExerciseAudio",
+      "type": "function",
+      "name": "useExerciseAudio",
+      "filePath": "apps/mobile/src/features/exercise/hooks/useExerciseAudio.ts",
+      "lineRange": [
+        18,
+        139
+      ],
+      "summary": "useExerciseAudio 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/hooks/useExerciseGps.ts:reqLocPerm",
+      "type": "function",
+      "name": "reqLocPerm",
+      "filePath": "apps/mobile/src/features/exercise/hooks/useExerciseGps.ts",
+      "lineRange": [
+        10,
+        14
+      ],
+      "summary": "reqLocPerm 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/hooks/useExerciseGps.ts:getCurPos",
+      "type": "function",
+      "name": "getCurPos",
+      "filePath": "apps/mobile/src/features/exercise/hooks/useExerciseGps.ts",
+      "lineRange": [
+        16,
+        20
+      ],
+      "summary": "getCurPos 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/hooks/useExerciseGps.ts:watchPos",
+      "type": "function",
+      "name": "watchPos",
+      "filePath": "apps/mobile/src/features/exercise/hooks/useExerciseGps.ts",
+      "lineRange": [
+        22,
+        26
+      ],
+      "summary": "watchPos 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/hooks/useExerciseGps.ts:computeDistance",
+      "type": "function",
+      "name": "computeDistance",
+      "filePath": "apps/mobile/src/features/exercise/hooks/useExerciseGps.ts",
+      "lineRange": [
+        28,
+        39
+      ],
+      "summary": "computeDistance 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/hooks/useExerciseRest.ts:useExerciseRest",
+      "type": "function",
+      "name": "useExerciseRest",
+      "filePath": "apps/mobile/src/features/exercise/hooks/useExerciseRest.ts",
+      "lineRange": [
+        3,
+        29
+      ],
+      "summary": "useExerciseRest 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/hooks/useExerciseSets.ts:useExerciseSets",
+      "type": "function",
+      "name": "useExerciseSets",
+      "filePath": "apps/mobile/src/features/exercise/hooks/useExerciseSets.ts",
+      "lineRange": [
+        6,
+        95
+      ],
+      "summary": "useExerciseSets 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/hooks/useExerciseTargets.ts:useExerciseTargets",
+      "type": "function",
+      "name": "useExerciseTargets",
+      "filePath": "apps/mobile/src/features/exercise/hooks/useExerciseTargets.ts",
+      "lineRange": [
+        20,
+        124
+      ],
+      "summary": "useExerciseTargets 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/hooks/useExerciseTimer.ts:useExerciseTimer",
+      "type": "function",
+      "name": "useExerciseTimer",
+      "filePath": "apps/mobile/src/features/exercise/hooks/useExerciseTimer.ts",
+      "lineRange": [
+        7,
+        110
+      ],
+      "summary": "useExerciseTimer 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/layouts/EnduranceActive.tsx:EnduranceActive",
+      "type": "function",
+      "name": "EnduranceActive",
+      "filePath": "apps/mobile/src/features/exercise/layouts/EnduranceActive.tsx",
+      "lineRange": [
+        13,
+        120
+      ],
+      "summary": "EnduranceActive 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/layouts/GpsActive.tsx:GpsActive",
+      "type": "function",
+      "name": "GpsActive",
+      "filePath": "apps/mobile/src/features/exercise/layouts/GpsActive.tsx",
+      "lineRange": [
+        33,
+        95
+      ],
+      "summary": "GpsActive 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/layouts/MeditativeActive.tsx:MeditativeActive",
+      "type": "function",
+      "name": "MeditativeActive",
+      "filePath": "apps/mobile/src/features/exercise/layouts/MeditativeActive.tsx",
+      "lineRange": [
+        14,
+        119
+      ],
+      "summary": "MeditativeActive 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/layouts/StrengthActive.tsx:StrengthActive",
+      "type": "function",
+      "name": "StrengthActive",
+      "filePath": "apps/mobile/src/features/exercise/layouts/StrengthActive.tsx",
+      "lineRange": [
+        22,
+        191
+      ],
+      "summary": "力量训练布局实现。",
+      "tags": [
+        "exercise",
+        "strength"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/pages/CountdownPage.tsx:CountdownPage",
+      "type": "function",
+      "name": "CountdownPage",
+      "filePath": "apps/mobile/src/features/exercise/pages/CountdownPage.tsx",
+      "lineRange": [
+        20,
+        41
+      ],
+      "summary": "CountdownPage 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/pages/PausedPage.tsx:PausedPage",
+      "type": "function",
+      "name": "PausedPage",
+      "filePath": "apps/mobile/src/features/exercise/pages/PausedPage.tsx",
+      "lineRange": [
+        11,
+        192
+      ],
+      "summary": "PausedPage 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/pages/PrepPage.tsx:PrepPage",
+      "type": "function",
+      "name": "PrepPage",
+      "filePath": "apps/mobile/src/features/exercise/pages/PrepPage.tsx",
+      "lineRange": [
+        9,
+        213
+      ],
+      "summary": "运动准备页面实现。",
+      "tags": [
+        "exercise",
+        "prep"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/pages/ReportPage.tsx:ReportPage",
+      "type": "function",
+      "name": "ReportPage",
+      "filePath": "apps/mobile/src/features/exercise/pages/ReportPage.tsx",
+      "lineRange": [
+        9,
+        202
+      ],
+      "summary": "ReportPage 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/shared/CelebrationOverlay.tsx:CelebrationOverlay",
+      "type": "function",
+      "name": "CelebrationOverlay",
+      "filePath": "apps/mobile/src/features/exercise/shared/CelebrationOverlay.tsx",
+      "lineRange": [
+        12,
+        40
+      ],
+      "summary": "CelebrationOverlay 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/shared/EmbeddedRest.tsx:EmbeddedRest",
+      "type": "function",
+      "name": "EmbeddedRest",
+      "filePath": "apps/mobile/src/features/exercise/shared/EmbeddedRest.tsx",
+      "lineRange": [
+        12,
+        25
+      ],
+      "summary": "EmbeddedRest 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/shared/ExerciseTopBar.tsx:ExerciseTopBar",
+      "type": "function",
+      "name": "ExerciseTopBar",
+      "filePath": "apps/mobile/src/features/exercise/shared/ExerciseTopBar.tsx",
+      "lineRange": [
+        17,
+        47
+      ],
+      "summary": "ExerciseTopBar 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/shared/RestOverlay.tsx:RestOverlay",
+      "type": "function",
+      "name": "RestOverlay",
+      "filePath": "apps/mobile/src/features/exercise/shared/RestOverlay.tsx",
+      "lineRange": [
+        17,
+        56
+      ],
+      "summary": "RestOverlay 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/components/ActiveInsightBar.tsx:ActiveInsightBar",
+      "type": "function",
+      "name": "ActiveInsightBar",
+      "filePath": "apps/mobile/src/features/global-pulse/components/ActiveInsightBar.tsx",
+      "lineRange": [
+        16,
+        16
+      ],
+      "summary": "ActiveInsightBar 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:apps/mobile/src/components/AnimatedMusicIcon.tsx",
+      "target": "function:apps/mobile/src/components/AnimatedMusicIcon.tsx:AnimatedMusicIcon",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/components/AnimatedMusicIcon.tsx",
+      "target": "function:apps/mobile/src/components/AnimatedMusicIcon.tsx:AnimatedMusicIcon",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/MeditationMusicBar.tsx",
+      "target": "function:apps/mobile/src/components/MeditationMusicBar.tsx:CoverIcon",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/components/MeditationMusicBar.tsx",
+      "target": "function:apps/mobile/src/components/MeditationMusicBar.tsx:MeditationMusicBar",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/components/MeditationMusicBar.tsx",
+      "target": "function:apps/mobile/src/components/MeditationMusicBar.tsx:MeditationMusicBar",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "function:apps/mobile/src/features/exercise/SportPage.tsx:SportPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "function:apps/mobile/src/features/exercise/SportPage.tsx:SportPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useExerciseAudio.ts",
+      "target": "function:apps/mobile/src/features/exercise/hooks/useExerciseAudio.ts:useExerciseAudio",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useExerciseAudio.ts",
+      "target": "function:apps/mobile/src/features/exercise/hooks/useExerciseAudio.ts:useExerciseAudio",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useExerciseGps.ts",
+      "target": "function:apps/mobile/src/features/exercise/hooks/useExerciseGps.ts:reqLocPerm",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useExerciseGps.ts",
+      "target": "function:apps/mobile/src/features/exercise/hooks/useExerciseGps.ts:reqLocPerm",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useExerciseGps.ts",
+      "target": "function:apps/mobile/src/features/exercise/hooks/useExerciseGps.ts:getCurPos",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useExerciseGps.ts",
+      "target": "function:apps/mobile/src/features/exercise/hooks/useExerciseGps.ts:getCurPos",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useExerciseGps.ts",
+      "target": "function:apps/mobile/src/features/exercise/hooks/useExerciseGps.ts:watchPos",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useExerciseGps.ts",
+      "target": "function:apps/mobile/src/features/exercise/hooks/useExerciseGps.ts:watchPos",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useExerciseGps.ts",
+      "target": "function:apps/mobile/src/features/exercise/hooks/useExerciseGps.ts:computeDistance",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useExerciseGps.ts",
+      "target": "function:apps/mobile/src/features/exercise/hooks/useExerciseGps.ts:computeDistance",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useExerciseRest.ts",
+      "target": "function:apps/mobile/src/features/exercise/hooks/useExerciseRest.ts:useExerciseRest",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useExerciseRest.ts",
+      "target": "function:apps/mobile/src/features/exercise/hooks/useExerciseRest.ts:useExerciseRest",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useExerciseSets.ts",
+      "target": "function:apps/mobile/src/features/exercise/hooks/useExerciseSets.ts:useExerciseSets",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useExerciseSets.ts",
+      "target": "function:apps/mobile/src/features/exercise/hooks/useExerciseSets.ts:useExerciseSets",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useExerciseTargets.ts",
+      "target": "function:apps/mobile/src/features/exercise/hooks/useExerciseTargets.ts:useExerciseTargets",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useExerciseTargets.ts",
+      "target": "function:apps/mobile/src/features/exercise/hooks/useExerciseTargets.ts:useExerciseTargets",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useExerciseTimer.ts",
+      "target": "function:apps/mobile/src/features/exercise/hooks/useExerciseTimer.ts:useExerciseTimer",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useExerciseTimer.ts",
+      "target": "function:apps/mobile/src/features/exercise/hooks/useExerciseTimer.ts:useExerciseTimer",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/EnduranceActive.tsx",
+      "target": "function:apps/mobile/src/features/exercise/layouts/EnduranceActive.tsx:EnduranceActive",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/EnduranceActive.tsx",
+      "target": "function:apps/mobile/src/features/exercise/layouts/EnduranceActive.tsx:EnduranceActive",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/GpsActive.tsx",
+      "target": "function:apps/mobile/src/features/exercise/layouts/GpsActive.tsx:GpsActive",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/GpsActive.tsx",
+      "target": "function:apps/mobile/src/features/exercise/layouts/GpsActive.tsx:GpsActive",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/MeditativeActive.tsx",
+      "target": "function:apps/mobile/src/features/exercise/layouts/MeditativeActive.tsx:MeditativeActive",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/MeditativeActive.tsx",
+      "target": "function:apps/mobile/src/features/exercise/layouts/MeditativeActive.tsx:MeditativeActive",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/StrengthActive.tsx",
+      "target": "function:apps/mobile/src/features/exercise/layouts/StrengthActive.tsx:StrengthActive",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/StrengthActive.tsx",
+      "target": "function:apps/mobile/src/features/exercise/layouts/StrengthActive.tsx:StrengthActive",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/pages/CountdownPage.tsx",
+      "target": "function:apps/mobile/src/features/exercise/pages/CountdownPage.tsx:CountdownPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/pages/CountdownPage.tsx",
+      "target": "function:apps/mobile/src/features/exercise/pages/CountdownPage.tsx:CountdownPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/pages/PausedPage.tsx",
+      "target": "function:apps/mobile/src/features/exercise/pages/PausedPage.tsx:PausedPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/pages/PausedPage.tsx",
+      "target": "function:apps/mobile/src/features/exercise/pages/PausedPage.tsx:PausedPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/pages/PrepPage.tsx",
+      "target": "function:apps/mobile/src/features/exercise/pages/PrepPage.tsx:PrepPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/pages/PrepPage.tsx",
+      "target": "function:apps/mobile/src/features/exercise/pages/PrepPage.tsx:PrepPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/pages/ReportPage.tsx",
+      "target": "function:apps/mobile/src/features/exercise/pages/ReportPage.tsx:ReportPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/pages/ReportPage.tsx",
+      "target": "function:apps/mobile/src/features/exercise/pages/ReportPage.tsx:ReportPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/shared/CelebrationOverlay.tsx",
+      "target": "function:apps/mobile/src/features/exercise/shared/CelebrationOverlay.tsx:CelebrationOverlay",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/shared/CelebrationOverlay.tsx",
+      "target": "function:apps/mobile/src/features/exercise/shared/CelebrationOverlay.tsx:CelebrationOverlay",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/shared/EmbeddedRest.tsx",
+      "target": "function:apps/mobile/src/features/exercise/shared/EmbeddedRest.tsx:EmbeddedRest",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/shared/EmbeddedRest.tsx",
+      "target": "function:apps/mobile/src/features/exercise/shared/EmbeddedRest.tsx:EmbeddedRest",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/shared/ExerciseTopBar.tsx",
+      "target": "function:apps/mobile/src/features/exercise/shared/ExerciseTopBar.tsx:ExerciseTopBar",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/shared/ExerciseTopBar.tsx",
+      "target": "function:apps/mobile/src/features/exercise/shared/ExerciseTopBar.tsx:ExerciseTopBar",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/shared/RestOverlay.tsx",
+      "target": "function:apps/mobile/src/features/exercise/shared/RestOverlay.tsx:RestOverlay",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/shared/RestOverlay.tsx",
+      "target": "function:apps/mobile/src/features/exercise/shared/RestOverlay.tsx:RestOverlay",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/ActiveInsightBar.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/ActiveInsightBar.tsx:ActiveInsightBar",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/ActiveInsightBar.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/ActiveInsightBar.tsx:ActiveInsightBar",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/MeditationMusicBar.tsx",
+      "target": "file:apps/mobile/src/components/AnimatedMusicIcon.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/MeditationMusicBar.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/MeditationMusicBar.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/features/exercise/hooks/useAmapComponents.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/features/exercise/hooks/useExerciseAudio.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/features/exercise/hooks/useExerciseGps.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/features/exercise/hooks/useExerciseRest.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/features/exercise/hooks/useExerciseSets.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/features/exercise/hooks/useExerciseTargets.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/features/exercise/hooks/useExerciseTimer.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/features/exercise/layouts/EnduranceActive.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/features/exercise/layouts/GpsActive.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/features/exercise/layouts/MeditativeActive.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/features/exercise/layouts/StrengthActive.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/features/exercise/pages/CountdownPage.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/features/exercise/pages/PausedPage.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/features/exercise/pages/PrepPage.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/features/exercise/pages/ReportPage.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/components/ActiveInsightBar.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/hooks/useGoalResolver.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/hooks/useSessionHeartbeat.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/features/music/components/MusicPickerModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/features/music/services/audioPlayerRef.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/SportPage.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useExerciseAudio.ts",
+      "target": "file:apps/mobile/src/services/AudioSessionManager.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useExerciseAudio.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useExerciseSets.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useExerciseTargets.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/EnduranceActive.tsx",
+      "target": "file:apps/mobile/src/components/MeditationMusicBar.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/EnduranceActive.tsx",
+      "target": "file:apps/mobile/src/features/exercise/layouts/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/EnduranceActive.tsx",
+      "target": "file:apps/mobile/src/features/exercise/shared/CelebrationOverlay.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/EnduranceActive.tsx",
+      "target": "file:apps/mobile/src/features/exercise/shared/ExerciseTopBar.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/EnduranceActive.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/GpsActive.tsx",
+      "target": "file:apps/mobile/src/components/MeditationMusicBar.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/GpsActive.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/MeditativeActive.tsx",
+      "target": "file:apps/mobile/src/components/MeditationMusicBar.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/MeditativeActive.tsx",
+      "target": "file:apps/mobile/src/features/exercise/layouts/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/MeditativeActive.tsx",
+      "target": "file:apps/mobile/src/features/exercise/shared/CelebrationOverlay.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/MeditativeActive.tsx",
+      "target": "file:apps/mobile/src/features/exercise/shared/ExerciseTopBar.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/MeditativeActive.tsx",
+      "target": "file:apps/mobile/src/features/exercise/shared/RestOverlay.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/MeditativeActive.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/StrengthActive.tsx",
+      "target": "file:apps/mobile/src/components/MeditationMusicBar.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/StrengthActive.tsx",
+      "target": "file:apps/mobile/src/features/exercise/layouts/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/StrengthActive.tsx",
+      "target": "file:apps/mobile/src/features/exercise/shared/CelebrationOverlay.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/StrengthActive.tsx",
+      "target": "file:apps/mobile/src/features/exercise/shared/EmbeddedRest.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/StrengthActive.tsx",
+      "target": "file:apps/mobile/src/features/exercise/shared/ExerciseTopBar.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/StrengthActive.tsx",
+      "target": "file:apps/mobile/src/features/exercise/shared/RestOverlay.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/StrengthActive.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/layouts/types.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/pages/CountdownPage.tsx",
+      "target": "file:apps/mobile/src/components/MeditationMusicBar.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/pages/CountdownPage.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/pages/PausedPage.tsx",
+      "target": "file:apps/mobile/src/components/MeditationMusicBar.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/pages/PausedPage.tsx",
+      "target": "file:apps/mobile/src/features/exercise/pages/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/pages/PausedPage.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/pages/PrepPage.tsx",
+      "target": "file:apps/mobile/src/features/exercise/pages/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/pages/PrepPage.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/pages/ReportPage.tsx",
+      "target": "file:apps/mobile/src/features/exercise/pages/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/pages/ReportPage.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/pages/ReportPage.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/pages/types.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/shared/CelebrationOverlay.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/shared/EmbeddedRest.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/shared/ExerciseTopBar.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/shared/RestOverlay.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    }
+  ]
+}

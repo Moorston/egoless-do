@@ -441,7 +441,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                     { value: profile.bodyFat ? `${profile.bodyFat}` : '-', unit: '%', label: T('bodyBodyFat') || '体脂' },
                   ].map((item, i) => (
                     <View key={i} style={{ alignItems: 'center' }}>
-                      <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: '#fff' }}>{item.value}{item.unit}</Text>
+                      <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: '#fff' }}>{String(item.value)}{item.unit}</Text>
                       <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>{item.label}</Text>
                     </View>
                   ))}
@@ -803,13 +803,13 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
             </View>
             <View style={{ flexDirection: 'row', gap: 12, marginBottom: 8 }}>
               <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{activeTrainingPlan.startDate} ~ {activeTrainingPlan.endDate}</Text>
-              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{activeTrainingPlan.tasks.filter(t => t.sportKey && t.sportKey !== 'rest').length}天/周</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{String(activeTrainingPlan.tasks.filter(t => t.sportKey && t.sportKey !== 'rest').length)}天/周</Text>
             </View>
             {planProgress && (
               <View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
                   <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyProgress') || '本周进度'}</Text>
-                  <Text style={{ fontSize: FONT_SMALL(), color: TH.text, fontWeight: '600' }}>{planProgress.weekComplete}/{planProgress.weekTotal}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.text, fontWeight: '600' }}>{String(planProgress.weekComplete)}/{String(planProgress.weekTotal)}</Text>
                 </View>
                 <View style={[styles.progressBarBg, { backgroundColor: TH.border, height: 6 }]}>
                   <View style={[styles.progressBarFill, { backgroundColor: '#f59e0b', height: 6, width: `${planProgress.weekTotal > 0 ? (planProgress.weekComplete / planProgress.weekTotal) * 100 : 0}%` }]} />

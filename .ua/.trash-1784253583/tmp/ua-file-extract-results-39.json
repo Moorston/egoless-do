@@ -1,0 +1,436 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 4,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/design.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 148,
+      "nonEmptyLines": 118,
+      "sections": [
+        {
+          "heading": "习惯页优化 — 技术设计",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "架构概览",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "共享常量迁移",
+          "level": 2,
+          "line": 26
+        },
+        {
+          "heading": "FlatList 修复方案",
+          "level": 2,
+          "line": 45
+        },
+        {
+          "heading": "日历复用方案",
+          "level": 2,
+          "line": 67
+        },
+        {
+          "heading": "打卡动画设计",
+          "level": 2,
+          "line": 86
+        },
+        {
+          "heading": "统计图表设计",
+          "level": 2,
+          "line": 106
+        },
+        {
+          "heading": "高级筛选排序设计",
+          "level": 2,
+          "line": 119
+        },
+        {
+          "heading": "数据流",
+          "level": 2,
+          "line": 133
+        },
+        {
+          "heading": "兼容性",
+          "level": 2,
+          "line": 143
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 10
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/implement.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 135,
+      "nonEmptyLines": 108,
+      "sections": [
+        {
+          "heading": "习惯页优化 — 实施计划",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Phase 1: 代码重构",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "Step 1.1: 提取共享常量",
+          "level": 3,
+          "line": 5
+        },
+        {
+          "heading": "Step 1.2: 创建 useHabitForm hook",
+          "level": 3,
+          "line": 11
+        },
+        {
+          "heading": "Step 1.3: 创建 useHabitActions hook",
+          "level": 3,
+          "line": 17
+        },
+        {
+          "heading": "Step 1.4: 抽取 Modal 组件",
+          "level": 3,
+          "line": 23
+        },
+        {
+          "heading": "Step 1.5: 抽取 HabitCard 组件",
+          "level": 3,
+          "line": 31
+        },
+        {
+          "heading": "Step 1.6: 抽取 HabitFilterBar 组件",
+          "level": 3,
+          "line": 36
+        },
+        {
+          "heading": "Step 1.7: 重构 HabitsScreen",
+          "level": 3,
+          "line": 41
+        },
+        {
+          "heading": "Step 1.8: 重构 HabitDetailScreen",
+          "level": 3,
+          "line": 47
+        },
+        {
+          "heading": "Step 1.9: 修复硬编码中文和缺失选项",
+          "level": 3,
+          "line": 53
+        },
+        {
+          "heading": "Step 1.10: 运行测试",
+          "level": 3,
+          "line": 60
+        },
+        {
+          "heading": "Phase 2: UI 优化",
+          "level": 2,
+          "line": 64
+        },
+        {
+          "heading": "Step 2.1: 空状态优化",
+          "level": 3,
+          "line": 66
+        },
+        {
+          "heading": "Step 2.2: 卡片重新设计",
+          "level": 3,
+          "line": 71
+        },
+        {
+          "heading": "Step 2.3: 打卡动画",
+          "level": 3,
+          "line": 77
+        },
+        {
+          "heading": "Step 2.4: 列表动画",
+          "level": 3,
+          "line": 82
+        },
+        {
+          "heading": "Phase 3: 功能增强",
+          "level": 2,
+          "line": 87
+        },
+        {
+          "heading": "Step 3.1: 统计数据计算函数",
+          "level": 3,
+          "line": 89
+        },
+        {
+          "heading": "Step 3.2: 统计图表 UI",
+          "level": 3,
+          "line": 97
+        },
+        {
+          "heading": "Step 3.3: 高级筛选排序",
+          "level": 3,
+          "line": 105
+        },
+        {
+          "heading": "Step 3.4: 最终测试",
+          "level": 3,
+          "line": 111
+        },
+        {
+          "heading": "验证命令",
+          "level": 2,
+          "line": 116
+        },
+        {
+          "heading": "风险文件",
+          "level": 2,
+          "line": 129
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/prd.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 133,
+      "nonEmptyLines": 102,
+      "sections": [
+        {
+          "heading": "分析并优化习惯页功能和代码",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Goal",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "Background",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "现有文件结构",
+          "level": 3,
+          "line": 9
+        },
+        {
+          "heading": "已确认的技术问题",
+          "level": 3,
+          "line": 20
+        },
+        {
+          "heading": "Requirements",
+          "level": 2,
+          "line": 30
+        },
+        {
+          "heading": "Phase 1: 代码重构（不改变功能行为）",
+          "level": 3,
+          "line": 32
+        },
+        {
+          "heading": "Phase 2: UI 优化",
+          "level": 3,
+          "line": 69
+        },
+        {
+          "heading": "Phase 3: 功能增强",
+          "level": 3,
+          "line": 85
+        },
+        {
+          "heading": "Acceptance Criteria",
+          "level": 2,
+          "line": 98
+        },
+        {
+          "heading": "Phase 1 (重构)",
+          "level": 3,
+          "line": 100
+        },
+        {
+          "heading": "Phase 2 (UI)",
+          "level": 3,
+          "line": 111
+        },
+        {
+          "heading": "Phase 3 (功能)",
+          "level": 3,
+          "line": 116
+        },
+        {
+          "heading": "Technical Notes",
+          "level": 2,
+          "line": 120
+        },
+        {
+          "heading": "Out of Scope",
+          "level": 2,
+          "line": 128
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 15
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/task.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 26,
+      "nonEmptyLines": 26,
+      "sections": [
+        {
+          "heading": "id",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "title",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "status",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dev_type",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "scope",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "package",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "priority",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "creator",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "assignee",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "createdAt",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "completedAt",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "branch",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "base_branch",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "worktree_path",
+          "level": 1,
+          "line": 17
+        },
+        {
+          "heading": "commit",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "pr_url",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "subtasks",
+          "level": 1,
+          "line": 20
+        },
+        {
+          "heading": "children",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "parent",
+          "level": 1,
+          "line": 22
+        },
+        {
+          "heading": "relatedFiles",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "notes",
+          "level": 1,
+          "line": 24
+        },
+        {
+          "heading": "meta",
+          "level": 1,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    }
+  ]
+}

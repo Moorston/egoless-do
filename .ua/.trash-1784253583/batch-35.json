@@ -1,0 +1,63 @@
+{
+  "nodes": [
+    {
+      "id": "document:.trellis/spec/governance/INDEX.md",
+      "type": "document",
+      "name": "INDEX.md",
+      "filePath": ".trellis/spec/governance/INDEX.md",
+      "summary": "项目规范文档体系的入口与阅读路线图，以树形结构展示 governance/guides/mobile/core/config 各层规范位置，并为新开发者、AI 编码助手、Code Reviewer、架构师四类角色提供不同的文档阅读顺序。",
+      "tags": ["documentation", "governance", "index", "specification", "reading-guide"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:.trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md",
+      "type": "document",
+      "name": "ARCHITECTURE-CONSTRAINTS.md",
+      "filePath": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md",
+      "summary": "模块边界、层间依赖、数据流与禁止架构模式的权威定义，涵盖项目全景图、单向依赖与导出契约、三层架构、写入/读取/同步数据流、模块内聚、Store 契约、后端边界、12 条 P0/P1/P2 禁止模式黑名单及 ESLint 规则映射。",
+      "tags": ["documentation", "governance", "architecture", "constraints", "forbidden-patterns"],
+      "complexity": "complex",
+      "languageNotes": "8 个架构维度 + 12 条禁止模式（P0/P1/P2 三级），含 ESLint 规则映射与建议新增配置。"
+    },
+    {
+      "id": "document:.trellis/spec/governance/GLOBAL-CODE-STANDARDS.md",
+      "type": "document",
+      "name": "GLOBAL-CODE-STANDARDS.md",
+      "filePath": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md",
+      "summary": "项目级代码质量标准，覆盖 9 个维度：类型安全（any 禁止、as 限制、@ts-ignore 管理、import type）、副作用管控（纯函数、时间参数化、render 内禁止副作用）、日志规范、导入规范、命名规范、错误处理、测试规范、国际化规范及 ESLint 配置联动。",
+      "tags": ["documentation", "governance", "code-standards", "type-safety", "eslint"],
+      "complexity": "complex",
+      "languageNotes": "9 维度代码标准，每条规则标 MUST/SHOULD/MAY 强制等级和 Auto/Manual 自动化程度，含 ESLint 状态映射。"
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:.trellis/spec/governance/INDEX.md",
+      "target": "document:.trellis/spec/governance/GLOBAL-CODE-STANDARDS.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/governance/INDEX.md",
+      "target": "document:.trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/governance/GLOBAL-CODE-STANDARDS.md",
+      "target": "document:.trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md",
+      "target": "document:.trellis/spec/governance/GLOBAL-CODE-STANDARDS.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

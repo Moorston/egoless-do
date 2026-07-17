@@ -1,0 +1,13 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {"path": ".trellis/tasks/archive/2026-07/07-12-sync-goerror/implement.md", "language": "markdown", "sizeLines": 23, "fileCategory": "docs"},
+    {"path": ".trellis/tasks/archive/2026-07/07-12-sync-goerror/prd.md", "language": "markdown", "sizeLines": 81, "fileCategory": "docs"},
+    {"path": ".trellis/tasks/archive/2026-07/07-12-sync-goerror/task.json", "language": "json", "sizeLines": 25, "fileCategory": "config"}
+  ],
+  "batchImportData": {
+    ".trellis/tasks/archive/2026-07/07-12-sync-goerror/implement.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-sync-goerror/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-sync-goerror/task.json": []
+  }
+}

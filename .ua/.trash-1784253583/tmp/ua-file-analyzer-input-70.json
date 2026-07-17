@@ -1,0 +1,107 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": "packages/core/src/zod/index.ts",
+      "language": "typescript",
+      "sizeLines": 2,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/zod/schemas.test.ts",
+      "language": "typescript",
+      "sizeLines": 145,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/zod/schemas.ts",
+      "language": "typescript",
+      "sizeLines": 178,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/tsconfig.json",
+      "language": "json",
+      "sizeLines": 17,
+      "fileCategory": "config"
+    },
+    {
+      "path": "packages/core/vitest.config.ts",
+      "language": "typescript",
+      "sizeLines": 8,
+      "fileCategory": "code"
+    },
+    {
+      "path": "patches/expo-audio@57.0.0.patch",
+      "language": "patch",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "patches/expo-image-picker@57.0.2.patch",
+      "language": "patch",
+      "sizeLines": 15,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/cleanup_all_ghosts.mjs",
+      "language": "javascript",
+      "sizeLines": 249,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/cleanup_completed_plans.mjs",
+      "language": "javascript",
+      "sizeLines": 212,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/cleanup_ghost_foods.mjs",
+      "language": "javascript",
+      "sizeLines": 99,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/clear-business-data.sh",
+      "language": "shell",
+      "sizeLines": 117,
+      "fileCategory": "script"
+    },
+    {
+      "path": "scripts/clear-business-data.sql",
+      "language": "sql",
+      "sizeLines": 85,
+      "fileCategory": "data"
+    },
+    {
+      "path": "setup.ts",
+      "language": "typescript",
+      "sizeLines": 23,
+      "fileCategory": "code"
+    },
+    {
+      "path": "vitest.config.ts",
+      "language": "typescript",
+      "sizeLines": 21,
+      "fileCategory": "code"
+    }
+  ],
+  "batchImportData": {
+    "packages/core/src/zod/index.ts": [],
+    "packages/core/src/zod/schemas.test.ts": [
+      "packages/core/src/zod/schemas.ts"
+    ],
+    "packages/core/src/zod/schemas.ts": [],
+    "packages/core/tsconfig.json": [],
+    "packages/core/vitest.config.ts": [],
+    "patches/expo-audio@57.0.0.patch": [],
+    "patches/expo-image-picker@57.0.2.patch": [],
+    "scripts/cleanup_all_ghosts.mjs": [],
+    "scripts/cleanup_completed_plans.mjs": [],
+    "scripts/cleanup_ghost_foods.mjs": [],
+    "scripts/clear-business-data.sh": [],
+    "scripts/clear-business-data.sql": [],
+    "setup.ts": [],
+    "vitest.config.ts": []
+  }
+}

@@ -1,0 +1,1194 @@
+{
+  "nodes": [
+    {
+      "id": "file:packages/core/src/store/createHabitSlice.test.ts",
+      "type": "file",
+      "name": "createHabitSlice.test.ts",
+      "filePath": "packages/core/src/store/createHabitSlice.test.ts",
+      "summary": "createHabitSlice 测试：覆盖 addHabit/updateHabit/deleteHabit/checkinHabit 等行为。",
+      "tags": [
+        "habit",
+        "test",
+        "store"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/store/createHabitSlice.test.ts:makeTestStore",
+      "type": "function",
+      "name": "makeTestStore",
+      "filePath": "packages/core/src/store/createHabitSlice.test.ts",
+      "lineRange": [
+        5,
+        23
+      ],
+      "summary": "构建 Zustand 风格的测试 store（set/get/api）。",
+      "tags": [
+        "test",
+        "store",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/store/createHabitSlice.test.ts:makeHabit",
+      "type": "function",
+      "name": "makeHabit",
+      "filePath": "packages/core/src/store/createHabitSlice.test.ts",
+      "lineRange": [
+        33,
+        55
+      ],
+      "summary": "构造测试用 Habit。",
+      "tags": [
+        "test",
+        "habit",
+        "store"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/createHabitSlice.ts",
+      "type": "file",
+      "name": "createHabitSlice.ts",
+      "filePath": "packages/core/src/store/createHabitSlice.ts",
+      "summary": "习惯 Slice：管理 habits 列表，实现 add/update/delete/checkin/changeStatus/checkAutoStatus/autoSyncHabits，并联动 planItem 级联更新。",
+      "tags": [
+        "habit",
+        "store",
+        "slice"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/store/createHabitSlice.ts:createHabitSlice",
+      "type": "function",
+      "name": "createHabitSlice",
+      "filePath": "packages/core/src/store/createHabitSlice.ts",
+      "lineRange": [
+        15,
+        125
+      ],
+      "summary": "创建习惯 Slice：习惯增删改/打卡/状态切换/自动同步，联动 planItem 级联更新。",
+      "tags": [
+        "habit",
+        "store",
+        "slice"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/store/createMantraSlice.test.ts",
+      "type": "file",
+      "name": "createMantraSlice.test.ts",
+      "filePath": "packages/core/src/store/createMantraSlice.test.ts",
+      "summary": "createMantraSlice 测试：覆盖口诀/诵读 session 与预设初始化。",
+      "tags": [
+        "mantra",
+        "test",
+        "store"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/store/createMantraSlice.test.ts:makeTestStore",
+      "type": "function",
+      "name": "makeTestStore",
+      "filePath": "packages/core/src/store/createMantraSlice.test.ts",
+      "lineRange": [
+        8,
+        22
+      ],
+      "summary": "构建 Zustand 风格的测试 store（set/get/api）。",
+      "tags": [
+        "test",
+        "store",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/createMantraSlice.ts",
+      "type": "file",
+      "name": "createMantraSlice.ts",
+      "filePath": "packages/core/src/store/createMantraSlice.ts",
+      "summary": "口诀 Slice：管理 mantraDefs/mantraSessions/readingSessions，实现增删、预设初始化 initializePresetsIncremental 与 streak/统计计算。",
+      "tags": [
+        "mantra",
+        "store",
+        "slice"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/store/createMantraSlice.ts:createMantraSlice",
+      "type": "function",
+      "name": "createMantraSlice",
+      "filePath": "packages/core/src/store/createMantraSlice.ts",
+      "lineRange": [
+        43,
+        294
+      ],
+      "summary": "创建口诀 Slice：管理口诀定义/诵读 session，含预设初始化与 streak 统计。",
+      "tags": [
+        "mantra",
+        "store",
+        "slice"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:packages/core/src/store/createMeditationSlice.ts",
+      "type": "file",
+      "name": "createMeditationSlice.ts",
+      "filePath": "packages/core/src/store/createMeditationSlice.ts",
+      "summary": "冥想 Slice：createMeditationSlice 实现 addMedMinutes/calculateTotalMedMin（委托 business/meditation）。",
+      "tags": [
+        "meditation",
+        "store",
+        "slice"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/store/createMeditationSlice.ts:createMeditationSlice",
+      "type": "function",
+      "name": "createMeditationSlice",
+      "filePath": "packages/core/src/store/createMeditationSlice.ts",
+      "lineRange": [
+        16,
+        41
+      ],
+      "summary": "创建冥想 Slice：添加冥想分钟与累计时长计算。",
+      "tags": [
+        "meditation",
+        "store",
+        "slice"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/createMindSlice.test.ts",
+      "type": "file",
+      "name": "createMindSlice.test.ts",
+      "filePath": "packages/core/src/store/createMindSlice.test.ts",
+      "summary": "createMindSlice 测试：覆盖 fear/courage entry 与成就系统。",
+      "tags": [
+        "mind",
+        "test",
+        "store"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/store/createMindSlice.test.ts:makeTestStore",
+      "type": "function",
+      "name": "makeTestStore",
+      "filePath": "packages/core/src/store/createMindSlice.test.ts",
+      "lineRange": [
+        8,
+        22
+      ],
+      "summary": "构建 Zustand 风格的测试 store（set/get/api）。",
+      "tags": [
+        "test",
+        "store",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/createMindSlice.ts",
+      "type": "file",
+      "name": "createMindSlice.ts",
+      "filePath": "packages/core/src/store/createMindSlice.ts",
+      "summary": "心力 Slice：管理 fearEntries/courageEntries/achievements，实现 entry 增删、calcStreak、成就解锁 checkAchievements 与多维统计洞察。",
+      "tags": [
+        "mind",
+        "store",
+        "slice"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/store/createMindSlice.ts:calcStreak",
+      "type": "function",
+      "name": "calcStreak",
+      "filePath": "packages/core/src/store/createMindSlice.ts",
+      "lineRange": [
+        17,
+        33
+      ],
+      "summary": "根据勇气 entry 日期序列计算连续 streak。",
+      "tags": [
+        "mind",
+        "streak",
+        "store"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/store/createMindSlice.ts:createMindSlice",
+      "type": "function",
+      "name": "createMindSlice",
+      "filePath": "packages/core/src/store/createMindSlice.ts",
+      "lineRange": [
+        35,
+        292
+      ],
+      "summary": "创建心力 Slice：恐惧/勇气 entry 与成就系统，含 streak 与多维洞察。",
+      "tags": [
+        "mind",
+        "store",
+        "slice"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:packages/core/src/store/createPlanSlice.test.ts",
+      "type": "file",
+      "name": "createPlanSlice.test.ts",
+      "filePath": "packages/core/src/store/createPlanSlice.test.ts",
+      "summary": "createPlanSlice 测试：覆盖 plan/item 的增删改查/打卡/级联删除。",
+      "tags": [
+        "plan",
+        "test",
+        "store"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/store/createPlanSlice.test.ts:makeTestStore",
+      "type": "function",
+      "name": "makeTestStore",
+      "filePath": "packages/core/src/store/createPlanSlice.test.ts",
+      "lineRange": [
+        8,
+        27
+      ],
+      "summary": "构建 Zustand 风格的测试 store（set/get/api）。",
+      "tags": [
+        "test",
+        "store",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/store/createPlanSlice.test.ts:makePlan",
+      "type": "function",
+      "name": "makePlan",
+      "filePath": "packages/core/src/store/createPlanSlice.test.ts",
+      "lineRange": [
+        35,
+        47
+      ],
+      "summary": "构造测试用 Plan。",
+      "tags": [
+        "test",
+        "plan",
+        "store"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/store/createPlanSlice.test.ts:makePlanItem",
+      "type": "function",
+      "name": "makePlanItem",
+      "filePath": "packages/core/src/store/createPlanSlice.test.ts",
+      "lineRange": [
+        49,
+        61
+      ],
+      "summary": "构造测试用 PlanItem。",
+      "tags": [
+        "test",
+        "plan",
+        "store"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/createPlanSlice.ts",
+      "type": "file",
+      "name": "createPlanSlice.ts",
+      "filePath": "packages/core/src/store/createPlanSlice.ts",
+      "summary": "计划 Slice：最复杂的 Slice，管理 plans/planItems/planItemCheckins/dailyCustomTodos，实现 toggleCheckin/computeCascadeDelete/persistCascade 与计划生命周期及 notifyPlanDelayed。",
+      "tags": [
+        "plan",
+        "store",
+        "slice"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/store/createPlanSlice.ts:toggleCheckin",
+      "type": "function",
+      "name": "toggleCheckin",
+      "filePath": "packages/core/src/store/createPlanSlice.ts",
+      "lineRange": [
+        39,
+        77
+      ],
+      "summary": "切换计划项指定日期的打卡状态，联动进度与每日待办历史。",
+      "tags": [
+        "plan",
+        "checkin",
+        "store"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/store/createPlanSlice.ts:computeCascadeDelete",
+      "type": "function",
+      "name": "computeCascadeDelete",
+      "filePath": "packages/core/src/store/createPlanSlice.ts",
+      "lineRange": [
+        80,
+        111
+      ],
+      "summary": "计算计划或计划项删除时的级联影响（checkins/reflections/trails）。",
+      "tags": [
+        "plan",
+        "cascade",
+        "store"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/store/createPlanSlice.ts:createPlanSlice",
+      "type": "function",
+      "name": "createPlanSlice",
+      "filePath": "packages/core/src/store/createPlanSlice.ts",
+      "lineRange": [
+        120,
+        656
+      ],
+      "summary": "创建计划 Slice：计划/item/checkin 全生命周期、级联删除与延迟通知。",
+      "tags": [
+        "plan",
+        "store",
+        "slice"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:packages/core/src/store/createPracticeSlice.ts",
+      "type": "file",
+      "name": "createPracticeSlice.ts",
+      "filePath": "packages/core/src/store/createPracticeSlice.ts",
+      "summary": "修行 Slice：管理 visions/visionPractices/dedications/give，实现增删与 genVisionId/genDedId/genGiveId。",
+      "tags": [
+        "practice",
+        "store",
+        "slice"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/store/createPracticeSlice.ts:createPracticeSlice",
+      "type": "function",
+      "name": "createPracticeSlice",
+      "filePath": "packages/core/src/store/createPracticeSlice.ts",
+      "lineRange": [
+        49,
+        214
+      ],
+      "summary": "创建修行 Slice：愿景/回向/布施管理，含 ID 生成器。",
+      "tags": [
+        "practice",
+        "store",
+        "slice"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/store/createProfileSlice.ts",
+      "type": "file",
+      "name": "createProfileSlice.ts",
+      "filePath": "packages/core/src/store/createProfileSlice.ts",
+      "summary": "个人资料 Slice：createProfileSlice 实现 updateUserProfile/addWater/resetWater/setWaterGoal/setWeightUnit。",
+      "tags": [
+        "profile",
+        "store",
+        "slice"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/store/createProfileSlice.ts:createProfileSlice",
+      "type": "function",
+      "name": "createProfileSlice",
+      "filePath": "packages/core/src/store/createProfileSlice.ts",
+      "lineRange": [
+        7,
+        69
+      ],
+      "summary": "创建个人资料 Slice：用户资料/饮水/水量目标/体重单位更新。",
+      "tags": [
+        "profile",
+        "store",
+        "slice"
+      ],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:packages/core/src/store/createHabitSlice.test.ts",
+      "target": "function:packages/core/src/store/createHabitSlice.test.ts:makeTestStore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createHabitSlice.test.ts",
+      "target": "function:packages/core/src/store/createHabitSlice.test.ts:makeHabit",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createHabitSlice.ts",
+      "target": "function:packages/core/src/store/createHabitSlice.ts:createHabitSlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createHabitSlice.ts",
+      "target": "function:packages/core/src/store/createHabitSlice.ts:createHabitSlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createMantraSlice.test.ts",
+      "target": "function:packages/core/src/store/createMantraSlice.test.ts:makeTestStore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createMantraSlice.ts",
+      "target": "function:packages/core/src/store/createMantraSlice.ts:createMantraSlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createMantraSlice.ts",
+      "target": "function:packages/core/src/store/createMantraSlice.ts:createMantraSlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createMeditationSlice.ts",
+      "target": "function:packages/core/src/store/createMeditationSlice.ts:createMeditationSlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createMeditationSlice.ts",
+      "target": "function:packages/core/src/store/createMeditationSlice.ts:createMeditationSlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createMindSlice.test.ts",
+      "target": "function:packages/core/src/store/createMindSlice.test.ts:makeTestStore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createMindSlice.ts",
+      "target": "function:packages/core/src/store/createMindSlice.ts:calcStreak",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createMindSlice.ts",
+      "target": "function:packages/core/src/store/createMindSlice.ts:createMindSlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createMindSlice.ts",
+      "target": "function:packages/core/src/store/createMindSlice.ts:createMindSlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.test.ts",
+      "target": "function:packages/core/src/store/createPlanSlice.test.ts:makeTestStore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.test.ts",
+      "target": "function:packages/core/src/store/createPlanSlice.test.ts:makePlan",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.test.ts",
+      "target": "function:packages/core/src/store/createPlanSlice.test.ts:makePlanItem",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/store/createPlanSlice.ts:toggleCheckin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/store/createPlanSlice.ts:computeCascadeDelete",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/store/createPlanSlice.ts:createPlanSlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/store/createPlanSlice.ts:createPlanSlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPracticeSlice.ts",
+      "target": "function:packages/core/src/store/createPracticeSlice.ts:createPracticeSlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createPracticeSlice.ts",
+      "target": "function:packages/core/src/store/createPracticeSlice.ts:createPracticeSlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createProfileSlice.ts",
+      "target": "function:packages/core/src/store/createProfileSlice.ts:createProfileSlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createProfileSlice.ts",
+      "target": "function:packages/core/src/store/createProfileSlice.ts:createProfileSlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createHabitSlice.test.ts",
+      "target": "file:packages/core/src/store/createHabitSlice.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createHabitSlice.test.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createHabitSlice.ts",
+      "target": "file:packages/core/src/business/habits.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createHabitSlice.ts",
+      "target": "file:packages/core/src/logger.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createHabitSlice.ts",
+      "target": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createHabitSlice.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createHabitSlice.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createHabitSlice.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createMantraSlice.test.ts",
+      "target": "file:packages/core/src/store/createMantraSlice.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createMantraSlice.ts",
+      "target": "file:packages/core/src/constants.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createMantraSlice.ts",
+      "target": "file:packages/core/src/logger.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createMantraSlice.ts",
+      "target": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createMantraSlice.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createMantraSlice.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createMantraSlice.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createMeditationSlice.ts",
+      "target": "file:packages/core/src/business/meditation.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createMeditationSlice.ts",
+      "target": "file:packages/core/src/logger.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createMeditationSlice.ts",
+      "target": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createMeditationSlice.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createMeditationSlice.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createMeditationSlice.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createMindSlice.test.ts",
+      "target": "file:packages/core/src/store/createMindSlice.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createMindSlice.ts",
+      "target": "file:packages/core/src/logger.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createMindSlice.ts",
+      "target": "file:packages/core/src/store/mindSliceTypes.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createMindSlice.ts",
+      "target": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createMindSlice.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createMindSlice.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createMindSlice.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.test.ts",
+      "target": "file:packages/core/src/store/createPlanSlice.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "file:packages/core/src/business/plan.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "file:packages/core/src/business/reflections.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "file:packages/core/src/logger.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "file:packages/core/src/services/notification.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "file:packages/core/src/sync/entities.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "file:packages/core/src/types/reflection.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createPracticeSlice.ts",
+      "target": "file:packages/core/src/logger.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createPracticeSlice.ts",
+      "target": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createPracticeSlice.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createPracticeSlice.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createProfileSlice.ts",
+      "target": "file:packages/core/src/logger.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createProfileSlice.ts",
+      "target": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createProfileSlice.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createProfileSlice.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createHabitSlice.ts",
+      "target": "function:packages/core/src/business/habits.ts:createHabitFromForm",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createHabitSlice.ts",
+      "target": "function:packages/core/src/business/habits.ts:updateHabitInList",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createHabitSlice.ts",
+      "target": "function:packages/core/src/business/habits.ts:deleteHabitFromList",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createHabitSlice.ts",
+      "target": "function:packages/core/src/business/habits.ts:checkinHabitInList",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createHabitSlice.ts",
+      "target": "function:packages/core/src/business/habits.ts:changeHabitStatusInList",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createHabitSlice.ts",
+      "target": "function:packages/core/src/utils.ts:dateStr",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createHabitSlice.ts",
+      "target": "function:packages/core/src/business/habits.ts:checkAutoStatus",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createHabitSlice.ts",
+      "target": "function:packages/core/src/business/habits.ts:syncHabitsFromModules",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createMantraSlice.ts",
+      "target": "function:packages/core/src/utils.ts:dateStr",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createMeditationSlice.ts",
+      "target": "function:packages/core/src/business/meditation.ts:addMedMinutesToList",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createMeditationSlice.ts",
+      "target": "function:packages/core/src/utils.ts:activeOnly",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createMeditationSlice.ts",
+      "target": "function:packages/core/src/utils.ts:dateStr",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createMindSlice.ts",
+      "target": "function:packages/core/src/utils.ts:dateStr",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createMindSlice.ts",
+      "target": "function:packages/core/src/utils.ts:uid",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/utils.ts:dateStr",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/business/index.ts:checkinItem",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/business/index.ts:uncheckinItem",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/business/index.ts:refreshPlanItemStats",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/business/index.ts:computePlanProgress",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/business/index.ts:canDeletePlan",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/business/index.ts:addPlan",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/business/index.ts:updatePlan",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/business/index.ts:deletePlan",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/business/index.ts:startPlan",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/business/index.ts:pausePlan",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/business/index.ts:resumePlan",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/business/index.ts:completePlan",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/business/index.ts:cancelPlan",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/business/habits.ts:checkAutoStatus",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/business/index.ts:addPlanItem",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/utils.ts:activeOnly",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/business/index.ts:updatePlanItem",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/business/index.ts:deletePlanItem",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/business/index.ts:syncPlanItemsFromModules",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/utils.ts:parseDateParts",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/utils.ts:uid",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createPlanSlice.ts",
+      "target": "function:packages/core/src/business/reflections.ts:linkReflectionToPlanItem",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ]
+}

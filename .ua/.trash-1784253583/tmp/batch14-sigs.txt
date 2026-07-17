@@ -1,0 +1,118 @@
+============================================================
+FILE: apps/mobile/src/config.ts  (16l)
+  fns: []
+============================================================
+FILE: apps/mobile/src/features/global-pulse/components/ActiveMarker.tsx  (162l)
+  IMPORTS: ["import {ActiveSession , FONT_LABEL, FONT_TINY, FONT_SMALL} from '@egoless-do/core';", "import React, { useEffect, useRef, useMemo } from 'react';", "import { View, Text, StyleSheet, Animated } from 'react-native';", "import { useGlobalTick } from '../hooks/useGlobalTick';", "import { formatDisplayName, getCheckinTypeIcon } from '../services/globalPulseApi';"]
+  fns: ['formatDuration(18-30)', 'ActiveMarker(32-102)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/components/ActiveUserItem.tsx  (208l)
+  IMPORTS: ["import {ActiveSession , FONT_SUB, FONT_SMALL, FONT_BACK} from '@egoless-do/core';", "import React, { useMemo } from 'react';", "import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';", "import { useTheme, useT } from '../../../components/UI';", "import { useCityName } from '../hooks/useCityName';", "import { useGlobalTick } from '../hooks/useGlobalTick';", "import { formatDisplayName, getCheckinTypeIcon, getCheckinTypeColor } from '../services/globalPulseApi';"]
+  fns: ['formatDuration(21-33)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/components/ActiveUsersList.tsx  (146l)
+  IMPORTS: ["import {ActiveSession, CheckinType , FONT_SUB, FONT_TITLE, FONT_BODY, FONT_SMALL} from '@egoless-do/core';", "import React, { useMemo } from 'react';", "import { View, Text, StyleSheet, SectionList } from 'react-native';", "import { useTheme, useT } from '../../../components/UI';", "import { useAppStore, useShallowStore } from '../../../store/useAppStore';", "import { getCheckinTypeIcon, getCheckinTypeColor } from '../services/globalPulseApi';", "import { ActiveUserItem } from './ActiveUserItem';"]
+  fns: ['ActiveUsersList(34-107)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/components/BottomPanel.tsx  (297l)
+  IMPORTS: ["import {FONT_SUB, FONT_STAT_CARD, dateStr , ActiveSession, GlobalCheckin, LeaderboardEntry, CheckinType , FONT_SMALL, FONT_BACK} from '@egoless-do/core';", "import React, { useState, useMemo } from 'react';", "import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';", "import { useTheme, useT } from '../../../components/UI';", "import { useAppStore, useShallowStore } from '../../../store/useAppStore';", "import { ActiveUsersList } from './ActiveUsersList';", "import { Leaderboard } from './Leaderboard';"]
+  fns: ['BottomPanel(31-210)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/components/CityCallout.tsx  (81l)
+  IMPORTS: ["import {GlobalCheckin , FONT_BODY, FONT_SUB} from '@egoless-do/core';", "import React from 'react';", "import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';", "import { useTheme, useT } from '../../../components/UI';", "import { useCityName } from '../hooks/useCityName';", "import { formatDisplayName, getCheckinTypeIcon } from '../services/globalPulseApi';"]
+  fns: ['CityCallout(17-47)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx  (577l)
+  IMPORTS: ["import {GlobalCheckin, LeaderboardEntry, ActiveSession , aggregateMarkers , FONT_SUB, FONT_TITLE, FONT_BACK, FONT_STAT_CARD, FONT_BODY, FONT_SMALL, FONT_LABEL} from '@egoless-do/core';", "import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';", 'import {', "import MapView, { UrlTile, Marker } from 'react-native-maps';", "import { useTheme, useT } from '../../../components/UI';", "import { useActiveSessions } from '../hooks/useActiveSessions';", "import { useGlobalPulse } from '../hooks/useGlobalPulse';", "import { formatDisplayName } from '../services/globalPulseApi';", "import { getUserHash } from '../services/userHash';", "import { ActiveMarker } from './ActiveMarker';", "import { BottomPanel } from './BottomPanel';", "import { Leaderboard } from './Leaderboard';", "import { MarkerDetail } from './MarkerDetail';", "import { OfflineBanner } from './OfflineBanner';", "import { PulseMarker } from './PulseMarker';"]
+  fns: ['GlobalPulseMap(42-371)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/components/Leaderboard.tsx  (254l)
+  IMPORTS: ["import {GlobalCheckin, LeaderboardEntry, LeaderboardSort, CheckinType , FONT_SUB, FONT_STAT_CARD, FONT_BACK} from '@egoless-do/core';", "import React, { useState, useMemo, useCallback } from 'react';", 'import {', "import { useTheme, useT } from '../../../components/UI';", "import { LeaderboardItem } from './LeaderboardItem';", "import { PodiumItem } from './PodiumItem';"]
+  fns: ['buildLeaderboard(32-60)', 'Leaderboard(62-177)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/components/LeaderboardItem.tsx  (178l)
+  IMPORTS: ["import {LeaderboardEntry , FONT_SUB, FONT_TITLE, FONT_SMALL} from '@egoless-do/core';", "import React, { useMemo } from 'react';", "import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';", "import { useTheme, useT } from '../../../components/UI';", "import { useCityName } from '../hooks/useCityName';", "import { formatDisplayName, getCheckinTypeIcon, getCheckinTypeColor } from '../services/globalPulseApi';"]
+  fns: ['formatDate(22-28)', 'daysSince(31-35)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/components/MarkerDetail.tsx  (369l)
+  IMPORTS: ["import {GlobalCheckin, ActiveSession , FONT_SUB, FONT_TITLE, FONT_STAT_CARD, FONT_SMALL, FONT_LABEL, scaleFontSize} from '@egoless-do/core';", "import React, { useState, useEffect, useMemo } from 'react';", 'import {', "import { useTheme, useT } from '../../../components/UI';", "import { useCityName } from '../hooks/useCityName';", "import { useGlobalTick } from '../hooks/useGlobalTick';", "import { formatDisplayName, getCheckinTypeIcon, getCheckinTypeColor } from '../services/globalPulseApi';"]
+  fns: ['formatDuration(28-40)', 'MarkerDetail(42-215)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/components/OfflineBanner.tsx  (50l)
+  IMPORTS: ["import React from 'react';", "import { View, Text, StyleSheet } from 'react-native';", "import { useT } from '../../../components/UI';", "import { FONT_LABEL, FONT_SUB } from '@egoless-do/core';"]
+  fns: ['OfflineBanner(12-23)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/components/PodiumItem.tsx  (126l)
+  IMPORTS: ["import {LeaderboardEntry , FONT_SMALL, FONT_TINY, FONT_BACK, scaleFontSize} from '@egoless-do/core';", "import React, { useMemo } from 'react';", "import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, type ViewStyle } from 'react-native';", "import { useTheme, useT } from '../../../components/UI';", "import { useCityName } from '../hooks/useCityName';", "import { formatDisplayName } from '../services/globalPulseApi';"]
+  fns: ['formatDate(22-25)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/components/PrivacyControl.tsx  (244l)
+  IMPORTS: ["import AsyncStorage from '@react-native-async-storage/async-storage';", "import React, { useState, useEffect, useRef } from 'react';", 'import {', "import { useTheme, useT } from '../../../components/UI';", "import { FONT_BACK, FONT_LABEL, FONT_SUB } from '@egoless-do/core';", "import { optOut, optIn, deleteGlobalData } from '../services/globalPulseApi';", "import { getUserHash } from '../services/userHash';"]
+  fns: ['PrivacyControl(32-178)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/components/PulseMarker.tsx  (64l)
+  IMPORTS: ["import { CheckinType } from '@egoless-do/core';", "import React, { useMemo, memo } from 'react';", "import { View, Text, StyleSheet } from 'react-native';", "import { getCheckinTypeColor } from '../services/globalPulseApi';"]
+  fns: []
+============================================================
+FILE: apps/mobile/src/features/global-pulse/hooks/useActiveSessions.ts  (138l)
+  IMPORTS: ["import { ActiveSession, CheckinType } from '@egoless-do/core';", "import { useState, useEffect, useCallback, useRef, useMemo } from 'react';", "import { useAppStore, useShallowStore } from '../../../store/useAppStore';", 'import {']
+  fns: ['useActiveSessions(35-138)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/hooks/useCheckinSync.ts  (73l)
+  IMPORTS: ["import { createLogger , CheckinType , fuzzCoordinate } from '@egoless-do/core';", "import * as Location from 'expo-location';", "import { useCallback } from 'react';", "import { useAppStore, useShallowStore } from '../../../store/useAppStore';", "import { submitCheckin } from '../services/globalPulseApi';", "import { getUserHash, getFuzzSecret } from '../services/userHash';", "import { useNetworkStatus } from './useNetworkStatus';", "import { usePrivacy } from './usePrivacy';"]
+  fns: ['useCheckinSync(24-71)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/hooks/useCityName.ts  (193l)
+  IMPORTS: ["import { getCityInfo, CityInfo } from '@egoless-do/core';", "import { useState, useEffect, useRef, useMemo } from 'react';"]
+  fns: ['useCityName(26-94)', 'useCityNameBatch(101-186)', 'clearCityCache(191-193)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/hooks/useGlobalPulse.ts  (201l)
+  IMPORTS: ["import { GlobalCheckin, GlobalStats } from '@egoless-do/core';", "import { useState, useEffect, useCallback, useRef } from 'react';", "import { useNetworkStatus } from '../../../store/useNetworkStatus';", "import { getCheckins, getGlobalStats } from '../services/globalPulseApi';", 'import {']
+  fns: ['useGlobalPulse(39-199)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/hooks/useGlobalTick.ts  (79l)
+  IMPORTS: ["import { useSyncExternalStore, useCallback } from 'react';"]
+  fns: ['useGlobalTick(70-79)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/hooks/useNetworkStatus.ts  (66l)
+  IMPORTS: ["import { createLogger , NetworkStatus } from '@egoless-do/core';", "import NetInfo, { NetInfoState } from '@react-native-community/netinfo';", "import { useState, useEffect, useCallback } from 'react';"]
+  fns: ['useNetworkStatus(19-64)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/hooks/usePrivacy.ts  (139l)
+  IMPORTS: ["import { createLogger , UserPreferences } from '@egoless-do/core';", "import AsyncStorage from '@react-native-async-storage/async-storage';", "import { useState, useEffect, useCallback, useRef } from 'react';", "import { optOut, optIn, deleteGlobalData } from '../services/globalPulseApi';", "import { getUserHash } from '../services/userHash';"]
+  fns: ['usePrivacy(26-137)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/hooks/useSessionHeartbeat.ts  (75l)
+  IMPORTS: ["import { CheckinType } from '@egoless-do/core';", "import { useEffect, useRef, useCallback } from 'react';", "import { AppState, AppStateStatus } from 'react-native';", "import { updateSession } from '../services/activeSessionApi';"]
+  fns: ['useSessionHeartbeat(15-75)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/services/activeSessionApi.ts  (359l)
+  IMPORTS: ["import { ActiveSession, ApiResponse, CheckinType , createLogger } from '@egoless-do/core';", "import { API_URL as API_BASE_URL } from '../../../config';", "import { escapeFilter } from './pbFilterEscape';"]
+  fns: ['getConnectionState(21-23)', 'onConnectionStateChange(25-30)', 'setConnectionState(32-40)', 'pbRequest(43-93)', 'mapSession(95-111)', 'createSession(124-156)', 'updateSession(158-180)', 'deleteSession(182-187)', 'deleteSessionsByUserHash(189-206)', 'getActiveSessions(208-233)', 'subscribeSessions(255-359)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/services/globalPulseApi.ts  (340l)
+  IMPORTS: ['import {', "import { offlineAwareFetch } from '../../../net/offlineAware';", "import { API_URL as API_BASE_URL } from '../../../config';", "import { escapeFilter } from './pbFilterEscape';"]
+  fns: ['pbRequest(44-92)', 'submitCheckin(105-122)', 'getCheckins(127-188)', 'getGlobalStats(193-209)', 'getLeaderboard(214-246)', 'optOut(251-261)', 'optIn(266-276)', 'deleteGlobalData(281-291)', 'generateAnonymousId(296-302)', 'formatDisplayName(308-316)', 'getCheckinTypeIcon(321-328)', 'getCheckinTypeColor(333-340)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/services/offlineCache.ts  (315l)
+  IMPORTS: ["import { GlobalCheckin, GlobalStats, CheckinType } from '@egoless-do/core';", "import * as SQLite from 'expo-sqlite';"]
+  fns: ['openDatabase(21-23)', 'initDatabase(28-69)', 'cacheTile(74-86)', 'getCachedTile(91-109)', 'cleanupTileCache(114-130)', 'cacheCheckins(135-161)', 'getCachedCheckins(166-193)', 'cleanupCheckinCache(198-214)', 'cacheStats(219-227)', 'getCachedStats(232-256)', 'updateSyncStatus(261-269)', 'getSyncStatus(274-288)', 'clearAllCache(293-302)', 'getCacheSize(307-315)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/services/pbFilterEscape.ts  (22l)
+  fns: ['escapeFilter(11-22)']
+============================================================
+FILE: apps/mobile/src/features/global-pulse/services/userHash.ts  (61l)
+  IMPORTS: ["import AsyncStorage from '@react-native-async-storage/async-storage';", "import * as SecureStore from 'expo-secure-store';"]
+  fns: ['generateSecureRandomHex(8-13)', 'getUserHash(20-44)', 'getFuzzSecret(51-61)']
+============================================================
+FILE: apps/mobile/src/net/offlineAware.ts  (45l)
+  IMPORTS: ["import { getAuthToken } from '../store/authToken';", "import { useNetworkStatus } from '../store/useNetworkStatus';"]
+  fns: ['offlineAwareFetch(22-45)']
+============================================================
+FILE: apps/mobile/src/store/authToken.ts  (15l)
+  IMPORTS: ["import { useAppStore } from '../store/useAppStore';"]
+  fns: ['getAuthToken(6-9)', 'getAuthUserId(12-15)']
+============================================================
+FILE: apps/mobile/src/store/useNetworkStatus.ts  (32l)
+  IMPORTS: ["import NetInfo from '@react-native-community/netinfo';", "import { create } from 'zustand';"]
+  fns: []

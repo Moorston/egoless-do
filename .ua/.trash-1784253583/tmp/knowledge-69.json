@@ -1,0 +1,274 @@
+{
+  "packages/core/src/business/coordinateFuzzing.ts": {
+    "summary": "地理位置模糊算法：基于 secret key 的哈希种子确定性偏移，含经纬度换算、Haversine 距离计算。",
+    "tags": [
+      "business",
+      "geolocation",
+      "privacy",
+      "algorithm"
+    ],
+    "complexity": "moderate"
+  },
+  "packages/core/src/business/customLists.ts": {
+    "summary": "自定义标签/心情列表纯函数操作：增删、更新、重排序与必含项校验。",
+    "tags": [
+      "business",
+      "list-utility",
+      "pure-function"
+    ],
+    "complexity": "simple"
+  },
+  "packages/core/src/business/dateUtils.test.ts": {
+    "summary": "formatDateBar 日期格式化函数的单元测试。",
+    "tags": [
+      "business",
+      "date",
+      "test"
+    ],
+    "complexity": "simple"
+  },
+  "packages/core/src/business/dateUtils.ts": {
+    "summary": "HomeScreen 日期工具：WEEKDAYS 常量与 formatDateBar 格式化日期栏显示。",
+    "tags": [
+      "business",
+      "date",
+      "utility"
+    ],
+    "complexity": "simple"
+  },
+  "packages/core/src/business/precepts.ts": {
+    "summary": "持戒预设配置与查询：PRECEPT_AVOID/PRACTICE 预设集及习惯名前缀识别、显示名、类型判定。",
+    "tags": [
+      "business",
+      "precepts",
+      "meditation"
+    ],
+    "complexity": "moderate"
+  },
+  "packages/core/src/business/sleep.ts": {
+    "summary": "睡眠与中医十二时辰工具：BODY_CLOCK、当前/下一睡眠时段、时长格式化与质量评级/emoji。",
+    "tags": [
+      "business",
+      "sleep",
+      "body-clock"
+    ],
+    "complexity": "moderate"
+  },
+  "packages/core/src/business/zhiguanConstants.ts": {
+    "summary": "止观修行元数据常量：呼吸模式、发愿模板、内观引导方法表，供 store 与前端 UI 共用。",
+    "tags": [
+      "business",
+      "zhiguan",
+      "meditation",
+      "constant"
+    ],
+    "complexity": "simple"
+  },
+  "packages/core/src/business/zhiguanCountingRound.ts": {
+    "summary": "止观计数轮纯逻辑：呼吸通知、轮次计算与轮次状态重置（无 React 依赖便于单测）。",
+    "tags": [
+      "business",
+      "zhiguan",
+      "pure-function"
+    ],
+    "complexity": "moderate"
+  },
+  "packages/core/src/business/zhiguanTimer.ts": {
+    "summary": "止观计时器纯函数：已用时长、暂停累积、秒数格式化与闭幕倒计时判定。",
+    "tags": [
+      "business",
+      "zhiguan",
+      "timer",
+      "pure-function"
+    ],
+    "complexity": "simple"
+  },
+  "packages/core/src/constants/music.ts": {
+    "summary": "内置音乐常量：BUILTIN_TRACKS、音乐分类、用户音乐存储键、分类元数据与音轨视觉配置。",
+    "tags": [
+      "constant",
+      "music",
+      "media"
+    ],
+    "complexity": "moderate"
+  },
+  "packages/core/src/constants/sutraTexts.ts": {
+    "summary": "7 部核心经文全文常量与 getSutraText 查询函数，支撑诵经模块内容展示。",
+    "tags": [
+      "constant",
+      "sutra",
+      "meditation"
+    ],
+    "complexity": "simple"
+  },
+  "packages/core/src/data/DataGateway.test.ts": {
+    "summary": "NoopData 网关契约测试，验证平台无关数据访问接口行为。",
+    "tags": [
+      "data",
+      "test",
+      "gateway"
+    ],
+    "complexity": "simple"
+  },
+  "packages/core/src/data/DataGateway.ts": {
+    "summary": "统一数据网关接口 NoopDataGateway：定义 get/list/upsert/delete 四种操作的契约抽象。",
+    "tags": [
+      "data",
+      "gateway",
+      "interface",
+      "architecture"
+    ],
+    "complexity": "simple"
+  },
+  "packages/core/src/data/index.ts": {
+    "summary": "data 模块 barrel 文件，重导出数据网关相关类型与实现。",
+    "tags": [
+      "data",
+      "barrel",
+      "exports"
+    ],
+    "complexity": "simple"
+  },
+  "packages/core/src/i18n.ts": {
+    "summary": "i18n 向后兼容重导出：汇聚 zh/en/zhHant 翻译字典、translations、getT 与 t 函数。",
+    "tags": [
+      "i18n",
+      "barrel",
+      "localization"
+    ],
+    "complexity": "simple"
+  },
+  "packages/core/src/icons.ts": {
+    "summary": "Lucide 图标名称字符串映射（TAB/ACTION/FEATURE/FOOD），core 不依赖 lucide，仅存储名称供各端渲染映射。",
+    "tags": [
+      "icons",
+      "ui",
+      "cross-platform"
+    ],
+    "complexity": "moderate"
+  },
+  "packages/core/src/pocketbase.ts": {
+    "summary": "PocketBase 客户端单例：setPocketbaseUrl 初始化与 getPb 获取共享实例。",
+    "tags": [
+      "pocketbase",
+      "client",
+      "singleton"
+    ],
+    "complexity": "simple"
+  },
+  "packages/core/src/store/index.ts": {
+    "summary": "Store 大 barrel 导出：StorageAdapter、SyncDataMap 与所有 slice（Auth/Habit/Reflection/Plan/Food/Checkin/...）。",
+    "tags": [
+      "store",
+      "barrel",
+      "exports",
+      "zustand"
+    ],
+    "complexity": "simple"
+  },
+  "packages/core/src/store/storageAdapter.ts": {
+    "summary": "StorageAdapter 与 SyncDataMap 类型重导出，平台无关存储适配器的类型定义入口。",
+    "tags": [
+      "store",
+      "storage",
+      "interface",
+      "types"
+    ],
+    "complexity": "simple"
+  },
+  "packages/core/src/sync/index.ts": {
+    "summary": "sync 模块 barrel 文件，重导出同步引擎与协议相关符号。",
+    "tags": [
+      "sync",
+      "barrel",
+      "exports"
+    ],
+    "complexity": "simple"
+  },
+  "packages/core/src/types/index.ts": {
+    "summary": "types 模块 barrel，重导出核心层全部类型定义。",
+    "tags": [
+      "types",
+      "barrel",
+      "exports"
+    ],
+    "complexity": "simple"
+  },
+  "packages/core/src/types/music.ts": {
+    "summary": "音乐与音轨类型定义，供 constants/music.ts 引用。",
+    "tags": [
+      "types",
+      "music",
+      "type-definition"
+    ],
+    "complexity": "simple"
+  },
+  "packages/core/src/typography.ts": {
+    "summary": "统一字体大小层级：configureFontScale 全局缩放配置、scaleFontSize 与各 FONT_* 预设字号常量，跨端视觉一致。",
+    "tags": [
+      "typography",
+      "ui",
+      "cross-platform",
+      "style"
+    ],
+    "complexity": "moderate"
+  },
+  "packages/core/src/utils/index.ts": {
+    "summary": "utils 模块 barrel 文件，重导出核心工具函数集合。",
+    "tags": [
+      "utils",
+      "barrel",
+      "exports"
+    ],
+    "complexity": "simple"
+  },
+  "packages/core/src/utils/transform.ts": {
+    "summary": "数据格式转换工具：camelCase/snake_case 互转及对象键批量转换，用于 API 数据兼容。",
+    "tags": [
+      "utils",
+      "transform",
+      "serialization",
+      "string"
+    ],
+    "complexity": "simple"
+  },
+  "_funcs": {
+    "packages/core/src/business/coordinateFuzzing.ts:fuzzCoordinate": "基于哈希种子的确定性坐标模糊，将真实坐标偏移约数十米以保护隐私（含 lat/lng 地球曲率换算）。",
+    "packages/core/src/business/coordinateFuzzing.ts:isValidCoordinate": "校验经纬度数值是否在合法范围（-90~90, -180~180）。",
+    "packages/core/src/business/coordinateFuzzing.ts:calculateDistance": "Haversine 公式计算两点间球面距离（米）。",
+    "packages/core/src/business/customLists.ts:addCustomItem": "向自定义列表追加去重项（去除首尾空格后加入）。",
+    "packages/core/src/business/customLists.ts:removeCustomItem": "从自定义列表中过滤移除指定项。",
+    "packages/core/src/business/customLists.ts:updateCustomItem": "更新自定义列表中指定项的内容并去重。",
+    "packages/core/src/business/customLists.ts:reorderItem": "通过两次 splice 将列表项从 fromIndex 移动到 toIndex。",
+    "packages/core/src/business/customLists.ts:ensureOrderContains": "校验顺序列表包含所有必含项，返回缺失项清单。",
+    "packages/core/src/business/dateUtils.ts:formatDateBar": "格式化日期栏字符串，当天显示“今天”翻译，否则显示月·日与星期。",
+    "packages/core/src/business/precepts.ts:isPreceptHabit": "判断习惯名是否以持戒/实践前缀开头，归类为戒律习惯。",
+    "packages/core/src/business/precepts.ts:getPreceptDisplayName": "去除持戒/实践前缀，返回戒律习惯的显示名称。",
+    "packages/core/src/business/precepts.ts:getPreceptType": "根据前缀判定戒律类型为“持”还是“实践”。",
+    "packages/core/src/business/sleep.ts:getCurrentPeriod": "根据当前小时返回所处中医十二时辰时段对象。",
+    "packages/core/src/business/sleep.ts:getNextSleepPeriod": "返回当前时段的下一个十二时辰时段（循环）。",
+    "packages/core/src/business/sleep.ts:formatSleepDuration": "将睡眠分钟数格式化为“X小时Y分”字符串。",
+    "packages/core/src/business/sleep.ts:sleepQualityLevel": "根据睡眠时长（分钟）划分睡眠质量等级（如不足/正常/充足）。",
+    "packages/core/src/business/sleep.ts:qualityEmoji": "根据睡眠质量等级返回对应 emoji 图标。",
+    "packages/core/src/business/zhiguanCountingRound.ts:notifyBreath": "处理一次呼吸通知，更新计数轮状态（计数/周数/阵列）。",
+    "packages/core/src/business/zhiguanCountingRound.ts:computeRounds": "根据总呼吸次数计算完整轮次与剩余次数。",
+    "packages/core/src/business/zhiguanCountingRound.ts:resetRound": "重置计数轮状态为初始值。",
+    "packages/core/src/business/zhiguanTimer.ts:calcElapsed": "根据起始时间、已暂停时长与当前时钟计算实际已用秒数。",
+    "packages/core/src/business/zhiguanTimer.ts:accumulatePause": "累加一段暂停时间到 pausedElapsed。",
+    "packages/core/src/business/zhiguanTimer.ts:formatSec": "将总秒数格式化为 MM:SS 字符串。",
+    "packages/core/src/business/zhiguanTimer.ts:isInClosingCountdown": "判断是否进入闭幕倒计时阶段（已用时长接近目标）。",
+    "packages/core/src/constants/sutraTexts.ts:getSutraText": "根据键名查询并返回对应经文全文常量。",
+    "packages/core/src/pocketbase.ts:setPocketbaseUrl": "设置 PocketBase 客户端的服务器 URL 并（重建）单例。",
+    "packages/core/src/pocketbase.ts:getPb": "获取共享的 PocketBase 客户端单例实例。",
+    "packages/core/src/typography.ts:configureFontScale": "配置全局字体缩放因子（用于跨端字号统一）。",
+    "packages/core/src/typography.ts:scaleFontSize": "按当前字体缩放因子缩放并取整某个基础字号。",
+    "packages/core/src/utils/transform.ts:toCamelCase": "将 snake_case 字符串转换为 camelCase。",
+    "packages/core/src/utils/transform.ts:toSnakeCase": "将 camelCase 字符串转换为 snake_case（含连续大写处理）。",
+    "packages/core/src/utils/transform.ts:transformKeys": "按给定键转换函数批量转换对象所有键（递归处理数组与嵌套对象）。",
+    "packages/core/src/utils/transform.ts:keysToCamel": "批量将对象的 snake_case 键转换为 camelCase。",
+    "packages/core/src/utils/transform.ts:keysToSnake": "批量将对象的 camelCase 键转换为 snake_case。"
+  },
+  "_classes": {
+    "packages/core/src/data/DataGateway.ts:NoopDataGateway": "平台无关数据网关的 no-op 实现，提供 get/list/upsert/delete 四种契约方法（测试/占位用）。"
+  }
+}

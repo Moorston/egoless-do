@@ -1,0 +1,274 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 7,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": ".trellis/spec/config/frontend/component-guidelines.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 15,
+      "nonEmptyLines": 10,
+      "sections": [
+        {
+          "heading": "Component Guidelines",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Note",
+          "level": 2,
+          "line": 7
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 2
+      }
+    },
+    {
+      "path": ".trellis/spec/config/frontend/directory-structure.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 58,
+      "nonEmptyLines": 38,
+      "sections": [
+        {
+          "heading": "Directory Structure",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Package Layout",
+          "level": 2,
+          "line": 13
+        },
+        {
+          "heading": "Module Responsibilities",
+          "level": 2,
+          "line": 24
+        },
+        {
+          "heading": "Usage Pattern",
+          "level": 2,
+          "line": 33
+        },
+        {
+          "heading": "Forbidden Patterns",
+          "level": 2,
+          "line": 47
+        },
+        {
+          "heading": "Examples",
+          "level": 2,
+          "line": 55
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 7
+      }
+    },
+    {
+      "path": ".trellis/spec/config/frontend/hook-guidelines.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 15,
+      "nonEmptyLines": 10,
+      "sections": [
+        {
+          "heading": "Hook Guidelines",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Note",
+          "level": 2,
+          "line": 7
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 2
+      }
+    },
+    {
+      "path": ".trellis/spec/config/frontend/index.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 39,
+      "nonEmptyLines": 25,
+      "sections": [
+        {
+          "heading": "Frontend Development Guidelines",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Guidelines Summary",
+          "level": 2,
+          "line": 13
+        },
+        {
+          "heading": "How to Fill These Guidelines",
+          "level": 2,
+          "line": 26
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 4
+      }
+    },
+    {
+      "path": ".trellis/spec/config/frontend/quality-guidelines.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 77,
+      "nonEmptyLines": 56,
+      "sections": [
+        {
+          "heading": "Quality Guidelines",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "ESLint Baseline (eslint.base.js)",
+          "level": 2,
+          "line": 13
+        },
+        {
+          "heading": "Rules Explained",
+          "level": 3,
+          "line": 28
+        },
+        {
+          "heading": "TypeScript Baseline (tsconfig.base.json)",
+          "level": 2,
+          "line": 40
+        },
+        {
+          "heading": "Key Decisions",
+          "level": 3,
+          "line": 53
+        },
+        {
+          "heading": "Forbidden Patterns",
+          "level": 2,
+          "line": 64
+        },
+        {
+          "heading": "Code Review Checklist",
+          "level": 2,
+          "line": 72
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 8
+      }
+    },
+    {
+      "path": ".trellis/spec/config/frontend/state-management.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 15,
+      "nonEmptyLines": 10,
+      "sections": [
+        {
+          "heading": "State Management",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Note",
+          "level": 2,
+          "line": 7
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 2
+      }
+    },
+    {
+      "path": ".trellis/spec/config/frontend/type-safety.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 52,
+      "nonEmptyLines": 35,
+      "sections": [
+        {
+          "heading": "Type Safety",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Strict Mode",
+          "level": 2,
+          "line": 15
+        },
+        {
+          "heading": "The `allow-any` Philosophy",
+          "level": 2,
+          "line": 31
+        },
+        {
+          "heading": "Forbidden Patterns",
+          "level": 2,
+          "line": 40
+        },
+        {
+          "heading": "Examples",
+          "level": 2,
+          "line": 48
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 6
+      }
+    }
+  ]
+}

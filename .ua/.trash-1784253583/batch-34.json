@@ -1,0 +1,125 @@
+{
+  "nodes": [
+    {
+      "id": "document:.trellis/spec/core/frontend/index.md",
+      "type": "document",
+      "name": "index.md",
+      "filePath": ".trellis/spec/core/frontend/index.md",
+      "summary": "Core 包 Frontend 层开发指南的总入口，列出 Directory Structure、Component（范围说明）、Hook（范围说明）、State Management、Quality、Type Safety 六份指南及其状态。",
+      "tags": ["documentation", "frontend", "guidelines-index", "core-package"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/spec/core/frontend/directory-structure.md",
+      "type": "document",
+      "name": "directory-structure.md",
+      "filePath": ".trellis/spec/core/frontend/directory-structure.md",
+      "summary": "说明 core 的平台无关前端原语布局：i18n、typography、icons、slice 工厂、business 纯函数，列出各模块职责、被消费方、命名约定及禁止 React 导入等约束。",
+      "tags": ["documentation", "frontend", "directory-structure", "core-package", "i18n"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:.trellis/spec/core/frontend/component-guidelines.md",
+      "type": "document",
+      "name": "component-guidelines.md",
+      "filePath": ".trellis/spec/core/frontend/component-guidelines.md",
+      "summary": "Core 包范围说明：不含 React 组件，仅导出 i18n/typography/icons/slice 等可消费原语，组件规范参考 mobile 文档。",
+      "tags": ["documentation", "frontend", "components", "core-package"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/spec/core/frontend/hook-guidelines.md",
+      "type": "document",
+      "name": "hook-guidelines.md",
+      "filePath": ".trellis/spec/core/frontend/hook-guidelines.md",
+      "summary": "Core 包范围说明：不含 React hooks，仅导出可供 hooks 调用的纯函数，hook 规范参考 mobile 文档。",
+      "tags": ["documentation", "frontend", "hooks", "core-package"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/spec/core/frontend/state-management.md",
+      "type": "document",
+      "name": "state-management.md",
+      "filePath": ".trellis/spec/core/frontend/state-management.md",
+      "summary": "Core 包 Zustand slice 工厂模式：定义 SliceCreator 类型、adapter/onSync 注入、状态契约、实体同步流（Slice→Adapter→Storage→Sync），以及禁止直接调用同步逻辑等约束。",
+      "tags": ["documentation", "frontend", "state-management", "zustand", "slice-factory", "core-package"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:.trellis/spec/core/frontend/quality-guidelines.md",
+      "type": "document",
+      "name": "quality-guidelines.md",
+      "filePath": ".trellis/spec/core/frontend/quality-guidelines.md",
+      "summary": "Core 包质量标准：列出平台耦合、不纯度、类型安全等层面的禁止模式，定义 business/纯函数、slice 工厂、类型导出的必备模式及代码审查清单。",
+      "tags": ["documentation", "frontend", "quality", "code-standards", "core-package"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:.trellis/spec/core/frontend/type-safety.md",
+      "type": "document",
+      "name": "type-safety.md",
+      "filePath": ".trellis/spec/core/frontend/type-safety.md",
+      "summary": "Core 包类型安全规范：types/ 分文件定义域类型、类型位置规则（跨包/移动端专属）、可辨识联合与 exhaustive switch、slice 接口全枚举、Zod 同步边界校验，以及禁止 any/类型重复声明等约束。",
+      "tags": ["documentation", "frontend", "type-safety", "typescript", "zod", "core-package"],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:.trellis/spec/core/frontend/index.md",
+      "target": "document:.trellis/spec/core/frontend/directory-structure.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/core/frontend/index.md",
+      "target": "document:.trellis/spec/core/frontend/component-guidelines.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/core/frontend/index.md",
+      "target": "document:.trellis/spec/core/frontend/hook-guidelines.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/core/frontend/index.md",
+      "target": "document:.trellis/spec/core/frontend/state-management.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/core/frontend/index.md",
+      "target": "document:.trellis/spec/core/frontend/quality-guidelines.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/core/frontend/index.md",
+      "target": "document:.trellis/spec/core/frontend/type-safety.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/core/frontend/state-management.md",
+      "target": "document:.trellis/spec/core/frontend/type-safety.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/core/frontend/quality-guidelines.md",
+      "target": "document:.trellis/spec/core/frontend/type-safety.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

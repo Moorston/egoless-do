@@ -1,0 +1,15 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {"path": ".trellis/tasks/archive/2026-07/07-09-code-arch-governance/design.md", "language": "markdown", "sizeLines": 119, "fileCategory": "docs"},
+    {"path": ".trellis/tasks/archive/2026-07/07-09-code-arch-governance/implement.md", "language": "markdown", "sizeLines": 59, "fileCategory": "docs"},
+    {"path": ".trellis/tasks/archive/2026-07/07-09-code-arch-governance/prd.md", "language": "markdown", "sizeLines": 86, "fileCategory": "docs"},
+    {"path": ".trellis/tasks/archive/2026-07/07-09-code-arch-governance/task.json", "language": "json", "sizeLines": 25, "fileCategory": "config"}
+  ],
+  "batchImportData": {
+    ".trellis/tasks/archive/2026-07/07-09-code-arch-governance/design.md": [],
+    ".trellis/tasks/archive/2026-07/07-09-code-arch-governance/implement.md": [],
+    ".trellis/tasks/archive/2026-07/07-09-code-arch-governance/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-09-code-arch-governance/task.json": []
+  }
+}

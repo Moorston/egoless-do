@@ -1,0 +1,348 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 6,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": ".trellis/spec/core/backend/database-guidelines.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 88,
+      "nonEmptyLines": 59,
+      "sections": [
+        {
+          "heading": "Database Guidelines",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "StorageAdapter Interface",
+          "level": 2,
+          "line": 20
+        },
+        {
+          "heading": "Sync Protocol (core side)",
+          "level": 2,
+          "line": 35
+        },
+        {
+          "heading": "Entity Registry",
+          "level": 2,
+          "line": 52
+        },
+        {
+          "heading": "Migrations",
+          "level": 2,
+          "line": 58
+        },
+        {
+          "heading": "Common Mistakes",
+          "level": 2,
+          "line": 74
+        },
+        {
+          "heading": "Examples",
+          "level": 2,
+          "line": 84
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 8
+      }
+    },
+    {
+      "path": ".trellis/spec/core/backend/directory-structure.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 96,
+      "nonEmptyLines": 78,
+      "sections": [
+        {
+          "heading": "Directory Structure",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Directory Layout",
+          "level": 2,
+          "line": 15
+        },
+        {
+          "heading": "Module Organization",
+          "level": 2,
+          "line": 64
+        },
+        {
+          "heading": "Naming Conventions",
+          "level": 2,
+          "line": 77
+        },
+        {
+          "heading": "Examples",
+          "level": 2,
+          "line": 91
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 6
+      }
+    },
+    {
+      "path": ".trellis/spec/core/backend/error-handling.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 78,
+      "nonEmptyLines": 56,
+      "sections": [
+        {
+          "heading": "Error Handling",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Error Handling Patterns",
+          "level": 2,
+          "line": 18
+        },
+        {
+          "heading": "1. Default to null for missing data",
+          "level": 3,
+          "line": 20
+        },
+        {
+          "heading": "2. Log + rethrow at boundaries",
+          "level": 3,
+          "line": 29
+        },
+        {
+          "heading": "3. Validate at sync boundary",
+          "level": 3,
+          "line": 41
+        },
+        {
+          "heading": "Error Levels",
+          "level": 2,
+          "line": 54
+        },
+        {
+          "heading": "Forbidden Patterns",
+          "level": 2,
+          "line": 65
+        },
+        {
+          "heading": "Examples",
+          "level": 2,
+          "line": 74
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 9
+      }
+    },
+    {
+      "path": ".trellis/spec/core/backend/index.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 38,
+      "nonEmptyLines": 24,
+      "sections": [
+        {
+          "heading": "Backend Development Guidelines",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Guidelines Summary",
+          "level": 2,
+          "line": 13
+        },
+        {
+          "heading": "How to Fill These Guidelines",
+          "level": 2,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 4
+      }
+    },
+    {
+      "path": ".trellis/spec/core/backend/logging-guidelines.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 83,
+      "nonEmptyLines": 54,
+      "sections": [
+        {
+          "heading": "Logging Guidelines",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "API",
+          "level": 2,
+          "line": 13
+        },
+        {
+          "heading": "Log Levels",
+          "level": 2,
+          "line": 28
+        },
+        {
+          "heading": "Tag Naming",
+          "level": 2,
+          "line": 39
+        },
+        {
+          "heading": "What to Log",
+          "level": 2,
+          "line": 53
+        },
+        {
+          "heading": "What NOT to Log",
+          "level": 2,
+          "line": 62
+        },
+        {
+          "heading": "Forbidden Patterns",
+          "level": 2,
+          "line": 71
+        },
+        {
+          "heading": "Examples",
+          "level": 2,
+          "line": 79
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 9
+      }
+    },
+    {
+      "path": ".trellis/spec/core/backend/quality-guidelines.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 111,
+      "nonEmptyLines": 81,
+      "sections": [
+        {
+          "heading": "Quality Guidelines",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Forbidden Patterns",
+          "level": 2,
+          "line": 13
+        },
+        {
+          "heading": "Purity / Side Effects",
+          "level": 3,
+          "line": 15
+        },
+        {
+          "heading": "Architecture",
+          "level": 3,
+          "line": 21
+        },
+        {
+          "heading": "General",
+          "level": 3,
+          "line": 26
+        },
+        {
+          "heading": "Required Patterns",
+          "level": 2,
+          "line": 33
+        },
+        {
+          "heading": "Pure Functions in business/",
+          "level": 3,
+          "line": 35
+        },
+        {
+          "heading": "Slice Factories",
+          "level": 3,
+          "line": 48
+        },
+        {
+          "heading": "Conflict Resolution",
+          "level": 3,
+          "line": 72
+        },
+        {
+          "heading": "Testing",
+          "level": 2,
+          "line": 85
+        },
+        {
+          "heading": "Code Review Checklist",
+          "level": 2,
+          "line": 96
+        },
+        {
+          "heading": "Examples",
+          "level": 2,
+          "line": 107
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 13
+      }
+    }
+  ]
+}

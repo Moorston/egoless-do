@@ -1,0 +1,2435 @@
+{
+  "nodes": [
+    {
+      "id": "file:_archive/web-legacy/src/app/(auth)/forgot-password/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "_archive/web-legacy/src/app/(auth)/forgot-password/page.tsx",
+      "summary": "Web 旧版模块的功能模块\"ForgotPasswordPage\"。主导出\"ForgotPasswordPage\"。轻量实现。",
+      "tags": [
+        "归档",
+        "Web旧版",
+        "功能"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/app/(auth)/forgot-password/page.tsx:ForgotPasswordPage",
+      "type": "function",
+      "name": "ForgotPasswordPage",
+      "filePath": "_archive/web-legacy/src/app/(auth)/forgot-password/page.tsx",
+      "lineRange": [
+        10,
+        143
+      ],
+      "summary": "Web 旧版的页面组件\"ForgotPasswordPage\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "归档",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/styles.ts",
+      "type": "file",
+      "name": "styles.ts",
+      "filePath": "_archive/web-legacy/src/components/styles.ts",
+      "summary": "通用组件模块的UI 组件\"BREAKPOINT_MOBILE\"。主导出\"BREAKPOINT_MOBILE\"。共导出 6 项，轻量实现。",
+      "tags": [
+        "通用组件",
+        "UI",
+        "组件"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/styles.ts:cs",
+      "type": "function",
+      "name": "cs",
+      "filePath": "_archive/web-legacy/src/components/styles.ts",
+      "lineRange": [
+        11,
+        13
+      ],
+      "summary": "样式组合助手\"cs\"，用于按条件拼接 className 字符串。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/styles.ts:inp",
+      "type": "function",
+      "name": "inp",
+      "filePath": "_archive/web-legacy/src/components/styles.ts",
+      "lineRange": [
+        15,
+        17
+      ],
+      "summary": "输入样式助手\"inp\"，生成带主题状态的输入框样式。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/components/AddFoodModal.tsx",
+      "type": "file",
+      "name": "AddFoodModal.tsx",
+      "filePath": "apps/mobile/src/components/AddFoodModal.tsx",
+      "summary": "通用组件模块的UI 组件\"AddFoodModal\"。主导出\"AddFoodModal\"。规模较大，承载较丰富的交互与样式逻辑。",
+      "tags": [
+        "通用组件",
+        "UI",
+        "组件",
+        "弹窗",
+        "大规模组件"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/components/AddFoodModal.tsx:AddFoodModal",
+      "type": "function",
+      "name": "AddFoodModal",
+      "filePath": "apps/mobile/src/components/AddFoodModal.tsx",
+      "lineRange": [
+        29,
+        440
+      ],
+      "summary": "通用组件的弹窗组件\"AddFoodModal\"，承载模态交互。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/components/AppHeader.tsx",
+      "type": "file",
+      "name": "AppHeader.tsx",
+      "filePath": "apps/mobile/src/components/AppHeader.tsx",
+      "summary": "通用组件模块的UI 组件\"AppHeader\"。主导出\"AppHeader\"。中等规模。",
+      "tags": [
+        "通用组件",
+        "UI",
+        "组件"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/components/AppHeader.tsx:AppHeader",
+      "type": "function",
+      "name": "AppHeader",
+      "filePath": "apps/mobile/src/components/AppHeader.tsx",
+      "lineRange": [
+        38,
+        123
+      ],
+      "summary": "通用组件的页头组件\"AppHeader\"，展示标题、导航与操作入口。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/components/ConfirmationDialog.tsx",
+      "type": "file",
+      "name": "ConfirmationDialog.tsx",
+      "filePath": "apps/mobile/src/components/ConfirmationDialog.tsx",
+      "summary": "通用组件模块的UI 组件\"ConfirmationDialog\"。主导出\"ConfirmationDialog\"。轻量实现。",
+      "tags": [
+        "通用组件",
+        "UI",
+        "组件"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/components/ConfirmationDialog.tsx:ConfirmationDialog",
+      "type": "function",
+      "name": "ConfirmationDialog",
+      "filePath": "apps/mobile/src/components/ConfirmationDialog.tsx",
+      "lineRange": [
+        20,
+        82
+      ],
+      "summary": "通用组件的对话框组件\"ConfirmationDialog\"，承载确认/选择类交互。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/components/DatePickerModal.tsx",
+      "type": "file",
+      "name": "DatePickerModal.tsx",
+      "filePath": "apps/mobile/src/components/DatePickerModal.tsx",
+      "summary": "通用组件模块的UI 组件\"DatePickerModal\"。主导出\"DatePickerModal\"。轻量实现。",
+      "tags": [
+        "通用组件",
+        "UI",
+        "组件",
+        "弹窗"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/components/DatePickerModal.tsx:DatePickerModal",
+      "type": "function",
+      "name": "DatePickerModal",
+      "filePath": "apps/mobile/src/components/DatePickerModal.tsx",
+      "lineRange": [
+        33,
+        169
+      ],
+      "summary": "通用组件的弹窗组件\"DatePickerModal\"，承载模态交互。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/components/DateRangePickerModal.tsx",
+      "type": "file",
+      "name": "DateRangePickerModal.tsx",
+      "filePath": "apps/mobile/src/components/DateRangePickerModal.tsx",
+      "summary": "通用组件模块的UI 组件\"DateRangePickerModal\"。主导出\"DateRangePickerModal\"。中等规模。",
+      "tags": [
+        "通用组件",
+        "UI",
+        "组件",
+        "弹窗"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/components/DateRangePickerModal.tsx:DateRangePickerModal",
+      "type": "function",
+      "name": "DateRangePickerModal",
+      "filePath": "apps/mobile/src/components/DateRangePickerModal.tsx",
+      "lineRange": [
+        34,
+        218
+      ],
+      "summary": "通用组件的弹窗组件\"DateRangePickerModal\"，承载模态交互。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/components/EmptyState.tsx",
+      "type": "file",
+      "name": "EmptyState.tsx",
+      "filePath": "apps/mobile/src/components/EmptyState.tsx",
+      "summary": "通用组件模块的UI 组件\"EmptyState\"。主导出\"EmptyState\"。轻量实现。",
+      "tags": [
+        "通用组件",
+        "UI",
+        "组件"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/EmptyState.tsx:EmptyState",
+      "type": "function",
+      "name": "EmptyState",
+      "filePath": "apps/mobile/src/components/EmptyState.tsx",
+      "lineRange": [
+        15,
+        39
+      ],
+      "summary": "通用组件的\"EmptyState\"功能。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/components/ItemManagerPanel.tsx",
+      "type": "file",
+      "name": "ItemManagerPanel.tsx",
+      "filePath": "apps/mobile/src/components/ItemManagerPanel.tsx",
+      "summary": "通用组件模块的UI 组件\"ItemManagerPanel\"。主导出\"ItemManagerPanel\"。规模较大，承载较丰富的交互与样式逻辑。",
+      "tags": [
+        "通用组件",
+        "UI",
+        "组件",
+        "大规模组件"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/components/ItemManagerPanel.tsx:ItemManagerPanel",
+      "type": "function",
+      "name": "ItemManagerPanel",
+      "filePath": "apps/mobile/src/components/ItemManagerPanel.tsx",
+      "lineRange": [
+        57,
+        272
+      ],
+      "summary": "通用组件的\"ItemManagerPanel\"功能。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/components/PlanCountdown.tsx",
+      "type": "file",
+      "name": "PlanCountdown.tsx",
+      "filePath": "apps/mobile/src/components/PlanCountdown.tsx",
+      "summary": "通用组件模块的UI 组件\"PlanCountdown\"。主导出\"PlanCountdown\"。中等规模。",
+      "tags": [
+        "通用组件",
+        "UI",
+        "组件"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/components/PlanCountdown.tsx:getCountdownType",
+      "type": "function",
+      "name": "getCountdownType",
+      "filePath": "apps/mobile/src/components/PlanCountdown.tsx",
+      "lineRange": [
+        21,
+        46
+      ],
+      "summary": "工具函数\"getCountdownType\"，负责获取与转换。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/PlanCountdown.tsx:calculateTimeDiff",
+      "type": "function",
+      "name": "calculateTimeDiff",
+      "filePath": "apps/mobile/src/components/PlanCountdown.tsx",
+      "lineRange": [
+        48,
+        69
+      ],
+      "summary": "工具函数\"calculateTimeDiff\"，负责计算与转换。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/PlanCountdown.tsx:PlanCountdown",
+      "type": "function",
+      "name": "PlanCountdown",
+      "filePath": "apps/mobile/src/components/PlanCountdown.tsx",
+      "lineRange": [
+        75,
+        197
+      ],
+      "summary": "通用组件的\"PlanCountdown\"功能。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/components/SyncConflictPanel.tsx",
+      "type": "file",
+      "name": "SyncConflictPanel.tsx",
+      "filePath": "apps/mobile/src/components/SyncConflictPanel.tsx",
+      "summary": "通用组件模块的UI 组件\"SyncConflictPanel\"。主导出\"SyncConflictPanel\"。轻量实现。",
+      "tags": [
+        "通用组件",
+        "UI",
+        "组件"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/components/SyncConflictPanel.tsx:SyncConflictPanel",
+      "type": "function",
+      "name": "SyncConflictPanel",
+      "filePath": "apps/mobile/src/components/SyncConflictPanel.tsx",
+      "lineRange": [
+        9,
+        45
+      ],
+      "summary": "通用组件的\"SyncConflictPanel\"功能。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/components/TimePickerModal.tsx",
+      "type": "file",
+      "name": "TimePickerModal.tsx",
+      "filePath": "apps/mobile/src/components/TimePickerModal.tsx",
+      "summary": "通用组件模块的UI 组件\"TimePickerModal\"。主导出\"TimePickerModal\"。轻量实现。",
+      "tags": [
+        "通用组件",
+        "UI",
+        "组件",
+        "弹窗"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/components/TimePickerModal.tsx:TimePickerModal",
+      "type": "function",
+      "name": "TimePickerModal",
+      "filePath": "apps/mobile/src/components/TimePickerModal.tsx",
+      "lineRange": [
+        18,
+        146
+      ],
+      "summary": "通用组件的弹窗组件\"TimePickerModal\"，承载模态交互。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/components/UI.tsx",
+      "type": "file",
+      "name": "UI.tsx",
+      "filePath": "apps/mobile/src/components/UI.tsx",
+      "summary": "通用组件模块的UI 组件\"useTheme\"。主导出\"useTheme\"，承担钩子职责。共导出 14 项，中等规模。",
+      "tags": [
+        "通用组件",
+        "UI",
+        "组件"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/components/UI.tsx:Card",
+      "type": "function",
+      "name": "Card",
+      "filePath": "apps/mobile/src/components/UI.tsx",
+      "lineRange": [
+        28,
+        42
+      ],
+      "summary": "通用组件的卡片组件\"Card\"，汇总展示单项数据与关键指标。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/UI.tsx:PrimaryButton",
+      "type": "function",
+      "name": "PrimaryButton",
+      "filePath": "apps/mobile/src/components/UI.tsx",
+      "lineRange": [
+        45,
+        66
+      ],
+      "summary": "通用组件的按钮组件\"PrimaryButton\"，封装点击交互与状态样式。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/UI.tsx:OutlineButton",
+      "type": "function",
+      "name": "OutlineButton",
+      "filePath": "apps/mobile/src/components/UI.tsx",
+      "lineRange": [
+        69,
+        87
+      ],
+      "summary": "通用组件的按钮组件\"OutlineButton\"，封装点击交互与状态样式。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/UI.tsx:Toggle",
+      "type": "function",
+      "name": "Toggle",
+      "filePath": "apps/mobile/src/components/UI.tsx",
+      "lineRange": [
+        90,
+        108
+      ],
+      "summary": "通用组件的开关组件\"Toggle\"，提供二值切换交互。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/UI.tsx:Checkbox",
+      "type": "function",
+      "name": "Checkbox",
+      "filePath": "apps/mobile/src/components/UI.tsx",
+      "lineRange": [
+        111,
+        127
+      ],
+      "summary": "通用组件的\"Checkbox\"功能。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/UI.tsx:RowItem",
+      "type": "function",
+      "name": "RowItem",
+      "filePath": "apps/mobile/src/components/UI.tsx",
+      "lineRange": [
+        130,
+        161
+      ],
+      "summary": "通用组件的\"RowItem\"功能。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/UI.tsx:ScreenHeader",
+      "type": "function",
+      "name": "ScreenHeader",
+      "filePath": "apps/mobile/src/components/UI.tsx",
+      "lineRange": [
+        164,
+        197
+      ],
+      "summary": "通用组件的页头组件\"ScreenHeader\"，展示标题、导航与操作入口。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/UI.tsx:ThemedInput",
+      "type": "function",
+      "name": "ThemedInput",
+      "filePath": "apps/mobile/src/components/UI.tsx",
+      "lineRange": [
+        200,
+        233
+      ],
+      "summary": "通用组件的\"ThemedInput\"功能。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/UI.tsx:PillSelector",
+      "type": "function",
+      "name": "PillSelector",
+      "filePath": "apps/mobile/src/components/UI.tsx",
+      "lineRange": [
+        237,
+        265
+      ],
+      "summary": "通用组件的选择器组件\"PillSelector\"，提供选项列表与选中回调。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/UI.tsx:ProgressBar",
+      "type": "function",
+      "name": "ProgressBar",
+      "filePath": "apps/mobile/src/components/UI.tsx",
+      "lineRange": [
+        297,
+        321
+      ],
+      "summary": "通用组件的栏组件\"ProgressBar\"，如标签栏、筛选栏或操作栏。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/UI.tsx:BigTimer",
+      "type": "function",
+      "name": "BigTimer",
+      "filePath": "apps/mobile/src/components/UI.tsx",
+      "lineRange": [
+        324,
+        334
+      ],
+      "summary": "通用组件的\"BigTimer\"功能。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/components/VirtualList.tsx",
+      "type": "file",
+      "name": "VirtualList.tsx",
+      "filePath": "apps/mobile/src/components/VirtualList.tsx",
+      "summary": "通用组件模块的UI 组件\"VirtualList\"。主导出\"VirtualList\"。轻量实现。",
+      "tags": [
+        "通用组件",
+        "UI",
+        "组件"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/VirtualList.tsx:VirtualList",
+      "type": "function",
+      "name": "VirtualList",
+      "filePath": "apps/mobile/src/components/VirtualList.tsx",
+      "lineRange": [
+        15,
+        41
+      ],
+      "summary": "通用组件的\"VirtualList\"功能。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/components/charts/BarChart.tsx",
+      "type": "file",
+      "name": "BarChart.tsx",
+      "filePath": "apps/mobile/src/components/charts/BarChart.tsx",
+      "summary": "通用组件模块的UI 组件\"BarChart\"。主导出\"BarChart\"。轻量实现。",
+      "tags": [
+        "通用组件",
+        "UI",
+        "组件",
+        "可视化"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/charts/BarChart.tsx:BarChart",
+      "type": "function",
+      "name": "BarChart",
+      "filePath": "apps/mobile/src/components/charts/BarChart.tsx",
+      "lineRange": [
+        13,
+        72
+      ],
+      "summary": "通用组件的图表组件\"BarChart\"，将数据以可视化图形呈现。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/components/charts/CalendarGrid.tsx",
+      "type": "file",
+      "name": "CalendarGrid.tsx",
+      "filePath": "apps/mobile/src/components/charts/CalendarGrid.tsx",
+      "summary": "通用组件模块的UI 组件\"CalendarGrid\"。主导出\"CalendarGrid\"。轻量实现。",
+      "tags": [
+        "通用组件",
+        "UI",
+        "组件",
+        "可视化"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/components/charts/CalendarGrid.tsx:CalendarGrid",
+      "type": "function",
+      "name": "CalendarGrid",
+      "filePath": "apps/mobile/src/components/charts/CalendarGrid.tsx",
+      "lineRange": [
+        25,
+        144
+      ],
+      "summary": "通用组件的\"CalendarGrid\"功能。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/components/charts/HeatmapGrid.tsx",
+      "type": "file",
+      "name": "HeatmapGrid.tsx",
+      "filePath": "apps/mobile/src/components/charts/HeatmapGrid.tsx",
+      "summary": "通用组件模块的UI 组件\"HeatmapGrid\"。主导出\"HeatmapGrid\"。轻量实现。",
+      "tags": [
+        "通用组件",
+        "UI",
+        "组件",
+        "可视化"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/charts/HeatmapGrid.tsx:HeatmapGrid",
+      "type": "function",
+      "name": "HeatmapGrid",
+      "filePath": "apps/mobile/src/components/charts/HeatmapGrid.tsx",
+      "lineRange": [
+        24,
+        73
+      ],
+      "summary": "通用组件的\"HeatmapGrid\"功能。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/components/charts/LineChart.tsx",
+      "type": "file",
+      "name": "LineChart.tsx",
+      "filePath": "apps/mobile/src/components/charts/LineChart.tsx",
+      "summary": "通用组件模块的UI 组件\"LineChart\"。主导出\"LineChart\"。轻量实现。",
+      "tags": [
+        "通用组件",
+        "UI",
+        "组件",
+        "可视化"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/charts/LineChart.tsx:LineChart",
+      "type": "function",
+      "name": "LineChart",
+      "filePath": "apps/mobile/src/components/charts/LineChart.tsx",
+      "lineRange": [
+        16,
+        81
+      ],
+      "summary": "通用组件的图表组件\"LineChart\"，将数据以可视化图形呈现。",
+      "tags": [
+        "组件",
+        "通用组件",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/auth/ForgotPasswordScreen.tsx",
+      "type": "file",
+      "name": "ForgotPasswordScreen.tsx",
+      "filePath": "apps/mobile/src/features/auth/ForgotPasswordScreen.tsx",
+      "summary": "认证模块的功能模块\"ForgotPasswordScreen\"。主导出\"ForgotPasswordScreen\"。中等规模。",
+      "tags": [
+        "认证",
+        "登录",
+        "功能",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/auth/ForgotPasswordScreen.tsx:ForgotPasswordScreen",
+      "type": "function",
+      "name": "ForgotPasswordScreen",
+      "filePath": "apps/mobile/src/features/auth/ForgotPasswordScreen.tsx",
+      "lineRange": [
+        11,
+        205
+      ],
+      "summary": "认证的页面组件\"ForgotPasswordScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "认证",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/auth/LoginScreen.tsx",
+      "type": "file",
+      "name": "LoginScreen.tsx",
+      "filePath": "apps/mobile/src/features/auth/LoginScreen.tsx",
+      "summary": "认证模块的功能模块\"LoginScreen\"。主导出\"LoginScreen\"。轻量实现。",
+      "tags": [
+        "认证",
+        "登录",
+        "功能",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/auth/LoginScreen.tsx:LoginScreen",
+      "type": "function",
+      "name": "LoginScreen",
+      "filePath": "apps/mobile/src/features/auth/LoginScreen.tsx",
+      "lineRange": [
+        15,
+        141
+      ],
+      "summary": "认证的页面组件\"LoginScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "认证",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/auth/RegisterScreen.tsx",
+      "type": "file",
+      "name": "RegisterScreen.tsx",
+      "filePath": "apps/mobile/src/features/auth/RegisterScreen.tsx",
+      "summary": "认证模块的功能模块\"RegisterScreen\"。主导出\"RegisterScreen\"。中等规模。",
+      "tags": [
+        "认证",
+        "登录",
+        "功能",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/auth/RegisterScreen.tsx:RegisterScreen",
+      "type": "function",
+      "name": "RegisterScreen",
+      "filePath": "apps/mobile/src/features/auth/RegisterScreen.tsx",
+      "lineRange": [
+        13,
+        203
+      ],
+      "summary": "认证的页面组件\"RegisterScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "认证",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/auth/pushTokenRegistration.ts",
+      "type": "file",
+      "name": "pushTokenRegistration.ts",
+      "filePath": "apps/mobile/src/features/auth/pushTokenRegistration.ts",
+      "summary": "认证模块的功能模块\"registerExpoPushToken\"。主导出\"registerExpoPushToken\"，承担注册职责。轻量实现。",
+      "tags": [
+        "认证",
+        "登录",
+        "功能"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/auth/pushTokenRegistration.ts:registerExpoPushToken",
+      "type": "function",
+      "name": "registerExpoPushToken",
+      "filePath": "apps/mobile/src/features/auth/pushTokenRegistration.ts",
+      "lineRange": [
+        12,
+        48
+      ],
+      "summary": "认证的\"registerExpoPushToken\"，承担注册职责。",
+      "tags": [
+        "功能",
+        "认证",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/breathing/BreathHistoryPage.tsx",
+      "type": "file",
+      "name": "BreathHistoryPage.tsx",
+      "filePath": "apps/mobile/src/features/breathing/BreathHistoryPage.tsx",
+      "summary": "呼吸模块的功能模块\"BreathHistoryPage\"。主导出\"BreathHistoryPage\"。中等规模。",
+      "tags": [
+        "呼吸",
+        "正念",
+        "功能",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/breathing/BreathHistoryPage.tsx:BreathHistoryPage",
+      "type": "function",
+      "name": "BreathHistoryPage",
+      "filePath": "apps/mobile/src/features/breathing/BreathHistoryPage.tsx",
+      "lineRange": [
+        13,
+        191
+      ],
+      "summary": "呼吸的页面组件\"BreathHistoryPage\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "呼吸",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/breathing/BreathingEngine.tsx",
+      "type": "file",
+      "name": "BreathingEngine.tsx",
+      "filePath": "apps/mobile/src/features/breathing/BreathingEngine.tsx",
+      "summary": "呼吸模块的功能模块\"BreathingEngine\"。主导出\"BreathingEngine\"。规模较大，承载较丰富的交互与样式逻辑。",
+      "tags": [
+        "呼吸",
+        "正念",
+        "功能",
+        "大规模组件"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/breathing/BreathingEngine.tsx:BreathingEngine",
+      "type": "function",
+      "name": "BreathingEngine",
+      "filePath": "apps/mobile/src/features/breathing/BreathingEngine.tsx",
+      "lineRange": [
+        49,
+        464
+      ],
+      "summary": "呼吸的核心服务/引擎\"BreathingEngine\"，封装领域逻辑与流程控制。",
+      "tags": [
+        "功能",
+        "呼吸",
+        "导出函数"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/breathing/BreathingScreen.tsx",
+      "type": "file",
+      "name": "BreathingScreen.tsx",
+      "filePath": "apps/mobile/src/features/breathing/BreathingScreen.tsx",
+      "summary": "呼吸模块的功能模块\"BreathingScreen\"。主导出\"BreathingScreen\"。轻量实现。",
+      "tags": [
+        "呼吸",
+        "正念",
+        "功能",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/breathing/BreathingScreen.tsx:BreathingScreen",
+      "type": "function",
+      "name": "BreathingScreen",
+      "filePath": "apps/mobile/src/features/breathing/BreathingScreen.tsx",
+      "lineRange": [
+        34,
+        131
+      ],
+      "summary": "呼吸的页面组件\"BreathingScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "呼吸",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/breathing/breathStyles.ts",
+      "type": "file",
+      "name": "breathStyles.ts",
+      "filePath": "apps/mobile/src/features/breathing/breathStyles.ts",
+      "summary": "呼吸模块的功能模块\"styles\"。主导出\"styles\"。中等规模。",
+      "tags": [
+        "呼吸",
+        "正念",
+        "功能"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/breathing/hooks/useBreathSettings.ts",
+      "type": "file",
+      "name": "useBreathSettings.ts",
+      "filePath": "apps/mobile/src/features/breathing/hooks/useBreathSettings.ts",
+      "summary": "呼吸模块的自定义 Hook\"useBreathSettings\"，封装可复用的响应式状态与副作用逻辑，供多个组件消费。",
+      "tags": [
+        "呼吸",
+        "正念",
+        "自定义Hook",
+        "钩子"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/breathing/hooks/useBreathSettings.ts:useBreathSettings",
+      "type": "function",
+      "name": "useBreathSettings",
+      "filePath": "apps/mobile/src/features/breathing/hooks/useBreathSettings.ts",
+      "lineRange": [
+        33,
+        107
+      ],
+      "summary": "\"useBreathSettings\"是呼吸的自定义 Hook，管理钩子相关的响应式状态与副作用逻辑。",
+      "tags": [
+        "自定义Hook",
+        "呼吸",
+        "钩子"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/breathing/pages/BreathActivePage.tsx",
+      "type": "file",
+      "name": "BreathActivePage.tsx",
+      "filePath": "apps/mobile/src/features/breathing/pages/BreathActivePage.tsx",
+      "summary": "呼吸模块的子页面\"BreathActivePage\"。主导出\"BreathActivePage\"。轻量实现。",
+      "tags": [
+        "呼吸",
+        "正念",
+        "子页面",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/breathing/pages/BreathActivePage.tsx:BreathActivePage",
+      "type": "function",
+      "name": "BreathActivePage",
+      "filePath": "apps/mobile/src/features/breathing/pages/BreathActivePage.tsx",
+      "lineRange": [
+        62,
+        134
+      ],
+      "summary": "呼吸的页面组件\"BreathActivePage\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "子页面",
+        "呼吸",
+        "页面入口"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/breathing/pages/BreathPreparePage.tsx",
+      "type": "file",
+      "name": "BreathPreparePage.tsx",
+      "filePath": "apps/mobile/src/features/breathing/pages/BreathPreparePage.tsx",
+      "summary": "呼吸模块的子页面\"BreathPreparePage\"。主导出\"BreathPreparePage\"。中等规模。",
+      "tags": [
+        "呼吸",
+        "正念",
+        "子页面",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/breathing/pages/BreathPreparePage.tsx:BreathPreparePage",
+      "type": "function",
+      "name": "BreathPreparePage",
+      "filePath": "apps/mobile/src/features/breathing/pages/BreathPreparePage.tsx",
+      "lineRange": [
+        58,
+        168
+      ],
+      "summary": "呼吸的页面组件\"BreathPreparePage\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "子页面",
+        "呼吸",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/breathing/pages/BreathReportPage.tsx",
+      "type": "file",
+      "name": "BreathReportPage.tsx",
+      "filePath": "apps/mobile/src/features/breathing/pages/BreathReportPage.tsx",
+      "summary": "呼吸模块的子页面\"BreathReportPage\"。主导出\"BreathReportPage\"。轻量实现。",
+      "tags": [
+        "呼吸",
+        "正念",
+        "子页面",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/breathing/pages/BreathReportPage.tsx:BreathReportPage",
+      "type": "function",
+      "name": "BreathReportPage",
+      "filePath": "apps/mobile/src/features/breathing/pages/BreathReportPage.tsx",
+      "lineRange": [
+        60,
+        158
+      ],
+      "summary": "呼吸的页面组件\"BreathReportPage\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "子页面",
+        "呼吸",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/breathing/useBreathAudio.ts",
+      "type": "file",
+      "name": "useBreathAudio.ts",
+      "filePath": "apps/mobile/src/features/breathing/useBreathAudio.ts",
+      "summary": "呼吸模块的自定义 Hook\"useBreathAudio\"，封装可复用的响应式状态与副作用逻辑，供多个组件消费。",
+      "tags": [
+        "呼吸",
+        "正念",
+        "自定义Hook",
+        "钩子"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/breathing/useBreathAudio.ts:useBreathAudio",
+      "type": "function",
+      "name": "useBreathAudio",
+      "filePath": "apps/mobile/src/features/breathing/useBreathAudio.ts",
+      "lineRange": [
+        43,
+        101
+      ],
+      "summary": "\"useBreathAudio\"是呼吸的自定义 Hook，管理钩子相关的响应式状态与副作用逻辑。",
+      "tags": [
+        "自定义Hook",
+        "呼吸",
+        "钩子"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/diet/DietScreen.tsx",
+      "type": "file",
+      "name": "DietScreen.tsx",
+      "filePath": "apps/mobile/src/features/diet/DietScreen.tsx",
+      "summary": "饮食模块的功能模块\"DietScreen\"。主导出\"DietScreen\"。规模较大，承载较丰富的交互与样式逻辑。",
+      "tags": [
+        "饮食",
+        "记录",
+        "功能",
+        "页面入口",
+        "大规模组件"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/diet/DietScreen.tsx:DietScreen",
+      "type": "function",
+      "name": "DietScreen",
+      "filePath": "apps/mobile/src/features/diet/DietScreen.tsx",
+      "lineRange": [
+        35,
+        531
+      ],
+      "summary": "饮食的页面组件\"DietScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "饮食",
+        "页面入口"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/diet/WuxingCalendar.tsx",
+      "type": "file",
+      "name": "WuxingCalendar.tsx",
+      "filePath": "apps/mobile/src/features/diet/WuxingCalendar.tsx",
+      "summary": "饮食模块的功能模块\"WuxingCalendar\"。主导出\"WuxingCalendar\"。轻量实现。",
+      "tags": [
+        "饮食",
+        "记录",
+        "功能",
+        "可视化"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/diet/WuxingCalendar.tsx:WuxingCalendar",
+      "type": "function",
+      "name": "WuxingCalendar",
+      "filePath": "apps/mobile/src/features/diet/WuxingCalendar.tsx",
+      "lineRange": [
+        21,
+        138
+      ],
+      "summary": "饮食的\"WuxingCalendar\"功能。",
+      "tags": [
+        "功能",
+        "饮食",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:_archive/web-legacy/src/app/(auth)/forgot-password/page.tsx",
+      "target": "function:_archive/web-legacy/src/app/(auth)/forgot-password/page.tsx:ForgotPasswordPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:_archive/web-legacy/src/app/(auth)/forgot-password/page.tsx",
+      "target": "function:_archive/web-legacy/src/app/(auth)/forgot-password/page.tsx:ForgotPasswordPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/styles.ts",
+      "target": "function:_archive/web-legacy/src/components/styles.ts:cs",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/styles.ts",
+      "target": "function:_archive/web-legacy/src/components/styles.ts:cs",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/styles.ts",
+      "target": "function:_archive/web-legacy/src/components/styles.ts:inp",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/styles.ts",
+      "target": "function:_archive/web-legacy/src/components/styles.ts:inp",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/AddFoodModal.tsx",
+      "target": "function:apps/mobile/src/components/AddFoodModal.tsx:AddFoodModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/AddFoodModal.tsx",
+      "target": "function:apps/mobile/src/components/AddFoodModal.tsx:AddFoodModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/AppHeader.tsx",
+      "target": "function:apps/mobile/src/components/AppHeader.tsx:AppHeader",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/AppHeader.tsx",
+      "target": "function:apps/mobile/src/components/AppHeader.tsx:AppHeader",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/ConfirmationDialog.tsx",
+      "target": "function:apps/mobile/src/components/ConfirmationDialog.tsx:ConfirmationDialog",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/ConfirmationDialog.tsx",
+      "target": "function:apps/mobile/src/components/ConfirmationDialog.tsx:ConfirmationDialog",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/DatePickerModal.tsx",
+      "target": "function:apps/mobile/src/components/DatePickerModal.tsx:DatePickerModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/DatePickerModal.tsx",
+      "target": "function:apps/mobile/src/components/DatePickerModal.tsx:DatePickerModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/DateRangePickerModal.tsx",
+      "target": "function:apps/mobile/src/components/DateRangePickerModal.tsx:DateRangePickerModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/DateRangePickerModal.tsx",
+      "target": "function:apps/mobile/src/components/DateRangePickerModal.tsx:DateRangePickerModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/EmptyState.tsx",
+      "target": "function:apps/mobile/src/components/EmptyState.tsx:EmptyState",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/EmptyState.tsx",
+      "target": "function:apps/mobile/src/components/EmptyState.tsx:EmptyState",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/ItemManagerPanel.tsx",
+      "target": "function:apps/mobile/src/components/ItemManagerPanel.tsx:ItemManagerPanel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/ItemManagerPanel.tsx",
+      "target": "function:apps/mobile/src/components/ItemManagerPanel.tsx:ItemManagerPanel",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/PlanCountdown.tsx",
+      "target": "function:apps/mobile/src/components/PlanCountdown.tsx:getCountdownType",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/PlanCountdown.tsx",
+      "target": "function:apps/mobile/src/components/PlanCountdown.tsx:calculateTimeDiff",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/PlanCountdown.tsx",
+      "target": "function:apps/mobile/src/components/PlanCountdown.tsx:PlanCountdown",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/PlanCountdown.tsx",
+      "target": "function:apps/mobile/src/components/PlanCountdown.tsx:PlanCountdown",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/SyncConflictPanel.tsx",
+      "target": "function:apps/mobile/src/components/SyncConflictPanel.tsx:SyncConflictPanel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/SyncConflictPanel.tsx",
+      "target": "function:apps/mobile/src/components/SyncConflictPanel.tsx:SyncConflictPanel",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/TimePickerModal.tsx",
+      "target": "function:apps/mobile/src/components/TimePickerModal.tsx:TimePickerModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/TimePickerModal.tsx",
+      "target": "function:apps/mobile/src/components/TimePickerModal.tsx:TimePickerModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "function:apps/mobile/src/components/UI.tsx:Card",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "function:apps/mobile/src/components/UI.tsx:Card",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "function:apps/mobile/src/components/UI.tsx:PrimaryButton",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "function:apps/mobile/src/components/UI.tsx:PrimaryButton",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "function:apps/mobile/src/components/UI.tsx:OutlineButton",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "function:apps/mobile/src/components/UI.tsx:OutlineButton",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "function:apps/mobile/src/components/UI.tsx:Toggle",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "function:apps/mobile/src/components/UI.tsx:Toggle",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "function:apps/mobile/src/components/UI.tsx:Checkbox",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "function:apps/mobile/src/components/UI.tsx:Checkbox",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "function:apps/mobile/src/components/UI.tsx:RowItem",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "function:apps/mobile/src/components/UI.tsx:RowItem",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "function:apps/mobile/src/components/UI.tsx:ScreenHeader",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "function:apps/mobile/src/components/UI.tsx:ScreenHeader",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "function:apps/mobile/src/components/UI.tsx:ThemedInput",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "function:apps/mobile/src/components/UI.tsx:ThemedInput",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "function:apps/mobile/src/components/UI.tsx:PillSelector",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "function:apps/mobile/src/components/UI.tsx:PillSelector",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "function:apps/mobile/src/components/UI.tsx:ProgressBar",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "function:apps/mobile/src/components/UI.tsx:ProgressBar",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "function:apps/mobile/src/components/UI.tsx:BigTimer",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "function:apps/mobile/src/components/UI.tsx:BigTimer",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/VirtualList.tsx",
+      "target": "function:apps/mobile/src/components/VirtualList.tsx:VirtualList",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/VirtualList.tsx",
+      "target": "function:apps/mobile/src/components/VirtualList.tsx:VirtualList",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/charts/BarChart.tsx",
+      "target": "function:apps/mobile/src/components/charts/BarChart.tsx:BarChart",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/charts/BarChart.tsx",
+      "target": "function:apps/mobile/src/components/charts/BarChart.tsx:BarChart",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/charts/CalendarGrid.tsx",
+      "target": "function:apps/mobile/src/components/charts/CalendarGrid.tsx:CalendarGrid",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/charts/CalendarGrid.tsx",
+      "target": "function:apps/mobile/src/components/charts/CalendarGrid.tsx:CalendarGrid",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/charts/HeatmapGrid.tsx",
+      "target": "function:apps/mobile/src/components/charts/HeatmapGrid.tsx:HeatmapGrid",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/charts/HeatmapGrid.tsx",
+      "target": "function:apps/mobile/src/components/charts/HeatmapGrid.tsx:HeatmapGrid",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/charts/LineChart.tsx",
+      "target": "function:apps/mobile/src/components/charts/LineChart.tsx:LineChart",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/components/charts/LineChart.tsx",
+      "target": "function:apps/mobile/src/components/charts/LineChart.tsx:LineChart",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/auth/ForgotPasswordScreen.tsx",
+      "target": "function:apps/mobile/src/features/auth/ForgotPasswordScreen.tsx:ForgotPasswordScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/auth/ForgotPasswordScreen.tsx",
+      "target": "function:apps/mobile/src/features/auth/ForgotPasswordScreen.tsx:ForgotPasswordScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/auth/LoginScreen.tsx",
+      "target": "function:apps/mobile/src/features/auth/LoginScreen.tsx:LoginScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/auth/LoginScreen.tsx",
+      "target": "function:apps/mobile/src/features/auth/LoginScreen.tsx:LoginScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/auth/RegisterScreen.tsx",
+      "target": "function:apps/mobile/src/features/auth/RegisterScreen.tsx:RegisterScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/auth/RegisterScreen.tsx",
+      "target": "function:apps/mobile/src/features/auth/RegisterScreen.tsx:RegisterScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/auth/pushTokenRegistration.ts",
+      "target": "function:apps/mobile/src/features/auth/pushTokenRegistration.ts:registerExpoPushToken",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/auth/pushTokenRegistration.ts",
+      "target": "function:apps/mobile/src/features/auth/pushTokenRegistration.ts:registerExpoPushToken",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/breathing/BreathHistoryPage.tsx:BreathHistoryPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/breathing/BreathHistoryPage.tsx:BreathHistoryPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathingEngine.tsx",
+      "target": "function:apps/mobile/src/features/breathing/BreathingEngine.tsx:BreathingEngine",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathingEngine.tsx",
+      "target": "function:apps/mobile/src/features/breathing/BreathingEngine.tsx:BreathingEngine",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathingScreen.tsx",
+      "target": "function:apps/mobile/src/features/breathing/BreathingScreen.tsx:BreathingScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathingScreen.tsx",
+      "target": "function:apps/mobile/src/features/breathing/BreathingScreen.tsx:BreathingScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/hooks/useBreathSettings.ts",
+      "target": "function:apps/mobile/src/features/breathing/hooks/useBreathSettings.ts:useBreathSettings",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/hooks/useBreathSettings.ts",
+      "target": "function:apps/mobile/src/features/breathing/hooks/useBreathSettings.ts:useBreathSettings",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/pages/BreathActivePage.tsx",
+      "target": "function:apps/mobile/src/features/breathing/pages/BreathActivePage.tsx:BreathActivePage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/pages/BreathActivePage.tsx",
+      "target": "function:apps/mobile/src/features/breathing/pages/BreathActivePage.tsx:BreathActivePage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/pages/BreathPreparePage.tsx",
+      "target": "function:apps/mobile/src/features/breathing/pages/BreathPreparePage.tsx:BreathPreparePage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/pages/BreathPreparePage.tsx",
+      "target": "function:apps/mobile/src/features/breathing/pages/BreathPreparePage.tsx:BreathPreparePage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/pages/BreathReportPage.tsx",
+      "target": "function:apps/mobile/src/features/breathing/pages/BreathReportPage.tsx:BreathReportPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/pages/BreathReportPage.tsx",
+      "target": "function:apps/mobile/src/features/breathing/pages/BreathReportPage.tsx:BreathReportPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/useBreathAudio.ts",
+      "target": "function:apps/mobile/src/features/breathing/useBreathAudio.ts:useBreathAudio",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/useBreathAudio.ts",
+      "target": "function:apps/mobile/src/features/breathing/useBreathAudio.ts:useBreathAudio",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/diet/DietScreen.tsx",
+      "target": "function:apps/mobile/src/features/diet/DietScreen.tsx:DietScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/diet/DietScreen.tsx",
+      "target": "function:apps/mobile/src/features/diet/DietScreen.tsx:DietScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/diet/WuxingCalendar.tsx",
+      "target": "function:apps/mobile/src/features/diet/WuxingCalendar.tsx:WuxingCalendar",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/diet/WuxingCalendar.tsx",
+      "target": "function:apps/mobile/src/features/diet/WuxingCalendar.tsx:WuxingCalendar",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/app/(auth)/forgot-password/page.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/styles.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/AddFoodModal.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/AddFoodModal.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/AddFoodModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/AppHeader.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/AppHeader.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/AppHeader.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/ConfirmationDialog.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/ConfirmationDialog.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/DatePickerModal.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/DatePickerModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/DateRangePickerModal.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/DateRangePickerModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/EmptyState.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/EmptyState.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/ItemManagerPanel.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/ItemManagerPanel.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/ItemManagerPanel.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/PlanCountdown.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/PlanCountdown.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/SyncConflictPanel.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/SyncConflictPanel.tsx",
+      "target": "file:apps/mobile/src/store/syncStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/SyncConflictPanel.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/TimePickerModal.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/TimePickerModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/UI.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/VirtualList.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/charts/CalendarGrid.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/charts/HeatmapGrid.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/auth/ForgotPasswordScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/auth/ForgotPasswordScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/auth/ForgotPasswordScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/auth/LoginScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/auth/LoginScreen.tsx",
+      "target": "file:apps/mobile/src/features/auth/pushTokenRegistration.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/auth/LoginScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/auth/LoginScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/auth/LoginScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/auth/RegisterScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/auth/RegisterScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/auth/RegisterScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/auth/RegisterScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/auth/pushTokenRegistration.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathHistoryPage.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathHistoryPage.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathHistoryPage.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathHistoryPage.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathingEngine.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathingEngine.tsx",
+      "target": "file:apps/mobile/src/features/breathing/breathStyles.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathingEngine.tsx",
+      "target": "file:apps/mobile/src/features/breathing/hooks/useBreathSettings.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathingEngine.tsx",
+      "target": "file:apps/mobile/src/features/breathing/pages/BreathActivePage.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathingEngine.tsx",
+      "target": "file:apps/mobile/src/features/breathing/pages/BreathPreparePage.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathingEngine.tsx",
+      "target": "file:apps/mobile/src/features/breathing/pages/BreathReportPage.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathingEngine.tsx",
+      "target": "file:apps/mobile/src/features/breathing/useBreathAudio.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathingEngine.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathingEngine.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathingScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathingScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathingScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathingScreen.tsx",
+      "target": "file:apps/mobile/src/store/safeAsyncStorage.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/BreathingScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/breathStyles.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/hooks/useBreathSettings.ts",
+      "target": "file:apps/mobile/src/store/safeAsyncStorage.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/hooks/useBreathSettings.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/pages/BreathActivePage.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/pages/BreathActivePage.tsx",
+      "target": "file:apps/mobile/src/features/breathing/breathStyles.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/pages/BreathActivePage.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/pages/BreathPreparePage.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/pages/BreathPreparePage.tsx",
+      "target": "file:apps/mobile/src/features/breathing/breathStyles.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/pages/BreathPreparePage.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/pages/BreathReportPage.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/pages/BreathReportPage.tsx",
+      "target": "file:apps/mobile/src/features/breathing/breathStyles.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/pages/BreathReportPage.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/breathing/useBreathAudio.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/diet/DietScreen.tsx",
+      "target": "file:apps/mobile/src/components/AddFoodModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/diet/DietScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/diet/DietScreen.tsx",
+      "target": "file:apps/mobile/src/features/diet/WuxingCalendar.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/diet/DietScreen.tsx",
+      "target": "file:apps/mobile/src/features/diet/WuxingRadarChart.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/diet/DietScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/diet/DietScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/diet/DietScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/diet/WuxingCalendar.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:apps/mobile/src/components/PlanCountdown.tsx:PlanCountdown",
+      "target": "function:apps/mobile/src/components/PlanCountdown.tsx:getCountdownType",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:apps/mobile/src/components/PlanCountdown.tsx:PlanCountdown",
+      "target": "function:apps/mobile/src/components/PlanCountdown.tsx:calculateTimeDiff",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ]
+}

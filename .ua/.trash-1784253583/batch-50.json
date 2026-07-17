@@ -1,0 +1,79 @@
+{
+  "nodes": [
+    {
+      "id": "file:apps/mobile/app.json",
+      "type": "config",
+      "name": "app.json",
+      "filePath": "apps/mobile/app.json",
+      "summary": "Expo 应用主配置，声明应用名「心流纪」/slug/bundleIdentifier、iOS 隐私权限描述（定位/健康/照片）、Android 权限与 expo-sqlite/Sentry 等插件。",
+      "tags": [
+        "configuration",
+        "expo",
+        "mobile"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/eas.json",
+      "type": "config",
+      "name": "eas.json",
+      "filePath": "apps/mobile/eas.json",
+      "summary": "EAS Build/Submit 构建配置，定义 development（内部分发）、preview（Android APK）、production（iOS 自增版本/Android app-bundle）三种构建 profile 与提交通道。",
+      "tags": [
+        "configuration",
+        "eas",
+        "build"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/package.json",
+      "type": "config",
+      "name": "package.json",
+      "filePath": "apps/mobile/package.json",
+      "summary": "mobile 应用入口包配置，声明 scripts（通过工作区 expo CLI 启动）、workspace 依赖 @egoless-do/core，以及 Expo ~54 / React Navigation / Zustand / Sentry 等运行时依赖。",
+      "tags": [
+        "configuration",
+        "mobile",
+        "dependencies"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/tsconfig.json",
+      "type": "config",
+      "name": "tsconfig.json",
+      "filePath": "apps/mobile/tsconfig.json",
+      "summary": "mobile 应用 TypeScript 配置，继承 packages/config 基础配置，指定 jsx 为 react-native，并通过路径别名指向 core 与 src。",
+      "tags": [
+        "configuration",
+        "typescript",
+        "mobile"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:apps/mobile/app.json",
+      "target": "file:apps/mobile/eas.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:apps/mobile/package.json",
+      "target": "file:apps/mobile/app.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:apps/mobile/package.json",
+      "target": "file:apps/mobile/tsconfig.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

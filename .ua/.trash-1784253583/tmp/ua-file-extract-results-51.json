@@ -1,0 +1,116 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 5,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "backend/README.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 61,
+      "nonEmptyLines": 47,
+      "sections": [
+        {
+          "heading": "Egoless Do — Backend (PocketBase)",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "快速启动",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "推荐部署：甲骨文云永久免费 VPS",
+          "level": 2,
+          "line": 19
+        },
+        {
+          "heading": "Collections",
+          "level": 2,
+          "line": 47
+        },
+        {
+          "heading": "隐私设计",
+          "level": 2,
+          "line": 56
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 5
+      }
+    },
+    {
+      "path": "backend/create-collection.ps1",
+      "language": "powershell",
+      "fileCategory": "script",
+      "totalLines": 105,
+      "nonEmptyLines": 92,
+      "metrics": {}
+    },
+    {
+      "path": "backend/docker-compose.yml",
+      "language": "yaml",
+      "fileCategory": "infra",
+      "totalLines": 32,
+      "nonEmptyLines": 30,
+      "sections": [
+        {
+          "heading": "version",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "services",
+          "level": 1,
+          "line": 3
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 2
+      }
+    },
+    {
+      "path": "backend/pb_schema.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 624,
+      "nonEmptyLines": 624,
+      "sections": [
+        {
+          "heading": "_note",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "_collections",
+          "level": 1,
+          "line": 3
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 2
+      }
+    },
+    {
+      "path": "backend/setup.ps1",
+      "language": "powershell",
+      "fileCategory": "script",
+      "totalLines": 38,
+      "nonEmptyLines": 31,
+      "metrics": {}
+    }
+  ]
+}

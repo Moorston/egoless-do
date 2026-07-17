@@ -1,0 +1,2387 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 25,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/task.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 26,
+      "nonEmptyLines": 26,
+      "sections": [
+        {
+          "heading": "id",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "title",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "status",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dev_type",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "scope",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "package",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "priority",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "creator",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "assignee",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "createdAt",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "completedAt",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "branch",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "base_branch",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "worktree_path",
+          "level": 1,
+          "line": 17
+        },
+        {
+          "heading": "commit",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "pr_url",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "subtasks",
+          "level": 1,
+          "line": 20
+        },
+        {
+          "heading": "children",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "parent",
+          "level": 1,
+          "line": 22
+        },
+        {
+          "heading": "relatedFiles",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "notes",
+          "level": 1,
+          "line": 24
+        },
+        {
+          "heading": "meta",
+          "level": 1,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/implement.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/prd.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 19,
+      "nonEmptyLines": 11,
+      "sections": [
+        {
+          "heading": "愿景关联计划/习惯 + 立愿文案",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Goal",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "Requirements",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Acceptance Criteria",
+          "level": 2,
+          "line": 11
+        },
+        {
+          "heading": "Notes",
+          "level": 2,
+          "line": 15
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 5
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/task.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 26,
+      "nonEmptyLines": 26,
+      "sections": [
+        {
+          "heading": "id",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "title",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "status",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dev_type",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "scope",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "package",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "priority",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "creator",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "assignee",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "createdAt",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "completedAt",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "branch",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "base_branch",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "worktree_path",
+          "level": 1,
+          "line": 17
+        },
+        {
+          "heading": "commit",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "pr_url",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "subtasks",
+          "level": 1,
+          "line": 20
+        },
+        {
+          "heading": "children",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "parent",
+          "level": 1,
+          "line": 22
+        },
+        {
+          "heading": "relatedFiles",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "notes",
+          "level": 1,
+          "line": 24
+        },
+        {
+          "heading": "meta",
+          "level": 1,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-15-body-page-optimization/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 8,
+      "nonEmptyLines": 8,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-15-body-page-optimization/implement.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/implement.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/prd.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 19,
+      "nonEmptyLines": 11,
+      "sections": [
+        {
+          "heading": "调身功能增强 Wave 1 — 历史入口/动作描述/PR记录/动作多选/类型修复",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Goal",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "Requirements",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Acceptance Criteria",
+          "level": 2,
+          "line": 11
+        },
+        {
+          "heading": "Notes",
+          "level": 2,
+          "line": 15
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 5
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/task.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 26,
+      "nonEmptyLines": 26,
+      "sections": [
+        {
+          "heading": "id",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "title",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "status",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dev_type",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "scope",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "package",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "priority",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "creator",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "assignee",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "createdAt",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "completedAt",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "branch",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "base_branch",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "worktree_path",
+          "level": 1,
+          "line": 17
+        },
+        {
+          "heading": "commit",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "pr_url",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "subtasks",
+          "level": 1,
+          "line": 20
+        },
+        {
+          "heading": "children",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "parent",
+          "level": 1,
+          "line": 22
+        },
+        {
+          "heading": "relatedFiles",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "notes",
+          "level": 1,
+          "line": 24
+        },
+        {
+          "heading": "meta",
+          "level": 1,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/implement.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/prd.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 48,
+      "nonEmptyLines": 34,
+      "sections": [
+        {
+          "heading": "修复 Text strings 渲染错误",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Goal",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "Background",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "发现的问题",
+          "level": 2,
+          "line": 11
+        },
+        {
+          "heading": "BodyDashboard.tsx",
+          "level": 3,
+          "line": 13
+        },
+        {
+          "heading": "WeightTrendChart.tsx",
+          "level": 3,
+          "line": 20
+        },
+        {
+          "heading": "CheckinSuccessCard.tsx",
+          "level": 3,
+          "line": 23
+        },
+        {
+          "heading": "修复方案",
+          "level": 2,
+          "line": 26
+        },
+        {
+          "heading": "Acceptance Criteria",
+          "level": 2,
+          "line": 37
+        },
+        {
+          "heading": "Scope",
+          "level": 2,
+          "line": 44
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 10
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/task.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 26,
+      "nonEmptyLines": 26,
+      "sections": [
+        {
+          "heading": "id",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "title",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "status",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dev_type",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "scope",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "package",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "priority",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "creator",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "assignee",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "createdAt",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "completedAt",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "branch",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "base_branch",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "worktree_path",
+          "level": 1,
+          "line": 17
+        },
+        {
+          "heading": "commit",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "pr_url",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "subtasks",
+          "level": 1,
+          "line": 20
+        },
+        {
+          "heading": "children",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "parent",
+          "level": 1,
+          "line": 22
+        },
+        {
+          "heading": "relatedFiles",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "notes",
+          "level": 1,
+          "line": 24
+        },
+        {
+          "heading": "meta",
+          "level": 1,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/ar-06-reflection-map-refactor/design.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 295,
+      "nonEmptyLines": 230,
+      "sections": [
+        {
+          "heading": "AR-06-1: Reflections 模块复杂度降低 — 设计方案",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "一、现状分析",
+          "level": 2,
+          "line": 10
+        },
+        {
+          "heading": "1.1 RelationMapView (799 行, cognitive=199)",
+          "level": 3,
+          "line": 12
+        },
+        {
+          "heading": "1.2 useQuickTrailSearch (cognitive=174)",
+          "level": 3,
+          "line": 24
+        },
+        {
+          "heading": "二、目标架构",
+          "level": 2,
+          "line": 31
+        },
+        {
+          "heading": "2.1 拆分后的文件结构",
+          "level": 3,
+          "line": 33
+        },
+        {
+          "heading": "2.2 职责划分",
+          "level": 3,
+          "line": 55
+        },
+        {
+          "heading": "`core/business/reflectionGraph.ts` (纯函数, 平台无关)",
+          "level": 4,
+          "line": 57
+        },
+        {
+          "heading": "`hooks/useRelationGraph.ts`",
+          "level": 4,
+          "line": 90
+        },
+        {
+          "heading": "`hooks/useForceSimulation.ts`",
+          "level": 4,
+          "line": 99
+        },
+        {
+          "heading": "`hooks/useGraphGesture.ts`",
+          "level": 4,
+          "line": 111
+        },
+        {
+          "heading": "`RelationGraphSvg.tsx`",
+          "level": 4,
+          "line": 130
+        },
+        {
+          "heading": "瘦壳组件 `RelationMapView.tsx` (~150 行)",
+          "level": 4,
+          "line": 146
+        },
+        {
+          "heading": "三、类型定义 (`insights/types.ts`)",
+          "level": 2,
+          "line": 188
+        },
+        {
+          "heading": "四、useQuickTrailSearch 重构策略",
+          "level": 2,
+          "line": 219
+        },
+        {
+          "heading": "现状问题",
+          "level": 3,
+          "line": 221
+        },
+        {
+          "heading": "拆分方案",
+          "level": 3,
+          "line": 225
+        },
+        {
+          "heading": "五、实施步骤",
+          "level": 2,
+          "line": 245
+        },
+        {
+          "heading": "Phase 1: 类型提取 (30 分钟)",
+          "level": 3,
+          "line": 247
+        },
+        {
+          "heading": "Phase 2: 纯函数提取 (1-2 小时)",
+          "level": 3,
+          "line": 251
+        },
+        {
+          "heading": "Phase 3: Hook 拆分 (1-2 小时)",
+          "level": 3,
+          "line": 256
+        },
+        {
+          "heading": "Phase 4: 组件拆分 (1 小时)",
+          "level": 3,
+          "line": 261
+        },
+        {
+          "heading": "Phase 5: useQuickTrailSearch 重构 (1 小时)",
+          "level": 3,
+          "line": 265
+        },
+        {
+          "heading": "Phase 6: 验证 (30 分钟)",
+          "level": 3,
+          "line": 269
+        },
+        {
+          "heading": "六、风险评估",
+          "level": 2,
+          "line": 276
+        },
+        {
+          "heading": "七、预期收益",
+          "level": 2,
+          "line": 287
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 26
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/type-error-fix-plan.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 66,
+      "nonEmptyLines": 51,
+      "sections": [
+        {
+          "heading": "672 类型错误修复计划",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "错误分布",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "核心修复：useAppStoreShallow wrapper",
+          "level": 2,
+          "line": 18
+        },
+        {
+          "heading": "剩余 196 错误分文件修复",
+          "level": 2,
+          "line": 37
+        },
+        {
+          "heading": "实施步骤",
+          "level": 2,
+          "line": 58
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 5
+      }
+    },
+    {
+      "path": ".trellis/workspace/freebytes/index.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 74,
+      "nonEmptyLines": 61,
+      "sections": [
+        {
+          "heading": "Workspace Index - freebytes",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Current Status",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Active Documents",
+          "level": 2,
+          "line": 17
+        },
+        {
+          "heading": "Session History",
+          "level": 2,
+          "line": 27
+        },
+        {
+          "heading": "Notes",
+          "level": 2,
+          "line": 70
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 5
+      }
+    },
+    {
+      "path": ".trellis/workspace/freebytes/journal-1.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 1187,
+      "nonEmptyLines": 663,
+      "sections": [
+        {
+          "heading": "Journal - freebytes (Part 1)",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Session 1: Bootstrap Guidelines — fill project coding specs",
+          "level": 2,
+          "line": 10
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 17
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 21
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 25
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 31
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 35
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 39
+        },
+        {
+          "heading": "Session 2: Engine Class Refactoring (AR-09)",
+          "level": 2,
+          "line": 45
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 52
+        },
+        {
+          "heading": "Key Patterns Found",
+          "level": 3,
+          "line": 56
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 63
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 69
+        },
+        {
+          "heading": "Session 2: Engine class refactoring + bug fixes + ESLint hardening",
+          "level": 2,
+          "line": 74
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 81
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 85
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 89
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 97
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 101
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 105
+        },
+        {
+          "heading": "Session 3: 修复第二轮审计 36 项问题",
+          "level": 2,
+          "line": 110
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 117
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 121
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 125
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 131
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 135
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 139
+        },
+        {
+          "heading": "Session 4: 归档三个 P2 审计任务（platform/accessibility/perf）",
+          "level": 2,
+          "line": 144
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 150
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 154
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 158
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 165
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 169
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 173
+        },
+        {
+          "heading": "Session 5: customFoodPresets 持久化 + PB 同步",
+          "level": 2,
+          "line": 178
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 184
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 188
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 192
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 199
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 203
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 207
+        },
+        {
+          "heading": "Session 6: PB 同步 GoError 排查修复",
+          "level": 2,
+          "line": 212
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 218
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 222
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 226
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 232
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 236
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 240
+        },
+        {
+          "heading": "Session 7: PB 创建 custom_food_presets collection",
+          "level": 2,
+          "line": 245
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 251
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 255
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 259
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 265
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 269
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 273
+        },
+        {
+          "heading": "Session 8: 修复 ProfileScreen 因 createPermissionHook 报错崩溃",
+          "level": 2,
+          "line": 278
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 284
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 288
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 292
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 298
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 302
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 306
+        },
+        {
+          "heading": "Session 9: 分析 requireNativeModule/requireNativeComponent 原生模块错误",
+          "level": 2,
+          "line": 311
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 317
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 321
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 325
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 331
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 335
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 339
+        },
+        {
+          "heading": "Session 10: 修复 ProfileScreen 数据持久化和按钮位置",
+          "level": 2,
+          "line": 344
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 350
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 354
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 358
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 365
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 369
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 373
+        },
+        {
+          "heading": "Session 11: 继续 ProfileScreen 增强任务并归档",
+          "level": 2,
+          "line": 378
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 384
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 388
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 392
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 399
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 403
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 407
+        },
+        {
+          "heading": "Session 12: ProfileScreen any 类型修复 + 密码模态框键盘优化",
+          "level": 2,
+          "line": 412
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 418
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 422
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 426
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 432
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 436
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 440
+        },
+        {
+          "heading": "Session 13: ProfileScreen 修改密码按钮/弹窗改善 + verifyAuth 容错",
+          "level": 2,
+          "line": 445
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 451
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 455
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 459
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 467
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 471
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 475
+        },
+        {
+          "heading": "Session 14: 修复 AsyncStorage 原生模块错误 + expo-notifications 废弃警告",
+          "level": 2,
+          "line": 480
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 486
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 490
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 494
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 501
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 505
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 509
+        },
+        {
+          "heading": "Session 15: 架构修复 + 愿景优化 + BodyWeekPlanCard 修复",
+          "level": 2,
+          "line": 514
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 520
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 524
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 528
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 536
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 540
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 544
+        },
+        {
+          "heading": "Session 16: 愿景关联计划/习惯 + 立愿文案",
+          "level": 2,
+          "line": 549
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 555
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 559
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 563
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 569
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 573
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 577
+        },
+        {
+          "heading": "Session 17: 愿景关联计划/习惯 + 立愿文案",
+          "level": 2,
+          "line": 582
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 588
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 592
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 596
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 603
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 607
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 611
+        },
+        {
+          "heading": "Session 18: habits 表 vision_id + PlanCreateScreen 语法修复",
+          "level": 2,
+          "line": 616
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 622
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 626
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 630
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 637
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 641
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 645
+        },
+        {
+          "heading": "Session 19: 计划详情页愿景显示 + 保存弹窗 + 样式优化",
+          "level": 2,
+          "line": 650
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 656
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 660
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 664
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 676
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 680
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 684
+        },
+        {
+          "heading": "Session 20: 关系全景图愿景节点 + 习惯详情页愿景标题同行",
+          "level": 2,
+          "line": 689
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 695
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 699
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 703
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 709
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 713
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 717
+        },
+        {
+          "heading": "Session 21: 幽灵计划排查 + saving 防重复提交",
+          "level": 2,
+          "line": 722
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 728
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 732
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 736
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 742
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 746
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 750
+        },
+        {
+          "heading": "Session 22: token 过期机制分析 + 修复退出登录页",
+          "level": 2,
+          "line": 755
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 761
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 765
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 769
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 775
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 779
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 783
+        },
+        {
+          "heading": "Session 23: token 认证体系全面改进",
+          "level": 2,
+          "line": 788
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 794
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 798
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 802
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 808
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 812
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 816
+        },
+        {
+          "heading": "Session 24: SSE 实时连接 token 修复",
+          "level": 2,
+          "line": 821
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 827
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 831
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 835
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 841
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 845
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 849
+        },
+        {
+          "heading": "Session 25: token-refresh-rotation revokeNonce 重复声明修复",
+          "level": 2,
+          "line": 854
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 860
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 864
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 868
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 874
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 878
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 882
+        },
+        {
+          "heading": "Session 26: auth 深度修复",
+          "level": 2,
+          "line": 887
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 893
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 897
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 901
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 907
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 911
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 915
+        },
+        {
+          "heading": "Session 27: 修复 foodPreset storeKey 警告",
+          "level": 2,
+          "line": 920
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 926
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 930
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 934
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 940
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 944
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 948
+        },
+        {
+          "heading": "Session 28: 自定义食物预设持久化 + token 7天宽限期",
+          "level": 2,
+          "line": 953
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 959
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 963
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 967
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 974
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 978
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 982
+        },
+        {
+          "heading": "Session 29: token 反复退出根因排查 + 完整修复",
+          "level": 2,
+          "line": 987
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 993
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 997
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 1001
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 1009
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 1013
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 1017
+        },
+        {
+          "heading": "Session 30: 补打卡成功提示 + 重复登录根因修复",
+          "level": 2,
+          "line": 1022
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 1028
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 1032
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 1036
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 1042
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 1046
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 1050
+        },
+        {
+          "heading": "Session 31: 实现 DayCheckinScreen 补打卡全功能页面",
+          "level": 2,
+          "line": 1055
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 1061
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 1065
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 1069
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 1075
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 1079
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 1083
+        },
+        {
+          "heading": "Session 32: profile 持久化/测试修复 + auth 退出根因修复",
+          "level": 2,
+          "line": 1088
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 1094
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 1098
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 1102
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 1109
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 1113
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 1117
+        },
+        {
+          "heading": "Session 33: StatsScreen 缺失 StyleSheet 修复",
+          "level": 2,
+          "line": 1122
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 1128
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 1132
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 1136
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 1142
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 1146
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 1150
+        },
+        {
+          "heading": "Session 34: StatsScreen 进度修复 + body_training_plans + logout 追踪",
+          "level": 2,
+          "line": 1155
+        },
+        {
+          "heading": "Summary",
+          "level": 3,
+          "line": 1161
+        },
+        {
+          "heading": "Main Changes",
+          "level": 3,
+          "line": 1165
+        },
+        {
+          "heading": "Git Commits",
+          "level": 3,
+          "line": 1169
+        },
+        {
+          "heading": "Testing",
+          "level": 3,
+          "line": 1177
+        },
+        {
+          "heading": "Status",
+          "level": 3,
+          "line": 1181
+        },
+        {
+          "heading": "Next Steps",
+          "level": 3,
+          "line": 1185
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 244
+      }
+    },
+    {
+      "path": ".trellis/workspace/index.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 125,
+      "nonEmptyLines": 82,
+      "sections": [
+        {
+          "heading": "Workspace Index",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "File Structure",
+          "level": 3,
+          "line": 11
+        },
+        {
+          "heading": "Active Developers",
+          "level": 2,
+          "line": 26
+        },
+        {
+          "heading": "Getting Started",
+          "level": 2,
+          "line": 34
+        },
+        {
+          "heading": "For New Developers",
+          "level": 3,
+          "line": 36
+        },
+        {
+          "heading": "For Returning Developers",
+          "level": 3,
+          "line": 50
+        },
+        {
+          "heading": "Guidelines",
+          "level": 2,
+          "line": 64
+        },
+        {
+          "heading": "Journal File Rules",
+          "level": 3,
+          "line": 66
+        },
+        {
+          "heading": "Session Record Format",
+          "level": 3,
+          "line": 72
+        },
+        {
+          "heading": "Session Template",
+          "level": 2,
+          "line": 83
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 11
+      }
+    },
+    {
+      "path": ".ua/.understandignore",
+      "language": "unknown",
+      "fileCategory": "code",
+      "totalLines": 87,
+      "nonEmptyLines": 81,
+      "metrics": {}
+    },
+    {
+      "path": ".ua/config.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "sections": [
+        {
+          "heading": "outputLanguage",
+          "level": 1,
+          "line": 1
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 1
+      }
+    },
+    {
+      "path": ".workbuddy/memory/2026-07-12.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 13,
+      "nonEmptyLines": 12,
+      "sections": [
+        {
+          "heading": "2026-07-12",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "项目架构分析",
+          "level": 2,
+          "line": 3
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 2
+      }
+    },
+    {
+      "path": ".workbuddy/memory/2026-07-13.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 16,
+      "nonEmptyLines": 15,
+      "sections": [
+        {
+          "heading": "2026-07-13",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "项目架构重新分析（对比 2026-07-12）",
+          "level": 2,
+          "line": 3
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 2
+      }
+    },
+    {
+      "path": "apps/mobile/android/app/build.gradle",
+      "language": "gradle",
+      "fileCategory": "config",
+      "totalLines": 182,
+      "nonEmptyLines": 160,
+      "metrics": {}
+    }
+  ]
+}

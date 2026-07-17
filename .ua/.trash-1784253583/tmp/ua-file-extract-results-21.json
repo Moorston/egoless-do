@@ -1,0 +1,4257 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 23,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "apps/mobile/src/features/meditation/MeditationScreen.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 452,
+      "nonEmptyLines": 415,
+      "functions": [
+        {
+          "name": "MeditationScreen",
+          "startLine": 32,
+          "endLine": 430,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "MeditationScreen",
+          "line": 32,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "MeditationScreen",
+          "callee": "useTheme",
+          "lineNumber": 33
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useShallowStore",
+          "lineNumber": 37
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useRootNavigation",
+          "lineNumber": 42
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useT",
+          "lineNumber": 43
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useState",
+          "lineNumber": 45
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useState",
+          "lineNumber": 46
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useState",
+          "lineNumber": 47
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useState",
+          "lineNumber": 48
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useState",
+          "lineNumber": 49
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useState",
+          "lineNumber": 50
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useState",
+          "lineNumber": 51
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useState",
+          "lineNumber": 52
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useState",
+          "lineNumber": 53
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useRef",
+          "lineNumber": 54
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useRef",
+          "lineNumber": 55
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useRef",
+          "lineNumber": 56
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useRef",
+          "lineNumber": 57
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useMemo",
+          "lineNumber": 62
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "getTodayMedMinutes",
+          "lineNumber": 62
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "(medHistory ?? []).filter",
+          "lineNumber": 62
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useMemo",
+          "lineNumber": 63
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "(medHistory ?? []).filter",
+          "lineNumber": 63
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "dateStr",
+          "lineNumber": 63
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useMemo",
+          "lineNumber": 64
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "(medHistory ?? []).filter",
+          "lineNumber": 64
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useRef",
+          "lineNumber": 67
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useState",
+          "lineNumber": 68
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useRef",
+          "lineNumber": 69
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useState",
+          "lineNumber": 70
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useGoalResolver",
+          "lineNumber": 71
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useSessionHeartbeat",
+          "lineNumber": 74
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useCallback",
+          "lineNumber": 77
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useAppStore.getState",
+          "lineNumber": 78
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "resolveGoal",
+          "lineNumber": 80
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "createSession",
+          "lineNumber": 82
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useAppStore.getState",
+          "lineNumber": 84
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setSessionId",
+          "lineNumber": 90
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "log.warn",
+          "lineNumber": 93
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useCallback",
+          "lineNumber": 98
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "deleteSession",
+          "lineNumber": 100
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useCallback",
+          "lineNumber": 106
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setInsight",
+          "lineNumber": 107
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "clearTimeout",
+          "lineNumber": 109
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setTimeout",
+          "lineNumber": 110
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "updateSession",
+          "lineNumber": 111
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useEffect",
+          "lineNumber": 117
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "cleanupSession",
+          "lineNumber": 117
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 120
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 121
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 122
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 123
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useAudioPlayer",
+          "lineNumber": 126
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useEffect",
+          "lineNumber": 128
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useEffect",
+          "lineNumber": 133
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setAudioModeAsync({\r\n      playsInSilentMode: true,\r\n      shouldPlayInBackground: false,\r\n    }).catch",
+          "lineNumber": 134
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setAudioModeAsync",
+          "lineNumber": 134
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "log.error",
+          "lineNumber": 137
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useCallback",
+          "lineNumber": 140
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "bellPlayer.seekTo",
+          "lineNumber": 142
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "bellPlayer.play",
+          "lineNumber": 143
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useEffect",
+          "lineNumber": 148
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "clearInterval",
+          "lineNumber": 149
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "musicStop",
+          "lineNumber": 151
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "audioSessionManager.notifyStopped",
+          "lineNumber": 152
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useEffect",
+          "lineNumber": 156
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setInterval",
+          "lineNumber": 159
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setSec",
+          "lineNumber": 160
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "clearInterval",
+          "lineNumber": 163
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "clearInterval",
+          "lineNumber": 166
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useEffect",
+          "lineNumber": 171
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "audioSessionManager.requestPlay",
+          "lineNumber": 173
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "musicPlay",
+          "lineNumber": 176
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useEffect",
+          "lineNumber": 184
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "clearInterval",
+          "lineNumber": 186
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setActive",
+          "lineNumber": 187
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "cleanupSession",
+          "lineNumber": 188
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setPendingDurMin",
+          "lineNumber": 191
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setNoteText",
+          "lineNumber": 192
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setShowNoteModal",
+          "lineNumber": 193
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "musicStop",
+          "lineNumber": 196
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "audioSessionManager.notifyStopped",
+          "lineNumber": 197
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "playBell",
+          "lineNumber": 200
+        },
+        {
+          "caller": "handleStop",
+          "callee": "Math.round",
+          "lineNumber": 208
+        },
+        {
+          "caller": "handleStop",
+          "callee": "setPendingDurMin",
+          "lineNumber": 210
+        },
+        {
+          "caller": "handleStop",
+          "callee": "setNoteText",
+          "lineNumber": 211
+        },
+        {
+          "caller": "handleStop",
+          "callee": "setShowNoteModal",
+          "lineNumber": 212
+        },
+        {
+          "caller": "handleStop",
+          "callee": "setActive",
+          "lineNumber": 215
+        },
+        {
+          "caller": "handleStop",
+          "callee": "cleanupSession",
+          "lineNumber": 216
+        },
+        {
+          "caller": "handleStop",
+          "callee": "musicStop",
+          "lineNumber": 218
+        },
+        {
+          "caller": "handleStop",
+          "callee": "audioSessionManager.notifyStopped",
+          "lineNumber": 219
+        },
+        {
+          "caller": "handleStop",
+          "callee": "playBell",
+          "lineNumber": 222
+        },
+        {
+          "caller": "handleStart",
+          "callee": "setSec",
+          "lineNumber": 226
+        },
+        {
+          "caller": "handleStart",
+          "callee": "setActive",
+          "lineNumber": 227
+        },
+        {
+          "caller": "handleStart",
+          "callee": "createMeditationSession",
+          "lineNumber": 228
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useCallback",
+          "lineNumber": 231
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "musicPause",
+          "lineNumber": 233
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "audioSessionManager.notifyStopped",
+          "lineNumber": 234
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setShowMusicPicker",
+          "lineNumber": 235
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useCallback",
+          "lineNumber": 238
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setSelectedTrack",
+          "lineNumber": 239
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "musicStop",
+          "lineNumber": 240
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "audioSessionManager.notifyStopped",
+          "lineNumber": 241
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setShowMusicPicker",
+          "lineNumber": 242
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "useCallback",
+          "lineNumber": 245
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "shareCardRef.current.capture",
+          "lineNumber": 248
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "Sharing.shareAsync",
+          "lineNumber": 249
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 249
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "log.warn",
+          "lineNumber": 251
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setShowShare",
+          "lineNumber": 252
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 269
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "nav.navigate",
+          "lineNumber": 270
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 271
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 278
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 279
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 284
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 285
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 290
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 291
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 296
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 297
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "nav.navigate",
+          "lineNumber": 300
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 300
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 300
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 303
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 303
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "resolveGoal",
+          "lineNumber": 318
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "FONT_HERO",
+          "lineNumber": 323
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "Math.floor",
+          "lineNumber": 324
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "String(remaining % 60).padStart",
+          "lineNumber": 324
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "String",
+          "lineNumber": 324
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "FONT_BODY",
+          "lineNumber": 326
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 327
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 333
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setShowMusicPicker",
+          "lineNumber": 338
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "MEDITATION_DURATIONS_MIN.map",
+          "lineNumber": 342
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 343
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setDurMin",
+          "lineNumber": 344
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setSec",
+          "lineNumber": 344
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setActive",
+          "lineNumber": 344
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 348
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setShowShare",
+          "lineNumber": 355
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 359
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "new Date().toLocaleDateString",
+          "lineNumber": 362
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 368
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 372
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 376
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 383
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setShowShare",
+          "lineNumber": 383
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "T",
+          "lineNumber": 384
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "FONT_TITLE",
+          "lineNumber": 403
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "FONT_BODY",
+          "lineNumber": 404
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "FONT_BODY",
+          "lineNumber": 405
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "FONT_BODY",
+          "lineNumber": 407
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "addMedMinutes",
+          "lineNumber": 413
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setShowNoteModal",
+          "lineNumber": 413
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "FONT_BODY",
+          "lineNumber": 416
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "addMedMinutes",
+          "lineNumber": 419
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "noteText.trim",
+          "lineNumber": 419
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "setShowNoteModal",
+          "lineNumber": 419
+        },
+        {
+          "caller": "MeditationScreen",
+          "callee": "FONT_BODY",
+          "lineNumber": 422
+        }
+      ],
+      "metrics": {
+        "importCount": 13,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/music/components/CategoryCard.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 41,
+      "nonEmptyLines": 37,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/music/components/FavoriteButton.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 38,
+      "nonEmptyLines": 33,
+      "functions": [
+        {
+          "name": "FavoriteButton",
+          "startLine": 13,
+          "endLine": 38,
+          "params": [
+            "{ isFavorite, onToggle, size = 20 }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "FavoriteButton",
+          "line": 13,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "FavoriteButton",
+          "callee": "useTheme",
+          "lineNumber": 14
+        },
+        {
+          "caller": "FavoriteButton",
+          "callee": "useRef",
+          "lineNumber": 15
+        },
+        {
+          "caller": "FavoriteButton",
+          "callee": "useCallback",
+          "lineNumber": 17
+        },
+        {
+          "caller": "FavoriteButton",
+          "callee": "Animated.sequence([\n      Animated.timing(scale, { toValue: 1.3, duration: 150, useNativeDriver: true }),\n      Animated.spring(scale, { toValue: 1, friction: 3, useNativeDriver: true }),\n    ]).start",
+          "lineNumber": 19
+        },
+        {
+          "caller": "FavoriteButton",
+          "callee": "Animated.sequence",
+          "lineNumber": 19
+        },
+        {
+          "caller": "FavoriteButton",
+          "callee": "Animated.timing",
+          "lineNumber": 20
+        },
+        {
+          "caller": "FavoriteButton",
+          "callee": "Animated.spring",
+          "lineNumber": 21
+        },
+        {
+          "caller": "FavoriteButton",
+          "callee": "onToggle",
+          "lineNumber": 23
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/music/components/ImportMusicButton.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 48,
+      "nonEmptyLines": 42,
+      "functions": [
+        {
+          "name": "ImportMusicButton",
+          "startLine": 17,
+          "endLine": 48,
+          "params": [
+            "{ T, primaryColor }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ImportMusicButton",
+          "line": 17,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "ImportMusicButton",
+          "callee": "useTheme",
+          "lineNumber": 18
+        },
+        {
+          "caller": "ImportMusicButton",
+          "callee": "useMusicStore",
+          "lineNumber": 19
+        },
+        {
+          "caller": "ImportMusicButton",
+          "callee": "useState",
+          "lineNumber": 20
+        },
+        {
+          "caller": "ImportMusicButton",
+          "callee": "useCallback",
+          "lineNumber": 22
+        },
+        {
+          "caller": "ImportMusicButton",
+          "callee": "DocumentPicker.getDocumentAsync",
+          "lineNumber": 24
+        },
+        {
+          "caller": "ImportMusicButton",
+          "callee": "setImporting",
+          "lineNumber": 30
+        },
+        {
+          "caller": "ImportMusicButton",
+          "callee": "addUserTrack",
+          "lineNumber": 31
+        },
+        {
+          "caller": "ImportMusicButton",
+          "callee": "Alert.alert",
+          "lineNumber": 32
+        },
+        {
+          "caller": "ImportMusicButton",
+          "callee": "T('musicImportSuccess').replace",
+          "lineNumber": 32
+        },
+        {
+          "caller": "ImportMusicButton",
+          "callee": "T",
+          "lineNumber": 32
+        },
+        {
+          "caller": "ImportMusicButton",
+          "callee": "log.warn",
+          "lineNumber": 34
+        },
+        {
+          "caller": "ImportMusicButton",
+          "callee": "Alert.alert",
+          "lineNumber": 35
+        },
+        {
+          "caller": "ImportMusicButton",
+          "callee": "T",
+          "lineNumber": 35
+        },
+        {
+          "caller": "ImportMusicButton",
+          "callee": "setImporting",
+          "lineNumber": 37
+        },
+        {
+          "caller": "ImportMusicButton",
+          "callee": "FONT_BODY",
+          "lineNumber": 45
+        },
+        {
+          "caller": "ImportMusicButton",
+          "callee": "T",
+          "lineNumber": 45
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/music/components/MusicMiniBar.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 67,
+      "nonEmptyLines": 58,
+      "functions": [
+        {
+          "name": "MusicMiniBar",
+          "startLine": 30,
+          "endLine": 67,
+          "params": [
+            "{ currentTrack, isPlaying, loop, onTogglePlay, onToggleLoop, onPressTrackName, primaryColor }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "MusicMiniBar",
+          "line": 30,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "MusicMiniBar",
+          "callee": "useTheme",
+          "lineNumber": 31
+        },
+        {
+          "caller": "MusicMiniBar",
+          "callee": "useMusicStore",
+          "lineNumber": 32
+        },
+        {
+          "caller": "MusicMiniBar",
+          "callee": "useMusicStore",
+          "lineNumber": 33
+        },
+        {
+          "caller": "MusicMiniBar",
+          "callee": "useMusicStore",
+          "lineNumber": 34
+        },
+        {
+          "caller": "MusicMiniBar",
+          "callee": "FONT_SUB",
+          "lineNumber": 48
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/music/components/MusicPickerModal.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 221,
+      "nonEmptyLines": 206,
+      "functions": [
+        {
+          "name": "MusicPickerModal",
+          "startLine": 28,
+          "endLine": 150,
+          "params": [
+            "{ visible, onClose, onSelectTrack, onSelectNoMusic, primaryColor, selectedTrackId }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "MusicPickerModal",
+          "line": 28,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "MusicPickerModal",
+          "callee": "useTheme",
+          "lineNumber": 29
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "useT",
+          "lineNumber": 30
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "useMusicStore",
+          "lineNumber": 32
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "useMusicStore",
+          "lineNumber": 33
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "useMusicStore",
+          "lineNumber": 34
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "useMusicStore",
+          "lineNumber": 35
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "useMusicStore",
+          "lineNumber": 36
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "useMusicStore",
+          "lineNumber": 37
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "useMusicStore",
+          "lineNumber": 38
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "useMusicStore",
+          "lineNumber": 39
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "useMusicStore",
+          "lineNumber": 40
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "useMemo",
+          "lineNumber": 43
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "library.filter",
+          "lineNumber": 47
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "MUSIC_CATEGORY_META.find",
+          "lineNumber": 49
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "T",
+          "lineNumber": 50
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "T",
+          "lineNumber": 50
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "groups.push",
+          "lineNumber": 51
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "useMemo",
+          "lineNumber": 58
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "items.push",
+          "lineNumber": 61
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "items.push",
+          "lineNumber": 63
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "useCallback",
+          "lineNumber": 69
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "pause",
+          "lineNumber": 71
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "audioSessionManager.requestPlay",
+          "lineNumber": 73
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "resume",
+          "lineNumber": 74
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "audioSessionManager.requestPlay",
+          "lineNumber": 77
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "play",
+          "lineNumber": 79
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "onSelectTrack",
+          "lineNumber": 80
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "useCallback",
+          "lineNumber": 85
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "onSelectNoMusic",
+          "lineNumber": 90
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "onClose",
+          "lineNumber": 90
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "T",
+          "lineNumber": 97
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "favorites.includes",
+          "lineNumber": 113
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "handlePlay",
+          "lineNumber": 114
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "toggleFavorite",
+          "lineNumber": 115
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "useCallback",
+          "lineNumber": 123
+        },
+        {
+          "caller": "MusicPickerModal",
+          "callee": "T",
+          "lineNumber": 131
+        }
+      ],
+      "metrics": {
+        "importCount": 5,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/music/components/PlayerBar.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 202,
+      "nonEmptyLines": 172,
+      "functions": [
+        {
+          "name": "PlayerBar",
+          "startLine": 21,
+          "endLine": 196,
+          "params": [
+            "{ primaryColor, category }"
+          ]
+        },
+        {
+          "name": "formatTime",
+          "startLine": 198,
+          "endLine": 202,
+          "params": [
+            "sec"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "PlayerBar",
+          "line": 21,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "PlayerBar",
+          "callee": "useTheme",
+          "lineNumber": 22
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useT",
+          "lineNumber": 23
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useMusicStore",
+          "lineNumber": 24
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useMusicStore",
+          "lineNumber": 25
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useMusicStore",
+          "lineNumber": 26
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useMusicStore",
+          "lineNumber": 27
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useMusicStore",
+          "lineNumber": 28
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useMusicStore",
+          "lineNumber": 29
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useMusicStore",
+          "lineNumber": 30
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useMusicStore",
+          "lineNumber": 31
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useMusicStore",
+          "lineNumber": 32
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useMusicStore",
+          "lineNumber": 34
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useMusicStore",
+          "lineNumber": 35
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useMusicStore",
+          "lineNumber": 36
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useMusicStore",
+          "lineNumber": 37
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useMusicStore",
+          "lineNumber": 38
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useMusicStore",
+          "lineNumber": 39
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useMusicStore",
+          "lineNumber": 40
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useMusicStore",
+          "lineNumber": 41
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useMusicStore",
+          "lineNumber": 42
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useState",
+          "lineNumber": 44
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "formatTime",
+          "lineNumber": 47
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "formatTime",
+          "lineNumber": 48
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useCallback",
+          "lineNumber": 57
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "audioPlayerRef.current?.seekTo",
+          "lineNumber": 58
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useCallback",
+          "lineNumber": 61
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "pause",
+          "lineNumber": 62
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "resume",
+          "lineNumber": 62
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useCallback",
+          "lineNumber": 65
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "PLAY_MODES.findIndex",
+          "lineNumber": 66
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "setPlayMode",
+          "lineNumber": 67
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useCallback",
+          "lineNumber": 70
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "setVolume",
+          "lineNumber": 71
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "useCallback",
+          "lineNumber": 74
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "setSleepTimer",
+          "lineNumber": 75
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "setShowSleepModal",
+          "lineNumber": 76
+        },
+        {
+          "caller": "formatSleepTime",
+          "callee": "Math.floor",
+          "lineNumber": 80
+        },
+        {
+          "caller": "formatSleepTime",
+          "callee": "String(s).padStart",
+          "lineNumber": 82
+        },
+        {
+          "caller": "formatSleepTime",
+          "callee": "String",
+          "lineNumber": 82
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "PLAY_MODES.find",
+          "lineNumber": 87
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "T",
+          "lineNumber": 89
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "FONT_SUB",
+          "lineNumber": 97
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "T",
+          "lineNumber": 97
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "setError",
+          "lineNumber": 98
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "play",
+          "lineNumber": 98
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "FONT_SUB",
+          "lineNumber": 99
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "T",
+          "lineNumber": 99
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "FONT_BODY",
+          "lineNumber": 107
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "FONT_SUB",
+          "lineNumber": 110
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "setShowSleepModal",
+          "lineNumber": 117
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "FONT_SUB",
+          "lineNumber": 118
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "formatSleepTime",
+          "lineNumber": 119
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "setShowSleepModal",
+          "lineNumber": 123
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "FONT_SUB",
+          "lineNumber": 154
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "setShowSleepModal",
+          "lineNumber": 170
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "FONT_BODY",
+          "lineNumber": 173
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "T",
+          "lineNumber": 173
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "SLEEP_PRESETS.map",
+          "lineNumber": 175
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "handleSleepSelect",
+          "lineNumber": 176
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "FONT_BODY",
+          "lineNumber": 178
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "T('musicMinutes').replace",
+          "lineNumber": 178
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "T",
+          "lineNumber": 178
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "String",
+          "lineNumber": 178
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "handleSleepSelect",
+          "lineNumber": 182
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "FONT_BODY",
+          "lineNumber": 184
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "T",
+          "lineNumber": 184
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "setShowSleepModal",
+          "lineNumber": 188
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "FONT_BODY",
+          "lineNumber": 189
+        },
+        {
+          "caller": "PlayerBar",
+          "callee": "T",
+          "lineNumber": 189
+        },
+        {
+          "caller": "formatTime",
+          "callee": "Math.floor",
+          "lineNumber": 199
+        },
+        {
+          "caller": "formatTime",
+          "callee": "Math.floor",
+          "lineNumber": 200
+        },
+        {
+          "caller": "formatTime",
+          "callee": "String(s).padStart",
+          "lineNumber": 201
+        },
+        {
+          "caller": "formatTime",
+          "callee": "String",
+          "lineNumber": 201
+        }
+      ],
+      "metrics": {
+        "importCount": 6,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/music/components/TrackListItem.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 93,
+      "nonEmptyLines": 81,
+      "functions": [
+        {
+          "name": "TrackListItem",
+          "startLine": 25,
+          "endLine": 91,
+          "params": [
+            "{ track, isCurrent, isPlaying, isFavorite, onPlay, onToggleFavorite, primaryColor, showFavorite = true }"
+          ]
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "TrackListItem",
+          "callee": "useTheme",
+          "lineNumber": 26
+        },
+        {
+          "caller": "TrackListItem",
+          "callee": "useT",
+          "lineNumber": 27
+        },
+        {
+          "caller": "TrackListItem",
+          "callee": "useMusicStore",
+          "lineNumber": 29
+        },
+        {
+          "caller": "TrackListItem",
+          "callee": "useMusicStore",
+          "lineNumber": 33
+        },
+        {
+          "caller": "TrackListItem",
+          "callee": "useMusicStore",
+          "lineNumber": 34
+        },
+        {
+          "caller": "TrackListItem",
+          "callee": "MUSIC_CATEGORY_META.find",
+          "lineNumber": 38
+        },
+        {
+          "caller": "TrackListItem",
+          "callee": "T",
+          "lineNumber": 39
+        },
+        {
+          "caller": "TrackListItem",
+          "callee": "T",
+          "lineNumber": 39
+        },
+        {
+          "caller": "TrackListItem",
+          "callee": "useCallback",
+          "lineNumber": 41
+        },
+        {
+          "caller": "TrackListItem",
+          "callee": "Alert.alert",
+          "lineNumber": 42
+        },
+        {
+          "caller": "TrackListItem",
+          "callee": "T",
+          "lineNumber": 43
+        },
+        {
+          "caller": "TrackListItem",
+          "callee": "T",
+          "lineNumber": 44
+        },
+        {
+          "caller": "TrackListItem",
+          "callee": "T",
+          "lineNumber": 46
+        },
+        {
+          "caller": "TrackListItem",
+          "callee": "T",
+          "lineNumber": 47
+        },
+        {
+          "caller": "TrackListItem",
+          "callee": "removeUserTrack",
+          "lineNumber": 47
+        },
+        {
+          "caller": "TrackListItem",
+          "callee": "FONT_BODY",
+          "lineNumber": 58
+        },
+        {
+          "caller": "TrackListItem",
+          "callee": "FONT_SUB",
+          "lineNumber": 61
+        }
+      ],
+      "metrics": {
+        "importCount": 6,
+        "exportCount": 0,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/music/components/WaveformBar.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 85,
+      "nonEmptyLines": 77,
+      "functions": [
+        {
+          "name": "seededRandom",
+          "startLine": 13,
+          "endLine": 19,
+          "params": [
+            "seed"
+          ]
+        },
+        {
+          "name": "generateWaveform",
+          "startLine": 21,
+          "endLine": 41,
+          "params": [
+            "trackId",
+            "barCount"
+          ]
+        },
+        {
+          "name": "WaveformBar",
+          "startLine": 53,
+          "endLine": 85,
+          "params": [
+            "{ trackId, progress, primaryColor, inactiveColor = 'rgba(255,255,255,.15)', barCount = 40, height = 28, onPress }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "WaveformBar",
+          "line": 53,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "generateWaveform",
+          "callee": "Object.entries",
+          "lineNumber": 23
+        },
+        {
+          "caller": "generateWaveform",
+          "callee": "trackId.startsWith",
+          "lineNumber": 24
+        },
+        {
+          "caller": "generateWaveform",
+          "callee": "trackId.includes",
+          "lineNumber": 24
+        },
+        {
+          "caller": "generateWaveform",
+          "callee": "profile.slice",
+          "lineNumber": 26
+        },
+        {
+          "caller": "generateWaveform",
+          "callee": "result.push",
+          "lineNumber": 28
+        },
+        {
+          "caller": "generateWaveform",
+          "callee": "trackId.charCodeAt",
+          "lineNumber": 36
+        },
+        {
+          "caller": "generateWaveform",
+          "callee": "seededRandom",
+          "lineNumber": 39
+        },
+        {
+          "caller": "generateWaveform",
+          "callee": "Math.abs",
+          "lineNumber": 39
+        },
+        {
+          "caller": "generateWaveform",
+          "callee": "Array.from",
+          "lineNumber": 40
+        },
+        {
+          "caller": "generateWaveform",
+          "callee": "rand",
+          "lineNumber": 40
+        },
+        {
+          "caller": "WaveformBar",
+          "callee": "useMemo",
+          "lineNumber": 54
+        },
+        {
+          "caller": "WaveformBar",
+          "callee": "generateWaveform",
+          "lineNumber": 54
+        },
+        {
+          "caller": "WaveformBar",
+          "callee": "useCallback",
+          "lineNumber": 58
+        },
+        {
+          "caller": "WaveformBar",
+          "callee": "Math.max",
+          "lineNumber": 61
+        },
+        {
+          "caller": "WaveformBar",
+          "callee": "Math.min",
+          "lineNumber": 61
+        },
+        {
+          "caller": "WaveformBar",
+          "callee": "onPress",
+          "lineNumber": 62
+        },
+        {
+          "caller": "WaveformBar",
+          "callee": "bars.map",
+          "lineNumber": 67
+        },
+        {
+          "caller": "WaveformBar",
+          "callee": "Math.sin",
+          "lineNumber": 71
+        },
+        {
+          "caller": "WaveformBar",
+          "callee": "Math.max",
+          "lineNumber": 75
+        },
+        {
+          "caller": "WaveformBar",
+          "callee": "Math.sin",
+          "lineNumber": 79
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/music/screens/MusicCategoryScreen.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 108,
+      "nonEmptyLines": 97,
+      "functions": [
+        {
+          "name": "MusicCategoryScreen",
+          "startLine": 18,
+          "endLine": 108,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "MusicCategoryScreen",
+          "line": 18,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "useTheme",
+          "lineNumber": 19
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "useT",
+          "lineNumber": 20
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "useRootNavigation",
+          "lineNumber": 21
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "useRoute",
+          "lineNumber": 22
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 26
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 27
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 28
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 29
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 30
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 31
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 32
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 33
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 34
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 35
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 36
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 37
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "useEffect",
+          "lineNumber": 39
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "loadFavorites",
+          "lineNumber": 40
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "loadUserTracks",
+          "lineNumber": 41
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "MUSIC_CATEGORY_META.find",
+          "lineNumber": 44
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "useMemo",
+          "lineNumber": 45
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "computeTracksByCategory",
+          "lineNumber": 45
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "useCallback",
+          "lineNumber": 47
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "pause",
+          "lineNumber": 49
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "resume",
+          "lineNumber": 49
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "tracks.findIndex",
+          "lineNumber": 52
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "setQueue",
+          "lineNumber": 53
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "play",
+          "lineNumber": 54
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "useCallback",
+          "lineNumber": 58
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "favorites.includes",
+          "lineNumber": 63
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "handlePlay",
+          "lineNumber": 64
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "toggleFavorite",
+          "lineNumber": 65
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "nav.goBack",
+          "lineNumber": 74
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "FONT_TITLE",
+          "lineNumber": 77
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "T",
+          "lineNumber": 78
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "FONT_BODY",
+          "lineNumber": 90
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "T",
+          "lineNumber": 91
+        },
+        {
+          "caller": "MusicCategoryScreen",
+          "callee": "T",
+          "lineNumber": 91
+        }
+      ],
+      "metrics": {
+        "importCount": 6,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/music/screens/MusicScreen.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 152,
+      "nonEmptyLines": 139,
+      "functions": [
+        {
+          "name": "MusicScreen",
+          "startLine": 16,
+          "endLine": 152,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "MusicScreen",
+          "line": 16,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "MusicScreen",
+          "callee": "useTheme",
+          "lineNumber": 17
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "useT",
+          "lineNumber": 18
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "useRootNavigation",
+          "lineNumber": 19
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 22
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 23
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 24
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 25
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 26
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 27
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 28
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 29
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 30
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 31
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 32
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 33
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "useEffect",
+          "lineNumber": 35
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "loadFavorites",
+          "lineNumber": 36
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "loadUserTracks",
+          "lineNumber": 37
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "loadVolume",
+          "lineNumber": 38
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "useMemo",
+          "lineNumber": 41
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "computeCategoryMeta",
+          "lineNumber": 41
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "useCallback",
+          "lineNumber": 43
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "nav.navigate",
+          "lineNumber": 44
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "nav.goBack",
+          "lineNumber": 56
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "FONT_TITLE",
+          "lineNumber": 59
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "T",
+          "lineNumber": 59
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "FONT_BODY",
+          "lineNumber": 85
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "FONT_SUB",
+          "lineNumber": 88
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "T",
+          "lineNumber": 89
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "T",
+          "lineNumber": 89
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "pause",
+          "lineNumber": 106
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "resume",
+          "lineNumber": 106
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "categories.map",
+          "lineNumber": 129
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "MUSIC_CATEGORY_META.find",
+          "lineNumber": 130
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "T",
+          "lineNumber": 136
+        },
+        {
+          "caller": "MusicScreen",
+          "callee": "handleCategoryPress",
+          "lineNumber": 139
+        }
+      ],
+      "metrics": {
+        "importCount": 9,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/music/services/AudioEngineProvider.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 95,
+      "nonEmptyLines": 80,
+      "functions": [
+        {
+          "name": "AudioEngineProvider",
+          "startLine": 18,
+          "endLine": 95,
+          "params": [
+            "{ children }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "AudioEngineProvider",
+          "line": 18,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "useMusicStore",
+          "lineNumber": 19
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "useMusicStore",
+          "lineNumber": 20
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "useMusicStore",
+          "lineNumber": 21
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "useMusicStore",
+          "lineNumber": 22
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "useMusicStore",
+          "lineNumber": 23
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "useAudioPlayer",
+          "lineNumber": 29
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "useAudioPlayerStatus",
+          "lineNumber": 30
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "useEffect",
+          "lineNumber": 33
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "useMusicStore.getState().setPlaybackStatus",
+          "lineNumber": 34
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "useMusicStore.getState",
+          "lineNumber": 34
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "useEffect",
+          "lineNumber": 38
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "useMusicStore.getState().playNext",
+          "lineNumber": 44
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "useMusicStore.getState",
+          "lineNumber": 44
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "useEffect",
+          "lineNumber": 48
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "useEffect",
+          "lineNumber": 53
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "setAudioModeAsync({\n      playsInSilentMode: true,\n      shouldPlayInBackground: false,\n    }).catch",
+          "lineNumber": 54
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "setAudioModeAsync",
+          "lineNumber": 54
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "useEffect",
+          "lineNumber": 60
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "useEffect",
+          "lineNumber": 65
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "useRef",
+          "lineNumber": 70
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "useEffect",
+          "lineNumber": 71
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "player.pause",
+          "lineNumber": 73
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "player.seekTo",
+          "lineNumber": 81
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "player.play",
+          "lineNumber": 84
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "player.pause",
+          "lineNumber": 86
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "log.warn",
+          "lineNumber": 89
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "useMusicStore.getState().setError",
+          "lineNumber": 90
+        },
+        {
+          "caller": "AudioEngineProvider",
+          "callee": "useMusicStore.getState",
+          "lineNumber": 90
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/music/services/AudioSessionManager.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 94,
+      "nonEmptyLines": 82,
+      "classes": [
+        {
+          "name": "AudioSessionManager",
+          "startLine": 17,
+          "endLine": 92,
+          "methods": [
+            "requestPlay",
+            "notifyStopped",
+            "getActiveSource",
+            "canPlay"
+          ],
+          "properties": [
+            "activeSource",
+            "musicWasPlayingBeforeAmbient"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "audioSessionManager",
+          "line": 94,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "requestPlay",
+          "callee": "useMusicStore.getState",
+          "lineNumber": 31
+        },
+        {
+          "caller": "requestPlay",
+          "callee": "musicStore.pause",
+          "lineNumber": 34
+        },
+        {
+          "caller": "notifyStopped",
+          "callee": "useMusicStore.getState",
+          "lineNumber": 69
+        },
+        {
+          "caller": "notifyStopped",
+          "callee": "musicStore.resume",
+          "lineNumber": 71
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/music/services/audioPlayerRef.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 7,
+      "nonEmptyLines": 6,
+      "exports": [
+        {
+          "name": "audioPlayerRef",
+          "line": 7,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/music/useMusicStore.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 385,
+      "nonEmptyLines": 334,
+      "functions": [
+        {
+          "name": "ensureMusicDataDir",
+          "startLine": 10,
+          "endLine": 13,
+          "params": []
+        },
+        {
+          "name": "writeJsonFile",
+          "startLine": 14,
+          "endLine": 19,
+          "params": [
+            "filename",
+            "data"
+          ]
+        },
+        {
+          "name": "readJsonFile",
+          "startLine": 20,
+          "endLine": 26,
+          "params": [
+            "filename"
+          ]
+        },
+        {
+          "name": "setMusicSyncCallback",
+          "startLine": 52,
+          "endLine": 52,
+          "params": [
+            "fn"
+          ]
+        },
+        {
+          "name": "computeTracksByCategory",
+          "startLine": 113,
+          "endLine": 121,
+          "params": [
+            "library",
+            "userTracks",
+            "favorites",
+            "cat"
+          ]
+        },
+        {
+          "name": "computeCategoryMeta",
+          "startLine": 123,
+          "endLine": 132,
+          "params": [
+            "library",
+            "userTracks",
+            "favorites"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "setMusicSyncCallback",
+          "line": 52,
+          "isDefault": false
+        },
+        {
+          "name": "computeTracksByCategory",
+          "line": 113,
+          "isDefault": false
+        },
+        {
+          "name": "computeCategoryMeta",
+          "line": 123,
+          "isDefault": false
+        },
+        {
+          "name": "useMusicStore",
+          "line": 134,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "ensureMusicDataDir",
+          "callee": "FileSystem.getInfoAsync",
+          "lineNumber": 11
+        },
+        {
+          "caller": "ensureMusicDataDir",
+          "callee": "FileSystem.makeDirectoryAsync",
+          "lineNumber": 12
+        },
+        {
+          "caller": "writeJsonFile",
+          "callee": "ensureMusicDataDir",
+          "lineNumber": 16
+        },
+        {
+          "caller": "writeJsonFile",
+          "callee": "FileSystem.writeAsStringAsync",
+          "lineNumber": 17
+        },
+        {
+          "caller": "writeJsonFile",
+          "callee": "JSON.stringify",
+          "lineNumber": 17
+        },
+        {
+          "caller": "writeJsonFile",
+          "callee": "log.warn",
+          "lineNumber": 18
+        },
+        {
+          "caller": "readJsonFile",
+          "callee": "ensureMusicDataDir",
+          "lineNumber": 22
+        },
+        {
+          "caller": "readJsonFile",
+          "callee": "FileSystem.readAsStringAsync",
+          "lineNumber": 23
+        },
+        {
+          "caller": "readJsonFile",
+          "callee": "JSON.parse",
+          "lineNumber": 24
+        },
+        {
+          "caller": "computeTracksByCategory",
+          "callee": "all.filter",
+          "lineNumber": 118
+        },
+        {
+          "caller": "computeTracksByCategory",
+          "callee": "favorites.includes",
+          "lineNumber": 118
+        },
+        {
+          "caller": "computeTracksByCategory",
+          "callee": "library.filter",
+          "lineNumber": 120
+        },
+        {
+          "caller": "computeCategoryMeta",
+          "callee": "library.filter",
+          "lineNumber": 126
+        },
+        {
+          "caller": "computeCategoryMeta",
+          "callee": "library.filter",
+          "lineNumber": 127
+        },
+        {
+          "caller": "computeCategoryMeta",
+          "callee": "library.filter",
+          "lineNumber": 128
+        },
+        {
+          "caller": "computeCategoryMeta",
+          "callee": "allTracks.filter",
+          "lineNumber": 130
+        },
+        {
+          "caller": "computeCategoryMeta",
+          "callee": "favorites.includes",
+          "lineNumber": 130
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 4,
+        "functionCount": 6,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/zhiguan/SessionComplete.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 182,
+      "nonEmptyLines": 166,
+      "functions": [
+        {
+          "name": "SessionComplete",
+          "startLine": 27,
+          "endLine": 154,
+          "params": [
+            "{ durationSec, startTime, sankalpa, onSave, onAbandon }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "SessionComplete",
+          "line": 27,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "SessionComplete",
+          "callee": "useT",
+          "lineNumber": 28
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "useState",
+          "lineNumber": 29
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "useState",
+          "lineNumber": 30
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "useState",
+          "lineNumber": 31
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "useState",
+          "lineNumber": 32
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "Math.floor",
+          "lineNumber": 34
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "new Date(startTime).toLocaleDateString",
+          "lineNumber": 36
+        },
+        {
+          "caller": "toggleTactile",
+          "callee": "setEightTactile",
+          "lineNumber": 42
+        },
+        {
+          "caller": "handleSave",
+          "callee": "onSave",
+          "lineNumber": 46
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "T",
+          "lineNumber": 62
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "T",
+          "lineNumber": 67
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "T",
+          "lineNumber": 77
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "T",
+          "lineNumber": 78
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "EIGHT_TACTILE_KEYS.map",
+          "lineNumber": 80
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "toggleTactile",
+          "lineNumber": 84
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "T",
+          "lineNumber": 87
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "T",
+          "lineNumber": 96
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "T",
+          "lineNumber": 97
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "SAM_STAGES.map",
+          "lineNumber": 99
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "setSelfReportedStage",
+          "lineNumber": 103
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "T",
+          "lineNumber": 106
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "T",
+          "lineNumber": 116
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "T",
+          "lineNumber": 123
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "T",
+          "lineNumber": 128
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "T",
+          "lineNumber": 137
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "T",
+          "lineNumber": 146
+        },
+        {
+          "caller": "SessionComplete",
+          "callee": "T",
+          "lineNumber": 149
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 366,
+      "nonEmptyLines": 328,
+      "functions": [
+        {
+          "name": "ZhiguanScreen",
+          "startLine": 50,
+          "endLine": 332,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "ZhiguanScreen",
+          "line": 50,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useT",
+          "lineNumber": 51
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useSafeAreaInsets",
+          "lineNumber": 52
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useRootNavigation",
+          "lineNumber": 53
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useShallowStore",
+          "lineNumber": 56
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useMusicStore",
+          "lineNumber": 64
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useState",
+          "lineNumber": 66
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useState",
+          "lineNumber": 67
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useRef",
+          "lineNumber": 68
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useState",
+          "lineNumber": 70
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useState",
+          "lineNumber": 71
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useZhiguanTimer",
+          "lineNumber": 73
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useRef",
+          "lineNumber": 74
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useRef",
+          "lineNumber": 75
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useState",
+          "lineNumber": 76
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useState",
+          "lineNumber": 77
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useState",
+          "lineNumber": 78
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useCallback",
+          "lineNumber": 81
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "setRoundState",
+          "lineNumber": 82
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "notifyBreath",
+          "lineNumber": 83
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "recordBreathCount",
+          "lineNumber": 84
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useEffect",
+          "lineNumber": 90
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "initDraft",
+          "lineNumber": 91
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "AsyncStorage.getItem(SETTINGS_KEY).then",
+          "lineNumber": 92
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "AsyncStorage.getItem",
+          "lineNumber": 92
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "JSON.parse",
+          "lineNumber": 94
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "setSettings",
+          "lineNumber": 95
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "updateDraft",
+          "lineNumber": 96
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "resetDraft",
+          "lineNumber": 105
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useEffect",
+          "lineNumber": 109
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "Animated.timing(bgAnim, {\r\n      toValue: mode === 'practicing' ? 1 : 0,\r\n      duration: 1500,\r\n      useNativeDriver: false,\r\n    }).start",
+          "lineNumber": 110
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "Animated.timing",
+          "lineNumber": 110
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "usePracticeElapseHints",
+          "lineNumber": 118
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useRef",
+          "lineNumber": 125
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useEffect",
+          "lineNumber": 126
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "Haptics.notificationAsync",
+          "lineNumber": 130
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useCallback",
+          "lineNumber": 134
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "updateDraft",
+          "lineNumber": 136
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "startSession",
+          "lineNumber": 143
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "timer.start",
+          "lineNumber": 145
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "setMode",
+          "lineNumber": 146
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "musicStore.library.find",
+          "lineNumber": 157
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "musicStore.play",
+          "lineNumber": 159
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useCallback",
+          "lineNumber": 165
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "setIsLongPressing",
+          "lineNumber": 166
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "setTimeout",
+          "lineNumber": 167
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "setSessionTiming",
+          "lineNumber": 168
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "Date.now",
+          "lineNumber": 169
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "timer.stop",
+          "lineNumber": 172
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "setMode",
+          "lineNumber": 173
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "setIsLongPressing",
+          "lineNumber": 174
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "Haptics.impactAsync",
+          "lineNumber": 175
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "musicStore.stop",
+          "lineNumber": 176
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useCallback",
+          "lineNumber": 180
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "clearTimeout",
+          "lineNumber": 182
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "setIsLongPressing",
+          "lineNumber": 185
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useCallback",
+          "lineNumber": 188
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "completeSession",
+          "lineNumber": 195
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "nav.goBack",
+          "lineNumber": 204
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useCallback",
+          "lineNumber": 207
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "resetDraft",
+          "lineNumber": 208
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "musicStore.stop",
+          "lineNumber": 209
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "nav.goBack",
+          "lineNumber": 210
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "useCallback",
+          "lineNumber": 213
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "setSettings",
+          "lineNumber": 214
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "AsyncStorage.setItem",
+          "lineNumber": 215
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "JSON.stringify",
+          "lineNumber": 215
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "updateDraft",
+          "lineNumber": 216
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "setShowSettings",
+          "lineNumber": 223
+        },
+        {
+          "caller": "formatTime",
+          "callee": "Math.floor",
+          "lineNumber": 235
+        },
+        {
+          "caller": "formatTime",
+          "callee": "String(m).padStart",
+          "lineNumber": 237
+        },
+        {
+          "caller": "formatTime",
+          "callee": "String",
+          "lineNumber": 237
+        },
+        {
+          "caller": "formatTime",
+          "callee": "String(s).padStart",
+          "lineNumber": 237
+        },
+        {
+          "caller": "formatTime",
+          "callee": "String",
+          "lineNumber": 237
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "bgAnim.interpolate",
+          "lineNumber": 240
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "T",
+          "lineNumber": 250
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "T",
+          "lineNumber": 251
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "getPattern",
+          "lineNumber": 255
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "T('zhiguanTargetMinutes').replace",
+          "lineNumber": 257
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "T",
+          "lineNumber": 257
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "String",
+          "lineNumber": 257
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "T",
+          "lineNumber": 263
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "setShowSettings",
+          "lineNumber": 267
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "nav.navigate",
+          "lineNumber": 270
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "formatTime",
+          "lineNumber": 280
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "getPattern",
+          "lineNumber": 283
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "setShowVipassanaPanel",
+          "lineNumber": 290
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "T",
+          "lineNumber": 292
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "T",
+          "lineNumber": 301
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "T",
+          "lineNumber": 301
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "setShowVipassanaPanel",
+          "lineNumber": 307
+        },
+        {
+          "caller": "ZhiguanScreen",
+          "callee": "setShowSettings",
+          "lineNumber": 327
+        }
+      ],
+      "metrics": {
+        "importCount": 11,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/zhiguan/ZhiguanSettingsSheet.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 223,
+      "nonEmptyLines": 206,
+      "functions": [
+        {
+          "name": "ZhiguanSettingsSheet",
+          "startLine": 42,
+          "endLine": 199,
+          "params": [
+            "{ settings, onSave, onClose }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ZhiguanSettingsSheet",
+          "line": 42,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "useT",
+          "lineNumber": 43
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "useState",
+          "lineNumber": 44
+        },
+        {
+          "caller": "handleSave",
+          "callee": "onSave",
+          "lineNumber": 47
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "e.stopPropagation",
+          "lineNumber": 53
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "T",
+          "lineNumber": 57
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "BREATH_OPTIONS.map",
+          "lineNumber": 59
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "setLocalSettings",
+          "lineNumber": 63
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "T",
+          "lineNumber": 66
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "T",
+          "lineNumber": 73
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "TARGET_OPTIONS.map",
+          "lineNumber": 75
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "setLocalSettings",
+          "lineNumber": 79
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "setLocalSettings",
+          "lineNumber": 88
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "T",
+          "lineNumber": 91
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "T",
+          "lineNumber": 96
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "SOUND_OPTIONS.map",
+          "lineNumber": 98
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "setLocalSettings",
+          "lineNumber": 102
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "T",
+          "lineNumber": 105
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "T",
+          "lineNumber": 112
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "ZHIGUAN_METHOD_DEFS.map",
+          "lineNumber": 114
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "setLocalSettings",
+          "lineNumber": 118
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "T",
+          "lineNumber": 121
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "T",
+          "lineNumber": 123
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "T",
+          "lineNumber": 129
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "FONT_SMALL",
+          "lineNumber": 130
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "T",
+          "lineNumber": 130
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "FIVE_HINDRANCE_KEYS.map",
+          "lineNumber": 131
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "FONT_SUB",
+          "lineNumber": 134
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "T",
+          "lineNumber": 134
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "FONT_SUB",
+          "lineNumber": 135
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "FONT_SMALL",
+          "lineNumber": 138
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "T",
+          "lineNumber": 138
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "Array.from",
+          "lineNumber": 141
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "setLocalSettings",
+          "lineNumber": 148
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "FONT_SMALL",
+          "lineNumber": 156
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "T",
+          "lineNumber": 156
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "T",
+          "lineNumber": 162
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "SANKALPA_TEMPLATES.map",
+          "lineNumber": 164
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "setLocalSettings",
+          "lineNumber": 168
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "T",
+          "lineNumber": 171
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "setLocalSettings",
+          "lineNumber": 179
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "T",
+          "lineNumber": 180
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "T",
+          "lineNumber": 189
+        },
+        {
+          "caller": "ZhiguanSettingsSheet",
+          "callee": "T",
+          "lineNumber": 192
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/zhiguan/components/BreathRing.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 66,
+      "nonEmptyLines": 57,
+      "functions": [
+        {
+          "name": "BreathRing",
+          "startLine": 16,
+          "endLine": 61,
+          "params": [
+            "{ pattern, visible = true, size = 220, style }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "BreathRing",
+          "line": 16,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "BreathRing",
+          "callee": "useRef",
+          "lineNumber": 17
+        },
+        {
+          "caller": "BreathRing",
+          "callee": "useEffect",
+          "lineNumber": 23
+        },
+        {
+          "caller": "BreathRing",
+          "callee": "anim.setValue",
+          "lineNumber": 25
+        },
+        {
+          "caller": "BreathRing",
+          "callee": "Animated.loop",
+          "lineNumber": 26
+        },
+        {
+          "caller": "BreathRing",
+          "callee": "Animated.timing",
+          "lineNumber": 27
+        },
+        {
+          "caller": "BreathRing",
+          "callee": "loop.start",
+          "lineNumber": 34
+        },
+        {
+          "caller": "BreathRing",
+          "callee": "loop.stop",
+          "lineNumber": 35
+        },
+        {
+          "caller": "BreathRing",
+          "callee": "anim.interpolate",
+          "lineNumber": 38
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/zhiguan/components/CountingRound.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 83,
+      "nonEmptyLines": 76,
+      "functions": [
+        {
+          "name": "CountingRound",
+          "startLine": 17,
+          "endLine": 61,
+          "params": [
+            "{ state, T }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "CountingRound",
+          "line": 17,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "CountingRound",
+          "callee": "Array.from",
+          "lineNumber": 25
+        },
+        {
+          "caller": "CountingRound",
+          "callee": "Math.cos",
+          "lineNumber": 27
+        },
+        {
+          "caller": "CountingRound",
+          "callee": "Math.sin",
+          "lineNumber": 28
+        },
+        {
+          "caller": "CountingRound",
+          "callee": "T",
+          "lineNumber": 49
+        },
+        {
+          "caller": "CountingRound",
+          "callee": "T",
+          "lineNumber": 56
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/zhiguan/components/VipassanaPanel.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 84,
+      "nonEmptyLines": 75,
+      "functions": [
+        {
+          "name": "VipassanaPanel",
+          "startLine": 16,
+          "endLine": 65,
+          "params": [
+            "{ visible, onClose, T }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "VipassanaPanel",
+          "line": 16,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "VipassanaPanel",
+          "callee": "useState",
+          "lineNumber": 17
+        },
+        {
+          "caller": "VipassanaPanel",
+          "callee": "VIPASSANA_GUIDES.find",
+          "lineNumber": 19
+        },
+        {
+          "caller": "VipassanaPanel",
+          "callee": "e.stopPropagation",
+          "lineNumber": 24
+        },
+        {
+          "caller": "VipassanaPanel",
+          "callee": "T",
+          "lineNumber": 26
+        },
+        {
+          "caller": "VipassanaPanel",
+          "callee": "GUIDE_KEYS.map",
+          "lineNumber": 30
+        },
+        {
+          "caller": "VipassanaPanel",
+          "callee": "VIPASSANA_GUIDES.find",
+          "lineNumber": 31
+        },
+        {
+          "caller": "VipassanaPanel",
+          "callee": "setActiveGuide",
+          "lineNumber": 37
+        },
+        {
+          "caller": "VipassanaPanel",
+          "callee": "T",
+          "lineNumber": 41
+        },
+        {
+          "caller": "VipassanaPanel",
+          "callee": "currentGuide?.lines.map",
+          "lineNumber": 50
+        },
+        {
+          "caller": "VipassanaPanel",
+          "callee": "T",
+          "lineNumber": 53
+        },
+        {
+          "caller": "VipassanaPanel",
+          "callee": "T",
+          "lineNumber": 59
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/zhiguan/hooks/useZhiguanTimer.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 125,
+      "nonEmptyLines": 109,
+      "functions": [
+        {
+          "name": "useZhiguanTimer",
+          "startLine": 19,
+          "endLine": 110,
+          "params": []
+        },
+        {
+          "name": "usePracticeElapseHints",
+          "startLine": 113,
+          "endLine": 125,
+          "params": [
+            "elapsedSecs",
+            "handlers"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "useZhiguanTimer",
+          "line": 19,
+          "isDefault": false
+        },
+        {
+          "name": "usePracticeElapseHints",
+          "line": 113,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "useState",
+          "lineNumber": 20
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "useRef",
+          "lineNumber": 26
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "useRef",
+          "lineNumber": 27
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "useRef",
+          "lineNumber": 28
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "useRef",
+          "lineNumber": 29
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "useRef",
+          "lineNumber": 30
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "useRef",
+          "lineNumber": 31
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "useCallback",
+          "lineNumber": 33
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "Date.now",
+          "lineNumber": 34
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "Math.floor",
+          "lineNumber": 36
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "setState",
+          "lineNumber": 38
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "requestAnimationFrame",
+          "lineNumber": 44
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "useCallback",
+          "lineNumber": 48
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "Date.now",
+          "lineNumber": 49
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "setState",
+          "lineNumber": 56
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "requestAnimationFrame",
+          "lineNumber": 57
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "useCallback",
+          "lineNumber": 60
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "Date.now",
+          "lineNumber": 61
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "setState",
+          "lineNumber": 63
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "cancelAnimationFrame",
+          "lineNumber": 64
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "useCallback",
+          "lineNumber": 67
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "Date.now",
+          "lineNumber": 68
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "setState",
+          "lineNumber": 74
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "requestAnimationFrame",
+          "lineNumber": 75
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "useCallback",
+          "lineNumber": 78
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "cancelAnimationFrame",
+          "lineNumber": 79
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "setState",
+          "lineNumber": 81
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "useEffect",
+          "lineNumber": 84
+        },
+        {
+          "caller": "handler",
+          "callee": "Date.now",
+          "lineNumber": 87
+        },
+        {
+          "caller": "handler",
+          "callee": "setState",
+          "lineNumber": 89
+        },
+        {
+          "caller": "handler",
+          "callee": "Date.now",
+          "lineNumber": 91
+        },
+        {
+          "caller": "handler",
+          "callee": "setState",
+          "lineNumber": 95
+        },
+        {
+          "caller": "handler",
+          "callee": "requestAnimationFrame",
+          "lineNumber": 96
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "AppState.addEventListener",
+          "lineNumber": 99
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "sub.remove",
+          "lineNumber": 100
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "useEffect",
+          "lineNumber": 103
+        },
+        {
+          "caller": "useZhiguanTimer",
+          "callee": "cancelAnimationFrame",
+          "lineNumber": 105
+        },
+        {
+          "caller": "usePracticeElapseHints",
+          "callee": "useRef",
+          "lineNumber": 117
+        },
+        {
+          "caller": "usePracticeElapseHints",
+          "callee": "useRef",
+          "lineNumber": 118
+        },
+        {
+          "caller": "usePracticeElapseHints",
+          "callee": "useEffect",
+          "lineNumber": 120
+        },
+        {
+          "caller": "usePracticeElapseHints",
+          "callee": "handlersRef.current.on5min",
+          "lineNumber": 121
+        },
+        {
+          "caller": "usePracticeElapseHints",
+          "callee": "handlersRef.current.on30min",
+          "lineNumber": 122
+        },
+        {
+          "caller": "usePracticeElapseHints",
+          "callee": "handlersRef.current.on60min",
+          "lineNumber": 123
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/services/AudioSessionManager.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 94,
+      "nonEmptyLines": 82,
+      "classes": [
+        {
+          "name": "AudioSessionManager",
+          "startLine": 17,
+          "endLine": 92,
+          "methods": [
+            "requestPlay",
+            "notifyStopped",
+            "getActiveSource",
+            "canPlay"
+          ],
+          "properties": [
+            "activeSource",
+            "musicWasPlayingBeforeAmbient"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "audioSessionManager",
+          "line": 94,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "requestPlay",
+          "callee": "useMusicStore.getState",
+          "lineNumber": 31
+        },
+        {
+          "caller": "requestPlay",
+          "callee": "musicStore.pause",
+          "lineNumber": 34
+        },
+        {
+          "caller": "notifyStopped",
+          "callee": "useMusicStore.getState",
+          "lineNumber": 69
+        },
+        {
+          "caller": "notifyStopped",
+          "callee": "musicStore.resume",
+          "lineNumber": 71
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 1
+      }
+    }
+  ]
+}

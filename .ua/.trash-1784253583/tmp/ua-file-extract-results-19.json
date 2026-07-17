@@ -1,0 +1,5358 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 25,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "apps/mobile/src/features/sync/SyncService.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 75,
+      "nonEmptyLines": 60,
+      "functions": [
+        {
+          "name": "setSyncTokenProvider",
+          "startLine": 18,
+          "endLine": 18,
+          "params": [
+            "fn"
+          ]
+        },
+        {
+          "name": "setSyncUserIdProvider",
+          "startLine": 19,
+          "endLine": 19,
+          "params": [
+            "fn"
+          ]
+        },
+        {
+          "name": "setSyncChangeHandler",
+          "startLine": 20,
+          "endLine": 20,
+          "params": [
+            "fn"
+          ]
+        },
+        {
+          "name": "setDeletedIdsProvider",
+          "startLine": 21,
+          "endLine": 21,
+          "params": [
+            "fn"
+          ]
+        },
+        {
+          "name": "setKickedOutHandler",
+          "startLine": 22,
+          "endLine": 22,
+          "params": [
+            "fn"
+          ]
+        },
+        {
+          "name": "setTokenRecoveryFn",
+          "startLine": 23,
+          "endLine": 23,
+          "params": [
+            "fn"
+          ]
+        },
+        {
+          "name": "setRealtimeLogoutHandler",
+          "startLine": 24,
+          "endLine": 24,
+          "params": [
+            "fn"
+          ]
+        },
+        {
+          "name": "setRealtimeUserIdProvider",
+          "startLine": 25,
+          "endLine": 25,
+          "params": [
+            "fn"
+          ]
+        },
+        {
+          "name": "setRealtimeRunSync",
+          "startLine": 26,
+          "endLine": 26,
+          "params": [
+            "fn"
+          ]
+        },
+        {
+          "name": "setRealtimeApplyServerChanges",
+          "startLine": 27,
+          "endLine": 27,
+          "params": [
+            "fn"
+          ]
+        },
+        {
+          "name": "setSyncErrorHandler",
+          "startLine": 28,
+          "endLine": 28,
+          "params": [
+            "fn"
+          ]
+        },
+        {
+          "name": "setLastSyncAt",
+          "startLine": 29,
+          "endLine": 29,
+          "params": [
+            "ts"
+          ]
+        },
+        {
+          "name": "runSync",
+          "startLine": 31,
+          "endLine": 31,
+          "params": []
+        },
+        {
+          "name": "isSyncing",
+          "startLine": 32,
+          "endLine": 32,
+          "params": []
+        },
+        {
+          "name": "getClockOffset",
+          "startLine": 33,
+          "endLine": 33,
+          "params": []
+        },
+        {
+          "name": "isDeviceSyncedBefore",
+          "startLine": 34,
+          "endLine": 34,
+          "params": []
+        },
+        {
+          "name": "getSyncMetrics",
+          "startLine": 35,
+          "endLine": 35,
+          "params": []
+        },
+        {
+          "name": "getSyncStatus",
+          "startLine": 36,
+          "endLine": 36,
+          "params": []
+        },
+        {
+          "name": "connectRealtime",
+          "startLine": 40,
+          "endLine": 40,
+          "params": [
+            "pbUrl"
+          ]
+        },
+        {
+          "name": "disconnectRealtime",
+          "startLine": 41,
+          "endLine": 41,
+          "params": []
+        },
+        {
+          "name": "isRealtimeConnected",
+          "startLine": 42,
+          "endLine": 42,
+          "params": []
+        },
+        {
+          "name": "softResetSyncState",
+          "startLine": 45,
+          "endLine": 45,
+          "params": []
+        },
+        {
+          "name": "resetSyncState",
+          "startLine": 46,
+          "endLine": 46,
+          "params": []
+        },
+        {
+          "name": "forceFullSync",
+          "startLine": 47,
+          "endLine": 47,
+          "params": []
+        },
+        {
+          "name": "rehydrateFromDb",
+          "startLine": 50,
+          "endLine": 50,
+          "params": [
+            "entities"
+          ]
+        },
+        {
+          "name": "registerLocalDelete",
+          "startLine": 53,
+          "endLine": 53,
+          "params": [
+            "entity",
+            "id"
+          ]
+        },
+        {
+          "name": "initialSync",
+          "startLine": 56,
+          "endLine": 56,
+          "params": [
+            "token",
+            "userId"
+          ]
+        },
+        {
+          "name": "resumeInitialSync",
+          "startLine": 57,
+          "endLine": 57,
+          "params": [
+            "token",
+            "userId"
+          ]
+        },
+        {
+          "name": "setSyncTriggerCallback",
+          "startLine": 60,
+          "endLine": 60,
+          "params": [
+            "fn"
+          ]
+        },
+        {
+          "name": "triggerSyncDebounced",
+          "startLine": 61,
+          "endLine": 61,
+          "params": []
+        },
+        {
+          "name": "clearSyncTrigger",
+          "startLine": 62,
+          "endLine": 62,
+          "params": []
+        },
+        {
+          "name": "resetMigrationFlag",
+          "startLine": 65,
+          "endLine": 65,
+          "params": []
+        },
+        {
+          "name": "setMigrationDone",
+          "startLine": 66,
+          "endLine": 66,
+          "params": []
+        },
+        {
+          "name": "isMigrationDone",
+          "startLine": 67,
+          "endLine": 67,
+          "params": []
+        },
+        {
+          "name": "applyServerChanges",
+          "startLine": 70,
+          "endLine": 72,
+          "params": [
+            "data",
+            "deletedIds",
+            "signal"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "setSyncTokenProvider",
+          "line": 18,
+          "isDefault": false
+        },
+        {
+          "name": "setSyncUserIdProvider",
+          "line": 19,
+          "isDefault": false
+        },
+        {
+          "name": "setSyncChangeHandler",
+          "line": 20,
+          "isDefault": false
+        },
+        {
+          "name": "setDeletedIdsProvider",
+          "line": 21,
+          "isDefault": false
+        },
+        {
+          "name": "setKickedOutHandler",
+          "line": 22,
+          "isDefault": false
+        },
+        {
+          "name": "setTokenRecoveryFn",
+          "line": 23,
+          "isDefault": false
+        },
+        {
+          "name": "setRealtimeLogoutHandler",
+          "line": 24,
+          "isDefault": false
+        },
+        {
+          "name": "setRealtimeUserIdProvider",
+          "line": 25,
+          "isDefault": false
+        },
+        {
+          "name": "setRealtimeRunSync",
+          "line": 26,
+          "isDefault": false
+        },
+        {
+          "name": "setRealtimeApplyServerChanges",
+          "line": 27,
+          "isDefault": false
+        },
+        {
+          "name": "setSyncErrorHandler",
+          "line": 28,
+          "isDefault": false
+        },
+        {
+          "name": "setLastSyncAt",
+          "line": 29,
+          "isDefault": false
+        },
+        {
+          "name": "runSync",
+          "line": 31,
+          "isDefault": false
+        },
+        {
+          "name": "isSyncing",
+          "line": 32,
+          "isDefault": false
+        },
+        {
+          "name": "getClockOffset",
+          "line": 33,
+          "isDefault": false
+        },
+        {
+          "name": "isDeviceSyncedBefore",
+          "line": 34,
+          "isDefault": false
+        },
+        {
+          "name": "getSyncMetrics",
+          "line": 35,
+          "isDefault": false
+        },
+        {
+          "name": "getSyncStatus",
+          "line": 36,
+          "isDefault": false
+        },
+        {
+          "name": "SyncMetric",
+          "line": 37,
+          "isDefault": false
+        },
+        {
+          "name": "connectRealtime",
+          "line": 40,
+          "isDefault": false
+        },
+        {
+          "name": "disconnectRealtime",
+          "line": 41,
+          "isDefault": false
+        },
+        {
+          "name": "isRealtimeConnected",
+          "line": 42,
+          "isDefault": false
+        },
+        {
+          "name": "softResetSyncState",
+          "line": 45,
+          "isDefault": false
+        },
+        {
+          "name": "resetSyncState",
+          "line": 46,
+          "isDefault": false
+        },
+        {
+          "name": "forceFullSync",
+          "line": 47,
+          "isDefault": false
+        },
+        {
+          "name": "rehydrateFromDb",
+          "line": 50,
+          "isDefault": false
+        },
+        {
+          "name": "registerLocalDelete",
+          "line": 53,
+          "isDefault": false
+        },
+        {
+          "name": "initialSync",
+          "line": 56,
+          "isDefault": false
+        },
+        {
+          "name": "resumeInitialSync",
+          "line": 57,
+          "isDefault": false
+        },
+        {
+          "name": "setSyncTriggerCallback",
+          "line": 60,
+          "isDefault": false
+        },
+        {
+          "name": "triggerSyncDebounced",
+          "line": 61,
+          "isDefault": false
+        },
+        {
+          "name": "clearSyncTrigger",
+          "line": 62,
+          "isDefault": false
+        },
+        {
+          "name": "resetMigrationFlag",
+          "line": 65,
+          "isDefault": false
+        },
+        {
+          "name": "setMigrationDone",
+          "line": 66,
+          "isDefault": false
+        },
+        {
+          "name": "isMigrationDone",
+          "line": 67,
+          "isDefault": false
+        },
+        {
+          "name": "applyServerChanges",
+          "line": 70,
+          "isDefault": false
+        },
+        {
+          "name": "getLastSyncTimestamp",
+          "line": 75,
+          "isDefault": false
+        },
+        {
+          "name": "setLastSyncTimestamp",
+          "line": 75,
+          "isDefault": false
+        },
+        {
+          "name": "getSyncProgress",
+          "line": 75,
+          "isDefault": false
+        },
+        {
+          "name": "updateSyncProgress",
+          "line": 75,
+          "isDefault": false
+        },
+        {
+          "name": "resetSyncProgress",
+          "line": 75,
+          "isDefault": false
+        },
+        {
+          "name": "getQueueCount",
+          "line": 75,
+          "isDefault": false
+        },
+        {
+          "name": "dbGetAllFoodEntries",
+          "line": 75,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "setSyncTokenProvider",
+          "callee": "_engine.setTokenProvider",
+          "lineNumber": 18
+        },
+        {
+          "caller": "setSyncUserIdProvider",
+          "callee": "_engine.setUserIdProvider",
+          "lineNumber": 19
+        },
+        {
+          "caller": "setSyncChangeHandler",
+          "callee": "_engine.setChangeHandler",
+          "lineNumber": 20
+        },
+        {
+          "caller": "setDeletedIdsProvider",
+          "callee": "_engine.setDeletedIdsProvider",
+          "lineNumber": 21
+        },
+        {
+          "caller": "setKickedOutHandler",
+          "callee": "_engine.setKickedOutHandler",
+          "lineNumber": 22
+        },
+        {
+          "caller": "setTokenRecoveryFn",
+          "callee": "_engine.setTokenRecoveryFn",
+          "lineNumber": 23
+        },
+        {
+          "caller": "setRealtimeLogoutHandler",
+          "callee": "_engine.setRealtimeLogoutHandler",
+          "lineNumber": 24
+        },
+        {
+          "caller": "setRealtimeUserIdProvider",
+          "callee": "_engine.setRealtimeUserIdProvider",
+          "lineNumber": 25
+        },
+        {
+          "caller": "setRealtimeRunSync",
+          "callee": "_engine.setRealtimeRunSync",
+          "lineNumber": 26
+        },
+        {
+          "caller": "setRealtimeApplyServerChanges",
+          "callee": "_engine.setRealtimeApplyServerChanges",
+          "lineNumber": 27
+        },
+        {
+          "caller": "setSyncErrorHandler",
+          "callee": "_engine.setSyncErrorHandler",
+          "lineNumber": 28
+        },
+        {
+          "caller": "setLastSyncAt",
+          "callee": "_engine.setLastSyncAt",
+          "lineNumber": 29
+        },
+        {
+          "caller": "runSync",
+          "callee": "_engine.runSync",
+          "lineNumber": 31
+        },
+        {
+          "caller": "isSyncing",
+          "callee": "_engine.isSyncing",
+          "lineNumber": 32
+        },
+        {
+          "caller": "getClockOffset",
+          "callee": "_engine.getClockOffset",
+          "lineNumber": 33
+        },
+        {
+          "caller": "isDeviceSyncedBefore",
+          "callee": "_engine.isDeviceSyncedBefore",
+          "lineNumber": 34
+        },
+        {
+          "caller": "getSyncMetrics",
+          "callee": "_engine.getSyncMetrics",
+          "lineNumber": 35
+        },
+        {
+          "caller": "getSyncStatus",
+          "callee": "_engine.getSyncStatus",
+          "lineNumber": 36
+        },
+        {
+          "caller": "connectRealtime",
+          "callee": "_engine.connectRealtime",
+          "lineNumber": 40
+        },
+        {
+          "caller": "disconnectRealtime",
+          "callee": "_engine.disconnectRealtime",
+          "lineNumber": 41
+        },
+        {
+          "caller": "isRealtimeConnected",
+          "callee": "_engine.isRealtimeConnected",
+          "lineNumber": 42
+        },
+        {
+          "caller": "softResetSyncState",
+          "callee": "_engine.softReset",
+          "lineNumber": 45
+        },
+        {
+          "caller": "resetSyncState",
+          "callee": "_engine.hardReset",
+          "lineNumber": 46
+        },
+        {
+          "caller": "forceFullSync",
+          "callee": "_engine.forceFullSync",
+          "lineNumber": 47
+        },
+        {
+          "caller": "rehydrateFromDb",
+          "callee": "_engine.rehydrateFromDb",
+          "lineNumber": 50
+        },
+        {
+          "caller": "registerLocalDelete",
+          "callee": "_engine.registerLocalDelete",
+          "lineNumber": 53
+        },
+        {
+          "caller": "initialSync",
+          "callee": "_engine.initialSync",
+          "lineNumber": 56
+        },
+        {
+          "caller": "resumeInitialSync",
+          "callee": "_engine.resumeInitialSync",
+          "lineNumber": 57
+        },
+        {
+          "caller": "setSyncTriggerCallback",
+          "callee": "_engine.setSyncTriggerCallback",
+          "lineNumber": 60
+        },
+        {
+          "caller": "triggerSyncDebounced",
+          "callee": "_engine.triggerSyncDebounced",
+          "lineNumber": 61
+        },
+        {
+          "caller": "clearSyncTrigger",
+          "callee": "_engine.clearSyncTrigger",
+          "lineNumber": 62
+        },
+        {
+          "caller": "resetMigrationFlag",
+          "callee": "_engine.setMigrationDone",
+          "lineNumber": 65
+        },
+        {
+          "caller": "setMigrationDone",
+          "callee": "_engine.setMigrationDone",
+          "lineNumber": 66
+        },
+        {
+          "caller": "isMigrationDone",
+          "callee": "_engine.getMigrationDone",
+          "lineNumber": 67
+        },
+        {
+          "caller": "applyServerChanges",
+          "callee": "_engine.applyServerChanges",
+          "lineNumber": 71
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 43,
+        "functionCount": 35,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/sync/SyncTimestampManager.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 70,
+      "nonEmptyLines": 57,
+      "classes": [
+        {
+          "name": "SyncTimestampManager",
+          "startLine": 12,
+          "endLine": 70,
+          "methods": [
+            "getLastSyncAt",
+            "setLastSyncAt",
+            "getClockOffset",
+            "loadClockOffset",
+            "saveClockOffset",
+            "updateClockOffset",
+            "loadLastSyncAt",
+            "saveLastSyncAt",
+            "resetLastSyncAt"
+          ],
+          "properties": [
+            "_lastSyncAt",
+            "_lastSyncAtLoaded",
+            "_clockOffset"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "SyncTimestampManager",
+          "line": 12,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "loadClockOffset",
+          "callee": "openDatabase",
+          "lineNumber": 25
+        },
+        {
+          "caller": "loadClockOffset",
+          "callee": "getState",
+          "lineNumber": 26
+        },
+        {
+          "caller": "loadClockOffset",
+          "callee": "parseInt",
+          "lineNumber": 27
+        },
+        {
+          "caller": "loadClockOffset",
+          "callee": "log.warn",
+          "lineNumber": 28
+        },
+        {
+          "caller": "saveClockOffset",
+          "callee": "openDatabase",
+          "lineNumber": 34
+        },
+        {
+          "caller": "saveClockOffset",
+          "callee": "setState",
+          "lineNumber": 35
+        },
+        {
+          "caller": "saveClockOffset",
+          "callee": "String",
+          "lineNumber": 35
+        },
+        {
+          "caller": "saveClockOffset",
+          "callee": "log.warn",
+          "lineNumber": 36
+        },
+        {
+          "caller": "updateClockOffset",
+          "callee": "Date.now",
+          "lineNumber": 41
+        },
+        {
+          "caller": "updateClockOffset",
+          "callee": "Math.abs",
+          "lineNumber": 42
+        },
+        {
+          "caller": "updateClockOffset",
+          "callee": "this.saveClockOffset",
+          "lineNumber": 43
+        },
+        {
+          "caller": "loadLastSyncAt",
+          "callee": "openDatabase",
+          "lineNumber": 52
+        },
+        {
+          "caller": "loadLastSyncAt",
+          "callee": "getState",
+          "lineNumber": 53
+        },
+        {
+          "caller": "loadLastSyncAt",
+          "callee": "Number",
+          "lineNumber": 54
+        },
+        {
+          "caller": "loadLastSyncAt",
+          "callee": "log.warn",
+          "lineNumber": 55
+        },
+        {
+          "caller": "saveLastSyncAt",
+          "callee": "openDatabase",
+          "lineNumber": 61
+        },
+        {
+          "caller": "saveLastSyncAt",
+          "callee": "setState",
+          "lineNumber": 62
+        },
+        {
+          "caller": "saveLastSyncAt",
+          "callee": "String",
+          "lineNumber": 62
+        },
+        {
+          "caller": "saveLastSyncAt",
+          "callee": "log.warn",
+          "lineNumber": 63
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/sync/mergeSyncPatch.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 214,
+      "nonEmptyLines": 169,
+      "functions": [
+        {
+          "name": "makeStore",
+          "startLine": 11,
+          "endLine": 17,
+          "params": [
+            "overrides"
+          ]
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 0,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/sync/mergeSyncPatch.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 127,
+      "nonEmptyLines": 115,
+      "functions": [
+        {
+          "name": "isStoreKey",
+          "startLine": 23,
+          "endLine": 23,
+          "params": [
+            "k"
+          ]
+        },
+        {
+          "name": "mergeSyncPatch",
+          "startLine": 36,
+          "endLine": 127,
+          "params": [
+            "state",
+            "patch"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "STORE_KEY_TO_ENTITY",
+          "line": 11,
+          "isDefault": false
+        },
+        {
+          "name": "mergeSyncPatch",
+          "line": 36,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "Object.keys(patch)\r\n    .map(k => STORE_KEY_TO_ENTITY[k] ?? (k === 'aiMode' || k === 'aiModels' ? 'aiConfig' : null))\r\n    .filter",
+          "lineNumber": 41
+        },
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "Object.keys(patch)\r\n    .map",
+          "lineNumber": 41
+        },
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "Object.keys",
+          "lineNumber": 41
+        },
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "Object.entries",
+          "lineNumber": 48
+        },
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "isStoreKey",
+          "lineNumber": 55
+        },
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "Array.isArray",
+          "lineNumber": 55
+        },
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "(value as SyncableItem[]).filter",
+          "lineNumber": 58
+        },
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "validDelta.filter",
+          "lineNumber": 61
+        },
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "Array.isArray",
+          "lineNumber": 63
+        },
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "existing.map",
+          "lineNumber": 66
+        },
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "map.set",
+          "lineNumber": 74
+        },
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "map.values",
+          "lineNumber": 76
+        },
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "changedEntities.includes",
+          "lineNumber": 88
+        },
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "changedEntities.includes",
+          "lineNumber": 88
+        },
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "trailMap.get",
+          "lineNumber": 96
+        },
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "arr.push",
+          "lineNumber": 97
+        },
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "trailMap.set",
+          "lineNumber": 98
+        },
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "reflections.map",
+          "lineNumber": 102
+        },
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "trailMap.get",
+          "lineNumber": 103
+        },
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "[...ids].sort",
+          "lineNumber": 105
+        },
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "[...current].sort",
+          "lineNumber": 106
+        },
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "sortedNew.every",
+          "lineNumber": 109
+        },
+        {
+          "caller": "mergeSyncPatch",
+          "callee": "updated.some",
+          "lineNumber": 114
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/sync/migrateToSyncQueue.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 273,
+      "nonEmptyLines": 259,
+      "functions": [
+        {
+          "name": "isMigrationDone",
+          "startLine": 15,
+          "endLine": 21,
+          "params": []
+        },
+        {
+          "name": "migrateToSyncQueue",
+          "startLine": 24,
+          "endLine": 255,
+          "params": []
+        },
+        {
+          "name": "safeJson",
+          "startLine": 257,
+          "endLine": 261,
+          "params": [
+            "v"
+          ]
+        },
+        {
+          "name": "safeJsonObj",
+          "startLine": 263,
+          "endLine": 267,
+          "params": [
+            "v"
+          ]
+        },
+        {
+          "name": "safeParseColors",
+          "startLine": 269,
+          "endLine": 273,
+          "params": [
+            "v"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "isMigrationDone",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "migrateToSyncQueue",
+          "line": 24,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "isMigrationDone",
+          "callee": "openDatabase",
+          "lineNumber": 16
+        },
+        {
+          "caller": "isMigrationDone",
+          "callee": "await db.getFirstAsync",
+          "lineNumber": 17
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "isMigrationDone",
+          "lineNumber": 25
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "safeJson",
+          "lineNumber": 41
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "safeJson",
+          "lineNumber": 50
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "safeParseColors",
+          "lineNumber": 54
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "(() => { const d = new Date(Number(r.ts)); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })",
+          "lineNumber": 71
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "Number",
+          "lineNumber": 71
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "d.getFullYear",
+          "lineNumber": 71
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "String(d.getMonth() + 1).padStart",
+          "lineNumber": 71
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "String",
+          "lineNumber": 71
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "d.getMonth",
+          "lineNumber": 71
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "String(d.getDate()).padStart",
+          "lineNumber": 71
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "String",
+          "lineNumber": 71
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "d.getDate",
+          "lineNumber": 71
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "safeJson",
+          "lineNumber": 90
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "parseInt",
+          "lineNumber": 99
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "safeJsonObj",
+          "lineNumber": 108
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "safeJson",
+          "lineNumber": 127
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "safeJson",
+          "lineNumber": 130
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "safeJson",
+          "lineNumber": 163
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "safeJson",
+          "lineNumber": 163
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "safeJson",
+          "lineNumber": 171
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "safeJson",
+          "lineNumber": 172
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "safeJson",
+          "lineNumber": 173
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "safeJson",
+          "lineNumber": 182
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "safeJson",
+          "lineNumber": 201
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "safeJson",
+          "lineNumber": 210
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "openDatabase",
+          "lineNumber": 216
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "await db.getAllAsync",
+          "lineNumber": 219
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "import",
+          "lineNumber": 224
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "withDbLock",
+          "lineNumber": 225
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "toPayload",
+          "lineNumber": 231
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "db.runAsync",
+          "lineNumber": 233
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "JSON.stringify",
+          "lineNumber": 240
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "Date.now",
+          "lineNumber": 240
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "db.runAsync",
+          "lineNumber": 248
+        },
+        {
+          "caller": "migrateToSyncQueue",
+          "callee": "log.info",
+          "lineNumber": 253
+        },
+        {
+          "caller": "safeJson",
+          "callee": "JSON.parse",
+          "lineNumber": 259
+        },
+        {
+          "caller": "safeJsonObj",
+          "callee": "JSON.parse",
+          "lineNumber": 265
+        },
+        {
+          "caller": "safeJsonObj",
+          "callee": "Array.isArray",
+          "lineNumber": 265
+        },
+        {
+          "caller": "safeJsonObj",
+          "callee": "Array.isArray",
+          "lineNumber": 266
+        },
+        {
+          "caller": "safeParseColors",
+          "callee": "JSON.parse",
+          "lineNumber": 271
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 2,
+        "functionCount": 5,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/sync/orphanRecovery.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 92,
+      "nonEmptyLines": 76,
+      "functions": [
+        {
+          "name": "recoverOrphans",
+          "startLine": 35,
+          "endLine": 85,
+          "params": [
+            "entityConfig",
+            "getRowMapper",
+            "maxRounds",
+            "batchSize"
+          ]
+        },
+        {
+          "name": "shouldRunOrphanRecovery",
+          "startLine": 90,
+          "endLine": 92,
+          "params": [
+            "lastScanAt",
+            "minIntervalMs"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "recoverOrphans",
+          "line": 35,
+          "isDefault": false
+        },
+        {
+          "name": "shouldRunOrphanRecovery",
+          "line": 90,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "recoverOrphans",
+          "callee": "openDatabase",
+          "lineNumber": 41
+        },
+        {
+          "caller": "recoverOrphans",
+          "callee": "Object.entries",
+          "lineNumber": 48
+        },
+        {
+          "caller": "recoverOrphans",
+          "callee": "await db.getAllAsync",
+          "lineNumber": 51
+        },
+        {
+          "caller": "recoverOrphans",
+          "callee": "getRowMapper",
+          "lineNumber": 62
+        },
+        {
+          "caller": "recoverOrphans",
+          "callee": "mapper",
+          "lineNumber": 63
+        },
+        {
+          "caller": "recoverOrphans",
+          "callee": "enqueueChange",
+          "lineNumber": 64
+        },
+        {
+          "caller": "recoverOrphans",
+          "callee": "log.error",
+          "lineNumber": 66
+        },
+        {
+          "caller": "recoverOrphans",
+          "callee": "log.error",
+          "lineNumber": 76
+        },
+        {
+          "caller": "shouldRunOrphanRecovery",
+          "callee": "Date.now",
+          "lineNumber": 91
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/sync/useSync.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 269,
+      "nonEmptyLines": 233,
+      "functions": [
+        {
+          "name": "getNotifications",
+          "startLine": 26,
+          "endLine": 26,
+          "params": []
+        },
+        {
+          "name": "useSync",
+          "startLine": 28,
+          "endLine": 269,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "useSync",
+          "line": 28,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getNotifications",
+          "callee": "import",
+          "lineNumber": 26
+        },
+        {
+          "caller": "useSync",
+          "callee": "useShallowStore",
+          "lineNumber": 29
+        },
+        {
+          "caller": "useSync",
+          "callee": "useShallowStore",
+          "lineNumber": 30
+        },
+        {
+          "caller": "useSync",
+          "callee": "useRef",
+          "lineNumber": 31
+        },
+        {
+          "caller": "useSync",
+          "callee": "useState",
+          "lineNumber": 32
+        },
+        {
+          "caller": "useSync",
+          "callee": "useState",
+          "lineNumber": 33
+        },
+        {
+          "caller": "useSync",
+          "callee": "useCallback",
+          "lineNumber": 36
+        },
+        {
+          "caller": "useSync",
+          "callee": "useAppStore.getState",
+          "lineNumber": 37
+        },
+        {
+          "caller": "useSync",
+          "callee": "useAppStore.getState().refreshAuth",
+          "lineNumber": 40
+        },
+        {
+          "caller": "useSync",
+          "callee": "useAppStore.getState",
+          "lineNumber": 40
+        },
+        {
+          "caller": "useSync",
+          "callee": "log.debug",
+          "lineNumber": 41
+        },
+        {
+          "caller": "useSync",
+          "callee": "useAppStore.getState",
+          "lineNumber": 43
+        },
+        {
+          "caller": "useSync",
+          "callee": "runSync",
+          "lineNumber": 46
+        },
+        {
+          "caller": "useSync",
+          "callee": "log.error",
+          "lineNumber": 48
+        },
+        {
+          "caller": "useSync",
+          "callee": "setKickOutVisible",
+          "lineNumber": 49
+        },
+        {
+          "caller": "useSync",
+          "callee": "setKickOutVisible",
+          "lineNumber": 53
+        },
+        {
+          "caller": "useSync",
+          "callee": "useAppStore.getState().logout",
+          "lineNumber": 54
+        },
+        {
+          "caller": "useSync",
+          "callee": "useAppStore.getState",
+          "lineNumber": 54
+        },
+        {
+          "caller": "useSync",
+          "callee": "useCallback",
+          "lineNumber": 57
+        },
+        {
+          "caller": "useSync",
+          "callee": "setKickOutVisible",
+          "lineNumber": 58
+        },
+        {
+          "caller": "useSync",
+          "callee": "useAppStore.getState().logout",
+          "lineNumber": 59
+        },
+        {
+          "caller": "useSync",
+          "callee": "useAppStore.getState",
+          "lineNumber": 59
+        },
+        {
+          "caller": "useSync",
+          "callee": "useEffect",
+          "lineNumber": 63
+        },
+        {
+          "caller": "useSync",
+          "callee": "setSyncTokenProvider",
+          "lineNumber": 64
+        },
+        {
+          "caller": "useSync",
+          "callee": "useAppStore.getState",
+          "lineNumber": 65
+        },
+        {
+          "caller": "useSync",
+          "callee": "log.warn",
+          "lineNumber": 68
+        },
+        {
+          "caller": "useSync",
+          "callee": "log.info",
+          "lineNumber": 72
+        },
+        {
+          "caller": "useSync",
+          "callee": "setSyncUserIdProvider",
+          "lineNumber": 73
+        },
+        {
+          "caller": "useSync",
+          "callee": "useAppStore.getState",
+          "lineNumber": 73
+        },
+        {
+          "caller": "useSync",
+          "callee": "setSyncTriggerCallback",
+          "lineNumber": 76
+        },
+        {
+          "caller": "useSync",
+          "callee": "runSync().catch",
+          "lineNumber": 76
+        },
+        {
+          "caller": "useSync",
+          "callee": "runSync",
+          "lineNumber": 76
+        },
+        {
+          "caller": "useSync",
+          "callee": "log.error",
+          "lineNumber": 76
+        },
+        {
+          "caller": "useSync",
+          "callee": "setOnEnqueuedCallback",
+          "lineNumber": 77
+        },
+        {
+          "caller": "useSync",
+          "callee": "triggerSyncDebounced",
+          "lineNumber": 77
+        },
+        {
+          "caller": "useSync",
+          "callee": "setStorageAdapterTrigger",
+          "lineNumber": 79
+        },
+        {
+          "caller": "useSync",
+          "callee": "triggerSyncDebounced",
+          "lineNumber": 79
+        },
+        {
+          "caller": "useSync",
+          "callee": "setRegisterLocalDelete",
+          "lineNumber": 81
+        },
+        {
+          "caller": "useSync",
+          "callee": "registerLocalDelete",
+          "lineNumber": 81
+        },
+        {
+          "caller": "useSync",
+          "callee": "setKickedOutHandler",
+          "lineNumber": 84
+        },
+        {
+          "caller": "useSync",
+          "callee": "getQueueCount",
+          "lineNumber": 85
+        },
+        {
+          "caller": "useSync",
+          "callee": "setHasPendingData",
+          "lineNumber": 86
+        },
+        {
+          "caller": "useSync",
+          "callee": "setKickOutVisible",
+          "lineNumber": 87
+        },
+        {
+          "caller": "useSync",
+          "callee": "setSyncErrorHandler",
+          "lineNumber": 91
+        },
+        {
+          "caller": "useSync",
+          "callee": "useSyncStore.getState().setSyncError",
+          "lineNumber": 92
+        },
+        {
+          "caller": "useSync",
+          "callee": "useSyncStore.getState",
+          "lineNumber": 92
+        },
+        {
+          "caller": "useSync",
+          "callee": "setSyncChangeHandler",
+          "lineNumber": 95
+        },
+        {
+          "caller": "useSync",
+          "callee": "useAppStore.setState",
+          "lineNumber": 99
+        },
+        {
+          "caller": "useSync",
+          "callee": "mergeSyncPatch",
+          "lineNumber": 100
+        },
+        {
+          "caller": "useSync",
+          "callee": "changedEntities.includes",
+          "lineNumber": 106
+        },
+        {
+          "caller": "useSync",
+          "callee": "useAppStore.getState",
+          "lineNumber": 107
+        },
+        {
+          "caller": "useSync",
+          "callee": "Array.isArray",
+          "lineNumber": 110
+        },
+        {
+          "caller": "useSync",
+          "callee": "Object.keys",
+          "lineNumber": 113
+        },
+        {
+          "caller": "useSync",
+          "callee": "useMusicStore.setState",
+          "lineNumber": 113
+        },
+        {
+          "caller": "useSync",
+          "callee": "changedEntities.includes",
+          "lineNumber": 117
+        },
+        {
+          "caller": "useSync",
+          "callee": "useAppStore.getState().calculateTotalMedMin",
+          "lineNumber": 118
+        },
+        {
+          "caller": "useSync",
+          "callee": "useAppStore.getState",
+          "lineNumber": 118
+        },
+        {
+          "caller": "useSync",
+          "callee": "changedEntities.includes",
+          "lineNumber": 121
+        },
+        {
+          "caller": "useSync",
+          "callee": "useAppStore.getState().calculateStreak",
+          "lineNumber": 122
+        },
+        {
+          "caller": "useSync",
+          "callee": "useAppStore.getState",
+          "lineNumber": 122
+        },
+        {
+          "caller": "useSync",
+          "callee": "log.error",
+          "lineNumber": 125
+        },
+        {
+          "caller": "useSync",
+          "callee": "setDeletedIdsProvider",
+          "lineNumber": 129
+        },
+        {
+          "caller": "useSync",
+          "callee": "useAppStore.getState",
+          "lineNumber": 130
+        },
+        {
+          "caller": "useSync",
+          "callee": "recycleBin.map",
+          "lineNumber": 131
+        },
+        {
+          "caller": "useSync",
+          "callee": "useEffect",
+          "lineNumber": 136
+        },
+        {
+          "caller": "getExpoPushToken",
+          "callee": "getNotifications",
+          "lineNumber": 141
+        },
+        {
+          "caller": "getExpoPushToken",
+          "callee": "Notifications.getPermissionsAsync",
+          "lineNumber": 142
+        },
+        {
+          "caller": "getExpoPushToken",
+          "callee": "Notifications.requestPermissionsAsync",
+          "lineNumber": 146
+        },
+        {
+          "caller": "getExpoPushToken",
+          "callee": "log.info",
+          "lineNumber": 151
+        },
+        {
+          "caller": "getExpoPushToken",
+          "callee": "log.info",
+          "lineNumber": 157
+        },
+        {
+          "caller": "getExpoPushToken",
+          "callee": "Notifications.getExpoPushTokenAsync",
+          "lineNumber": 161
+        },
+        {
+          "caller": "getExpoPushToken",
+          "callee": "log.error",
+          "lineNumber": 164
+        },
+        {
+          "caller": "useSync",
+          "callee": "registerPushToken(token, Platform.OS as 'ios' | 'android', getExpoPushToken).catch",
+          "lineNumber": 170
+        },
+        {
+          "caller": "useSync",
+          "callee": "registerPushToken",
+          "lineNumber": 170
+        },
+        {
+          "caller": "useSync",
+          "callee": "useAppStore.getState",
+          "lineNumber": 171
+        },
+        {
+          "caller": "useSync",
+          "callee": "refreshAuth().then(() => {\r\n          const freshToken = useAppStore.getState().auth.token;\r\n          if (freshToken) {\r\n            registerPushToken(freshToken, Platform.OS as 'ios' | 'android', getExpoPushToken).catch(() => {});\r\n          }\r\n        }).catch",
+          "lineNumber": 173
+        },
+        {
+          "caller": "useSync",
+          "callee": "refreshAuth().then",
+          "lineNumber": 173
+        },
+        {
+          "caller": "useSync",
+          "callee": "refreshAuth",
+          "lineNumber": 173
+        },
+        {
+          "caller": "useSync",
+          "callee": "useAppStore.getState",
+          "lineNumber": 174
+        },
+        {
+          "caller": "useSync",
+          "callee": "registerPushToken(freshToken, Platform.OS as 'ios' | 'android', getExpoPushToken).catch",
+          "lineNumber": 176
+        },
+        {
+          "caller": "useSync",
+          "callee": "registerPushToken",
+          "lineNumber": 176
+        },
+        {
+          "caller": "useSync",
+          "callee": "useEffect",
+          "lineNumber": 184
+        },
+        {
+          "caller": "useSync",
+          "callee": "disconnectRealtime",
+          "lineNumber": 186
+        },
+        {
+          "caller": "useSync",
+          "callee": "connectRealtime",
+          "lineNumber": 190
+        },
+        {
+          "caller": "useSync",
+          "callee": "getSyncUrl",
+          "lineNumber": 190
+        },
+        {
+          "caller": "useSync",
+          "callee": "disconnectRealtime",
+          "lineNumber": 193
+        },
+        {
+          "caller": "useSync",
+          "callee": "useRef",
+          "lineNumber": 198
+        },
+        {
+          "caller": "useSync",
+          "callee": "useEffect",
+          "lineNumber": 199
+        },
+        {
+          "caller": "sync",
+          "callee": "useAppStore.getState",
+          "lineNumber": 207
+        },
+        {
+          "caller": "sync",
+          "callee": "Date.now",
+          "lineNumber": 208
+        },
+        {
+          "caller": "sync",
+          "callee": "useAppStore.getState().refreshAuth",
+          "lineNumber": 210
+        },
+        {
+          "caller": "sync",
+          "callee": "useAppStore.getState",
+          "lineNumber": 210
+        },
+        {
+          "caller": "sync",
+          "callee": "isMigrationDone",
+          "lineNumber": 217
+        },
+        {
+          "caller": "sync",
+          "callee": "migrateToSyncQueue",
+          "lineNumber": 218
+        },
+        {
+          "caller": "sync",
+          "callee": "setMigrationDone",
+          "lineNumber": 219
+        },
+        {
+          "caller": "sync",
+          "callee": "openDatabase",
+          "lineNumber": 223
+        },
+        {
+          "caller": "sync",
+          "callee": "getState",
+          "lineNumber": 224
+        },
+        {
+          "caller": "sync",
+          "callee": "useAppStore.getState",
+          "lineNumber": 226
+        },
+        {
+          "caller": "sync",
+          "callee": "resumeInitialSync",
+          "lineNumber": 227
+        },
+        {
+          "caller": "sync",
+          "callee": "flushWrites",
+          "lineNumber": 229
+        },
+        {
+          "caller": "sync",
+          "callee": "rehydrateFromDb",
+          "lineNumber": 230
+        },
+        {
+          "caller": "sync",
+          "callee": "Object.keys",
+          "lineNumber": 231
+        },
+        {
+          "caller": "sync",
+          "callee": "useAppStore.setState",
+          "lineNumber": 232
+        },
+        {
+          "caller": "sync",
+          "callee": "useAppStore.getState().calculateStreak",
+          "lineNumber": 234
+        },
+        {
+          "caller": "sync",
+          "callee": "useAppStore.getState",
+          "lineNumber": 234
+        },
+        {
+          "caller": "sync",
+          "callee": "useAppStore.getState().calculateTotalMedMin",
+          "lineNumber": 235
+        },
+        {
+          "caller": "sync",
+          "callee": "useAppStore.getState",
+          "lineNumber": 235
+        },
+        {
+          "caller": "sync",
+          "callee": "runSync",
+          "lineNumber": 239
+        },
+        {
+          "caller": "sync",
+          "callee": "log.error",
+          "lineNumber": 241
+        },
+        {
+          "caller": "useSync",
+          "callee": "sync",
+          "lineNumber": 253
+        },
+        {
+          "caller": "useSync",
+          "callee": "AppState.addEventListener",
+          "lineNumber": 256
+        },
+        {
+          "caller": "useSync",
+          "callee": "sync",
+          "lineNumber": 257
+        },
+        {
+          "caller": "useSync",
+          "callee": "sub.remove",
+          "lineNumber": 260
+        }
+      ],
+      "metrics": {
+        "importCount": 10,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/i18n/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 28,
+      "nonEmptyLines": 25,
+      "exports": [
+        {
+          "name": "useTranslation",
+          "line": 28,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/navigation/LazyScreen.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 26,
+      "nonEmptyLines": 22,
+      "functions": [
+        {
+          "name": "LoadingFallback",
+          "startLine": 9,
+          "endLine": 17,
+          "params": []
+        },
+        {
+          "name": "LazyScreen",
+          "startLine": 19,
+          "endLine": 21,
+          "params": [
+            "{ children }"
+          ]
+        },
+        {
+          "name": "withLazy",
+          "startLine": 24,
+          "endLine": 26,
+          "params": [
+            "Component"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "LoadingFallback",
+          "line": 9,
+          "isDefault": false
+        },
+        {
+          "name": "LazyScreen",
+          "line": 19,
+          "isDefault": false
+        },
+        {
+          "name": "withLazy",
+          "line": 24,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "LoadingFallback",
+          "callee": "useTheme",
+          "lineNumber": 10
+        },
+        {
+          "caller": "LoadingFallback",
+          "callee": "FONT_STAT_SECTION",
+          "lineNumber": 13
+        },
+        {
+          "caller": "LoadingFallback",
+          "callee": "FONT_SUB",
+          "lineNumber": 14
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 3,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/navigation/index.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 363,
+      "nonEmptyLines": 336,
+      "functions": [
+        {
+          "name": "FastHistoryWrapper",
+          "startLine": 81,
+          "endLine": 89,
+          "params": []
+        },
+        {
+          "name": "MedHistoryWrapper",
+          "startLine": 90,
+          "endLine": 98,
+          "params": []
+        },
+        {
+          "name": "MainTabBar",
+          "startLine": 111,
+          "endLine": 172,
+          "params": [
+            "{ state, navigation, descriptors, insets }"
+          ]
+        },
+        {
+          "name": "MainTabs",
+          "startLine": 174,
+          "endLine": 204,
+          "params": []
+        },
+        {
+          "name": "AppNavigator",
+          "startLine": 206,
+          "endLine": 363,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "RootStackParamList",
+          "line": 64,
+          "isDefault": false
+        },
+        {
+          "name": "MainTabParamList",
+          "line": 64,
+          "isDefault": false
+        },
+        {
+          "name": "useRootNavigation",
+          "line": 66,
+          "isDefault": false
+        },
+        {
+          "name": "useTabNavigation",
+          "line": 66,
+          "isDefault": false
+        },
+        {
+          "name": "SimpleHeader",
+          "line": 100,
+          "isDefault": false
+        },
+        {
+          "name": "AppNavigator",
+          "line": 206,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "MainTabBar",
+          "callee": "useTheme",
+          "lineNumber": 112
+        },
+        {
+          "caller": "MainTabBar",
+          "callee": "useShallowStore",
+          "lineNumber": 113
+        },
+        {
+          "caller": "MainTabBar",
+          "callee": "state.routes.filter",
+          "lineNumber": 114
+        },
+        {
+          "caller": "MainTabBar",
+          "callee": "t",
+          "lineNumber": 126
+        },
+        {
+          "caller": "MainTabBar",
+          "callee": "t",
+          "lineNumber": 127
+        },
+        {
+          "caller": "MainTabBar",
+          "callee": "t",
+          "lineNumber": 128
+        },
+        {
+          "caller": "MainTabBar",
+          "callee": "t",
+          "lineNumber": 129
+        },
+        {
+          "caller": "MainTabBar",
+          "callee": "t",
+          "lineNumber": 130
+        },
+        {
+          "caller": "MainTabBar",
+          "callee": "React.useEffect",
+          "lineNumber": 134
+        },
+        {
+          "caller": "MainTabBar",
+          "callee": "navigation.navigate",
+          "lineNumber": 136
+        },
+        {
+          "caller": "MainTabBar",
+          "callee": "visibleRoutes.map",
+          "lineNumber": 151
+        },
+        {
+          "caller": "MainTabBar",
+          "callee": "state.routes.indexOf",
+          "lineNumber": 152
+        },
+        {
+          "caller": "MainTabBar",
+          "callee": "navigation.navigate",
+          "lineNumber": 157
+        },
+        {
+          "caller": "MainTabBar",
+          "callee": "FONT_BODY",
+          "lineNumber": 164
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "useShallowStore",
+          "lineNumber": 175
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "t",
+          "lineNumber": 183
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "t",
+          "lineNumber": 184
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "t",
+          "lineNumber": 185
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withErrorBoundary",
+          "lineNumber": 186
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withLazy",
+          "lineNumber": 186
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "t",
+          "lineNumber": 186
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "t",
+          "lineNumber": 187
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withErrorBoundary",
+          "lineNumber": 188
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withLazy",
+          "lineNumber": 188
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "t",
+          "lineNumber": 188
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withErrorBoundary",
+          "lineNumber": 189
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withLazy",
+          "lineNumber": 189
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "t",
+          "lineNumber": 189
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withErrorBoundary",
+          "lineNumber": 190
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withLazy",
+          "lineNumber": 190
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "t",
+          "lineNumber": 190
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withErrorBoundary",
+          "lineNumber": 191
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withLazy",
+          "lineNumber": 191
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "t",
+          "lineNumber": 191
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withErrorBoundary",
+          "lineNumber": 192
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withLazy",
+          "lineNumber": 192
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "t",
+          "lineNumber": 192
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withErrorBoundary",
+          "lineNumber": 193
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withLazy",
+          "lineNumber": 193
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "t",
+          "lineNumber": 193
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withErrorBoundary",
+          "lineNumber": 194
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withLazy",
+          "lineNumber": 194
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "t",
+          "lineNumber": 194
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withErrorBoundary",
+          "lineNumber": 195
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withLazy",
+          "lineNumber": 195
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "t",
+          "lineNumber": 195
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withErrorBoundary",
+          "lineNumber": 196
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withLazy",
+          "lineNumber": 196
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "t",
+          "lineNumber": 196
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withErrorBoundary",
+          "lineNumber": 197
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withLazy",
+          "lineNumber": 197
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "t",
+          "lineNumber": 197
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withErrorBoundary",
+          "lineNumber": 198
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withLazy",
+          "lineNumber": 198
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "t",
+          "lineNumber": 198
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "t",
+          "lineNumber": 199
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withErrorBoundary",
+          "lineNumber": 200
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "t",
+          "lineNumber": 200
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withErrorBoundary",
+          "lineNumber": 201
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "withLazy",
+          "lineNumber": 201
+        },
+        {
+          "caller": "MainTabs",
+          "callee": "t",
+          "lineNumber": 201
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "useTheme",
+          "lineNumber": 207
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "useShallowStore",
+          "lineNumber": 208
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "useShallowStore",
+          "lineNumber": 209
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "useRef",
+          "lineNumber": 210
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "useSync",
+          "lineNumber": 211
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "useState",
+          "lineNumber": 212
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "useState",
+          "lineNumber": 213
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "useEffect",
+          "lineNumber": 216
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "isDeviceSyncedBefore().then",
+          "lineNumber": 218
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "isDeviceSyncedBefore",
+          "lineNumber": 218
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "import('../db/schema').then(({ openDatabase, getState }) => {\r\n        openDatabase().then(async (db) => {\r\n          const done = await getState(db, 'initialSyncDone');\r\n          if (done !== 'true') {\r\n            setSyncOverlayVisible(true);\r\n            const phase = await getState(db, 'initialSyncPhase');\r\n            setSyncPhase(parseInt(phase || '1', 10));\r\n          }\r\n        });\r\n      }).catch",
+          "lineNumber": 220
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "import('../db/schema').then",
+          "lineNumber": 220
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "import",
+          "lineNumber": 220
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "openDatabase().then",
+          "lineNumber": 221
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "openDatabase",
+          "lineNumber": 221
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "getState",
+          "lineNumber": 222
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "setSyncOverlayVisible",
+          "lineNumber": 224
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "getState",
+          "lineNumber": 225
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "setSyncPhase",
+          "lineNumber": 226
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "parseInt",
+          "lineNumber": 226
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "log.error",
+          "lineNumber": 229
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "useEffect",
+          "lineNumber": 234
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "useAppStore.getState",
+          "lineNumber": 236
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "useAppStore.getState",
+          "lineNumber": 237
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "Date.now",
+          "lineNumber": 239
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "refreshAuth().catch",
+          "lineNumber": 240
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "refreshAuth",
+          "lineNumber": 240
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "log.error",
+          "lineNumber": 240
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "useRef",
+          "lineNumber": 245
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "useEffect",
+          "lineNumber": 246
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "navRef.current.reset",
+          "lineNumber": 248
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "useEffect",
+          "lineNumber": 254
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "import('expo-notifications').then",
+          "lineNumber": 257
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "import",
+          "lineNumber": 257
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "Notifications.addNotificationResponseReceivedListener",
+          "lineNumber": 259
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "navRef.current.navigate",
+          "lineNumber": 262
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "sub?.remove",
+          "lineNumber": 266
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 294
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 295
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 299
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withLazy",
+          "lineNumber": 301
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "React.lazy",
+          "lineNumber": 301
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "import",
+          "lineNumber": 301
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withLazy",
+          "lineNumber": 303
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "React.lazy",
+          "lineNumber": 303
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "import",
+          "lineNumber": 303
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 304
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 305
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 306
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 307
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 308
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 309
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 311
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 312
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 313
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 314
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 316
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 317
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 318
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 319
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 322
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 323
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 324
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 326
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 331
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 335
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 338
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 340
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 341
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 342
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "withErrorBoundary",
+          "lineNumber": 343
+        },
+        {
+          "caller": "AppNavigator",
+          "callee": "tabNavRef.navigate",
+          "lineNumber": 357
+        }
+      ],
+      "metrics": {
+        "importCount": 16,
+        "exportCount": 6,
+        "functionCount": 5,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/navigation/screens.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 79,
+      "nonEmptyLines": 75,
+      "exports": [
+        {
+          "name": "_HomeScreen",
+          "line": 8,
+          "isDefault": false
+        },
+        {
+          "name": "_FastingScreen",
+          "line": 9,
+          "isDefault": false
+        },
+        {
+          "name": "_ExerciseScreen",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "_SettingsScreen",
+          "line": 11,
+          "isDefault": false
+        },
+        {
+          "name": "_PlanScreen",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "InsightScreen",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "MindTrailScreen",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "QuickCreateTrailScreen",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "ReflectionDetailScreen",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "ReflectionStatsScreen",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "ReflectionsScreen",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "RelationMapView",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "ReviewScreen",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "StrategyLibrary",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "ThoughtTrailDetailScreen",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "AISettingsScreen",
+          "line": 29,
+          "isDefault": false
+        },
+        {
+          "name": "BodyScreen",
+          "line": 30,
+          "isDefault": false
+        },
+        {
+          "name": "BodyPlanEditorScreen",
+          "line": 31,
+          "isDefault": false
+        },
+        {
+          "name": "PlanManagementScreen",
+          "line": 32,
+          "isDefault": false
+        },
+        {
+          "name": "BodyCheckinHistoryScreen",
+          "line": 33,
+          "isDefault": false
+        },
+        {
+          "name": "BreathHistoryPage",
+          "line": 34,
+          "isDefault": false
+        },
+        {
+          "name": "BreathingScreen",
+          "line": 35,
+          "isDefault": false
+        },
+        {
+          "name": "CheckinDetailScreen",
+          "line": 36,
+          "isDefault": false
+        },
+        {
+          "name": "CheckinHistoryScreen",
+          "line": 37,
+          "isDefault": false
+        },
+        {
+          "name": "DayCheckinScreen",
+          "line": 38,
+          "isDefault": false
+        },
+        {
+          "name": "DietScreen",
+          "line": 39,
+          "isDefault": false
+        },
+        {
+          "name": "ExerciseHistoryScreen",
+          "line": 40,
+          "isDefault": false
+        },
+        {
+          "name": "FastHistoryModule",
+          "line": 41,
+          "isDefault": false
+        },
+        {
+          "name": "FoodLogPage",
+          "line": 42,
+          "isDefault": false
+        },
+        {
+          "name": "ForgotPasswordScreen",
+          "line": 43,
+          "isDefault": false
+        },
+        {
+          "name": "GiveHistoryPage",
+          "line": 44,
+          "isDefault": false
+        },
+        {
+          "name": "GiveScreen",
+          "line": 45,
+          "isDefault": false
+        },
+        {
+          "name": "GlobalPulseScreen",
+          "line": 46,
+          "isDefault": false
+        },
+        {
+          "name": "GracePage",
+          "line": 47,
+          "isDefault": false
+        },
+        {
+          "name": "HabitDetailScreen",
+          "line": 48,
+          "isDefault": false
+        },
+        {
+          "name": "HabitsScreen",
+          "line": 49,
+          "isDefault": false
+        },
+        {
+          "name": "LoginScreen",
+          "line": 50,
+          "isDefault": false
+        },
+        {
+          "name": "MantraHistoryScreen",
+          "line": 51,
+          "isDefault": false
+        },
+        {
+          "name": "MantraScreen",
+          "line": 52,
+          "isDefault": false
+        },
+        {
+          "name": "MedHistoryModule",
+          "line": 53,
+          "isDefault": false
+        },
+        {
+          "name": "MeditationScreen",
+          "line": 54,
+          "isDefault": false
+        },
+        {
+          "name": "MindScreen",
+          "line": 55,
+          "isDefault": false
+        },
+        {
+          "name": "MusicCategoryScreen",
+          "line": 56,
+          "isDefault": false
+        },
+        {
+          "name": "MusicScreen",
+          "line": 57,
+          "isDefault": false
+        },
+        {
+          "name": "PlanCreateScreen",
+          "line": 58,
+          "isDefault": false
+        },
+        {
+          "name": "PlanDetailScreen",
+          "line": 59,
+          "isDefault": false
+        },
+        {
+          "name": "PlanHistoryScreen",
+          "line": 60,
+          "isDefault": false
+        },
+        {
+          "name": "PracticeScreen",
+          "line": 61,
+          "isDefault": false
+        },
+        {
+          "name": "PreceptHistoryPage",
+          "line": 62,
+          "isDefault": false
+        },
+        {
+          "name": "PreceptScreen",
+          "line": 63,
+          "isDefault": false
+        },
+        {
+          "name": "PrivacyPolicyScreen",
+          "line": 64,
+          "isDefault": false
+        },
+        {
+          "name": "ProfileScreen",
+          "line": 65,
+          "isDefault": false
+        },
+        {
+          "name": "RecycleBinScreen",
+          "line": 66,
+          "isDefault": false
+        },
+        {
+          "name": "RegisterScreen",
+          "line": 67,
+          "isDefault": false
+        },
+        {
+          "name": "ReviewDetailScreen",
+          "line": 68,
+          "isDefault": false
+        },
+        {
+          "name": "ReviewHistoryScreen",
+          "line": 69,
+          "isDefault": false
+        },
+        {
+          "name": "SleepHistoryPage",
+          "line": 70,
+          "isDefault": false
+        },
+        {
+          "name": "SleepScreen",
+          "line": 71,
+          "isDefault": false
+        },
+        {
+          "name": "SportPage",
+          "line": 72,
+          "isDefault": false
+        },
+        {
+          "name": "StatsScreen",
+          "line": 73,
+          "isDefault": false
+        },
+        {
+          "name": "StreakBreakScreen",
+          "line": 74,
+          "isDefault": false
+        },
+        {
+          "name": "SutraHistoryScreen",
+          "line": 75,
+          "isDefault": false
+        },
+        {
+          "name": "SutraScreen",
+          "line": 76,
+          "isDefault": false
+        },
+        {
+          "name": "VowScreen",
+          "line": 77,
+          "isDefault": false
+        },
+        {
+          "name": "ZhiguanHistoryScreen",
+          "line": 78,
+          "isDefault": false
+        },
+        {
+          "name": "ZhiguanScreen",
+          "line": 79,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 66,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/sentry.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 131,
+      "nonEmptyLines": 121,
+      "functions": [
+        {
+          "name": "initSentry",
+          "startLine": 16,
+          "endLine": 74,
+          "params": []
+        },
+        {
+          "name": "captureException",
+          "startLine": 80,
+          "endLine": 86,
+          "params": [
+            "error",
+            "context"
+          ]
+        },
+        {
+          "name": "captureMessage",
+          "startLine": 92,
+          "endLine": 98,
+          "params": [
+            "message",
+            "context"
+          ]
+        },
+        {
+          "name": "addBreadcrumb",
+          "startLine": 104,
+          "endLine": 112,
+          "params": [
+            "category",
+            "message",
+            "data"
+          ]
+        },
+        {
+          "name": "setSentryUser",
+          "startLine": 119,
+          "endLine": 122,
+          "params": [
+            "user"
+          ]
+        },
+        {
+          "name": "clearSentryUser",
+          "startLine": 128,
+          "endLine": 131,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "initSentry",
+          "line": 16,
+          "isDefault": false
+        },
+        {
+          "name": "captureException",
+          "line": 80,
+          "isDefault": false
+        },
+        {
+          "name": "captureMessage",
+          "line": 92,
+          "isDefault": false
+        },
+        {
+          "name": "addBreadcrumb",
+          "line": 104,
+          "isDefault": false
+        },
+        {
+          "name": "setSentryUser",
+          "line": 119,
+          "isDefault": false
+        },
+        {
+          "name": "clearSentryUser",
+          "line": 128,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "initSentry",
+          "callee": "Sentry.init",
+          "lineNumber": 26
+        },
+        {
+          "caller": "beforeSend",
+          "callee": "event.breadcrumbs.map",
+          "lineNumber": 58
+        },
+        {
+          "caller": "beforeSend",
+          "callee": "Object.keys",
+          "lineNumber": 61
+        },
+        {
+          "caller": "beforeSend",
+          "callee": "/token|password|secret/i.test",
+          "lineNumber": 62
+        },
+        {
+          "caller": "captureException",
+          "callee": "Sentry.setContext",
+          "lineNumber": 83
+        },
+        {
+          "caller": "captureException",
+          "callee": "Sentry.captureException",
+          "lineNumber": 85
+        },
+        {
+          "caller": "captureMessage",
+          "callee": "Sentry.setContext",
+          "lineNumber": 95
+        },
+        {
+          "caller": "captureMessage",
+          "callee": "Sentry.captureMessage",
+          "lineNumber": 97
+        },
+        {
+          "caller": "addBreadcrumb",
+          "callee": "Sentry.addBreadcrumb",
+          "lineNumber": 106
+        },
+        {
+          "caller": "setSentryUser",
+          "callee": "Sentry.setUser",
+          "lineNumber": 121
+        },
+        {
+          "caller": "clearSentryUser",
+          "callee": "Sentry.setUser",
+          "lineNumber": 130
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 6,
+        "functionCount": 6,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/store/WriteBatcher.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 302,
+      "nonEmptyLines": 243,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/store/WriteBatcher.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 232,
+      "nonEmptyLines": 216,
+      "classes": [
+        {
+          "name": "WriteBatcher",
+          "startLine": 18,
+          "endLine": 232,
+          "methods": [
+            "constructor",
+            "write",
+            "markDeleted",
+            "_scheduleFlush",
+            "flushNow",
+            "pendingCount",
+            "_flush"
+          ],
+          "properties": [
+            "_pendingWrites",
+            "_flushTimer",
+            "_flushDelayMs",
+            "_onFlushed",
+            "_onPersistError",
+            "_retryCount"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "WriteBatcher",
+          "line": 18,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "write",
+          "callee": "this._pendingWrites.get",
+          "lineNumber": 34
+        },
+        {
+          "caller": "write",
+          "callee": "this._pendingWrites.set",
+          "lineNumber": 39
+        },
+        {
+          "caller": "write",
+          "callee": "this._pendingWrites.set",
+          "lineNumber": 48
+        },
+        {
+          "caller": "write",
+          "callee": "this._scheduleFlush",
+          "lineNumber": 50
+        },
+        {
+          "caller": "markDeleted",
+          "callee": "Date.now",
+          "lineNumber": 53
+        },
+        {
+          "caller": "markDeleted",
+          "callee": "this._pendingWrites.set",
+          "lineNumber": 54
+        },
+        {
+          "caller": "markDeleted",
+          "callee": "this._scheduleFlush",
+          "lineNumber": 59
+        },
+        {
+          "caller": "_scheduleFlush",
+          "callee": "setTimeout",
+          "lineNumber": 64
+        },
+        {
+          "caller": "_scheduleFlush",
+          "callee": "this._flush",
+          "lineNumber": 66
+        },
+        {
+          "caller": "flushNow",
+          "callee": "clearTimeout",
+          "lineNumber": 72
+        },
+        {
+          "caller": "flushNow",
+          "callee": "this._flush",
+          "lineNumber": 76
+        },
+        {
+          "caller": "_flush",
+          "callee": "[...this._pendingWrites.entries()].map",
+          "lineNumber": 83
+        },
+        {
+          "caller": "_flush",
+          "callee": "this._pendingWrites.entries",
+          "lineNumber": 83
+        },
+        {
+          "caller": "_flush",
+          "callee": "keys.map",
+          "lineNumber": 85
+        },
+        {
+          "caller": "_flush",
+          "callee": "this._pendingWrites.get",
+          "lineNumber": 85
+        },
+        {
+          "caller": "_flush",
+          "callee": "keys.map",
+          "lineNumber": 86
+        },
+        {
+          "caller": "_flush",
+          "callee": "snapRefs.get",
+          "lineNumber": 86
+        },
+        {
+          "caller": "_flush",
+          "callee": "log.debug",
+          "lineNumber": 88
+        },
+        {
+          "caller": "_flush",
+          "callee": "writes.map(w => w.entity).join",
+          "lineNumber": 88
+        },
+        {
+          "caller": "_flush",
+          "callee": "writes.map",
+          "lineNumber": 88
+        },
+        {
+          "caller": "_flush",
+          "callee": "openDatabase",
+          "lineNumber": 90
+        },
+        {
+          "caller": "_flush",
+          "callee": "withDbLock",
+          "lineNumber": 92
+        },
+        {
+          "caller": "_flush",
+          "callee": "Date.now",
+          "lineNumber": 98
+        },
+        {
+          "caller": "_flush",
+          "callee": "db.runAsync",
+          "lineNumber": 99
+        },
+        {
+          "caller": "_flush",
+          "callee": "config.toRow",
+          "lineNumber": 104
+        },
+        {
+          "caller": "_flush",
+          "callee": "Object.keys",
+          "lineNumber": 105
+        },
+        {
+          "caller": "_flush",
+          "callee": "Object.values",
+          "lineNumber": 106
+        },
+        {
+          "caller": "_flush",
+          "callee": "columns.map(c => `${c}=?`).join",
+          "lineNumber": 107
+        },
+        {
+          "caller": "_flush",
+          "callee": "columns.map",
+          "lineNumber": 107
+        },
+        {
+          "caller": "_flush",
+          "callee": "columns.map(() => '?').join",
+          "lineNumber": 108
+        },
+        {
+          "caller": "_flush",
+          "callee": "columns.map",
+          "lineNumber": 108
+        },
+        {
+          "caller": "_flush",
+          "callee": "db.runAsync",
+          "lineNumber": 110
+        },
+        {
+          "caller": "_flush",
+          "callee": "db.runAsync",
+          "lineNumber": 116
+        },
+        {
+          "caller": "_flush",
+          "callee": "columns.join",
+          "lineNumber": 117
+        },
+        {
+          "caller": "_flush",
+          "callee": "String",
+          "lineNumber": 121
+        },
+        {
+          "caller": "_flush",
+          "callee": "msg.includes",
+          "lineNumber": 122
+        },
+        {
+          "caller": "_flush",
+          "callee": "db.runAsync",
+          "lineNumber": 123
+        },
+        {
+          "caller": "_flush",
+          "callee": "db.runAsync",
+          "lineNumber": 137
+        },
+        {
+          "caller": "_flush",
+          "callee": "JSON.stringify",
+          "lineNumber": 139
+        },
+        {
+          "caller": "_flush",
+          "callee": "Date.now",
+          "lineNumber": 139
+        },
+        {
+          "caller": "_flush",
+          "callee": "this._pendingWrites.get",
+          "lineNumber": 145
+        },
+        {
+          "caller": "_flush",
+          "callee": "snapRefs.get",
+          "lineNumber": 145
+        },
+        {
+          "caller": "_flush",
+          "callee": "this._pendingWrites.delete",
+          "lineNumber": 145
+        },
+        {
+          "caller": "_flush",
+          "callee": "this._onFlushed",
+          "lineNumber": 148
+        },
+        {
+          "caller": "_flush",
+          "callee": "log.error",
+          "lineNumber": 150
+        },
+        {
+          "caller": "_flush",
+          "callee": "withDbLock",
+          "lineNumber": 152
+        },
+        {
+          "caller": "_flush",
+          "callee": "db.runAsync",
+          "lineNumber": 159
+        },
+        {
+          "caller": "_flush",
+          "callee": "Date.now",
+          "lineNumber": 161
+        },
+        {
+          "caller": "_flush",
+          "callee": "config.toRow",
+          "lineNumber": 164
+        },
+        {
+          "caller": "_flush",
+          "callee": "Object.keys",
+          "lineNumber": 165
+        },
+        {
+          "caller": "_flush",
+          "callee": "Object.values",
+          "lineNumber": 166
+        },
+        {
+          "caller": "_flush",
+          "callee": "cols.map(c => `${c}=?`).join",
+          "lineNumber": 167
+        },
+        {
+          "caller": "_flush",
+          "callee": "cols.map",
+          "lineNumber": 167
+        },
+        {
+          "caller": "_flush",
+          "callee": "cols.map(() => '?').join",
+          "lineNumber": 168
+        },
+        {
+          "caller": "_flush",
+          "callee": "cols.map",
+          "lineNumber": 168
+        },
+        {
+          "caller": "_flush",
+          "callee": "db.runAsync",
+          "lineNumber": 169
+        },
+        {
+          "caller": "_flush",
+          "callee": "db.runAsync",
+          "lineNumber": 174
+        },
+        {
+          "caller": "_flush",
+          "callee": "cols.join",
+          "lineNumber": 175
+        },
+        {
+          "caller": "_flush",
+          "callee": "db.runAsync",
+          "lineNumber": 183
+        },
+        {
+          "caller": "_flush",
+          "callee": "JSON.stringify",
+          "lineNumber": 185
+        },
+        {
+          "caller": "_flush",
+          "callee": "Date.now",
+          "lineNumber": 185
+        },
+        {
+          "caller": "_flush",
+          "callee": "log.error",
+          "lineNumber": 188
+        },
+        {
+          "caller": "_flush",
+          "callee": "String",
+          "lineNumber": 191
+        },
+        {
+          "caller": "_flush",
+          "callee": "this._onPersistError",
+          "lineNumber": 192
+        },
+        {
+          "caller": "_flush",
+          "callee": "this._pendingWrites.get",
+          "lineNumber": 200
+        },
+        {
+          "caller": "_flush",
+          "callee": "snapRefs.get",
+          "lineNumber": 200
+        },
+        {
+          "caller": "_flush",
+          "callee": "this._pendingWrites.delete",
+          "lineNumber": 200
+        },
+        {
+          "caller": "_flush",
+          "callee": "log.error",
+          "lineNumber": 211
+        },
+        {
+          "caller": "_flush",
+          "callee": "this._onPersistError",
+          "lineNumber": 214
+        },
+        {
+          "caller": "_flush",
+          "callee": "this._pendingWrites.clear",
+          "lineNumber": 216
+        },
+        {
+          "caller": "_flush",
+          "callee": "setTimeout",
+          "lineNumber": 220
+        },
+        {
+          "caller": "_flush",
+          "callee": "this._flush",
+          "lineNumber": 222
+        },
+        {
+          "caller": "_flush",
+          "callee": "this._onFlushed",
+          "lineNumber": 228
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "apps/mobile/src/store/entityTableMap.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 26,
+      "nonEmptyLines": 22,
+      "functions": [
+        {
+          "name": "buildEntityTableMap",
+          "startLine": 14,
+          "endLine": 24,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "ENTITY_TABLE_MAP",
+          "line": 26,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "buildEntityTableMap",
+          "callee": "(Object.keys(SCHEMAS) as SyncEntity[]).map",
+          "lineNumber": 15
+        },
+        {
+          "caller": "buildEntityTableMap",
+          "callee": "Object.keys",
+          "lineNumber": 15
+        },
+        {
+          "caller": "buildEntityTableMap",
+          "callee": "buildToRow",
+          "lineNumber": 20
+        },
+        {
+          "caller": "buildEntityTableMap",
+          "callee": "Object.fromEntries",
+          "lineNumber": 23
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/store/initApp.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 353,
+      "nonEmptyLines": 321,
+      "functions": [
+        {
+          "name": "loadSettingsPatch",
+          "startLine": 40,
+          "endLine": 53,
+          "params": []
+        },
+        {
+          "name": "initApp",
+          "startLine": 67,
+          "endLine": 353,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "initApp",
+          "line": 67,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "loadSettingsPatch",
+          "callee": "adapter.getSettings",
+          "lineNumber": 44
+        },
+        {
+          "caller": "loadSettingsPatch",
+          "callee": "log.error",
+          "lineNumber": 49
+        },
+        {
+          "caller": "initApp",
+          "callee": "setSentryBridge",
+          "lineNumber": 69
+        },
+        {
+          "caller": "initApp",
+          "callee": "configureFontScale",
+          "lineNumber": 73
+        },
+        {
+          "caller": "initApp",
+          "callee": "PixelRatio.getFontScale",
+          "lineNumber": 73
+        },
+        {
+          "caller": "initApp",
+          "callee": "openDatabase",
+          "lineNumber": 80
+        },
+        {
+          "caller": "initApp",
+          "callee": "migrateAsyncStorageToSQLite",
+          "lineNumber": 84
+        },
+        {
+          "caller": "initApp",
+          "callee": "setAppState",
+          "lineNumber": 86
+        },
+        {
+          "caller": "initApp",
+          "callee": "log.error",
+          "lineNumber": 89
+        },
+        {
+          "caller": "initApp",
+          "callee": "migrateSettingsToSQLite",
+          "lineNumber": 93
+        },
+        {
+          "caller": "initApp",
+          "callee": "log.error",
+          "lineNumber": 95
+        },
+        {
+          "caller": "initApp",
+          "callee": "flushWrites",
+          "lineNumber": 99
+        },
+        {
+          "caller": "initApp",
+          "callee": "log.error",
+          "lineNumber": 99
+        },
+        {
+          "caller": "initApp",
+          "callee": "Promise.all",
+          "lineNumber": 104
+        },
+        {
+          "caller": "initApp",
+          "callee": "loadSettingsPatch",
+          "lineNumber": 105
+        },
+        {
+          "caller": "initApp",
+          "callee": "rehydrateFromDb",
+          "lineNumber": 106
+        },
+        {
+          "caller": "initApp",
+          "callee": "log.error",
+          "lineNumber": 109
+        },
+        {
+          "caller": "initApp",
+          "callee": "Object.keys",
+          "lineNumber": 133
+        },
+        {
+          "caller": "initApp",
+          "callee": "setState",
+          "lineNumber": 134
+        },
+        {
+          "caller": "initApp",
+          "callee": "store",
+          "lineNumber": 159
+        },
+        {
+          "caller": "initApp",
+          "callee": "items.filter",
+          "lineNumber": 163
+        },
+        {
+          "caller": "initApp",
+          "callee": "isGhost",
+          "lineNumber": 163
+        },
+        {
+          "caller": "initApp",
+          "callee": "log.warn",
+          "lineNumber": 165
+        },
+        {
+          "caller": "initApp",
+          "callee": "items.map",
+          "lineNumber": 166
+        },
+        {
+          "caller": "initApp",
+          "callee": "ghosts.some",
+          "lineNumber": 166
+        },
+        {
+          "caller": "initApp",
+          "callee": "Date.now",
+          "lineNumber": 166
+        },
+        {
+          "caller": "initApp",
+          "callee": "toDelete.push",
+          "lineNumber": 167
+        },
+        {
+          "caller": "initApp",
+          "callee": "Object.keys",
+          "lineNumber": 171
+        },
+        {
+          "caller": "initApp",
+          "callee": "setState",
+          "lineNumber": 172
+        },
+        {
+          "caller": "initApp",
+          "callee": "adapter.markDeleted(entity as Parameters<typeof adapter.markDeleted>[0], id).catch",
+          "lineNumber": 175
+        },
+        {
+          "caller": "initApp",
+          "callee": "adapter.markDeleted",
+          "lineNumber": 175
+        },
+        {
+          "caller": "initApp",
+          "callee": "log.error",
+          "lineNumber": 175
+        },
+        {
+          "caller": "initApp",
+          "callee": "log.error",
+          "lineNumber": 178
+        },
+        {
+          "caller": "initApp",
+          "callee": "loadSecureTokens",
+          "lineNumber": 183
+        },
+        {
+          "caller": "initApp",
+          "callee": "store",
+          "lineNumber": 185
+        },
+        {
+          "caller": "initApp",
+          "callee": "apiGetMe(secureTokens.token).then(({ user }) => {\r\n            // Token is valid — update user info\r\n            const latestAuth = store().auth;\r\n            if (latestAuth.token === secureTokens.token) {\r\n              setState({ auth: { ...latestAuth, user } } as PartialMobileStore);\r\n            }\r\n          }).catch",
+          "lineNumber": 200
+        },
+        {
+          "caller": "initApp",
+          "callee": "apiGetMe(secureTokens.token).then",
+          "lineNumber": 200
+        },
+        {
+          "caller": "initApp",
+          "callee": "apiGetMe",
+          "lineNumber": 200
+        },
+        {
+          "caller": "initApp",
+          "callee": "store",
+          "lineNumber": 202
+        },
+        {
+          "caller": "initApp",
+          "callee": "setState",
+          "lineNumber": 204
+        },
+        {
+          "caller": "initApp",
+          "callee": "log.info",
+          "lineNumber": 208
+        },
+        {
+          "caller": "initApp",
+          "callee": "store().refreshAuth().catch",
+          "lineNumber": 209
+        },
+        {
+          "caller": "initApp",
+          "callee": "store().refreshAuth",
+          "lineNumber": 209
+        },
+        {
+          "caller": "initApp",
+          "callee": "store",
+          "lineNumber": 209
+        },
+        {
+          "caller": "initApp",
+          "callee": "log.error",
+          "lineNumber": 209
+        },
+        {
+          "caller": "initApp",
+          "callee": "setState",
+          "lineNumber": 214
+        },
+        {
+          "caller": "initApp",
+          "callee": "setState",
+          "lineNumber": 224
+        },
+        {
+          "caller": "initApp",
+          "callee": "log.error",
+          "lineNumber": 231
+        },
+        {
+          "caller": "initApp",
+          "callee": "store",
+          "lineNumber": 237
+        },
+        {
+          "caller": "initApp",
+          "callee": "log.warn",
+          "lineNumber": 239
+        },
+        {
+          "caller": "initApp",
+          "callee": "setState",
+          "lineNumber": 240
+        },
+        {
+          "caller": "initApp",
+          "callee": "useAppStore.subscribe",
+          "lineNumber": 246
+        },
+        {
+          "caller": "initApp",
+          "callee": "saveSecureTokens(newToken, newRefresh, state.auth.expiresAt).catch",
+          "lineNumber": 252
+        },
+        {
+          "caller": "initApp",
+          "callee": "saveSecureTokens",
+          "lineNumber": 252
+        },
+        {
+          "caller": "initApp",
+          "callee": "log.error",
+          "lineNumber": 252
+        },
+        {
+          "caller": "initApp",
+          "callee": "clearSecureTokens().catch",
+          "lineNumber": 254
+        },
+        {
+          "caller": "initApp",
+          "callee": "clearSecureTokens",
+          "lineNumber": 254
+        },
+        {
+          "caller": "initApp",
+          "callee": "log.error",
+          "lineNumber": 254
+        },
+        {
+          "caller": "initApp",
+          "callee": "setSentryUser",
+          "lineNumber": 258
+        },
+        {
+          "caller": "initApp",
+          "callee": "clearSentryUser",
+          "lineNumber": 260
+        },
+        {
+          "caller": "initApp",
+          "callee": "setAutoSyncCallback",
+          "lineNumber": 268
+        },
+        {
+          "caller": "initApp",
+          "callee": "store().autoSyncPlanItems",
+          "lineNumber": 269
+        },
+        {
+          "caller": "initApp",
+          "callee": "store",
+          "lineNumber": 269
+        },
+        {
+          "caller": "initApp",
+          "callee": "store().autoSyncHabits",
+          "lineNumber": 270
+        },
+        {
+          "caller": "initApp",
+          "callee": "store",
+          "lineNumber": 270
+        },
+        {
+          "caller": "initApp",
+          "callee": "runSync().catch",
+          "lineNumber": 271
+        },
+        {
+          "caller": "initApp",
+          "callee": "runSync",
+          "lineNumber": 271
+        },
+        {
+          "caller": "initApp",
+          "callee": "log.error",
+          "lineNumber": 271
+        },
+        {
+          "caller": "initApp",
+          "callee": "setTokenRecoveryFn",
+          "lineNumber": 276
+        },
+        {
+          "caller": "initApp",
+          "callee": "store",
+          "lineNumber": 277
+        },
+        {
+          "caller": "initApp",
+          "callee": "store().refreshAuth",
+          "lineNumber": 279
+        },
+        {
+          "caller": "initApp",
+          "callee": "store",
+          "lineNumber": 279
+        },
+        {
+          "caller": "initApp",
+          "callee": "store",
+          "lineNumber": 280
+        },
+        {
+          "caller": "initApp",
+          "callee": "setRealtimeLogoutHandler",
+          "lineNumber": 290
+        },
+        {
+          "caller": "initApp",
+          "callee": "log.warn",
+          "lineNumber": 291
+        },
+        {
+          "caller": "initApp",
+          "callee": "setRealtimeUserIdProvider",
+          "lineNumber": 293
+        },
+        {
+          "caller": "initApp",
+          "callee": "store",
+          "lineNumber": 293
+        },
+        {
+          "caller": "initApp",
+          "callee": "adapter.getSettings",
+          "lineNumber": 298
+        },
+        {
+          "caller": "initApp",
+          "callee": "adapter.persistSettings('lastDailyReset', date).catch",
+          "lineNumber": 301
+        },
+        {
+          "caller": "initApp",
+          "callee": "adapter.persistSettings",
+          "lineNumber": 301
+        },
+        {
+          "caller": "initApp",
+          "callee": "log.error",
+          "lineNumber": 301
+        },
+        {
+          "caller": "initApp",
+          "callee": "store",
+          "lineNumber": 302
+        },
+        {
+          "caller": "initApp",
+          "callee": "setState",
+          "lineNumber": 303
+        },
+        {
+          "caller": "initApp",
+          "callee": "store",
+          "lineNumber": 304
+        },
+        {
+          "caller": "initApp",
+          "callee": "store",
+          "lineNumber": 305
+        },
+        {
+          "caller": "initApp",
+          "callee": "store",
+          "lineNumber": 307
+        },
+        {
+          "caller": "initApp",
+          "callee": "adapter.persistChange('profile', 'self', {\r\n          ...data,\r\n          calGoal: s.calGoal, customFoodPresets: s.customFoodPresets,\r\n          theme: s.theme, language: s.language,\r\n          remindEnabled: s.remindEnabled, remindTime: s.remindTime,\r\n          healthSyncEnabled: s.healthSyncEnabled,\r\n          customTags: s.customTags, customMoods: s.customMoods,\r\n          allTagsOrder: s.allTagsOrder, allMoodsOrder: s.allMoodsOrder,\r\n        } as Record<string, unknown>).catch",
+          "lineNumber": 308
+        },
+        {
+          "caller": "initApp",
+          "callee": "adapter.persistChange",
+          "lineNumber": 308
+        },
+        {
+          "caller": "initApp",
+          "callee": "log.error",
+          "lineNumber": 316
+        },
+        {
+          "caller": "initApp",
+          "callee": "store().performDailyReset",
+          "lineNumber": 319
+        },
+        {
+          "caller": "initApp",
+          "callee": "store",
+          "lineNumber": 319
+        },
+        {
+          "caller": "initApp",
+          "callee": "store().checkHabitAutoStatus",
+          "lineNumber": 322
+        },
+        {
+          "caller": "initApp",
+          "callee": "store",
+          "lineNumber": 322
+        },
+        {
+          "caller": "initApp",
+          "callee": "AppState.addEventListener",
+          "lineNumber": 326
+        },
+        {
+          "caller": "initApp",
+          "callee": "callback",
+          "lineNumber": 327
+        },
+        {
+          "caller": "initApp",
+          "callee": "store().calculateTotalMedMin",
+          "lineNumber": 334
+        },
+        {
+          "caller": "initApp",
+          "callee": "store",
+          "lineNumber": 334
+        },
+        {
+          "caller": "initApp",
+          "callee": "store().calculateStreak",
+          "lineNumber": 335
+        },
+        {
+          "caller": "initApp",
+          "callee": "store",
+          "lineNumber": 335
+        },
+        {
+          "caller": "initApp",
+          "callee": "log.error",
+          "lineNumber": 337
+        },
+        {
+          "caller": "initApp",
+          "callee": "store().cleanupRecycleBin",
+          "lineNumber": 341
+        },
+        {
+          "caller": "initApp",
+          "callee": "store",
+          "lineNumber": 341
+        },
+        {
+          "caller": "initApp",
+          "callee": "log.error",
+          "lineNumber": 341
+        },
+        {
+          "caller": "initApp",
+          "callee": "dailyReset.start",
+          "lineNumber": 347
+        },
+        {
+          "caller": "initApp",
+          "callee": "Promise.resolve",
+          "lineNumber": 347
+        },
+        {
+          "caller": "initApp",
+          "callee": "log.error",
+          "lineNumber": 347
+        },
+        {
+          "caller": "initApp",
+          "callee": "log.info",
+          "lineNumber": 349
+        },
+        {
+          "caller": "initApp",
+          "callee": "log.error",
+          "lineNumber": 351
+        }
+      ],
+      "metrics": {
+        "importCount": 8,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/store/migrateAsyncStorage.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 154,
+      "nonEmptyLines": 136,
+      "functions": [
+        {
+          "name": "seedSettings",
+          "startLine": 63,
+          "endLine": 84,
+          "params": []
+        },
+        {
+          "name": "seedEntityData",
+          "startLine": 86,
+          "endLine": 93,
+          "params": []
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "seedSettings",
+          "callee": "memoryAsyncStorage.set",
+          "lineNumber": 64
+        },
+        {
+          "caller": "seedSettings",
+          "callee": "JSON.stringify",
+          "lineNumber": 64
+        },
+        {
+          "caller": "seedEntityData",
+          "callee": "memoryAsyncStorage.set",
+          "lineNumber": 87
+        },
+        {
+          "caller": "seedEntityData",
+          "callee": "JSON.stringify",
+          "lineNumber": 87
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 0,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/store/migrateAsyncStorage.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 259,
+      "nonEmptyLines": 229,
+      "functions": [
+        {
+          "name": "migrateAsyncStorageToSQLite",
+          "startLine": 49,
+          "endLine": 195,
+          "params": [
+            "db",
+            "adapter"
+          ]
+        },
+        {
+          "name": "migrateSettingsToSQLite",
+          "startLine": 215,
+          "endLine": 259,
+          "params": [
+            "db",
+            "adapter"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "migrateAsyncStorageToSQLite",
+          "line": 49,
+          "isDefault": false
+        },
+        {
+          "name": "migrateSettingsToSQLite",
+          "line": 215,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "getState",
+          "lineNumber": 54
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "AsyncStorage.getItem",
+          "lineNumber": 60
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "setState",
+          "lineNumber": 66
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "JSON.parse",
+          "lineNumber": 72
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "setState",
+          "lineNumber": 74
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "ENTITY_MIGRATIONS.some",
+          "lineNumber": 79
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "Array.isArray",
+          "lineNumber": 80
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "Object.keys",
+          "lineNumber": 84
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "setState",
+          "lineNumber": 88
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "log.info",
+          "lineNumber": 92
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "Array.isArray",
+          "lineNumber": 99
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "adapter.persistChange",
+          "lineNumber": 105
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "log.error",
+          "lineNumber": 108
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "adapter.persistChange",
+          "lineNumber": 116
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "log.error",
+          "lineNumber": 119
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "adapter.persistChange",
+          "lineNumber": 126
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "Date.now",
+          "lineNumber": 130
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "log.error",
+          "lineNumber": 135
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "import",
+          "lineNumber": 140
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "flushWrites",
+          "lineNumber": 141
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "setState",
+          "lineNumber": 144
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "ENTITY_MIGRATIONS.map(m => m.storeKey)\n    .concat(['userProfile', 'aiMode', 'aiModels'])\n    .filter",
+          "lineNumber": 149
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "ENTITY_MIGRATIONS.map(m => m.storeKey)\n    .concat",
+          "lineNumber": 149
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "ENTITY_MIGRATIONS.map",
+          "lineNumber": 149
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "AsyncStorage.setItem",
+          "lineNumber": 158
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "JSON.stringify",
+          "lineNumber": 158
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "log.error",
+          "lineNumber": 160
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "log.info",
+          "lineNumber": 164
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "ENTITY_MIGRATIONS.find",
+          "lineNumber": 170
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "Array.isArray",
+          "lineNumber": 171
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "flushWrites",
+          "lineNumber": 178
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "import",
+          "lineNumber": 179
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "rehydrateFromDb",
+          "lineNumber": 180
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "log.warn",
+          "lineNumber": 183
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "log.info",
+          "lineNumber": 185
+        },
+        {
+          "caller": "migrateAsyncStorageToSQLite",
+          "callee": "log.error",
+          "lineNumber": 190
+        },
+        {
+          "caller": "migrateSettingsToSQLite",
+          "callee": "getState",
+          "lineNumber": 219
+        },
+        {
+          "caller": "migrateSettingsToSQLite",
+          "callee": "AsyncStorage.getItem",
+          "lineNumber": 224
+        },
+        {
+          "caller": "migrateSettingsToSQLite",
+          "callee": "setState",
+          "lineNumber": 229
+        },
+        {
+          "caller": "migrateSettingsToSQLite",
+          "callee": "JSON.parse",
+          "lineNumber": 235
+        },
+        {
+          "caller": "migrateSettingsToSQLite",
+          "callee": "setState",
+          "lineNumber": 237
+        },
+        {
+          "caller": "migrateSettingsToSQLite",
+          "callee": "adapter.persistSettings",
+          "lineNumber": 245
+        },
+        {
+          "caller": "migrateSettingsToSQLite",
+          "callee": "log.error",
+          "lineNumber": 248
+        },
+        {
+          "caller": "migrateSettingsToSQLite",
+          "callee": "log.info",
+          "lineNumber": 254
+        },
+        {
+          "caller": "migrateSettingsToSQLite",
+          "callee": "setState",
+          "lineNumber": 257
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/store/rowMappers.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 1051,
+      "nonEmptyLines": 932,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/store/rowMappers.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 111,
+      "nonEmptyLines": 106,
+      "exports": [
+        {
+          "name": "rowToHabit",
+          "line": 70,
+          "isDefault": false
+        },
+        {
+          "name": "rowToReflection",
+          "line": 71,
+          "isDefault": false
+        },
+        {
+          "name": "rowToFasting",
+          "line": 72,
+          "isDefault": false
+        },
+        {
+          "name": "rowToFood",
+          "line": 73,
+          "isDefault": false
+        },
+        {
+          "name": "rowToCheckin",
+          "line": 74,
+          "isDefault": false
+        },
+        {
+          "name": "rowToExercise",
+          "line": 75,
+          "isDefault": false
+        },
+        {
+          "name": "rowToMeditation",
+          "line": 76,
+          "isDefault": false
+        },
+        {
+          "name": "rowToProfile",
+          "line": 77,
+          "isDefault": false
+        },
+        {
+          "name": "rowToPlan",
+          "line": 78,
+          "isDefault": false
+        },
+        {
+          "name": "rowToPlanItem",
+          "line": 79,
+          "isDefault": false
+        },
+        {
+          "name": "rowToPlanItemCheckin",
+          "line": 80,
+          "isDefault": false
+        },
+        {
+          "name": "rowToGrace",
+          "line": 81,
+          "isDefault": false
+        },
+        {
+          "name": "rowToDailyCustomTodo",
+          "line": 82,
+          "isDefault": false
+        },
+        {
+          "name": "rowToDailyTodoHistory",
+          "line": 83,
+          "isDefault": false
+        },
+        {
+          "name": "rowToThoughtTrail",
+          "line": 84,
+          "isDefault": false
+        },
+        {
+          "name": "rowToTrailNote",
+          "line": 85,
+          "isDefault": false
+        },
+        {
+          "name": "rowToReflectionLink",
+          "line": 86,
+          "isDefault": false
+        },
+        {
+          "name": "rowToAIConfig",
+          "line": 87,
+          "isDefault": false
+        },
+        {
+          "name": "rowToCheckinReview",
+          "line": 88,
+          "isDefault": false
+        },
+        {
+          "name": "rowToBodyGoal",
+          "line": 89,
+          "isDefault": false
+        },
+        {
+          "name": "rowToBodyPlan",
+          "line": 90,
+          "isDefault": false
+        },
+        {
+          "name": "rowToWeightRecord",
+          "line": 91,
+          "isDefault": false
+        },
+        {
+          "name": "rowToBodyCheckin",
+          "line": 92,
+          "isDefault": false
+        },
+        {
+          "name": "rowToSleep",
+          "line": 93,
+          "isDefault": false
+        },
+        {
+          "name": "rowToGive",
+          "line": 94,
+          "isDefault": false
+        },
+        {
+          "name": "rowToMotivationEntry",
+          "line": 95,
+          "isDefault": false
+        },
+        {
+          "name": "rowToCustomWuxing",
+          "line": 96,
+          "isDefault": false
+        },
+        {
+          "name": "rowToVision",
+          "line": 97,
+          "isDefault": false
+        },
+        {
+          "name": "rowToVisionPractice",
+          "line": 98,
+          "isDefault": false
+        },
+        {
+          "name": "rowToDedication",
+          "line": 99,
+          "isDefault": false
+        },
+        {
+          "name": "rowToFearEntry",
+          "line": 100,
+          "isDefault": false
+        },
+        {
+          "name": "rowToCourageEntry",
+          "line": 101,
+          "isDefault": false
+        },
+        {
+          "name": "rowToFearAchievement",
+          "line": 102,
+          "isDefault": false
+        },
+        {
+          "name": "rowToMantraDef",
+          "line": 103,
+          "isDefault": false
+        },
+        {
+          "name": "rowToMantraSession",
+          "line": 104,
+          "isDefault": false
+        },
+        {
+          "name": "rowToSutraReading",
+          "line": 105,
+          "isDefault": false
+        },
+        {
+          "name": "rowToFoodPreset",
+          "line": 106,
+          "isDefault": false
+        },
+        {
+          "name": "rowToBreath",
+          "line": 107,
+          "isDefault": false
+        },
+        {
+          "name": "rowToZhiguanSession",
+          "line": 108,
+          "isDefault": false
+        },
+        {
+          "name": "rowToEntityMap",
+          "line": 111,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 40,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/store/secureAuth.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 59,
+      "nonEmptyLines": 54,
+      "functions": [
+        {
+          "name": "saveSecureTokens",
+          "startLine": 14,
+          "endLine": 25,
+          "params": [
+            "token",
+            "refreshToken",
+            "expiresAt"
+          ]
+        },
+        {
+          "name": "loadSecureTokens",
+          "startLine": 28,
+          "endLine": 46,
+          "params": []
+        },
+        {
+          "name": "clearSecureTokens",
+          "startLine": 49,
+          "endLine": 59,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "saveSecureTokens",
+          "line": 14,
+          "isDefault": false
+        },
+        {
+          "name": "loadSecureTokens",
+          "line": 28,
+          "isDefault": false
+        },
+        {
+          "name": "clearSecureTokens",
+          "line": 49,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "saveSecureTokens",
+          "callee": "Promise.all",
+          "lineNumber": 16
+        },
+        {
+          "caller": "saveSecureTokens",
+          "callee": "SecureStore.setItemAsync",
+          "lineNumber": 17
+        },
+        {
+          "caller": "saveSecureTokens",
+          "callee": "SecureStore.setItemAsync",
+          "lineNumber": 18
+        },
+        {
+          "caller": "saveSecureTokens",
+          "callee": "SecureStore.setItemAsync",
+          "lineNumber": 19
+        },
+        {
+          "caller": "saveSecureTokens",
+          "callee": "String",
+          "lineNumber": 19
+        },
+        {
+          "caller": "saveSecureTokens",
+          "callee": "log.error",
+          "lineNumber": 22
+        },
+        {
+          "caller": "loadSecureTokens",
+          "callee": "Promise.all",
+          "lineNumber": 30
+        },
+        {
+          "caller": "loadSecureTokens",
+          "callee": "SecureStore.getItemAsync",
+          "lineNumber": 31
+        },
+        {
+          "caller": "loadSecureTokens",
+          "callee": "SecureStore.getItemAsync",
+          "lineNumber": 32
+        },
+        {
+          "caller": "loadSecureTokens",
+          "callee": "SecureStore.getItemAsync",
+          "lineNumber": 33
+        },
+        {
+          "caller": "loadSecureTokens",
+          "callee": "parseInt",
+          "lineNumber": 37
+        },
+        {
+          "caller": "loadSecureTokens",
+          "callee": "log.error",
+          "lineNumber": 43
+        },
+        {
+          "caller": "clearSecureTokens",
+          "callee": "Promise.all",
+          "lineNumber": 51
+        },
+        {
+          "caller": "clearSecureTokens",
+          "callee": "SecureStore.deleteItemAsync(TOKEN_KEY).catch",
+          "lineNumber": 52
+        },
+        {
+          "caller": "clearSecureTokens",
+          "callee": "SecureStore.deleteItemAsync",
+          "lineNumber": 52
+        },
+        {
+          "caller": "clearSecureTokens",
+          "callee": "log.error",
+          "lineNumber": 52
+        },
+        {
+          "caller": "clearSecureTokens",
+          "callee": "SecureStore.deleteItemAsync(REFRESH_KEY).catch",
+          "lineNumber": 53
+        },
+        {
+          "caller": "clearSecureTokens",
+          "callee": "SecureStore.deleteItemAsync",
+          "lineNumber": 53
+        },
+        {
+          "caller": "clearSecureTokens",
+          "callee": "log.error",
+          "lineNumber": 53
+        },
+        {
+          "caller": "clearSecureTokens",
+          "callee": "SecureStore.deleteItemAsync(EXPIRES_KEY).catch",
+          "lineNumber": 54
+        },
+        {
+          "caller": "clearSecureTokens",
+          "callee": "SecureStore.deleteItemAsync",
+          "lineNumber": 54
+        },
+        {
+          "caller": "clearSecureTokens",
+          "callee": "log.error",
+          "lineNumber": 54
+        },
+        {
+          "caller": "clearSecureTokens",
+          "callee": "log.error",
+          "lineNumber": 57
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 3,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/store/storageAdapter.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 111,
+      "nonEmptyLines": 95,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/store/storageAdapter.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 132,
+      "nonEmptyLines": 118,
+      "functions": [
+        {
+          "name": "setStorageAdapterTrigger",
+          "startLine": 13,
+          "endLine": 13,
+          "params": [
+            "fn"
+          ]
+        },
+        {
+          "name": "setRegisterLocalDelete",
+          "startLine": 17,
+          "endLine": 17,
+          "params": [
+            "fn"
+          ]
+        },
+        {
+          "name": "setPersistErrorHandler",
+          "startLine": 32,
+          "endLine": 34,
+          "params": [
+            "fn"
+          ]
+        },
+        {
+          "name": "flushWrites",
+          "startLine": 36,
+          "endLine": 38,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "setStorageAdapterTrigger",
+          "line": 13,
+          "isDefault": false
+        },
+        {
+          "name": "setRegisterLocalDelete",
+          "line": 17,
+          "isDefault": false
+        },
+        {
+          "name": "setPersistErrorHandler",
+          "line": 32,
+          "isDefault": false
+        },
+        {
+          "name": "flushWrites",
+          "line": 36,
+          "isDefault": false
+        },
+        {
+          "name": "mobileStorageAdapter",
+          "line": 40,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "flushWrites",
+          "callee": "_batcher.flushNow",
+          "lineNumber": 37
+        },
+        {
+          "caller": "persistChange",
+          "callee": "_batcher.write",
+          "lineNumber": 49
+        },
+        {
+          "caller": "persistChange",
+          "callee": "_batcher.flushNow",
+          "lineNumber": 52
+        },
+        {
+          "caller": "markDeleted",
+          "callee": "_registerLocalDelete",
+          "lineNumber": 57
+        },
+        {
+          "caller": "markDeleted",
+          "callee": "_batcher.markDeleted",
+          "lineNumber": 58
+        },
+        {
+          "caller": "batchDelete",
+          "callee": "_registerLocalDelete",
+          "lineNumber": 63
+        },
+        {
+          "caller": "batchDelete",
+          "callee": "_batcher.markDeleted",
+          "lineNumber": 64
+        },
+        {
+          "caller": "batchDelete",
+          "callee": "_batcher.flushNow",
+          "lineNumber": 67
+        },
+        {
+          "caller": "hardDelete",
+          "callee": "openDatabase",
+          "lineNumber": 71
+        },
+        {
+          "caller": "hardDelete",
+          "callee": "withDbLock",
+          "lineNumber": 72
+        },
+        {
+          "caller": "hardDelete",
+          "callee": "db.runAsync",
+          "lineNumber": 77
+        },
+        {
+          "caller": "hardDelete",
+          "callee": "_registerLocalDelete",
+          "lineNumber": 79
+        },
+        {
+          "caller": "hardDelete",
+          "callee": "_batcher.markDeleted",
+          "lineNumber": 84
+        },
+        {
+          "caller": "hardDelete",
+          "callee": "_batcher.flushNow",
+          "lineNumber": 86
+        },
+        {
+          "caller": "persistSettings",
+          "callee": "openDatabase",
+          "lineNumber": 91
+        },
+        {
+          "caller": "persistSettings",
+          "callee": "withDbLock",
+          "lineNumber": 92
+        },
+        {
+          "caller": "persistSettings",
+          "callee": "setState",
+          "lineNumber": 93
+        },
+        {
+          "caller": "persistSettings",
+          "callee": "JSON.stringify",
+          "lineNumber": 93
+        },
+        {
+          "caller": "getSettings",
+          "callee": "openDatabase",
+          "lineNumber": 98
+        },
+        {
+          "caller": "getSettings",
+          "callee": "withDbLock",
+          "lineNumber": 99
+        },
+        {
+          "caller": "getSettings",
+          "callee": "getState",
+          "lineNumber": 100
+        },
+        {
+          "caller": "getSettings",
+          "callee": "JSON.parse",
+          "lineNumber": 103
+        },
+        {
+          "caller": "transaction",
+          "callee": "openDatabase",
+          "lineNumber": 119
+        },
+        {
+          "caller": "transaction",
+          "callee": "withDbLock",
+          "lineNumber": 120
+        },
+        {
+          "caller": "transaction",
+          "callee": "db.execAsync",
+          "lineNumber": 121
+        },
+        {
+          "caller": "transaction",
+          "callee": "fn",
+          "lineNumber": 123
+        },
+        {
+          "caller": "transaction",
+          "callee": "db.execAsync",
+          "lineNumber": 124
+        },
+        {
+          "caller": "transaction",
+          "callee": "db.execAsync",
+          "lineNumber": 127
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 5,
+        "functionCount": 4,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/store/syncStore.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 111,
+      "nonEmptyLines": 92,
+      "exports": [
+        {
+          "name": "useSyncStore",
+          "line": 50,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/store/useAppStore.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 638,
+      "nonEmptyLines": 542,
+      "functions": [
+        {
+          "name": "getAppStateListener",
+          "startLine": 148,
+          "endLine": 154,
+          "params": []
+        },
+        {
+          "name": "resetStoreDefaults",
+          "startLine": 157,
+          "endLine": 180,
+          "params": []
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getAppStateListener",
+          "callee": "mockAddEventListener.mock.calls.find",
+          "lineNumber": 149
+        },
+        {
+          "caller": "resetStoreDefaults",
+          "callee": "useAppStore.setState",
+          "lineNumber": 158
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 0,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    }
+  ]
+}

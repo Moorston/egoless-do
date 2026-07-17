@@ -62,7 +62,7 @@ export default function Banner({
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <TouchableOpacity style={{ alignItems: 'center', flex: 1 }} onPress={onStatsPress} activeOpacity={0.7}>
           <Text style={{ color: 'rgba(255,255,255,.6)', fontSize: FONT_SUB() }}>{T('totalCompleted')}</Text>
-          <Text style={{ color: '#fff', fontWeight: '800', fontSize: FONT_STAT_CARD() }}>{isToday ? totalCompleted : viewDateStats.totalDays}</Text>
+          <Text style={{ color: '#fff', fontWeight: '800', fontSize: FONT_STAT_CARD() }}>{String(isToday ? totalCompleted : viewDateStats.totalDays)}</Text>
           <Text style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_SMALL() }}>{T('days')}</Text>
           <BarChart3 size={12} color="rgba(255,255,255,.7)" style={{ marginTop: 4 }} />
         </TouchableOpacity>

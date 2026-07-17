@@ -1,0 +1,6516 @@
+{
+  "nodes": [
+    {
+      "id": "file:.trellis/scripts/add_session.py",
+      "type": "file",
+      "name": "add_session.py",
+      "filePath": ".trellis/scripts/add_session.py",
+      "summary": "添加新会话到journal文件并更新index.md的脚本。",
+      "tags": [
+        "trellis",
+        "session",
+        "script"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:.trellis/scripts/common/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": ".trellis/scripts/common/__init__.py",
+      "summary": "Trellis公共工具包init，聚合active_task/io/paths导出。",
+      "tags": [
+        "trellis",
+        "common",
+        "barrel"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/scripts/common/active_task.py",
+      "type": "file",
+      "name": "active_task.py",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "summary": "会话作用域的活动任务解析工具。",
+      "tags": [
+        "trellis",
+        "task",
+        "session"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:.trellis/scripts/common/config.py",
+      "type": "file",
+      "name": "config.py",
+      "filePath": ".trellis/scripts/common/config.py",
+      "summary": "读取.trellis/config.yaml的配置读取器。",
+      "tags": [
+        "trellis",
+        "config",
+        "utility"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:.trellis/scripts/common/developer.py",
+      "type": "file",
+      "name": "developer.py",
+      "filePath": ".trellis/scripts/common/developer.py",
+      "summary": "开发者初始化管理工具。",
+      "tags": [
+        "trellis",
+        "developer",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/scripts/common/git.py",
+      "type": "file",
+      "name": "git.py",
+      "filePath": ".trellis/scripts/common/git.py",
+      "summary": "Trellis脚本统一的git命令执行工具。",
+      "tags": [
+        "trellis",
+        "git",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/scripts/common/git_context.py",
+      "type": "file",
+      "name": "git_context.py",
+      "filePath": ".trellis/scripts/common/git_context.py",
+      "summary": "Git与Session上下文输出入口shim。",
+      "tags": [
+        "trellis",
+        "context",
+        "git"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/scripts/common/io.py",
+      "type": "file",
+      "name": "io.py",
+      "filePath": ".trellis/scripts/common/io.py",
+      "summary": "JSON文件读写工具（read_json/write_json）。",
+      "tags": [
+        "trellis",
+        "io",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/scripts/common/log.py",
+      "type": "file",
+      "name": "log.py",
+      "filePath": ".trellis/scripts/common/log.py",
+      "summary": "终端颜色与结构化日志工具。",
+      "tags": [
+        "trellis",
+        "log",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/scripts/common/packages_context.py",
+      "type": "file",
+      "name": "packages_context.py",
+      "filePath": ".trellis/scripts/common/packages_context.py",
+      "summary": "包发现与上下文输出工具。",
+      "tags": [
+        "trellis",
+        "context",
+        "packages"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/scripts/common/paths.py",
+      "type": "file",
+      "name": "paths.py",
+      "filePath": ".trellis/scripts/common/paths.py",
+      "summary": "Trellis通用路径工具（仓库根/开发者/工作流目录）。",
+      "tags": [
+        "trellis",
+        "paths",
+        "utility"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:.trellis/scripts/common/safe_commit.py",
+      "type": "file",
+      "name": "safe_commit.py",
+      "filePath": ".trellis/scripts/common/safe_commit.py",
+      "summary": "Trellis自有路径的安全git-add辅助。",
+      "tags": [
+        "trellis",
+        "git",
+        "safe-commit"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:.trellis/scripts/common/session_context.py",
+      "type": "file",
+      "name": "session_context.py",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "summary": "会话上下文生成工具（默认与记录模式）。",
+      "tags": [
+        "trellis",
+        "session",
+        "context"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:.trellis/scripts/common/task_context.py",
+      "type": "file",
+      "name": "task_context.py",
+      "filePath": ".trellis/scripts/common/task_context.py",
+      "summary": "任务JSONL上下文管理工具。",
+      "tags": [
+        "trellis",
+        "task",
+        "context"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/scripts/common/task_queue.py",
+      "type": "file",
+      "name": "task_queue.py",
+      "filePath": ".trellis/scripts/common/task_queue.py",
+      "summary": "任务队列管理工具。",
+      "tags": [
+        "trellis",
+        "task",
+        "queue"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/scripts/common/task_store.py",
+      "type": "file",
+      "name": "task_store.py",
+      "filePath": ".trellis/scripts/common/task_store.py",
+      "summary": "任务存储工具，含任务持久化与查询。",
+      "tags": [
+        "trellis",
+        "task",
+        "store"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:.trellis/scripts/common/task_utils.py",
+      "type": "file",
+      "name": "task_utils.py",
+      "filePath": ".trellis/scripts/common/task_utils.py",
+      "summary": "任务工具函数集合。",
+      "tags": [
+        "trellis",
+        "task",
+        "utility"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:.trellis/scripts/common/tasks.py",
+      "type": "file",
+      "name": "tasks.py",
+      "filePath": ".trellis/scripts/common/tasks.py",
+      "summary": "任务基础数据结构与操作。",
+      "tags": [
+        "trellis",
+        "task",
+        "core"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/scripts/common/trellis_config.py",
+      "type": "file",
+      "name": "trellis_config.py",
+      "filePath": ".trellis/scripts/common/trellis_config.py",
+      "summary": "Trellis工作流配置读取工具。",
+      "tags": [
+        "trellis",
+        "config",
+        "workflow"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/scripts/common/types.py",
+      "type": "file",
+      "name": "types.py",
+      "filePath": ".trellis/scripts/common/types.py",
+      "summary": "Trellis脚本公共类型定义。",
+      "tags": [
+        "trellis",
+        "types",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/scripts/common/workflow_phase.py",
+      "type": "file",
+      "name": "workflow_phase.py",
+      "filePath": ".trellis/scripts/common/workflow_phase.py",
+      "summary": "工作流阶段解析与平台标记过滤工具。",
+      "tags": [
+        "trellis",
+        "workflow",
+        "phase"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:.trellis/scripts/get_context.py",
+      "type": "file",
+      "name": "get_context.py",
+      "filePath": ".trellis/scripts/get_context.py",
+      "summary": "获取AI Agent会话上下文的入口脚本。",
+      "tags": [
+        "trellis",
+        "context",
+        "script"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/scripts/get_developer.py",
+      "type": "file",
+      "name": "get_developer.py",
+      "filePath": ".trellis/scripts/get_developer.py",
+      "summary": "获取当前开发者名字的包装脚本。",
+      "tags": [
+        "trellis",
+        "developer",
+        "script"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/scripts/init_developer.py",
+      "type": "file",
+      "name": "init_developer.py",
+      "filePath": ".trellis/scripts/init_developer.py",
+      "summary": "初始化工作流开发者信息。",
+      "tags": [
+        "trellis",
+        "developer",
+        "script"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/scripts/task.py",
+      "type": "file",
+      "name": "task.py",
+      "filePath": ".trellis/scripts/task.py",
+      "summary": "任务管理主脚本（创建/查询/分配/优先级）。",
+      "tags": [
+        "trellis",
+        "task",
+        "script"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:.trellis/scripts/add_session.py:get_latest_journal_info",
+      "type": "function",
+      "name": "get_latest_journal_info",
+      "filePath": ".trellis/scripts/add_session.py",
+      "lineRange": [
+        69,
+        93
+      ],
+      "summary": "get_latest_journal_info 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/add_session.py:get_current_session",
+      "type": "function",
+      "name": "get_current_session",
+      "filePath": ".trellis/scripts/add_session.py",
+      "lineRange": [
+        96,
+        107
+      ],
+      "summary": "get_current_session 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/add_session.py:_extract_journal_num",
+      "type": "function",
+      "name": "_extract_journal_num",
+      "filePath": ".trellis/scripts/add_session.py",
+      "lineRange": [
+        110,
+        113
+      ],
+      "summary": "_extract_journal_num 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/add_session.py:count_journal_files",
+      "type": "function",
+      "name": "count_journal_files",
+      "filePath": ".trellis/scripts/add_session.py",
+      "lineRange": [
+        116,
+        133
+      ],
+      "summary": "count_journal_files 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/add_session.py:get_current_git_branch",
+      "type": "function",
+      "name": "get_current_git_branch",
+      "filePath": ".trellis/scripts/add_session.py",
+      "lineRange": [
+        136,
+        142
+      ],
+      "summary": "get_current_git_branch 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/add_session.py:branch_ref_exists",
+      "type": "function",
+      "name": "branch_ref_exists",
+      "filePath": ".trellis/scripts/add_session.py",
+      "lineRange": [
+        145,
+        151
+      ],
+      "summary": "branch_ref_exists 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/add_session.py:resolve_session_branch",
+      "type": "function",
+      "name": "resolve_session_branch",
+      "filePath": ".trellis/scripts/add_session.py",
+      "lineRange": [
+        154,
+        183
+      ],
+      "summary": "resolve_session_branch 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/add_session.py:create_new_journal_file",
+      "type": "function",
+      "name": "create_new_journal_file",
+      "filePath": ".trellis/scripts/add_session.py",
+      "lineRange": [
+        186,
+        202
+      ],
+      "summary": "create_new_journal_file 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/add_session.py:generate_session_content",
+      "type": "function",
+      "name": "generate_session_content",
+      "filePath": ".trellis/scripts/add_session.py",
+      "lineRange": [
+        205,
+        259
+      ],
+      "summary": "generate_session_content 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/add_session.py:update_index",
+      "type": "function",
+      "name": "update_index",
+      "filePath": ".trellis/scripts/add_session.py",
+      "lineRange": [
+        262,
+        374
+      ],
+      "summary": "update_index 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/add_session.py:_auto_commit_workspace",
+      "type": "function",
+      "name": "_auto_commit_workspace",
+      "filePath": ".trellis/scripts/add_session.py",
+      "lineRange": [
+        381,
+        450
+      ],
+      "summary": "_auto_commit_workspace 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/add_session.py:add_session",
+      "type": "function",
+      "name": "add_session",
+      "filePath": ".trellis/scripts/add_session.py",
+      "lineRange": [
+        453,
+        550
+      ],
+      "summary": "add_session 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/add_session.py:main",
+      "type": "function",
+      "name": "main",
+      "filePath": ".trellis/scripts/add_session.py",
+      "lineRange": [
+        557,
+        611
+      ],
+      "summary": "main 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/common/__init__.py:_configure_stream",
+      "type": "function",
+      "name": "_configure_stream",
+      "filePath": ".trellis/scripts/common/__init__.py",
+      "lineRange": [
+        20,
+        33
+      ],
+      "summary": "_configure_stream 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/__init__.py:configure_encoding",
+      "type": "function",
+      "name": "configure_encoding",
+      "filePath": ".trellis/scripts/common/__init__.py",
+      "lineRange": [
+        42,
+        55
+      ],
+      "summary": "configure_encoding 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:normalize_task_ref",
+      "type": "function",
+      "name": "normalize_task_ref",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        102,
+        119
+      ],
+      "summary": "normalize_task_ref 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:resolve_task_ref",
+      "type": "function",
+      "name": "resolve_task_ref",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        122,
+        135
+      ],
+      "summary": "resolve_task_ref 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_runtime_sessions_dir",
+      "type": "function",
+      "name": "_runtime_sessions_dir",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        138,
+        139
+      ],
+      "summary": "_runtime_sessions_dir 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_sanitize_key",
+      "type": "function",
+      "name": "_sanitize_key",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        142,
+        145
+      ],
+      "summary": "_sanitize_key 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_hash_value",
+      "type": "function",
+      "name": "_hash_value",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        148,
+        149
+      ],
+      "summary": "_hash_value 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_as_dict",
+      "type": "function",
+      "name": "_as_dict",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        152,
+        153
+      ],
+      "summary": "_as_dict 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_string_value",
+      "type": "function",
+      "name": "_string_value",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        156,
+        160
+      ],
+      "summary": "_string_value 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_lookup_string",
+      "type": "function",
+      "name": "_lookup_string",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        163,
+        177
+      ],
+      "summary": "_lookup_string 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_detect_platform",
+      "type": "function",
+      "name": "_detect_platform",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        180,
+        190
+      ],
+      "summary": "_detect_platform 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_context_key",
+      "type": "function",
+      "name": "_context_key",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        193,
+        199
+      ],
+      "summary": "_context_key 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_iter_env_keys",
+      "type": "function",
+      "name": "_iter_env_keys",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        202,
+        209
+      ],
+      "summary": "_iter_env_keys 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_env_platform_name",
+      "type": "function",
+      "name": "_env_platform_name",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        212,
+        215
+      ],
+      "summary": "_env_platform_name 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_lookup_env_context_key",
+      "type": "function",
+      "name": "_lookup_env_context_key",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        218,
+        246
+      ],
+      "summary": "_lookup_env_context_key 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_find_repo_root_from_cwd",
+      "type": "function",
+      "name": "_find_repo_root_from_cwd",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        249,
+        256
+      ],
+      "summary": "_find_repo_root_from_cwd 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_cursor_shell_ticket_dir",
+      "type": "function",
+      "name": "_cursor_shell_ticket_dir",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        259,
+        260
+      ],
+      "summary": "_cursor_shell_ticket_dir 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_remove_file",
+      "type": "function",
+      "name": "_remove_file",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        263,
+        268
+      ],
+      "summary": "_remove_file 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_task_refs_match",
+      "type": "function",
+      "name": "_task_refs_match",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        271,
+        278
+      ],
+      "summary": "_task_refs_match 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_pending_ticket_matches_args",
+      "type": "function",
+      "name": "_pending_ticket_matches_args",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        281,
+        307
+      ],
+      "summary": "_pending_ticket_matches_args 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_ticket_is_fresh",
+      "type": "function",
+      "name": "_ticket_is_fresh",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        310,
+        322
+      ],
+      "summary": "_ticket_is_fresh 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_ticket_cwd_matches_repo",
+      "type": "function",
+      "name": "_ticket_cwd_matches_repo",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        325,
+        333
+      ],
+      "summary": "_ticket_cwd_matches_repo 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_matching_cursor_ticket_context_key",
+      "type": "function",
+      "name": "_matching_cursor_ticket_context_key",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        336,
+        350
+      ],
+      "summary": "_matching_cursor_ticket_context_key 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_lookup_cursor_shell_ticket_context_key",
+      "type": "function",
+      "name": "_lookup_cursor_shell_ticket_context_key",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        353,
+        379
+      ],
+      "summary": "_lookup_cursor_shell_ticket_context_key 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:resolve_context_key",
+      "type": "function",
+      "name": "resolve_context_key",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        382,
+        417
+      ],
+      "summary": "resolve_context_key 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_read_json",
+      "type": "function",
+      "name": "_read_json",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        420,
+        425
+      ],
+      "summary": "_read_json 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_write_json",
+      "type": "function",
+      "name": "_write_json",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        428,
+        437
+      ],
+      "summary": "_write_json 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_canonical_task_ref",
+      "type": "function",
+      "name": "_canonical_task_ref",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        440,
+        450
+      ],
+      "summary": "_canonical_task_ref 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_active_from_ref",
+      "type": "function",
+      "name": "_active_from_ref",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        453,
+        463
+      ],
+      "summary": "_active_from_ref 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_context_path",
+      "type": "function",
+      "name": "_context_path",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        466,
+        467
+      ],
+      "summary": "_context_path 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:resolve_active_task",
+      "type": "function",
+      "name": "resolve_active_task",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        470,
+        496
+      ],
+      "summary": "resolve_active_task 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_resolve_single_session_fallback",
+      "type": "function",
+      "name": "_resolve_single_session_fallback",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        499,
+        521
+      ],
+      "summary": "_resolve_single_session_fallback 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_utc_now",
+      "type": "function",
+      "name": "_utc_now",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        524,
+        525
+      ],
+      "summary": "_utc_now 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:_context_metadata",
+      "type": "function",
+      "name": "_context_metadata",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        528,
+        547
+      ],
+      "summary": "_context_metadata 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:set_active_task",
+      "type": "function",
+      "name": "set_active_task",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        550,
+        576
+      ],
+      "summary": "set_active_task 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:clear_active_task",
+      "type": "function",
+      "name": "clear_active_task",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        579,
+        593
+      ],
+      "summary": "clear_active_task 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:clear_task_from_sessions",
+      "type": "function",
+      "name": "clear_task_from_sessions",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        596,
+        618
+      ],
+      "summary": "clear_task_from_sessions 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/active_task.py:get_current_task_source",
+      "type": "function",
+      "name": "get_current_task_source",
+      "filePath": ".trellis/scripts/common/active_task.py",
+      "lineRange": [
+        621,
+        628
+      ],
+      "summary": "get_current_task_source 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/config.py:_unquote",
+      "type": "function",
+      "name": "_unquote",
+      "filePath": ".trellis/scripts/common/config.py",
+      "lineRange": [
+        21,
+        36
+      ],
+      "summary": "_unquote 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/config.py:_strip_inline_comment",
+      "type": "function",
+      "name": "_strip_inline_comment",
+      "filePath": ".trellis/scripts/common/config.py",
+      "lineRange": [
+        39,
+        59
+      ],
+      "summary": "_strip_inline_comment 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/config.py:parse_simple_yaml",
+      "type": "function",
+      "name": "parse_simple_yaml",
+      "filePath": ".trellis/scripts/common/config.py",
+      "lineRange": [
+        62,
+        86
+      ],
+      "summary": "parse_simple_yaml 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/config.py:_parse_yaml_block",
+      "type": "function",
+      "name": "_parse_yaml_block",
+      "filePath": ".trellis/scripts/common/config.py",
+      "lineRange": [
+        89,
+        152
+      ],
+      "summary": "_parse_yaml_block 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/common/config.py:_next_content_line",
+      "type": "function",
+      "name": "_next_content_line",
+      "filePath": ".trellis/scripts/common/config.py",
+      "lineRange": [
+        155,
+        163
+      ],
+      "summary": "_next_content_line 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/config.py:_is_true_config_value",
+      "type": "function",
+      "name": "_is_true_config_value",
+      "filePath": ".trellis/scripts/common/config.py",
+      "lineRange": [
+        175,
+        181
+      ],
+      "summary": "_is_true_config_value 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/config.py:_get_config_path",
+      "type": "function",
+      "name": "_get_config_path",
+      "filePath": ".trellis/scripts/common/config.py",
+      "lineRange": [
+        184,
+        187
+      ],
+      "summary": "_get_config_path 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/config.py:_load_config",
+      "type": "function",
+      "name": "_load_config",
+      "filePath": ".trellis/scripts/common/config.py",
+      "lineRange": [
+        190,
+        197
+      ],
+      "summary": "_load_config 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/config.py:get_session_commit_message",
+      "type": "function",
+      "name": "get_session_commit_message",
+      "filePath": ".trellis/scripts/common/config.py",
+      "lineRange": [
+        200,
+        203
+      ],
+      "summary": "get_session_commit_message 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/config.py:get_max_journal_lines",
+      "type": "function",
+      "name": "get_max_journal_lines",
+      "filePath": ".trellis/scripts/common/config.py",
+      "lineRange": [
+        206,
+        213
+      ],
+      "summary": "get_max_journal_lines 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/config.py:get_session_auto_commit",
+      "type": "function",
+      "name": "get_session_auto_commit",
+      "filePath": ".trellis/scripts/common/config.py",
+      "lineRange": [
+        216,
+        244
+      ],
+      "summary": "get_session_auto_commit 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/config.py:get_codex_dispatch_mode",
+      "type": "function",
+      "name": "get_codex_dispatch_mode",
+      "filePath": ".trellis/scripts/common/config.py",
+      "lineRange": [
+        247,
+        272
+      ],
+      "summary": "get_codex_dispatch_mode 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/config.py:get_hooks",
+      "type": "function",
+      "name": "get_hooks",
+      "filePath": ".trellis/scripts/common/config.py",
+      "lineRange": [
+        275,
+        292
+      ],
+      "summary": "get_hooks 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/config.py:get_packages",
+      "type": "function",
+      "name": "get_packages",
+      "filePath": ".trellis/scripts/common/config.py",
+      "lineRange": [
+        300,
+        318
+      ],
+      "summary": "get_packages 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/config.py:get_default_package",
+      "type": "function",
+      "name": "get_default_package",
+      "filePath": ".trellis/scripts/common/config.py",
+      "lineRange": [
+        321,
+        329
+      ],
+      "summary": "get_default_package 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/config.py:get_submodule_packages",
+      "type": "function",
+      "name": "get_submodule_packages",
+      "filePath": ".trellis/scripts/common/config.py",
+      "lineRange": [
+        332,
+        349
+      ],
+      "summary": "get_submodule_packages 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/config.py:get_git_packages",
+      "type": "function",
+      "name": "get_git_packages",
+      "filePath": ".trellis/scripts/common/config.py",
+      "lineRange": [
+        352,
+        380
+      ],
+      "summary": "get_git_packages 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/config.py:is_monorepo",
+      "type": "function",
+      "name": "is_monorepo",
+      "filePath": ".trellis/scripts/common/config.py",
+      "lineRange": [
+        383,
+        385
+      ],
+      "summary": "is_monorepo 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/config.py:get_spec_base",
+      "type": "function",
+      "name": "get_spec_base",
+      "filePath": ".trellis/scripts/common/config.py",
+      "lineRange": [
+        388,
+        397
+      ],
+      "summary": "get_spec_base 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/config.py:validate_package",
+      "type": "function",
+      "name": "validate_package",
+      "filePath": ".trellis/scripts/common/config.py",
+      "lineRange": [
+        400,
+        409
+      ],
+      "summary": "validate_package 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/config.py:resolve_package",
+      "type": "function",
+      "name": "resolve_package",
+      "filePath": ".trellis/scripts/common/config.py",
+      "lineRange": [
+        412,
+        451
+      ],
+      "summary": "resolve_package 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/config.py:get_spec_scope",
+      "type": "function",
+      "name": "get_spec_scope",
+      "filePath": ".trellis/scripts/common/config.py",
+      "lineRange": [
+        454,
+        474
+      ],
+      "summary": "get_spec_scope 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/developer.py:init_developer",
+      "type": "function",
+      "name": "init_developer",
+      "filePath": ".trellis/scripts/common/developer.py",
+      "lineRange": [
+        33,
+        148
+      ],
+      "summary": "init_developer 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/common/developer.py:ensure_developer",
+      "type": "function",
+      "name": "ensure_developer",
+      "filePath": ".trellis/scripts/common/developer.py",
+      "lineRange": [
+        151,
+        163
+      ],
+      "summary": "ensure_developer 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/developer.py:show_developer_info",
+      "type": "function",
+      "name": "show_developer_info",
+      "filePath": ".trellis/scripts/common/developer.py",
+      "lineRange": [
+        166,
+        182
+      ],
+      "summary": "show_developer_info 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/git.py:run_git",
+      "type": "function",
+      "name": "run_git",
+      "filePath": ".trellis/scripts/common/git.py",
+      "lineRange": [
+        13,
+        31
+      ],
+      "summary": "run_git 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/git_context.py:main",
+      "type": "function",
+      "name": "main",
+      "filePath": ".trellis/scripts/common/git_context.py",
+      "lineRange": [
+        46,
+        102
+      ],
+      "summary": "main 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/common/io.py:read_json",
+      "type": "function",
+      "name": "read_json",
+      "filePath": ".trellis/scripts/common/io.py",
+      "lineRange": [
+        14,
+        22
+      ],
+      "summary": "read_json 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/io.py:write_json",
+      "type": "function",
+      "name": "write_json",
+      "filePath": ".trellis/scripts/common/io.py",
+      "lineRange": [
+        25,
+        37
+      ],
+      "summary": "write_json 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/log.py:colored",
+      "type": "function",
+      "name": "colored",
+      "filePath": ".trellis/scripts/common/log.py",
+      "lineRange": [
+        23,
+        25
+      ],
+      "summary": "colored 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/log.py:log_info",
+      "type": "function",
+      "name": "log_info",
+      "filePath": ".trellis/scripts/common/log.py",
+      "lineRange": [
+        28,
+        30
+      ],
+      "summary": "log_info 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/log.py:log_success",
+      "type": "function",
+      "name": "log_success",
+      "filePath": ".trellis/scripts/common/log.py",
+      "lineRange": [
+        33,
+        35
+      ],
+      "summary": "log_success 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/log.py:log_warn",
+      "type": "function",
+      "name": "log_warn",
+      "filePath": ".trellis/scripts/common/log.py",
+      "lineRange": [
+        38,
+        40
+      ],
+      "summary": "log_warn 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/log.py:log_error",
+      "type": "function",
+      "name": "log_error",
+      "filePath": ".trellis/scripts/common/log.py",
+      "lineRange": [
+        43,
+        45
+      ],
+      "summary": "log_error 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/packages_context.py:_scan_spec_layers",
+      "type": "function",
+      "name": "_scan_spec_layers",
+      "filePath": ".trellis/scripts/common/packages_context.py",
+      "lineRange": [
+        30,
+        41
+      ],
+      "summary": "_scan_spec_layers 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/packages_context.py:_get_active_task_package",
+      "type": "function",
+      "name": "_get_active_task_package",
+      "filePath": ".trellis/scripts/common/packages_context.py",
+      "lineRange": [
+        44,
+        50
+      ],
+      "summary": "_get_active_task_package 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/packages_context.py:_resolve_scope_set",
+      "type": "function",
+      "name": "_resolve_scope_set",
+      "filePath": ".trellis/scripts/common/packages_context.py",
+      "lineRange": [
+        53,
+        84
+      ],
+      "summary": "_resolve_scope_set 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/packages_context.py:get_packages_info",
+      "type": "function",
+      "name": "get_packages_info",
+      "filePath": ".trellis/scripts/common/packages_context.py",
+      "lineRange": [
+        91,
+        122
+      ],
+      "summary": "get_packages_info 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/packages_context.py:get_packages_section",
+      "type": "function",
+      "name": "get_packages_section",
+      "filePath": ".trellis/scripts/common/packages_context.py",
+      "lineRange": [
+        125,
+        154
+      ],
+      "summary": "get_packages_section 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/packages_context.py:get_context_packages_text",
+      "type": "function",
+      "name": "get_context_packages_text",
+      "filePath": ".trellis/scripts/common/packages_context.py",
+      "lineRange": [
+        157,
+        210
+      ],
+      "summary": "get_context_packages_text 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/common/packages_context.py:get_context_packages_json",
+      "type": "function",
+      "name": "get_context_packages_json",
+      "filePath": ".trellis/scripts/common/packages_context.py",
+      "lineRange": [
+        213,
+        238
+      ],
+      "summary": "get_context_packages_json 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/paths.py:get_repo_root",
+      "type": "function",
+      "name": "get_repo_root",
+      "filePath": ".trellis/scripts/common/paths.py",
+      "lineRange": [
+        43,
+        62
+      ],
+      "summary": "get_repo_root 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/paths.py:get_developer",
+      "type": "function",
+      "name": "get_developer",
+      "filePath": ".trellis/scripts/common/paths.py",
+      "lineRange": [
+        69,
+        94
+      ],
+      "summary": "get_developer 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/paths.py:check_developer",
+      "type": "function",
+      "name": "check_developer",
+      "filePath": ".trellis/scripts/common/paths.py",
+      "lineRange": [
+        97,
+        106
+      ],
+      "summary": "check_developer 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/paths.py:get_tasks_dir",
+      "type": "function",
+      "name": "get_tasks_dir",
+      "filePath": ".trellis/scripts/common/paths.py",
+      "lineRange": [
+        113,
+        124
+      ],
+      "summary": "get_tasks_dir 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/paths.py:get_workspace_dir",
+      "type": "function",
+      "name": "get_workspace_dir",
+      "filePath": ".trellis/scripts/common/paths.py",
+      "lineRange": [
+        131,
+        146
+      ],
+      "summary": "get_workspace_dir 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/paths.py:get_active_journal_file",
+      "type": "function",
+      "name": "get_active_journal_file",
+      "filePath": ".trellis/scripts/common/paths.py",
+      "lineRange": [
+        153,
+        185
+      ],
+      "summary": "get_active_journal_file 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/paths.py:count_lines",
+      "type": "function",
+      "name": "count_lines",
+      "filePath": ".trellis/scripts/common/paths.py",
+      "lineRange": [
+        188,
+        203
+      ],
+      "summary": "count_lines 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/paths.py:normalize_task_ref",
+      "type": "function",
+      "name": "normalize_task_ref",
+      "filePath": ".trellis/scripts/common/paths.py",
+      "lineRange": [
+        210,
+        232
+      ],
+      "summary": "normalize_task_ref 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/paths.py:resolve_task_ref",
+      "type": "function",
+      "name": "resolve_task_ref",
+      "filePath": ".trellis/scripts/common/paths.py",
+      "lineRange": [
+        235,
+        251
+      ],
+      "summary": "resolve_task_ref 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/paths.py:get_current_task",
+      "type": "function",
+      "name": "get_current_task",
+      "filePath": ".trellis/scripts/common/paths.py",
+      "lineRange": [
+        254,
+        272
+      ],
+      "summary": "get_current_task 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/paths.py:get_current_task_abs",
+      "type": "function",
+      "name": "get_current_task_abs",
+      "filePath": ".trellis/scripts/common/paths.py",
+      "lineRange": [
+        275,
+        294
+      ],
+      "summary": "get_current_task_abs 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/paths.py:get_current_task_source",
+      "type": "function",
+      "name": "get_current_task_source",
+      "filePath": ".trellis/scripts/common/paths.py",
+      "lineRange": [
+        297,
+        308
+      ],
+      "summary": "get_current_task_source 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/paths.py:set_current_task",
+      "type": "function",
+      "name": "set_current_task",
+      "filePath": ".trellis/scripts/common/paths.py",
+      "lineRange": [
+        311,
+        336
+      ],
+      "summary": "set_current_task 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/paths.py:clear_current_task",
+      "type": "function",
+      "name": "clear_current_task",
+      "filePath": ".trellis/scripts/common/paths.py",
+      "lineRange": [
+        339,
+        362
+      ],
+      "summary": "clear_current_task 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/paths.py:has_current_task",
+      "type": "function",
+      "name": "has_current_task",
+      "filePath": ".trellis/scripts/common/paths.py",
+      "lineRange": [
+        365,
+        374
+      ],
+      "summary": "has_current_task 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/paths.py:generate_task_date_prefix",
+      "type": "function",
+      "name": "generate_task_date_prefix",
+      "filePath": ".trellis/scripts/common/paths.py",
+      "lineRange": [
+        381,
+        387
+      ],
+      "summary": "generate_task_date_prefix 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/paths.py:get_spec_dir",
+      "type": "function",
+      "name": "get_spec_dir",
+      "filePath": ".trellis/scripts/common/paths.py",
+      "lineRange": [
+        395,
+        409
+      ],
+      "summary": "get_spec_dir 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/paths.py:get_package_path",
+      "type": "function",
+      "name": "get_package_path",
+      "filePath": ".trellis/scripts/common/paths.py",
+      "lineRange": [
+        412,
+        433
+      ],
+      "summary": "get_package_path 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/safe_commit.py:safe_trellis_paths_to_add",
+      "type": "function",
+      "name": "safe_trellis_paths_to_add",
+      "filePath": ".trellis/scripts/common/safe_commit.py",
+      "lineRange": [
+        61,
+        141
+      ],
+      "summary": "safe_trellis_paths_to_add 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/common/safe_commit.py:safe_archive_paths_to_add",
+      "type": "function",
+      "name": "safe_archive_paths_to_add",
+      "filePath": ".trellis/scripts/common/safe_commit.py",
+      "lineRange": [
+        144,
+        199
+      ],
+      "summary": "safe_archive_paths_to_add 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/common/safe_commit.py:_stderr_indicates_ignored",
+      "type": "function",
+      "name": "_stderr_indicates_ignored",
+      "filePath": ".trellis/scripts/common/safe_commit.py",
+      "lineRange": [
+        202,
+        207
+      ],
+      "summary": "_stderr_indicates_ignored 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/safe_commit.py:safe_git_add",
+      "type": "function",
+      "name": "safe_git_add",
+      "filePath": ".trellis/scripts/common/safe_commit.py",
+      "lineRange": [
+        210,
+        232
+      ],
+      "summary": "safe_git_add 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/safe_commit.py:print_gitignore_warning",
+      "type": "function",
+      "name": "print_gitignore_warning",
+      "filePath": ".trellis/scripts/common/safe_commit.py",
+      "lineRange": [
+        235,
+        315
+      ],
+      "summary": "print_gitignore_warning 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:_is_git_worktree",
+      "type": "function",
+      "name": "_is_git_worktree",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        69,
+        72
+      ],
+      "summary": "_is_git_worktree 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:_parse_recent_commits",
+      "type": "function",
+      "name": "_parse_recent_commits",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        75,
+        86
+      ],
+      "summary": "_parse_recent_commits 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:_collect_git_repo_info",
+      "type": "function",
+      "name": "_collect_git_repo_info",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        89,
+        109
+      ],
+      "summary": "_collect_git_repo_info 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:_collect_root_git_info",
+      "type": "function",
+      "name": "_collect_root_git_info",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        112,
+        140
+      ],
+      "summary": "_collect_root_git_info 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:_discover_child_git_repos",
+      "type": "function",
+      "name": "_discover_child_git_repos",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        143,
+        175
+      ],
+      "summary": "_discover_child_git_repos 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:_collect_package_git_info",
+      "type": "function",
+      "name": "_collect_package_git_info",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        178,
+        209
+      ],
+      "summary": "_collect_package_git_info 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:_append_root_git_context",
+      "type": "function",
+      "name": "_append_root_git_context",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        212,
+        243
+      ],
+      "summary": "_append_root_git_context 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:_append_package_git_context",
+      "type": "function",
+      "name": "_append_package_git_context",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        246,
+        264
+      ],
+      "summary": "_append_package_git_context 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:_read_project_version",
+      "type": "function",
+      "name": "_read_project_version",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        267,
+        274
+      ],
+      "summary": "_read_project_version 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:_fetch_trellis_version_output",
+      "type": "function",
+      "name": "_fetch_trellis_version_output",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        277,
+        293
+      ],
+      "summary": "_fetch_trellis_version_output 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:_extract_available_update_version",
+      "type": "function",
+      "name": "_extract_available_update_version",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        296,
+        305
+      ],
+      "summary": "_extract_available_update_version 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:_resolve_available_update_version",
+      "type": "function",
+      "name": "_resolve_available_update_version",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        308,
+        312
+      ],
+      "summary": "_resolve_available_update_version 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:_parse_version",
+      "type": "function",
+      "name": "_parse_version",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        315,
+        322
+      ],
+      "summary": "_parse_version 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:_compare_prerelease",
+      "type": "function",
+      "name": "_compare_prerelease",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        325,
+        351
+      ],
+      "summary": "_compare_prerelease 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:_compare_versions",
+      "type": "function",
+      "name": "_compare_versions",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        354,
+        364
+      ],
+      "summary": "_compare_versions 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:_update_marker_path",
+      "type": "function",
+      "name": "_update_marker_path",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        367,
+        380
+      ],
+      "summary": "_update_marker_path 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:_mark_update_check_attempted",
+      "type": "function",
+      "name": "_mark_update_check_attempted",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        383,
+        392
+      ],
+      "summary": "_mark_update_check_attempted 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:_get_update_hint",
+      "type": "function",
+      "name": "_get_update_hint",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        395,
+        416
+      ],
+      "summary": "_get_update_hint 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:get_context_json",
+      "type": "function",
+      "name": "get_context_json",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        423,
+        490
+      ],
+      "summary": "get_context_json 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:output_json",
+      "type": "function",
+      "name": "output_json",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        493,
+        500
+      ],
+      "summary": "output_json 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:get_context_text",
+      "type": "function",
+      "name": "get_context_text",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        507,
+        650
+      ],
+      "summary": "get_context_text 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:get_context_record_json",
+      "type": "function",
+      "name": "get_context_record_json",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        657,
+        729
+      ],
+      "summary": "get_context_record_json 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:get_context_text_record",
+      "type": "function",
+      "name": "get_context_text_record",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        732,
+        806
+      ],
+      "summary": "get_context_text_record 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/common/session_context.py:output_text",
+      "type": "function",
+      "name": "output_text",
+      "filePath": ".trellis/scripts/common/session_context.py",
+      "lineRange": [
+        809,
+        821
+      ],
+      "summary": "output_text 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_context.py:cmd_add_context",
+      "type": "function",
+      "name": "cmd_add_context",
+      "filePath": ".trellis/scripts/common/task_context.py",
+      "lineRange": [
+        33,
+        80
+      ],
+      "summary": "cmd_add_context 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_context.py:cmd_validate",
+      "type": "function",
+      "name": "cmd_validate",
+      "filePath": ".trellis/scripts/common/task_context.py",
+      "lineRange": [
+        87,
+        112
+      ],
+      "summary": "cmd_validate 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_context.py:_validate_jsonl",
+      "type": "function",
+      "name": "_validate_jsonl",
+      "filePath": ".trellis/scripts/common/task_context.py",
+      "lineRange": [
+        115,
+        165
+      ],
+      "summary": "_validate_jsonl 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_context.py:cmd_list_context",
+      "type": "function",
+      "name": "cmd_list_context",
+      "filePath": ".trellis/scripts/common/task_context.py",
+      "lineRange": [
+        172,
+        223
+      ],
+      "summary": "cmd_list_context 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_queue.py:_task_to_dict",
+      "type": "function",
+      "name": "_task_to_dict",
+      "filePath": ".trellis/scripts/common/task_queue.py",
+      "lineRange": [
+        29,
+        40
+      ],
+      "summary": "_task_to_dict 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_queue.py:list_tasks_by_status",
+      "type": "function",
+      "name": "list_tasks_by_status",
+      "filePath": ".trellis/scripts/common/task_queue.py",
+      "lineRange": [
+        47,
+        71
+      ],
+      "summary": "list_tasks_by_status 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_queue.py:list_pending_tasks",
+      "type": "function",
+      "name": "list_pending_tasks",
+      "filePath": ".trellis/scripts/common/task_queue.py",
+      "lineRange": [
+        74,
+        83
+      ],
+      "summary": "list_pending_tasks 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_queue.py:list_tasks_by_assignee",
+      "type": "function",
+      "name": "list_tasks_by_assignee",
+      "filePath": ".trellis/scripts/common/task_queue.py",
+      "lineRange": [
+        86,
+        114
+      ],
+      "summary": "list_tasks_by_assignee 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_queue.py:list_my_tasks",
+      "type": "function",
+      "name": "list_my_tasks",
+      "filePath": ".trellis/scripts/common/task_queue.py",
+      "lineRange": [
+        117,
+        140
+      ],
+      "summary": "list_my_tasks 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_queue.py:get_task_stats",
+      "type": "function",
+      "name": "get_task_stats",
+      "filePath": ".trellis/scripts/common/task_queue.py",
+      "lineRange": [
+        143,
+        163
+      ],
+      "summary": "get_task_stats 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_queue.py:format_task_stats",
+      "type": "function",
+      "name": "format_task_stats",
+      "filePath": ".trellis/scripts/common/task_queue.py",
+      "lineRange": [
+        166,
+        175
+      ],
+      "summary": "format_task_stats 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_store.py:_slugify",
+      "type": "function",
+      "name": "_slugify",
+      "filePath": ".trellis/scripts/common/task_store.py",
+      "lineRange": [
+        63,
+        69
+      ],
+      "summary": "_slugify 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_store.py:ensure_tasks_dir",
+      "type": "function",
+      "name": "ensure_tasks_dir",
+      "filePath": ".trellis/scripts/common/task_store.py",
+      "lineRange": [
+        72,
+        84
+      ],
+      "summary": "ensure_tasks_dir 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_store.py:_find_archived_task_by_dir_name",
+      "type": "function",
+      "name": "_find_archived_task_by_dir_name",
+      "filePath": ".trellis/scripts/common/task_store.py",
+      "lineRange": [
+        87,
+        100
+      ],
+      "summary": "_find_archived_task_by_dir_name 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_store.py:_repo_relative_path",
+      "type": "function",
+      "name": "_repo_relative_path",
+      "filePath": ".trellis/scripts/common/task_store.py",
+      "lineRange": [
+        103,
+        108
+      ],
+      "summary": "_repo_relative_path 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_store.py:_has_subagent_platform",
+      "type": "function",
+      "name": "_has_subagent_platform",
+      "filePath": ".trellis/scripts/common/task_store.py",
+      "lineRange": [
+        146,
+        158
+      ],
+      "summary": "_has_subagent_platform 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_store.py:_write_seed_jsonl",
+      "type": "function",
+      "name": "_write_seed_jsonl",
+      "filePath": ".trellis/scripts/common/task_store.py",
+      "lineRange": [
+        161,
+        169
+      ],
+      "summary": "_write_seed_jsonl 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_store.py:_default_prd_content",
+      "type": "function",
+      "name": "_default_prd_content",
+      "filePath": ".trellis/scripts/common/task_store.py",
+      "lineRange": [
+        172,
+        195
+      ],
+      "summary": "_default_prd_content 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_store.py:cmd_create",
+      "type": "function",
+      "name": "cmd_create",
+      "filePath": ".trellis/scripts/common/task_store.py",
+      "lineRange": [
+        202,
+        428
+      ],
+      "summary": "cmd_create 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_store.py:cmd_archive",
+      "type": "function",
+      "name": "cmd_archive",
+      "filePath": ".trellis/scripts/common/task_store.py",
+      "lineRange": [
+        435,
+        524
+      ],
+      "summary": "cmd_archive 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_store.py:_auto_commit_archive",
+      "type": "function",
+      "name": "_auto_commit_archive",
+      "filePath": ".trellis/scripts/common/task_store.py",
+      "lineRange": [
+        527,
+        609
+      ],
+      "summary": "_auto_commit_archive 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_store.py:cmd_add_subtask",
+      "type": "function",
+      "name": "cmd_add_subtask",
+      "filePath": ".trellis/scripts/common/task_store.py",
+      "lineRange": [
+        616,
+        662
+      ],
+      "summary": "cmd_add_subtask 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_store.py:cmd_remove_subtask",
+      "type": "function",
+      "name": "cmd_remove_subtask",
+      "filePath": ".trellis/scripts/common/task_store.py",
+      "lineRange": [
+        669,
+        709
+      ],
+      "summary": "cmd_remove_subtask 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_store.py:cmd_set_branch",
+      "type": "function",
+      "name": "cmd_set_branch",
+      "filePath": ".trellis/scripts/common/task_store.py",
+      "lineRange": [
+        716,
+        740
+      ],
+      "summary": "cmd_set_branch 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_store.py:cmd_set_base_branch",
+      "type": "function",
+      "name": "cmd_set_base_branch",
+      "filePath": ".trellis/scripts/common/task_store.py",
+      "lineRange": [
+        747,
+        775
+      ],
+      "summary": "cmd_set_base_branch 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_store.py:cmd_set_scope",
+      "type": "function",
+      "name": "cmd_set_scope",
+      "filePath": ".trellis/scripts/common/task_store.py",
+      "lineRange": [
+        782,
+        806
+      ],
+      "summary": "cmd_set_scope 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_utils.py:is_safe_task_path",
+      "type": "function",
+      "name": "is_safe_task_path",
+      "filePath": ".trellis/scripts/common/task_utils.py",
+      "lineRange": [
+        27,
+        69
+      ],
+      "summary": "is_safe_task_path 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_utils.py:find_task_by_name",
+      "type": "function",
+      "name": "find_task_by_name",
+      "filePath": ".trellis/scripts/common/task_utils.py",
+      "lineRange": [
+        76,
+        99
+      ],
+      "summary": "find_task_by_name 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_utils.py:archive_task_dir",
+      "type": "function",
+      "name": "archive_task_dir",
+      "filePath": ".trellis/scripts/common/task_utils.py",
+      "lineRange": [
+        106,
+        143
+      ],
+      "summary": "archive_task_dir 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_utils.py:archive_task_complete",
+      "type": "function",
+      "name": "archive_task_complete",
+      "filePath": ".trellis/scripts/common/task_utils.py",
+      "lineRange": [
+        146,
+        167
+      ],
+      "summary": "archive_task_complete 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_utils.py:resolve_task_dir",
+      "type": "function",
+      "name": "resolve_task_dir",
+      "filePath": ".trellis/scripts/common/task_utils.py",
+      "lineRange": [
+        174,
+        211
+      ],
+      "summary": "resolve_task_dir 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/task_utils.py:run_task_hooks",
+      "type": "function",
+      "name": "run_task_hooks",
+      "filePath": ".trellis/scripts/common/task_utils.py",
+      "lineRange": [
+        218,
+        261
+      ],
+      "summary": "run_task_hooks 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/tasks.py:load_task",
+      "type": "function",
+      "name": "load_task",
+      "filePath": ".trellis/scripts/common/tasks.py",
+      "lineRange": [
+        23,
+        51
+      ],
+      "summary": "load_task 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/tasks.py:iter_active_tasks",
+      "type": "function",
+      "name": "iter_active_tasks",
+      "filePath": ".trellis/scripts/common/tasks.py",
+      "lineRange": [
+        54,
+        73
+      ],
+      "summary": "iter_active_tasks 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/tasks.py:get_all_statuses",
+      "type": "function",
+      "name": "get_all_statuses",
+      "filePath": ".trellis/scripts/common/tasks.py",
+      "lineRange": [
+        76,
+        87
+      ],
+      "summary": "get_all_statuses 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/tasks.py:children_progress",
+      "type": "function",
+      "name": "children_progress",
+      "filePath": ".trellis/scripts/common/tasks.py",
+      "lineRange": [
+        90,
+        112
+      ],
+      "summary": "children_progress 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/trellis_config.py:_unquote",
+      "type": "function",
+      "name": "_unquote",
+      "filePath": ".trellis/scripts/common/trellis_config.py",
+      "lineRange": [
+        19,
+        22
+      ],
+      "summary": "_unquote 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/trellis_config.py:_strip_inline_comment",
+      "type": "function",
+      "name": "_strip_inline_comment",
+      "filePath": ".trellis/scripts/common/trellis_config.py",
+      "lineRange": [
+        25,
+        42
+      ],
+      "summary": "_strip_inline_comment 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/trellis_config.py:_next_content_line",
+      "type": "function",
+      "name": "_next_content_line",
+      "filePath": ".trellis/scripts/common/trellis_config.py",
+      "lineRange": [
+        45,
+        52
+      ],
+      "summary": "_next_content_line 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/trellis_config.py:_parse_yaml_block",
+      "type": "function",
+      "name": "_parse_yaml_block",
+      "filePath": ".trellis/scripts/common/trellis_config.py",
+      "lineRange": [
+        55,
+        108
+      ],
+      "summary": "_parse_yaml_block 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/common/trellis_config.py:parse_simple_yaml",
+      "type": "function",
+      "name": "parse_simple_yaml",
+      "filePath": ".trellis/scripts/common/trellis_config.py",
+      "lineRange": [
+        111,
+        116
+      ],
+      "summary": "parse_simple_yaml 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/trellis_config.py:read_trellis_config",
+      "type": "function",
+      "name": "read_trellis_config",
+      "filePath": ".trellis/scripts/common/trellis_config.py",
+      "lineRange": [
+        119,
+        131
+      ],
+      "summary": "read_trellis_config 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:.trellis/scripts/common/types.py:TaskData",
+      "type": "class",
+      "name": "TaskData",
+      "filePath": ".trellis/scripts/common/types.py",
+      "lineRange": [
+        21,
+        51
+      ],
+      "summary": "TaskData 类定义。",
+      "tags": [
+        "class"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:.trellis/scripts/common/types.py:TaskInfo",
+      "type": "class",
+      "name": "TaskInfo",
+      "filePath": ".trellis/scripts/common/types.py",
+      "lineRange": [
+        59,
+        93
+      ],
+      "summary": "TaskInfo 类定义。",
+      "tags": [
+        "class"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/workflow_phase.py:_workflow_md_path",
+      "type": "function",
+      "name": "_workflow_md_path",
+      "filePath": ".trellis/scripts/common/workflow_phase.py",
+      "lineRange": [
+        28,
+        29
+      ],
+      "summary": "_workflow_md_path 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/workflow_phase.py:_read_workflow",
+      "type": "function",
+      "name": "_read_workflow",
+      "filePath": ".trellis/scripts/common/workflow_phase.py",
+      "lineRange": [
+        41,
+        45
+      ],
+      "summary": "_read_workflow 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/workflow_phase.py:_parse_marker",
+      "type": "function",
+      "name": "_parse_marker",
+      "filePath": ".trellis/scripts/common/workflow_phase.py",
+      "lineRange": [
+        48,
+        59
+      ],
+      "summary": "_parse_marker 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/workflow_phase.py:get_phase_index",
+      "type": "function",
+      "name": "get_phase_index",
+      "filePath": ".trellis/scripts/common/workflow_phase.py",
+      "lineRange": [
+        62,
+        97
+      ],
+      "summary": "get_phase_index 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/workflow_phase.py:get_step",
+      "type": "function",
+      "name": "get_step",
+      "filePath": ".trellis/scripts/common/workflow_phase.py",
+      "lineRange": [
+        100,
+        131
+      ],
+      "summary": "get_step 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/workflow_phase.py:_platform_matches",
+      "type": "function",
+      "name": "_platform_matches",
+      "filePath": ".trellis/scripts/common/workflow_phase.py",
+      "lineRange": [
+        134,
+        141
+      ],
+      "summary": "_platform_matches 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/workflow_phase.py:resolve_effective_platform",
+      "type": "function",
+      "name": "resolve_effective_platform",
+      "filePath": ".trellis/scripts/common/workflow_phase.py",
+      "lineRange": [
+        144,
+        168
+      ],
+      "summary": "resolve_effective_platform 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/common/workflow_phase.py:filter_platform",
+      "type": "function",
+      "name": "filter_platform",
+      "filePath": ".trellis/scripts/common/workflow_phase.py",
+      "lineRange": [
+        171,
+        212
+      ],
+      "summary": "filter_platform 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/get_developer.py:main",
+      "type": "function",
+      "name": "main",
+      "filePath": ".trellis/scripts/get_developer.py",
+      "lineRange": [
+        15,
+        22
+      ],
+      "summary": "main 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/init_developer.py:main",
+      "type": "function",
+      "name": "main",
+      "filePath": ".trellis/scripts/init_developer.py",
+      "lineRange": [
+        25,
+        47
+      ],
+      "summary": "main 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/task.py:cmd_start",
+      "type": "function",
+      "name": "cmd_start",
+      "filePath": ".trellis/scripts/task.py",
+      "lineRange": [
+        70,
+        140
+      ],
+      "summary": "cmd_start 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/task.py:cmd_finish",
+      "type": "function",
+      "name": "cmd_finish",
+      "filePath": ".trellis/scripts/task.py",
+      "lineRange": [
+        143,
+        161
+      ],
+      "summary": "cmd_finish 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/task.py:cmd_current",
+      "type": "function",
+      "name": "cmd_current",
+      "filePath": ".trellis/scripts/task.py",
+      "lineRange": [
+        164,
+        180
+      ],
+      "summary": "cmd_current 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/task.py:cmd_list",
+      "type": "function",
+      "name": "cmd_list",
+      "filePath": ".trellis/scripts/task.py",
+      "lineRange": [
+        187,
+        261
+      ],
+      "summary": "cmd_list 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:.trellis/scripts/task.py:cmd_list_archive",
+      "type": "function",
+      "name": "cmd_list_archive",
+      "filePath": ".trellis/scripts/task.py",
+      "lineRange": [
+        268,
+        295
+      ],
+      "summary": "cmd_list_archive 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/task.py:show_usage",
+      "type": "function",
+      "name": "show_usage",
+      "filePath": ".trellis/scripts/task.py",
+      "lineRange": [
+        302,
+        348
+      ],
+      "summary": "show_usage 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.trellis/scripts/task.py:main",
+      "type": "function",
+      "name": "main",
+      "filePath": ".trellis/scripts/task.py",
+      "lineRange": [
+        355,
+        502
+      ],
+      "summary": "main 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:get_latest_journal_info",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:get_latest_journal_info",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:get_current_session",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:get_current_session",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:_extract_journal_num",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:_extract_journal_num",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:count_journal_files",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:count_journal_files",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:get_current_git_branch",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:get_current_git_branch",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:branch_ref_exists",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:branch_ref_exists",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:resolve_session_branch",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:resolve_session_branch",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:create_new_journal_file",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:create_new_journal_file",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:generate_session_content",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:generate_session_content",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:update_index",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:update_index",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:_auto_commit_workspace",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:_auto_commit_workspace",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:add_session",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:add_session",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "function:.trellis/scripts/add_session.py:main",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/__init__.py",
+      "target": "function:.trellis/scripts/common/__init__.py:_configure_stream",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/__init__.py",
+      "target": "function:.trellis/scripts/common/__init__.py:_configure_stream",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/__init__.py",
+      "target": "function:.trellis/scripts/common/__init__.py:configure_encoding",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/__init__.py",
+      "target": "function:.trellis/scripts/common/__init__.py:configure_encoding",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:normalize_task_ref",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:normalize_task_ref",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:resolve_task_ref",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:resolve_task_ref",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_runtime_sessions_dir",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_runtime_sessions_dir",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_sanitize_key",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_sanitize_key",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_hash_value",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_hash_value",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_as_dict",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_as_dict",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_string_value",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_string_value",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_lookup_string",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_lookup_string",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_detect_platform",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_detect_platform",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_context_key",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_context_key",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_iter_env_keys",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_iter_env_keys",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_env_platform_name",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_env_platform_name",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_lookup_env_context_key",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_lookup_env_context_key",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_find_repo_root_from_cwd",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_find_repo_root_from_cwd",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_cursor_shell_ticket_dir",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_cursor_shell_ticket_dir",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_remove_file",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_remove_file",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_task_refs_match",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_task_refs_match",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_pending_ticket_matches_args",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_pending_ticket_matches_args",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_ticket_is_fresh",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_ticket_is_fresh",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_ticket_cwd_matches_repo",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_ticket_cwd_matches_repo",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_matching_cursor_ticket_context_key",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_matching_cursor_ticket_context_key",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_lookup_cursor_shell_ticket_context_key",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_lookup_cursor_shell_ticket_context_key",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:resolve_context_key",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:resolve_context_key",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_read_json",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_read_json",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_write_json",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_write_json",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_canonical_task_ref",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_canonical_task_ref",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_active_from_ref",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_active_from_ref",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_context_path",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_context_path",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:resolve_active_task",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:resolve_active_task",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_resolve_single_session_fallback",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_resolve_single_session_fallback",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_utc_now",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_utc_now",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_context_metadata",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:_context_metadata",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:set_active_task",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:set_active_task",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:clear_active_task",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:clear_active_task",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:clear_task_from_sessions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:clear_task_from_sessions",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:get_current_task_source",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/active_task.py",
+      "target": "function:.trellis/scripts/common/active_task.py:get_current_task_source",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:_unquote",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:_unquote",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:_strip_inline_comment",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:_strip_inline_comment",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:parse_simple_yaml",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:parse_simple_yaml",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:_parse_yaml_block",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:_parse_yaml_block",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:_next_content_line",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:_next_content_line",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:_is_true_config_value",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:_is_true_config_value",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:_get_config_path",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:_get_config_path",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:_load_config",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:_load_config",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:get_session_commit_message",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:get_session_commit_message",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:get_max_journal_lines",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:get_max_journal_lines",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:get_session_auto_commit",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:get_session_auto_commit",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:get_codex_dispatch_mode",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:get_codex_dispatch_mode",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:get_hooks",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:get_hooks",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:get_packages",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:get_packages",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:get_default_package",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:get_default_package",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:get_submodule_packages",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:get_submodule_packages",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:get_git_packages",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:get_git_packages",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:is_monorepo",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:is_monorepo",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:get_spec_base",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:get_spec_base",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:validate_package",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:validate_package",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:resolve_package",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:resolve_package",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:get_spec_scope",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "function:.trellis/scripts/common/config.py:get_spec_scope",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/developer.py",
+      "target": "function:.trellis/scripts/common/developer.py:init_developer",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/developer.py",
+      "target": "function:.trellis/scripts/common/developer.py:init_developer",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/developer.py",
+      "target": "function:.trellis/scripts/common/developer.py:ensure_developer",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/developer.py",
+      "target": "function:.trellis/scripts/common/developer.py:ensure_developer",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/developer.py",
+      "target": "function:.trellis/scripts/common/developer.py:show_developer_info",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/developer.py",
+      "target": "function:.trellis/scripts/common/developer.py:show_developer_info",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/git.py",
+      "target": "function:.trellis/scripts/common/git.py:run_git",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/git.py",
+      "target": "function:.trellis/scripts/common/git.py:run_git",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/git_context.py",
+      "target": "function:.trellis/scripts/common/git_context.py:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/git_context.py",
+      "target": "function:.trellis/scripts/common/git_context.py:main",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/io.py",
+      "target": "function:.trellis/scripts/common/io.py:read_json",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/io.py",
+      "target": "function:.trellis/scripts/common/io.py:read_json",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/io.py",
+      "target": "function:.trellis/scripts/common/io.py:write_json",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/io.py",
+      "target": "function:.trellis/scripts/common/io.py:write_json",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/log.py",
+      "target": "function:.trellis/scripts/common/log.py:colored",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/log.py",
+      "target": "function:.trellis/scripts/common/log.py:colored",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/log.py",
+      "target": "function:.trellis/scripts/common/log.py:log_info",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/log.py",
+      "target": "function:.trellis/scripts/common/log.py:log_info",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/log.py",
+      "target": "function:.trellis/scripts/common/log.py:log_success",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/log.py",
+      "target": "function:.trellis/scripts/common/log.py:log_success",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/log.py",
+      "target": "function:.trellis/scripts/common/log.py:log_warn",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/log.py",
+      "target": "function:.trellis/scripts/common/log.py:log_warn",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/log.py",
+      "target": "function:.trellis/scripts/common/log.py:log_error",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/log.py",
+      "target": "function:.trellis/scripts/common/log.py:log_error",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/packages_context.py",
+      "target": "function:.trellis/scripts/common/packages_context.py:_scan_spec_layers",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/packages_context.py",
+      "target": "function:.trellis/scripts/common/packages_context.py:_scan_spec_layers",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/packages_context.py",
+      "target": "function:.trellis/scripts/common/packages_context.py:_get_active_task_package",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/packages_context.py",
+      "target": "function:.trellis/scripts/common/packages_context.py:_get_active_task_package",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/packages_context.py",
+      "target": "function:.trellis/scripts/common/packages_context.py:_resolve_scope_set",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/packages_context.py",
+      "target": "function:.trellis/scripts/common/packages_context.py:_resolve_scope_set",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/packages_context.py",
+      "target": "function:.trellis/scripts/common/packages_context.py:get_packages_info",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/packages_context.py",
+      "target": "function:.trellis/scripts/common/packages_context.py:get_packages_info",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/packages_context.py",
+      "target": "function:.trellis/scripts/common/packages_context.py:get_packages_section",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/packages_context.py",
+      "target": "function:.trellis/scripts/common/packages_context.py:get_packages_section",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/packages_context.py",
+      "target": "function:.trellis/scripts/common/packages_context.py:get_context_packages_text",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/packages_context.py",
+      "target": "function:.trellis/scripts/common/packages_context.py:get_context_packages_text",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/packages_context.py",
+      "target": "function:.trellis/scripts/common/packages_context.py:get_context_packages_json",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/packages_context.py",
+      "target": "function:.trellis/scripts/common/packages_context.py:get_context_packages_json",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:get_repo_root",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:get_repo_root",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:get_developer",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:get_developer",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:check_developer",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:check_developer",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:get_tasks_dir",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:get_tasks_dir",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:get_workspace_dir",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:get_workspace_dir",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:get_active_journal_file",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:get_active_journal_file",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:count_lines",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:count_lines",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:normalize_task_ref",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:normalize_task_ref",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:resolve_task_ref",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:resolve_task_ref",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:get_current_task",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:get_current_task",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:get_current_task_abs",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:get_current_task_abs",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:get_current_task_source",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:get_current_task_source",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:set_current_task",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:set_current_task",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:clear_current_task",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:clear_current_task",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:has_current_task",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:has_current_task",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:generate_task_date_prefix",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:generate_task_date_prefix",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:get_spec_dir",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:get_spec_dir",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:get_package_path",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/paths.py",
+      "target": "function:.trellis/scripts/common/paths.py:get_package_path",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/safe_commit.py",
+      "target": "function:.trellis/scripts/common/safe_commit.py:safe_trellis_paths_to_add",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/safe_commit.py",
+      "target": "function:.trellis/scripts/common/safe_commit.py:safe_trellis_paths_to_add",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/safe_commit.py",
+      "target": "function:.trellis/scripts/common/safe_commit.py:safe_archive_paths_to_add",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/safe_commit.py",
+      "target": "function:.trellis/scripts/common/safe_commit.py:safe_archive_paths_to_add",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/safe_commit.py",
+      "target": "function:.trellis/scripts/common/safe_commit.py:_stderr_indicates_ignored",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/safe_commit.py",
+      "target": "function:.trellis/scripts/common/safe_commit.py:_stderr_indicates_ignored",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/safe_commit.py",
+      "target": "function:.trellis/scripts/common/safe_commit.py:safe_git_add",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/safe_commit.py",
+      "target": "function:.trellis/scripts/common/safe_commit.py:safe_git_add",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/safe_commit.py",
+      "target": "function:.trellis/scripts/common/safe_commit.py:print_gitignore_warning",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/safe_commit.py",
+      "target": "function:.trellis/scripts/common/safe_commit.py:print_gitignore_warning",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_is_git_worktree",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_is_git_worktree",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_parse_recent_commits",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_parse_recent_commits",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_collect_git_repo_info",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_collect_git_repo_info",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_collect_root_git_info",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_collect_root_git_info",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_discover_child_git_repos",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_discover_child_git_repos",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_collect_package_git_info",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_collect_package_git_info",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_append_root_git_context",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_append_root_git_context",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_append_package_git_context",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_append_package_git_context",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_read_project_version",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_read_project_version",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_fetch_trellis_version_output",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_fetch_trellis_version_output",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_extract_available_update_version",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_extract_available_update_version",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_resolve_available_update_version",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_resolve_available_update_version",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_parse_version",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_parse_version",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_compare_prerelease",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_compare_prerelease",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_compare_versions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_compare_versions",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_update_marker_path",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_update_marker_path",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_mark_update_check_attempted",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_mark_update_check_attempted",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_get_update_hint",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:_get_update_hint",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:get_context_json",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:get_context_json",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:output_json",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:output_json",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:get_context_text",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:get_context_text",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:get_context_record_json",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:get_context_record_json",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:get_context_text_record",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:get_context_text_record",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:output_text",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "function:.trellis/scripts/common/session_context.py:output_text",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_context.py",
+      "target": "function:.trellis/scripts/common/task_context.py:cmd_add_context",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_context.py",
+      "target": "function:.trellis/scripts/common/task_context.py:cmd_add_context",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_context.py",
+      "target": "function:.trellis/scripts/common/task_context.py:cmd_validate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_context.py",
+      "target": "function:.trellis/scripts/common/task_context.py:cmd_validate",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_context.py",
+      "target": "function:.trellis/scripts/common/task_context.py:_validate_jsonl",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_context.py",
+      "target": "function:.trellis/scripts/common/task_context.py:_validate_jsonl",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_context.py",
+      "target": "function:.trellis/scripts/common/task_context.py:cmd_list_context",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_context.py",
+      "target": "function:.trellis/scripts/common/task_context.py:cmd_list_context",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_queue.py",
+      "target": "function:.trellis/scripts/common/task_queue.py:_task_to_dict",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_queue.py",
+      "target": "function:.trellis/scripts/common/task_queue.py:_task_to_dict",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_queue.py",
+      "target": "function:.trellis/scripts/common/task_queue.py:list_tasks_by_status",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_queue.py",
+      "target": "function:.trellis/scripts/common/task_queue.py:list_tasks_by_status",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_queue.py",
+      "target": "function:.trellis/scripts/common/task_queue.py:list_pending_tasks",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_queue.py",
+      "target": "function:.trellis/scripts/common/task_queue.py:list_pending_tasks",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_queue.py",
+      "target": "function:.trellis/scripts/common/task_queue.py:list_tasks_by_assignee",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_queue.py",
+      "target": "function:.trellis/scripts/common/task_queue.py:list_tasks_by_assignee",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_queue.py",
+      "target": "function:.trellis/scripts/common/task_queue.py:list_my_tasks",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_queue.py",
+      "target": "function:.trellis/scripts/common/task_queue.py:list_my_tasks",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_queue.py",
+      "target": "function:.trellis/scripts/common/task_queue.py:get_task_stats",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_queue.py",
+      "target": "function:.trellis/scripts/common/task_queue.py:get_task_stats",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_queue.py",
+      "target": "function:.trellis/scripts/common/task_queue.py:format_task_stats",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_queue.py",
+      "target": "function:.trellis/scripts/common/task_queue.py:format_task_stats",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:_slugify",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:_slugify",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:ensure_tasks_dir",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:ensure_tasks_dir",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:_find_archived_task_by_dir_name",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:_find_archived_task_by_dir_name",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:_repo_relative_path",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:_repo_relative_path",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:_has_subagent_platform",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:_has_subagent_platform",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:_write_seed_jsonl",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:_write_seed_jsonl",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:_default_prd_content",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:_default_prd_content",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:cmd_create",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:cmd_create",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:cmd_archive",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:cmd_archive",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:_auto_commit_archive",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:_auto_commit_archive",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:cmd_add_subtask",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:cmd_add_subtask",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:cmd_remove_subtask",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:cmd_remove_subtask",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:cmd_set_branch",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:cmd_set_branch",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:cmd_set_base_branch",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:cmd_set_base_branch",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:cmd_set_scope",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "function:.trellis/scripts/common/task_store.py:cmd_set_scope",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_utils.py",
+      "target": "function:.trellis/scripts/common/task_utils.py:is_safe_task_path",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_utils.py",
+      "target": "function:.trellis/scripts/common/task_utils.py:is_safe_task_path",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_utils.py",
+      "target": "function:.trellis/scripts/common/task_utils.py:find_task_by_name",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_utils.py",
+      "target": "function:.trellis/scripts/common/task_utils.py:find_task_by_name",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_utils.py",
+      "target": "function:.trellis/scripts/common/task_utils.py:archive_task_dir",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_utils.py",
+      "target": "function:.trellis/scripts/common/task_utils.py:archive_task_dir",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_utils.py",
+      "target": "function:.trellis/scripts/common/task_utils.py:archive_task_complete",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_utils.py",
+      "target": "function:.trellis/scripts/common/task_utils.py:archive_task_complete",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_utils.py",
+      "target": "function:.trellis/scripts/common/task_utils.py:resolve_task_dir",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_utils.py",
+      "target": "function:.trellis/scripts/common/task_utils.py:resolve_task_dir",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_utils.py",
+      "target": "function:.trellis/scripts/common/task_utils.py:run_task_hooks",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_utils.py",
+      "target": "function:.trellis/scripts/common/task_utils.py:run_task_hooks",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/tasks.py",
+      "target": "function:.trellis/scripts/common/tasks.py:load_task",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/tasks.py",
+      "target": "function:.trellis/scripts/common/tasks.py:load_task",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/tasks.py",
+      "target": "function:.trellis/scripts/common/tasks.py:iter_active_tasks",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/tasks.py",
+      "target": "function:.trellis/scripts/common/tasks.py:iter_active_tasks",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/tasks.py",
+      "target": "function:.trellis/scripts/common/tasks.py:get_all_statuses",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/tasks.py",
+      "target": "function:.trellis/scripts/common/tasks.py:get_all_statuses",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/tasks.py",
+      "target": "function:.trellis/scripts/common/tasks.py:children_progress",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/tasks.py",
+      "target": "function:.trellis/scripts/common/tasks.py:children_progress",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/trellis_config.py",
+      "target": "function:.trellis/scripts/common/trellis_config.py:_unquote",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/trellis_config.py",
+      "target": "function:.trellis/scripts/common/trellis_config.py:_unquote",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/trellis_config.py",
+      "target": "function:.trellis/scripts/common/trellis_config.py:_strip_inline_comment",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/trellis_config.py",
+      "target": "function:.trellis/scripts/common/trellis_config.py:_strip_inline_comment",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/trellis_config.py",
+      "target": "function:.trellis/scripts/common/trellis_config.py:_next_content_line",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/trellis_config.py",
+      "target": "function:.trellis/scripts/common/trellis_config.py:_next_content_line",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/trellis_config.py",
+      "target": "function:.trellis/scripts/common/trellis_config.py:_parse_yaml_block",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/trellis_config.py",
+      "target": "function:.trellis/scripts/common/trellis_config.py:_parse_yaml_block",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/trellis_config.py",
+      "target": "function:.trellis/scripts/common/trellis_config.py:parse_simple_yaml",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/trellis_config.py",
+      "target": "function:.trellis/scripts/common/trellis_config.py:parse_simple_yaml",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/trellis_config.py",
+      "target": "function:.trellis/scripts/common/trellis_config.py:read_trellis_config",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/trellis_config.py",
+      "target": "function:.trellis/scripts/common/trellis_config.py:read_trellis_config",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/types.py",
+      "target": "class:.trellis/scripts/common/types.py:TaskData",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/types.py",
+      "target": "class:.trellis/scripts/common/types.py:TaskInfo",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/workflow_phase.py",
+      "target": "function:.trellis/scripts/common/workflow_phase.py:_workflow_md_path",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/workflow_phase.py",
+      "target": "function:.trellis/scripts/common/workflow_phase.py:_workflow_md_path",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/workflow_phase.py",
+      "target": "function:.trellis/scripts/common/workflow_phase.py:_read_workflow",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/workflow_phase.py",
+      "target": "function:.trellis/scripts/common/workflow_phase.py:_read_workflow",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/workflow_phase.py",
+      "target": "function:.trellis/scripts/common/workflow_phase.py:_parse_marker",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/workflow_phase.py",
+      "target": "function:.trellis/scripts/common/workflow_phase.py:_parse_marker",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/workflow_phase.py",
+      "target": "function:.trellis/scripts/common/workflow_phase.py:get_phase_index",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/workflow_phase.py",
+      "target": "function:.trellis/scripts/common/workflow_phase.py:get_phase_index",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/workflow_phase.py",
+      "target": "function:.trellis/scripts/common/workflow_phase.py:get_step",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/workflow_phase.py",
+      "target": "function:.trellis/scripts/common/workflow_phase.py:get_step",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/workflow_phase.py",
+      "target": "function:.trellis/scripts/common/workflow_phase.py:_platform_matches",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/workflow_phase.py",
+      "target": "function:.trellis/scripts/common/workflow_phase.py:_platform_matches",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/workflow_phase.py",
+      "target": "function:.trellis/scripts/common/workflow_phase.py:resolve_effective_platform",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/workflow_phase.py",
+      "target": "function:.trellis/scripts/common/workflow_phase.py:resolve_effective_platform",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/common/workflow_phase.py",
+      "target": "function:.trellis/scripts/common/workflow_phase.py:filter_platform",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/common/workflow_phase.py",
+      "target": "function:.trellis/scripts/common/workflow_phase.py:filter_platform",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/get_developer.py",
+      "target": "function:.trellis/scripts/get_developer.py:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/get_developer.py",
+      "target": "function:.trellis/scripts/get_developer.py:main",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/init_developer.py",
+      "target": "function:.trellis/scripts/init_developer.py:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/init_developer.py",
+      "target": "function:.trellis/scripts/init_developer.py:main",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/task.py",
+      "target": "function:.trellis/scripts/task.py:cmd_start",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/task.py",
+      "target": "function:.trellis/scripts/task.py:cmd_start",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/task.py",
+      "target": "function:.trellis/scripts/task.py:cmd_finish",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/task.py",
+      "target": "function:.trellis/scripts/task.py:cmd_finish",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/task.py",
+      "target": "function:.trellis/scripts/task.py:cmd_current",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/task.py",
+      "target": "function:.trellis/scripts/task.py:cmd_current",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/task.py",
+      "target": "function:.trellis/scripts/task.py:cmd_list",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/task.py",
+      "target": "function:.trellis/scripts/task.py:cmd_list",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/task.py",
+      "target": "function:.trellis/scripts/task.py:cmd_list_archive",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/task.py",
+      "target": "function:.trellis/scripts/task.py:cmd_list_archive",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/task.py",
+      "target": "function:.trellis/scripts/task.py:show_usage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/task.py",
+      "target": "function:.trellis/scripts/task.py:show_usage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/task.py",
+      "target": "function:.trellis/scripts/task.py:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.trellis/scripts/task.py",
+      "target": "function:.trellis/scripts/task.py:main",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "file:.trellis/scripts/common/config.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "file:.trellis/scripts/common/developer.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "file:.trellis/scripts/common/git.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "file:.trellis/scripts/common/paths.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "file:.trellis/scripts/common/safe_commit.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "file:.trellis/scripts/common/tasks.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/add_session.py",
+      "target": "file:.trellis/scripts/common/types.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/__init__.py",
+      "target": "file:.trellis/scripts/common/active_task.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/__init__.py",
+      "target": "file:.trellis/scripts/common/io.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/__init__.py",
+      "target": "file:.trellis/scripts/common/paths.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/config.py",
+      "target": "file:.trellis/scripts/common/paths.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/developer.py",
+      "target": "file:.trellis/scripts/common/paths.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/git_context.py",
+      "target": "file:.trellis/scripts/common/git.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/git_context.py",
+      "target": "file:.trellis/scripts/common/packages_context.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/git_context.py",
+      "target": "file:.trellis/scripts/common/session_context.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/git_context.py",
+      "target": "file:.trellis/scripts/common/trellis_config.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/git_context.py",
+      "target": "file:.trellis/scripts/common/workflow_phase.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/packages_context.py",
+      "target": "file:.trellis/scripts/common/config.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/packages_context.py",
+      "target": "file:.trellis/scripts/common/paths.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/packages_context.py",
+      "target": "file:.trellis/scripts/common/tasks.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/safe_commit.py",
+      "target": "file:.trellis/scripts/common/git.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/safe_commit.py",
+      "target": "file:.trellis/scripts/common/paths.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "file:.trellis/scripts/common/active_task.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "file:.trellis/scripts/common/config.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "file:.trellis/scripts/common/git.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "file:.trellis/scripts/common/packages_context.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "file:.trellis/scripts/common/paths.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/session_context.py",
+      "target": "file:.trellis/scripts/common/tasks.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_context.py",
+      "target": "file:.trellis/scripts/common/log.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_context.py",
+      "target": "file:.trellis/scripts/common/paths.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_context.py",
+      "target": "file:.trellis/scripts/common/task_utils.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_queue.py",
+      "target": "file:.trellis/scripts/common/paths.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_queue.py",
+      "target": "file:.trellis/scripts/common/tasks.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "file:.trellis/scripts/common/config.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "file:.trellis/scripts/common/git.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "file:.trellis/scripts/common/io.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "file:.trellis/scripts/common/log.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "file:.trellis/scripts/common/paths.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "file:.trellis/scripts/common/safe_commit.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_store.py",
+      "target": "file:.trellis/scripts/common/task_utils.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/task_utils.py",
+      "target": "file:.trellis/scripts/common/paths.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/tasks.py",
+      "target": "file:.trellis/scripts/common/io.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/tasks.py",
+      "target": "file:.trellis/scripts/common/paths.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/tasks.py",
+      "target": "file:.trellis/scripts/common/types.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/common/workflow_phase.py",
+      "target": "file:.trellis/scripts/common/paths.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/get_context.py",
+      "target": "file:.trellis/scripts/common/git_context.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/get_developer.py",
+      "target": "file:.trellis/scripts/common/paths.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/init_developer.py",
+      "target": "file:.trellis/scripts/common/developer.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/init_developer.py",
+      "target": "file:.trellis/scripts/common/paths.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/task.py",
+      "target": "file:.trellis/scripts/common/active_task.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/task.py",
+      "target": "file:.trellis/scripts/common/io.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/task.py",
+      "target": "file:.trellis/scripts/common/log.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/task.py",
+      "target": "file:.trellis/scripts/common/paths.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/task.py",
+      "target": "file:.trellis/scripts/common/task_context.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/task.py",
+      "target": "file:.trellis/scripts/common/task_store.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/task.py",
+      "target": "file:.trellis/scripts/common/task_utils.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:.trellis/scripts/task.py",
+      "target": "file:.trellis/scripts/common/tasks.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    }
+  ]
+}

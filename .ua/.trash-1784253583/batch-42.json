@@ -1,0 +1,98 @@
+{
+  "nodes": [
+    {
+      "id": "document:.trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/design.md",
+      "type": "document",
+      "name": "design.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/design.md",
+      "summary": "饮食弹窗页我的tab数据持久化与PB同步的设计文档，规划从 AddFoodModal 经 store action、adapter.persistChange、WriteBatcher 到 SQLite，再经 SyncEngine 同步到 PocketBase 的完整写入/读取/删除数据流，列出8项需新增或修改的文件（类型、实体Schema、Store层、SQLite表、PB collection等）并评估兼容性与风险。",
+      "tags": [
+        "documentation",
+        "design-doc",
+        "data-flow",
+        "persistence",
+        "sync"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:.trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/implement.md",
+      "type": "document",
+      "name": "implement.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/implement.md",
+      "summary": "饮食弹窗页我的tab数据持久化与PB同步的执行计划，分6个步骤：扩展数据模型、注册实体Schema、更新Store层、添加SQLite表、PocketBase后端建表与hook、最终验证，附验证命令、风险文件清单与回滚点。",
+      "tags": [
+        "documentation",
+        "implementation-plan",
+        "persistence",
+        "sync"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/prd.md",
+      "summary": "饮食弹窗页我的tab预设数据从仅内存状态提升为SQLite持久化并同步PocketBase的产品需求，基于调研发现现有 customFoodPresets 未调用persistChange/onSync导致刷新即丢失，提出扩展数据模型、注册同步实体、添加SQLite表、更新Store、创建PB collection等7项需求及验收标准。",
+      "tags": [
+        "documentation",
+        "prd",
+        "requirements",
+        "persistence",
+        "sync"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:.trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/task.json",
+      "summary": "diet-my-tab-persist 任务的元数据配置，记录任务标识、标题（饮食弹窗页我的tab数据持久化+PB同步）、状态 completed、优先级 P2、创建者与负责人为 freebytes、创建时间等治理任务跟踪字段。",
+      "tags": [
+        "configuration",
+        "task-metadata",
+        "project-management"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/design.md",
+      "target": "document:.trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/implement.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/implement.md",
+      "target": "document:.trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/prd.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/design.md",
+      "target": "config:.trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/task.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/implement.md",
+      "target": "config:.trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/task.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/prd.md",
+      "target": "config:.trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/task.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

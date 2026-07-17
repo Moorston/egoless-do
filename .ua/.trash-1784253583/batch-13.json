@@ -1,0 +1,1701 @@
+{
+  "nodes": [
+    {
+      "id": "file:_archive/web-legacy/src/components/PrivacyPolicyPage.tsx",
+      "type": "file",
+      "name": "PrivacyPolicyPage.tsx",
+      "filePath": "_archive/web-legacy/src/components/PrivacyPolicyPage.tsx",
+      "summary": "隐私政策静态页：展示应用隐私条款，含返回按钮。",
+      "tags": [
+        "web-legacy",
+        "page",
+        "privacy",
+        "simple"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/PrivacyPolicyPage.tsx:PrivacyPolicyPage",
+      "type": "function",
+      "name": "PrivacyPolicyPage",
+      "filePath": "_archive/web-legacy/src/components/PrivacyPolicyPage.tsx",
+      "lineRange": [
+        8,
+        44
+      ],
+      "summary": "渲染隐私政策正文与返回导航。",
+      "tags": [
+        "privacy",
+        "page"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/ReflectionsTab.tsx",
+      "type": "file",
+      "name": "ReflectionsTab.tsx",
+      "filePath": "_archive/web-legacy/src/components/ReflectionsTab.tsx",
+      "summary": "感念 Tab：含感念列表、搜索高亮、标签/心情筛选、排序、收藏(Pin)、关联(trails)、LineChart 趋势、TagManagerPanel/MoodManagerPanel、useReflections 数据源。",
+      "tags": [
+        "web-legacy",
+        "reflection",
+        "tab",
+        "search",
+        "chart"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/ReflectionsTab.tsx:ReflectionsTab",
+      "type": "function",
+      "name": "ReflectionsTab",
+      "filePath": "_archive/web-legacy/src/components/ReflectionsTab.tsx",
+      "lineRange": [
+        24,
+        971
+      ],
+      "summary": "感念列表 + 搜索/筛选/排序/收藏 + 趋势图 + 标签/心情面板。",
+      "tags": [
+        "reflection",
+        "search",
+        "chart"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/SettingsTab.tsx",
+      "type": "file",
+      "name": "SettingsTab.tsx",
+      "filePath": "_archive/web-legacy/src/components/SettingsTab.tsx",
+      "summary": "设置 Tab：主题、语言、提醒、AI、数据统计图、分享、导入导出、清数据、注销等系统设置。",
+      "tags": [
+        "web-legacy",
+        "settings",
+        "tab",
+        "system"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/SettingsTab.tsx:SettingsTab",
+      "type": "function",
+      "name": "SettingsTab",
+      "filePath": "_archive/web-legacy/src/components/SettingsTab.tsx",
+      "lineRange": [
+        22,
+        232
+      ],
+      "summary": "渲染主题/语言/提醒/AI/危险区(清数据/注销)等设置项。",
+      "tags": [
+        "settings",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/SportPage.tsx",
+      "type": "file",
+      "name": "SportPage.tsx",
+      "filePath": "_archive/web-legacy/src/components/SportPage.tsx",
+      "summary": "运动主页面：运动全流程 (SportPrepPage→SportActivePage→SportReportPage)，含热量估算(estimateCalories/MET_MAP)与距离计算、高德地图。",
+      "tags": [
+        "web-legacy",
+        "sport",
+        "flow",
+        "map"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/SportPage.tsx:computeDistance",
+      "type": "function",
+      "name": "computeDistance",
+      "filePath": "_archive/web-legacy/src/components/SportPage.tsx",
+      "lineRange": [
+        15,
+        26
+      ],
+      "summary": "根据轨迹坐标计算 GPS 距离。",
+      "tags": [
+        "sport",
+        "gps"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/SportPage.tsx:SportPage",
+      "type": "function",
+      "name": "SportPage",
+      "filePath": "_archive/web-legacy/src/components/SportPage.tsx",
+      "lineRange": [
+        30,
+        383
+      ],
+      "summary": "运动流程状态机：准备→进行中→报告三阶段。",
+      "tags": [
+        "sport",
+        "flow"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/StarfieldBackground.tsx",
+      "type": "file",
+      "name": "StarfieldBackground.tsx",
+      "filePath": "_archive/web-legacy/src/components/StarfieldBackground.tsx",
+      "summary": "星空背景动画组件：用 canvas 渲染粒子星场背景装饰。",
+      "tags": [
+        "web-legacy",
+        "canvas",
+        "animation",
+        "background"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/StarfieldBackground.tsx:StarfieldBackground",
+      "type": "function",
+      "name": "StarfieldBackground",
+      "filePath": "_archive/web-legacy/src/components/StarfieldBackground.tsx",
+      "lineRange": [
+        17,
+        156
+      ],
+      "summary": "canvas 粒子星空循环动画。",
+      "tags": [
+        "canvas",
+        "animation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/StatsPage.tsx",
+      "type": "file",
+      "name": "StatsPage.tsx",
+      "filePath": "_archive/web-legacy/src/components/StatsPage.tsx",
+      "summary": "统计页壳：薄封装，注入 THEMES 后委托 StatsTab 渲染。",
+      "tags": [
+        "web-legacy",
+        "stats",
+        "page"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/StatsPage.tsx:StatsPage",
+      "type": "function",
+      "name": "StatsPage",
+      "filePath": "_archive/web-legacy/src/components/StatsPage.tsx",
+      "lineRange": [
+        9,
+        29
+      ],
+      "summary": "统计页入口，渲染 StatsTab。",
+      "tags": [
+        "stats",
+        "shell"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/StatsTab.tsx",
+      "type": "file",
+      "name": "StatsTab.tsx",
+      "filePath": "_archive/web-legacy/src/components/StatsTab.tsx",
+      "summary": "统计 Tab：体重/热量/周跑量聚合图(LineChart/BarChart)、冥想/打卡/日历热力图(CalendarGrid)、shield/grace 统计。",
+      "tags": [
+        "web-legacy",
+        "stats",
+        "chart",
+        "aggregate"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/StatsTab.tsx:StatsTab",
+      "type": "function",
+      "name": "StatsTab",
+      "filePath": "_archive/web-legacy/src/components/StatsTab.tsx",
+      "lineRange": [
+        13,
+        169
+      ],
+      "summary": "渲染体重/热量/跑量折线图与日历热力图。",
+      "tags": [
+        "stats",
+        "chart"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/StreakBreakPage.tsx",
+      "type": "file",
+      "name": "StreakBreakPage.tsx",
+      "filePath": "_archive/web-legacy/src/components/StreakBreakPage.tsx",
+      "summary": "连续中断页：展示 streak 断裂洞察(周/月分布、恢复天数)与鼓励文案、MiniBarChart；提供恢复打卡引导。",
+      "tags": [
+        "web-legacy",
+        "streak",
+        "insights",
+        "recovery"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/StreakBreakPage.tsx:StreakBreakPage",
+      "type": "function",
+      "name": "StreakBreakPage",
+      "filePath": "_archive/web-legacy/src/components/StreakBreakPage.tsx",
+      "lineRange": [
+        16,
+        254
+      ],
+      "summary": "展示 streak 断裂分析与恢复建议。",
+      "tags": [
+        "streak",
+        "insights"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/StreakBreakPage.tsx:MiniBarChart",
+      "type": "function",
+      "name": "MiniBarChart",
+      "filePath": "_archive/web-legacy/src/components/StreakBreakPage.tsx",
+      "lineRange": [
+        256,
+        280
+      ],
+      "summary": "小型柱状图子组件(分布可视化)。",
+      "tags": [
+        "chart",
+        "mini"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/TagManagerPanel.tsx",
+      "type": "file",
+      "name": "TagManagerPanel.tsx",
+      "filePath": "_archive/web-legacy/src/components/TagManagerPanel.tsx",
+      "summary": "标签管理面板：自定义标签增删改、排序(drag-reorder)、预设 TAGS_PRESET。",
+      "tags": [
+        "web-legacy",
+        "tag",
+        "manager"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/charts/BarChart.tsx",
+      "type": "file",
+      "name": "BarChart.tsx",
+      "filePath": "_archive/web-legacy/src/components/charts/BarChart.tsx",
+      "summary": "柱状图组件：基于 CSS/Flex 渲染 x 轴标签与柱形，含 tooltip。",
+      "tags": [
+        "web-legacy",
+        "chart",
+        "bar"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/charts/BarChart.tsx:BarChart",
+      "type": "function",
+      "name": "BarChart",
+      "filePath": "_archive/web-legacy/src/components/charts/BarChart.tsx",
+      "lineRange": [
+        16,
+        42
+      ],
+      "summary": "渲染柱形图与坐标轴、tooltip。",
+      "tags": [
+        "chart",
+        "bar"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/charts/CalendarGrid.tsx",
+      "type": "file",
+      "name": "CalendarGrid.tsx",
+      "filePath": "_archive/web-legacy/src/components/charts/CalendarGrid.tsx",
+      "summary": "日历网格组件：月历翻页，标记打卡 done/grace 状态与今日高亮。",
+      "tags": [
+        "web-legacy",
+        "chart",
+        "calendar"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/charts/CalendarGrid.tsx:CalendarGrid",
+      "type": "function",
+      "name": "CalendarGrid",
+      "filePath": "_archive/web-legacy/src/components/charts/CalendarGrid.tsx",
+      "lineRange": [
+        28,
+        144
+      ],
+      "summary": "渲染月历网格，标记每日打卡/grace。",
+      "tags": [
+        "calendar",
+        "chart"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/charts/HeatmapGrid.tsx",
+      "type": "file",
+      "name": "HeatmapGrid.tsx",
+      "filePath": "_archive/web-legacy/src/components/charts/HeatmapGrid.tsx",
+      "summary": "热力图网格组件：按周×日格子展示强度热力图(通用)。",
+      "tags": [
+        "web-legacy",
+        "chart",
+        "heatmap"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/charts/HeatmapGrid.tsx:HeatmapGrid",
+      "type": "function",
+      "name": "HeatmapGrid",
+      "filePath": "_archive/web-legacy/src/components/charts/HeatmapGrid.tsx",
+      "lineRange": [
+        19,
+        78
+      ],
+      "summary": "渲染通用热力图网格(周×日强度)。",
+      "tags": [
+        "heatmap",
+        "chart"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/charts/LineChart.tsx",
+      "type": "file",
+      "name": "LineChart.tsx",
+      "filePath": "_archive/web-legacy/src/components/charts/LineChart.tsx",
+      "summary": "折线图组件：基于 SVG 渲染折线、坐标轴标签与 tooltip。",
+      "tags": [
+        "web-legacy",
+        "chart",
+        "line"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/charts/LineChart.tsx:LineChart",
+      "type": "function",
+      "name": "LineChart",
+      "filePath": "_archive/web-legacy/src/components/charts/LineChart.tsx",
+      "lineRange": [
+        19,
+        46
+      ],
+      "summary": "渲染 SVG 折线图、坐标轴与 tooltip。",
+      "tags": [
+        "chart",
+        "line"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/helpers.tsx",
+      "type": "file",
+      "name": "helpers.tsx",
+      "filePath": "_archive/web-legacy/src/components/helpers.tsx",
+      "summary": "UI/样式/Hooks 聚合导出(barrel)：re-export ./ui、./hooks、./styles。",
+      "tags": [
+        "web-legacy",
+        "barrel",
+        "helpers"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/hooks/useT.ts",
+      "type": "file",
+      "name": "useT.ts",
+      "filePath": "_archive/web-legacy/src/components/hooks/useT.ts",
+      "summary": "多语言 Hook：基于 store.language 返回 t(k,语言) 的柯里化函数。",
+      "tags": [
+        "web-legacy",
+        "i18n",
+        "hook"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/hooks/useT.ts:useT",
+      "type": "function",
+      "name": "useT",
+      "filePath": "_archive/web-legacy/src/components/hooks/useT.ts",
+      "lineRange": [
+        7,
+        10
+      ],
+      "summary": "绑定当前语言的翻译函数。",
+      "tags": [
+        "i18n",
+        "hook"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/hooks/useTheme.ts",
+      "type": "file",
+      "name": "useTheme.ts",
+      "filePath": "_archive/web-legacy/src/components/hooks/useTheme.ts",
+      "summary": "主题 Hook：根据 store.theme 从 THEMES 映当前配色(TH/primary)。",
+      "tags": [
+        "web-legacy",
+        "theme",
+        "hook"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/hooks/useTheme.ts:useTheme",
+      "type": "function",
+      "name": "useTheme",
+      "filePath": "_archive/web-legacy/src/components/hooks/useTheme.ts",
+      "lineRange": [
+        7,
+        14
+      ],
+      "summary": "缓存并返回当前主题配色对象。",
+      "tags": [
+        "theme",
+        "hook"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/sport/SportActivePage.tsx",
+      "type": "file",
+      "name": "SportActivePage.tsx",
+      "filePath": "_archive/web-legacy/src/components/sport/SportActivePage.tsx",
+      "summary": "运动中页面：计时器(Play/Pause/±)、距离/卡路里/组数实时更新、fmt 时间格式化。",
+      "tags": [
+        "web-legacy",
+        "sport",
+        "active",
+        "timer"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/sport/SportActivePage.tsx:SportActivePageInner",
+      "type": "function",
+      "name": "SportActivePageInner",
+      "filePath": "_archive/web-legacy/src/components/sport/SportActivePage.tsx",
+      "lineRange": [
+        48,
+        299
+      ],
+      "summary": "运动中计时/距离/卡路里实时面板。",
+      "tags": [
+        "sport",
+        "timer"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/sport/SportPrepPage.tsx",
+      "type": "file",
+      "name": "SportPrepPage.tsx",
+      "filePath": "_archive/web-legacy/src/components/sport/SportPrepPage.tsx",
+      "summary": "运动准备页：选择运动类型/目标(mode: free/target)与预设 target 开始计数。",
+      "tags": [
+        "web-legacy",
+        "sport",
+        "prep"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/sport/SportPrepPage.tsx:SportPrepPageInner",
+      "type": "function",
+      "name": "SportPrepPageInner",
+      "filePath": "_archive/web-legacy/src/components/sport/SportPrepPage.tsx",
+      "lineRange": [
+        25,
+        118
+      ],
+      "summary": "配置运动类型/目标并进入运动中。",
+      "tags": [
+        "sport",
+        "setup"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/sport/SportReportPage.tsx",
+      "type": "file",
+      "name": "SportReportPage.tsx",
+      "filePath": "_archive/web-legacy/src/components/sport/SportReportPage.tsx",
+      "summary": "运动报告页：展示本次运动总时长/距离/卡路里/配速(formatPace)与地图轨迹。",
+      "tags": [
+        "web-legacy",
+        "sport",
+        "report"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/sport/SportReportPage.tsx:SportReportPageInner",
+      "type": "function",
+      "name": "SportReportPageInner",
+      "filePath": "_archive/web-legacy/src/components/sport/SportReportPage.tsx",
+      "lineRange": [
+        33,
+        126
+      ],
+      "summary": "渲染运动结束报告摘要。",
+      "tags": [
+        "sport",
+        "summary"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/ui/Checkbox.tsx",
+      "type": "file",
+      "name": "Checkbox.tsx",
+      "filePath": "_archive/web-legacy/src/components/ui/Checkbox.tsx",
+      "summary": "复选框 UI 组件：主题色 + Check 图标。",
+      "tags": [
+        "web-legacy",
+        "ui",
+        "checkbox"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/ui/Checkbox.tsx:Checkbox",
+      "type": "function",
+      "name": "Checkbox",
+      "filePath": "_archive/web-legacy/src/components/ui/Checkbox.tsx",
+      "lineRange": [
+        8,
+        23
+      ],
+      "summary": "渲染主题色复选框。",
+      "tags": [
+        "ui",
+        "checkbox"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/ui/ErrorBoundary.tsx",
+      "type": "file",
+      "name": "ErrorBoundary.tsx",
+      "filePath": "_archive/web-legacy/src/components/ui/ErrorBoundary.tsx",
+      "summary": "错误边界类组件：捕获 React 异常上报 Sentry 并展示降级 UI。",
+      "tags": [
+        "web-legacy",
+        "ui",
+        "error-boundary",
+        "sentry"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/ui/ErrorBoundary.tsx:ErrorBoundary",
+      "type": "function",
+      "name": "ErrorBoundary",
+      "filePath": "_archive/web-legacy/src/components/ui/ErrorBoundary.tsx",
+      "lineRange": [
+        43,
+        46
+      ],
+      "summary": "componentDidCatch 上报 Sentry 并渲染 AlertTriangle 降级。",
+      "tags": [
+        "error-boundary",
+        "sentry"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:_archive/web-legacy/src/components/ui/ErrorBoundary.tsx:ErrorBoundaryInner",
+      "type": "class",
+      "name": "ErrorBoundaryInner",
+      "filePath": "_archive/web-legacy/src/components/ui/ErrorBoundary.tsx",
+      "lineRange": [
+        15,
+        41
+      ],
+      "summary": "内部错误边界实现类。",
+      "tags": [
+        "error-boundary",
+        "class"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/ui/LinkWorldBtn.tsx",
+      "type": "file",
+      "name": "LinkWorldBtn.tsx",
+      "filePath": "_archive/web-legacy/src/components/ui/LinkWorldBtn.tsx",
+      "summary": "跳转运动世界外链按钮组件(ChevronRight 指示)。",
+      "tags": [
+        "web-legacy",
+        "ui",
+        "link"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/ui/LinkWorldBtn.tsx:LinkWorldBtn",
+      "type": "function",
+      "name": "LinkWorldBtn",
+      "filePath": "_archive/web-legacy/src/components/ui/LinkWorldBtn.tsx",
+      "lineRange": [
+        8,
+        24
+      ],
+      "summary": "渲染外链跳转按钮。",
+      "tags": [
+        "ui",
+        "link"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/ui/Modal.tsx",
+      "type": "file",
+      "name": "Modal.tsx",
+      "filePath": "_archive/web-legacy/src/components/ui/Modal.tsx",
+      "summary": "通用弹窗组件：createPortal + 遮罩 + 点击外部关闭。",
+      "tags": [
+        "web-legacy",
+        "ui",
+        "modal"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/ui/Modal.tsx:Modal",
+      "type": "function",
+      "name": "Modal",
+      "filePath": "_archive/web-legacy/src/components/ui/Modal.tsx",
+      "lineRange": [
+        20,
+        56
+      ],
+      "summary": "基于 createPortal 渲染遮罩弹窗，点击外部关闭。",
+      "tags": [
+        "ui",
+        "modal"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/ui/RowItem.tsx",
+      "type": "file",
+      "name": "RowItem.tsx",
+      "filePath": "_archive/web-legacy/src/components/ui/RowItem.tsx",
+      "summary": "通用行项组件：标题/副文本/右侧插槽，主题色。",
+      "tags": [
+        "web-legacy",
+        "ui",
+        "list-item"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/ui/RowItem.tsx:RowItem",
+      "type": "function",
+      "name": "RowItem",
+      "filePath": "_archive/web-legacy/src/components/ui/RowItem.tsx",
+      "lineRange": [
+        7,
+        22
+      ],
+      "summary": "渲染通用行项布局。",
+      "tags": [
+        "ui",
+        "list"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/ui/Toggle.tsx",
+      "type": "file",
+      "name": "Toggle.tsx",
+      "filePath": "_archive/web-legacy/src/components/ui/Toggle.tsx",
+      "summary": "开关 UI 组件：主题色 Toggle。",
+      "tags": [
+        "web-legacy",
+        "ui",
+        "toggle"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/ui/Toggle.tsx:Toggle",
+      "type": "function",
+      "name": "Toggle",
+      "filePath": "_archive/web-legacy/src/components/ui/Toggle.tsx",
+      "lineRange": [
+        7,
+        15
+      ],
+      "summary": "渲染主题色开关。",
+      "tags": [
+        "ui",
+        "toggle"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/useDailyTodo.ts",
+      "type": "file",
+      "name": "useDailyTodo.ts",
+      "filePath": "_archive/web-legacy/src/components/useDailyTodo.ts",
+      "summary": "每日待办 Hook：用 core.createDailyTodoHook 绑定 useWebStore 切片生成。",
+      "tags": [
+        "web-legacy",
+        "hook",
+        "daily-todo"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/useFoodSearch.ts",
+      "type": "file",
+      "name": "useFoodSearch.ts",
+      "filePath": "_archive/web-legacy/src/components/useFoodSearch.ts",
+      "summary": "食物搜索 Hook：基于 FOOD_PRESETS 关键词过滤 + FOOD_ICON_MAP 图标分类。",
+      "tags": [
+        "web-legacy",
+        "hook",
+        "food",
+        "search"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/useFoodSearch.ts:useFoodSearch",
+      "type": "function",
+      "name": "useFoodSearch",
+      "filePath": "_archive/web-legacy/src/components/useFoodSearch.ts",
+      "lineRange": [
+        11,
+        59
+      ],
+      "summary": "按关键字搜索食物预设并分类图标。",
+      "tags": [
+        "food",
+        "search",
+        "hook"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/useOverlay.ts",
+      "type": "file",
+      "name": "useOverlay.ts",
+      "filePath": "_archive/web-legacy/src/components/useOverlay.ts",
+      "summary": "覆盖层管理：OverlayContext + useOverlayState(24 种 overlayKey 开关) + useOverlay 访问器。",
+      "tags": [
+        "web-legacy",
+        "overlay",
+        "context",
+        "hook"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/useOverlay.ts:useOverlayState",
+      "type": "function",
+      "name": "useOverlayState",
+      "filePath": "_archive/web-legacy/src/components/useOverlay.ts",
+      "lineRange": [
+        48,
+        68
+      ],
+      "summary": "管理 24 种 OverlayKey 的开关与属性状态。",
+      "tags": [
+        "overlay",
+        "state"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/useOverlay.ts:useOverlay",
+      "type": "function",
+      "name": "useOverlay",
+      "filePath": "_archive/web-legacy/src/components/useOverlay.ts",
+      "lineRange": [
+        71,
+        75
+      ],
+      "summary": "OverlayContext 访问器，未包裹则抛错。",
+      "tags": [
+        "overlay",
+        "context"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/useReflections.ts",
+      "type": "file",
+      "name": "useReflections.ts",
+      "filePath": "_archive/web-legacy/src/components/useReflections.ts",
+      "summary": "感念数据 Hook：分页/搜索/筛选(防抖)、排序、收藏、关联遍历。",
+      "tags": [
+        "web-legacy",
+        "hook",
+        "reflection",
+        "search"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/useReflections.ts:useReflections",
+      "type": "function",
+      "name": "useReflections",
+      "filePath": "_archive/web-legacy/src/components/useReflections.ts",
+      "lineRange": [
+        23,
+        322
+      ],
+      "summary": "感念列表数据源：搜索、筛选、排序、分页与关联。",
+      "tags": [
+        "reflection",
+        "hook"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/components/useReminder.ts",
+      "type": "file",
+      "name": "useReminder.ts",
+      "filePath": "_archive/web-legacy/src/components/useReminder.ts",
+      "summary": "提醒 Hook：到设定时间(remindTime)调用 Notification API 发送常驻提醒(30s 轮询)。",
+      "tags": [
+        "web-legacy",
+        "hook",
+        "reminder",
+        "notification"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/components/useReminder.ts:useReminder",
+      "type": "function",
+      "name": "useReminder",
+      "filePath": "_archive/web-legacy/src/components/useReminder.ts",
+      "lineRange": [
+        7,
+        39
+      ],
+      "summary": "每分钟检查 remindTime 并发送浏览器通知。",
+      "tags": [
+        "reminder",
+        "notification"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/lib/amapLoader.ts",
+      "type": "file",
+      "name": "amapLoader.ts",
+      "filePath": "_archive/web-legacy/src/lib/amapLoader.ts",
+      "summary": "高德地图 SDK 加载器：单例 loadPromise、配置安全码、懒加载 @amap/amap-jsapi-loader。",
+      "tags": [
+        "web-legacy",
+        "amap",
+        "loader",
+        "geo"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:_archive/web-legacy/src/lib/amapLoader.ts:loadAMap",
+      "type": "function",
+      "name": "loadAMap",
+      "filePath": "_archive/web-legacy/src/lib/amapLoader.ts",
+      "lineRange": [
+        8,
+        27
+      ],
+      "summary": "单例加载高德 SDK 并返回 AMap 命名空间。",
+      "tags": [
+        "amap",
+        "loader"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/src/store/useWebStore.ts",
+      "type": "file",
+      "name": "useWebStore.ts",
+      "filePath": "_archive/web-legacy/src/store/useWebStore.ts",
+      "summary": "Web 端 Zustand store：用 persist(localStorage)+noopAdapter 组合 18 个 slice(无同步)，含 DailyResetManager 每日重置、autoSyncPlanItems 触发、rehydrate 后 habit 状态检查。",
+      "tags": [
+        "web-legacy",
+        "store",
+        "zustand",
+        "persist"
+      ],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:_archive/web-legacy/src/components/PrivacyPolicyPage.tsx",
+      "target": "function:_archive/web-legacy/src/components/PrivacyPolicyPage.tsx:PrivacyPolicyPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/PrivacyPolicyPage.tsx",
+      "target": "function:_archive/web-legacy/src/components/PrivacyPolicyPage.tsx:PrivacyPolicyPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ReflectionsTab.tsx",
+      "target": "function:_archive/web-legacy/src/components/ReflectionsTab.tsx:ReflectionsTab",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ReflectionsTab.tsx",
+      "target": "function:_archive/web-legacy/src/components/ReflectionsTab.tsx:ReflectionsTab",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/SettingsTab.tsx",
+      "target": "function:_archive/web-legacy/src/components/SettingsTab.tsx:SettingsTab",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/SettingsTab.tsx",
+      "target": "function:_archive/web-legacy/src/components/SettingsTab.tsx:SettingsTab",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/SportPage.tsx",
+      "target": "function:_archive/web-legacy/src/components/SportPage.tsx:computeDistance",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/SportPage.tsx",
+      "target": "function:_archive/web-legacy/src/components/SportPage.tsx:SportPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/SportPage.tsx",
+      "target": "function:_archive/web-legacy/src/components/SportPage.tsx:SportPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/StarfieldBackground.tsx",
+      "target": "function:_archive/web-legacy/src/components/StarfieldBackground.tsx:StarfieldBackground",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/StarfieldBackground.tsx",
+      "target": "function:_archive/web-legacy/src/components/StarfieldBackground.tsx:StarfieldBackground",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/StatsPage.tsx",
+      "target": "function:_archive/web-legacy/src/components/StatsPage.tsx:StatsPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/StatsPage.tsx",
+      "target": "function:_archive/web-legacy/src/components/StatsPage.tsx:StatsPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/StatsTab.tsx",
+      "target": "function:_archive/web-legacy/src/components/StatsTab.tsx:StatsTab",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/StatsTab.tsx",
+      "target": "function:_archive/web-legacy/src/components/StatsTab.tsx:StatsTab",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/StreakBreakPage.tsx",
+      "target": "function:_archive/web-legacy/src/components/StreakBreakPage.tsx:StreakBreakPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/StreakBreakPage.tsx",
+      "target": "function:_archive/web-legacy/src/components/StreakBreakPage.tsx:StreakBreakPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/StreakBreakPage.tsx",
+      "target": "function:_archive/web-legacy/src/components/StreakBreakPage.tsx:MiniBarChart",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/charts/BarChart.tsx",
+      "target": "function:_archive/web-legacy/src/components/charts/BarChart.tsx:BarChart",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/charts/BarChart.tsx",
+      "target": "function:_archive/web-legacy/src/components/charts/BarChart.tsx:BarChart",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/charts/CalendarGrid.tsx",
+      "target": "function:_archive/web-legacy/src/components/charts/CalendarGrid.tsx:CalendarGrid",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/charts/CalendarGrid.tsx",
+      "target": "function:_archive/web-legacy/src/components/charts/CalendarGrid.tsx:CalendarGrid",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/charts/HeatmapGrid.tsx",
+      "target": "function:_archive/web-legacy/src/components/charts/HeatmapGrid.tsx:HeatmapGrid",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/charts/HeatmapGrid.tsx",
+      "target": "function:_archive/web-legacy/src/components/charts/HeatmapGrid.tsx:HeatmapGrid",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/charts/LineChart.tsx",
+      "target": "function:_archive/web-legacy/src/components/charts/LineChart.tsx:LineChart",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/charts/LineChart.tsx",
+      "target": "function:_archive/web-legacy/src/components/charts/LineChart.tsx:LineChart",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/hooks/useT.ts",
+      "target": "function:_archive/web-legacy/src/components/hooks/useT.ts:useT",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/hooks/useT.ts",
+      "target": "function:_archive/web-legacy/src/components/hooks/useT.ts:useT",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/hooks/useTheme.ts",
+      "target": "function:_archive/web-legacy/src/components/hooks/useTheme.ts:useTheme",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/hooks/useTheme.ts",
+      "target": "function:_archive/web-legacy/src/components/hooks/useTheme.ts:useTheme",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/sport/SportActivePage.tsx",
+      "target": "function:_archive/web-legacy/src/components/sport/SportActivePage.tsx:SportActivePageInner",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/sport/SportPrepPage.tsx",
+      "target": "function:_archive/web-legacy/src/components/sport/SportPrepPage.tsx:SportPrepPageInner",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/sport/SportReportPage.tsx",
+      "target": "function:_archive/web-legacy/src/components/sport/SportReportPage.tsx:SportReportPageInner",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ui/Checkbox.tsx",
+      "target": "function:_archive/web-legacy/src/components/ui/Checkbox.tsx:Checkbox",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ui/Checkbox.tsx",
+      "target": "function:_archive/web-legacy/src/components/ui/Checkbox.tsx:Checkbox",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ui/ErrorBoundary.tsx",
+      "target": "function:_archive/web-legacy/src/components/ui/ErrorBoundary.tsx:ErrorBoundary",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ui/ErrorBoundary.tsx",
+      "target": "function:_archive/web-legacy/src/components/ui/ErrorBoundary.tsx:ErrorBoundary",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ui/ErrorBoundary.tsx",
+      "target": "class:_archive/web-legacy/src/components/ui/ErrorBoundary.tsx:ErrorBoundaryInner",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ui/ErrorBoundary.tsx",
+      "target": "class:_archive/web-legacy/src/components/ui/ErrorBoundary.tsx:ErrorBoundaryInner",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ui/LinkWorldBtn.tsx",
+      "target": "function:_archive/web-legacy/src/components/ui/LinkWorldBtn.tsx:LinkWorldBtn",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ui/LinkWorldBtn.tsx",
+      "target": "function:_archive/web-legacy/src/components/ui/LinkWorldBtn.tsx:LinkWorldBtn",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ui/Modal.tsx",
+      "target": "function:_archive/web-legacy/src/components/ui/Modal.tsx:Modal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ui/Modal.tsx",
+      "target": "function:_archive/web-legacy/src/components/ui/Modal.tsx:Modal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ui/RowItem.tsx",
+      "target": "function:_archive/web-legacy/src/components/ui/RowItem.tsx:RowItem",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ui/RowItem.tsx",
+      "target": "function:_archive/web-legacy/src/components/ui/RowItem.tsx:RowItem",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ui/Toggle.tsx",
+      "target": "function:_archive/web-legacy/src/components/ui/Toggle.tsx:Toggle",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ui/Toggle.tsx",
+      "target": "function:_archive/web-legacy/src/components/ui/Toggle.tsx:Toggle",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/useFoodSearch.ts",
+      "target": "function:_archive/web-legacy/src/components/useFoodSearch.ts:useFoodSearch",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/useFoodSearch.ts",
+      "target": "function:_archive/web-legacy/src/components/useFoodSearch.ts:useFoodSearch",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/useOverlay.ts",
+      "target": "function:_archive/web-legacy/src/components/useOverlay.ts:useOverlayState",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/useOverlay.ts",
+      "target": "function:_archive/web-legacy/src/components/useOverlay.ts:useOverlayState",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/useOverlay.ts",
+      "target": "function:_archive/web-legacy/src/components/useOverlay.ts:useOverlay",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/useOverlay.ts",
+      "target": "function:_archive/web-legacy/src/components/useOverlay.ts:useOverlay",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/useReflections.ts",
+      "target": "function:_archive/web-legacy/src/components/useReflections.ts:useReflections",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/useReflections.ts",
+      "target": "function:_archive/web-legacy/src/components/useReflections.ts:useReflections",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/useReminder.ts",
+      "target": "function:_archive/web-legacy/src/components/useReminder.ts:useReminder",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/useReminder.ts",
+      "target": "function:_archive/web-legacy/src/components/useReminder.ts:useReminder",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/lib/amapLoader.ts",
+      "target": "function:_archive/web-legacy/src/lib/amapLoader.ts:loadAMap",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:_archive/web-legacy/src/lib/amapLoader.ts",
+      "target": "function:_archive/web-legacy/src/lib/amapLoader.ts:loadAMap",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/PrivacyPolicyPage.tsx",
+      "target": "file:_archive/web-legacy/src/components/helpers.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/PrivacyPolicyPage.tsx",
+      "target": "file:_archive/web-legacy/src/store/useWebStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ReflectionsTab.tsx",
+      "target": "file:_archive/web-legacy/src/components/charts/LineChart.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ReflectionsTab.tsx",
+      "target": "file:_archive/web-legacy/src/components/helpers.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ReflectionsTab.tsx",
+      "target": "file:_archive/web-legacy/src/components/TagManagerPanel.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ReflectionsTab.tsx",
+      "target": "file:_archive/web-legacy/src/components/useOverlay.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ReflectionsTab.tsx",
+      "target": "file:_archive/web-legacy/src/components/useReflections.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ReflectionsTab.tsx",
+      "target": "file:_archive/web-legacy/src/store/useWebStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/SettingsTab.tsx",
+      "target": "file:_archive/web-legacy/src/components/helpers.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/SettingsTab.tsx",
+      "target": "file:_archive/web-legacy/src/components/useOverlay.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/SettingsTab.tsx",
+      "target": "file:_archive/web-legacy/src/store/useWebStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/SportPage.tsx",
+      "target": "file:_archive/web-legacy/src/components/helpers.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/SportPage.tsx",
+      "target": "file:_archive/web-legacy/src/components/sport/SportActivePage.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/SportPage.tsx",
+      "target": "file:_archive/web-legacy/src/components/sport/SportPrepPage.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/SportPage.tsx",
+      "target": "file:_archive/web-legacy/src/components/sport/SportReportPage.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/SportPage.tsx",
+      "target": "file:_archive/web-legacy/src/lib/amapLoader.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/SportPage.tsx",
+      "target": "file:_archive/web-legacy/src/store/useWebStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/StatsPage.tsx",
+      "target": "file:_archive/web-legacy/src/components/helpers.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/StatsPage.tsx",
+      "target": "file:_archive/web-legacy/src/components/StatsTab.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/StatsPage.tsx",
+      "target": "file:_archive/web-legacy/src/store/useWebStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/StatsTab.tsx",
+      "target": "file:_archive/web-legacy/src/components/charts/BarChart.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/StatsTab.tsx",
+      "target": "file:_archive/web-legacy/src/components/charts/CalendarGrid.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/StatsTab.tsx",
+      "target": "file:_archive/web-legacy/src/components/charts/LineChart.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/StatsTab.tsx",
+      "target": "file:_archive/web-legacy/src/components/helpers.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/StatsTab.tsx",
+      "target": "file:_archive/web-legacy/src/store/useWebStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/StreakBreakPage.tsx",
+      "target": "file:_archive/web-legacy/src/components/helpers.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/StreakBreakPage.tsx",
+      "target": "file:_archive/web-legacy/src/components/useOverlay.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/StreakBreakPage.tsx",
+      "target": "file:_archive/web-legacy/src/store/useWebStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/TagManagerPanel.tsx",
+      "target": "file:_archive/web-legacy/src/components/helpers.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/TagManagerPanel.tsx",
+      "target": "file:_archive/web-legacy/src/store/useWebStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/charts/BarChart.tsx",
+      "target": "file:_archive/web-legacy/src/components/helpers.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/charts/CalendarGrid.tsx",
+      "target": "file:_archive/web-legacy/src/components/helpers.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/charts/HeatmapGrid.tsx",
+      "target": "file:_archive/web-legacy/src/components/helpers.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/charts/LineChart.tsx",
+      "target": "file:_archive/web-legacy/src/components/helpers.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/hooks/useT.ts",
+      "target": "file:_archive/web-legacy/src/store/useWebStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/hooks/useTheme.ts",
+      "target": "file:_archive/web-legacy/src/store/useWebStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/sport/SportReportPage.tsx",
+      "target": "file:_archive/web-legacy/src/store/useWebStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ui/Checkbox.tsx",
+      "target": "file:_archive/web-legacy/src/store/useWebStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ui/ErrorBoundary.tsx",
+      "target": "file:_archive/web-legacy/src/store/useWebStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ui/LinkWorldBtn.tsx",
+      "target": "file:_archive/web-legacy/src/store/useWebStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ui/Modal.tsx",
+      "target": "file:_archive/web-legacy/src/store/useWebStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ui/RowItem.tsx",
+      "target": "file:_archive/web-legacy/src/store/useWebStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/ui/Toggle.tsx",
+      "target": "file:_archive/web-legacy/src/store/useWebStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/useDailyTodo.ts",
+      "target": "file:_archive/web-legacy/src/store/useWebStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/useFoodSearch.ts",
+      "target": "file:_archive/web-legacy/src/components/helpers.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/useFoodSearch.ts",
+      "target": "file:_archive/web-legacy/src/store/useWebStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/useReflections.ts",
+      "target": "file:_archive/web-legacy/src/store/useWebStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:_archive/web-legacy/src/components/useReminder.ts",
+      "target": "file:_archive/web-legacy/src/store/useWebStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    }
+  ]
+}

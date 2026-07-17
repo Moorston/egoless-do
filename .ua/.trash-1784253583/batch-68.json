@@ -1,0 +1,664 @@
+{
+  "nodes": [
+    {
+      "id": "file:backend/pb_migrations/1783689998_deleted_published_minds.js",
+      "type": "file",
+      "name": "1783689998_deleted_published_minds.js",
+      "filePath": "backend/pb_migrations/1783689998_deleted_published_minds.js",
+      "summary": "删除已废弃 published_minds 集合的迁移，清理公开心念历史数据。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database",
+        "cleanup"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1783689999_deleted_checkins.js",
+      "type": "file",
+      "name": "1783689999_deleted_checkins.js",
+      "filePath": "backend/pb_migrations/1783689999_deleted_checkins.js",
+      "summary": "删除已废弃 checkins 旧集合的迁移，合并到新数据模型。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database",
+        "cleanup"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1783691974_updated_account_lockouts.js",
+      "type": "file",
+      "name": "1783691974_updated_account_lockouts.js",
+      "filePath": "backend/pb_migrations/1783691974_updated_account_lockouts.js",
+      "summary": "更新 account_lockouts 集合结构的迁移，调整锁定策略字段。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database",
+        "security"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1783691975_updated_audit_logs.js",
+      "type": "file",
+      "name": "1783691975_updated_audit_logs.js",
+      "filePath": "backend/pb_migrations/1783691975_updated_audit_logs.js",
+      "summary": "更新 audit_logs 集合结构的迁移，补全审计字段。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database",
+        "security"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:backend/pb_migrations/1783843612_created_custom_food_presets.js",
+      "type": "file",
+      "name": "1783843612_created_custom_food_presets.js",
+      "filePath": "backend/pb_migrations/1783843612_created_custom_food_presets.js",
+      "summary": "创建 custom_food_presets 集合，支持用户自定义食物预设模板。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1783843763_updated_custom_food_presets.js",
+      "type": "file",
+      "name": "1783843763_updated_custom_food_presets.js",
+      "filePath": "backend/pb_migrations/1783843763_updated_custom_food_presets.js",
+      "summary": "更新 custom_food_presets 集合结构的迁移，补全预设字段。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:backend/pb_migrations/20260710_fix_trail_notes_note_id.js",
+      "type": "file",
+      "name": "20260710_fix_trail_notes_note_id.js",
+      "filePath": "backend/pb_migrations/20260710_fix_trail_notes_note_id.js",
+      "summary": "修复 trail_notes 中 note_id 字段的迁移，修正笔记主键映射。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database",
+        "bugfix"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:backend/pocketbase.exe",
+      "type": "file",
+      "name": "pocketbase.exe",
+      "filePath": "backend/pocketbase.exe",
+      "summary": "PocketBase v0.38.2 可执行二进制，作为数据库与实时 API 服务运行（Windows 平台）。",
+      "tags": [
+        "pocketbase",
+        "infrastructure",
+        "binary"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:infra/docker/api/src/db.ts",
+      "type": "file",
+      "name": "db.ts",
+      "filePath": "infra/docker/api/src/db.ts",
+      "summary": "Auth API 服务端 better-sqlite3 数据库初始化，创建 verification_codes 与 token_blacklist 表。",
+      "tags": [
+        "database",
+        "sqlite",
+        "auth",
+        "infrastructure"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "service:infra/docker/docker-compose.yml",
+      "type": "service",
+      "name": "docker-compose.yml",
+      "filePath": "infra/docker/docker-compose.yml",
+      "summary": "Docker Compose 编排：PocketBase、Hono Auth API、定时备份三服务，含网络、卷、健康检查与依赖。",
+      "tags": [
+        "docker",
+        "orchestration",
+        "infrastructure",
+        "deployment"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "service:infra/docker/Dockerfile.web",
+      "type": "service",
+      "name": "Dockerfile.web",
+      "filePath": "infra/docker/Dockerfile.web",
+      "summary": "归档 Web 应用多阶段构建镜像（Node 26 alpine）：安装依赖、构建 core 与 Next.js，导出 standalone 生产镜像。",
+      "tags": [
+        "docker",
+        "infrastructure",
+        "build-system",
+        "containerization"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:infra/nginx/nginx.conf",
+      "type": "file",
+      "name": "nginx.conf",
+      "filePath": "infra/nginx/nginx.conf",
+      "summary": "Nginx 反向代理配置：upstream PocketBase 与 auth-api，含限流、gzip、WebSocket 与路由规则。",
+      "tags": [
+        "nginx",
+        "infrastructure",
+        "proxy"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:openspec/archive/comprehensive-audit-fix/report.md",
+      "type": "document",
+      "name": "report.md",
+      "filePath": "openspec/archive/comprehensive-audit-fix/report.md",
+      "summary": "归档报告：五维度全面代码审计修复（安全/类型Bug/架构/性能/同步），共修复 100/122 个问题，含 commit 链与指标对比。",
+      "tags": [
+        "documentation",
+        "audit",
+        "archive",
+        "report"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:openspec/archive/perf-systematic/proposal.md",
+      "type": "document",
+      "name": "proposal.md",
+      "filePath": "openspec/archive/perf-systematic/proposal.md",
+      "summary": "归档提案：性能与架构系统性改造 change，含 Zustand selector 改造、rehydrate 并行化、N+1 消除、global-pulse 逻辑迁移。",
+      "tags": [
+        "documentation",
+        "proposal",
+        "archive",
+        "performance"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/config/eslint.base.js",
+      "type": "file",
+      "name": "eslint.base.js",
+      "filePath": "packages/config/eslint.base.js",
+      "summary": "ESLint 基础配置：TypeScript 解析器、import 排序与去重、max-lines-per-function/max-depth 架构规则及测试文件 any 降级。",
+      "tags": [
+        "configuration",
+        "eslint",
+        "code-style"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:packages/config/package.json",
+      "type": "config",
+      "name": "package.json",
+      "filePath": "packages/config/package.json",
+      "summary": "@egoless-do/config 包入口配置，暴露 eslint.base.js 作为包主入口。",
+      "tags": [
+        "configuration",
+        "build-system",
+        "package"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:packages/config/tsconfig.base.json",
+      "type": "config",
+      "name": "tsconfig.base.json",
+      "filePath": "packages/config/tsconfig.base.json",
+      "summary": "TypeScript 基础编译配置：ES2020 目标、bundler 模块解析、strict 模式与 @egoless-do/core 路径别名。",
+      "tags": [
+        "configuration",
+        "typescript",
+        "build-system"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:packages/core/package.json",
+      "type": "config",
+      "name": "package.json",
+      "filePath": "packages/core/package.json",
+      "summary": "@egoless-do/core 包配置，依赖 pocketbase/zustand/zod，定义 build/type-check/test 脚本。",
+      "tags": [
+        "configuration",
+        "package",
+        "build-system"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/ai/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "packages/core/src/ai/index.ts",
+      "summary": "AI 模块 barrel 导出，汇聚 AIService、LocalAIEngine、OpenAICompatibleProvider、各类风险检测与上下文提醒函数。",
+      "tags": [
+        "ai",
+        "barrel",
+        "exports"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/ai/layout-algorithms.test.ts",
+      "type": "file",
+      "name": "layout-algorithms.test.ts",
+      "filePath": "packages/core/src/ai/layout-algorithms.test.ts",
+      "summary": "force-directed/hierarchical/circular/grid 布局算法的单元测试。",
+      "tags": [
+        "ai",
+        "test",
+        "layout"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/ai/layout-algorithms.ts",
+      "type": "file",
+      "name": "layout-algorithms.ts",
+      "filePath": "packages/core/src/ai/layout-algorithms.ts",
+      "summary": "AI 节点布局算法库：实现力导向、层级、环形、网格四种布局及节点聚合，用于思维图谱可视化。",
+      "tags": [
+        "ai",
+        "algorithm",
+        "layout",
+        "graph"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:packages/core/src/ai/rag/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "packages/core/src/ai/rag/index.ts",
+      "summary": "RAG 检索增强生成模块 barrel，导出 ReflectionIndex 构建/检索、同义词扩展、推荐与查询解析 prompt。",
+      "tags": [
+        "ai",
+        "rag",
+        "barrel",
+        "search"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/business/breathing.test.ts",
+      "type": "file",
+      "name": "breathing.test.ts",
+      "filePath": "packages/core/src/business/breathing.test.ts",
+      "summary": "呼吸预设（cycleDuration、phaseLabelKey 等）的单元测试。",
+      "tags": [
+        "business",
+        "breathing",
+        "test"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/business/breathing.ts",
+      "type": "file",
+      "name": "breathing.ts",
+      "filePath": "packages/core/src/business/breathing.ts",
+      "summary": "呼吸法预设配置与辅助函数：BREATHING_PRESETS 及周期时长、阶段标签键、描述/提示键计算。",
+      "tags": [
+        "business",
+        "breathing",
+        "meditation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/business/coordinateFuzzing.test.ts",
+      "type": "file",
+      "name": "coordinateFuzzing.test.ts",
+      "filePath": "packages/core/src/business/coordinateFuzzing.test.ts",
+      "summary": "坐标模糊（fuzzCoordinate）、坐标校验与距离计算函数的单元测试。",
+      "tags": [
+        "business",
+        "geolocation",
+        "test"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/layout-algorithms.ts:applyForceLayout",
+      "type": "function",
+      "name": "applyForceLayout",
+      "filePath": "packages/core/src/ai/layout-algorithms.ts",
+      "lineRange": [
+        43,
+        144
+      ],
+      "summary": "力导向布局主函数，基于节点间斥力与边引力迭代计算节点位置。",
+      "tags": [
+        "ai",
+        "algorithm",
+        "layout",
+        "graph",
+        "function"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/ai/layout-algorithms.ts:applyHierarchicalLayout",
+      "type": "function",
+      "name": "applyHierarchicalLayout",
+      "filePath": "packages/core/src/ai/layout-algorithms.ts",
+      "lineRange": [
+        147,
+        214
+      ],
+      "summary": "层级布局算法，按层级与层内顺序排列节点，适用于树状思维图谱。",
+      "tags": [
+        "ai",
+        "algorithm",
+        "layout",
+        "graph",
+        "function"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/ai/layout-algorithms.ts:applyCircularLayout",
+      "type": "function",
+      "name": "applyCircularLayout",
+      "filePath": "packages/core/src/ai/layout-algorithms.ts",
+      "lineRange": [
+        217,
+        231
+      ],
+      "summary": "环形布局算法，将节点均匀分布在椭圆或圆周上。",
+      "tags": [
+        "ai",
+        "algorithm",
+        "layout",
+        "graph",
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/layout-algorithms.ts:applyGridLayout",
+      "type": "function",
+      "name": "applyGridLayout",
+      "filePath": "packages/core/src/ai/layout-algorithms.ts",
+      "lineRange": [
+        234,
+        250
+      ],
+      "summary": "网格布局算法，按规则网格行列排布节点。",
+      "tags": [
+        "ai",
+        "algorithm",
+        "layout",
+        "graph",
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/layout-algorithms.ts:aggregateNodes",
+      "type": "function",
+      "name": "aggregateNodes",
+      "filePath": "packages/core/src/ai/layout-algorithms.ts",
+      "lineRange": [
+        253,
+        298
+      ],
+      "summary": "节点聚合函数，将距离小于阈值的相邻节点合并为超级节点。",
+      "tags": [
+        "ai",
+        "algorithm",
+        "layout",
+        "graph",
+        "function"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/business/breathing.ts:cycleDuration",
+      "type": "function",
+      "name": "cycleDuration",
+      "filePath": "packages/core/src/business/breathing.ts",
+      "lineRange": [
+        78,
+        80
+      ],
+      "summary": "计算某呼吸预设所有相位的总周期时长（吸/屏/呼）。",
+      "tags": [
+        "business",
+        "breathing",
+        "meditation",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/breathing.ts:phaseLabelKey",
+      "type": "function",
+      "name": "phaseLabelKey",
+      "filePath": "packages/core/src/business/breathing.ts",
+      "lineRange": [
+        83,
+        89
+      ],
+      "summary": "根据呼吸相位类型返回对应 i18n 标签键名。",
+      "tags": [
+        "business",
+        "breathing",
+        "meditation",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/breathing.ts:getDescKey",
+      "type": "function",
+      "name": "getDescKey",
+      "filePath": "packages/core/src/business/breathing.ts",
+      "lineRange": [
+        92,
+        94
+      ],
+      "summary": "根据呼吸预设与风格返回描述 i18n 键名。",
+      "tags": [
+        "business",
+        "breathing",
+        "meditation",
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/breathing.ts:getTipsKey",
+      "type": "function",
+      "name": "getTipsKey",
+      "filePath": "packages/core/src/business/breathing.ts",
+      "lineRange": [
+        97,
+        99
+      ],
+      "summary": "根据呼吸预设与风格返回提示 i18n 键名。",
+      "tags": [
+        "business",
+        "breathing",
+        "meditation",
+        "function"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:packages/core/src/ai/layout-algorithms.ts",
+      "target": "function:packages/core/src/ai/layout-algorithms.ts:applyForceLayout",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/ai/layout-algorithms.ts",
+      "target": "function:packages/core/src/ai/layout-algorithms.ts:applyForceLayout",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/layout-algorithms.ts",
+      "target": "function:packages/core/src/ai/layout-algorithms.ts:applyHierarchicalLayout",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/ai/layout-algorithms.ts",
+      "target": "function:packages/core/src/ai/layout-algorithms.ts:applyHierarchicalLayout",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/layout-algorithms.ts",
+      "target": "function:packages/core/src/ai/layout-algorithms.ts:applyCircularLayout",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/ai/layout-algorithms.ts",
+      "target": "function:packages/core/src/ai/layout-algorithms.ts:applyCircularLayout",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/layout-algorithms.ts",
+      "target": "function:packages/core/src/ai/layout-algorithms.ts:applyGridLayout",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/ai/layout-algorithms.ts",
+      "target": "function:packages/core/src/ai/layout-algorithms.ts:applyGridLayout",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/layout-algorithms.ts",
+      "target": "function:packages/core/src/ai/layout-algorithms.ts:aggregateNodes",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/ai/layout-algorithms.ts",
+      "target": "function:packages/core/src/ai/layout-algorithms.ts:aggregateNodes",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/breathing.ts",
+      "target": "function:packages/core/src/business/breathing.ts:cycleDuration",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/breathing.ts",
+      "target": "function:packages/core/src/business/breathing.ts:cycleDuration",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/breathing.ts",
+      "target": "function:packages/core/src/business/breathing.ts:phaseLabelKey",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/breathing.ts",
+      "target": "function:packages/core/src/business/breathing.ts:phaseLabelKey",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/breathing.ts",
+      "target": "function:packages/core/src/business/breathing.ts:getDescKey",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/breathing.ts",
+      "target": "function:packages/core/src/business/breathing.ts:getDescKey",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/breathing.ts",
+      "target": "function:packages/core/src/business/breathing.ts:getTipsKey",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/business/breathing.ts",
+      "target": "function:packages/core/src/business/breathing.ts:getTipsKey",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/layout-algorithms.test.ts",
+      "target": "file:packages/core/src/ai/layout-algorithms.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/layout-algorithms.ts",
+      "target": "file:packages/core/src/ai/layout-algorithms.test.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:packages/core/src/business/breathing.test.ts",
+      "target": "file:packages/core/src/business/breathing.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/breathing.ts",
+      "target": "file:packages/core/src/business/breathing.test.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

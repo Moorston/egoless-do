@@ -1,0 +1,126 @@
+[
+  {
+    "order": 1,
+    "title": "项目概览：心流纪 · Egoless Do",
+    "description": "从 README 与根目录配置开始，建立对项目的整体认知。这是一个跨平台（React Native/Expo + Next.js + PocketBase）的正念修行 + 习惯追踪 + 思维记录综合应用，强调离线优先、隐私优先、多端同步与零月费运营。Turborepo + pnpm workspace 组织代码，三层核心架构（Store / Business / Infrastructure）承载业务。本步将让你知道\"这个项目是做什么的、用什么技术、目录如何划分\"，为后续深入打好地图。",
+    "nodeIds": [
+      "document:README.md",
+      "document:CLAUDE.md",
+      "config:package.json",
+      "config:turbo.json",
+      "config:pnpm-workspace.yaml"
+    ]
+  },
+  {
+    "order": 2,
+    "title": "应用入口与导航骨架",
+    "description": "跟随启动链从 apps/mobile/index.js 进入 App.tsx，理解 React Native 应用的引导过程：导航容器注册、SplashScreen 卸载、根导航栈（RootNavigator）装配。navigation 层以 types.ts 定义路由 param list、useAppNavigation 封装类型化跳转。本步回答\"App 如何启动、页面之间如何跳转\"——这是所有后续 feature 的壳层基础。",
+    "nodeIds": [
+      "file:apps/mobile/index.js",
+      "file:apps/mobile/App.tsx",
+      "file:apps/mobile/src/navigation/types.ts",
+      "file:apps/mobile/src/navigation/useAppNavigation.ts"
+    ]
+  },
+  {
+    "order": 3,
+    "title": "Store 层：Zustand Slice 与状态持有",
+    "description": "进入 packages/core 的核心——useAppStore 与二十余个 createXxxSlice（Checkin/Habit/Diet/Fasting/Meditation/Reflection/Sleep/Zhiguan 等）。Store 层只持有状态与协调持久化，业务规则一律委托给 Business 层；sliceHelper 统一 slice 工厂，mergeEngine 处理合并逻辑，storageAdapter 对接本地存储。本步回答\"状态放在哪、Slice 之间如何协作\"，这是整个应用的状态中枢。",
+    "nodeIds": [
+      "file:apps/mobile/src/store/useAppStore.ts",
+      "file:packages/core/src/store/index.ts",
+      "file:packages/core/src/store/createHabitSlice.ts",
+      "file:packages/core/src/store/storageAdapter.ts",
+      "file:packages/core/src/store/sliceHelper.ts"
+    ]
+  },
+  {
+    "order": 4,
+    "title": "Business 层：纯函数领域规则",
+    "description": "Business 层是项目\"零副作用\"的全部可测内核：habits/plan/reflections/zhiguan/checkin/fasting/sleep 等领域的纯函数（计数规则、计划推导、禁食判定、经脉计数等）。因为纯函数不碰 I/O，所以可被 vitest 密集覆盖。本步回答\"业务规则写在哪里、为何要单独抽出一层\"，让你看到领域知识与 UI/存储是如何解耦的。",
+    "nodeIds": [
+      "file:packages/core/src/business/index.ts",
+      "file:packages/core/src/business/habits.ts",
+      "file:packages/core/src/business/plan.ts",
+      "file:packages/core/src/business/zhiguanCountingRound.ts",
+      "file:packages/core/src/business/reflections.ts"
+    ]
+  },
+  {
+    "order": 5,
+    "title": "Core 基础设施：同步、SQLite 与 AI",
+    "description": "Core 的横切基础设施是\"离线优先 + 多端同步\"的工程实现。sync 层（entitySchemas/conflict/merge）用时间戳 + 集合 schema 解决冲突合并；data 层用 DataGateway + entityRegistry 抽象存储访问；ai 层实现 RAG 检索（rag/indexer-retriever）、洞察画像、风险预警与路线推荐。本步回答\"数据如何离线落盘、冲突如何解决、AI 如何接入\",并串联起第 3 步 Store 层与第 6 步 Mobile 本地存储的关系。",
+    "nodeIds": [
+      "file:packages/core/src/sync/index.ts",
+      "file:packages/core/src/sync/conflict.ts",
+      "file:packages/core/src/sync/entitySchemas.ts",
+      "file:packages/core/src/data/DataGateway.ts",
+      "file:packages/core/src/data/entityRegistry.ts",
+      "file:packages/core/src/ai/index.ts",
+      "file:packages/core/src/ai/rag/retriever.ts"
+    ]
+  },
+  {
+    "order": 6,
+    "title": "Mobile 本地持久化与功能模块示例",
+    "description": "Mobile 端把 Core 能力落到 SQLite：db/schema.ts 定义表结构与迁移、WriteBatcher 做 100ms 批量写入、syncQueue 承接待同步变更。HomeScreen 是聚合今日数据的核心看板；HabitsScreen 则展示了 feature 模块的标准形态（Screen + Hooks + components + 调用 Store slice）。本步回答\"SQLite 表长什么样、一个 feature 如何组织\"，把抽象三层落到真屏幕上。",
+    "nodeIds": [
+      "file:apps/mobile/src/db/schema.ts",
+      "file:apps/mobile/src/store/WriteBatcher.ts",
+      "file:apps/mobile/src/db/syncQueue.ts",
+      "file:apps/mobile/src/features/home/screens/HomeScreen.tsx",
+      "file:apps/mobile/src/features/habits/HabitsScreen.tsx",
+      "file:apps/mobile/src/features/habits/hooks/useHabitActions.ts"
+    ]
+  },
+  {
+    "order": 7,
+    "title": "后端服务：PocketBase 与实时同步",
+    "description": "PocketBase 作为 BaaS 承载多端数据汇聚与鉴权。pb_schema.json 定义集合结构、pb_migrations 管理 schema 演进、pb_hooks（auth/main/sync）以 JS 钩子实现推送同步、用户 token 与鉴权逻辑。本步回答\"服务端数据模型如何定义、钩子如何扩展 PocketBase\"，并与第 5 步 Core sync 层对照，看清\"移动端↔服务端\"同步链路的另一半。",
+    "nodeIds": [
+      "config:backend/pb_schema.json",
+      "file:backend/pb_hooks/main.pb.js",
+      "file:backend/pb_hooks/sync.pb.js",
+      "file:backend/pb_migrations/001_init.js",
+      "file:backend/pb_hooks/auth.pb.js",
+      "service:backend/docker-compose.yml"
+    ]
+  },
+  {
+    "order": 8,
+    "title": "服务 API 与部署基础设施",
+    "description": "infra/docker/api 是一个独立 Node.js REST 服务，补强 PocketBase 不具备的能力：JWT 鉴权/刷新轮转/Token 黑名单、账号锁定、限流、审计日志、RBAC、MFA、健康监测与 Sentry 上报。Dockerfile 使用多阶段构建（base→deps→runner）产出 node:20-alpine 生产镜像，docker-compose 编排 API + PocketBase + 前端。本步回答\"鉴权与鉴权网关如何落地、服务如何容器化\"，串联起第 7 步的服务端全貌。",
+    "nodeIds": [
+      "file:infra/docker/api/src/index.ts",
+      "file:infra/docker/api/src/auth/login.ts",
+      "file:infra/docker/api/src/rbac.ts",
+      "file:infra/docker/api/src/rate-limit.ts",
+      "file:infra/docker/api/src/monitoring.ts",
+      "service:infra/docker/api/Dockerfile",
+      "service:infra/docker/docker-compose.yml"
+    ]
+  },
+  {
+    "order": 9,
+    "title": "治理文档与任务追踪（Trellis）",
+    "description": "项目以 .trellis/spec/governance 沉淀架构治理：ARCHITECTURE-CONSTRAINTS（8 个架构维度、12 条 P0/P1/P2 禁止模式）、GLOBAL-CODE-STANDARDS（9 个代码规范维度 + ESLint 联动）与 INDEX 索引。它为\"AI 与人类开发者如何一致地演进代码\"提供规则，是本仓库区别于普通项目的重要资产。本步回答\"架构边界在哪、哪些模式被明确禁止\"，让你理解代码结构背后的治理逻辑。",
+    "nodeIds": [
+      "document:.trellis/spec/governance/INDEX.md",
+      "document:.trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md",
+      "document:.trellis/spec/governance/GLOBAL-CODE-STANDARDS.md"
+    ]
+  },
+  {
+    "order": 10,
+    "title": "测试、质量保障与全景回顾",
+    "description": "收尾步把质量体系串起来：Vitest 覆盖 pure function（habits/plan/zhiguan）、Store slice、sync 冲突合并、WriteBatcher、DB syncQueue、性能与集成测试；ESLint 将第 9 步的规范自动化；ErrorBoundary、SyncBanner、Sentry（monitoring.ts）做运行时兜底。走完本步，你能从\"项目是什么\"到\"状态怎么管、数据怎么同步、规则怎么测、质量怎么守\"，形成完整的架构认知闭环。",
+    "nodeIds": [
+      "file:packages/core/src/business/habits.ts",
+      "file:apps/mobile/src/features/sync/SyncEngine.test.ts",
+      "file:apps/mobile/src/store/WriteBatcher.test.ts",
+      "file:apps/mobile/src/db/syncQueue.test.ts",
+      "file:apps/mobile/src/__tests__/integration.test.ts",
+      "file:apps/mobile/src/__tests__/performance.test.ts"
+    ]
+  }
+]

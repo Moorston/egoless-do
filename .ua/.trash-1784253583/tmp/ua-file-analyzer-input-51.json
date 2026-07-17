@@ -1,0 +1,43 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": "backend/README.md",
+      "language": "markdown",
+      "sizeLines": 61,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "backend/create-collection.ps1",
+      "language": "powershell",
+      "sizeLines": 104,
+      "fileCategory": "script"
+    },
+    {
+      "path": "backend/docker-compose.yml",
+      "language": "yaml",
+      "sizeLines": 32,
+      "fileCategory": "infra"
+    },
+    {
+      "path": "backend/pb_schema.json",
+      "language": "json",
+      "sizeLines": 624,
+      "fileCategory": "config"
+    },
+    {
+      "path": "backend/setup.ps1",
+      "language": "powershell",
+      "sizeLines": 38,
+      "fileCategory": "script"
+    }
+  ],
+  "batchImportData": {
+    "backend/README.md": [],
+    "backend/create-collection.ps1": [],
+    "backend/docker-compose.yml": [],
+    "backend/pb_schema.json": [],
+    "backend/setup.ps1": []
+  },
+  "batchIndex": 51
+}

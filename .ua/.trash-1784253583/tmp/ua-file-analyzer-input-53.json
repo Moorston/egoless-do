@@ -1,0 +1,29 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": "docs/claude-md-pieces/core-philosophy.md",
+      "language": "markdown",
+      "sizeLines": 17,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/claude-md-pieces/decision-tree.md",
+      "language": "markdown",
+      "sizeLines": 21,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/claude-md-pieces/project-dir-layout.md",
+      "language": "markdown",
+      "sizeLines": 42,
+      "fileCategory": "docs"
+    }
+  ],
+  "batchImportData": {
+    "docs/claude-md-pieces/core-philosophy.md": [],
+    "docs/claude-md-pieces/decision-tree.md": [],
+    "docs/claude-md-pieces/project-dir-layout.md": []
+  },
+  "batchIndex": 53
+}

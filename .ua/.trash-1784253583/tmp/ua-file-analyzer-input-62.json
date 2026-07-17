@@ -1,0 +1,182 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/task.json",
+      "language": "json",
+      "sizeLines": 25,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/check.jsonl",
+      "language": "jsonl",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/implement.jsonl",
+      "language": "jsonl",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/prd.md",
+      "language": "markdown",
+      "sizeLines": 19,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/task.json",
+      "language": "json",
+      "sizeLines": 25,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-15-body-page-optimization/check.jsonl",
+      "language": "jsonl",
+      "sizeLines": 8,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-15-body-page-optimization/implement.jsonl",
+      "language": "jsonl",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/check.jsonl",
+      "language": "jsonl",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/implement.jsonl",
+      "language": "jsonl",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/prd.md",
+      "language": "markdown",
+      "sizeLines": 19,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/task.json",
+      "language": "json",
+      "sizeLines": 25,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/check.jsonl",
+      "language": "jsonl",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/implement.jsonl",
+      "language": "jsonl",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/prd.md",
+      "language": "markdown",
+      "sizeLines": 48,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/task.json",
+      "language": "json",
+      "sizeLines": 25,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/ar-06-reflection-map-refactor/design.md",
+      "language": "markdown",
+      "sizeLines": 295,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/type-error-fix-plan.md",
+      "language": "markdown",
+      "sizeLines": 65,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/workspace/freebytes/index.md",
+      "language": "markdown",
+      "sizeLines": 73,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/workspace/freebytes/journal-1.md",
+      "language": "markdown",
+      "sizeLines": 1187,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/workspace/index.md",
+      "language": "markdown",
+      "sizeLines": 125,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".ua/.understandignore",
+      "language": "unknown",
+      "sizeLines": 87,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".ua/config.json",
+      "language": "json",
+      "sizeLines": 0,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".workbuddy/memory/2026-07-12.md",
+      "language": "markdown",
+      "sizeLines": 13,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".workbuddy/memory/2026-07-13.md",
+      "language": "markdown",
+      "sizeLines": 16,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "apps/mobile/android/app/build.gradle",
+      "language": "gradle",
+      "sizeLines": 182,
+      "fileCategory": "config"
+    }
+  ],
+  "batchImportData": {
+    ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-15-body-page-optimization/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-15-body-page-optimization/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/task.json": [],
+    ".trellis/tasks/archive/2026-07/ar-06-reflection-map-refactor/design.md": [],
+    ".trellis/tasks/archive/2026-07/type-error-fix-plan.md": [],
+    ".trellis/workspace/freebytes/index.md": [],
+    ".trellis/workspace/freebytes/journal-1.md": [],
+    ".trellis/workspace/index.md": [],
+    ".ua/.understandignore": [],
+    ".ua/config.json": [],
+    ".workbuddy/memory/2026-07-12.md": [],
+    ".workbuddy/memory/2026-07-13.md": [],
+    "apps/mobile/android/app/build.gradle": []
+  }
+}

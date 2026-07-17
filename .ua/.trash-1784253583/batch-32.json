@@ -1,0 +1,111 @@
+{
+  "nodes": [
+    {
+      "id": "document:.trellis/spec/config/frontend/index.md",
+      "type": "document",
+      "name": "index.md",
+      "filePath": ".trellis/spec/config/frontend/index.md",
+      "summary": "Frontend 开发指南的总入口，以表格列出 Directory Structure、Component、Hook、State Management、Quality、Type Safety 六份指南及其状态，并说明如何填写这些规范文件。",
+      "tags": ["documentation", "frontend", "guidelines-index", "config-package"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/spec/config/frontend/directory-structure.md",
+      "type": "document",
+      "name": "directory-structure.md",
+      "filePath": ".trellis/spec/config/frontend/directory-structure.md",
+      "summary": "说明 @egoless-do/config 包的目录布局与职责：仅包含 eslint.base.js 与 tsconfig.base.json 两个工具文件，明确模块职责、使用方式和禁止跨应用专属规则等约束。",
+      "tags": ["documentation", "frontend", "directory-structure", "config-package"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/spec/config/frontend/component-guidelines.md",
+      "type": "document",
+      "name": "component-guidelines.md",
+      "filePath": ".trellis/spec/config/frontend/component-guidelines.md",
+      "summary": "Config 包的范围说明：不含 UI 组件，仅为 ESLint/TS 共享配置，组件规范应参考 mobile 与 core 对应文档。",
+      "tags": ["documentation", "frontend", "components", "config-package"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/spec/config/frontend/hook-guidelines.md",
+      "type": "document",
+      "name": "hook-guidelines.md",
+      "filePath": ".trellis/spec/config/frontend/hook-guidelines.md",
+      "summary": "Config 包的范围说明：不含 hooks，仅为 ESLint/TS 共享配置。",
+      "tags": ["documentation", "frontend", "hooks", "config-package"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/spec/config/frontend/quality-guidelines.md",
+      "type": "document",
+      "name": "quality-guidelines.md",
+      "filePath": ".trellis/spec/config/frontend/quality-guidelines.md",
+      "summary": "Config 包的质量基线：定义 eslint.base.js（no-unused-vars、no-explicit-any warn、eqeqeq）与 tsconfig.base.json（strict、ES2020、bundler resolution、core 路径别名）的关键决策和代码审查清单。",
+      "tags": ["documentation", "frontend", "quality", "eslint", "config-package"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:.trellis/spec/config/frontend/state-management.md",
+      "type": "document",
+      "name": "state-management.md",
+      "filePath": ".trellis/spec/config/frontend/state-management.md",
+      "summary": "Config 包的范围说明：不含状态管理，仅为 ESLint/TS 共享配置。",
+      "tags": ["documentation", "frontend", "state-management", "config-package"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/spec/config/frontend/type-safety.md",
+      "type": "document",
+      "name": "type-safety.md",
+      "filePath": ".trellis/spec/config/frontend/type-safety.md",
+      "summary": "Config 包的类型安全规范：strict: true 含义、no-explicit-any 的 warn 迁移策略，以及禁止 strict:false、@ts-ignore 无注释、关闭 noImplicitAny 等约束。",
+      "tags": ["documentation", "frontend", "type-safety", "typescript", "config-package"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:.trellis/spec/config/frontend/index.md",
+      "target": "document:.trellis/spec/config/frontend/directory-structure.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/config/frontend/index.md",
+      "target": "document:.trellis/spec/config/frontend/component-guidelines.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/config/frontend/index.md",
+      "target": "document:.trellis/spec/config/frontend/hook-guidelines.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/config/frontend/index.md",
+      "target": "document:.trellis/spec/config/frontend/quality-guidelines.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/config/frontend/index.md",
+      "target": "document:.trellis/spec/config/frontend/state-management.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/config/frontend/index.md",
+      "target": "document:.trellis/spec/config/frontend/type-safety.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

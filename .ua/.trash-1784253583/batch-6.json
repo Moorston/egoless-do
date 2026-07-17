@@ -1,0 +1,2117 @@
+{
+  "nodes": [
+    {
+      "id": "file:apps/mobile/src/features/reflections/core/ShareCard.tsx",
+      "type": "file",
+      "name": "ShareCard.tsx",
+      "filePath": "apps/mobile/src/features/reflections/core/ShareCard.tsx",
+      "summary": "感念分享卡片组件，使用 ViewShot 截取感念内容并通过 expo-sharing 分享图片，或经 SAF 保存到本地。",
+      "tags": [
+        "react-component",
+        "share",
+        "ui-component"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/core/ShareCard.tsx:ShareCard",
+      "type": "function",
+      "name": "ShareCard",
+      "filePath": "apps/mobile/src/features/reflections/core/ShareCard.tsx",
+      "lineRange": [
+        26,
+        171
+      ],
+      "summary": "渲染感念分享卡片，解析颜色/日期，提供分享图片与保存到本地功能。",
+      "tags": [
+        "share",
+        "capture"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/core/SwipeableRow.tsx",
+      "type": "file",
+      "name": "SwipeableRow.tsx",
+      "filePath": "apps/mobile/src/features/reflections/core/SwipeableRow.tsx",
+      "summary": "通用滑动删除行组件，基于 PanResponder + Animated 实现左滑露出删除按钮，供时间线等列表复用。",
+      "tags": [
+        "react-component",
+        "ui-component",
+        "gesture"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/hooks/searchPipeline.test.ts",
+      "type": "file",
+      "name": "searchPipeline.test.ts",
+      "filePath": "apps/mobile/src/features/reflections/hooks/searchPipeline.test.ts",
+      "summary": "searchPipeline 纯函数单元测试，覆盖 mergeResults 排序、runAIPhase2 意图扩展与 runAIPhase3 语义搜索逻辑。",
+      "tags": [
+        "test",
+        "search",
+        "ai-analysis"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/hooks/searchPipeline.test.ts:makeReflection",
+      "type": "function",
+      "name": "makeReflection",
+      "filePath": "apps/mobile/src/features/reflections/hooks/searchPipeline.test.ts",
+      "lineRange": [
+        26,
+        36
+      ],
+      "summary": "测试辅助工厂，构造带覆盖字段的 MindReflection 对象。",
+      "tags": [
+        "test-helper"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/hooks/searchPipeline.ts",
+      "type": "file",
+      "name": "searchPipeline.ts",
+      "filePath": "apps/mobile/src/features/reflections/hooks/searchPipeline.ts",
+      "summary": "AI 搜索流水线纯函数（从 useQuickTrailSearch 抽离），含意图理解 Phase2、语义扩展 Phase3 与结果合并。",
+      "tags": [
+        "search",
+        "ai-analysis",
+        "pure-function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/hooks/searchPipeline.ts:runAIPhase2",
+      "type": "function",
+      "name": "runAIPhase2",
+      "filePath": "apps/mobile/src/features/reflections/hooks/searchPipeline.ts",
+      "lineRange": [
+        16,
+        52
+      ],
+      "summary": "Phase2 意图理解：解析智能查询并基于新过滤器扩展候选集，写入 allResults。",
+      "tags": [
+        "ai-analysis",
+        "search"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/hooks/searchPipeline.ts:runAIPhase3",
+      "type": "function",
+      "name": "runAIPhase3",
+      "filePath": "apps/mobile/src/features/reflections/hooks/searchPipeline.ts",
+      "lineRange": [
+        55,
+        79
+      ],
+      "summary": "Phase3 语义扩展：通过 embedding 语义搜索补充相关感念，标记为 extended 来源。",
+      "tags": [
+        "ai-analysis",
+        "semantic-search"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/hooks/searchPipeline.ts:mergeResults",
+      "type": "function",
+      "name": "mergeResults",
+      "filePath": "apps/mobile/src/features/reflections/hooks/searchPipeline.ts",
+      "lineRange": [
+        82,
+        86
+      ],
+      "summary": "合并排序结果：先按分数排 direct 结果，再排 extended 结果。",
+      "tags": [
+        "search",
+        "merge"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.ts",
+      "type": "file",
+      "name": "useQuickTrailSearch.ts",
+      "filePath": "apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.ts",
+      "summary": "心迹快速搜索主 hook，串联本地索引检索、AI 意图/语义搜索流水线、筛选标签心情与历史记录。",
+      "tags": [
+        "custom-hook",
+        "search",
+        "ai-analysis"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.ts:useQuickTrailSearch",
+      "type": "function",
+      "name": "useQuickTrailSearch",
+      "filePath": "apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.ts",
+      "lineRange": [
+        26,
+        460
+      ],
+      "summary": "管理搜索查询/筛选/选择/分页状态，编排本地+AI 搜索流程并暴露操作回调。",
+      "tags": [
+        "search",
+        "ai-analysis"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/hooks/useReflections.ts",
+      "type": "file",
+      "name": "useReflections.ts",
+      "filePath": "apps/mobile/src/features/reflections/hooks/useReflections.ts",
+      "summary": "感念页主 hook，从 store 读取感念与习惯，提供过滤、标签心情切换、分享与多维分析数据（趋势/热力图/标签图）。",
+      "tags": [
+        "custom-hook",
+        "analytics",
+        "filter"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/hooks/useReflections.ts:useReflections",
+      "type": "function",
+      "name": "useReflections",
+      "filePath": "apps/mobile/src/features/reflections/hooks/useReflections.ts",
+      "lineRange": [
+        25,
+        371
+      ],
+      "summary": "聚合感念过滤、动态标签心情计数、情绪趋势、写作热力图与智能合集等派生数据。",
+      "tags": [
+        "analytics",
+        "filter"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/hooks/useSearchHistory.ts",
+      "type": "file",
+      "name": "useSearchHistory.ts",
+      "filePath": "apps/mobile/src/features/reflections/hooks/useSearchHistory.ts",
+      "summary": "持久化搜索历史 hook，基于 safeAsyncStorage 读写最近 10 条搜索记录。",
+      "tags": [
+        "custom-hook",
+        "persistence",
+        "search"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/hooks/useSearchHistory.ts:useSearchHistory",
+      "type": "function",
+      "name": "useSearchHistory",
+      "filePath": "apps/mobile/src/features/reflections/hooks/useSearchHistory.ts",
+      "lineRange": [
+        8,
+        26
+      ],
+      "summary": "加载并维护搜索历史列表，提供去重插入并持久化的 addToHistory。",
+      "tags": [
+        "persistence",
+        "search"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/hooks/useTrailAI.ts",
+      "type": "file",
+      "name": "useTrailAI.ts",
+      "filePath": "apps/mobile/src/features/reflections/hooks/useTrailAI.ts",
+      "summary": "心迹 AI 生成 hook，调用 AIService 生成洞察与回顾指南，含缓存失效判断与中止控制。",
+      "tags": [
+        "custom-hook",
+        "ai-analysis"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/hooks/useTrailAI.ts:isCacheStale",
+      "type": "function",
+      "name": "isCacheStale",
+      "filePath": "apps/mobile/src/features/reflections/hooks/useTrailAI.ts",
+      "lineRange": [
+        9,
+        29
+      ],
+      "summary": "判断洞察/回顾缓存是否过期，依据关联感念与笔记的最新修改时间。",
+      "tags": [
+        "ai-analysis",
+        "cache"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/hooks/useTrailAI.ts:useTrailAI",
+      "type": "function",
+      "name": "useTrailAI",
+      "filePath": "apps/mobile/src/features/reflections/hooks/useTrailAI.ts",
+      "lineRange": [
+        31,
+        133
+      ],
+      "summary": "提供 handleGenerateInsight/handleGenerateReview，管理 AbortController 与缓存写入。",
+      "tags": [
+        "ai-analysis",
+        "cache"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/hooks/useTrailActions.ts",
+      "type": "file",
+      "name": "useTrailActions.ts",
+      "filePath": "apps/mobile/src/features/reflections/hooks/useTrailActions.ts",
+      "summary": "心迹操作 hook，封装感念增删、笔记保存、计划创建、重命名删除与导航等副作用回调。",
+      "tags": [
+        "custom-hook",
+        "actions",
+        "navigation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/hooks/useTrailActions.ts:useTrailActions",
+      "type": "function",
+      "name": "useTrailActions",
+      "filePath": "apps/mobile/src/features/reflections/hooks/useTrailActions.ts",
+      "lineRange": [
+        12,
+        147
+      ],
+      "summary": "聚合心迹相关操作回调（写感念、移除、笔记、计划、删除、导航），统一 Alert 确认。",
+      "tags": [
+        "actions",
+        "navigation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/hooks/useTrailData.ts",
+      "type": "file",
+      "name": "useTrailData.ts",
+      "filePath": "apps/mobile/src/features/reflections/hooks/useTrailData.ts",
+      "summary": "心迹数据 hook，基于 trailId 派生概览、时间线、关联感念、关联计划与相关心迹等聚合数据。",
+      "tags": [
+        "custom-hook",
+        "data-aggregation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/hooks/useTrailData.ts:useTrailData",
+      "type": "function",
+      "name": "useTrailData",
+      "filePath": "apps/mobile/src/features/reflections/hooks/useTrailData.ts",
+      "lineRange": [
+        7,
+        70
+      ],
+      "summary": "从 store 读取并计算心迹的 overview、timeline、links、planItems 与 relatedTrails。",
+      "tags": [
+        "data-aggregation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx",
+      "type": "file",
+      "name": "AIAnalysisStream.tsx",
+      "filePath": "apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx",
+      "summary": "AI 分析流展示组件，含打字机动画的 ChatMessage、BlinkingCursor、TypingIndicator 与消息工厂。",
+      "tags": [
+        "react-component",
+        "ai-analysis",
+        "animation"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx:AIAnalysisStream",
+      "type": "function",
+      "name": "AIAnalysisStream",
+      "filePath": "apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx",
+      "lineRange": [
+        24,
+        81
+      ],
+      "summary": "渲染分析消息列表，完成后触发淡出动画并回调 onComplete。",
+      "tags": [
+        "ai-analysis",
+        "animation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx:ChatMessage",
+      "type": "function",
+      "name": "ChatMessage",
+      "filePath": "apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx",
+      "lineRange": [
+        85,
+        179
+      ],
+      "summary": "单条聊天气泡，带逐字打字动画与淡入滑入效果。",
+      "tags": [
+        "animation",
+        "ui-component"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx:BlinkingCursor",
+      "type": "function",
+      "name": "BlinkingCursor",
+      "filePath": "apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx",
+      "lineRange": [
+        183,
+        208
+      ],
+      "summary": "闪烁光标组件，使用 Animated.loop 实现透明度循环。",
+      "tags": [
+        "animation",
+        "ui-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx:TypingIndicator",
+      "type": "function",
+      "name": "TypingIndicator",
+      "filePath": "apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx",
+      "lineRange": [
+        212,
+        253
+      ],
+      "summary": "三点打字指示器，三颗圆点依次浮动动画。",
+      "tags": [
+        "animation",
+        "ui-component"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx:createAnalysisMessages",
+      "type": "function",
+      "name": "createAnalysisMessages",
+      "filePath": "apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx",
+      "lineRange": [
+        326,
+        361
+      ],
+      "summary": "将分析步骤数组转换为聊天消息数组，插入阶段分隔消息。",
+      "tags": [
+        "ai-analysis",
+        "factory"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/insights/InsightPanel.tsx",
+      "type": "file",
+      "name": "InsightPanel.tsx",
+      "filePath": "apps/mobile/src/features/reflections/insights/InsightPanel.tsx",
+      "summary": "感念洞察面板组件，汇总活跃感念、标签与心情分布，并提供跳转记录入口。",
+      "tags": [
+        "react-component",
+        "insights",
+        "analytics"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/insights/InsightPanel.tsx:InsightPanel",
+      "type": "function",
+      "name": "InsightPanel",
+      "filePath": "apps/mobile/src/features/reflections/insights/InsightPanel.tsx",
+      "lineRange": [
+        18,
+        144
+      ],
+      "summary": "计算并展示活跃感念列表、标签与心情统计，暴露标签/心情点击与去记录回调。",
+      "tags": [
+        "insights",
+        "analytics"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/insights/InsightPanelSkeleton.tsx",
+      "type": "file",
+      "name": "InsightPanelSkeleton.tsx",
+      "filePath": "apps/mobile/src/features/reflections/insights/InsightPanelSkeleton.tsx",
+      "summary": "洞察面板骨架屏加载占位组件。",
+      "tags": [
+        "react-component",
+        "ui-component",
+        "skeleton"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/insights/InsightPanelSkeleton.tsx:InsightPanelSkeleton",
+      "type": "function",
+      "name": "InsightPanelSkeleton",
+      "filePath": "apps/mobile/src/features/reflections/insights/InsightPanelSkeleton.tsx",
+      "lineRange": [
+        6,
+        55
+      ],
+      "summary": "渲染洞察面板加载态占位骨架。",
+      "tags": [
+        "skeleton"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/insights/InsightScreen.tsx",
+      "type": "file",
+      "name": "InsightScreen.tsx",
+      "filePath": "apps/mobile/src/features/reflections/insights/InsightScreen.tsx",
+      "summary": "感念洞察页主组件，组合统计、热力图、情绪趋势与标签图等多个洞察区块。",
+      "tags": [
+        "react-component",
+        "insights",
+        "analytics"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/insights/InsightScreen.tsx:InsightScreen",
+      "type": "function",
+      "name": "InsightScreen",
+      "filePath": "apps/mobile/src/features/reflections/insights/InsightScreen.tsx",
+      "lineRange": [
+        23,
+        196
+      ],
+      "summary": "编排洞察页各统计区块的展示与交互。",
+      "tags": [
+        "insights",
+        "analytics"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/insights/InsightSection.tsx",
+      "type": "file",
+      "name": "InsightSection.tsx",
+      "filePath": "apps/mobile/src/features/reflections/insights/InsightSection.tsx",
+      "summary": "单个洞察区块组件，展示标题与统计数值，可点击下钻。",
+      "tags": [
+        "react-component",
+        "insights"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/insights/InsightSection.tsx:InsightSection",
+      "type": "function",
+      "name": "InsightSection",
+      "filePath": "apps/mobile/src/features/reflections/insights/InsightSection.tsx",
+      "lineRange": [
+        16,
+        170
+      ],
+      "summary": "渲染带标题、数值与可选点击回调的洞察统计区块。",
+      "tags": [
+        "insights"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/insights/RecommendCard.tsx",
+      "type": "file",
+      "name": "RecommendCard.tsx",
+      "filePath": "apps/mobile/src/features/reflections/insights/RecommendCard.tsx",
+      "summary": "推荐卡片组件，展示推荐感念或策略摘要。",
+      "tags": [
+        "react-component",
+        "insights",
+        "ui-component"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/insights/RecommendCard.tsx:RecommendCard",
+      "type": "function",
+      "name": "RecommendCard",
+      "filePath": "apps/mobile/src/features/reflections/insights/RecommendCard.tsx",
+      "lineRange": [
+        17,
+        173
+      ],
+      "summary": "渲染单条推荐内容卡片。",
+      "tags": [
+        "insights",
+        "ui-component"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/insights/ReflectionStatsScreen.tsx",
+      "type": "file",
+      "name": "ReflectionStatsScreen.tsx",
+      "filePath": "apps/mobile/src/features/reflections/insights/ReflectionStatsScreen.tsx",
+      "summary": "感念统计大屏页，整合日历热力图、心情分布、标签频率与写作概览等多维可视化。",
+      "tags": [
+        "react-component",
+        "analytics",
+        "insights"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/insights/ReflectionStatsScreen.tsx:ReflectionStatsScreen",
+      "type": "function",
+      "name": "ReflectionStatsScreen",
+      "filePath": "apps/mobile/src/features/reflections/insights/ReflectionStatsScreen.tsx",
+      "lineRange": [
+        15,
+        488
+      ],
+      "summary": "聚合并渲染感念多维统计数据，含日历网格、心情与标签分布图表。",
+      "tags": [
+        "analytics",
+        "insights"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/insights/SmartQueryBubble.tsx",
+      "type": "file",
+      "name": "SmartQueryBubble.tsx",
+      "filePath": "apps/mobile/src/features/reflections/insights/SmartQueryBubble.tsx",
+      "summary": "智能查询气泡组件，解析并展示查询中的标签/心情/时间范围选项。",
+      "tags": [
+        "react-component",
+        "search",
+        "ai-analysis"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/insights/SmartQueryBubble.tsx:parseOptions",
+      "type": "function",
+      "name": "parseOptions",
+      "filePath": "apps/mobile/src/features/reflections/insights/SmartQueryBubble.tsx",
+      "lineRange": [
+        14,
+        29
+      ],
+      "summary": "从智能查询结果中解析出可点击的标签、心情与时间范围选项。",
+      "tags": [
+        "search",
+        "parse"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/insights/SmartQueryBubble.tsx:SmartQueryBubble",
+      "type": "function",
+      "name": "SmartQueryBubble",
+      "filePath": "apps/mobile/src/features/reflections/insights/SmartQueryBubble.tsx",
+      "lineRange": [
+        31,
+        108
+      ],
+      "summary": "渲染智能查询气泡，展示解析后的筛选选项。",
+      "tags": [
+        "search",
+        "ai-analysis"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/insights/StrategyLibrary.tsx",
+      "type": "file",
+      "name": "StrategyLibrary.tsx",
+      "filePath": "apps/mobile/src/features/reflections/insights/StrategyLibrary.tsx",
+      "summary": "策略库组件，展示 AI 生成的反思回顾策略与建议列表。",
+      "tags": [
+        "react-component",
+        "insights",
+        "ai-analysis"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/insights/StrategyLibrary.tsx:StrategyLibrary",
+      "type": "function",
+      "name": "StrategyLibrary",
+      "filePath": "apps/mobile/src/features/reflections/insights/StrategyLibrary.tsx",
+      "lineRange": [
+        21,
+        216
+      ],
+      "summary": "从 store 读取并渲染策略建议列表。",
+      "tags": [
+        "insights",
+        "ai-analysis"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/review/EditNoteModal.tsx",
+      "type": "file",
+      "name": "EditNoteModal.tsx",
+      "filePath": "apps/mobile/src/features/reflections/review/EditNoteModal.tsx",
+      "summary": "编辑笔记弹窗组件，修改笔记内容、标签与心情。",
+      "tags": [
+        "react-component",
+        "modal",
+        "review"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/review/EditNoteModal.tsx:EditNoteModal",
+      "type": "function",
+      "name": "EditNoteModal",
+      "filePath": "apps/mobile/src/features/reflections/review/EditNoteModal.tsx",
+      "lineRange": [
+        28,
+        201
+      ],
+      "summary": "渲染编辑笔记表单弹窗，提交修改内容、标签与心情。",
+      "tags": [
+        "modal",
+        "review"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/review/ReviewGuideSection.tsx",
+      "type": "file",
+      "name": "ReviewGuideSection.tsx",
+      "filePath": "apps/mobile/src/features/reflections/review/ReviewGuideSection.tsx",
+      "summary": "回顾指南区块组件，展示 AI 生成的回顾视角、观察与建议。",
+      "tags": [
+        "react-component",
+        "review",
+        "ai-analysis"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/review/ReviewGuideSection.tsx:ReviewGuideSection",
+      "type": "function",
+      "name": "ReviewGuideSection",
+      "filePath": "apps/mobile/src/features/reflections/review/ReviewGuideSection.tsx",
+      "lineRange": [
+        17,
+        234
+      ],
+      "summary": "渲染回顾指南的视角、观察与建议列表。",
+      "tags": [
+        "review",
+        "ai-analysis"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/review/ReviewNoteCard.tsx",
+      "type": "file",
+      "name": "ReviewNoteCard.tsx",
+      "filePath": "apps/mobile/src/features/reflections/review/ReviewNoteCard.tsx",
+      "summary": "回顾笔记卡片组件，展示单条笔记内容与元信息。",
+      "tags": [
+        "react-component",
+        "review",
+        "ui-component"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/review/ReviewNoteCard.tsx:ReviewNoteCardComponent",
+      "type": "function",
+      "name": "ReviewNoteCardComponent",
+      "filePath": "apps/mobile/src/features/reflections/review/ReviewNoteCard.tsx",
+      "lineRange": [
+        16,
+        97
+      ],
+      "summary": "渲染单条回顾笔记卡片及其内容元信息。",
+      "tags": [
+        "review",
+        "ui-component"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/review/ReviewScreen.tsx",
+      "type": "file",
+      "name": "ReviewScreen.tsx",
+      "filePath": "apps/mobile/src/features/reflections/review/ReviewScreen.tsx",
+      "summary": "回顾页主组件，组合回顾指南、笔记列表与 AI 分析入口。",
+      "tags": [
+        "react-component",
+        "review"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/review/ReviewScreen.tsx:ReviewScreen",
+      "type": "function",
+      "name": "ReviewScreen",
+      "filePath": "apps/mobile/src/features/reflections/review/ReviewScreen.tsx",
+      "lineRange": [
+        18,
+        250
+      ],
+      "summary": "编排回顾页的指南区块、笔记列表与 AI 分析交互。",
+      "tags": [
+        "review"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/review/WriteNoteModal.tsx",
+      "type": "file",
+      "name": "WriteNoteModal.tsx",
+      "filePath": "apps/mobile/src/features/reflections/review/WriteNoteModal.tsx",
+      "summary": "写笔记弹窗组件，创建新笔记并选择标签与心情。",
+      "tags": [
+        "react-component",
+        "modal",
+        "review"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/review/WriteNoteModal.tsx:WriteNoteModal",
+      "type": "function",
+      "name": "WriteNoteModal",
+      "filePath": "apps/mobile/src/features/reflections/review/WriteNoteModal.tsx",
+      "lineRange": [
+        29,
+        233
+      ],
+      "summary": "渲染写笔记表单弹窗，提交新建笔记内容、标签与心情。",
+      "tags": [
+        "modal",
+        "review"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/shared/MoodBar.tsx",
+      "type": "file",
+      "name": "MoodBar.tsx",
+      "filePath": "apps/mobile/src/features/reflections/shared/MoodBar.tsx",
+      "summary": "心情条形展示组件，以彩条形式呈现感念心情分布。",
+      "tags": [
+        "react-component",
+        "ui-component",
+        "shared"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/shared/MoodBar.tsx:MoodBar",
+      "type": "function",
+      "name": "MoodBar",
+      "filePath": "apps/mobile/src/features/reflections/shared/MoodBar.tsx",
+      "lineRange": [
+        16,
+        42
+      ],
+      "summary": "渲染心情分布彩条。",
+      "tags": [
+        "ui-component",
+        "shared"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/shared/SegmentBar.tsx",
+      "type": "file",
+      "name": "SegmentBar.tsx",
+      "filePath": "apps/mobile/src/features/reflections/shared/SegmentBar.tsx",
+      "summary": "分段条形组件，展示多段比例分布（如标签/心情占比）。",
+      "tags": [
+        "react-component",
+        "ui-component",
+        "shared"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/shared/SegmentBar.tsx:SegmentBar",
+      "type": "function",
+      "name": "SegmentBar",
+      "filePath": "apps/mobile/src/features/reflections/shared/SegmentBar.tsx",
+      "lineRange": [
+        13,
+        43
+      ],
+      "summary": "渲染多段比例分布条。",
+      "tags": [
+        "ui-component",
+        "shared"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/shared/SelectReflectionModal.tsx",
+      "type": "file",
+      "name": "SelectReflectionModal.tsx",
+      "filePath": "apps/mobile/src/features/reflections/shared/SelectReflectionModal.tsx",
+      "summary": "选择感念弹窗组件，勾选多条感念加入心迹。",
+      "tags": [
+        "react-component",
+        "modal",
+        "shared"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/shared/SelectReflectionModal.tsx:SelectReflectionModal",
+      "type": "function",
+      "name": "SelectReflectionModal",
+      "filePath": "apps/mobile/src/features/reflections/shared/SelectReflectionModal.tsx",
+      "lineRange": [
+        20,
+        186
+      ],
+      "summary": "渲染多选感念列表弹窗，返回已选 ID 集合。",
+      "tags": [
+        "modal",
+        "shared"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/shared/SelectionSummary.tsx",
+      "type": "file",
+      "name": "SelectionSummary.tsx",
+      "filePath": "apps/mobile/src/features/reflections/shared/SelectionSummary.tsx",
+      "summary": "选择摘要组件，展示已选感念数量与汇总信息。",
+      "tags": [
+        "react-component",
+        "ui-component",
+        "shared"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/shared/SelectionSummary.tsx:SelectionSummary",
+      "type": "function",
+      "name": "SelectionSummary",
+      "filePath": "apps/mobile/src/features/reflections/shared/SelectionSummary.tsx",
+      "lineRange": [
+        14,
+        49
+      ],
+      "summary": "渲染已选项目的数量摘要。",
+      "tags": [
+        "ui-component",
+        "shared"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/shared/TopicChip.tsx",
+      "type": "file",
+      "name": "TopicChip.tsx",
+      "filePath": "apps/mobile/src/features/reflections/shared/TopicChip.tsx",
+      "summary": "话题标签组件，渲染可点击的话题 chip。",
+      "tags": [
+        "react-component",
+        "ui-component",
+        "shared"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/shared/TopicChip.tsx:TopicChip",
+      "type": "function",
+      "name": "TopicChip",
+      "filePath": "apps/mobile/src/features/reflections/shared/TopicChip.tsx",
+      "lineRange": [
+        14,
+        46
+      ],
+      "summary": "渲染单个话题标签 chip。",
+      "tags": [
+        "ui-component",
+        "shared"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/timeline/TimelineList.tsx",
+      "type": "file",
+      "name": "TimelineList.tsx",
+      "filePath": "apps/mobile/src/features/reflections/timeline/TimelineList.tsx",
+      "summary": "时间线列表组件，组合感念与笔记条目并按日期排序展示。",
+      "tags": [
+        "react-component",
+        "timeline"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/timeline/TimelineList.tsx:TimelineList",
+      "type": "function",
+      "name": "TimelineList",
+      "filePath": "apps/mobile/src/features/reflections/timeline/TimelineList.tsx",
+      "lineRange": [
+        24,
+        109
+      ],
+      "summary": "渲染按日期排序的时间线，组合感念与笔记条目。",
+      "tags": [
+        "timeline"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/timeline/TimelineNoteItem.tsx",
+      "type": "file",
+      "name": "TimelineNoteItem.tsx",
+      "filePath": "apps/mobile/src/features/reflections/timeline/TimelineNoteItem.tsx",
+      "summary": "时间线笔记条目组件，展示单条笔记内容。",
+      "tags": [
+        "react-component",
+        "timeline"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/timeline/TimelineNoteItem.tsx:TimelineNoteItemComponent",
+      "type": "function",
+      "name": "TimelineNoteItemComponent",
+      "filePath": "apps/mobile/src/features/reflections/timeline/TimelineNoteItem.tsx",
+      "lineRange": [
+        18,
+        105
+      ],
+      "summary": "渲染时间线中的单条笔记条目。",
+      "tags": [
+        "timeline"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/timeline/TimelineReflectionItem.tsx",
+      "type": "file",
+      "name": "TimelineReflectionItem.tsx",
+      "filePath": "apps/mobile/src/features/reflections/timeline/TimelineReflectionItem.tsx",
+      "summary": "时间线感念条目组件，展示单条感念内容。",
+      "tags": [
+        "react-component",
+        "timeline"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/timeline/TimelineReflectionItem.tsx:TimelineReflectionItemComponent",
+      "type": "function",
+      "name": "TimelineReflectionItemComponent",
+      "filePath": "apps/mobile/src/features/reflections/timeline/TimelineReflectionItem.tsx",
+      "lineRange": [
+        28,
+        112
+      ],
+      "summary": "渲染时间线中的单条感念条目。",
+      "tags": [
+        "timeline"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/trails/CreateThoughtTrailModal.tsx",
+      "type": "file",
+      "name": "CreateThoughtTrailModal.tsx",
+      "filePath": "apps/mobile/src/features/reflections/trails/CreateThoughtTrailModal.tsx",
+      "summary": "创建心迹弹窗组件，填写名称、描述并选择感念来新建心迹。",
+      "tags": [
+        "react-component",
+        "modal",
+        "trails"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/trails/CreateThoughtTrailModal.tsx:CreateThoughtTrailModal",
+      "type": "function",
+      "name": "CreateThoughtTrailModal",
+      "filePath": "apps/mobile/src/features/reflections/trails/CreateThoughtTrailModal.tsx",
+      "lineRange": [
+        18,
+        306
+      ],
+      "summary": "渲染创建心迹表单弹窗，提交名称、描述与所选感念。",
+      "tags": [
+        "modal",
+        "trails"
+      ],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:apps/mobile/src/features/reflections/core/ShareCard.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/core/ShareCard.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/core/SwipeableRow.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/searchPipeline.test.ts",
+      "target": "file:apps/mobile/src/features/reflections/hooks/searchPipeline.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/searchPipeline.test.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/searchPipeline.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.ts",
+      "target": "file:apps/mobile/src/features/reflections/hooks/searchPipeline.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.ts",
+      "target": "file:apps/mobile/src/features/reflections/hooks/useSearchHistory.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useReflections.ts",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useReflections.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useSearchHistory.ts",
+      "target": "file:apps/mobile/src/store/safeAsyncStorage.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useTrailAI.ts",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useTrailAI.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useTrailActions.ts",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useTrailActions.ts",
+      "target": "file:apps/mobile/src/navigation/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useTrailActions.ts",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useTrailActions.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useTrailData.ts",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useTrailData.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/InsightPanel.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/InsightPanel.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/InsightPanelSkeleton.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/InsightScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/InsightScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/InsightScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/InsightScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/InsightSection.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/InsightSection.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/RecommendCard.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/RecommendCard.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/ReflectionStatsScreen.tsx",
+      "target": "file:apps/mobile/src/components/charts/CalendarGrid.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/ReflectionStatsScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/ReflectionStatsScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/ReflectionStatsScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/SmartQueryBubble.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/SmartQueryBubble.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/StrategyLibrary.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/StrategyLibrary.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/StrategyLibrary.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/review/EditNoteModal.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/review/EditNoteModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/review/ReviewGuideSection.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/review/ReviewGuideSection.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/review/ReviewNoteCard.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/review/ReviewNoteCard.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/review/ReviewScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/review/ReviewScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/review/ReviewScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/review/WriteNoteModal.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/review/WriteNoteModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/shared/MoodBar.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/shared/MoodBar.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/shared/SegmentBar.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/shared/SegmentBar.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/shared/SelectReflectionModal.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/shared/SelectReflectionModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/shared/SelectionSummary.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/shared/SelectionSummary.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/shared/TopicChip.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/shared/TopicChip.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/timeline/TimelineList.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/timeline/TimelineList.tsx",
+      "target": "file:apps/mobile/src/features/reflections/core/SwipeableRow.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/timeline/TimelineList.tsx",
+      "target": "file:apps/mobile/src/features/reflections/timeline/TimelineNoteItem.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/timeline/TimelineList.tsx",
+      "target": "file:apps/mobile/src/features/reflections/timeline/TimelineReflectionItem.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/timeline/TimelineList.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/timeline/TimelineNoteItem.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/timeline/TimelineNoteItem.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/timeline/TimelineReflectionItem.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/timeline/TimelineReflectionItem.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/CreateThoughtTrailModal.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/CreateThoughtTrailModal.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/CreateThoughtTrailModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/core/ShareCard.tsx",
+      "target": "function:apps/mobile/src/features/reflections/core/ShareCard.tsx:ShareCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/core/ShareCard.tsx",
+      "target": "function:apps/mobile/src/features/reflections/core/ShareCard.tsx:ShareCard",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/searchPipeline.test.ts",
+      "target": "function:apps/mobile/src/features/reflections/hooks/searchPipeline.test.ts:makeReflection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/searchPipeline.ts",
+      "target": "function:apps/mobile/src/features/reflections/hooks/searchPipeline.ts:runAIPhase2",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/searchPipeline.ts",
+      "target": "function:apps/mobile/src/features/reflections/hooks/searchPipeline.ts:runAIPhase2",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/searchPipeline.ts",
+      "target": "function:apps/mobile/src/features/reflections/hooks/searchPipeline.ts:runAIPhase3",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/searchPipeline.ts",
+      "target": "function:apps/mobile/src/features/reflections/hooks/searchPipeline.ts:runAIPhase3",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/searchPipeline.ts",
+      "target": "function:apps/mobile/src/features/reflections/hooks/searchPipeline.ts:mergeResults",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/searchPipeline.ts",
+      "target": "function:apps/mobile/src/features/reflections/hooks/searchPipeline.ts:mergeResults",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.ts",
+      "target": "function:apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.ts:useQuickTrailSearch",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.ts",
+      "target": "function:apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.ts:useQuickTrailSearch",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useReflections.ts",
+      "target": "function:apps/mobile/src/features/reflections/hooks/useReflections.ts:useReflections",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useReflections.ts",
+      "target": "function:apps/mobile/src/features/reflections/hooks/useReflections.ts:useReflections",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useSearchHistory.ts",
+      "target": "function:apps/mobile/src/features/reflections/hooks/useSearchHistory.ts:useSearchHistory",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useSearchHistory.ts",
+      "target": "function:apps/mobile/src/features/reflections/hooks/useSearchHistory.ts:useSearchHistory",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useTrailAI.ts",
+      "target": "function:apps/mobile/src/features/reflections/hooks/useTrailAI.ts:isCacheStale",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useTrailAI.ts",
+      "target": "function:apps/mobile/src/features/reflections/hooks/useTrailAI.ts:useTrailAI",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useTrailAI.ts",
+      "target": "function:apps/mobile/src/features/reflections/hooks/useTrailAI.ts:useTrailAI",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useTrailActions.ts",
+      "target": "function:apps/mobile/src/features/reflections/hooks/useTrailActions.ts:useTrailActions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useTrailActions.ts",
+      "target": "function:apps/mobile/src/features/reflections/hooks/useTrailActions.ts:useTrailActions",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useTrailData.ts",
+      "target": "function:apps/mobile/src/features/reflections/hooks/useTrailData.ts:useTrailData",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useTrailData.ts",
+      "target": "function:apps/mobile/src/features/reflections/hooks/useTrailData.ts:useTrailData",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx:AIAnalysisStream",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx:AIAnalysisStream",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx:ChatMessage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx:BlinkingCursor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx:TypingIndicator",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx:createAnalysisMessages",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx:createAnalysisMessages",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/InsightPanel.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/InsightPanel.tsx:InsightPanel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/InsightPanel.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/InsightPanel.tsx:InsightPanel",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/InsightPanelSkeleton.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/InsightPanelSkeleton.tsx:InsightPanelSkeleton",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/InsightPanelSkeleton.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/InsightPanelSkeleton.tsx:InsightPanelSkeleton",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/InsightScreen.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/InsightScreen.tsx:InsightScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/InsightScreen.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/InsightScreen.tsx:InsightScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/InsightSection.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/InsightSection.tsx:InsightSection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/InsightSection.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/InsightSection.tsx:InsightSection",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/RecommendCard.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/RecommendCard.tsx:RecommendCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/ReflectionStatsScreen.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/ReflectionStatsScreen.tsx:ReflectionStatsScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/ReflectionStatsScreen.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/ReflectionStatsScreen.tsx:ReflectionStatsScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/SmartQueryBubble.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/SmartQueryBubble.tsx:parseOptions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/SmartQueryBubble.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/SmartQueryBubble.tsx:SmartQueryBubble",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/SmartQueryBubble.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/SmartQueryBubble.tsx:SmartQueryBubble",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/StrategyLibrary.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/StrategyLibrary.tsx:StrategyLibrary",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/StrategyLibrary.tsx",
+      "target": "function:apps/mobile/src/features/reflections/insights/StrategyLibrary.tsx:StrategyLibrary",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/review/EditNoteModal.tsx",
+      "target": "function:apps/mobile/src/features/reflections/review/EditNoteModal.tsx:EditNoteModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/review/EditNoteModal.tsx",
+      "target": "function:apps/mobile/src/features/reflections/review/EditNoteModal.tsx:EditNoteModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/review/ReviewGuideSection.tsx",
+      "target": "function:apps/mobile/src/features/reflections/review/ReviewGuideSection.tsx:ReviewGuideSection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/review/ReviewGuideSection.tsx",
+      "target": "function:apps/mobile/src/features/reflections/review/ReviewGuideSection.tsx:ReviewGuideSection",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/review/ReviewNoteCard.tsx",
+      "target": "function:apps/mobile/src/features/reflections/review/ReviewNoteCard.tsx:ReviewNoteCardComponent",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/review/ReviewScreen.tsx",
+      "target": "function:apps/mobile/src/features/reflections/review/ReviewScreen.tsx:ReviewScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/review/ReviewScreen.tsx",
+      "target": "function:apps/mobile/src/features/reflections/review/ReviewScreen.tsx:ReviewScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/review/WriteNoteModal.tsx",
+      "target": "function:apps/mobile/src/features/reflections/review/WriteNoteModal.tsx:WriteNoteModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/review/WriteNoteModal.tsx",
+      "target": "function:apps/mobile/src/features/reflections/review/WriteNoteModal.tsx:WriteNoteModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/shared/MoodBar.tsx",
+      "target": "function:apps/mobile/src/features/reflections/shared/MoodBar.tsx:MoodBar",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/shared/MoodBar.tsx",
+      "target": "function:apps/mobile/src/features/reflections/shared/MoodBar.tsx:MoodBar",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/shared/SegmentBar.tsx",
+      "target": "function:apps/mobile/src/features/reflections/shared/SegmentBar.tsx:SegmentBar",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/shared/SegmentBar.tsx",
+      "target": "function:apps/mobile/src/features/reflections/shared/SegmentBar.tsx:SegmentBar",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/shared/SelectReflectionModal.tsx",
+      "target": "function:apps/mobile/src/features/reflections/shared/SelectReflectionModal.tsx:SelectReflectionModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/shared/SelectReflectionModal.tsx",
+      "target": "function:apps/mobile/src/features/reflections/shared/SelectReflectionModal.tsx:SelectReflectionModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/shared/SelectionSummary.tsx",
+      "target": "function:apps/mobile/src/features/reflections/shared/SelectionSummary.tsx:SelectionSummary",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/shared/SelectionSummary.tsx",
+      "target": "function:apps/mobile/src/features/reflections/shared/SelectionSummary.tsx:SelectionSummary",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/shared/TopicChip.tsx",
+      "target": "function:apps/mobile/src/features/reflections/shared/TopicChip.tsx:TopicChip",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/shared/TopicChip.tsx",
+      "target": "function:apps/mobile/src/features/reflections/shared/TopicChip.tsx:TopicChip",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/timeline/TimelineList.tsx",
+      "target": "function:apps/mobile/src/features/reflections/timeline/TimelineList.tsx:TimelineList",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/timeline/TimelineList.tsx",
+      "target": "function:apps/mobile/src/features/reflections/timeline/TimelineList.tsx:TimelineList",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/timeline/TimelineNoteItem.tsx",
+      "target": "function:apps/mobile/src/features/reflections/timeline/TimelineNoteItem.tsx:TimelineNoteItemComponent",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/timeline/TimelineReflectionItem.tsx",
+      "target": "function:apps/mobile/src/features/reflections/timeline/TimelineReflectionItem.tsx:TimelineReflectionItemComponent",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/CreateThoughtTrailModal.tsx",
+      "target": "function:apps/mobile/src/features/reflections/trails/CreateThoughtTrailModal.tsx:CreateThoughtTrailModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/trails/CreateThoughtTrailModal.tsx",
+      "target": "function:apps/mobile/src/features/reflections/trails/CreateThoughtTrailModal.tsx:CreateThoughtTrailModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:apps/mobile/src/features/reflections/hooks/useTrailAI.ts:useTrailAI",
+      "target": "function:apps/mobile/src/features/reflections/hooks/useTrailAI.ts:isCacheStale",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:apps/mobile/src/features/reflections/insights/SmartQueryBubble.tsx:SmartQueryBubble",
+      "target": "function:apps/mobile/src/features/reflections/insights/SmartQueryBubble.tsx:parseOptions",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.ts:useQuickTrailSearch",
+      "target": "function:apps/mobile/src/features/reflections/hooks/searchPipeline.ts:runAIPhase2",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.ts:useQuickTrailSearch",
+      "target": "function:apps/mobile/src/features/reflections/hooks/searchPipeline.ts:runAIPhase3",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.ts:useQuickTrailSearch",
+      "target": "function:apps/mobile/src/features/reflections/hooks/searchPipeline.ts:mergeResults",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.ts:useQuickTrailSearch",
+      "target": "function:apps/mobile/src/features/reflections/hooks/useSearchHistory.ts:useSearchHistory",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ]
+}

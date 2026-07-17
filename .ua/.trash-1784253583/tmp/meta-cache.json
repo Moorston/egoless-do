@@ -1,0 +1,233 @@
+{
+  ".trellis/tasks/archive/2026-07/07-12-fix-profile-screen-crash/prd.md": {
+    "summary": "修复 ProfileScreen 因 expo-image-picker 导入 createPermissionHook 报错的 PRD：记录目标、根因（Expo SDK 54 移除 createPermissionHook）、补丁修复方案与验收标准。",
+    "tags": [
+      "documentation",
+      "bugfix",
+      "expo",
+      "prd"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-12-fix-profile-screen-crash/task.json": {
+    "summary": "fix-profile-screen-crash 任务元数据，标记为已完成 P2 任务。",
+    "tags": [
+      "configuration",
+      "task",
+      "trellis"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/check.jsonl": {
+    "summary": "pb-create-food-preset 任务工作记录文件。",
+    "tags": [
+      "documentation",
+      "task-record",
+      "trellis"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/implement.jsonl": {
+    "summary": "pb-create-food-preset 任务实现记录（含 PB 集合创建脚本）。",
+    "tags": [
+      "documentation",
+      "task-record",
+      "trellis"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-12-sync-goerror/check.jsonl": {
+    "summary": "sync-goerror 任务工作记录（同步错误分析）。",
+    "tags": [
+      "documentation",
+      "task-record",
+      "trellis"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-12-sync-goerror/implement.jsonl": {
+    "summary": "sync-goerror 任务工作记录（同步错误分析）。",
+    "tags": [
+      "documentation",
+      "task-record",
+      "trellis"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/check.jsonl": {
+    "summary": "analyze-token-expiry 任务工作记录文件。",
+    "tags": [
+      "documentation",
+      "task-record",
+      "trellis"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/implement.jsonl": {
+    "summary": "analyze-token-expiry 任务工作记录文件。",
+    "tags": [
+      "documentation",
+      "task-record",
+      "trellis"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/prd.md": {
+    "summary": "分析 token 过期问题的 PRD：记录 token 刷新机制、过期导致的同步失败场景与分析结论。",
+    "tags": [
+      "documentation",
+      "auth",
+      "token",
+      "prd"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/task.json": {
+    "summary": "analyze-token-expiry 任务元数据。",
+    "tags": [
+      "configuration",
+      "task",
+      "trellis"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/check.jsonl": {
+    "summary": "analyze-vow-layout 任务工作记录文件。",
+    "tags": [
+      "documentation",
+      "task-record",
+      "trellis"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/implement.jsonl": {
+    "summary": "analyze-vow-layout 任务工作记录文件。",
+    "tags": [
+      "documentation",
+      "task-record",
+      "trellis"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/prd.md": {
+    "summary": "分析 vow（发愿）布局问题的 PRD，记录布局异常现象与建议方案。",
+    "tags": [
+      "documentation",
+      "ui",
+      "vow",
+      "prd"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/task.json": {
+    "summary": "analyze-vow-layout 任务元数据。",
+    "tags": [
+      "configuration",
+      "task",
+      "trellis"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/check.jsonl": {
+    "summary": "fix-auth-issues 任务工作记录文件。",
+    "tags": [
+      "documentation",
+      "task-record",
+      "trellis"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/implement.jsonl": {
+    "summary": "fix-auth-issues 任务工作记录文件。",
+    "tags": [
+      "documentation",
+      "task-record",
+      "trellis"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/prd.md": {
+    "summary": "修复认证相关问题的 PRD，记录 auth 流程中的缺陷与修复方案。",
+    "tags": [
+      "documentation",
+      "auth",
+      "bugfix",
+      "prd"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/task.json": {
+    "summary": "fix-auth-issues 任务元数据。",
+    "tags": [
+      "configuration",
+      "task",
+      "trellis"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/check.jsonl": {
+    "summary": "optimize-vision-edit 任务工作记录文件。",
+    "tags": [
+      "documentation",
+      "task-record",
+      "trellis"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/implement.jsonl": {
+    "summary": "optimize-vision-edit 任务工作记录文件。",
+    "tags": [
+      "documentation",
+      "task-record",
+      "trellis"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/prd.md": {
+    "summary": "优化 vision（愿景）编辑体验的 PRD，记录交互问题与改进方案。",
+    "tags": [
+      "documentation",
+      "vision",
+      "optimization",
+      "prd"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/task.json": {
+    "summary": "optimize-vision-edit 任务元数据。",
+    "tags": [
+      "configuration",
+      "task",
+      "trellis"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/check.jsonl": {
+    "summary": "optimize-vow-edit 任务工作记录文件。",
+    "tags": [
+      "documentation",
+      "task-record",
+      "trellis"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/implement.jsonl": {
+    "summary": "optimize-vow-edit 任务工作记录文件。",
+    "tags": [
+      "documentation",
+      "task-record",
+      "trellis"
+    ],
+    "complexity": "simple"
+  },
+  ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/prd.md": {
+    "summary": "优化 vow 编辑体验的 PRD，记录编辑流程问题与改进方案。",
+    "tags": [
+      "documentation",
+      "vow",
+      "optimization",
+      "prd"
+    ],
+    "complexity": "moderate"
+  }
+}

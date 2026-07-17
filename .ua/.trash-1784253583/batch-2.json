@@ -1,0 +1,2514 @@
+{
+  "nodes": [
+    {
+      "id": "file:apps/mobile/src/features/diet/WuxingRadarChart.tsx",
+      "type": "file",
+      "name": "WuxingRadarChart.tsx",
+      "filePath": "apps/mobile/src/features/diet/WuxingRadarChart.tsx",
+      "summary": "饮食模块的功能模块\"WuxingRadarChart\"。主导出\"WuxingRadarChart\"。中等规模。",
+      "tags": [
+        "饮食",
+        "记录",
+        "功能",
+        "可视化"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/diet/WuxingRadarChart.tsx:WuxingRadarChart",
+      "type": "function",
+      "name": "WuxingRadarChart",
+      "filePath": "apps/mobile/src/features/diet/WuxingRadarChart.tsx",
+      "lineRange": [
+        22,
+        166
+      ],
+      "summary": "饮食的图表组件\"WuxingRadarChart\"，将数据以可视化图形呈现。",
+      "tags": [
+        "功能",
+        "饮食",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/ExerciseHistoryScreen.tsx",
+      "type": "file",
+      "name": "ExerciseHistoryScreen.tsx",
+      "filePath": "apps/mobile/src/features/exercise/ExerciseHistoryScreen.tsx",
+      "summary": "运动模块的功能模块\"ExerciseHistoryScreen\"。主导出\"ExerciseHistoryScreen\"。规模较大，承载较丰富的交互与样式逻辑。",
+      "tags": [
+        "运动",
+        "训练",
+        "功能",
+        "页面入口",
+        "大规模组件"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/ExerciseHistoryScreen.tsx:DetailCard",
+      "type": "function",
+      "name": "DetailCard",
+      "filePath": "apps/mobile/src/features/exercise/ExerciseHistoryScreen.tsx",
+      "lineRange": [
+        15,
+        92
+      ],
+      "summary": "运动的卡片组件\"DetailCard\"，汇总展示单项数据与关键指标。",
+      "tags": [
+        "功能",
+        "运动",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/ExerciseHistoryScreen.tsx:ExerciseHistoryScreen",
+      "type": "function",
+      "name": "ExerciseHistoryScreen",
+      "filePath": "apps/mobile/src/features/exercise/ExerciseHistoryScreen.tsx",
+      "lineRange": [
+        105,
+        503
+      ],
+      "summary": "运动的页面组件\"ExerciseHistoryScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "运动",
+        "页面入口"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/ExerciseScreen.tsx",
+      "type": "file",
+      "name": "ExerciseScreen.tsx",
+      "filePath": "apps/mobile/src/features/exercise/ExerciseScreen.tsx",
+      "summary": "运动模块的功能模块\"ExerciseScreen\"。主导出\"ExerciseScreen\"。规模较大，承载较丰富的交互与样式逻辑。",
+      "tags": [
+        "运动",
+        "训练",
+        "功能",
+        "页面入口",
+        "大规模组件"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/ExerciseScreen.tsx:ExerciseScreen",
+      "type": "function",
+      "name": "ExerciseScreen",
+      "filePath": "apps/mobile/src/features/exercise/ExerciseScreen.tsx",
+      "lineRange": [
+        18,
+        303
+      ],
+      "summary": "运动的页面组件\"ExerciseScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "运动",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/TrainingCalendar.tsx",
+      "type": "file",
+      "name": "TrainingCalendar.tsx",
+      "filePath": "apps/mobile/src/features/exercise/TrainingCalendar.tsx",
+      "summary": "运动模块的功能模块\"TrainingCalendar\"。主导出\"TrainingCalendar\"。中等规模。",
+      "tags": [
+        "运动",
+        "训练",
+        "功能",
+        "可视化"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/TrainingCalendar.tsx:TrainingCalendar",
+      "type": "function",
+      "name": "TrainingCalendar",
+      "filePath": "apps/mobile/src/features/exercise/TrainingCalendar.tsx",
+      "lineRange": [
+        15,
+        223
+      ],
+      "summary": "运动的\"TrainingCalendar\"功能。",
+      "tags": [
+        "功能",
+        "运动",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/exercise/hooks/useAmapComponents.ts",
+      "type": "file",
+      "name": "useAmapComponents.ts",
+      "filePath": "apps/mobile/src/features/exercise/hooks/useAmapComponents.ts",
+      "summary": "运动模块的自定义 Hook\"useAmapComponents\"，封装可复用的响应式状态与副作用逻辑，供多个组件消费。",
+      "tags": [
+        "运动",
+        "训练",
+        "自定义Hook",
+        "钩子"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/exercise/hooks/useAmapComponents.ts:useAmapComponents",
+      "type": "function",
+      "name": "useAmapComponents",
+      "filePath": "apps/mobile/src/features/exercise/hooks/useAmapComponents.ts",
+      "lineRange": [
+        7,
+        21
+      ],
+      "summary": "\"useAmapComponents\"是运动的自定义 Hook，管理钩子相关的响应式状态与副作用逻辑。",
+      "tags": [
+        "自定义Hook",
+        "运动",
+        "钩子"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/fasting/FastHistoryPage.tsx",
+      "type": "file",
+      "name": "FastHistoryPage.tsx",
+      "filePath": "apps/mobile/src/features/fasting/FastHistoryPage.tsx",
+      "summary": "禁食模块的功能模块\"FastCalendarScreen\"。主导出\"FastCalendarScreen\"。共导出 2 项，规模较大，承载较丰富的交互与样式逻辑。",
+      "tags": [
+        "禁食",
+        "计时",
+        "功能",
+        "页面入口",
+        "大规模组件"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/fasting/FastHistoryPage.tsx:calcStreak",
+      "type": "function",
+      "name": "calcStreak",
+      "filePath": "apps/mobile/src/features/fasting/FastHistoryPage.tsx",
+      "lineRange": [
+        31,
+        50
+      ],
+      "summary": "工具函数\"calcStreak\"，负责计算与转换。",
+      "tags": [
+        "功能",
+        "禁食",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/fasting/FastHistoryPage.tsx:StatsCard",
+      "type": "function",
+      "name": "StatsCard",
+      "filePath": "apps/mobile/src/features/fasting/FastHistoryPage.tsx",
+      "lineRange": [
+        53,
+        81
+      ],
+      "summary": "禁食的卡片组件\"StatsCard\"，汇总展示单项数据与关键指标。",
+      "tags": [
+        "功能",
+        "禁食",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/fasting/FastHistoryPage.tsx:Heatmap",
+      "type": "function",
+      "name": "Heatmap",
+      "filePath": "apps/mobile/src/features/fasting/FastHistoryPage.tsx",
+      "lineRange": [
+        84,
+        126
+      ],
+      "summary": "禁食的\"Heatmap\"功能。",
+      "tags": [
+        "功能",
+        "禁食",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/fasting/FastHistoryPage.tsx:FastCalendarScreen",
+      "type": "function",
+      "name": "FastCalendarScreen",
+      "filePath": "apps/mobile/src/features/fasting/FastHistoryPage.tsx",
+      "lineRange": [
+        129,
+        183
+      ],
+      "summary": "禁食的页面组件\"FastCalendarScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "禁食",
+        "页面入口"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/fasting/FastHistoryPage.tsx:DetailModal",
+      "type": "function",
+      "name": "DetailModal",
+      "filePath": "apps/mobile/src/features/fasting/FastHistoryPage.tsx",
+      "lineRange": [
+        186,
+        247
+      ],
+      "summary": "禁食的弹窗组件\"DetailModal\"，承载模态交互。",
+      "tags": [
+        "功能",
+        "禁食",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/fasting/FastHistoryPage.tsx:FastHistoryPage",
+      "type": "function",
+      "name": "FastHistoryPage",
+      "filePath": "apps/mobile/src/features/fasting/FastHistoryPage.tsx",
+      "lineRange": [
+        262,
+        398
+      ],
+      "summary": "禁食的页面组件\"FastHistoryPage\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "禁食",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/fasting/FastingScreen.tsx",
+      "type": "file",
+      "name": "FastingScreen.tsx",
+      "filePath": "apps/mobile/src/features/fasting/FastingScreen.tsx",
+      "summary": "禁食模块的功能模块\"FastingScreen\"。主导出\"FastingScreen\"。规模较大，承载较丰富的交互与样式逻辑。",
+      "tags": [
+        "禁食",
+        "计时",
+        "功能",
+        "页面入口",
+        "大规模组件"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/fasting/FastingScreen.tsx:FastingScreen",
+      "type": "function",
+      "name": "FastingScreen",
+      "filePath": "apps/mobile/src/features/fasting/FastingScreen.tsx",
+      "lineRange": [
+        28,
+        409
+      ],
+      "summary": "禁食的页面组件\"FastingScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "禁食",
+        "页面入口"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/components/ClusterMarker.tsx",
+      "type": "file",
+      "name": "ClusterMarker.tsx",
+      "filePath": "apps/mobile/src/features/global-pulse/components/ClusterMarker.tsx",
+      "summary": "全球脉动模块的UI 组件\"ClusterMarker\"。主导出\"ClusterMarker\"。轻量实现。",
+      "tags": [
+        "全球脉动",
+        "地图",
+        "组件"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/components/ClusterMarker.tsx:ClusterMarker",
+      "type": "function",
+      "name": "ClusterMarker",
+      "filePath": "apps/mobile/src/features/global-pulse/components/ClusterMarker.tsx",
+      "lineRange": [
+        14,
+        35
+      ],
+      "summary": "全球脉动的\"ClusterMarker\"功能。",
+      "tags": [
+        "组件",
+        "全球脉动",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/components/LoadingOverlay.tsx",
+      "type": "file",
+      "name": "LoadingOverlay.tsx",
+      "filePath": "apps/mobile/src/features/global-pulse/components/LoadingOverlay.tsx",
+      "summary": "全球脉动模块的UI 组件\"LoadingOverlay\"。主导出\"LoadingOverlay\"。轻量实现。",
+      "tags": [
+        "全球脉动",
+        "地图",
+        "组件"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/components/LoadingOverlay.tsx:LoadingOverlay",
+      "type": "function",
+      "name": "LoadingOverlay",
+      "filePath": "apps/mobile/src/features/global-pulse/components/LoadingOverlay.tsx",
+      "lineRange": [
+        24,
+        64
+      ],
+      "summary": "全球脉动的覆盖层组件\"LoadingOverlay\"，作为页面局部的浮层展示。",
+      "tags": [
+        "组件",
+        "全球脉动",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/components/PrivacyIntroModal.tsx",
+      "type": "file",
+      "name": "PrivacyIntroModal.tsx",
+      "filePath": "apps/mobile/src/features/global-pulse/components/PrivacyIntroModal.tsx",
+      "summary": "全球脉动模块的UI 组件\"PrivacyIntroModal\"。主导出\"PrivacyIntroModal\"。中等规模。",
+      "tags": [
+        "全球脉动",
+        "地图",
+        "组件",
+        "弹窗"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/components/PrivacyIntroModal.tsx:PrivacyIntroModal",
+      "type": "function",
+      "name": "PrivacyIntroModal",
+      "filePath": "apps/mobile/src/features/global-pulse/components/PrivacyIntroModal.tsx",
+      "lineRange": [
+        22,
+        111
+      ],
+      "summary": "全球脉动的弹窗组件\"PrivacyIntroModal\"，承载模态交互。",
+      "tags": [
+        "组件",
+        "全球脉动",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/hooks/useGoalResolver.ts",
+      "type": "file",
+      "name": "useGoalResolver.ts",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/useGoalResolver.ts",
+      "summary": "全球脉动模块的自定义 Hook\"useGoalResolver\"，封装可复用的响应式状态与副作用逻辑，供多个组件消费。",
+      "tags": [
+        "全球脉动",
+        "地图",
+        "自定义Hook",
+        "钩子"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/hooks/useGoalResolver.ts:useGoalResolver",
+      "type": "function",
+      "name": "useGoalResolver",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/useGoalResolver.ts",
+      "lineRange": [
+        11,
+        36
+      ],
+      "summary": "\"useGoalResolver\"是全球脉动的自定义 Hook，管理钩子相关的响应式状态与副作用逻辑。",
+      "tags": [
+        "自定义Hook",
+        "全球脉动",
+        "钩子"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "apps/mobile/src/features/global-pulse/index.ts",
+      "summary": "全球脉动模块的功能模块\"GlobalPulseMap\"。主导出\"GlobalPulseMap\"。共导出 39 项，轻量实现。",
+      "tags": [
+        "全球脉动",
+        "地图",
+        "功能"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/habits/HabitDetailScreen.tsx",
+      "type": "file",
+      "name": "HabitDetailScreen.tsx",
+      "filePath": "apps/mobile/src/features/habits/HabitDetailScreen.tsx",
+      "summary": "习惯模块的功能模块\"HabitDetailScreen\"。主导出\"HabitDetailScreen\"。中等规模。",
+      "tags": [
+        "习惯",
+        "打卡",
+        "功能",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/habits/HabitDetailScreen.tsx:HabitDetailScreen",
+      "type": "function",
+      "name": "HabitDetailScreen",
+      "filePath": "apps/mobile/src/features/habits/HabitDetailScreen.tsx",
+      "lineRange": [
+        22,
+        267
+      ],
+      "summary": "习惯的页面组件\"HabitDetailScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "习惯",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/habits/HabitStatsSection.tsx",
+      "type": "file",
+      "name": "HabitStatsSection.tsx",
+      "filePath": "apps/mobile/src/features/habits/HabitStatsSection.tsx",
+      "summary": "习惯模块的功能模块\"HabitStatsSection\"。主导出\"HabitStatsSection\"。轻量实现。",
+      "tags": [
+        "习惯",
+        "打卡",
+        "功能"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/habits/HabitStatsSection.tsx:HabitStatsSection",
+      "type": "function",
+      "name": "HabitStatsSection",
+      "filePath": "apps/mobile/src/features/habits/HabitStatsSection.tsx",
+      "lineRange": [
+        17,
+        74
+      ],
+      "summary": "习惯的区块组件\"HabitStatsSection\"，用于页面内的分组展示。",
+      "tags": [
+        "功能",
+        "习惯",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/habits/HabitsScreen.tsx",
+      "type": "file",
+      "name": "HabitsScreen.tsx",
+      "filePath": "apps/mobile/src/features/habits/HabitsScreen.tsx",
+      "summary": "习惯模块的功能模块\"HabitsScreen\"。主导出\"HabitsScreen\"。轻量实现。",
+      "tags": [
+        "习惯",
+        "打卡",
+        "功能",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/habits/HabitsScreen.tsx:HabitsScreen",
+      "type": "function",
+      "name": "HabitsScreen",
+      "filePath": "apps/mobile/src/features/habits/HabitsScreen.tsx",
+      "lineRange": [
+        26,
+        156
+      ],
+      "summary": "习惯的页面组件\"HabitsScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "习惯",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/habits/components/HabitActionMenu.tsx",
+      "type": "file",
+      "name": "HabitActionMenu.tsx",
+      "filePath": "apps/mobile/src/features/habits/components/HabitActionMenu.tsx",
+      "summary": "习惯模块的UI 组件\"HabitActionMenu\"。主导出\"HabitActionMenu\"。轻量实现。",
+      "tags": [
+        "习惯",
+        "打卡",
+        "组件"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/habits/components/HabitActionMenu.tsx:HabitActionMenu",
+      "type": "function",
+      "name": "HabitActionMenu",
+      "filePath": "apps/mobile/src/features/habits/components/HabitActionMenu.tsx",
+      "lineRange": [
+        21,
+        90
+      ],
+      "summary": "习惯的\"HabitActionMenu\"功能。",
+      "tags": [
+        "组件",
+        "习惯",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/habits/components/HabitCalendarModal.tsx",
+      "type": "file",
+      "name": "HabitCalendarModal.tsx",
+      "filePath": "apps/mobile/src/features/habits/components/HabitCalendarModal.tsx",
+      "summary": "习惯模块的UI 组件\"HabitCalendarModal\"。主导出\"HabitCalendarModal\"。轻量实现。",
+      "tags": [
+        "习惯",
+        "打卡",
+        "组件",
+        "弹窗",
+        "可视化"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/habits/components/HabitCalendarModal.tsx:HabitCalendarModal",
+      "type": "function",
+      "name": "HabitCalendarModal",
+      "filePath": "apps/mobile/src/features/habits/components/HabitCalendarModal.tsx",
+      "lineRange": [
+        18,
+        56
+      ],
+      "summary": "习惯的弹窗组件\"HabitCalendarModal\"，承载模态交互。",
+      "tags": [
+        "组件",
+        "习惯",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/habits/components/HabitCard.tsx",
+      "type": "file",
+      "name": "HabitCard.tsx",
+      "filePath": "apps/mobile/src/features/habits/components/HabitCard.tsx",
+      "summary": "习惯模块的UI 组件\"HabitCard\"。主导出\"HabitCard\"。轻量实现。",
+      "tags": [
+        "习惯",
+        "打卡",
+        "组件"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/habits/components/HabitCard.tsx:HabitCard",
+      "type": "function",
+      "name": "HabitCard",
+      "filePath": "apps/mobile/src/features/habits/components/HabitCard.tsx",
+      "lineRange": [
+        25,
+        162
+      ],
+      "summary": "习惯的卡片组件\"HabitCard\"，汇总展示单项数据与关键指标。",
+      "tags": [
+        "组件",
+        "习惯",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/habits/components/HabitCheckinButton.tsx",
+      "type": "file",
+      "name": "HabitCheckinButton.tsx",
+      "filePath": "apps/mobile/src/features/habits/components/HabitCheckinButton.tsx",
+      "summary": "习惯模块的UI 组件\"HabitCheckinButton\"。主导出\"HabitCheckinButton\"。轻量实现。",
+      "tags": [
+        "习惯",
+        "打卡",
+        "组件"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/habits/components/HabitCheckinButton.tsx:HabitCheckinButton",
+      "type": "function",
+      "name": "HabitCheckinButton",
+      "filePath": "apps/mobile/src/features/habits/components/HabitCheckinButton.tsx",
+      "lineRange": [
+        15,
+        54
+      ],
+      "summary": "习惯的按钮组件\"HabitCheckinButton\"，封装点击交互与状态样式。",
+      "tags": [
+        "组件",
+        "习惯",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/habits/components/HabitDeleteConfirmModal.tsx",
+      "type": "file",
+      "name": "HabitDeleteConfirmModal.tsx",
+      "filePath": "apps/mobile/src/features/habits/components/HabitDeleteConfirmModal.tsx",
+      "summary": "习惯模块的UI 组件\"HabitDeleteConfirmModal\"。主导出\"HabitDeleteConfirmModal\"。轻量实现。",
+      "tags": [
+        "习惯",
+        "打卡",
+        "组件",
+        "弹窗"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/habits/components/HabitDeleteConfirmModal.tsx:HabitDeleteConfirmModal",
+      "type": "function",
+      "name": "HabitDeleteConfirmModal",
+      "filePath": "apps/mobile/src/features/habits/components/HabitDeleteConfirmModal.tsx",
+      "lineRange": [
+        15,
+        41
+      ],
+      "summary": "习惯的弹窗组件\"HabitDeleteConfirmModal\"，承载模态交互。",
+      "tags": [
+        "组件",
+        "习惯",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/habits/components/HabitEmptyState.tsx",
+      "type": "file",
+      "name": "HabitEmptyState.tsx",
+      "filePath": "apps/mobile/src/features/habits/components/HabitEmptyState.tsx",
+      "summary": "习惯模块的UI 组件\"HabitEmptyState\"。主导出\"HabitEmptyState\"。轻量实现。",
+      "tags": [
+        "习惯",
+        "打卡",
+        "组件"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/habits/components/HabitEmptyState.tsx:HabitEmptyState",
+      "type": "function",
+      "name": "HabitEmptyState",
+      "filePath": "apps/mobile/src/features/habits/components/HabitEmptyState.tsx",
+      "lineRange": [
+        15,
+        41
+      ],
+      "summary": "习惯的\"HabitEmptyState\"功能。",
+      "tags": [
+        "组件",
+        "习惯",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/habits/components/HabitFilterBar.tsx",
+      "type": "file",
+      "name": "HabitFilterBar.tsx",
+      "filePath": "apps/mobile/src/features/habits/components/HabitFilterBar.tsx",
+      "summary": "习惯模块的UI 组件\"HabitFilterBar\"。主导出\"HabitFilterBar\"。轻量实现。",
+      "tags": [
+        "习惯",
+        "打卡",
+        "组件"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/habits/components/HabitFilterBar.tsx:HabitFilterBar",
+      "type": "function",
+      "name": "HabitFilterBar",
+      "filePath": "apps/mobile/src/features/habits/components/HabitFilterBar.tsx",
+      "lineRange": [
+        16,
+        41
+      ],
+      "summary": "习惯的栏组件\"HabitFilterBar\"，如标签栏、筛选栏或操作栏。",
+      "tags": [
+        "组件",
+        "习惯",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/habits/components/HabitFormModal.tsx",
+      "type": "file",
+      "name": "HabitFormModal.tsx",
+      "filePath": "apps/mobile/src/features/habits/components/HabitFormModal.tsx",
+      "summary": "习惯模块的UI 组件\"HabitFormModal\"。主导出\"HabitFormModal\"。中等规模。",
+      "tags": [
+        "习惯",
+        "打卡",
+        "组件",
+        "弹窗"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/habits/components/HabitFormModal.tsx:HabitFormModal",
+      "type": "function",
+      "name": "HabitFormModal",
+      "filePath": "apps/mobile/src/features/habits/components/HabitFormModal.tsx",
+      "lineRange": [
+        31,
+        188
+      ],
+      "summary": "习惯的弹窗组件\"HabitFormModal\"，承载模态交互。",
+      "tags": [
+        "组件",
+        "习惯",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/habits/components/HabitStatusReasonModal.tsx",
+      "type": "file",
+      "name": "HabitStatusReasonModal.tsx",
+      "filePath": "apps/mobile/src/features/habits/components/HabitStatusReasonModal.tsx",
+      "summary": "习惯模块的UI 组件\"HabitStatusReasonModal\"。主导出\"HabitStatusReasonModal\"。轻量实现。",
+      "tags": [
+        "习惯",
+        "打卡",
+        "组件",
+        "弹窗"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/habits/components/HabitStatusReasonModal.tsx:HabitStatusReasonModal",
+      "type": "function",
+      "name": "HabitStatusReasonModal",
+      "filePath": "apps/mobile/src/features/habits/components/HabitStatusReasonModal.tsx",
+      "lineRange": [
+        18,
+        54
+      ],
+      "summary": "习惯的弹窗组件\"HabitStatusReasonModal\"，承载模态交互。",
+      "tags": [
+        "组件",
+        "习惯",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/habits/constants.ts",
+      "type": "file",
+      "name": "constants.ts",
+      "filePath": "apps/mobile/src/features/habits/constants.ts",
+      "summary": "习惯模块的功能模块\"STATUS_COLORS\"。主导出\"STATUS_COLORS\"。共导出 4 项，轻量实现。",
+      "tags": [
+        "习惯",
+        "打卡",
+        "功能"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/habits/hooks/useHabitActions.ts",
+      "type": "file",
+      "name": "useHabitActions.ts",
+      "filePath": "apps/mobile/src/features/habits/hooks/useHabitActions.ts",
+      "summary": "习惯模块的自定义 Hook\"useHabitActions\"，封装可复用的响应式状态与副作用逻辑，供多个组件消费。",
+      "tags": [
+        "习惯",
+        "打卡",
+        "自定义Hook",
+        "钩子"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/habits/hooks/useHabitActions.ts:useHabitActions",
+      "type": "function",
+      "name": "useHabitActions",
+      "filePath": "apps/mobile/src/features/habits/hooks/useHabitActions.ts",
+      "lineRange": [
+        7,
+        60
+      ],
+      "summary": "\"useHabitActions\"是习惯的自定义 Hook，管理钩子相关的响应式状态与副作用逻辑。",
+      "tags": [
+        "自定义Hook",
+        "习惯",
+        "钩子"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/habits/hooks/useHabitForm.ts",
+      "type": "file",
+      "name": "useHabitForm.ts",
+      "filePath": "apps/mobile/src/features/habits/hooks/useHabitForm.ts",
+      "summary": "习惯模块的自定义 Hook\"useHabitForm\"，封装可复用的响应式状态与副作用逻辑，供多个组件消费。",
+      "tags": [
+        "习惯",
+        "打卡",
+        "自定义Hook",
+        "钩子"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/habits/hooks/useHabitForm.ts:useHabitForm",
+      "type": "function",
+      "name": "useHabitForm",
+      "filePath": "apps/mobile/src/features/habits/hooks/useHabitForm.ts",
+      "lineRange": [
+        37,
+        103
+      ],
+      "summary": "\"useHabitForm\"是习惯的自定义 Hook，管理钩子相关的响应式状态与副作用逻辑。",
+      "tags": [
+        "自定义Hook",
+        "习惯",
+        "钩子"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/health/HealthService.ts",
+      "type": "file",
+      "name": "HealthService.ts",
+      "filePath": "apps/mobile/src/features/health/HealthService.ts",
+      "summary": "健康模块的服务封装\"isHealthAvailable\"，集中处理平台 API 调用、异步 I/O 与错误处理。",
+      "tags": [
+        "健康",
+        "数据接入",
+        "服务"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/health/HealthService.ts:isHealthAvailable",
+      "type": "function",
+      "name": "isHealthAvailable",
+      "filePath": "apps/mobile/src/features/health/HealthService.ts",
+      "lineRange": [
+        63,
+        68
+      ],
+      "summary": "工具函数\"isHealthAvailable\"，提供纯计算 / 校验逻辑。",
+      "tags": [
+        "服务",
+        "健康",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/health/HealthService.ts:requestHealthPermissions",
+      "type": "function",
+      "name": "requestHealthPermissions",
+      "filePath": "apps/mobile/src/features/health/HealthService.ts",
+      "lineRange": [
+        70,
+        121
+      ],
+      "summary": "健康的\"requestHealthPermissions\"，承担请求职责。",
+      "tags": [
+        "服务",
+        "健康",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/health/HealthService.ts:readTodaySteps",
+      "type": "function",
+      "name": "readTodaySteps",
+      "filePath": "apps/mobile/src/features/health/HealthService.ts",
+      "lineRange": [
+        123,
+        165
+      ],
+      "summary": "健康的\"readTodaySteps\"，承担读取职责。",
+      "tags": [
+        "服务",
+        "健康",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/health/HealthService.ts:readLatestWeight",
+      "type": "function",
+      "name": "readLatestWeight",
+      "filePath": "apps/mobile/src/features/health/HealthService.ts",
+      "lineRange": [
+        167,
+        220
+      ],
+      "summary": "健康的\"readLatestWeight\"，承担读取职责。",
+      "tags": [
+        "服务",
+        "健康",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/health/HealthService.ts:writeWorkout",
+      "type": "function",
+      "name": "writeWorkout",
+      "filePath": "apps/mobile/src/features/health/HealthService.ts",
+      "lineRange": [
+        222,
+        278
+      ],
+      "summary": "健康的\"writeWorkout\"，承担写入职责。",
+      "tags": [
+        "服务",
+        "健康",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/health/HealthService.ts:performHealthSync",
+      "type": "function",
+      "name": "performHealthSync",
+      "filePath": "apps/mobile/src/features/health/HealthService.ts",
+      "lineRange": [
+        280,
+        305
+      ],
+      "summary": "健康的\"performHealthSync\"功能。",
+      "tags": [
+        "服务",
+        "健康",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/components/Banner.tsx",
+      "type": "file",
+      "name": "Banner.tsx",
+      "filePath": "apps/mobile/src/features/home/components/Banner.tsx",
+      "summary": "首页模块的UI 组件\"Banner\"。主导出\"Banner\"。轻量实现。",
+      "tags": [
+        "首页",
+        "聚合",
+        "组件"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/components/Banner.tsx:Banner",
+      "type": "function",
+      "name": "Banner",
+      "filePath": "apps/mobile/src/features/home/components/Banner.tsx",
+      "lineRange": [
+        24,
+        86
+      ],
+      "summary": "首页的横幅组件\"Banner\"，用于展示提示或引导信息。",
+      "tags": [
+        "组件",
+        "首页",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/components/CheckinModal.tsx",
+      "type": "file",
+      "name": "CheckinModal.tsx",
+      "filePath": "apps/mobile/src/features/home/components/CheckinModal.tsx",
+      "summary": "首页模块的UI 组件\"CheckinModal\"。主导出\"CheckinModal\"。规模较大，承载较丰富的交互与样式逻辑。",
+      "tags": [
+        "首页",
+        "聚合",
+        "组件",
+        "弹窗",
+        "大规模组件"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/components/CheckinModal.tsx:CheckinModal",
+      "type": "function",
+      "name": "CheckinModal",
+      "filePath": "apps/mobile/src/features/home/components/CheckinModal.tsx",
+      "lineRange": [
+        28,
+        673
+      ],
+      "summary": "首页的弹窗组件\"CheckinModal\"，承载模态交互。",
+      "tags": [
+        "组件",
+        "首页",
+        "导出函数"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/components/CheckinModal.tsx:RowItem",
+      "type": "function",
+      "name": "RowItem",
+      "filePath": "apps/mobile/src/features/home/components/CheckinModal.tsx",
+      "lineRange": [
+        747,
+        762
+      ],
+      "summary": "首页的\"RowItem\"功能。",
+      "tags": [
+        "组件",
+        "首页",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/components/CheckinReflection.tsx",
+      "type": "file",
+      "name": "CheckinReflection.tsx",
+      "filePath": "apps/mobile/src/features/home/components/CheckinReflection.tsx",
+      "summary": "首页模块的UI 组件\"CheckinReflection\"。主导出\"CheckinReflection\"。中等规模。",
+      "tags": [
+        "首页",
+        "聚合",
+        "组件"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/components/CheckinReflection.tsx:CheckinReflection",
+      "type": "function",
+      "name": "CheckinReflection",
+      "filePath": "apps/mobile/src/features/home/components/CheckinReflection.tsx",
+      "lineRange": [
+        21,
+        103
+      ],
+      "summary": "首页的\"CheckinReflection\"功能。",
+      "tags": [
+        "组件",
+        "首页",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/components/CheckinStatsModal.tsx",
+      "type": "file",
+      "name": "CheckinStatsModal.tsx",
+      "filePath": "apps/mobile/src/features/home/components/CheckinStatsModal.tsx",
+      "summary": "首页模块的UI 组件\"CheckinStatsModal\"。主导出\"CheckinStatsModal\"。轻量实现。",
+      "tags": [
+        "首页",
+        "聚合",
+        "组件",
+        "弹窗"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/components/CheckinStatsModal.tsx:CheckinStatsModal",
+      "type": "function",
+      "name": "CheckinStatsModal",
+      "filePath": "apps/mobile/src/features/home/components/CheckinStatsModal.tsx",
+      "lineRange": [
+        18,
+        164
+      ],
+      "summary": "首页的弹窗组件\"CheckinStatsModal\"，承载模态交互。",
+      "tags": [
+        "组件",
+        "首页",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/components/DateBar.tsx",
+      "type": "file",
+      "name": "DateBar.tsx",
+      "filePath": "apps/mobile/src/features/home/components/DateBar.tsx",
+      "summary": "首页模块的UI 组件\"DateBar\"。主导出\"DateBar\"。轻量实现。",
+      "tags": [
+        "首页",
+        "聚合",
+        "组件"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/home/components/DateBar.tsx:DateBar",
+      "type": "function",
+      "name": "DateBar",
+      "filePath": "apps/mobile/src/features/home/components/DateBar.tsx",
+      "lineRange": [
+        14,
+        50
+      ],
+      "summary": "首页的栏组件\"DateBar\"，如标签栏、筛选栏或操作栏。",
+      "tags": [
+        "组件",
+        "首页",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:apps/mobile/src/features/diet/WuxingRadarChart.tsx",
+      "target": "function:apps/mobile/src/features/diet/WuxingRadarChart.tsx:WuxingRadarChart",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/diet/WuxingRadarChart.tsx",
+      "target": "function:apps/mobile/src/features/diet/WuxingRadarChart.tsx:WuxingRadarChart",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/ExerciseHistoryScreen.tsx",
+      "target": "function:apps/mobile/src/features/exercise/ExerciseHistoryScreen.tsx:DetailCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/ExerciseHistoryScreen.tsx",
+      "target": "function:apps/mobile/src/features/exercise/ExerciseHistoryScreen.tsx:ExerciseHistoryScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/ExerciseHistoryScreen.tsx",
+      "target": "function:apps/mobile/src/features/exercise/ExerciseHistoryScreen.tsx:ExerciseHistoryScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/ExerciseScreen.tsx",
+      "target": "function:apps/mobile/src/features/exercise/ExerciseScreen.tsx:ExerciseScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/ExerciseScreen.tsx",
+      "target": "function:apps/mobile/src/features/exercise/ExerciseScreen.tsx:ExerciseScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/TrainingCalendar.tsx",
+      "target": "function:apps/mobile/src/features/exercise/TrainingCalendar.tsx:TrainingCalendar",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/TrainingCalendar.tsx",
+      "target": "function:apps/mobile/src/features/exercise/TrainingCalendar.tsx:TrainingCalendar",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useAmapComponents.ts",
+      "target": "function:apps/mobile/src/features/exercise/hooks/useAmapComponents.ts:useAmapComponents",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/hooks/useAmapComponents.ts",
+      "target": "function:apps/mobile/src/features/exercise/hooks/useAmapComponents.ts:useAmapComponents",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/fasting/FastHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/fasting/FastHistoryPage.tsx:calcStreak",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/fasting/FastHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/fasting/FastHistoryPage.tsx:StatsCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/fasting/FastHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/fasting/FastHistoryPage.tsx:Heatmap",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/fasting/FastHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/fasting/FastHistoryPage.tsx:FastCalendarScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/fasting/FastHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/fasting/FastHistoryPage.tsx:FastCalendarScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/fasting/FastHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/fasting/FastHistoryPage.tsx:DetailModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/fasting/FastHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/fasting/FastHistoryPage.tsx:FastHistoryPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/fasting/FastHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/fasting/FastHistoryPage.tsx:FastHistoryPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/fasting/FastingScreen.tsx",
+      "target": "function:apps/mobile/src/features/fasting/FastingScreen.tsx:FastingScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/fasting/FastingScreen.tsx",
+      "target": "function:apps/mobile/src/features/fasting/FastingScreen.tsx:FastingScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/ClusterMarker.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/ClusterMarker.tsx:ClusterMarker",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/ClusterMarker.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/ClusterMarker.tsx:ClusterMarker",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/LoadingOverlay.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/LoadingOverlay.tsx:LoadingOverlay",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/LoadingOverlay.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/LoadingOverlay.tsx:LoadingOverlay",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/PrivacyIntroModal.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/PrivacyIntroModal.tsx:PrivacyIntroModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/PrivacyIntroModal.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/PrivacyIntroModal.tsx:PrivacyIntroModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useGoalResolver.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/hooks/useGoalResolver.ts:useGoalResolver",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useGoalResolver.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/hooks/useGoalResolver.ts:useGoalResolver",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitDetailScreen.tsx",
+      "target": "function:apps/mobile/src/features/habits/HabitDetailScreen.tsx:HabitDetailScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitDetailScreen.tsx",
+      "target": "function:apps/mobile/src/features/habits/HabitDetailScreen.tsx:HabitDetailScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitStatsSection.tsx",
+      "target": "function:apps/mobile/src/features/habits/HabitStatsSection.tsx:HabitStatsSection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitStatsSection.tsx",
+      "target": "function:apps/mobile/src/features/habits/HabitStatsSection.tsx:HabitStatsSection",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitsScreen.tsx",
+      "target": "function:apps/mobile/src/features/habits/HabitsScreen.tsx:HabitsScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitsScreen.tsx",
+      "target": "function:apps/mobile/src/features/habits/HabitsScreen.tsx:HabitsScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitActionMenu.tsx",
+      "target": "function:apps/mobile/src/features/habits/components/HabitActionMenu.tsx:HabitActionMenu",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitActionMenu.tsx",
+      "target": "function:apps/mobile/src/features/habits/components/HabitActionMenu.tsx:HabitActionMenu",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitCalendarModal.tsx",
+      "target": "function:apps/mobile/src/features/habits/components/HabitCalendarModal.tsx:HabitCalendarModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitCalendarModal.tsx",
+      "target": "function:apps/mobile/src/features/habits/components/HabitCalendarModal.tsx:HabitCalendarModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitCard.tsx",
+      "target": "function:apps/mobile/src/features/habits/components/HabitCard.tsx:HabitCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitCheckinButton.tsx",
+      "target": "function:apps/mobile/src/features/habits/components/HabitCheckinButton.tsx:HabitCheckinButton",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitCheckinButton.tsx",
+      "target": "function:apps/mobile/src/features/habits/components/HabitCheckinButton.tsx:HabitCheckinButton",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitDeleteConfirmModal.tsx",
+      "target": "function:apps/mobile/src/features/habits/components/HabitDeleteConfirmModal.tsx:HabitDeleteConfirmModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitDeleteConfirmModal.tsx",
+      "target": "function:apps/mobile/src/features/habits/components/HabitDeleteConfirmModal.tsx:HabitDeleteConfirmModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitEmptyState.tsx",
+      "target": "function:apps/mobile/src/features/habits/components/HabitEmptyState.tsx:HabitEmptyState",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitEmptyState.tsx",
+      "target": "function:apps/mobile/src/features/habits/components/HabitEmptyState.tsx:HabitEmptyState",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitFilterBar.tsx",
+      "target": "function:apps/mobile/src/features/habits/components/HabitFilterBar.tsx:HabitFilterBar",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitFilterBar.tsx",
+      "target": "function:apps/mobile/src/features/habits/components/HabitFilterBar.tsx:HabitFilterBar",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitFormModal.tsx",
+      "target": "function:apps/mobile/src/features/habits/components/HabitFormModal.tsx:HabitFormModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitFormModal.tsx",
+      "target": "function:apps/mobile/src/features/habits/components/HabitFormModal.tsx:HabitFormModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitStatusReasonModal.tsx",
+      "target": "function:apps/mobile/src/features/habits/components/HabitStatusReasonModal.tsx:HabitStatusReasonModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitStatusReasonModal.tsx",
+      "target": "function:apps/mobile/src/features/habits/components/HabitStatusReasonModal.tsx:HabitStatusReasonModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/hooks/useHabitActions.ts",
+      "target": "function:apps/mobile/src/features/habits/hooks/useHabitActions.ts:useHabitActions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/hooks/useHabitActions.ts",
+      "target": "function:apps/mobile/src/features/habits/hooks/useHabitActions.ts:useHabitActions",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/hooks/useHabitForm.ts",
+      "target": "function:apps/mobile/src/features/habits/hooks/useHabitForm.ts:useHabitForm",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/hooks/useHabitForm.ts",
+      "target": "function:apps/mobile/src/features/habits/hooks/useHabitForm.ts:useHabitForm",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/health/HealthService.ts",
+      "target": "function:apps/mobile/src/features/health/HealthService.ts:isHealthAvailable",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/health/HealthService.ts",
+      "target": "function:apps/mobile/src/features/health/HealthService.ts:isHealthAvailable",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/health/HealthService.ts",
+      "target": "function:apps/mobile/src/features/health/HealthService.ts:requestHealthPermissions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/health/HealthService.ts",
+      "target": "function:apps/mobile/src/features/health/HealthService.ts:requestHealthPermissions",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/health/HealthService.ts",
+      "target": "function:apps/mobile/src/features/health/HealthService.ts:readTodaySteps",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/health/HealthService.ts",
+      "target": "function:apps/mobile/src/features/health/HealthService.ts:readTodaySteps",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/health/HealthService.ts",
+      "target": "function:apps/mobile/src/features/health/HealthService.ts:readLatestWeight",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/health/HealthService.ts",
+      "target": "function:apps/mobile/src/features/health/HealthService.ts:readLatestWeight",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/health/HealthService.ts",
+      "target": "function:apps/mobile/src/features/health/HealthService.ts:writeWorkout",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/health/HealthService.ts",
+      "target": "function:apps/mobile/src/features/health/HealthService.ts:writeWorkout",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/health/HealthService.ts",
+      "target": "function:apps/mobile/src/features/health/HealthService.ts:performHealthSync",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/health/HealthService.ts",
+      "target": "function:apps/mobile/src/features/health/HealthService.ts:performHealthSync",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/Banner.tsx",
+      "target": "function:apps/mobile/src/features/home/components/Banner.tsx:Banner",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/Banner.tsx",
+      "target": "function:apps/mobile/src/features/home/components/Banner.tsx:Banner",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/CheckinModal.tsx",
+      "target": "function:apps/mobile/src/features/home/components/CheckinModal.tsx:CheckinModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/CheckinModal.tsx",
+      "target": "function:apps/mobile/src/features/home/components/CheckinModal.tsx:CheckinModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/CheckinModal.tsx",
+      "target": "function:apps/mobile/src/features/home/components/CheckinModal.tsx:RowItem",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/CheckinReflection.tsx",
+      "target": "function:apps/mobile/src/features/home/components/CheckinReflection.tsx:CheckinReflection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/CheckinReflection.tsx",
+      "target": "function:apps/mobile/src/features/home/components/CheckinReflection.tsx:CheckinReflection",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/CheckinStatsModal.tsx",
+      "target": "function:apps/mobile/src/features/home/components/CheckinStatsModal.tsx:CheckinStatsModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/CheckinStatsModal.tsx",
+      "target": "function:apps/mobile/src/features/home/components/CheckinStatsModal.tsx:CheckinStatsModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/DateBar.tsx",
+      "target": "function:apps/mobile/src/features/home/components/DateBar.tsx:DateBar",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/DateBar.tsx",
+      "target": "function:apps/mobile/src/features/home/components/DateBar.tsx:DateBar",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/diet/WuxingRadarChart.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/ExerciseHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/ExerciseHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/features/exercise/hooks/useAmapComponents.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/ExerciseHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/features/exercise/TrainingCalendar.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/ExerciseHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/ExerciseHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/ExerciseHistoryScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/ExerciseScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/ExerciseScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/ExerciseScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/ExerciseScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/ExerciseScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/exercise/TrainingCalendar.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/fasting/FastHistoryPage.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/fasting/FastHistoryPage.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/fasting/FastHistoryPage.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/fasting/FastHistoryPage.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/fasting/FastingScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/fasting/FastingScreen.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/components/ActiveInsightBar.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/fasting/FastingScreen.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/hooks/useGoalResolver.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/fasting/FastingScreen.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/fasting/FastingScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/fasting/FastingScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/fasting/FastingScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/fasting/FastingScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/ClusterMarker.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/LoadingOverlay.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/LoadingOverlay.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/PrivacyIntroModal.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/PrivacyIntroModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useGoalResolver.ts",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useGoalResolver.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitDetailScreen.tsx",
+      "target": "file:apps/mobile/src/components/charts/CalendarGrid.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitDetailScreen.tsx",
+      "target": "file:apps/mobile/src/components/TimePickerModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitDetailScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitDetailScreen.tsx",
+      "target": "file:apps/mobile/src/features/habits/constants.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitDetailScreen.tsx",
+      "target": "file:apps/mobile/src/features/habits/HabitStatsSection.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitDetailScreen.tsx",
+      "target": "file:apps/mobile/src/features/notifications/NotificationService.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitDetailScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitDetailScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitDetailScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitStatsSection.tsx",
+      "target": "file:apps/mobile/src/components/charts/BarChart.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitStatsSection.tsx",
+      "target": "file:apps/mobile/src/components/charts/LineChart.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitStatsSection.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitStatsSection.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitsScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitsScreen.tsx",
+      "target": "file:apps/mobile/src/features/habits/components/HabitActionMenu.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitsScreen.tsx",
+      "target": "file:apps/mobile/src/features/habits/components/HabitCalendarModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitsScreen.tsx",
+      "target": "file:apps/mobile/src/features/habits/components/HabitCard.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitsScreen.tsx",
+      "target": "file:apps/mobile/src/features/habits/components/HabitDeleteConfirmModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitsScreen.tsx",
+      "target": "file:apps/mobile/src/features/habits/components/HabitEmptyState.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitsScreen.tsx",
+      "target": "file:apps/mobile/src/features/habits/components/HabitFilterBar.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitsScreen.tsx",
+      "target": "file:apps/mobile/src/features/habits/components/HabitFormModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitsScreen.tsx",
+      "target": "file:apps/mobile/src/features/habits/components/HabitStatusReasonModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitsScreen.tsx",
+      "target": "file:apps/mobile/src/features/habits/constants.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitsScreen.tsx",
+      "target": "file:apps/mobile/src/features/habits/hooks/useHabitActions.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitsScreen.tsx",
+      "target": "file:apps/mobile/src/features/habits/hooks/useHabitForm.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitsScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitsScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitsScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/HabitsScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitActionMenu.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitActionMenu.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitCalendarModal.tsx",
+      "target": "file:apps/mobile/src/components/charts/CalendarGrid.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitCalendarModal.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitCalendarModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitCard.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitCard.tsx",
+      "target": "file:apps/mobile/src/features/habits/constants.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitCard.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitCheckinButton.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitCheckinButton.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitDeleteConfirmModal.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitDeleteConfirmModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitEmptyState.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitEmptyState.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitFilterBar.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitFilterBar.tsx",
+      "target": "file:apps/mobile/src/features/habits/constants.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitFilterBar.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitFormModal.tsx",
+      "target": "file:apps/mobile/src/components/TimePickerModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitFormModal.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitFormModal.tsx",
+      "target": "file:apps/mobile/src/features/habits/hooks/useHabitForm.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitFormModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitStatusReasonModal.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/components/HabitStatusReasonModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/constants.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/hooks/useHabitActions.ts",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/hooks/useHabitActions.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/hooks/useHabitForm.ts",
+      "target": "file:apps/mobile/src/features/notifications/NotificationService.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/hooks/useHabitForm.ts",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/habits/hooks/useHabitForm.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/health/HealthService.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/Banner.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/Banner.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/CheckinModal.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/CheckinModal.tsx",
+      "target": "file:apps/mobile/src/features/home/components/CheckinReflection.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/CheckinModal.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/CheckinModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/CheckinReflection.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/CheckinReflection.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/CheckinStatsModal.tsx",
+      "target": "file:apps/mobile/src/components/charts/CalendarGrid.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/CheckinStatsModal.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/CheckinStatsModal.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/CheckinStatsModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/DateBar.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/home/components/DateBar.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:apps/mobile/src/features/fasting/FastHistoryPage.tsx:StatsCard",
+      "target": "function:apps/mobile/src/features/fasting/FastHistoryPage.tsx:calcStreak",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:apps/mobile/src/features/fasting/FastHistoryPage.tsx:FastCalendarScreen",
+      "target": "function:apps/mobile/src/features/fasting/FastHistoryPage.tsx:calcStreak",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:apps/mobile/src/features/health/HealthService.ts:performHealthSync",
+      "target": "function:apps/mobile/src/features/health/HealthService.ts:isHealthAvailable",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:apps/mobile/src/features/health/HealthService.ts:performHealthSync",
+      "target": "function:apps/mobile/src/features/health/HealthService.ts:readTodaySteps",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:apps/mobile/src/features/health/HealthService.ts:performHealthSync",
+      "target": "function:apps/mobile/src/features/health/HealthService.ts:readLatestWeight",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ]
+}

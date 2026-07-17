@@ -1,0 +1,521 @@
+{
+  "nodes": [
+    {
+      "id": "file:packages/core/src/business/reflectionGraph.test.ts",
+      "type": "file",
+      "name": "reflectionGraph.test.ts",
+      "filePath": "packages/core/src/business/reflectionGraph.test.ts",
+      "summary": "reflectionGraph 关系图构建的单元测试，构造感念/计划/习惯输入并校验图输出。",
+      "tags": [
+        "test",
+        "business",
+        "graph",
+        "reflections"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/business/reflectionGraph.ts",
+      "type": "file",
+      "name": "reflectionGraph.ts",
+      "filePath": "packages/core/src/business/reflectionGraph.ts",
+      "summary": "感念关系图纯函数，依据 context 将计划/习惯/感念/心轨/愿景构建为节点-边图并生成洞察。",
+      "tags": [
+        "business",
+        "graph",
+        "reflections",
+        "pure-function",
+        "insights"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:packages/core/src/types/reflectionGraph.ts",
+      "type": "file",
+      "name": "reflectionGraph.ts",
+      "filePath": "packages/core/src/types/reflectionGraph.ts",
+      "summary": "关系图构建的类型定义，包含 RelationNode、RelationEdge、GraphBuildInput/Output 等接口。",
+      "tags": [
+        "type-definition",
+        "graph",
+        "reflections",
+        "interface",
+        "shared"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/business/reflectionGraph.test.ts:makeReflection",
+      "type": "function",
+      "name": "makeReflection",
+      "filePath": "packages/core/src/business/reflectionGraph.test.ts",
+      "lineRange": [
+        10,
+        17
+      ],
+      "summary": "构造感念测试桩对象（含 id/content/tags）。",
+      "tags": [
+        "test-helper",
+        "reflections",
+        "fixture"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/reflectionGraph.test.ts:makeInput",
+      "type": "function",
+      "name": "makeInput",
+      "filePath": "packages/core/src/business/reflectionGraph.test.ts",
+      "lineRange": [
+        19,
+        32
+      ],
+      "summary": "构造 GraphBuildInput 测试桩，组合感念/计划/习惯等输入。",
+      "tags": [
+        "test-helper",
+        "graph",
+        "fixture"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/reflectionGraph.ts:makeNode",
+      "type": "function",
+      "name": "makeNode",
+      "filePath": "packages/core/src/business/reflectionGraph.ts",
+      "lineRange": [
+        36,
+        56
+      ],
+      "summary": "创建 RelationNode，截断超长标签并随机布局坐标。",
+      "tags": [
+        "graph",
+        "reflections",
+        "builder"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/reflectionGraph.ts:addEdge",
+      "type": "function",
+      "name": "addEdge",
+      "filePath": "packages/core/src/business/reflectionGraph.ts",
+      "lineRange": [
+        59,
+        69
+      ],
+      "summary": "向边列表追加 RelationEdge，跳过重复三元组。",
+      "tags": [
+        "graph",
+        "reflections",
+        "builder"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/reflectionGraph.ts:buildPlanGraph",
+      "type": "function",
+      "name": "buildPlanGraph",
+      "filePath": "packages/core/src/business/reflectionGraph.ts",
+      "lineRange": [
+        72,
+        122
+      ],
+      "summary": "plan 上下文图构建：创建计划节点并关联子项、感念与心轨边。",
+      "tags": [
+        "graph",
+        "reflections",
+        "builder"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/business/reflectionGraph.ts:buildHabitGraph",
+      "type": "function",
+      "name": "buildHabitGraph",
+      "filePath": "packages/core/src/business/reflectionGraph.ts",
+      "lineRange": [
+        125,
+        169
+      ],
+      "summary": "habit 上下文图构建：创建习惯节点并关联愿景边。",
+      "tags": [
+        "graph",
+        "reflections",
+        "builder"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/business/reflectionGraph.ts:buildReflectionGraph",
+      "type": "function",
+      "name": "buildReflectionGraph",
+      "filePath": "packages/core/src/business/reflectionGraph.ts",
+      "lineRange": [
+        172,
+        238
+      ],
+      "summary": "reflection 上下文图构建：创建感念节点并关联标签与链接边。",
+      "tags": [
+        "graph",
+        "reflections",
+        "builder"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/business/reflectionGraph.ts:buildTrailGraph",
+      "type": "function",
+      "name": "buildTrailGraph",
+      "filePath": "packages/core/src/business/reflectionGraph.ts",
+      "lineRange": [
+        241,
+        297
+      ],
+      "summary": "trail 上下文图构建：创建心轨节点并关联感念与计划项边。",
+      "tags": [
+        "graph",
+        "reflections",
+        "builder"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/business/reflectionGraph.ts:buildPlanItemGraph",
+      "type": "function",
+      "name": "buildPlanItemGraph",
+      "filePath": "packages/core/src/business/reflectionGraph.ts",
+      "lineRange": [
+        300,
+        358
+      ],
+      "summary": "planItem 上下文图构建：创建计划项节点并与计划/感念/习惯连边。",
+      "tags": [
+        "graph",
+        "reflections",
+        "builder"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/business/reflectionGraph.ts:limitNodes",
+      "type": "function",
+      "name": "limitNodes",
+      "filePath": "packages/core/src/business/reflectionGraph.ts",
+      "lineRange": [
+        364,
+        388
+      ],
+      "summary": "按上下文节点截断图规模，保留关联节点与边。",
+      "tags": [
+        "graph",
+        "reflections",
+        "builder"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/reflectionGraph.ts:generateInsights",
+      "type": "function",
+      "name": "generateInsights",
+      "filePath": "packages/core/src/business/reflectionGraph.ts",
+      "lineRange": [
+        391,
+        433
+      ],
+      "summary": "依据当前图结构与上下文类型生成洞察文本列表（导出）。",
+      "tags": [
+        "graph",
+        "reflections",
+        "insights",
+        "exported"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/business/reflectionGraph.ts:buildRelationGraph",
+      "type": "function",
+      "name": "buildRelationGraph",
+      "filePath": "packages/core/src/business/reflectionGraph.ts",
+      "lineRange": [
+        436,
+        474
+      ],
+      "summary": "主入口：组合各上下文图构建、节点截断与洞察生成，返回 GraphBuildResult（导出）。",
+      "tags": [
+        "graph",
+        "reflections",
+        "entry",
+        "exported"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/business/reflectionGraph.ts:linkPlansToVisions",
+      "type": "function",
+      "name": "linkPlansToVisions",
+      "filePath": "packages/core/src/business/reflectionGraph.ts",
+      "lineRange": [
+        477,
+        495
+      ],
+      "summary": "建立计划节点到愿景节点的关联边。",
+      "tags": [
+        "graph",
+        "reflections",
+        "builder"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/reflectionGraph.ts:linkHabitsToVisions",
+      "type": "function",
+      "name": "linkHabitsToVisions",
+      "filePath": "packages/core/src/business/reflectionGraph.ts",
+      "lineRange": [
+        498,
+        516
+      ],
+      "summary": "建立习惯节点到愿景节点的关联边。",
+      "tags": [
+        "graph",
+        "reflections",
+        "builder"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:packages/core/src/business/reflectionGraph.test.ts",
+      "target": "file:packages/core/src/business/reflectionGraph.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/reflectionGraph.test.ts",
+      "target": "file:packages/core/src/types/reflectionGraph.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/reflectionGraph.ts",
+      "target": "file:packages/core/src/types/reflectionGraph.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/reflectionGraph.test.ts",
+      "target": "function:packages/core/src/business/reflectionGraph.test.ts:makeReflection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/reflectionGraph.test.ts",
+      "target": "function:packages/core/src/business/reflectionGraph.test.ts:makeInput",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/reflectionGraph.ts",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:makeNode",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/reflectionGraph.ts",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:addEdge",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/reflectionGraph.ts",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:buildPlanGraph",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/reflectionGraph.ts",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:buildHabitGraph",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/reflectionGraph.ts",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:buildReflectionGraph",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/reflectionGraph.ts",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:buildTrailGraph",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/reflectionGraph.ts",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:buildPlanItemGraph",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/reflectionGraph.ts",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:limitNodes",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/reflectionGraph.ts",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:generateInsights",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/reflectionGraph.ts",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:buildRelationGraph",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/reflectionGraph.ts",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:linkPlansToVisions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/reflectionGraph.ts",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:linkHabitsToVisions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/reflectionGraph.ts",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:generateInsights",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/reflectionGraph.ts",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:buildRelationGraph",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/business/reflectionGraph.ts:buildRelationGraph",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:buildPlanGraph",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/business/reflectionGraph.ts:buildRelationGraph",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:buildHabitGraph",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/business/reflectionGraph.ts:buildRelationGraph",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:buildReflectionGraph",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/business/reflectionGraph.ts:buildRelationGraph",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:buildTrailGraph",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/business/reflectionGraph.ts:buildRelationGraph",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:buildPlanItemGraph",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/business/reflectionGraph.ts:buildRelationGraph",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:linkPlansToVisions",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/business/reflectionGraph.ts:buildRelationGraph",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:linkHabitsToVisions",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/business/reflectionGraph.ts:buildRelationGraph",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:limitNodes",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/business/reflectionGraph.ts:buildRelationGraph",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:generateInsights",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/business/reflectionGraph.ts:buildPlanGraph",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:makeNode",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/business/reflectionGraph.ts:buildPlanGraph",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:addEdge",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/business/reflectionGraph.ts:buildReflectionGraph",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:makeNode",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/business/reflectionGraph.ts:buildTrailGraph",
+      "target": "function:packages/core/src/business/reflectionGraph.ts:addEdge",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/business/reflectionGraph.test.ts:makeInput",
+      "target": "function:packages/core/src/business/reflectionGraph.test.ts:makeReflection",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ]
+}

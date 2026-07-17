@@ -1,0 +1,636 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 25,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "backend/pb_hooks/sync.pb.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 261,
+      "nonEmptyLines": 243,
+      "callGraph": [
+        {
+          "caller": "escapeFilterValue",
+          "callee": "String",
+          "lineNumber": 13
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, '\\\\(').replace(/\\)/g, '\\\\)').replace",
+          "lineNumber": 13
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, '\\\\(').replace",
+          "lineNumber": 13
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace",
+          "lineNumber": 13
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace",
+          "lineNumber": 13
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace",
+          "lineNumber": 13
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace",
+          "lineNumber": 13
+        },
+        {
+          "caller": "isValidId",
+          "callee": "uuidRe.test",
+          "lineNumber": 16
+        },
+        {
+          "caller": "isValidId",
+          "callee": "idRe.test",
+          "lineNumber": 16
+        },
+        {
+          "caller": "buildUserFilter",
+          "callee": "escapeFilterValue",
+          "lineNumber": 18
+        },
+        {
+          "caller": "buildUserFilter",
+          "callee": "escapeFilterValue",
+          "lineNumber": 20
+        },
+        {
+          "caller": "buildFilter",
+          "callee": "escapeFilterValue",
+          "lineNumber": 24
+        },
+        {
+          "caller": "buildFilter",
+          "callee": "escapeFilterValue",
+          "lineNumber": 24
+        },
+        {
+          "caller": "safeFindRecords",
+          "callee": "app.findRecordsByFilter",
+          "lineNumber": 26
+        },
+        {
+          "caller": "safeFindRecords",
+          "callee": "app.findRecordsByFilter",
+          "lineNumber": 27
+        },
+        {
+          "caller": "safeFindRecords",
+          "callee": "app.findRecordsByFilter",
+          "lineNumber": 28
+        },
+        {
+          "caller": "safeFindRecords",
+          "callee": "app.findRecordsByFilter",
+          "lineNumber": 29
+        },
+        {
+          "caller": "parseRecordData",
+          "callee": "rec.get",
+          "lineNumber": 34
+        },
+        {
+          "caller": "parseRecordData",
+          "callee": "JSON.parse",
+          "lineNumber": 34
+        },
+        {
+          "caller": "exportRecord",
+          "callee": "rec.publicExport",
+          "lineNumber": 35
+        },
+        {
+          "caller": "exportRecord",
+          "callee": "JSON.parse",
+          "lineNumber": 35
+        },
+        {
+          "caller": "exportRecord",
+          "callee": "new Date(exported.updated_at).getTime",
+          "lineNumber": 35
+        },
+        {
+          "caller": "exportRecord",
+          "callee": "Object.keys",
+          "lineNumber": 35
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "String",
+          "lineNumber": 142
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, '\\\\(').replace(/\\)/g, '\\\\)').replace",
+          "lineNumber": 142
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, '\\\\(').replace",
+          "lineNumber": 142
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace",
+          "lineNumber": 142
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace",
+          "lineNumber": 142
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace",
+          "lineNumber": 142
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace",
+          "lineNumber": 142
+        },
+        {
+          "caller": "buildUserFilter",
+          "callee": "escapeFilterValue",
+          "lineNumber": 144
+        },
+        {
+          "caller": "buildUserFilter",
+          "callee": "escapeFilterValue",
+          "lineNumber": 146
+        },
+        {
+          "caller": "safeFindRecords",
+          "callee": "app.findRecordsByFilter",
+          "lineNumber": 151
+        },
+        {
+          "caller": "safeFindRecords",
+          "callee": "app.findRecordsByFilter",
+          "lineNumber": 152
+        },
+        {
+          "caller": "safeFindRecords",
+          "callee": "app.findRecordsByFilter",
+          "lineNumber": 153
+        },
+        {
+          "caller": "safeFindRecords",
+          "callee": "app.findRecordsByFilter",
+          "lineNumber": 154
+        },
+        {
+          "caller": "exportRecord",
+          "callee": "rec.publicExport",
+          "lineNumber": 159
+        },
+        {
+          "caller": "exportRecord",
+          "callee": "JSON.parse",
+          "lineNumber": 159
+        },
+        {
+          "caller": "exportRecord",
+          "callee": "new Date(exported.updated_at).getTime",
+          "lineNumber": 159
+        },
+        {
+          "caller": "exportRecord",
+          "callee": "Object.keys",
+          "lineNumber": 159
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "String",
+          "lineNumber": 220
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, '\\\\(').replace(/\\)/g, '\\\\)').replace",
+          "lineNumber": 220
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, '\\\\(').replace",
+          "lineNumber": 220
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace",
+          "lineNumber": 220
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace",
+          "lineNumber": 220
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace",
+          "lineNumber": 220
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace",
+          "lineNumber": 220
+        },
+        {
+          "caller": "buildUserFilter",
+          "callee": "escapeFilterValue",
+          "lineNumber": 222
+        },
+        {
+          "caller": "buildUserFilter",
+          "callee": "escapeFilterValue",
+          "lineNumber": 224
+        },
+        {
+          "caller": "safeFindRecords",
+          "callee": "app.findRecordsByFilter",
+          "lineNumber": 229
+        },
+        {
+          "caller": "safeFindRecords",
+          "callee": "app.findRecordsByFilter",
+          "lineNumber": 230
+        },
+        {
+          "caller": "safeFindRecords",
+          "callee": "app.findRecordsByFilter",
+          "lineNumber": 231
+        },
+        {
+          "caller": "safeFindRecords",
+          "callee": "app.findRecordsByFilter",
+          "lineNumber": 232
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_hooks/types.d.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 66,
+      "nonEmptyLines": 59,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_hooks/user_token.pb.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 87,
+      "nonEmptyLines": 79,
+      "callGraph": [
+        {
+          "caller": "escapeFilterValue",
+          "callee": "String",
+          "lineNumber": 61
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, \"\\\\\\\\\").replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, \"\\\\(\").replace(/\\)/g, \"\\\\)\").replace",
+          "lineNumber": 62
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, \"\\\\\\\\\").replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, \"\\\\(\").replace",
+          "lineNumber": 62
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, \"\\\\\\\\\").replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace",
+          "lineNumber": 62
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, \"\\\\\\\\\").replace(/\"/g, '\\\\\"').replace",
+          "lineNumber": 62
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, \"\\\\\\\\\").replace",
+          "lineNumber": 62
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace",
+          "lineNumber": 62
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/001_global_pulse.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 200,
+      "nonEmptyLines": 189,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/001_init.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 262,
+      "nonEmptyLines": 261,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/002_add_checkin_reviews.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 32,
+      "nonEmptyLines": 31,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/002_ensure_sync_collections.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 113,
+      "nonEmptyLines": 102,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/003_add_exercise_entries.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 39,
+      "nonEmptyLines": 33,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/003_add_trail_notes.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 81,
+      "nonEmptyLines": 77,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/004_add_plan_collections.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 52,
+      "nonEmptyLines": 44,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/004_add_push_tokens.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 37,
+      "nonEmptyLines": 35,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/005_add_global_pulse_collections.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 79,
+      "nonEmptyLines": 77,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/005_add_grace_history.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 39,
+      "nonEmptyLines": 33,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/006_add_active_sessions.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 49,
+      "nonEmptyLines": 46,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/006_add_daily_custom_todos.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 73,
+      "nonEmptyLines": 64,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/007_add_thought_trail_collections.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 110,
+      "nonEmptyLines": 96,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/008_add_global_checkins_fields.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 51,
+      "nonEmptyLines": 43,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/010_create_active_sessions.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 49,
+      "nonEmptyLines": 47,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/011_leaderboard_and_session_permissions.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 61,
+      "nonEmptyLines": 58,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/012_add_remaining_sync_collections.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 63,
+      "nonEmptyLines": 59,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/012_fix_exercise_sport_key.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 43,
+      "nonEmptyLines": 36,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/013_fix_missing_sync_fields.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 57,
+      "nonEmptyLines": 50,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/014_add_login_epoch.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 37,
+      "nonEmptyLines": 33,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/014_fix_sync_collection_fields.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 52,
+      "nonEmptyLines": 47,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/015_fix_missing_created_fields.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 84,
+      "nonEmptyLines": 75,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    }
+  ]
+}

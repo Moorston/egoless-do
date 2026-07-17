@@ -1,0 +1,46 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 3,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "infra/scripts/backup-pb.sh",
+      "language": "shell",
+      "fileCategory": "script",
+      "totalLines": 80,
+      "nonEmptyLines": 67,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/scripts/deploy.sh",
+      "language": "shell",
+      "fileCategory": "script",
+      "totalLines": 65,
+      "nonEmptyLines": 53,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/scripts/restore-pb.sh",
+      "language": "shell",
+      "fileCategory": "script",
+      "totalLines": 70,
+      "nonEmptyLines": 58,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "nodes": [
+    {
+      "id": "document:.trellis/spec/guides/code-reuse-thinking-guide.md",
+      "type": "document",
+      "name": "code-reuse-thinking-guide.md",
+      "filePath": ".trellis/spec/guides/code-reuse-thinking-guide.md",
+      "summary": "代码复用思考指南，帮助开发者在写新代码前先搜索与识别重复模式（复制粘贴函数、相似组件、重复常量、重复字段提取），提供抽象时机判断与提交前检查清单。",
+      "tags": [
+        "documentation",
+        "code-reuse",
+        "thinking-guide",
+        "best-practices"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:.trellis/spec/guides/cross-layer-thinking-guide.md",
+      "type": "document",
+      "name": "cross-layer-thinking-guide.md",
+      "filePath": ".trellis/spec/guides/cross-layer-thinking-guide.md",
+      "summary": "跨层思考指南，针对跨越 API/Service/Component/多层的特性，指导映射数据流、识别边界与定义契约，并列出隐式格式假设、散落验证等常见跨层错误。",
+      "tags": [
+        "documentation",
+        "cross-layer",
+        "thinking-guide",
+        "architecture",
+        "data-flow"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "document:.trellis/spec/guides/index.md",
+      "type": "document",
+      "name": "index.md",
+      "filePath": ".trellis/spec/guides/index.md",
+      "summary": "思维指南总览页，介绍为何需要思维思维触发器与修改前必须先搜索的关键规则。",
+      "tags": [
+        "documentation",
+        "thinking-guide",
+        "index",
+        "best-practices"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:.trellis/spec/guides/index.md",
+      "target": "document:.trellis/spec/guides/code-reuse-thinking-guide.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/guides/index.md",
+      "target": "document:.trellis/spec/guides/cross-layer-thinking-guide.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

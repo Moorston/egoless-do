@@ -1,0 +1,3829 @@
+{
+  "scriptCompleted": true,
+  "stats": {
+    "filesScanned": 1184,
+    "filesWithImports": 634,
+    "totalEdges": 2001
+  },
+  "importMap": {
+    "_archive/web-legacy/instrumentation-client.ts": [],
+    "_archive/web-legacy/instrumentation.ts": [],
+    "_archive/web-legacy/next-env.d.ts": [],
+    "_archive/web-legacy/next.config.ts": [],
+    "_archive/web-legacy/package.json": [],
+    "_archive/web-legacy/public/manifest.json": [],
+    "_archive/web-legacy/public/sw-bg-sync.js": [],
+    "_archive/web-legacy/public/sw.js": [],
+    "_archive/web-legacy/public/workbox-495fd258.js": [],
+    "_archive/web-legacy/README.md": [],
+    "_archive/web-legacy/src/app/(auth)/forgot-password/page.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/app/(auth)/login/page.tsx": [
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/app/(auth)/register/page.tsx": [
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/app/api/_auth.ts": [
+      "_archive/web-legacy/src/app/api/_db.ts",
+      "_archive/web-legacy/src/app/api/_pb.ts"
+    ],
+    "_archive/web-legacy/src/app/api/_db.ts": [],
+    "_archive/web-legacy/src/app/api/_errors.ts": [],
+    "_archive/web-legacy/src/app/api/_pb.ts": [],
+    "_archive/web-legacy/src/app/api/_rateLimit.ts": [],
+    "_archive/web-legacy/src/app/api/_validation.ts": [],
+    "_archive/web-legacy/src/app/api/auth/check-email/route.ts": [
+      "_archive/web-legacy/src/app/api/_pb.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/app/api/auth/login/route.ts": [
+      "_archive/web-legacy/src/app/api/_pb.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts",
+      "_archive/web-legacy/src/app/api/constants.ts"
+    ],
+    "_archive/web-legacy/src/app/api/auth/logout/route.ts": [
+      "_archive/web-legacy/src/app/api/_auth.ts",
+      "_archive/web-legacy/src/app/api/_db.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts"
+    ],
+    "_archive/web-legacy/src/app/api/auth/me/route.ts": [
+      "_archive/web-legacy/src/app/api/_auth.ts",
+      "_archive/web-legacy/src/app/api/_pb.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts"
+    ],
+    "_archive/web-legacy/src/app/api/auth/refresh/route.ts": [
+      "_archive/web-legacy/src/app/api/_auth.ts",
+      "_archive/web-legacy/src/app/api/_pb.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts",
+      "_archive/web-legacy/src/app/api/constants.ts"
+    ],
+    "_archive/web-legacy/src/app/api/auth/register/route.ts": [
+      "_archive/web-legacy/src/app/api/_db.ts",
+      "_archive/web-legacy/src/app/api/_errors.ts",
+      "_archive/web-legacy/src/app/api/_pb.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts",
+      "_archive/web-legacy/src/app/api/_validation.ts",
+      "_archive/web-legacy/src/app/api/constants.ts"
+    ],
+    "_archive/web-legacy/src/app/api/auth/reset-password/route.ts": [
+      "_archive/web-legacy/src/app/api/_db.ts",
+      "_archive/web-legacy/src/app/api/_errors.ts",
+      "_archive/web-legacy/src/app/api/_pb.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts",
+      "_archive/web-legacy/src/app/api/_validation.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/app/api/auth/send-code/route.ts": [
+      "_archive/web-legacy/src/app/api/_db.ts",
+      "_archive/web-legacy/src/app/api/_pb.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/app/api/auth/wechat/route.ts": [
+      "_archive/web-legacy/src/app/api/_errors.ts",
+      "_archive/web-legacy/src/app/api/_pb.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts",
+      "_archive/web-legacy/src/app/api/constants.ts"
+    ],
+    "_archive/web-legacy/src/app/api/constants.ts": [],
+    "_archive/web-legacy/src/app/api/monitoring/route.ts": [],
+    "_archive/web-legacy/src/app/api/plan/notify-delayed/route.ts": [
+      "_archive/web-legacy/src/app/api/_auth.ts",
+      "_archive/web-legacy/src/app/api/_pb.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/app/api/push/route.ts": [
+      "_archive/web-legacy/src/app/api/_auth.ts",
+      "_archive/web-legacy/src/app/api/_pb.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/app/api/setup/route.ts": [
+      "_archive/web-legacy/src/app/api/_pb.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/app/error.tsx": [],
+    "_archive/web-legacy/src/app/global-error.tsx": [],
+    "_archive/web-legacy/src/app/globals.css": [],
+    "_archive/web-legacy/src/app/layout.tsx": [
+      "_archive/web-legacy/src/app/globals.css"
+    ],
+    "_archive/web-legacy/src/app/not-found.tsx": [],
+    "_archive/web-legacy/src/app/page.tsx": [],
+    "_archive/web-legacy/src/components/AmapContainer.tsx": [
+      "_archive/web-legacy/src/lib/amapLoader.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/AppHeader.tsx": [
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/AppShell.tsx": [
+      "_archive/web-legacy/src/components/AppHeader.tsx",
+      "_archive/web-legacy/src/components/BottomNav.tsx",
+      "_archive/web-legacy/src/components/ExerciseTab.tsx",
+      "_archive/web-legacy/src/components/FastingTab.tsx",
+      "_archive/web-legacy/src/components/HeaderTabs.tsx",
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/components/HomeTab.tsx",
+      "_archive/web-legacy/src/components/MeditateTab.tsx",
+      "_archive/web-legacy/src/components/SettingsTab.tsx",
+      "_archive/web-legacy/src/components/StarfieldBackground.tsx",
+      "_archive/web-legacy/src/components/useOverlay.ts",
+      "_archive/web-legacy/src/components/useReminder.ts",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/BottomNav.tsx": [
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/charts/BarChart.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/charts/CalendarGrid.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/charts/HeatmapGrid.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/charts/LineChart.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/CheckinDetailPage.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/CheckinPage.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/CheckinStatsModal.tsx": [
+      "_archive/web-legacy/src/components/charts/CalendarGrid.tsx",
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/DateRangePickerModal.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/ExerciseHistoryPage.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/lib/amapLoader.ts",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/ExerciseTab.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/components/useOverlay.ts",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/FastHistoryPage.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/FastingTab.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/components/useOverlay.ts",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/FoodLogPage.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/components/useFoodSearch.ts",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/GlobalMapPage.tsx": [
+      "_archive/web-legacy/src/components/AmapContainer.tsx",
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/GracePage.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/components/useOverlay.ts",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/HabitsTab.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/HeaderTabs.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/helpers.tsx": [],
+    "_archive/web-legacy/src/components/HistoryPage.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/components/useOverlay.ts",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/HomeTab.tsx": [
+      "_archive/web-legacy/src/components/CheckinStatsModal.tsx",
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/components/useFoodSearch.ts",
+      "_archive/web-legacy/src/components/useOverlay.ts",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/hooks/index.ts": [],
+    "_archive/web-legacy/src/components/hooks/useCachedStyle.ts": [],
+    "_archive/web-legacy/src/components/hooks/useResponsive.ts": [],
+    "_archive/web-legacy/src/components/hooks/useT.ts": [
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/hooks/useTheme.ts": [
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/ItemHeatmap.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/ManagerPanelShared.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/MedHistoryPage.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/MeditateTab.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/components/useOverlay.ts",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/MoodManagerPanel.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/components/ManagerPanelShared.tsx",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/PlanCreatePage.tsx": [
+      "_archive/web-legacy/src/components/DateRangePickerModal.tsx",
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/PlanDetailContent.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/components/ItemHeatmap.tsx",
+      "_archive/web-legacy/src/components/useDailyTodo.ts",
+      "_archive/web-legacy/src/components/useOverlay.ts",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/PlanDetailPage.tsx": [
+      "_archive/web-legacy/src/components/PlanDetailContent.tsx",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/PlanHistoryPage.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/components/useOverlay.ts",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/PlanTab.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/components/PlanDetailContent.tsx",
+      "_archive/web-legacy/src/components/useOverlay.ts",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/PlanTodoListModal.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/PrivacyPolicyPage.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/ReflectionsTab.tsx": [
+      "_archive/web-legacy/src/components/charts/LineChart.tsx",
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/components/MoodManagerPanel.tsx",
+      "_archive/web-legacy/src/components/TagManagerPanel.tsx",
+      "_archive/web-legacy/src/components/useOverlay.ts",
+      "_archive/web-legacy/src/components/useReflections.ts",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/SettingsTab.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/components/ManagerPanelShared.tsx",
+      "_archive/web-legacy/src/components/useOverlay.ts",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/sport/SportActivePage.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/sport/SportPrepPage.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/sport/SportReportPage.tsx": [
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/SportPage.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/components/sport/SportActivePage.tsx",
+      "_archive/web-legacy/src/components/sport/SportPrepPage.tsx",
+      "_archive/web-legacy/src/components/sport/SportReportPage.tsx",
+      "_archive/web-legacy/src/lib/amapLoader.ts",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/StarfieldBackground.tsx": [],
+    "_archive/web-legacy/src/components/StatsPage.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/components/StatsTab.tsx",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/StatsTab.tsx": [
+      "_archive/web-legacy/src/components/charts/BarChart.tsx",
+      "_archive/web-legacy/src/components/charts/CalendarGrid.tsx",
+      "_archive/web-legacy/src/components/charts/LineChart.tsx",
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/StreakBreakPage.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/components/useOverlay.ts",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/styles.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/TagManagerPanel.tsx": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/components/ManagerPanelShared.tsx",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/ui/Checkbox.tsx": [
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/ui/ErrorBoundary.tsx": [
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/ui/index.ts": [],
+    "_archive/web-legacy/src/components/ui/LinkWorldBtn.tsx": [
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/ui/Modal.tsx": [
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/ui/RowItem.tsx": [
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/ui/Toggle.tsx": [
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/ui/VirtualList.tsx": [],
+    "_archive/web-legacy/src/components/useDailyTodo.ts": [
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/useFoodSearch.ts": [
+      "_archive/web-legacy/src/components/helpers.tsx",
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/useOverlay.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/useReflections.ts": [
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/useReminder.ts": [
+      "_archive/web-legacy/src/store/useWebStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/lib/amapLoader.ts": [],
+    "_archive/web-legacy/src/middleware.ts": [],
+    "_archive/web-legacy/src/store/useWebStore.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/types/amap.d.ts": [],
+    "_archive/web-legacy/tsconfig.json": [],
+    "_archive/web-legacy/vitest.config.ts": [],
+    ".clinerules": [],
+    ".dockerignore": [],
+    ".env.example": [],
+    ".github/copilot-instructions.md": [],
+    ".github/dependabot.yml": [],
+    ".github/workflows/ci.yml": [],
+    ".gitmodules": [],
+    ".npmrc": [],
+    ".trellis/.template-hashes.json": [],
+    ".trellis/.version": [],
+    ".trellis/agents/check.md": [],
+    ".trellis/agents/implement.md": [],
+    ".trellis/config.yaml": [],
+    ".trellis/plans/auth-proxy-extraction.md": [],
+    ".trellis/scripts/__init__.py": [],
+    ".trellis/scripts/add_session.py": [
+      ".trellis/scripts/common/config.py",
+      ".trellis/scripts/common/developer.py",
+      ".trellis/scripts/common/git.py",
+      ".trellis/scripts/common/paths.py",
+      ".trellis/scripts/common/safe_commit.py",
+      ".trellis/scripts/common/tasks.py",
+      ".trellis/scripts/common/types.py"
+    ],
+    ".trellis/scripts/common/__init__.py": [
+      ".trellis/scripts/common/active_task.py",
+      ".trellis/scripts/common/io.py",
+      ".trellis/scripts/common/paths.py"
+    ],
+    ".trellis/scripts/common/active_task.py": [],
+    ".trellis/scripts/common/cli_adapter.py": [],
+    ".trellis/scripts/common/config.py": [
+      ".trellis/scripts/common/paths.py"
+    ],
+    ".trellis/scripts/common/developer.py": [
+      ".trellis/scripts/common/paths.py"
+    ],
+    ".trellis/scripts/common/git_context.py": [
+      ".trellis/scripts/common/git.py",
+      ".trellis/scripts/common/packages_context.py",
+      ".trellis/scripts/common/session_context.py",
+      ".trellis/scripts/common/trellis_config.py",
+      ".trellis/scripts/common/workflow_phase.py"
+    ],
+    ".trellis/scripts/common/git.py": [],
+    ".trellis/scripts/common/io.py": [],
+    ".trellis/scripts/common/log.py": [],
+    ".trellis/scripts/common/packages_context.py": [
+      ".trellis/scripts/common/config.py",
+      ".trellis/scripts/common/paths.py",
+      ".trellis/scripts/common/tasks.py"
+    ],
+    ".trellis/scripts/common/paths.py": [],
+    ".trellis/scripts/common/safe_commit.py": [
+      ".trellis/scripts/common/git.py",
+      ".trellis/scripts/common/paths.py"
+    ],
+    ".trellis/scripts/common/session_context.py": [
+      ".trellis/scripts/common/active_task.py",
+      ".trellis/scripts/common/config.py",
+      ".trellis/scripts/common/git.py",
+      ".trellis/scripts/common/packages_context.py",
+      ".trellis/scripts/common/paths.py",
+      ".trellis/scripts/common/tasks.py"
+    ],
+    ".trellis/scripts/common/task_context.py": [
+      ".trellis/scripts/common/log.py",
+      ".trellis/scripts/common/paths.py",
+      ".trellis/scripts/common/task_utils.py"
+    ],
+    ".trellis/scripts/common/task_queue.py": [
+      ".trellis/scripts/common/paths.py",
+      ".trellis/scripts/common/tasks.py"
+    ],
+    ".trellis/scripts/common/task_store.py": [
+      ".trellis/scripts/common/config.py",
+      ".trellis/scripts/common/git.py",
+      ".trellis/scripts/common/io.py",
+      ".trellis/scripts/common/log.py",
+      ".trellis/scripts/common/paths.py",
+      ".trellis/scripts/common/safe_commit.py",
+      ".trellis/scripts/common/task_utils.py"
+    ],
+    ".trellis/scripts/common/task_utils.py": [
+      ".trellis/scripts/common/paths.py"
+    ],
+    ".trellis/scripts/common/tasks.py": [
+      ".trellis/scripts/common/io.py",
+      ".trellis/scripts/common/paths.py",
+      ".trellis/scripts/common/types.py"
+    ],
+    ".trellis/scripts/common/trellis_config.py": [],
+    ".trellis/scripts/common/types.py": [],
+    ".trellis/scripts/common/workflow_phase.py": [
+      ".trellis/scripts/common/paths.py"
+    ],
+    ".trellis/scripts/get_context.py": [
+      ".trellis/scripts/common/git_context.py"
+    ],
+    ".trellis/scripts/get_developer.py": [
+      ".trellis/scripts/common/paths.py"
+    ],
+    ".trellis/scripts/hooks/linear_sync.py": [],
+    ".trellis/scripts/init_developer.py": [
+      ".trellis/scripts/common/developer.py",
+      ".trellis/scripts/common/paths.py"
+    ],
+    ".trellis/scripts/task.py": [
+      ".trellis/scripts/common/active_task.py",
+      ".trellis/scripts/common/io.py",
+      ".trellis/scripts/common/log.py",
+      ".trellis/scripts/common/paths.py",
+      ".trellis/scripts/common/task_context.py",
+      ".trellis/scripts/common/task_store.py",
+      ".trellis/scripts/common/task_utils.py",
+      ".trellis/scripts/common/tasks.py"
+    ],
+    ".trellis/spec/config/frontend/component-guidelines.md": [],
+    ".trellis/spec/config/frontend/directory-structure.md": [],
+    ".trellis/spec/config/frontend/hook-guidelines.md": [],
+    ".trellis/spec/config/frontend/index.md": [],
+    ".trellis/spec/config/frontend/quality-guidelines.md": [],
+    ".trellis/spec/config/frontend/state-management.md": [],
+    ".trellis/spec/config/frontend/type-safety.md": [],
+    ".trellis/spec/core/backend/database-guidelines.md": [],
+    ".trellis/spec/core/backend/directory-structure.md": [],
+    ".trellis/spec/core/backend/error-handling.md": [],
+    ".trellis/spec/core/backend/index.md": [],
+    ".trellis/spec/core/backend/logging-guidelines.md": [],
+    ".trellis/spec/core/backend/quality-guidelines.md": [],
+    ".trellis/spec/core/frontend/component-guidelines.md": [],
+    ".trellis/spec/core/frontend/directory-structure.md": [],
+    ".trellis/spec/core/frontend/hook-guidelines.md": [],
+    ".trellis/spec/core/frontend/index.md": [],
+    ".trellis/spec/core/frontend/quality-guidelines.md": [],
+    ".trellis/spec/core/frontend/state-management.md": [],
+    ".trellis/spec/core/frontend/type-safety.md": [],
+    ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md": [],
+    ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md": [],
+    ".trellis/spec/governance/INDEX.md": [],
+    ".trellis/spec/guides/code-reuse-thinking-guide.md": [],
+    ".trellis/spec/guides/cross-layer-thinking-guide.md": [],
+    ".trellis/spec/guides/index.md": [],
+    ".trellis/spec/mobile/frontend/component-guidelines.md": [],
+    ".trellis/spec/mobile/frontend/directory-structure.md": [],
+    ".trellis/spec/mobile/frontend/hook-guidelines.md": [],
+    ".trellis/spec/mobile/frontend/index.md": [],
+    ".trellis/spec/mobile/frontend/quality-guidelines.md": [],
+    ".trellis/spec/mobile/frontend/state-management.md": [],
+    ".trellis/spec/mobile/frontend/type-safety.md": [],
+    ".trellis/spec/web/frontend/component-guidelines.md": [],
+    ".trellis/spec/web/frontend/directory-structure.md": [],
+    ".trellis/spec/web/frontend/hook-guidelines.md": [],
+    ".trellis/spec/web/frontend/index.md": [],
+    ".trellis/spec/web/frontend/quality-guidelines.md": [],
+    ".trellis/spec/web/frontend/state-management.md": [],
+    ".trellis/spec/web/frontend/type-safety.md": [],
+    ".trellis/tasks/archive/2026-07/00-bootstrap-guidelines/prd.md": [],
+    ".trellis/tasks/archive/2026-07/00-bootstrap-guidelines/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-03-bugfix-comprehensive/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-03-bugfix-comprehensive/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-03-bugfix-comprehensive/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-03-bugfix-comprehensive/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/design.md": [],
+    ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/implement.md": [],
+    ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-03-sync-pull-audit/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-03-sync-pull-audit/design.md": [],
+    ".trellis/tasks/archive/2026-07/07-03-sync-pull-audit/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-03-sync-pull-audit/implement.md": [],
+    ".trellis/tasks/archive/2026-07/07-03-sync-pull-audit/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-03-sync-pull-audit/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-05-engine-class-refactor/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-05-engine-class-refactor/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-05-engine-class-refactor/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-05-engine-class-refactor/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-06-fix-remaining-ts-errors/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-06-fix-remaining-ts-errors/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-06-fix-remaining-ts-errors/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-06-fix-remaining-ts-errors/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-09-accessibility-audit/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-09-accessibility-audit/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-09-accessibility-audit/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-09-accessibility-audit/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-09-code-arch-governance/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-09-code-arch-governance/design.md": [],
+    ".trellis/tasks/archive/2026-07/07-09-code-arch-governance/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-09-code-arch-governance/implement.md": [],
+    ".trellis/tasks/archive/2026-07/07-09-code-arch-governance/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-09-code-arch-governance/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-09-dependency-audit/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-09-dependency-audit/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-09-dependency-audit/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-09-dependency-audit/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-09-full-dimension-audit/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-09-full-dimension-audit/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-09-full-dimension-audit/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-09-full-dimension-audit/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-09-i18n-audit/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-09-i18n-audit/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-09-i18n-audit/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-09-i18n-audit/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-09-perf-audit/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-09-perf-audit/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-09-perf-audit/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-09-perf-audit/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-09-platform-audit/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-09-platform-audit/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-09-platform-audit/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-09-platform-audit/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-09-round2-audit-fixes/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-09-round2-audit-fixes/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-09-round2-audit-fixes/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-09-round2-audit-fixes/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-10-arch-m1m2m3-refactor/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-10-arch-m1m2m3-refactor/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-10-arch-m1m2m3-refactor/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-10-arch-m1m2m3-refactor/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-10-arch-refactor-deferred/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-10-arch-refactor-deferred/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-10-arch-refactor-deferred/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-10-arch-refactor-deferred/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-10-architecture-analysis/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-10-architecture-analysis/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-10-architecture-analysis/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-10-architecture-analysis/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-10-architecture-deep-analysis/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-10-architecture-deep-analysis/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-10-architecture-deep-analysis/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-10-architecture-deep-analysis/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-10-architecture-improvements/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-10-architecture-improvements/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-10-architecture-improvements/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-10-architecture-improvements/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-10-auth-architecture-fixes/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-10-auth-architecture-fixes/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-10-auth-architecture-fixes/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-10-auth-architecture-fixes/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-10-auth-flow-fixes/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-10-auth-flow-fixes/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-10-auth-flow-fixes/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-10-auth-flow-fixes/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-10-package-structure-analysis/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-10-package-structure-analysis/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-10-package-structure-analysis/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-10-package-structure-analysis/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/design.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/implement.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/design.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/implement.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-12-fix-asyncstorage-notifications/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-12-fix-asyncstorage-notifications/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-12-fix-asyncstorage-notifications/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-fix-asyncstorage-notifications/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-12-fix-profile-screen-crash/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-12-fix-profile-screen-crash/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-12-fix-profile-screen-crash/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-fix-profile-screen-crash/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/implement.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-12-sync-goerror/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-12-sync-goerror/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-12-sync-goerror/implement.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-sync-goerror/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-sync-goerror/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-15-body-page-optimization/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-15-body-page-optimization/design.md": [],
+    ".trellis/tasks/archive/2026-07/07-15-body-page-optimization/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-15-body-page-optimization/implement.md": [],
+    ".trellis/tasks/archive/2026-07/07-15-body-page-optimization/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-15-body-page-optimization/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/task.json": [],
+    ".trellis/tasks/archive/2026-07/ar-06-reflection-map-refactor/design.md": [],
+    ".trellis/tasks/archive/2026-07/type-error-fix-plan.md": [],
+    ".trellis/workflow.md": [],
+    ".trellis/workspace/freebytes/index.md": [],
+    ".trellis/workspace/freebytes/journal-1.md": [],
+    ".trellis/workspace/index.md": [],
+    ".ua/.understandignore": [],
+    ".ua/config.json": [],
+    ".workbuddy/memory/2026-07-12.md": [],
+    ".workbuddy/memory/2026-07-13.md": [],
+    "AGENTS.md": [],
+    "apps/mobile/android/app/build.gradle": [],
+    "apps/mobile/android/app/debug.keystore": [],
+    "apps/mobile/android/app/proguard-rules.pro": [],
+    "apps/mobile/android/app/src/debug/AndroidManifest.xml": [],
+    "apps/mobile/android/app/src/debugOptimized/AndroidManifest.xml": [],
+    "apps/mobile/android/app/src/main/AndroidManifest.xml": [],
+    "apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt": [],
+    "apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt": [],
+    "apps/mobile/android/app/src/main/res/drawable/ic_launcher_background.xml": [],
+    "apps/mobile/android/app/src/main/res/drawable/rn_edit_text_material.xml": [],
+    "apps/mobile/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml": [],
+    "apps/mobile/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml": [],
+    "apps/mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher_round.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher_round.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp": [],
+    "apps/mobile/android/app/src/main/res/values-night/colors.xml": [],
+    "apps/mobile/android/app/src/main/res/values/colors.xml": [],
+    "apps/mobile/android/app/src/main/res/values/strings.xml": [],
+    "apps/mobile/android/app/src/main/res/values/styles.xml": [],
+    "apps/mobile/android/build.gradle": [],
+    "apps/mobile/android/gradle.properties": [],
+    "apps/mobile/android/gradle/wrapper/gradle-wrapper.jar": [],
+    "apps/mobile/android/gradle/wrapper/gradle-wrapper.properties": [],
+    "apps/mobile/android/gradlew": [],
+    "apps/mobile/android/gradlew.bat": [],
+    "apps/mobile/android/settings.gradle": [],
+    "apps/mobile/app.json": [],
+    "apps/mobile/App.tsx": [
+      "apps/mobile/src/features/music/index.ts",
+      "apps/mobile/src/features/splash/SplashScreen.tsx",
+      "apps/mobile/src/i18n/index.ts",
+      "apps/mobile/src/navigation/index.tsx",
+      "apps/mobile/src/store/initApp.ts"
+    ],
+    "apps/mobile/babel.config.js": [],
+    "apps/mobile/eas.json": [],
+    "apps/mobile/index.js": [
+      "apps/mobile/App.tsx",
+      "apps/mobile/src/sentry.ts"
+    ],
+    "apps/mobile/ios/.xcode.env": [],
+    "apps/mobile/ios/app.xcodeproj/project.pbxproj": [],
+    "apps/mobile/ios/app.xcodeproj/xcshareddata/xcschemes/app.xcscheme": [],
+    "apps/mobile/ios/app/app-Bridging-Header.h": [],
+    "apps/mobile/ios/app/app.entitlements": [],
+    "apps/mobile/ios/app/AppDelegate.swift": [],
+    "apps/mobile/ios/app/Images.xcassets/AppIcon.appiconset/Contents.json": [],
+    "apps/mobile/ios/app/Images.xcassets/Contents.json": [],
+    "apps/mobile/ios/app/Images.xcassets/SplashScreenBackground.colorset/Contents.json": [],
+    "apps/mobile/ios/app/Images.xcassets/SplashScreenLegacy.imageset/Contents.json": [],
+    "apps/mobile/ios/app/Info.plist": [],
+    "apps/mobile/ios/app/SplashScreen.storyboard": [],
+    "apps/mobile/ios/app/Supporting/Expo.plist": [],
+    "apps/mobile/ios/Podfile": [],
+    "apps/mobile/ios/Podfile.properties.json": [],
+    "apps/mobile/metro.config.js": [],
+    "apps/mobile/package.json": [],
+    "apps/mobile/src/__tests__/helpers/syncMocks.ts": [],
+    "apps/mobile/src/__tests__/integration.test.ts": [],
+    "apps/mobile/src/__tests__/performance.test.ts": [],
+    "apps/mobile/src/components/AddFoodModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/AnimatedMusicIcon.tsx": [],
+    "apps/mobile/src/components/AppHeader.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/charts/BarChart.tsx": [],
+    "apps/mobile/src/components/charts/CalendarGrid.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/charts/HeatmapGrid.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/charts/LineChart.tsx": [],
+    "apps/mobile/src/components/ConfirmationDialog.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/DatePickerModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/DateRangePickerModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/EmptyState.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/ErrorBoundary.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/FabButton.tsx": [],
+    "apps/mobile/src/components/ItemManagerPanel.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/KickOutModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/MeditationMusicBar.tsx": [
+      "apps/mobile/src/components/AnimatedMusicIcon.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/PlanCountdown.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/StarfieldBackground.tsx": [],
+    "apps/mobile/src/components/SyncBanner.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/db/schema.ts",
+      "apps/mobile/src/db/syncQueue.ts",
+      "apps/mobile/src/features/sync/SyncService.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/SyncConflictPanel.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/syncStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/SyncProgressOverlay.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/db/syncQueue.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/TimePickerModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/UI.tsx": [
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/VirtualList.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/config.ts": [],
+    "apps/mobile/src/db/queries.ts": [
+      "apps/mobile/src/store/rowMappers.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/db/schema.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/db/sqlHelper.ts": [],
+    "apps/mobile/src/db/syncQueue.test.ts": [
+      "apps/mobile/src/db/syncQueue.ts"
+    ],
+    "apps/mobile/src/db/syncQueue.ts": [
+      "apps/mobile/src/db/schema.ts",
+      "apps/mobile/src/db/sqlHelper.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/db/useDatabase.ts": [
+      "apps/mobile/src/db/schema.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/auth/ForgotPasswordScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/auth/LoginScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/auth/pushTokenRegistration.ts",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/auth/pushTokenRegistration.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/auth/RegisterScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/breathing/BreathHistoryPage.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/breathing/BreathingEngine.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/breathing/breathStyles.ts",
+      "apps/mobile/src/features/breathing/hooks/useBreathSettings.ts",
+      "apps/mobile/src/features/breathing/pages/BreathActivePage.tsx",
+      "apps/mobile/src/features/breathing/pages/BreathPreparePage.tsx",
+      "apps/mobile/src/features/breathing/pages/BreathReportPage.tsx",
+      "apps/mobile/src/features/breathing/useBreathAudio.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/breathing/BreathingScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/store/safeAsyncStorage.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/breathing/breathStyles.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/breathing/hooks/useBreathSettings.ts": [
+      "apps/mobile/src/store/safeAsyncStorage.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/breathing/pages/BreathActivePage.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/breathing/breathStyles.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/breathing/pages/BreathPreparePage.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/breathing/breathStyles.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/breathing/pages/BreathReportPage.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/breathing/breathStyles.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/breathing/useBreathAudio.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/diet/DietScreen.tsx": [
+      "apps/mobile/src/components/AddFoodModal.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/diet/WuxingCalendar.tsx",
+      "apps/mobile/src/features/diet/WuxingRadarChart.tsx",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/diet/WuxingCalendar.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/diet/WuxingRadarChart.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/exercise/ExerciseHistoryScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/exercise/hooks/useAmapComponents.ts",
+      "apps/mobile/src/features/exercise/TrainingCalendar.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/exercise/ExerciseScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/exercise/hooks/useAmapComponents.ts": [],
+    "apps/mobile/src/features/exercise/hooks/useExerciseAudio.ts": [
+      "apps/mobile/src/services/AudioSessionManager.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/exercise/hooks/useExerciseGps.ts": [],
+    "apps/mobile/src/features/exercise/hooks/useExerciseRest.ts": [],
+    "apps/mobile/src/features/exercise/hooks/useExerciseSets.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/exercise/hooks/useExerciseTargets.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/exercise/hooks/useExerciseTimer.ts": [],
+    "apps/mobile/src/features/exercise/layouts/EnduranceActive.tsx": [
+      "apps/mobile/src/components/MeditationMusicBar.tsx",
+      "apps/mobile/src/features/exercise/layouts/types.ts",
+      "apps/mobile/src/features/exercise/shared/CelebrationOverlay.tsx",
+      "apps/mobile/src/features/exercise/shared/ExerciseTopBar.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/exercise/layouts/GpsActive.tsx": [
+      "apps/mobile/src/components/MeditationMusicBar.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/exercise/layouts/MeditativeActive.tsx": [
+      "apps/mobile/src/components/MeditationMusicBar.tsx",
+      "apps/mobile/src/features/exercise/layouts/types.ts",
+      "apps/mobile/src/features/exercise/shared/CelebrationOverlay.tsx",
+      "apps/mobile/src/features/exercise/shared/ExerciseTopBar.tsx",
+      "apps/mobile/src/features/exercise/shared/RestOverlay.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/exercise/layouts/StrengthActive.tsx": [
+      "apps/mobile/src/components/MeditationMusicBar.tsx",
+      "apps/mobile/src/features/exercise/layouts/types.ts",
+      "apps/mobile/src/features/exercise/shared/CelebrationOverlay.tsx",
+      "apps/mobile/src/features/exercise/shared/EmbeddedRest.tsx",
+      "apps/mobile/src/features/exercise/shared/ExerciseTopBar.tsx",
+      "apps/mobile/src/features/exercise/shared/RestOverlay.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/exercise/layouts/types.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/exercise/pages/CountdownPage.tsx": [
+      "apps/mobile/src/components/MeditationMusicBar.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/exercise/pages/PausedPage.tsx": [
+      "apps/mobile/src/components/MeditationMusicBar.tsx",
+      "apps/mobile/src/features/exercise/pages/types.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/exercise/pages/PrepPage.tsx": [
+      "apps/mobile/src/features/exercise/pages/types.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/exercise/pages/ReportPage.tsx": [
+      "apps/mobile/src/features/exercise/pages/types.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/exercise/pages/types.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/exercise/shared/CelebrationOverlay.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/exercise/shared/EmbeddedRest.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/exercise/shared/ExerciseTopBar.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/exercise/shared/RestOverlay.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/exercise/SportPage.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/exercise/hooks/useAmapComponents.ts",
+      "apps/mobile/src/features/exercise/hooks/useExerciseAudio.ts",
+      "apps/mobile/src/features/exercise/hooks/useExerciseGps.ts",
+      "apps/mobile/src/features/exercise/hooks/useExerciseRest.ts",
+      "apps/mobile/src/features/exercise/hooks/useExerciseSets.ts",
+      "apps/mobile/src/features/exercise/hooks/useExerciseTargets.ts",
+      "apps/mobile/src/features/exercise/hooks/useExerciseTimer.ts",
+      "apps/mobile/src/features/exercise/layouts/EnduranceActive.tsx",
+      "apps/mobile/src/features/exercise/layouts/GpsActive.tsx",
+      "apps/mobile/src/features/exercise/layouts/MeditativeActive.tsx",
+      "apps/mobile/src/features/exercise/layouts/StrengthActive.tsx",
+      "apps/mobile/src/features/exercise/pages/CountdownPage.tsx",
+      "apps/mobile/src/features/exercise/pages/PausedPage.tsx",
+      "apps/mobile/src/features/exercise/pages/PrepPage.tsx",
+      "apps/mobile/src/features/exercise/pages/ReportPage.tsx",
+      "apps/mobile/src/features/global-pulse/components/ActiveInsightBar.tsx",
+      "apps/mobile/src/features/global-pulse/hooks/useGoalResolver.ts",
+      "apps/mobile/src/features/global-pulse/hooks/useSessionHeartbeat.ts",
+      "apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "apps/mobile/src/features/music/components/MusicPickerModal.tsx",
+      "apps/mobile/src/features/music/services/audioPlayerRef.ts",
+      "apps/mobile/src/features/music/useMusicStore.ts",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/exercise/TrainingCalendar.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/fasting/FastHistoryPage.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/fasting/FastingScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/global-pulse/components/ActiveInsightBar.tsx",
+      "apps/mobile/src/features/global-pulse/hooks/useGoalResolver.ts",
+      "apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/components/ActiveInsightBar.tsx": [],
+    "apps/mobile/src/features/global-pulse/components/ActiveMarker.tsx": [
+      "apps/mobile/src/features/global-pulse/hooks/useGlobalTick.ts",
+      "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/components/ActiveUserItem.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/global-pulse/hooks/useCityName.ts",
+      "apps/mobile/src/features/global-pulse/hooks/useGlobalTick.ts",
+      "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/components/ActiveUsersList.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/global-pulse/components/ActiveUserItem.tsx",
+      "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/components/BottomPanel.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/global-pulse/components/ActiveUsersList.tsx",
+      "apps/mobile/src/features/global-pulse/components/Leaderboard.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/components/CityCallout.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/global-pulse/hooks/useCityName.ts",
+      "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/components/ClusterMarker.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/global-pulse/components/ActiveMarker.tsx",
+      "apps/mobile/src/features/global-pulse/components/BottomPanel.tsx",
+      "apps/mobile/src/features/global-pulse/components/Leaderboard.tsx",
+      "apps/mobile/src/features/global-pulse/components/MarkerDetail.tsx",
+      "apps/mobile/src/features/global-pulse/components/OfflineBanner.tsx",
+      "apps/mobile/src/features/global-pulse/components/PulseMarker.tsx",
+      "apps/mobile/src/features/global-pulse/hooks/useActiveSessions.ts",
+      "apps/mobile/src/features/global-pulse/hooks/useGlobalPulse.ts",
+      "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "apps/mobile/src/features/global-pulse/services/userHash.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/components/Leaderboard.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/global-pulse/components/LeaderboardItem.tsx",
+      "apps/mobile/src/features/global-pulse/components/PodiumItem.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/components/LeaderboardItem.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/global-pulse/hooks/useCityName.ts",
+      "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/components/LoadingOverlay.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/components/MarkerDetail.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/global-pulse/hooks/useCityName.ts",
+      "apps/mobile/src/features/global-pulse/hooks/useGlobalTick.ts",
+      "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/components/OfflineBanner.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/components/PodiumItem.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/global-pulse/hooks/useCityName.ts",
+      "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/components/PrivacyControl.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "apps/mobile/src/features/global-pulse/services/userHash.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/components/PrivacyIntroModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/components/PulseMarker.tsx": [
+      "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/hooks/useActiveSessions.ts": [
+      "apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/hooks/useCheckinSync.ts": [
+      "apps/mobile/src/features/global-pulse/hooks/useNetworkStatus.ts",
+      "apps/mobile/src/features/global-pulse/hooks/usePrivacy.ts",
+      "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "apps/mobile/src/features/global-pulse/services/userHash.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/hooks/useCityName.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/hooks/useGlobalPulse.ts": [
+      "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "apps/mobile/src/store/useNetworkStatus.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/hooks/useGlobalTick.test.ts": [],
+    "apps/mobile/src/features/global-pulse/hooks/useGlobalTick.ts": [],
+    "apps/mobile/src/features/global-pulse/hooks/useGoalResolver.ts": [
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/hooks/useNetworkStatus.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/hooks/usePrivacy.ts": [
+      "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "apps/mobile/src/features/global-pulse/services/userHash.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/hooks/useSessionHeartbeat.ts": [
+      "apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/index.ts": [],
+    "apps/mobile/src/features/global-pulse/services/activeSessionApi.ts": [
+      "apps/mobile/src/config.ts",
+      "apps/mobile/src/features/global-pulse/services/pbFilterEscape.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts": [
+      "apps/mobile/src/config.ts",
+      "apps/mobile/src/features/global-pulse/services/pbFilterEscape.ts",
+      "apps/mobile/src/net/offlineAware.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/services/offlineCache.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/global-pulse/services/pbFilterEscape.ts": [],
+    "apps/mobile/src/features/global-pulse/services/userHash.ts": [],
+    "apps/mobile/src/features/habits/components/HabitActionMenu.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/habits/components/HabitCalendarModal.tsx": [
+      "apps/mobile/src/components/charts/CalendarGrid.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/habits/components/HabitCard.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/habits/constants.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/habits/components/HabitCheckinButton.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/habits/components/HabitDeleteConfirmModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/habits/components/HabitEmptyState.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/habits/components/HabitFilterBar.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/habits/constants.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/habits/components/HabitFormModal.tsx": [
+      "apps/mobile/src/components/TimePickerModal.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/habits/hooks/useHabitForm.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/habits/components/HabitStatusReasonModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/habits/constants.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/habits/HabitDetailScreen.tsx": [
+      "apps/mobile/src/components/charts/CalendarGrid.tsx",
+      "apps/mobile/src/components/TimePickerModal.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/habits/constants.ts",
+      "apps/mobile/src/features/habits/HabitStatsSection.tsx",
+      "apps/mobile/src/features/notifications/NotificationService.ts",
+      "apps/mobile/src/navigation/types.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/habits/HabitsScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/habits/components/HabitActionMenu.tsx",
+      "apps/mobile/src/features/habits/components/HabitCalendarModal.tsx",
+      "apps/mobile/src/features/habits/components/HabitCard.tsx",
+      "apps/mobile/src/features/habits/components/HabitDeleteConfirmModal.tsx",
+      "apps/mobile/src/features/habits/components/HabitEmptyState.tsx",
+      "apps/mobile/src/features/habits/components/HabitFilterBar.tsx",
+      "apps/mobile/src/features/habits/components/HabitFormModal.tsx",
+      "apps/mobile/src/features/habits/components/HabitStatusReasonModal.tsx",
+      "apps/mobile/src/features/habits/constants.ts",
+      "apps/mobile/src/features/habits/hooks/useHabitActions.ts",
+      "apps/mobile/src/features/habits/hooks/useHabitForm.ts",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/navigation/types.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/habits/HabitStatsSection.tsx": [
+      "apps/mobile/src/components/charts/BarChart.tsx",
+      "apps/mobile/src/components/charts/LineChart.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/habits/hooks/useHabitActions.ts": [
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/habits/hooks/useHabitForm.ts": [
+      "apps/mobile/src/features/notifications/NotificationService.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/health/HealthService.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/home/components/Banner.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/home/components/CheckinModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/home/components/CheckinReflection.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/home/components/CheckinReflection.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/home/components/CheckinStatsModal.tsx": [
+      "apps/mobile/src/components/charts/CalendarGrid.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/home/components/DateBar.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/home/components/DelayedReminder.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/home/components/GraceReminder.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/home/components/HomeBubble.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/home/components/HomeFoodSection.tsx": [
+      "apps/mobile/src/components/AddFoodModal.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/home/components/HomePlanSection.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/home/components/ReviewView.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/home/hooks/useDateNavigation.test.ts": [
+      "apps/mobile/src/features/home/hooks/useDateNavigation.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/home/hooks/useDateNavigation.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/home/index.ts": [],
+    "apps/mobile/src/features/home/screens/CheckinDetailScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/home/screens/CheckinHistoryScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/home/components/ReviewView.tsx",
+      "apps/mobile/src/hooks/usePagination.ts",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/home/screens/DayCheckinScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/home/screens/FoodLogPage.tsx": [
+      "apps/mobile/src/components/AddFoodModal.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/home/screens/GlobalPulseScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/global-pulse/index.ts",
+      "apps/mobile/src/navigation/hooks.ts"
+    ],
+    "apps/mobile/src/features/home/screens/GracePage.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/home/screens/HomeScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/home/components/Banner.tsx",
+      "apps/mobile/src/features/home/components/CheckinStatsModal.tsx",
+      "apps/mobile/src/features/home/components/DateBar.tsx",
+      "apps/mobile/src/features/home/components/DelayedReminder.tsx",
+      "apps/mobile/src/features/home/components/GraceReminder.tsx",
+      "apps/mobile/src/features/home/components/HomeBubble.tsx",
+      "apps/mobile/src/features/home/components/HomeFoodSection.tsx",
+      "apps/mobile/src/features/home/components/HomePlanSection.tsx",
+      "apps/mobile/src/features/home/hooks/useDateNavigation.ts",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/navigation/useAppNavigation.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/home/screens/ReviewDetailScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/home/screens/ReviewHistoryScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/home/screens/StreakBreakScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/mantra/hooks/useMantraTimer.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/mantra/MantraEngine.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/mantra/hooks/useMantraTimer.ts",
+      "apps/mobile/src/features/mantra/pages/MantraActivePage.tsx",
+      "apps/mobile/src/features/mantra/pages/MantraReportPage.tsx",
+      "apps/mobile/src/features/mantra/pages/MantraSelectPage.tsx",
+      "apps/mobile/src/features/mantra/pages/MantraStartPage.tsx",
+      "apps/mobile/src/features/mantra/useMantraAudio.ts",
+      "apps/mobile/src/features/shared/hooks/useAudioCache.ts",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/mantra/MantraHistoryScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/types.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/mantra/MantraScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/mantra/pages/MantraActivePage.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/shared/components/MalaRing.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/mantra/pages/MantraReportPage.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/mantra/pages/MantraSelectPage.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/types.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/mantra/pages/MantraStartPage.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/mantra/useMantraAudio.ts": [
+      "apps/mobile/src/features/shared/hooks/useAudioCache.ts"
+    ],
+    "apps/mobile/src/features/meditation/MedHistoryPage.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/useAppNavigation.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/meditation/MeditationScreen.tsx": [
+      "apps/mobile/src/components/MeditationMusicBar.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/global-pulse/components/ActiveInsightBar.tsx",
+      "apps/mobile/src/features/global-pulse/hooks/useGoalResolver.ts",
+      "apps/mobile/src/features/global-pulse/hooks/useSessionHeartbeat.ts",
+      "apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "apps/mobile/src/features/music/components/MusicPickerModal.tsx",
+      "apps/mobile/src/features/music/useMusicStore.ts",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/services/AudioSessionManager.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/mind/MindScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/music/components/CategoryCard.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/music/components/FavoriteButton.tsx": [
+      "apps/mobile/src/components/UI.tsx"
+    ],
+    "apps/mobile/src/features/music/components/ImportMusicButton.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/music/useMusicStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/music/components/MusicMiniBar.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/music/components/WaveformBar.tsx",
+      "apps/mobile/src/features/music/useMusicStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/music/components/MusicPickerModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/music/components/TrackListItem.tsx",
+      "apps/mobile/src/features/music/useMusicStore.ts",
+      "apps/mobile/src/services/AudioSessionManager.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/music/components/PlayerBar.tsx": [
+      "apps/mobile/src/components/AnimatedMusicIcon.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/music/components/WaveformBar.tsx",
+      "apps/mobile/src/features/music/services/audioPlayerRef.ts",
+      "apps/mobile/src/features/music/useMusicStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/music/components/TrackListItem.tsx": [
+      "apps/mobile/src/components/AnimatedMusicIcon.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/music/components/FavoriteButton.tsx",
+      "apps/mobile/src/features/music/components/WaveformBar.tsx",
+      "apps/mobile/src/features/music/useMusicStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/music/components/WaveformBar.tsx": [],
+    "apps/mobile/src/features/music/index.ts": [],
+    "apps/mobile/src/features/music/screens/MusicCategoryScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/music/components/PlayerBar.tsx",
+      "apps/mobile/src/features/music/components/TrackListItem.tsx",
+      "apps/mobile/src/features/music/useMusicStore.ts",
+      "apps/mobile/src/navigation/hooks.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/music/screens/MusicScreen.tsx": [
+      "apps/mobile/src/components/AnimatedMusicIcon.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/music/components/CategoryCard.tsx",
+      "apps/mobile/src/features/music/components/ImportMusicButton.tsx",
+      "apps/mobile/src/features/music/components/PlayerBar.tsx",
+      "apps/mobile/src/features/music/components/WaveformBar.tsx",
+      "apps/mobile/src/features/music/useMusicStore.ts",
+      "apps/mobile/src/navigation/hooks.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/music/services/AudioEngineProvider.tsx": [
+      "apps/mobile/src/features/music/services/audioPlayerRef.ts",
+      "apps/mobile/src/features/music/useMusicStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/music/services/audioPlayerRef.ts": [],
+    "apps/mobile/src/features/music/services/AudioSessionManager.ts": [
+      "apps/mobile/src/features/music/useMusicStore.ts"
+    ],
+    "apps/mobile/src/features/music/useMusicStore.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/notifications/NotificationService.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/plan/components/Heatmap.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/plan/components/ItemHeatmap.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/plan/components/LinkBadge.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/plan/components/PlanItemForm.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/plan/components/ProgressRing.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/plan/components/StatusBadge.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/plan/PlanCreateScreen.tsx": [
+      "apps/mobile/src/components/DatePickerModal.tsx",
+      "apps/mobile/src/components/DateRangePickerModal.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/types.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/plan/PlanDetailContent.tsx": [
+      "apps/mobile/src/components/PlanCountdown.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/plan/components/Heatmap.tsx",
+      "apps/mobile/src/features/plan/components/ItemHeatmap.tsx",
+      "apps/mobile/src/features/plan/components/LinkBadge.tsx",
+      "apps/mobile/src/features/plan/components/ProgressRing.tsx",
+      "apps/mobile/src/features/plan/components/StatusBadge.tsx",
+      "apps/mobile/src/features/plan/useDailyTodo.ts",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/plan/PlanDetailScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/plan/PlanDetailContent.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/types.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/plan/PlanHeroCard.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/plan/PlanHistoryScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/plan/PlanScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/plan/PlanDetailContent.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/plan/PlanTodoList.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/plan/components/LinkBadge.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/plan/PlanTodoListModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/plan/useDailyTodo.ts": [
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/BodyAwarenessCard.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/BodyCheckinInline.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/BodyDashboard.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/practice/body/hooks/useTodayPlan.ts",
+      "apps/mobile/src/features/practice/body/modals/AdjustExerciseModal.tsx",
+      "apps/mobile/src/features/practice/body/modals/AssessmentModal.tsx",
+      "apps/mobile/src/features/practice/body/modals/BodyCheckinModal.tsx",
+      "apps/mobile/src/features/practice/body/modals/DayActionSheet.tsx",
+      "apps/mobile/src/features/practice/body/modals/GoalEditLightModal.tsx",
+      "apps/mobile/src/features/practice/body/modals/GoalEditModal.tsx",
+      "apps/mobile/src/features/practice/body/modals/QuickSwapModal.tsx",
+      "apps/mobile/src/features/practice/body/modals/WeightRecordModal.tsx",
+      "apps/mobile/src/features/practice/body/modals/WeightTrendModal.tsx",
+      "apps/mobile/src/features/practice/body/screens/CelebrationOverlay.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/BodyFlow.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/practice/body/BodyCheckinInline.tsx",
+      "apps/mobile/src/features/practice/body/CheckinSuccessCard.tsx",
+      "apps/mobile/src/features/practice/body/hooks/useBodyFlowState.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/BodyProfileCard.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/BodyTodayPlanCard.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/BodyWeekPlanCard.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/CheckinSuccessCard.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/components/BodyTrainingPlanSection.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/components/CollapsibleSection.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/GoalCard.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/hooks/useBodyFlowState.ts": [
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/hooks/useTodayPlan.test.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/hooks/useTodayPlan.ts": [
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/modals/AdjustExerciseModal.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/modals/AssessmentModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/modals/BodyCheckinModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/modals/DayActionSheet.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/modals/GoalEditLightModal.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/modals/GoalEditModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/modals/PlanEditModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/modals/QuickSwapModal.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/modals/TemplatePickerModal.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/modals/WeightRecordModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/modals/WeightTrendModal.tsx": [
+      "apps/mobile/src/features/practice/body/WeightTrendChart.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/PlanCard.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/screens/BodyCheckinHistoryScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/screens/BodyPlanEditorScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/practice/body/modals/TemplatePickerModal.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/screens/CelebrationOverlay.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/screens/PlanManagementScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/WeightTrendChart.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/BodyScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+      "apps/mobile/src/features/practice/body/BodyFlow.tsx",
+      "apps/mobile/src/features/practice/body/hooks/useBodyFlowState.ts",
+      "apps/mobile/src/features/practice/body/hooks/useTodayPlan.ts",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/GiveHistoryPage.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/GiveScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/hooks/useConversation.ts": [],
+    "apps/mobile/src/features/practice/PracticeScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/PreceptHistoryPage.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/PreceptScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/AddReflectionBar.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/AddReflectionFAB.tsx": [
+      "apps/mobile/src/components/UI.tsx"
+    ],
+    "apps/mobile/src/features/reflections/core/BatchActionBar.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/CreatePlanFromReflectionModal.tsx": [
+      "apps/mobile/src/components/DatePickerModal.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/plan/components/PlanItemForm.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/CreatePlanFromTrailModal.tsx": [
+      "apps/mobile/src/components/DatePickerModal.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/plan/components/PlanItemForm.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/CreateReflectionModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/DayGroup.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/core/ReflectionCard.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/FilterDrawer.tsx": [
+      "apps/mobile/src/components/DateRangePickerModal.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/FilterTags.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/index.ts": [],
+    "apps/mobile/src/features/reflections/core/PlanTaskCard.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/types.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/PlanTasksSection.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/core/PlanTaskCard.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/ReflectionCard.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/ReflectionDetailContent.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/trails/index.ts",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/ReflectionDetailScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/core/ReflectionDetailContent.tsx",
+      "apps/mobile/src/features/reflections/core/ShareCard.tsx",
+      "apps/mobile/src/navigation/types.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/ReflectionForm.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/ReflectionsScreen.tsx": [
+      "apps/mobile/src/components/ItemManagerPanel.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/core/CreatePlanFromReflectionModal.tsx",
+      "apps/mobile/src/features/reflections/core/FilterDrawer.tsx",
+      "apps/mobile/src/features/reflections/core/ReflectionDetailContent.tsx",
+      "apps/mobile/src/features/reflections/core/ReflectionForm.tsx",
+      "apps/mobile/src/features/reflections/core/SearchFilterBar.tsx",
+      "apps/mobile/src/features/reflections/core/ShareCard.tsx",
+      "apps/mobile/src/features/reflections/hooks/useReflections.ts",
+      "apps/mobile/src/features/reflections/trails/MindTrailEntryCard.tsx",
+      "apps/mobile/src/features/reflections/trails/TrailPickerModal.tsx",
+      "apps/mobile/src/features/reflections/trails/TrailSuggestionBanner.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/store/safeAsyncStorage.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/SearchFilterBar.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/ShareCard.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/SwipeableRow.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/hooks/index.ts": [],
+    "apps/mobile/src/features/reflections/hooks/searchPipeline.test.ts": [
+      "apps/mobile/src/features/reflections/hooks/searchPipeline.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/hooks/searchPipeline.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.test.ts": [],
+    "apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.ts": [
+      "apps/mobile/src/features/reflections/hooks/searchPipeline.ts",
+      "apps/mobile/src/features/reflections/hooks/useSearchHistory.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/hooks/useReflections.test.ts": [],
+    "apps/mobile/src/features/reflections/hooks/useReflections.ts": [
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/hooks/useSearchHistory.test.ts": [],
+    "apps/mobile/src/features/reflections/hooks/useSearchHistory.ts": [
+      "apps/mobile/src/store/safeAsyncStorage.ts"
+    ],
+    "apps/mobile/src/features/reflections/hooks/useTrailActions.ts": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/types.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/hooks/useTrailAI.ts": [
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/hooks/useTrailData.ts": [
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/index.ts": [],
+    "apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/insights/hooks/useRelationGraph.ts": [
+      "apps/mobile/src/features/reflections/insights/types.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/insights/index.ts": [],
+    "apps/mobile/src/features/reflections/insights/InsightPanel.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/insights/InsightPanelSkeleton.tsx": [
+      "apps/mobile/src/components/UI.tsx"
+    ],
+    "apps/mobile/src/features/reflections/insights/InsightScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/types.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/insights/InsightSection.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/insights/InsightsPanel.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/insights/NodeDetailPanel.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/insights/types.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/insights/RecommendCard.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/insights/ReflectionStatsScreen.tsx": [
+      "apps/mobile/src/components/charts/CalendarGrid.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/insights/RelationMapView.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/insights/hooks/useRelationGraph.ts",
+      "apps/mobile/src/features/reflections/insights/InsightsPanel.tsx",
+      "apps/mobile/src/features/reflections/insights/NodeDetailPanel.tsx",
+      "apps/mobile/src/features/reflections/insights/StatsBar.tsx",
+      "apps/mobile/src/features/reflections/insights/types.ts",
+      "apps/mobile/src/navigation/types.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/insights/SmartQueryBubble.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/insights/StatsBar.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/insights/types.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/insights/StrategyLibrary.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/insights/types.ts": [],
+    "apps/mobile/src/features/reflections/review/EditNoteModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/review/index.ts": [],
+    "apps/mobile/src/features/reflections/review/ReviewGuideSection.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/review/ReviewNoteCard.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/review/ReviewScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/review/WriteNoteModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/shared/index.ts": [],
+    "apps/mobile/src/features/reflections/shared/MoodBar.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/shared/SegmentBar.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/shared/SelectionSummary.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/shared/SelectReflectionModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/shared/TopicChip.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/timeline/index.ts": [],
+    "apps/mobile/src/features/reflections/timeline/TimelineList.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/core/SwipeableRow.tsx",
+      "apps/mobile/src/features/reflections/timeline/TimelineNoteItem.tsx",
+      "apps/mobile/src/features/reflections/timeline/TimelineReflectionItem.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/timeline/TimelineNoteItem.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/timeline/TimelineReflectionItem.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/trails/CreateThoughtTrailModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/trails/index.ts": [],
+    "apps/mobile/src/features/reflections/trails/LinkReflectionModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/trails/MindTrailEntryCard.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/trails/MindTrailScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/insights/RecommendCard.tsx",
+      "apps/mobile/src/features/reflections/trails/CreateThoughtTrailModal.tsx",
+      "apps/mobile/src/features/reflections/trails/SmartQueryPanel.tsx",
+      "apps/mobile/src/navigation/types.ts",
+      "apps/mobile/src/store/safeAsyncStorage.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/trails/QuickCreateTrailScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/core/FilterTags.tsx",
+      "apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.ts",
+      "apps/mobile/src/features/reflections/insights/AIAnalysisStream.tsx",
+      "apps/mobile/src/features/reflections/insights/InsightPanel.tsx",
+      "apps/mobile/src/features/reflections/insights/SmartQueryBubble.tsx",
+      "apps/mobile/src/features/reflections/shared/SelectionSummary.tsx",
+      "apps/mobile/src/features/reflections/trails/ReflectionCheckItem.tsx",
+      "apps/mobile/src/navigation/types.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/trails/ReflectionCheckItem.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/trails/RelatedTrailsSection.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/trails/ReviewAIPanel.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/shared/SegmentBar.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/trails/SmartQueryPanel.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/insights/SmartQueryBubble.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/core/AddReflectionFAB.tsx",
+      "apps/mobile/src/features/reflections/core/CreatePlanFromTrailModal.tsx",
+      "apps/mobile/src/features/reflections/core/PlanTasksSection.tsx",
+      "apps/mobile/src/features/reflections/hooks/useTrailActions.ts",
+      "apps/mobile/src/features/reflections/hooks/useTrailAI.ts",
+      "apps/mobile/src/features/reflections/hooks/useTrailData.ts",
+      "apps/mobile/src/features/reflections/review/EditNoteModal.tsx",
+      "apps/mobile/src/features/reflections/review/ReviewNoteCard.tsx",
+      "apps/mobile/src/features/reflections/review/WriteNoteModal.tsx",
+      "apps/mobile/src/features/reflections/shared/SegmentBar.tsx",
+      "apps/mobile/src/features/reflections/shared/SelectReflectionModal.tsx",
+      "apps/mobile/src/features/reflections/timeline/TimelineList.tsx",
+      "apps/mobile/src/features/reflections/trails/RelatedTrailsSection.tsx",
+      "apps/mobile/src/features/reflections/trails/ReviewAIPanel.tsx",
+      "apps/mobile/src/navigation/types.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/trails/TrailOverviewCard.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/trails/TrailPickerModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/trails/CreateThoughtTrailModal.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/trails/TrailSuggestionBanner.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/types.ts",
+      "apps/mobile/src/store/safeAsyncStorage.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/settings/AISettingsScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/settings/PrivacyPolicyScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/settings/ProfileScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/settings/RecycleBinScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/settings/SettingsScreen.tsx": [
+      "apps/mobile/src/components/SyncConflictPanel.tsx",
+      "apps/mobile/src/components/TimePickerModal.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/notifications/NotificationService.ts",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/shared/components/MalaRing.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/shared/hooks/useAudioCache.ts": [],
+    "apps/mobile/src/features/shared/utils/lazyModule.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/sleep/DiaryModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/sleep/hooks/useBarrierTimer.ts": [],
+    "apps/mobile/src/features/sleep/pages/SleepBarrierPage.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/sleep/sleepStyles.ts"
+    ],
+    "apps/mobile/src/features/sleep/pages/SleepGratitudePage.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/sleep/sleepStyles.ts"
+    ],
+    "apps/mobile/src/features/sleep/pages/SleepReportPage.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/sleep/sleepStyles.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/sleep/SleepEngine.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/sleep/DiaryModal.tsx",
+      "apps/mobile/src/features/sleep/hooks/useBarrierTimer.ts",
+      "apps/mobile/src/features/sleep/pages/SleepBarrierPage.tsx",
+      "apps/mobile/src/features/sleep/pages/SleepGratitudePage.tsx",
+      "apps/mobile/src/features/sleep/pages/SleepReportPage.tsx",
+      "apps/mobile/src/features/sleep/sleepStyles.ts",
+      "apps/mobile/src/features/sleep/useSleepNotifications.ts",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/sleep/SleepHistoryPage.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/sleep/SleepScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/sleep/sleepStyles.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/sleep/useSleepNotifications.ts": [
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/splash/SplashScreen.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/stats/StatsScreen.tsx": [
+      "apps/mobile/src/components/charts/BarChart.tsx",
+      "apps/mobile/src/components/charts/CalendarGrid.tsx",
+      "apps/mobile/src/components/charts/LineChart.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/sutra/SutraHistoryScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/sutra/SutraScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/shared/components/MalaRing.tsx",
+      "apps/mobile/src/features/shared/hooks/useAudioCache.ts",
+      "apps/mobile/src/features/sutra/useSutraAudio.ts",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/sutra/useSutraAudio.ts": [
+      "apps/mobile/src/features/shared/hooks/useAudioCache.ts"
+    ],
+    "apps/mobile/src/features/sync/mergeSyncPatch.test.ts": [
+      "apps/mobile/src/features/sync/mergeSyncPatch.ts",
+      "apps/mobile/src/store/useAppStore.ts"
+    ],
+    "apps/mobile/src/features/sync/mergeSyncPatch.ts": [
+      "apps/mobile/src/features/sync/SyncApplyService.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/sync/migrateToSyncQueue.ts": [
+      "apps/mobile/src/db/schema.ts",
+      "apps/mobile/src/db/syncQueue.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/sync/orphanRecovery.ts": [
+      "apps/mobile/src/db/schema.ts",
+      "apps/mobile/src/db/syncQueue.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/sync/RealtimeAgent.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/sync/SyncApplyService.test.ts": [
+      "apps/mobile/src/features/sync/SyncApplyService.ts"
+    ],
+    "apps/mobile/src/features/sync/SyncApplyService.ts": [
+      "apps/mobile/src/db/schema.ts",
+      "apps/mobile/src/db/sqlHelper.ts",
+      "apps/mobile/src/features/sync/orphanRecovery.ts",
+      "apps/mobile/src/store/rowMappers.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/sync/SyncEngine.test.ts": [
+      "apps/mobile/src/features/sync/SyncEngine.ts"
+    ],
+    "apps/mobile/src/features/sync/SyncEngine.ts": [
+      "apps/mobile/src/db/schema.ts",
+      "apps/mobile/src/db/sqlHelper.ts",
+      "apps/mobile/src/db/syncQueue.ts",
+      "apps/mobile/src/features/sync/orphanRecovery.ts",
+      "apps/mobile/src/features/sync/SyncApplyService.ts",
+      "apps/mobile/src/features/sync/SyncRealtimeController.ts",
+      "apps/mobile/src/features/sync/SyncRehydrationManager.ts",
+      "apps/mobile/src/features/sync/SyncResetService.ts",
+      "apps/mobile/src/features/sync/SyncTimestampManager.ts",
+      "apps/mobile/src/store/storageAdapter.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/sync/SyncRealtimeController.ts": [
+      "apps/mobile/src/db/schema.ts",
+      "apps/mobile/src/db/syncQueue.ts",
+      "apps/mobile/src/features/sync/RealtimeAgent.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/sync/SyncRehydrationManager.test.ts": [
+      "apps/mobile/src/features/sync/SyncRehydrationManager.ts"
+    ],
+    "apps/mobile/src/features/sync/SyncRehydrationManager.ts": [
+      "apps/mobile/src/db/queries.ts",
+      "apps/mobile/src/db/schema.ts",
+      "apps/mobile/src/db/syncQueue.ts",
+      "apps/mobile/src/store/rowMappers.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/sync/SyncResetService.ts": [
+      "apps/mobile/src/db/schema.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/sync/SyncService.test.ts": [
+      "apps/mobile/src/db/syncQueue.ts",
+      "apps/mobile/src/features/sync/SyncService.ts"
+    ],
+    "apps/mobile/src/features/sync/SyncService.ts": [
+      "apps/mobile/src/db/queries.ts",
+      "apps/mobile/src/db/syncQueue.ts",
+      "apps/mobile/src/features/sync/SyncEngine.ts"
+    ],
+    "apps/mobile/src/features/sync/SyncTimestampManager.ts": [
+      "apps/mobile/src/db/schema.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/sync/useSync.test.ts": [],
+    "apps/mobile/src/features/sync/useSync.ts": [
+      "apps/mobile/src/db/schema.ts",
+      "apps/mobile/src/db/syncQueue.ts",
+      "apps/mobile/src/features/music/useMusicStore.ts",
+      "apps/mobile/src/features/sync/mergeSyncPatch.ts",
+      "apps/mobile/src/features/sync/migrateToSyncQueue.ts",
+      "apps/mobile/src/features/sync/SyncService.ts",
+      "apps/mobile/src/store/storageAdapter.ts",
+      "apps/mobile/src/store/syncStore.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/vow/components/DailyDetail.tsx": [
+      "apps/mobile/src/features/vow/useVowProgress.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/vow/components/DedicationCard.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/vow/components/ProgressOverview.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/vow/components/VisionCard.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/vow/DedicationTab.tsx": [
+      "apps/mobile/src/features/vow/components/DedicationCard.tsx",
+      "apps/mobile/src/features/vow/modals/DedicationSettingsModal.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/vow/DedicationWriteScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/vow/useVowProgress.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/vow/modals/DedicationSettingsModal.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/vow/modals/VisionEditModal.tsx": [
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/vow/ProgressTab.tsx": [
+      "apps/mobile/src/features/vow/components/DailyDetail.tsx",
+      "apps/mobile/src/features/vow/components/ProgressOverview.tsx",
+      "apps/mobile/src/features/vow/useVowProgress.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/vow/useVowProgress.ts": [
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/vow/VowScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/vow/components/VisionCard.tsx",
+      "apps/mobile/src/features/vow/modals/VisionEditModal.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/zhiguan/components/BreathRing.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/zhiguan/components/CountingRound.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/zhiguan/components/VipassanaPanel.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/zhiguan/hooks/useZhiguanTimer.ts": [],
+    "apps/mobile/src/features/zhiguan/SessionComplete.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/zhiguan/ZhiguanHistoryScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/music/useMusicStore.ts",
+      "apps/mobile/src/features/zhiguan/components/BreathRing.tsx",
+      "apps/mobile/src/features/zhiguan/components/CountingRound.tsx",
+      "apps/mobile/src/features/zhiguan/components/VipassanaPanel.tsx",
+      "apps/mobile/src/features/zhiguan/hooks/useZhiguanTimer.ts",
+      "apps/mobile/src/features/zhiguan/SessionComplete.tsx",
+      "apps/mobile/src/features/zhiguan/ZhiguanSettingsSheet.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/zhiguan/ZhiguanSettingsSheet.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/hooks/usePagination.test.ts": [],
+    "apps/mobile/src/hooks/usePagination.ts": [],
+    "apps/mobile/src/i18n/index.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/navigation/hooks.ts": [
+      "apps/mobile/src/navigation/types.ts"
+    ],
+    "apps/mobile/src/navigation/index.tsx": [
+      "apps/mobile/src/components/ErrorBoundary.tsx",
+      "apps/mobile/src/components/FabButton.tsx",
+      "apps/mobile/src/components/KickOutModal.tsx",
+      "apps/mobile/src/components/StarfieldBackground.tsx",
+      "apps/mobile/src/components/SyncBanner.tsx",
+      "apps/mobile/src/components/SyncProgressOverlay.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/sync/SyncService.ts",
+      "apps/mobile/src/features/sync/useSync.ts",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/LazyScreen.tsx",
+      "apps/mobile/src/navigation/screens.ts",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/navigation/types.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/navigation/LazyScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/navigation/screens.ts": [],
+    "apps/mobile/src/navigation/SimpleHeader.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/navigation/types.ts": [],
+    "apps/mobile/src/navigation/useAppNavigation.ts": [
+      "apps/mobile/src/navigation/types.ts"
+    ],
+    "apps/mobile/src/net/offlineAware.ts": [
+      "apps/mobile/src/store/authToken.ts",
+      "apps/mobile/src/store/useNetworkStatus.ts"
+    ],
+    "apps/mobile/src/sentry.ts": [],
+    "apps/mobile/src/services/AudioSessionManager.ts": [
+      "apps/mobile/src/features/music/useMusicStore.ts"
+    ],
+    "apps/mobile/src/store/authToken.ts": [
+      "apps/mobile/src/store/useAppStore.ts"
+    ],
+    "apps/mobile/src/store/createMobileUiSlice.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/store/entityTableMap.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/store/initApp.test.ts": [],
+    "apps/mobile/src/store/initApp.ts": [
+      "apps/mobile/src/db/schema.ts",
+      "apps/mobile/src/features/sync/SyncService.ts",
+      "apps/mobile/src/sentry.ts",
+      "apps/mobile/src/store/migrateAsyncStorage.ts",
+      "apps/mobile/src/store/secureAuth.ts",
+      "apps/mobile/src/store/storageAdapter.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/store/migrateAsyncStorage.test.ts": [
+      "apps/mobile/src/store/migrateAsyncStorage.ts",
+      "apps/mobile/src/store/storageAdapter.ts"
+    ],
+    "apps/mobile/src/store/migrateAsyncStorage.ts": [
+      "apps/mobile/src/db/schema.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/store/rowMappers.test.ts": [
+      "apps/mobile/src/store/rowMappers.ts"
+    ],
+    "apps/mobile/src/store/rowMappers.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/store/safeAsyncStorage.ts": [],
+    "apps/mobile/src/store/secureAuth.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/store/storageAdapter.test.ts": [
+      "apps/mobile/src/store/storageAdapter.ts"
+    ],
+    "apps/mobile/src/store/storageAdapter.ts": [
+      "apps/mobile/src/db/schema.ts",
+      "apps/mobile/src/store/entityTableMap.ts",
+      "apps/mobile/src/store/WriteBatcher.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/store/syncStore.ts": [],
+    "apps/mobile/src/store/uiStore.test.ts": [
+      "apps/mobile/src/store/uiStore.ts"
+    ],
+    "apps/mobile/src/store/uiStore.ts": [],
+    "apps/mobile/src/store/useAppStore.test.ts": [
+      "apps/mobile/src/features/music/useMusicStore.ts",
+      "apps/mobile/src/features/sync/SyncService.ts",
+      "apps/mobile/src/store/storageAdapter.ts",
+      "apps/mobile/src/store/useAppStore.ts"
+    ],
+    "apps/mobile/src/store/useAppStore.ts": [
+      "apps/mobile/src/config.ts",
+      "apps/mobile/src/features/music/useMusicStore.ts",
+      "apps/mobile/src/features/sync/SyncService.ts",
+      "apps/mobile/src/store/createMobileUiSlice.ts",
+      "apps/mobile/src/store/storageAdapter.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/store/useNetworkStatus.ts": [],
+    "apps/mobile/src/store/WriteBatcher.test.ts": [
+      "apps/mobile/src/store/WriteBatcher.ts"
+    ],
+    "apps/mobile/src/store/WriteBatcher.ts": [
+      "apps/mobile/src/db/schema.ts",
+      "apps/mobile/src/db/sqlHelper.ts",
+      "apps/mobile/src/store/entityTableMap.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/theme/index.ts": [],
+    "apps/mobile/tsconfig.json": [],
+    "apps/mobile/vitest.config.ts": [],
+    "backend/create-collection.ps1": [],
+    "backend/docker-compose.yml": [],
+    "backend/pb_data_backup/types.d.ts": [],
+    "backend/pb_hooks/auth.pb.js": [],
+    "backend/pb_hooks/init.pb.js": [],
+    "backend/pb_hooks/main.pb.js": [],
+    "backend/pb_hooks/sync_push_pull.pb.js": [],
+    "backend/pb_hooks/sync.pb.js": [],
+    "backend/pb_hooks/types.d.ts": [],
+    "backend/pb_hooks/user_token.pb.js": [],
+    "backend/pb_migrations/001_global_pulse.js": [],
+    "backend/pb_migrations/001_init.js": [],
+    "backend/pb_migrations/002_add_checkin_reviews.js": [],
+    "backend/pb_migrations/002_ensure_sync_collections.js": [],
+    "backend/pb_migrations/003_add_exercise_entries.js": [],
+    "backend/pb_migrations/003_add_trail_notes.js": [],
+    "backend/pb_migrations/004_add_plan_collections.js": [],
+    "backend/pb_migrations/004_add_push_tokens.js": [],
+    "backend/pb_migrations/005_add_global_pulse_collections.js": [],
+    "backend/pb_migrations/005_add_grace_history.js": [],
+    "backend/pb_migrations/006_add_active_sessions.js": [],
+    "backend/pb_migrations/006_add_daily_custom_todos.js": [],
+    "backend/pb_migrations/007_add_thought_trail_collections.js": [],
+    "backend/pb_migrations/008_add_global_checkins_fields.js": [],
+    "backend/pb_migrations/010_create_active_sessions.js": [],
+    "backend/pb_migrations/011_leaderboard_and_session_permissions.js": [],
+    "backend/pb_migrations/012_add_remaining_sync_collections.js": [],
+    "backend/pb_migrations/012_fix_exercise_sport_key.js": [],
+    "backend/pb_migrations/013_fix_missing_sync_fields.js": [],
+    "backend/pb_migrations/014_add_login_epoch.js": [],
+    "backend/pb_migrations/014_fix_sync_collection_fields.js": [],
+    "backend/pb_migrations/015_fix_missing_created_fields.js": [],
+    "backend/pb_migrations/1782352478_created_global_checkins.js": [],
+    "backend/pb_migrations/1782352495_created_global_stats.js": [],
+    "backend/pb_migrations/1782445175_created_push_tokens.js": [],
+    "backend/pb_migrations/1782500000_create_all_sync_collections.js": [],
+    "backend/pb_migrations/1782600000_add_body_collections.js": [],
+    "backend/pb_migrations/1782700000_add_vow_collections.js": [],
+    "backend/pb_migrations/1782800000_add_mantra_collections.js": [],
+    "backend/pb_migrations/1782900000_add_sleep_and_give_collections.js": [],
+    "backend/pb_migrations/1782910000_add_diet_collections.js": [],
+    "backend/pb_migrations/1782920000_add_sutra_reading_collection.js": [],
+    "backend/pb_migrations/1782930000_add_fear_collections.js": [],
+    "backend/pb_migrations/1782940000_add_zhiguan_and_breath_collections.js": [],
+    "backend/pb_migrations/1782950000_fix_collection_permissions.js": [],
+    "backend/pb_migrations/1783352556_created_account_lockouts.js": [],
+    "backend/pb_migrations/1783352556_created_audit_logs.js": [],
+    "backend/pb_migrations/1783352556_created_refresh_tokens.js": [],
+    "backend/pb_migrations/1783352556_created_token_blacklist.js": [],
+    "backend/pb_migrations/1783352556_created_user_mfa.js": [],
+    "backend/pb_migrations/1783352556_created_user_roles.js": [],
+    "backend/pb_migrations/1783352556_created_verification_codes.js": [],
+    "backend/pb_migrations/1783660940_updated_refresh_tokens.js": [],
+    "backend/pb_migrations/1783661066_updated_audit_logs.js": [],
+    "backend/pb_migrations/1783661086_updated_user_mfa.js": [],
+    "backend/pb_migrations/1783689997_deleted_map_pins.js": [],
+    "backend/pb_migrations/1783689998_deleted_intents.js": [],
+    "backend/pb_migrations/1783689998_deleted_published_minds.js": [],
+    "backend/pb_migrations/1783689999_deleted_checkins.js": [],
+    "backend/pb_migrations/1783691974_updated_account_lockouts.js": [],
+    "backend/pb_migrations/1783691975_updated_audit_logs.js": [],
+    "backend/pb_migrations/1783843612_created_custom_food_presets.js": [],
+    "backend/pb_migrations/1783843763_updated_custom_food_presets.js": [],
+    "backend/pb_migrations/20260710_fix_trail_notes_note_id.js": [],
+    "backend/pb_schema.json": [],
+    "backend/pocketbase.exe": [],
+    "backend/README.md": [],
+    "backend/setup.ps1": [],
+    "CLAUDE.md": [],
+    "docs/API.md": [],
+    "docs/architecture-analysis-2026-07-12.html": [],
+    "docs/architecture-analysis-2026-07-13.html": [],
+    "docs/architecture-analysis.md": [],
+    "docs/architecture-risk-solutions.md": [],
+    "docs/architecture-rules.md": [],
+    "docs/architecture-section2-6-analysis.md": [],
+    "docs/audit-2026-07-08.md": [],
+    "docs/claude-md-pieces/core-philosophy.md": [],
+    "docs/claude-md-pieces/decision-tree.md": [],
+    "docs/claude-md-pieces/project-dir-layout.md": [],
+    "docs/DEPLOY.md": [],
+    "docs/full-dimension-audit-2026-07-09.md": [],
+    "docs/MIGRATION_GUIDE.md": [],
+    "docs/package-structure-analysis.md": [],
+    "docs/remaining-dimension-audit-2026-07-09.md": [],
+    "docs/round2-audit-2026-07-09.md": [],
+    "infra/docker/api/.env.example": [],
+    "infra/docker/api/Dockerfile": [],
+    "infra/docker/api/package.json": [],
+    "infra/docker/api/src/account-lockout.ts": [
+      "infra/docker/api/src/errors.ts",
+      "infra/docker/api/src/pb.ts"
+    ],
+    "infra/docker/api/src/audit-log.ts": [
+      "infra/docker/api/src/errors.ts",
+      "infra/docker/api/src/pb.ts"
+    ],
+    "infra/docker/api/src/auth-middleware.ts": [
+      "infra/docker/api/src/token-blacklist.ts"
+    ],
+    "infra/docker/api/src/auth/change-password.ts": [
+      "infra/docker/api/src/auth-middleware.ts",
+      "infra/docker/api/src/pb.ts",
+      "infra/docker/api/src/rate-limit.ts",
+      "infra/docker/api/src/token-blacklist.ts",
+      "infra/docker/api/src/token-refresh-rotation.ts"
+    ],
+    "infra/docker/api/src/auth/check-email.ts": [
+      "infra/docker/api/src/errors.ts",
+      "infra/docker/api/src/pb.ts",
+      "infra/docker/api/src/rate-limit.ts"
+    ],
+    "infra/docker/api/src/auth/login.ts": [
+      "infra/docker/api/src/account-lockout.ts",
+      "infra/docker/api/src/audit-log.ts",
+      "infra/docker/api/src/pb.ts",
+      "infra/docker/api/src/rate-limit.ts",
+      "infra/docker/api/src/token-refresh-rotation.ts"
+    ],
+    "infra/docker/api/src/auth/logout.ts": [
+      "infra/docker/api/src/audit-log.ts",
+      "infra/docker/api/src/auth-middleware.ts",
+      "infra/docker/api/src/rate-limit.ts",
+      "infra/docker/api/src/token-blacklist.ts",
+      "infra/docker/api/src/token-refresh-rotation.ts"
+    ],
+    "infra/docker/api/src/auth/me.ts": [
+      "infra/docker/api/src/auth-middleware.ts",
+      "infra/docker/api/src/errors.ts",
+      "infra/docker/api/src/pb.ts",
+      "infra/docker/api/src/rate-limit.ts"
+    ],
+    "infra/docker/api/src/auth/mfa.ts": [
+      "infra/docker/api/src/audit-log.ts",
+      "infra/docker/api/src/auth-middleware.ts",
+      "infra/docker/api/src/mfa.ts"
+    ],
+    "infra/docker/api/src/auth/rbac.ts": [
+      "infra/docker/api/src/audit-log.ts",
+      "infra/docker/api/src/auth-middleware.ts",
+      "infra/docker/api/src/rbac.ts"
+    ],
+    "infra/docker/api/src/auth/refresh.ts": [
+      "infra/docker/api/src/config.ts",
+      "infra/docker/api/src/rate-limit.ts",
+      "infra/docker/api/src/token-refresh-rotation.ts"
+    ],
+    "infra/docker/api/src/auth/register.ts": [
+      "infra/docker/api/src/audit-log.ts",
+      "infra/docker/api/src/auth-middleware.ts",
+      "infra/docker/api/src/errors.ts",
+      "infra/docker/api/src/pb.ts",
+      "infra/docker/api/src/rate-limit.ts",
+      "infra/docker/api/src/token-refresh-rotation.ts",
+      "infra/docker/api/src/verification-code.ts"
+    ],
+    "infra/docker/api/src/auth/reset-password.ts": [
+      "infra/docker/api/src/auth-middleware.ts",
+      "infra/docker/api/src/errors.ts",
+      "infra/docker/api/src/pb.ts",
+      "infra/docker/api/src/rate-limit.ts",
+      "infra/docker/api/src/token-blacklist.ts",
+      "infra/docker/api/src/token-refresh-rotation.ts",
+      "infra/docker/api/src/verification-code.ts"
+    ],
+    "infra/docker/api/src/auth/send-code.ts": [
+      "infra/docker/api/src/config.ts",
+      "infra/docker/api/src/errors.ts",
+      "infra/docker/api/src/pb.ts",
+      "infra/docker/api/src/rate-limit.ts",
+      "infra/docker/api/src/verification-code.ts"
+    ],
+    "infra/docker/api/src/auth/wechat.ts": [
+      "infra/docker/api/src/auth-middleware.ts",
+      "infra/docker/api/src/errors.ts",
+      "infra/docker/api/src/pb.ts",
+      "infra/docker/api/src/rate-limit.ts",
+      "infra/docker/api/src/token-refresh-rotation.ts"
+    ],
+    "infra/docker/api/src/config.ts": [],
+    "infra/docker/api/src/db.ts": [],
+    "infra/docker/api/src/errors.ts": [],
+    "infra/docker/api/src/index.ts": [
+      "infra/docker/api/src/account-lockout.ts",
+      "infra/docker/api/src/audit-log.ts",
+      "infra/docker/api/src/auth/change-password.ts",
+      "infra/docker/api/src/auth/check-email.ts",
+      "infra/docker/api/src/auth/login.ts",
+      "infra/docker/api/src/auth/logout.ts",
+      "infra/docker/api/src/auth/me.ts",
+      "infra/docker/api/src/auth/mfa.ts",
+      "infra/docker/api/src/auth/rbac.ts",
+      "infra/docker/api/src/auth/refresh.ts",
+      "infra/docker/api/src/auth/register.ts",
+      "infra/docker/api/src/auth/reset-password.ts",
+      "infra/docker/api/src/auth/send-code.ts",
+      "infra/docker/api/src/auth/wechat.ts",
+      "infra/docker/api/src/config.ts",
+      "infra/docker/api/src/mfa.ts",
+      "infra/docker/api/src/monitoring.ts",
+      "infra/docker/api/src/plan.ts",
+      "infra/docker/api/src/push.ts",
+      "infra/docker/api/src/rbac.ts",
+      "infra/docker/api/src/setup.ts",
+      "infra/docker/api/src/token-blacklist.ts",
+      "infra/docker/api/src/token-refresh-rotation.ts",
+      "infra/docker/api/src/verification-code.ts"
+    ],
+    "infra/docker/api/src/mfa.ts": [
+      "infra/docker/api/src/errors.ts",
+      "infra/docker/api/src/pb.ts"
+    ],
+    "infra/docker/api/src/monitoring.ts": [],
+    "infra/docker/api/src/pb.ts": [],
+    "infra/docker/api/src/plan.ts": [
+      "infra/docker/api/src/auth-middleware.ts",
+      "infra/docker/api/src/config.ts",
+      "infra/docker/api/src/errors.ts",
+      "infra/docker/api/src/pb.ts",
+      "infra/docker/api/src/rate-limit.ts"
+    ],
+    "infra/docker/api/src/push.ts": [
+      "infra/docker/api/src/auth-middleware.ts",
+      "infra/docker/api/src/errors.ts",
+      "infra/docker/api/src/pb.ts",
+      "infra/docker/api/src/rate-limit.ts"
+    ],
+    "infra/docker/api/src/rate-limit.ts": [],
+    "infra/docker/api/src/rbac.ts": [
+      "infra/docker/api/src/errors.ts",
+      "infra/docker/api/src/pb.ts"
+    ],
+    "infra/docker/api/src/setup.ts": [
+      "infra/docker/api/src/pb.ts",
+      "infra/docker/api/src/rate-limit.ts"
+    ],
+    "infra/docker/api/src/token-blacklist.ts": [
+      "infra/docker/api/src/errors.ts",
+      "infra/docker/api/src/pb.ts"
+    ],
+    "infra/docker/api/src/token-refresh-rotation.ts": [
+      "infra/docker/api/src/errors.ts",
+      "infra/docker/api/src/pb.ts"
+    ],
+    "infra/docker/api/src/verification-code.ts": [
+      "infra/docker/api/src/errors.ts",
+      "infra/docker/api/src/pb.ts"
+    ],
+    "infra/docker/api/tsconfig.json": [],
+    "infra/docker/docker-compose.yml": [],
+    "infra/docker/Dockerfile.web": [],
+    "infra/nginx/nginx.conf": [],
+    "infra/scripts/backup-pb.sh": [],
+    "infra/scripts/deploy.sh": [],
+    "infra/scripts/restore-pb.sh": [],
+    "openspec/archive/comprehensive-audit-fix/report.md": [],
+    "openspec/archive/perf-systematic/proposal.md": [],
+    "package.json": [],
+    "packages/config/eslint.base.js": [],
+    "packages/config/package.json": [],
+    "packages/config/tsconfig.base.json": [],
+    "packages/core/package.json": [],
+    "packages/core/src/__tests__/performDailyReset.test.ts": [
+      "packages/core/src/business/plan.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/ai/ai-service.ts": [
+      "packages/core/src/ai/cloud-providers.ts",
+      "packages/core/src/ai/local-engine.ts",
+      "packages/core/src/ai/types.ts",
+      "packages/core/src/business/review.ts",
+      "packages/core/src/logger.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/ai/cloud-providers.ts": [
+      "packages/core/src/ai/types.ts",
+      "packages/core/src/logger.ts"
+    ],
+    "packages/core/src/ai/context-reminder.ts": [
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/ai/index.ts": [],
+    "packages/core/src/ai/insight-profile.test.ts": [
+      "packages/core/src/ai/insight-profile.ts",
+      "packages/core/src/types/reflection.ts"
+    ],
+    "packages/core/src/ai/insight-profile.ts": [
+      "packages/core/src/ai/ai-service.ts",
+      "packages/core/src/ai/json-utils.ts",
+      "packages/core/src/ai/trail-recommender.ts",
+      "packages/core/src/ai/types.ts",
+      "packages/core/src/business/thought-trail.ts",
+      "packages/core/src/business/trail-creation.ts",
+      "packages/core/src/logger.ts",
+      "packages/core/src/types/reflection.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/ai/json-utils.test.ts": [
+      "packages/core/src/ai/json-utils.ts"
+    ],
+    "packages/core/src/ai/json-utils.ts": [
+      "packages/core/src/logger.ts"
+    ],
+    "packages/core/src/ai/layout-algorithms.test.ts": [
+      "packages/core/src/ai/layout-algorithms.ts"
+    ],
+    "packages/core/src/ai/layout-algorithms.ts": [],
+    "packages/core/src/ai/local-engine.ts": [
+      "packages/core/src/ai/types.ts"
+    ],
+    "packages/core/src/ai/personalized-suggestions.ts": [
+      "packages/core/src/ai/risk-warning.ts",
+      "packages/core/src/ai/thought-patterns.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/ai/rag/cache.ts": [],
+    "packages/core/src/ai/rag/index.ts": [],
+    "packages/core/src/ai/rag/indexer.ts": [
+      "packages/core/src/types/reflection.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/ai/rag/prompt-builder.ts": [
+      "packages/core/src/ai/rag/indexer.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/ai/rag/retriever.test.ts": [
+      "packages/core/src/ai/rag/indexer.ts",
+      "packages/core/src/ai/rag/retriever.ts"
+    ],
+    "packages/core/src/ai/rag/retriever.ts": [
+      "packages/core/src/ai/rag/indexer.ts"
+    ],
+    "packages/core/src/ai/risk-warning.test.ts": [
+      "packages/core/src/ai/risk-warning.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/ai/risk-warning.ts": [
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/ai/thought-patterns.test.ts": [
+      "packages/core/src/ai/thought-patterns.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/ai/thought-patterns.ts": [
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/ai/trail-recommender.ts": [
+      "packages/core/src/ai/ai-service.ts",
+      "packages/core/src/ai/json-utils.ts",
+      "packages/core/src/ai/rag/cache.ts",
+      "packages/core/src/ai/rag/indexer.ts",
+      "packages/core/src/ai/rag/prompt-builder.ts",
+      "packages/core/src/ai/rag/retriever.ts",
+      "packages/core/src/ai/types.ts",
+      "packages/core/src/business/trail-creation.ts",
+      "packages/core/src/logger.ts",
+      "packages/core/src/types/reflection.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/ai/types.ts": [],
+    "packages/core/src/auth.test.ts": [
+      "packages/core/src/auth.ts",
+      "packages/core/src/fetch.ts"
+    ],
+    "packages/core/src/auth.ts": [
+      "packages/core/src/fetch.ts",
+      "packages/core/src/logger.ts",
+      "packages/core/src/sync/types.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/business/body.test.ts": [
+      "packages/core/src/business/body.ts"
+    ],
+    "packages/core/src/business/body.ts": [
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/business/breathing.test.ts": [
+      "packages/core/src/business/breathing.ts"
+    ],
+    "packages/core/src/business/breathing.ts": [],
+    "packages/core/src/business/checkin.test.ts": [
+      "packages/core/src/business/checkin.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/business/checkin.ts": [
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/business/coordinateFuzzing.test.ts": [
+      "packages/core/src/business/coordinateFuzzing.ts"
+    ],
+    "packages/core/src/business/coordinateFuzzing.ts": [],
+    "packages/core/src/business/customLists.ts": [],
+    "packages/core/src/business/dateChangeDetection.ts": [
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/business/dateUtils.test.ts": [
+      "packages/core/src/business/dateUtils.ts"
+    ],
+    "packages/core/src/business/dateUtils.ts": [],
+    "packages/core/src/business/exercise.test.ts": [
+      "packages/core/src/business/exercise.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/business/exercise.ts": [
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/business/fasting.test.ts": [
+      "packages/core/src/business/fasting.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/business/fasting.ts": [
+      "packages/core/src/defaults.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/business/food.test.ts": [
+      "packages/core/src/business/food.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/business/food.ts": [
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/business/grace.test.ts": [
+      "packages/core/src/business/grace.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/business/grace.ts": [
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/business/habits.test.ts": [
+      "packages/core/src/business/habits.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/business/habits.ts": [
+      "packages/core/src/business/module-state.ts",
+      "packages/core/src/defaults.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/business/index.ts": [],
+    "packages/core/src/business/markerAggregation.test.ts": [
+      "packages/core/src/business/markerAggregation.ts",
+      "packages/core/src/types/globalPulse.ts"
+    ],
+    "packages/core/src/business/markerAggregation.ts": [
+      "packages/core/src/types/globalPulse.ts"
+    ],
+    "packages/core/src/business/meditation.test.ts": [
+      "packages/core/src/business/meditation.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/business/meditation.ts": [
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/business/module-state.ts": [
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/business/plan.test.ts": [
+      "packages/core/src/business/plan.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/business/plan.ts": [
+      "packages/core/src/business/module-state.ts",
+      "packages/core/src/constants.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/business/planForm.ts": [
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/business/planLogic.test.ts": [
+      "packages/core/src/business/plan.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/business/planTodo.test.ts": [
+      "packages/core/src/business/planTodo.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/business/planTodo.ts": [
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/business/precepts.ts": [],
+    "packages/core/src/business/reflectionAnalytics.test.ts": [
+      "packages/core/src/business/reflectionAnalytics.ts",
+      "packages/core/src/types/reflection.ts"
+    ],
+    "packages/core/src/business/reflectionAnalytics.ts": [
+      "packages/core/src/types/reflection.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/business/reflectionGraph.test.ts": [
+      "packages/core/src/business/reflectionGraph.ts",
+      "packages/core/src/types/reflectionGraph.ts"
+    ],
+    "packages/core/src/business/reflectionGraph.ts": [
+      "packages/core/src/types/reflectionGraph.ts"
+    ],
+    "packages/core/src/business/reflections.test.ts": [
+      "packages/core/src/business/reflections.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/business/reflections.ts": [
+      "packages/core/src/defaults.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/business/reverseGeocoding.ts": [
+      "packages/core/src/logger.ts"
+    ],
+    "packages/core/src/business/review.test.ts": [
+      "packages/core/src/business/review.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/business/review.ts": [
+      "packages/core/src/business/checkin.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/business/sleep.ts": [],
+    "packages/core/src/business/thought-trail.test.ts": [
+      "packages/core/src/business/thought-trail.ts",
+      "packages/core/src/types/reflection.ts",
+      "packages/core/src/types/thought-trail.ts",
+      "packages/core/src/types/trail-note.ts"
+    ],
+    "packages/core/src/business/thought-trail.ts": [
+      "packages/core/src/types/reflection.ts",
+      "packages/core/src/types/thought-trail.ts",
+      "packages/core/src/types/trail-note.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/business/trail-creation.test.ts": [
+      "packages/core/src/business/trail-creation.ts",
+      "packages/core/src/types/reflection.ts"
+    ],
+    "packages/core/src/business/trail-creation.ts": [
+      "packages/core/src/business/thought-trail.ts",
+      "packages/core/src/logger.ts",
+      "packages/core/src/types/reflection.ts",
+      "packages/core/src/types/thought-trail.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/business/useDailyTodo.ts": [
+      "packages/core/src/business/plan.ts",
+      "packages/core/src/business/planTodo.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/business/zhiguanConstants.ts": [],
+    "packages/core/src/business/zhiguanCountingRound.test.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "packages/core/src/business/zhiguanCountingRound.ts": [],
+    "packages/core/src/business/zhiguanHintEngine.test.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "packages/core/src/business/zhiguanHintEngine.ts": [
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/business/zhiguanHistory.test.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "packages/core/src/business/zhiguanHistory.ts": [
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/business/zhiguanMethods.ts": [
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/business/zhiguanTimer.test.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "packages/core/src/business/zhiguanTimer.ts": [],
+    "packages/core/src/constants.ts": [
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/constants/music.ts": [
+      "packages/core/src/types/music.ts"
+    ],
+    "packages/core/src/constants/sutraTexts.ts": [],
+    "packages/core/src/constants/wuxingMap.ts": [
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/dailyReset.test.ts": [
+      "packages/core/src/dailyReset.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/dailyReset.ts": [
+      "packages/core/src/logger.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/data/DataGateway.test.ts": [
+      "packages/core/src/data/DataGateway.ts"
+    ],
+    "packages/core/src/data/DataGateway.ts": [],
+    "packages/core/src/data/entityRegistry.ts": [
+      "packages/core/src/sync/entities.ts",
+      "packages/core/src/sync/entitySchemas.ts"
+    ],
+    "packages/core/src/data/index.ts": [],
+    "packages/core/src/defaults.ts": [
+      "packages/core/src/ai/types.ts",
+      "packages/core/src/constants.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/fetch.test.ts": [
+      "packages/core/src/fetch.ts"
+    ],
+    "packages/core/src/fetch.ts": [],
+    "packages/core/src/i18n.ts": [],
+    "packages/core/src/i18n/en.ts": [
+      "packages/core/src/i18n/types.ts"
+    ],
+    "packages/core/src/i18n/index.ts": [
+      "packages/core/src/i18n/en.ts",
+      "packages/core/src/i18n/types.ts",
+      "packages/core/src/i18n/zh-Hant.ts",
+      "packages/core/src/i18n/zh.ts"
+    ],
+    "packages/core/src/i18n/types.ts": [],
+    "packages/core/src/i18n/zh-Hant.ts": [
+      "packages/core/src/i18n/types.ts"
+    ],
+    "packages/core/src/i18n/zh.ts": [
+      "packages/core/src/i18n/types.ts"
+    ],
+    "packages/core/src/icons.ts": [],
+    "packages/core/src/index.ts": [],
+    "packages/core/src/logger.ts": [],
+    "packages/core/src/pocketbase.ts": [],
+    "packages/core/src/push.ts": [
+      "packages/core/src/fetch.ts",
+      "packages/core/src/logger.ts"
+    ],
+    "packages/core/src/services/notification.ts": [],
+    "packages/core/src/store/checkinSlice.test.ts": [
+      "packages/core/src/store/createCheckinSlice.ts",
+      "packages/core/src/store/types.ts"
+    ],
+    "packages/core/src/store/createAuthSlice.test.ts": [
+      "packages/core/src/auth.ts",
+      "packages/core/src/store/createAuthSlice.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/store/createAuthSlice.ts": [
+      "packages/core/src/ai/ai-service.ts",
+      "packages/core/src/ai/trail-recommender.ts",
+      "packages/core/src/auth.ts",
+      "packages/core/src/fetch.ts",
+      "packages/core/src/logger.ts",
+      "packages/core/src/store/mergeEngine.ts",
+      "packages/core/src/store/sliceHelper.ts",
+      "packages/core/src/store/types.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/store/createBodySlice.ts": [
+      "packages/core/src/business/body.ts",
+      "packages/core/src/logger.ts",
+      "packages/core/src/store/sliceHelper.ts",
+      "packages/core/src/store/types.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/store/createCheckinSlice.test.ts": [
+      "packages/core/src/store/createCheckinSlice.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/store/createCheckinSlice.ts": [
+      "packages/core/src/business/index.ts",
+      "packages/core/src/logger.ts",
+      "packages/core/src/store/sliceHelper.ts",
+      "packages/core/src/store/types.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/store/createDietSlice.test.ts": [
+      "packages/core/src/store/createDietSlice.ts"
+    ],
+    "packages/core/src/store/createDietSlice.ts": [
+      "packages/core/src/business/index.ts",
+      "packages/core/src/constants.ts",
+      "packages/core/src/logger.ts",
+      "packages/core/src/store/sliceHelper.ts",
+      "packages/core/src/store/types.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/store/createExerciseSlice.test.ts": [
+      "packages/core/src/store/createExerciseSlice.ts"
+    ],
+    "packages/core/src/store/createExerciseSlice.ts": [
+      "packages/core/src/business/index.ts",
+      "packages/core/src/logger.ts",
+      "packages/core/src/store/sliceHelper.ts",
+      "packages/core/src/store/types.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/store/createFastingSlice.test.ts": [
+      "packages/core/src/store/createFastingSlice.ts"
+    ],
+    "packages/core/src/store/createFastingSlice.ts": [
+      "packages/core/src/business/fasting.ts",
+      "packages/core/src/logger.ts",
+      "packages/core/src/store/sliceHelper.ts",
+      "packages/core/src/store/types.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/store/createFoodSlice.test.ts": [
+      "packages/core/src/store/createFoodSlice.ts"
+    ],
+    "packages/core/src/store/createFoodSlice.ts": [
+      "packages/core/src/store/createDietSlice.ts",
+      "packages/core/src/store/sliceHelper.ts",
+      "packages/core/src/store/types.ts"
+    ],
+    "packages/core/src/store/createHabitSlice.test.ts": [
+      "packages/core/src/store/createHabitSlice.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/store/createHabitSlice.ts": [
+      "packages/core/src/business/habits.ts",
+      "packages/core/src/logger.ts",
+      "packages/core/src/store/sliceHelper.ts",
+      "packages/core/src/store/types.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/store/createMantraSlice.test.ts": [
+      "packages/core/src/store/createMantraSlice.ts"
+    ],
+    "packages/core/src/store/createMantraSlice.ts": [
+      "packages/core/src/constants.ts",
+      "packages/core/src/logger.ts",
+      "packages/core/src/store/sliceHelper.ts",
+      "packages/core/src/store/types.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/store/createMeditationSlice.ts": [
+      "packages/core/src/business/meditation.ts",
+      "packages/core/src/logger.ts",
+      "packages/core/src/store/sliceHelper.ts",
+      "packages/core/src/store/types.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/store/createMindSlice.test.ts": [
+      "packages/core/src/store/createMindSlice.ts"
+    ],
+    "packages/core/src/store/createMindSlice.ts": [
+      "packages/core/src/logger.ts",
+      "packages/core/src/store/mindSliceTypes.ts",
+      "packages/core/src/store/sliceHelper.ts",
+      "packages/core/src/store/types.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/store/createPlanSlice.test.ts": [
+      "packages/core/src/store/createPlanSlice.ts"
+    ],
+    "packages/core/src/store/createPlanSlice.ts": [
+      "packages/core/src/business/plan.ts",
+      "packages/core/src/business/reflections.ts",
+      "packages/core/src/logger.ts",
+      "packages/core/src/services/notification.ts",
+      "packages/core/src/store/sliceHelper.ts",
+      "packages/core/src/store/types.ts",
+      "packages/core/src/sync/entities.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/types/reflection.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/store/createPracticeSlice.ts": [
+      "packages/core/src/logger.ts",
+      "packages/core/src/store/sliceHelper.ts",
+      "packages/core/src/store/types.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/store/createProfileSlice.ts": [
+      "packages/core/src/logger.ts",
+      "packages/core/src/store/sliceHelper.ts",
+      "packages/core/src/store/types.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/store/createRecycleBinSlice.test.ts": [
+      "packages/core/src/store/createRecycleBinSlice.ts"
+    ],
+    "packages/core/src/store/createRecycleBinSlice.ts": [
+      "packages/core/src/logger.ts",
+      "packages/core/src/store/sliceHelper.ts",
+      "packages/core/src/store/types.ts",
+      "packages/core/src/sync/entities.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/store/createReflectionSlice.ts": [
+      "packages/core/src/business/index.ts",
+      "packages/core/src/business/reflections.ts",
+      "packages/core/src/constants.ts",
+      "packages/core/src/defaults.ts",
+      "packages/core/src/logger.ts",
+      "packages/core/src/store/sliceHelper.ts",
+      "packages/core/src/store/types.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/store/createReviewSlice.ts": [
+      "packages/core/src/ai/ai-service.ts",
+      "packages/core/src/business/review.ts",
+      "packages/core/src/logger.ts",
+      "packages/core/src/store/sliceHelper.ts",
+      "packages/core/src/store/types.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/store/createSettingsSlice.ts": [
+      "packages/core/src/ai/types.ts",
+      "packages/core/src/store/sliceHelper.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/store/createSleepSlice.ts": [
+      "packages/core/src/logger.ts",
+      "packages/core/src/store/sliceHelper.ts",
+      "packages/core/src/store/types.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/store/createSliceErrorSlice.ts": [
+      "packages/core/src/store/sliceHelper.ts",
+      "packages/core/src/store/types.ts"
+    ],
+    "packages/core/src/store/createThoughtTrailSlice.test.ts": [
+      "packages/core/src/store/createThoughtTrailSlice.ts",
+      "packages/core/src/store/types.ts",
+      "packages/core/src/types/thought-trail.ts"
+    ],
+    "packages/core/src/store/createThoughtTrailSlice.ts": [
+      "packages/core/src/logger.ts",
+      "packages/core/src/store/sliceHelper.ts",
+      "packages/core/src/store/types.ts",
+      "packages/core/src/types/plan.ts",
+      "packages/core/src/types/reflection.ts",
+      "packages/core/src/types/thought-trail.ts",
+      "packages/core/src/types/trail-note.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/store/createTrailNoteSlice.test.ts": [
+      "packages/core/src/store/createThoughtTrailSlice.ts",
+      "packages/core/src/store/types.ts",
+      "packages/core/src/types/thought-trail.ts"
+    ],
+    "packages/core/src/store/createZhiguanSlice.ts": [
+      "packages/core/src/business/zhiguanHistory.ts",
+      "packages/core/src/logger.ts",
+      "packages/core/src/store/sliceHelper.ts",
+      "packages/core/src/store/types.ts",
+      "packages/core/src/types.ts",
+      "packages/core/src/types/breath.ts"
+    ],
+    "packages/core/src/store/habitSlice.test.ts": [
+      "packages/core/src/business/habits.ts",
+      "packages/core/src/store/createHabitSlice.ts",
+      "packages/core/src/store/types.ts"
+    ],
+    "packages/core/src/store/index.ts": [],
+    "packages/core/src/store/mergeEngine.ts": [
+      "packages/core/src/sync/entities.ts",
+      "packages/core/src/sync/merge.ts",
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/store/mindSliceTypes.ts": [
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/store/planSlice.test.ts": [
+      "packages/core/src/store/createPlanSlice.ts",
+      "packages/core/src/store/types.ts"
+    ],
+    "packages/core/src/store/sliceHelper.ts": [
+      "packages/core/src/store/types.ts"
+    ],
+    "packages/core/src/store/storageAdapter.ts": [],
+    "packages/core/src/store/types.ts": [
+      "packages/core/src/ai/types.ts",
+      "packages/core/src/business/fasting.ts",
+      "packages/core/src/business/habits.ts",
+      "packages/core/src/business/reflections.ts",
+      "packages/core/src/store/createBodySlice.ts",
+      "packages/core/src/store/createExerciseSlice.ts",
+      "packages/core/src/store/createFastingSlice.ts",
+      "packages/core/src/store/createMantraSlice.ts",
+      "packages/core/src/store/createMeditationSlice.ts",
+      "packages/core/src/store/createPracticeSlice.ts",
+      "packages/core/src/store/createSettingsSlice.ts",
+      "packages/core/src/store/mindSliceTypes.ts",
+      "packages/core/src/store/zhiguanSliceTypes.ts",
+      "packages/core/src/sync/entities.ts",
+      "packages/core/src/types.ts"
+    ],
+    "packages/core/src/store/zhiguanSliceTypes.ts": [
+      "packages/core/src/types.ts",
+      "packages/core/src/types/breath.ts"
+    ],
+    "packages/core/src/sync/conflict.test.ts": [
+      "packages/core/src/sync/conflict.ts"
+    ],
+    "packages/core/src/sync/conflict.ts": [],
+    "packages/core/src/sync/entities.ts": [
+      "packages/core/src/sync/entitySchemas.ts"
+    ],
+    "packages/core/src/sync/entitySchemas.test.ts": [
+      "packages/core/src/sync/entities.ts",
+      "packages/core/src/sync/entitySchemas.ts"
+    ],
+    "packages/core/src/sync/entitySchemas.ts": [
+      "packages/core/src/data/entityRegistry.ts",
+      "packages/core/src/sync/entities.ts"
+    ],
+    "packages/core/src/sync/index.ts": [],
+    "packages/core/src/sync/merge.test.ts": [
+      "packages/core/src/sync/merge.ts"
+    ],
+    "packages/core/src/sync/merge.ts": [
+      "packages/core/src/sync/conflict.ts"
+    ],
+    "packages/core/src/sync/types.ts": [
+      "packages/core/src/sync/entities.ts"
+    ],
+    "packages/core/src/types.ts": [],
+    "packages/core/src/types/app.ts": [
+      "packages/core/src/types/auth.ts",
+      "packages/core/src/types/checkin.ts",
+      "packages/core/src/types/exercise.ts",
+      "packages/core/src/types/fasting.ts",
+      "packages/core/src/types/food.ts",
+      "packages/core/src/types/habit.ts",
+      "packages/core/src/types/plan.ts",
+      "packages/core/src/types/recycle.ts",
+      "packages/core/src/types/reflection-link.ts",
+      "packages/core/src/types/reflection.ts",
+      "packages/core/src/types/shared.ts",
+      "packages/core/src/types/thought-trail.ts"
+    ],
+    "packages/core/src/types/auth.ts": [],
+    "packages/core/src/types/body.ts": [
+      "packages/core/src/types/shared.ts"
+    ],
+    "packages/core/src/types/breath.ts": [
+      "packages/core/src/types/shared.ts"
+    ],
+    "packages/core/src/types/checkin.ts": [
+      "packages/core/src/types/shared.ts"
+    ],
+    "packages/core/src/types/diet.ts": [
+      "packages/core/src/types/shared.ts"
+    ],
+    "packages/core/src/types/exercise.ts": [
+      "packages/core/src/types/shared.ts"
+    ],
+    "packages/core/src/types/fasting.ts": [
+      "packages/core/src/types/shared.ts"
+    ],
+    "packages/core/src/types/food.ts": [
+      "packages/core/src/types/shared.ts"
+    ],
+    "packages/core/src/types/give.ts": [
+      "packages/core/src/types/shared.ts"
+    ],
+    "packages/core/src/types/globalPulse.ts": [],
+    "packages/core/src/types/habit.ts": [
+      "packages/core/src/types/shared.ts"
+    ],
+    "packages/core/src/types/index.ts": [],
+    "packages/core/src/types/mantra.ts": [
+      "packages/core/src/types/shared.ts"
+    ],
+    "packages/core/src/types/mind.ts": [
+      "packages/core/src/types/shared.ts"
+    ],
+    "packages/core/src/types/music.ts": [],
+    "packages/core/src/types/plan.ts": [
+      "packages/core/src/types/shared.ts"
+    ],
+    "packages/core/src/types/recycle.ts": [
+      "packages/core/src/types/breath.ts",
+      "packages/core/src/types/exercise.ts",
+      "packages/core/src/types/food.ts",
+      "packages/core/src/types/habit.ts",
+      "packages/core/src/types/plan.ts",
+      "packages/core/src/types/reflection.ts"
+    ],
+    "packages/core/src/types/reflection-link.ts": [
+      "packages/core/src/types/shared.ts"
+    ],
+    "packages/core/src/types/reflection.ts": [
+      "packages/core/src/types/shared.ts"
+    ],
+    "packages/core/src/types/reflectionGraph.ts": [],
+    "packages/core/src/types/review.ts": [
+      "packages/core/src/types/shared.ts"
+    ],
+    "packages/core/src/types/shared.ts": [],
+    "packages/core/src/types/sleep.ts": [
+      "packages/core/src/types/shared.ts"
+    ],
+    "packages/core/src/types/thought-trail.ts": [
+      "packages/core/src/types/shared.ts"
+    ],
+    "packages/core/src/types/trail-note.ts": [
+      "packages/core/src/types/shared.ts"
+    ],
+    "packages/core/src/types/vow.ts": [
+      "packages/core/src/types/shared.ts"
+    ],
+    "packages/core/src/types/zhiguan.ts": [
+      "packages/core/src/types/shared.ts"
+    ],
+    "packages/core/src/typography.ts": [],
+    "packages/core/src/utils.test.ts": [
+      "packages/core/src/utils.ts"
+    ],
+    "packages/core/src/utils.ts": [],
+    "packages/core/src/utils/index.ts": [],
+    "packages/core/src/utils/transform.ts": [],
+    "packages/core/src/zod/index.ts": [],
+    "packages/core/src/zod/schemas.test.ts": [
+      "packages/core/src/zod/schemas.ts"
+    ],
+    "packages/core/src/zod/schemas.ts": [],
+    "packages/core/tsconfig.json": [],
+    "packages/core/vitest.config.ts": [],
+    "patches/expo-audio@57.0.0.patch": [],
+    "patches/expo-image-picker@57.0.2.patch": [],
+    "pnpm-workspace.yaml": [],
+    "PRIVACY_POLICY.md": [],
+    "README.md": [],
+    "scripts/cleanup_all_ghosts.mjs": [],
+    "scripts/cleanup_completed_plans.mjs": [],
+    "scripts/cleanup_ghost_foods.mjs": [],
+    "scripts/clear-business-data.sh": [],
+    "scripts/clear-business-data.sql": [],
+    "setup.ts": [],
+    "skills-lock.json": [],
+    "tsconfig.json": [],
+    "turbo.json": [],
+    "vitest.config.ts": []
+  }
+}

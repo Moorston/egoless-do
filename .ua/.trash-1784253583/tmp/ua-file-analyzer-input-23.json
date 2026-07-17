@@ -1,0 +1,202 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": "_archive/web-legacy/src/app/api/_auth.ts",
+      "language": "typescript",
+      "sizeLines": 77,
+      "fileCategory": "code"
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/_db.ts",
+      "language": "typescript",
+      "sizeLines": 32,
+      "fileCategory": "code"
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/_errors.ts",
+      "language": "typescript",
+      "sizeLines": 9,
+      "fileCategory": "code"
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/_pb.ts",
+      "language": "typescript",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/_rateLimit.ts",
+      "language": "typescript",
+      "sizeLines": 51,
+      "fileCategory": "code"
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/_validation.ts",
+      "language": "typescript",
+      "sizeLines": 9,
+      "fileCategory": "code"
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/auth/check-email/route.ts",
+      "language": "typescript",
+      "sizeLines": 35,
+      "fileCategory": "code"
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/auth/login/route.ts",
+      "language": "typescript",
+      "sizeLines": 47,
+      "fileCategory": "code"
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/auth/logout/route.ts",
+      "language": "typescript",
+      "sizeLines": 30,
+      "fileCategory": "code"
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/auth/me/route.ts",
+      "language": "typescript",
+      "sizeLines": 29,
+      "fileCategory": "code"
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/auth/refresh/route.ts",
+      "language": "typescript",
+      "sizeLines": 44,
+      "fileCategory": "code"
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/auth/register/route.ts",
+      "language": "typescript",
+      "sizeLines": 73,
+      "fileCategory": "code"
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/auth/reset-password/route.ts",
+      "language": "typescript",
+      "sizeLines": 79,
+      "fileCategory": "code"
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/auth/send-code/route.ts",
+      "language": "typescript",
+      "sizeLines": 112,
+      "fileCategory": "code"
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/auth/wechat/route.ts",
+      "language": "typescript",
+      "sizeLines": 81,
+      "fileCategory": "code"
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/constants.ts",
+      "language": "typescript",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/plan/notify-delayed/route.ts",
+      "language": "typescript",
+      "sizeLines": 93,
+      "fileCategory": "code"
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/push/route.ts",
+      "language": "typescript",
+      "sizeLines": 224,
+      "fileCategory": "code"
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/setup/route.ts",
+      "language": "typescript",
+      "sizeLines": 104,
+      "fileCategory": "code"
+    }
+  ],
+  "batchImportData": {
+    "_archive/web-legacy/src/app/api/_auth.ts": [
+      "_archive/web-legacy/src/app/api/_db.ts",
+      "_archive/web-legacy/src/app/api/_pb.ts"
+    ],
+    "_archive/web-legacy/src/app/api/_db.ts": [],
+    "_archive/web-legacy/src/app/api/_errors.ts": [],
+    "_archive/web-legacy/src/app/api/_pb.ts": [],
+    "_archive/web-legacy/src/app/api/_rateLimit.ts": [],
+    "_archive/web-legacy/src/app/api/_validation.ts": [],
+    "_archive/web-legacy/src/app/api/auth/check-email/route.ts": [
+      "_archive/web-legacy/src/app/api/_pb.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/app/api/auth/login/route.ts": [
+      "_archive/web-legacy/src/app/api/_pb.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts",
+      "_archive/web-legacy/src/app/api/constants.ts"
+    ],
+    "_archive/web-legacy/src/app/api/auth/logout/route.ts": [
+      "_archive/web-legacy/src/app/api/_auth.ts",
+      "_archive/web-legacy/src/app/api/_db.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts"
+    ],
+    "_archive/web-legacy/src/app/api/auth/me/route.ts": [
+      "_archive/web-legacy/src/app/api/_auth.ts",
+      "_archive/web-legacy/src/app/api/_pb.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts"
+    ],
+    "_archive/web-legacy/src/app/api/auth/refresh/route.ts": [
+      "_archive/web-legacy/src/app/api/_auth.ts",
+      "_archive/web-legacy/src/app/api/_pb.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts",
+      "_archive/web-legacy/src/app/api/constants.ts"
+    ],
+    "_archive/web-legacy/src/app/api/auth/register/route.ts": [
+      "_archive/web-legacy/src/app/api/_db.ts",
+      "_archive/web-legacy/src/app/api/_errors.ts",
+      "_archive/web-legacy/src/app/api/_pb.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts",
+      "_archive/web-legacy/src/app/api/_validation.ts",
+      "_archive/web-legacy/src/app/api/constants.ts"
+    ],
+    "_archive/web-legacy/src/app/api/auth/reset-password/route.ts": [
+      "_archive/web-legacy/src/app/api/_db.ts",
+      "_archive/web-legacy/src/app/api/_errors.ts",
+      "_archive/web-legacy/src/app/api/_pb.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts",
+      "_archive/web-legacy/src/app/api/_validation.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/app/api/auth/send-code/route.ts": [
+      "_archive/web-legacy/src/app/api/_db.ts",
+      "_archive/web-legacy/src/app/api/_pb.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/app/api/auth/wechat/route.ts": [
+      "_archive/web-legacy/src/app/api/_errors.ts",
+      "_archive/web-legacy/src/app/api/_pb.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts",
+      "_archive/web-legacy/src/app/api/constants.ts"
+    ],
+    "_archive/web-legacy/src/app/api/constants.ts": [],
+    "_archive/web-legacy/src/app/api/plan/notify-delayed/route.ts": [
+      "_archive/web-legacy/src/app/api/_auth.ts",
+      "_archive/web-legacy/src/app/api/_pb.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/app/api/push/route.ts": [
+      "_archive/web-legacy/src/app/api/_auth.ts",
+      "_archive/web-legacy/src/app/api/_pb.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts",
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/app/api/setup/route.ts": [
+      "_archive/web-legacy/src/app/api/_pb.ts",
+      "_archive/web-legacy/src/app/api/_rateLimit.ts",
+      "packages/core/src/index.ts"
+    ]
+  }
+}

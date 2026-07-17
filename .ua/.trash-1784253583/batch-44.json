@@ -1,0 +1,54 @@
+{
+  "nodes": [
+    {
+      "id": "document:.trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/implement.md",
+      "type": "document",
+      "name": "implement.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/implement.md",
+      "summary": "PB 创建 custom_food_presets collection 的执行计划，分 3 步：新建 backend/pb_hooks/init.pb.js 使用 onAfterBootstrap 在启动时自动创建缺失的集合、新建备用脚本 backend/create-collection.ps1 通过 PB Admin API 手动创建、最后验证语法与重启后自动创建效果，提供自动/手动/Admin UI 三种创建方式。",
+      "tags": ["documentation", "implementation-plan", "pocketbase", "backend"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/prd.md",
+      "summary": "在 PocketBase 实例中创建 custom_food_presets 集合的产品需求，解决 PB 不会自动根据 pb_schema.json 创建 collection 的问题，要求新增 user_id/preset_id/data/updated_at 字段与权限规则，并提供创建脚本与标准流程文档，为后续新 collection 建立自愈能力。",
+      "tags": ["documentation", "prd", "requirements", "pocketbase", "backend"],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:.trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/task.json",
+      "summary": "pb-create-food-preset 任务的元数据配置，记录任务标识、标题（PB 创建 custom_food_presets collection）、状态 completed、优先级 P2、创建者与负责人为 freebytes、时间 2026-07-12 等治理任务跟踪字段。",
+      "tags": ["configuration", "task-metadata", "project-management"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/prd.md",
+      "target": "document:.trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/implement.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/prd.md",
+      "target": "config:.trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/task.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/implement.md",
+      "target": "config:.trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/task.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

@@ -1,0 +1,2699 @@
+{
+  "nodes": [
+    {
+      "id": "file:apps/mobile/src/config.ts",
+      "type": "file",
+      "name": "config.ts",
+      "filePath": "apps/mobile/src/config.ts",
+      "summary": "移动应用配置入口：导出 API_URL 等运行时常量。",
+      "tags": [
+        "mobile",
+        "config",
+        "entry"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/components/ActiveMarker.tsx",
+      "type": "file",
+      "name": "ActiveMarker.tsx",
+      "filePath": "apps/mobile/src/features/global-pulse/components/ActiveMarker.tsx",
+      "summary": "地图活动 marker：展示用户/打卡类型图标，useGlobalTick 驱动脉搏动画。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "map",
+        "marker"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/components/ActiveMarker.tsx:formatDuration",
+      "type": "function",
+      "name": "formatDuration",
+      "filePath": "apps/mobile/src/features/global-pulse/components/ActiveMarker.tsx",
+      "lineRange": [
+        18,
+        30
+      ],
+      "summary": "格式化持续时长为 mm:ss。",
+      "tags": [
+        "format",
+        "duration"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/components/ActiveMarker.tsx:ActiveMarker",
+      "type": "function",
+      "name": "ActiveMarker",
+      "filePath": "apps/mobile/src/features/global-pulse/components/ActiveMarker.tsx",
+      "lineRange": [
+        32,
+        102
+      ],
+      "summary": "渲染脉搏动画 marker，使用 Animated 缩放。",
+      "tags": [
+        "marker",
+        "animation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/components/ActiveUserItem.tsx",
+      "type": "file",
+      "name": "ActiveUserItem.tsx",
+      "filePath": "apps/mobile/src/features/global-pulse/components/ActiveUserItem.tsx",
+      "summary": "活动用户列表项：展示用户名(formatDisplayName)、城市(useCityName)、打卡类型图标/颜色、相对时长(useGlobalTick)。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "list",
+        "user"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/components/ActiveUserItem.tsx:formatDuration",
+      "type": "function",
+      "name": "formatDuration",
+      "filePath": "apps/mobile/src/features/global-pulse/components/ActiveUserItem.tsx",
+      "lineRange": [
+        21,
+        33
+      ],
+      "summary": "格式化持续时长。",
+      "tags": [
+        "format",
+        "duration"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/components/ActiveUsersList.tsx",
+      "type": "file",
+      "name": "ActiveUsersList.tsx",
+      "filePath": "apps/mobile/src/features/global-pulse/components/ActiveUsersList.tsx",
+      "summary": "活动用户分组列表(SectionList)：按类型分组，渲染 ActiveUserItem。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "list",
+        "section"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/components/ActiveUsersList.tsx:ActiveUsersList",
+      "type": "function",
+      "name": "ActiveUsersList",
+      "filePath": "apps/mobile/src/features/global-pulse/components/ActiveUsersList.tsx",
+      "lineRange": [
+        34,
+        107
+      ],
+      "summary": "渲染分组活动用户列表。",
+      "tags": [
+        "list",
+        "section"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/components/BottomPanel.tsx",
+      "type": "file",
+      "name": "BottomPanel.tsx",
+      "filePath": "apps/mobile/src/features/global-pulse/components/BottomPanel.tsx",
+      "summary": "底部面板：嵌入 ActiveUsersList/Leadboard，展示今日/统计概览。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "panel",
+        "bottom"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/components/BottomPanel.tsx:BottomPanel",
+      "type": "function",
+      "name": "BottomPanel",
+      "filePath": "apps/mobile/src/features/global-pulse/components/BottomPanel.tsx",
+      "lineRange": [
+        31,
+        210
+      ],
+      "summary": "底部抽屉面板：活动用户+排行榜+统计。",
+      "tags": [
+        "panel",
+        "dashboard"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/components/CityCallout.tsx",
+      "type": "file",
+      "name": "CityCallout.tsx",
+      "filePath": "apps/mobile/src/features/global-pulse/components/CityCallout.tsx",
+      "summary": "城市标注城市：调用 useCityName 反查城市名并渲染 callout。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "map",
+        "city"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/components/CityCallout.tsx:CityCallout",
+      "type": "function",
+      "name": "CityCallout",
+      "filePath": "apps/mobile/src/features/global-pulse/components/CityCallout.tsx",
+      "lineRange": [
+        17,
+        47
+      ],
+      "summary": "渲染地图城市气泡(反查城市名)。",
+      "tags": [
+        "city",
+        "callout"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx",
+      "type": "file",
+      "name": "GlobalPulseMap.tsx",
+      "filePath": "apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx",
+      "summary": "全球脉动主地图(MapView)：aggregateMarkers 聚合、UrlTile 瓦片、MarkerDetail/OfflineBanner/PulseMarker、getUserHash 匿名。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "map",
+        "main"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx:GlobalPulseMap",
+      "type": "function",
+      "name": "GlobalPulseMap",
+      "filePath": "apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx",
+      "lineRange": [
+        42,
+        371
+      ],
+      "summary": "主地图组件：聚合 marker 与详情面板。",
+      "tags": [
+        "map",
+        "marker"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/components/Leaderboard.tsx",
+      "type": "file",
+      "name": "Leaderboard.tsx",
+      "filePath": "apps/mobile/src/features/global-pulse/components/Leaderboard.tsx",
+      "summary": "排行榜：排序切换(LeaderboardSort)、PodiumItem 前三名、LeaderboardItem 列表。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "leaderboard",
+        "sort"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/components/Leaderboard.tsx:buildLeaderboard",
+      "type": "function",
+      "name": "buildLeaderboard",
+      "filePath": "apps/mobile/src/features/global-pulse/components/Leaderboard.tsx",
+      "lineRange": [
+        32,
+        60
+      ],
+      "summary": "按排序规则聚合排行榜数据。",
+      "tags": [
+        "leaderboard",
+        "aggregate"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/components/Leaderboard.tsx:Leaderboard",
+      "type": "function",
+      "name": "Leaderboard",
+      "filePath": "apps/mobile/src/features/global-pulse/components/Leaderboard.tsx",
+      "lineRange": [
+        62,
+        177
+      ],
+      "summary": "渲染排序切换与排行榜列表。",
+      "tags": [
+        "leaderboard",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/components/LeaderboardItem.tsx",
+      "type": "file",
+      "name": "LeaderboardItem.tsx",
+      "filePath": "apps/mobile/src/features/global-pulse/components/LeaderboardItem.tsx",
+      "summary": "排行榜行项：展示名次/用户名/城市/天数、daysSince、ActivityIndicator。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "leaderboard",
+        "item"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/components/MarkerDetail.tsx",
+      "type": "file",
+      "name": "MarkerDetail.tsx",
+      "filePath": "apps/mobile/src/features/global-pulse/components/MarkerDetail.tsx",
+      "summary": "Marker 详情面板：展示打卡详情/活动会话/城市/时长(useGlobalTick)+scaleFontSize。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "detail",
+        "panel"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/components/MarkerDetail.tsx:formatDuration",
+      "type": "function",
+      "name": "formatDuration",
+      "filePath": "apps/mobile/src/features/global-pulse/components/MarkerDetail.tsx",
+      "lineRange": [
+        28,
+        40
+      ],
+      "summary": "格式化时长。",
+      "tags": [
+        "format",
+        "duration"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/components/MarkerDetail.tsx:MarkerDetail",
+      "type": "function",
+      "name": "MarkerDetail",
+      "filePath": "apps/mobile/src/features/global-pulse/components/MarkerDetail.tsx",
+      "lineRange": [
+        42,
+        215
+      ],
+      "summary": "渲染选中 marker 详情与活跃会话列表。",
+      "tags": [
+        "detail",
+        "panel"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/components/OfflineBanner.tsx",
+      "type": "file",
+      "name": "OfflineBanner.tsx",
+      "filePath": "apps/mobile/src/features/global-pulse/components/OfflineBanner.tsx",
+      "summary": "离线横幅提示组件。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "offline",
+        "banner"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/components/OfflineBanner.tsx:OfflineBanner",
+      "type": "function",
+      "name": "OfflineBanner",
+      "filePath": "apps/mobile/src/features/global-pulse/components/OfflineBanner.tsx",
+      "lineRange": [
+        12,
+        23
+      ],
+      "summary": "渲染网络离线提示横幅。",
+      "tags": [
+        "offline",
+        "banner"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/components/PodiumItem.tsx",
+      "type": "file",
+      "name": "PodiumItem.tsx",
+      "filePath": "apps/mobile/src/features/global-pulse/components/PodiumItem.tsx",
+      "summary": "领奖台项：前三名金银铜样式。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "leaderboard",
+        "podium"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/components/PrivacyControl.tsx",
+      "type": "file",
+      "name": "PrivacyControl.tsx",
+      "filePath": "apps/mobile/src/features/global-pulse/components/PrivacyControl.tsx",
+      "summary": "隐私控制：optIn/optOut/deleteGlobalData(AsyncStorage)+getUserHash。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "privacy",
+        "settings"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/components/PrivacyControl.tsx:PrivacyControl",
+      "type": "function",
+      "name": "PrivacyControl",
+      "filePath": "apps/mobile/src/features/global-pulse/components/PrivacyControl.tsx",
+      "lineRange": [
+        32,
+        178
+      ],
+      "summary": "渲染 opt-in/opt-out/删除全球数据操作。",
+      "tags": [
+        "privacy",
+        "settings"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/components/PulseMarker.tsx",
+      "type": "file",
+      "name": "PulseMarker.tsx",
+      "filePath": "apps/mobile/src/features/global-pulse/components/PulseMarker.tsx",
+      "summary": "打卡类型 marker(memo)：按 CheckinType 着色图标。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "map",
+        "marker"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/hooks/useActiveSessions.ts",
+      "type": "file",
+      "name": "useActiveSessions.ts",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/useActiveSessions.ts",
+      "summary": "活动会话 Hook：订阅活跃会话、连接状态、增量更新。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "hook",
+        "session"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/hooks/useActiveSessions.ts:useActiveSessions",
+      "type": "function",
+      "name": "useActiveSessions",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/useActiveSessions.ts",
+      "lineRange": [
+        35,
+        138
+      ],
+      "summary": "订阅活跃会话流并维护本地列表。",
+      "tags": [
+        "session",
+        "hook"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/hooks/useCheckinSync.ts",
+      "type": "file",
+      "name": "useCheckinSync.ts",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/useCheckinSync.ts",
+      "summary": "打卡同步 Hook：fuzzCoordinate 模糊定位+expo-location+submitCheckin，用 useNetworkStatus/usePrivacy。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "hook",
+        "sync",
+        "checkin"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/hooks/useCheckinSync.ts:useCheckinSync",
+      "type": "function",
+      "name": "useCheckinSync",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/useCheckinSync.ts",
+      "lineRange": [
+        24,
+        71
+      ],
+      "summary": "定位模糊化并提交全球打卡。",
+      "tags": [
+        "checkin",
+        "geo",
+        "privacy"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/hooks/useCityName.ts",
+      "type": "file",
+      "name": "useCityName.ts",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/useCityName.ts",
+      "summary": "城市名 Hook：getCityInfo 反向地理编码，单条(useCityName)/批量(useCityNameBatch)/clearCityCache。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "hook",
+        "geo",
+        "city"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/hooks/useCityName.ts:useCityName",
+      "type": "function",
+      "name": "useCityName",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/useCityName.ts",
+      "lineRange": [
+        26,
+        94
+      ],
+      "summary": "单个坐标→城市名(缓存)。",
+      "tags": [
+        "geo",
+        "city"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/hooks/useCityName.ts:useCityNameBatch",
+      "type": "function",
+      "name": "useCityNameBatch",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/useCityName.ts",
+      "lineRange": [
+        101,
+        186
+      ],
+      "summary": "批量坐标→城市名。",
+      "tags": [
+        "geo",
+        "city",
+        "batch"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/hooks/useCityName.ts:clearCityCache",
+      "type": "function",
+      "name": "clearCityCache",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/useCityName.ts",
+      "lineRange": [
+        191,
+        193
+      ],
+      "summary": "清空城市名缓存。",
+      "tags": [
+        "cache"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/hooks/useGlobalPulse.ts",
+      "type": "file",
+      "name": "useGlobalPulse.ts",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/useGlobalPulse.ts",
+      "summary": "全球脉动数据 Hook：getCheckins/getGlobalStats，依赖 useNetworkStatus。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "hook",
+        "data"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/hooks/useGlobalPulse.ts:useGlobalPulse",
+      "type": "function",
+      "name": "useGlobalPulse",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/useGlobalPulse.ts",
+      "lineRange": [
+        39,
+        199
+      ],
+      "summary": "拉取打卡与全局统计。",
+      "tags": [
+        "data",
+        "hook"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/hooks/useGlobalTick.ts",
+      "type": "file",
+      "name": "useGlobalTick.ts",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/useGlobalTick.ts",
+      "summary": "全局节拍 Hook：useSyncExternalStore 订阅定时 tick，驱动实时相对时间，自动清理。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "hook",
+        "tick"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/hooks/useGlobalTick.ts:useGlobalTick",
+      "type": "function",
+      "name": "useGlobalTick",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/useGlobalTick.ts",
+      "lineRange": [
+        70,
+        79
+      ],
+      "summary": "订阅全局 tick 派发相对时间。",
+      "tags": [
+        "tick",
+        "sync-external-store"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:apps/mobile/src/features/global-pulse/hooks/useGlobalTick.ts:TickStore",
+      "type": "class",
+      "name": "TickStore",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/useGlobalTick.ts",
+      "lineRange": [
+        9,
+        41
+      ],
+      "summary": "外部可变 store：驱动 useGlobalTick 的 tick 订阅源。",
+      "tags": [
+        "hook"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/hooks/useNetworkStatus.ts",
+      "type": "file",
+      "name": "useNetworkStatus.ts",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/useNetworkStatus.ts",
+      "summary": "网络状态 Hook：NetInfo 订阅 NetworkStatus 变化。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "hook",
+        "network"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/hooks/useNetworkStatus.ts:useNetworkStatus",
+      "type": "function",
+      "name": "useNetworkStatus",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/useNetworkStatus.ts",
+      "lineRange": [
+        19,
+        64
+      ],
+      "summary": "NetInfo 订阅并映射为 NetworkStatus。",
+      "tags": [
+        "network",
+        "hook"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/hooks/usePrivacy.ts",
+      "type": "file",
+      "name": "usePrivacy.ts",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/usePrivacy.ts",
+      "summary": "隐私 Hook：读写 AsyncStorage 匿名偏好、optIn/optOut/deleteGlobalData。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "hook",
+        "privacy"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/hooks/usePrivacy.ts:usePrivacy",
+      "type": "function",
+      "name": "usePrivacy",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/usePrivacy.ts",
+      "lineRange": [
+        26,
+        137
+      ],
+      "summary": "管理匿名数据偏好与删除。",
+      "tags": [
+        "privacy",
+        "hook"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/hooks/useSessionHeartbeat.ts",
+      "type": "file",
+      "name": "useSessionHeartbeat.ts",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/useSessionHeartbeat.ts",
+      "summary": "会话心跳 Hook：AppState 切换时更新活跃会话(updateSession)，保持心跳。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "hook",
+        "heartbeat"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/hooks/useSessionHeartbeat.ts:useSessionHeartbeat",
+      "type": "function",
+      "name": "useSessionHeartbeat",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/useSessionHeartbeat.ts",
+      "lineRange": [
+        15,
+        75
+      ],
+      "summary": "应用前后台切换时维持会话心跳。",
+      "tags": [
+        "heartbeat",
+        "session"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "type": "file",
+      "name": "activeSessionApi.ts",
+      "filePath": "apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "summary": "活跃会话 API：CRUD(create/update/delete/deleteSessionsByUserHash/getActiveSessions)+subscribeSessions 实时订阅+pbRequest。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "api",
+        "session"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:getConnectionState",
+      "type": "function",
+      "name": "getConnectionState",
+      "filePath": "apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "lineRange": [
+        21,
+        23
+      ],
+      "summary": "读取当前连接状态。",
+      "tags": [
+        "api",
+        "network"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:onConnectionStateChange",
+      "type": "function",
+      "name": "onConnectionStateChange",
+      "filePath": "apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "lineRange": [
+        25,
+        30
+      ],
+      "summary": "订阅连接状态变更。",
+      "tags": [
+        "api",
+        "network"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:pbRequest",
+      "type": "function",
+      "name": "pbRequest",
+      "filePath": "apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "lineRange": [
+        43,
+        93
+      ],
+      "summary": "PocketBase 统一请求封装(离线感知 + filter 转义)。",
+      "tags": [
+        "api",
+        "pocketbase"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:mapSession",
+      "type": "function",
+      "name": "mapSession",
+      "filePath": "apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "lineRange": [
+        95,
+        111
+      ],
+      "summary": "将 PB 会话记录映射为 ActiveSession。",
+      "tags": [
+        "api",
+        "session"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:createSession",
+      "type": "function",
+      "name": "createSession",
+      "filePath": "apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "lineRange": [
+        124,
+        156
+      ],
+      "summary": "创建活跃会话。",
+      "tags": [
+        "session",
+        "api"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:updateSession",
+      "type": "function",
+      "name": "updateSession",
+      "filePath": "apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "lineRange": [
+        158,
+        180
+      ],
+      "summary": "更新会话心跳。",
+      "tags": [
+        "session",
+        "api"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:deleteSession",
+      "type": "function",
+      "name": "deleteSession",
+      "filePath": "apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "lineRange": [
+        182,
+        187
+      ],
+      "summary": "删除单条活跃会话。",
+      "tags": [
+        "api",
+        "session"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:deleteSessionsByUserHash",
+      "type": "function",
+      "name": "deleteSessionsByUserHash",
+      "filePath": "apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "lineRange": [
+        189,
+        206
+      ],
+      "summary": "按用户 hash 删除会话。",
+      "tags": [
+        "session",
+        "api"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:getActiveSessions",
+      "type": "function",
+      "name": "getActiveSessions",
+      "filePath": "apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "lineRange": [
+        208,
+        233
+      ],
+      "summary": "拉取活跃会话列表。",
+      "tags": [
+        "session",
+        "api"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:subscribeSessions",
+      "type": "function",
+      "name": "subscribeSessions",
+      "filePath": "apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "lineRange": [
+        255,
+        359
+      ],
+      "summary": "订阅会话变更流(pb)。",
+      "tags": [
+        "session",
+        "subscribe"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "type": "file",
+      "name": "globalPulseApi.ts",
+      "filePath": "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "summary": "全球脉动 API：submitCheckin/getCheckins/getGlobalStats/getLeaderboard/optOut/optIn/deleteGlobalData+formatDisplayName/getCheckinTypeIcon/Color。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "api",
+        "data"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:pbRequest",
+      "type": "function",
+      "name": "pbRequest",
+      "filePath": "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "lineRange": [
+        44,
+        92
+      ],
+      "summary": "PocketBase 统一请求封装(离线感知 + filter 转义)。",
+      "tags": [
+        "api",
+        "pocketbase"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:submitCheckin",
+      "type": "function",
+      "name": "submitCheckin",
+      "filePath": "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "lineRange": [
+        105,
+        122
+      ],
+      "summary": "提交全球打卡。",
+      "tags": [
+        "checkin",
+        "api"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:getCheckins",
+      "type": "function",
+      "name": "getCheckins",
+      "filePath": "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "lineRange": [
+        127,
+        188
+      ],
+      "summary": "拉取打卡列表(离线感知)。",
+      "tags": [
+        "checkin",
+        "api"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:getGlobalStats",
+      "type": "function",
+      "name": "getGlobalStats",
+      "filePath": "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "lineRange": [
+        193,
+        209
+      ],
+      "summary": "拉取全球统计(GlobalStats)。",
+      "tags": [
+        "api",
+        "stats"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:getLeaderboard",
+      "type": "function",
+      "name": "getLeaderboard",
+      "filePath": "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "lineRange": [
+        214,
+        246
+      ],
+      "summary": "拉取排行榜。",
+      "tags": [
+        "leaderboard",
+        "api"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:optOut",
+      "type": "function",
+      "name": "optOut",
+      "filePath": "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "lineRange": [
+        251,
+        261
+      ],
+      "summary": "匿名 opt-out 全球脉动。",
+      "tags": [
+        "api",
+        "privacy"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:optIn",
+      "type": "function",
+      "name": "optIn",
+      "filePath": "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "lineRange": [
+        266,
+        276
+      ],
+      "summary": "opt-in 全球脉动(恢复分享)。",
+      "tags": [
+        "api",
+        "privacy"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:deleteGlobalData",
+      "type": "function",
+      "name": "deleteGlobalData",
+      "filePath": "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "lineRange": [
+        281,
+        291
+      ],
+      "summary": "删除用户全球脉动数据。",
+      "tags": [
+        "api"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:generateAnonymousId",
+      "type": "function",
+      "name": "generateAnonymousId",
+      "filePath": "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "lineRange": [
+        296,
+        302
+      ],
+      "summary": "生成匿名用户 ID。",
+      "tags": [
+        "api",
+        "privacy"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:formatDisplayName",
+      "type": "function",
+      "name": "formatDisplayName",
+      "filePath": "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "lineRange": [
+        308,
+        316
+      ],
+      "summary": "匿名化显示用户名。",
+      "tags": [
+        "privacy",
+        "format"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:getCheckinTypeIcon",
+      "type": "function",
+      "name": "getCheckinTypeIcon",
+      "filePath": "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "lineRange": [
+        321,
+        328
+      ],
+      "summary": "按 CheckinType 返回对应图标名。",
+      "tags": [
+        "api",
+        "checkin",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:getCheckinTypeColor",
+      "type": "function",
+      "name": "getCheckinTypeColor",
+      "filePath": "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "lineRange": [
+        333,
+        340
+      ],
+      "summary": "按 CheckinType 返回对应颜色。",
+      "tags": [
+        "api",
+        "checkin",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "type": "file",
+      "name": "offlineCache.ts",
+      "filePath": "apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "summary": "离线缓存(SQLite)：瓦片/打卡/统计/同步状态表 CACHE，initDatabase+CRUD+cleanup。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "cache",
+        "sqlite"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:initDatabase",
+      "type": "function",
+      "name": "initDatabase",
+      "filePath": "apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "lineRange": [
+        28,
+        69
+      ],
+      "summary": "初始化 SQLite 缓存表。",
+      "tags": [
+        "sqlite",
+        "init"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:cacheTile",
+      "type": "function",
+      "name": "cacheTile",
+      "filePath": "apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "lineRange": [
+        74,
+        86
+      ],
+      "summary": "缓存地图瓦片。",
+      "tags": [
+        "api",
+        "cache",
+        "tile"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:getCachedTile",
+      "type": "function",
+      "name": "getCachedTile",
+      "filePath": "apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "lineRange": [
+        91,
+        109
+      ],
+      "summary": "读取缓存瓦片。",
+      "tags": [
+        "api",
+        "cache",
+        "tile"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:cleanupTileCache",
+      "type": "function",
+      "name": "cleanupTileCache",
+      "filePath": "apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "lineRange": [
+        114,
+        130
+      ],
+      "summary": "清理过期瓦片缓存。",
+      "tags": [
+        "api",
+        "cache",
+        "tile"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:cacheCheckins",
+      "type": "function",
+      "name": "cacheCheckins",
+      "filePath": "apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "lineRange": [
+        135,
+        161
+      ],
+      "summary": "缓存打卡数据。",
+      "tags": [
+        "cache",
+        "checkin"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:getCachedCheckins",
+      "type": "function",
+      "name": "getCachedCheckins",
+      "filePath": "apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "lineRange": [
+        166,
+        193
+      ],
+      "summary": "读取缓存打卡。",
+      "tags": [
+        "cache",
+        "checkin"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:cleanupCheckinCache",
+      "type": "function",
+      "name": "cleanupCheckinCache",
+      "filePath": "apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "lineRange": [
+        198,
+        214
+      ],
+      "summary": "清理过期打卡缓存。",
+      "tags": [
+        "api",
+        "cache",
+        "checkin"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:cacheStats",
+      "type": "function",
+      "name": "cacheStats",
+      "filePath": "apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "lineRange": [
+        219,
+        227
+      ],
+      "summary": "缓存全球统计。",
+      "tags": [
+        "api",
+        "cache",
+        "stats"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:getCachedStats",
+      "type": "function",
+      "name": "getCachedStats",
+      "filePath": "apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "lineRange": [
+        232,
+        256
+      ],
+      "summary": "读取缓存统计。",
+      "tags": [
+        "api",
+        "cache",
+        "stats"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:updateSyncStatus",
+      "type": "function",
+      "name": "updateSyncStatus",
+      "filePath": "apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "lineRange": [
+        261,
+        269
+      ],
+      "summary": "更新同步状态。",
+      "tags": [
+        "api",
+        "sync"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:getSyncStatus",
+      "type": "function",
+      "name": "getSyncStatus",
+      "filePath": "apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "lineRange": [
+        274,
+        288
+      ],
+      "summary": "读取同步状态。",
+      "tags": [
+        "api",
+        "sync"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:clearAllCache",
+      "type": "function",
+      "name": "clearAllCache",
+      "filePath": "apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "lineRange": [
+        293,
+        302
+      ],
+      "summary": "清空所有缓存。",
+      "tags": [
+        "cache"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:getCacheSize",
+      "type": "function",
+      "name": "getCacheSize",
+      "filePath": "apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "lineRange": [
+        307,
+        315
+      ],
+      "summary": "计算缓存占用大小。",
+      "tags": [
+        "api",
+        "cache"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/services/pbFilterEscape.ts",
+      "type": "file",
+      "name": "pbFilterEscape.ts",
+      "filePath": "apps/mobile/src/features/global-pulse/services/pbFilterEscape.ts",
+      "summary": "PocketBase filter 转义：escapeFilter 防注入。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "util",
+        "security"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/pbFilterEscape.ts:escapeFilter",
+      "type": "function",
+      "name": "escapeFilter",
+      "filePath": "apps/mobile/src/features/global-pulse/services/pbFilterEscape.ts",
+      "lineRange": [
+        11,
+        22
+      ],
+      "summary": "转义 PB filter 参数防注入。",
+      "tags": [
+        "security",
+        "pb"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/services/userHash.ts",
+      "type": "file",
+      "name": "userHash.ts",
+      "filePath": "apps/mobile/src/features/global-pulse/services/userHash.ts",
+      "summary": "用户匿名 hash：SecureStore/AsyncStorage 持久化 userID+fuzzSecret 定位密钥。",
+      "tags": [
+        "mobile",
+        "global-pulse",
+        "privacy",
+        "hash"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/userHash.ts:getUserHash",
+      "type": "function",
+      "name": "getUserHash",
+      "filePath": "apps/mobile/src/features/global-pulse/services/userHash.ts",
+      "lineRange": [
+        20,
+        44
+      ],
+      "summary": "读取/创建匿名用户 hash。",
+      "tags": [
+        "privacy",
+        "hash"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/global-pulse/services/userHash.ts:getFuzzSecret",
+      "type": "function",
+      "name": "getFuzzSecret",
+      "filePath": "apps/mobile/src/features/global-pulse/services/userHash.ts",
+      "lineRange": [
+        51,
+        61
+      ],
+      "summary": "读取定位模糊密钥。",
+      "tags": [
+        "geo",
+        "privacy"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/net/offlineAware.ts",
+      "type": "file",
+      "name": "offlineAware.ts",
+      "filePath": "apps/mobile/src/net/offlineAware.ts",
+      "summary": "离线感知 fetch：自动附加 authToken、失败时走离线缓存。",
+      "tags": [
+        "mobile",
+        "net",
+        "offline",
+        "fetch"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/net/offlineAware.ts:offlineAwareFetch",
+      "type": "function",
+      "name": "offlineAwareFetch",
+      "filePath": "apps/mobile/src/net/offlineAware.ts",
+      "lineRange": [
+        22,
+        45
+      ],
+      "summary": "带 token、离线回退的网络请求封装。",
+      "tags": [
+        "fetch",
+        "offline"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:apps/mobile/src/net/offlineAware.ts:OfflineError",
+      "type": "class",
+      "name": "OfflineError",
+      "filePath": "apps/mobile/src/net/offlineAware.ts",
+      "lineRange": [
+        6,
+        11
+      ],
+      "summary": "离线错误类型：标识离线回退失败。",
+      "tags": [
+        "util"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/store/authToken.ts",
+      "type": "file",
+      "name": "authToken.ts",
+      "filePath": "apps/mobile/src/store/authToken.ts",
+      "summary": "认证 token 工具：从 useAppStore 取 token/userId。",
+      "tags": [
+        "mobile",
+        "store",
+        "auth",
+        "token"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/authToken.ts:getAuthToken",
+      "type": "function",
+      "name": "getAuthToken",
+      "filePath": "apps/mobile/src/store/authToken.ts",
+      "lineRange": [
+        6,
+        9
+      ],
+      "summary": "从 store 读取 auth token。",
+      "tags": [
+        "auth",
+        "token"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/authToken.ts:getAuthUserId",
+      "type": "function",
+      "name": "getAuthUserId",
+      "filePath": "apps/mobile/src/store/authToken.ts",
+      "lineRange": [
+        12,
+        15
+      ],
+      "summary": "从 store 读取用户 id。",
+      "tags": [
+        "auth",
+        "token"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/store/useNetworkStatus.ts",
+      "type": "file",
+      "name": "useNetworkStatus.ts",
+      "filePath": "apps/mobile/src/store/useNetworkStatus.ts",
+      "summary": "网络状态 store：zustand+NetInfo 维护 NetworkStatus。",
+      "tags": [
+        "mobile",
+        "store",
+        "network",
+        "zustand"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/ActiveMarker.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/ActiveMarker.tsx:formatDuration",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/ActiveMarker.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/ActiveMarker.tsx:ActiveMarker",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/ActiveMarker.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/ActiveMarker.tsx:ActiveMarker",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/ActiveUserItem.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/ActiveUserItem.tsx:formatDuration",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/ActiveUsersList.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/ActiveUsersList.tsx:ActiveUsersList",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/ActiveUsersList.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/ActiveUsersList.tsx:ActiveUsersList",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/BottomPanel.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/BottomPanel.tsx:BottomPanel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/BottomPanel.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/BottomPanel.tsx:BottomPanel",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/CityCallout.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/CityCallout.tsx:CityCallout",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/CityCallout.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/CityCallout.tsx:CityCallout",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx:GlobalPulseMap",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx:GlobalPulseMap",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/Leaderboard.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/Leaderboard.tsx:buildLeaderboard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/Leaderboard.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/Leaderboard.tsx:Leaderboard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/Leaderboard.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/Leaderboard.tsx:Leaderboard",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/MarkerDetail.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/MarkerDetail.tsx:formatDuration",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/MarkerDetail.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/MarkerDetail.tsx:MarkerDetail",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/MarkerDetail.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/MarkerDetail.tsx:MarkerDetail",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/OfflineBanner.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/OfflineBanner.tsx:OfflineBanner",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/OfflineBanner.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/OfflineBanner.tsx:OfflineBanner",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/PrivacyControl.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/PrivacyControl.tsx:PrivacyControl",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/PrivacyControl.tsx",
+      "target": "function:apps/mobile/src/features/global-pulse/components/PrivacyControl.tsx:PrivacyControl",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useActiveSessions.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/hooks/useActiveSessions.ts:useActiveSessions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useActiveSessions.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/hooks/useActiveSessions.ts:useActiveSessions",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useCheckinSync.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/hooks/useCheckinSync.ts:useCheckinSync",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useCheckinSync.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/hooks/useCheckinSync.ts:useCheckinSync",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useCityName.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/hooks/useCityName.ts:useCityName",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useCityName.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/hooks/useCityName.ts:useCityName",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useCityName.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/hooks/useCityName.ts:useCityNameBatch",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useCityName.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/hooks/useCityName.ts:useCityNameBatch",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useCityName.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/hooks/useCityName.ts:clearCityCache",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useCityName.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/hooks/useCityName.ts:clearCityCache",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useGlobalPulse.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/hooks/useGlobalPulse.ts:useGlobalPulse",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useGlobalPulse.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/hooks/useGlobalPulse.ts:useGlobalPulse",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useGlobalTick.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/hooks/useGlobalTick.ts:useGlobalTick",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useGlobalTick.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/hooks/useGlobalTick.ts:useGlobalTick",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useGlobalTick.ts",
+      "target": "class:apps/mobile/src/features/global-pulse/hooks/useGlobalTick.ts:TickStore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useNetworkStatus.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/hooks/useNetworkStatus.ts:useNetworkStatus",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useNetworkStatus.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/hooks/useNetworkStatus.ts:useNetworkStatus",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/usePrivacy.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/hooks/usePrivacy.ts:usePrivacy",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/usePrivacy.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/hooks/usePrivacy.ts:usePrivacy",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useSessionHeartbeat.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/hooks/useSessionHeartbeat.ts:useSessionHeartbeat",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useSessionHeartbeat.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/hooks/useSessionHeartbeat.ts:useSessionHeartbeat",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:getConnectionState",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:getConnectionState",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:onConnectionStateChange",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:onConnectionStateChange",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:pbRequest",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:mapSession",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:createSession",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:createSession",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:updateSession",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:updateSession",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:deleteSession",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:deleteSession",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:deleteSessionsByUserHash",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:deleteSessionsByUserHash",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:getActiveSessions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:getActiveSessions",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:subscribeSessions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts:subscribeSessions",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:pbRequest",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:submitCheckin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:submitCheckin",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:getCheckins",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:getCheckins",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:getGlobalStats",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:getGlobalStats",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:getLeaderboard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:getLeaderboard",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:optOut",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:optOut",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:optIn",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:optIn",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:deleteGlobalData",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:deleteGlobalData",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:generateAnonymousId",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:generateAnonymousId",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:formatDisplayName",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:formatDisplayName",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:getCheckinTypeIcon",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:getCheckinTypeIcon",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:getCheckinTypeColor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts:getCheckinTypeColor",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:initDatabase",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:initDatabase",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:cacheTile",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:cacheTile",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:getCachedTile",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:getCachedTile",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:cleanupTileCache",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:cacheCheckins",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:cacheCheckins",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:getCachedCheckins",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:getCachedCheckins",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:cleanupCheckinCache",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:cacheStats",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:cacheStats",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:getCachedStats",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:getCachedStats",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:updateSyncStatus",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:updateSyncStatus",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:getSyncStatus",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:getSyncStatus",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:clearAllCache",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:clearAllCache",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:getCacheSize",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/offlineCache.ts:getCacheSize",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/pbFilterEscape.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/pbFilterEscape.ts:escapeFilter",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/pbFilterEscape.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/pbFilterEscape.ts:escapeFilter",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/userHash.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/userHash.ts:getUserHash",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/userHash.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/userHash.ts:getUserHash",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/userHash.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/userHash.ts:getFuzzSecret",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/userHash.ts",
+      "target": "function:apps/mobile/src/features/global-pulse/services/userHash.ts:getFuzzSecret",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/net/offlineAware.ts",
+      "target": "function:apps/mobile/src/net/offlineAware.ts:offlineAwareFetch",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/net/offlineAware.ts",
+      "target": "function:apps/mobile/src/net/offlineAware.ts:offlineAwareFetch",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/net/offlineAware.ts",
+      "target": "class:apps/mobile/src/net/offlineAware.ts:OfflineError",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/net/offlineAware.ts",
+      "target": "class:apps/mobile/src/net/offlineAware.ts:OfflineError",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/store/authToken.ts",
+      "target": "function:apps/mobile/src/store/authToken.ts:getAuthToken",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/authToken.ts",
+      "target": "function:apps/mobile/src/store/authToken.ts:getAuthToken",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/store/authToken.ts",
+      "target": "function:apps/mobile/src/store/authToken.ts:getAuthUserId",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/authToken.ts",
+      "target": "function:apps/mobile/src/store/authToken.ts:getAuthUserId",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/ActiveMarker.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/hooks/useGlobalTick.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/ActiveMarker.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/ActiveUserItem.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/hooks/useCityName.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/ActiveUserItem.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/hooks/useGlobalTick.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/ActiveUserItem.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/ActiveUsersList.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/components/ActiveUserItem.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/ActiveUsersList.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/BottomPanel.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/components/ActiveUsersList.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/BottomPanel.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/components/Leaderboard.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/CityCallout.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/hooks/useCityName.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/CityCallout.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/components/ActiveMarker.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/components/BottomPanel.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/components/Leaderboard.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/components/MarkerDetail.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/components/OfflineBanner.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/components/PulseMarker.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/hooks/useActiveSessions.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/hooks/useGlobalPulse.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/services/userHash.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/Leaderboard.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/components/LeaderboardItem.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/Leaderboard.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/components/PodiumItem.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/LeaderboardItem.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/hooks/useCityName.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/LeaderboardItem.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/MarkerDetail.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/hooks/useCityName.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/MarkerDetail.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/hooks/useGlobalTick.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/MarkerDetail.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/PodiumItem.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/hooks/useCityName.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/PodiumItem.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/PrivacyControl.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/PrivacyControl.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/services/userHash.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/components/PulseMarker.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useActiveSessions.ts",
+      "target": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useCheckinSync.ts",
+      "target": "file:apps/mobile/src/features/global-pulse/hooks/useNetworkStatus.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useCheckinSync.ts",
+      "target": "file:apps/mobile/src/features/global-pulse/hooks/usePrivacy.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useCheckinSync.ts",
+      "target": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useCheckinSync.ts",
+      "target": "file:apps/mobile/src/features/global-pulse/services/userHash.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useGlobalPulse.ts",
+      "target": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useGlobalPulse.ts",
+      "target": "file:apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useGlobalPulse.ts",
+      "target": "file:apps/mobile/src/store/useNetworkStatus.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/usePrivacy.ts",
+      "target": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/usePrivacy.ts",
+      "target": "file:apps/mobile/src/features/global-pulse/services/userHash.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useSessionHeartbeat.ts",
+      "target": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "target": "file:apps/mobile/src/config.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "target": "file:apps/mobile/src/features/global-pulse/services/pbFilterEscape.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "file:apps/mobile/src/config.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "file:apps/mobile/src/features/global-pulse/services/pbFilterEscape.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "target": "file:apps/mobile/src/net/offlineAware.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/net/offlineAware.ts",
+      "target": "file:apps/mobile/src/store/authToken.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/net/offlineAware.ts",
+      "target": "file:apps/mobile/src/store/useNetworkStatus.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    }
+  ]
+}

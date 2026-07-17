@@ -1,0 +1,15 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {"path": ".trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/design.md", "language": "markdown", "sizeLines": 84, "fileCategory": "docs"},
+    {"path": ".trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/implement.md", "language": "markdown", "sizeLines": 47, "fileCategory": "docs"},
+    {"path": ".trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/prd.md", "language": "markdown", "sizeLines": 53, "fileCategory": "docs"},
+    {"path": ".trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/task.json", "language": "json", "sizeLines": 25, "fileCategory": "config"}
+  ],
+  "batchImportData": {
+    ".trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/design.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/implement.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/task.json": []
+  }
+}

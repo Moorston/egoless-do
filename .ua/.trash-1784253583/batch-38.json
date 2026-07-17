@@ -1,0 +1,146 @@
+{
+  "nodes": [
+    {
+      "id": "document:.trellis/spec/web/frontend/component-guidelines.md",
+      "type": "document",
+      "name": "component-guidelines.md",
+      "filePath": ".trellis/spec/web/frontend/component-guidelines.md",
+      "summary": "Web 端组件规范（已归档），说明组件结构、Props 约定、样式模式、可访问性与常见错误。",
+      "tags": [
+        "documentation",
+        "web",
+        "component-guidelines",
+        "archived"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/spec/web/frontend/directory-structure.md",
+      "type": "document",
+      "name": "directory-structure.md",
+      "filePath": ".trellis/spec/web/frontend/directory-structure.md",
+      "summary": "Web 端目录结构规范（已归档），说明模块组织、文件布局与命名约定。",
+      "tags": [
+        "documentation",
+        "web",
+        "directory-structure",
+        "archived"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/spec/web/frontend/hook-guidelines.md",
+      "type": "document",
+      "name": "hook-guidelines.md",
+      "filePath": ".trellis/spec/web/frontend/hook-guidelines.md",
+      "summary": "Web 端 Hook 规范（已归档），说明自定义 Hook、数据获取模式与命名约定。",
+      "tags": [
+        "documentation",
+        "web",
+        "hook-guidelines",
+        "archived"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/spec/web/frontend/index.md",
+      "type": "document",
+      "name": "index.md",
+      "filePath": ".trellis/spec/web/frontend/index.md",
+      "summary": "Web 端前端开发指南总览页（已归档），标注 apps/web 已归档至 _archive/web-legacy，并指向移动端活跃模式。",
+      "tags": [
+        "documentation",
+        "web",
+        "index",
+        "archived"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/spec/web/frontend/quality-guidelines.md",
+      "type": "document",
+      "name": "quality-guidelines.md",
+      "filePath": ".trellis/spec/web/frontend/quality-guidelines.md",
+      "summary": "Web 端质量规范（已归档），列出禁止模式、必需模式、测试要求与代码审查清单。",
+      "tags": [
+        "documentation",
+        "web",
+        "quality-guidelines",
+        "archived"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/spec/web/frontend/state-management.md",
+      "type": "document",
+      "name": "state-management.md",
+      "filePath": ".trellis/spec/web/frontend/state-management.md",
+      "summary": "Web 端状态管理规范（已归档），说明状态分类、全局状态使用时机、服务端状态与常见错误。",
+      "tags": [
+        "documentation",
+        "web",
+        "state-management",
+        "archived"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/spec/web/frontend/type-safety.md",
+      "type": "document",
+      "name": "type-safety.md",
+      "filePath": ".trellis/spec/web/frontend/type-safety.md",
+      "summary": "Web 端类型安全规范（已归档），说明类型组织、验证、常见模式与禁止模式。",
+      "tags": [
+        "documentation",
+        "web",
+        "type-safety",
+        "archived"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:.trellis/spec/web/frontend/index.md",
+      "target": "document:.trellis/spec/web/frontend/component-guidelines.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/web/frontend/index.md",
+      "target": "document:.trellis/spec/web/frontend/directory-structure.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/web/frontend/index.md",
+      "target": "document:.trellis/spec/web/frontend/hook-guidelines.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/web/frontend/index.md",
+      "target": "document:.trellis/spec/web/frontend/quality-guidelines.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/web/frontend/index.md",
+      "target": "document:.trellis/spec/web/frontend/state-management.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/web/frontend/index.md",
+      "target": "document:.trellis/spec/web/frontend/type-safety.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": "infra/docker/api/.env.example",
+      "language": "config",
+      "sizeLines": 27,
+      "fileCategory": "config"
+    },
+    {
+      "path": "infra/docker/api/package.json",
+      "language": "json",
+      "sizeLines": 28,
+      "fileCategory": "config"
+    },
+    {
+      "path": "infra/docker/api/tsconfig.json",
+      "language": "json",
+      "sizeLines": 16,
+      "fileCategory": "config"
+    }
+  ],
+  "batchImportData": {
+    "infra/docker/api/.env.example": [],
+    "infra/docker/api/package.json": [],
+    "infra/docker/api/tsconfig.json": []
+  },
+  "batchIndex": 54
+}

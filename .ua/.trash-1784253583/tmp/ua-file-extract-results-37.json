@@ -1,0 +1,444 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 7,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": ".trellis/spec/mobile/frontend/component-guidelines.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 110,
+      "nonEmptyLines": 83,
+      "sections": [
+        {
+          "heading": "Component Guidelines",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Screen Component Pattern",
+          "level": 2,
+          "line": 18
+        },
+        {
+          "heading": "Rules:",
+          "level": 3,
+          "line": 48
+        },
+        {
+          "heading": "Shared Component Pattern",
+          "level": 2,
+          "line": 58
+        },
+        {
+          "heading": "Shared primitives from `components/UI.tsx`:",
+          "level": 3,
+          "line": 70
+        },
+        {
+          "heading": "Forbidden Patterns",
+          "level": 2,
+          "line": 82
+        },
+        {
+          "heading": "Logging",
+          "level": 2,
+          "line": 92
+        },
+        {
+          "heading": "Examples",
+          "level": 2,
+          "line": 105
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 9
+      }
+    },
+    {
+      "path": ".trellis/spec/mobile/frontend/directory-structure.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 96,
+      "nonEmptyLines": 77,
+      "sections": [
+        {
+          "heading": "Directory Structure",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Directory Layout",
+          "level": 2,
+          "line": 13
+        },
+        {
+          "heading": "Module Organization",
+          "level": 2,
+          "line": 57
+        },
+        {
+          "heading": "Naming Conventions",
+          "level": 2,
+          "line": 76
+        },
+        {
+          "heading": "Examples",
+          "level": 2,
+          "line": 91
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 6
+      }
+    },
+    {
+      "path": ".trellis/spec/mobile/frontend/hook-guidelines.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 114,
+      "nonEmptyLines": 80,
+      "sections": [
+        {
+          "heading": "Hook Guidelines",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Naming & Location",
+          "level": 2,
+          "line": 13
+        },
+        {
+          "heading": "Core Patterns",
+          "level": 2,
+          "line": 22
+        },
+        {
+          "heading": "1. Side-effect hook (Expo SDK wrapper)",
+          "level": 3,
+          "line": 24
+        },
+        {
+          "heading": "2. Navigation hook",
+          "level": 3,
+          "line": 67
+        },
+        {
+          "heading": "Hook Composition Rules",
+          "level": 2,
+          "line": 84
+        },
+        {
+          "heading": "Error Handling in Hooks",
+          "level": 2,
+          "line": 92
+        },
+        {
+          "heading": "Forbidden Patterns",
+          "level": 2,
+          "line": 101
+        },
+        {
+          "heading": "Examples",
+          "level": 2,
+          "line": 110
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 10
+      }
+    },
+    {
+      "path": ".trellis/spec/mobile/frontend/index.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 39,
+      "nonEmptyLines": 25,
+      "sections": [
+        {
+          "heading": "Frontend Development Guidelines",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Guidelines Summary",
+          "level": 2,
+          "line": 13
+        },
+        {
+          "heading": "How to Fill These Guidelines",
+          "level": 2,
+          "line": 26
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 4
+      }
+    },
+    {
+      "path": ".trellis/spec/mobile/frontend/quality-guidelines.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 144,
+      "nonEmptyLines": 108,
+      "sections": [
+        {
+          "heading": "Quality Guidelines",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Forbidden Patterns",
+          "level": 2,
+          "line": 13
+        },
+        {
+          "heading": "Architecture",
+          "level": 3,
+          "line": 15
+        },
+        {
+          "heading": "React / RN",
+          "level": 3,
+          "line": 21
+        },
+        {
+          "heading": "i18n / Theming",
+          "level": 3,
+          "line": 27
+        },
+        {
+          "heading": "Data / Sync",
+          "level": 3,
+          "line": 32
+        },
+        {
+          "heading": "Required Patterns",
+          "level": 2,
+          "line": 39
+        },
+        {
+          "heading": "Store Reads",
+          "level": 3,
+          "line": 41
+        },
+        {
+          "heading": "Slice Actions",
+          "level": 3,
+          "line": 50
+        },
+        {
+          "heading": "AsyncStorage Native Module Fallback",
+          "level": 3,
+          "line": 58
+        },
+        {
+          "heading": "Error Logging",
+          "level": 3,
+          "line": 69
+        },
+        {
+          "heading": "Testing",
+          "level": 2,
+          "line": 79
+        },
+        {
+          "heading": "Pre-commit Checklist",
+          "level": 2,
+          "line": 88
+        },
+        {
+          "heading": "Common Mistakes",
+          "level": 2,
+          "line": 99
+        },
+        {
+          "heading": "Missing `scaleFontSize` Import",
+          "level": 3,
+          "line": 101
+        },
+        {
+          "heading": "Text Strings Must Be Rendered Within Text Component",
+          "level": 3,
+          "line": 115
+        },
+        {
+          "heading": "Code Review Checklist",
+          "level": 2,
+          "line": 136
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 18
+      }
+    },
+    {
+      "path": ".trellis/spec/mobile/frontend/state-management.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 140,
+      "nonEmptyLines": 103,
+      "sections": [
+        {
+          "heading": "State Management",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Store Architecture",
+          "level": 2,
+          "line": 21
+        },
+        {
+          "heading": "Reading State (selector rules)",
+          "level": 2,
+          "line": 41
+        },
+        {
+          "heading": "Side Effects (persistence + synchronization)",
+          "level": 2,
+          "line": 65
+        },
+        {
+          "heading": "Persistence Configuration",
+          "level": 2,
+          "line": 87
+        },
+        {
+          "heading": "Offline / Sync Cycle",
+          "level": 2,
+          "line": 105
+        },
+        {
+          "heading": "Forbidden Patterns",
+          "level": 2,
+          "line": 126
+        },
+        {
+          "heading": "Examples",
+          "level": 2,
+          "line": 135
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 9
+      }
+    },
+    {
+      "path": ".trellis/spec/mobile/frontend/type-safety.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 110,
+      "nonEmptyLines": 75,
+      "sections": [
+        {
+          "heading": "Type Safety",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Type Location Rules",
+          "level": 2,
+          "line": 17
+        },
+        {
+          "heading": "Type Imports",
+          "level": 2,
+          "line": 31
+        },
+        {
+          "heading": "Type Discrimination",
+          "level": 2,
+          "line": 48
+        },
+        {
+          "heading": "Type Narrowing",
+          "level": 2,
+          "line": 62
+        },
+        {
+          "heading": "Generic Patterns",
+          "level": 2,
+          "line": 81
+        },
+        {
+          "heading": "Forbidden Patterns",
+          "level": 2,
+          "line": 96
+        },
+        {
+          "heading": "Examples",
+          "level": 2,
+          "line": 106
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 9
+      }
+    }
+  ]
+}

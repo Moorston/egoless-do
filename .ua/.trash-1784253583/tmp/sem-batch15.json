@@ -1,0 +1,824 @@
+{
+  "infra/docker/api/src/account-lockout.ts": {
+    "summary": "账户安全锁：isAccountLocked/recordLoginAttempt/cleanupExpiredLockouts/initAccountLockoutCollection 防爆破，含邮箱维度锁。",
+    "tags": [
+      "api",
+      "auth",
+      "security",
+      "lockout"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "isAccountLocked": {
+        "summary": "检查账户是否被临时锁定。",
+        "tags": [
+          "security",
+          "lockout"
+        ],
+        "complexity": "simple"
+      },
+      "recordLoginAttemptLocked": {
+        "summary": "记录登录尝试并在阈值后锁定。",
+        "tags": [
+          "security",
+          "lockout"
+        ],
+        "complexity": "moderate"
+      },
+      "cleanupExpiredLockouts": {
+        "summary": "清理过期锁记录。",
+        "tags": [
+          "lockout",
+          "cleanup"
+        ],
+        "complexity": "moderate"
+      },
+      "initAccountLockoutCollection": {
+        "summary": "初始化锁集合 schema。",
+        "tags": [
+          "pocketbase",
+          "init"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  },
+  "infra/docker/api/src/audit-log.ts": {
+    "summary": "审计日志：logAuditEvent/getUserAuditLogs/getRecentSecurityEvents/cleanupExpiredAuditLogs/initAuditLogCollection+extractClientInfo。",
+    "tags": [
+      "api",
+      "security",
+      "audit"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "logAuditEvent": {
+        "summary": "记录安全审计事件。",
+        "tags": [
+          "audit",
+          "security"
+        ],
+        "complexity": "simple"
+      },
+      "getUserAuditLogs": {
+        "summary": "按用户查询审计日志。",
+        "tags": [
+          "audit",
+          "query"
+        ],
+        "complexity": "moderate"
+      },
+      "getRecentSecurityEvents": {
+        "summary": "查询近期安全事件。",
+        "tags": [
+          "audit",
+          "security"
+        ],
+        "complexity": "moderate"
+      },
+      "cleanupExpiredAuditLogs": {
+        "summary": "清理过期审计日志。",
+        "tags": [
+          "audit",
+          "cleanup"
+        ],
+        "complexity": "moderate"
+      },
+      "initAuditLogCollection": {
+        "summary": "初始化审计集合 schema。",
+        "tags": [
+          "pocketbase",
+          "init"
+        ],
+        "complexity": "moderate"
+      },
+      "extractClientInfo": {
+        "summary": "提取客户端 IP/UA 信息。",
+        "tags": [
+          "audit",
+          "util"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "infra/docker/api/src/auth-middleware.ts": {
+    "summary": "认证中间件：verifyAuth(JWT 解析/黑名单校验)、sanitizeError、validatePassword、base64UrlDecode/jwtExp。",
+    "tags": [
+      "api",
+      "auth",
+      "middleware",
+      "jwt"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "jwtPayload": {
+        "summary": "解析 JWT payload(base64url)。",
+        "tags": [
+          "jwt",
+          "auth"
+        ],
+        "complexity": "simple"
+      },
+      "verifyAuth": {
+        "summary": "校验 Authorization 头并解析 user。",
+        "tags": [
+          "auth",
+          "middleware"
+        ],
+        "complexity": "moderate"
+      },
+      "sanitizeError": {
+        "summary": "脱敏错误信息。",
+        "tags": [
+          "security",
+          "error"
+        ],
+        "complexity": "simple"
+      },
+      "validatePassword": {
+        "summary": "校验密码强度。",
+        "tags": [
+          "auth",
+          "validation"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "infra/docker/api/src/auth/change-password.ts": {
+    "summary": "修改密码路由：校验旧密码、validatePassword、blacklistToken、revokeAllRefreshTokens。",
+    "tags": [
+      "api",
+      "auth",
+      "route",
+      "password"
+    ],
+    "complexity": "simple"
+  },
+  "infra/docker/api/src/auth/check-email.ts": {
+    "summary": "检查邮箱路由：escapeFilter 查询邮箱是否注册+邮箱维度限流(checkEmailRateLimit)。",
+    "tags": [
+      "api",
+      "auth",
+      "route",
+      "check-email"
+    ],
+    "complexity": "simple"
+  },
+  "infra/docker/api/src/auth/login.ts": {
+    "summary": "登录路由：rateLimit+lockout(isAccountLocked/recordLoginAttempt)+logAuditEvent+generateRefreshToken。",
+    "tags": [
+      "api",
+      "auth",
+      "route",
+      "login"
+    ],
+    "complexity": "simple"
+  },
+  "infra/docker/api/src/auth/logout.ts": {
+    "summary": "注销路由：verifyAuth+blacklistToken+revokeRefreshToken+logAuditEvent。",
+    "tags": [
+      "api",
+      "auth",
+      "route",
+      "logout"
+    ],
+    "complexity": "simple"
+  },
+  "infra/docker/api/src/auth/me.ts": {
+    "summary": "当前用户路由：verifyAuth+getPb 查询用户信息。",
+    "tags": [
+      "api",
+      "auth",
+      "route",
+      "me"
+    ],
+    "complexity": "simple"
+  },
+  "infra/docker/api/src/auth/mfa.ts": {
+    "summary": "MFA 路由：桥接 mfa.ts 的 enable/disable/verifyMFACode，logAuditEvent。",
+    "tags": [
+      "api",
+      "auth",
+      "route",
+      "mfa"
+    ],
+    "complexity": "simple"
+  },
+  "infra/docker/api/src/auth/rbac.ts": {
+    "summary": "角色路由：桥接 rbac.ts getUserRole/setUserRole/hasPermission，logAuditEvent。",
+    "tags": [
+      "api",
+      "auth",
+      "route",
+      "rbac"
+    ],
+    "complexity": "simple"
+  },
+  "infra/docker/api/src/auth/refresh.ts": {
+    "summary": "刷新令牌路由：validateAndRevokeRefreshToken+refreshRateLimit+createRefreshToken。",
+    "tags": [
+      "api",
+      "auth",
+      "route",
+      "refresh"
+    ],
+    "complexity": "simple"
+  },
+  "infra/docker/api/src/auth/register.ts": {
+    "summary": "注册路由：验证码(verification-code)+validatePassword+crypto+generateRefreshToken+logAuditEvent+registerRateLimit。",
+    "tags": [
+      "api",
+      "auth",
+      "route",
+      "register"
+    ],
+    "complexity": "simple"
+  },
+  "infra/docker/api/src/auth/reset-password.ts": {
+    "summary": "重置密码路由：验证码+validatePassword+blacklistToken+revokeAllRefreshTokens。",
+    "tags": [
+      "api",
+      "auth",
+      "route",
+      "reset-password"
+    ],
+    "complexity": "simple"
+  },
+  "infra/docker/api/src/auth/send-code.ts": {
+    "summary": "发送验证码路由：nodemailer 发邮件+saveVerificationCode+canSendCode+generateCode/getTransporter。",
+    "tags": [
+      "api",
+      "auth",
+      "route",
+      "send-code"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "generateCode": {
+        "summary": "生成数字验证码。",
+        "tags": [
+          "verification",
+          "random"
+        ],
+        "complexity": "simple"
+      },
+      "getTransporter": {
+        "summary": "构建 nodemailer SMTP transport。",
+        "tags": [
+          "email",
+          "nodemailer"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "infra/docker/api/src/auth/wechat.ts": {
+    "summary": "微信登录路由：code→session+escapeFilter+generateRefreshToken+wechatRateLimit+wechatPassword。",
+    "tags": [
+      "api",
+      "auth",
+      "route",
+      "wechat"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "wechatPassword": {
+        "summary": "生成微信绑定用的随机密码。",
+        "tags": [
+          "auth",
+          "wechat"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "infra/docker/api/src/config.ts": {
+    "summary": "服务配置：dotenv 加载 + env/envRequired/getInternalSecret。",
+    "tags": [
+      "api",
+      "config",
+      "env"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "env": {
+        "summary": "读取环境变量(带默认值)。",
+        "tags": [
+          "config",
+          "env"
+        ],
+        "complexity": "simple"
+      },
+      "envRequired": {
+        "summary": "读取必填环境变量，缺则抛错。",
+        "tags": [
+          "config",
+          "env"
+        ],
+        "complexity": "simple"
+      },
+      "getInternalSecret": {
+        "summary": "读取内部服务密钥。",
+        "tags": [
+          "config",
+          "secret"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "infra/docker/api/src/errors.ts": {
+    "summary": "错误工具：errMessage/errStatus 构造统一错误响应。",
+    "tags": [
+      "api",
+      "error",
+      "util"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "errMessage": {
+        "summary": "构造错误消息体。",
+        "tags": [
+          "error",
+          "util"
+        ],
+        "complexity": "simple"
+      },
+      "errStatus": {
+        "summary": "构造带状态码的错误响应。",
+        "tags": [
+          "error",
+          "util"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "infra/docker/api/src/index.ts": {
+    "summary": "API 入口：Hono 服务装配 cors+rate-limit+12 个 auth 路由+init*Collection。",
+    "tags": [
+      "api",
+      "entry",
+      "hono"
+    ],
+    "complexity": "simple"
+  },
+  "infra/docker/api/src/mfa.ts": {
+    "summary": "MFA 服务：TOTP(generateMFASecret/generateTOTP/verifyTOTP)+generateBackupCodes+enable/disable/verifyMFACode/initMFACollection+bcrypt。",
+    "tags": [
+      "api",
+      "auth",
+      "mfa",
+      "totp"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "generateMFASecret": {
+        "summary": "生成 MFA 密钥。",
+        "tags": [
+          "mfa",
+          "totp"
+        ],
+        "complexity": "simple"
+      },
+      "generateTOTP": {
+        "summary": "生成当前 TOTP 码。",
+        "tags": [
+          "mfa",
+          "totp"
+        ],
+        "complexity": "simple"
+      },
+      "verifyTOTP": {
+        "summary": "校验 TOTP 码(含窗口)。",
+        "tags": [
+          "mfa",
+          "totp"
+        ],
+        "complexity": "moderate"
+      },
+      "generateBackupCodes": {
+        "summary": "生成一次性备用码。",
+        "tags": [
+          "mfa",
+          "backup"
+        ],
+        "complexity": "simple"
+      },
+      "enableMFA": {
+        "summary": "启用 MFA 并保存配置。",
+        "tags": [
+          "mfa",
+          "enable"
+        ],
+        "complexity": "moderate"
+      },
+      "disableMFA": {
+        "summary": "关闭 MFA。",
+        "tags": [
+          "mfa",
+          "disable"
+        ],
+        "complexity": "simple"
+      },
+      "verifyMFACode": {
+        "summary": "校验 TOTP 或备用码。",
+        "tags": [
+          "mfa",
+          "verify"
+        ],
+        "complexity": "moderate"
+      },
+      "initMFACollection": {
+        "summary": "初始化 MFA 集合 schema。",
+        "tags": [
+          "pocketbase",
+          "init"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  },
+  "infra/docker/api/src/monitoring.ts": {
+    "summary": "监控路由：Hono 健康检查/指标端点。",
+    "tags": [
+      "api",
+      "monitoring",
+      "hono"
+    ],
+    "complexity": "simple"
+  },
+  "infra/docker/api/src/pb.ts": {
+    "summary": "PocketBase 客户端：getPb/authenticateAdmin/getAdminPb+escapeFilter。",
+    "tags": [
+      "api",
+      "pocketbase",
+      "client"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "getPb": {
+        "summary": "创建 PocketBase 客户端。",
+        "tags": [
+          "pocketbase",
+          "client"
+        ],
+        "complexity": "simple"
+      },
+      "authenticateAdmin": {
+        "summary": "管理员认证 PB。",
+        "tags": [
+          "pocketbase",
+          "admin"
+        ],
+        "complexity": "simple"
+      },
+      "getAdminPb": {
+        "summary": "获取已认证管理员客户端。",
+        "tags": [
+          "pocketbase",
+          "admin"
+        ],
+        "complexity": "simple"
+      },
+      "escapeFilter": {
+        "summary": "转义 PB filter 字符串防注入。",
+        "tags": [
+          "pocketbase",
+          "security"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "infra/docker/api/src/plan.ts": {
+    "summary": "计划邮件通知路由：verifyAuth+nodemailer+escapeHtml+getTransporter+adminPb。",
+    "tags": [
+      "api",
+      "plan",
+      "email"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "escapeHtml": {
+        "summary": "HTML 实体转义防 XSS。",
+        "tags": [
+          "security",
+          "xss"
+        ],
+        "complexity": "simple"
+      },
+      "getTransporter": {
+        "summary": "构建 SMTP transport。",
+        "tags": [
+          "email",
+          "nodemailer"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "infra/docker/api/src/push.ts": {
+    "summary": "推送路由：verifyAuth+Expo Push(sendExpoPush)+rateLimit。",
+    "tags": [
+      "api",
+      "push",
+      "expo"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "sendExpoPush": {
+        "summary": "调用 Expo Push API 发送通知。",
+        "tags": [
+          "push",
+          "expo"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  },
+  "infra/docker/api/src/rate-limit.ts": {
+    "summary": "限流服务：内存+持久化(fs)双维度 createRateLimiter/getClientIp/createPBRateLimiter/cleanupExpiredRateLimits。",
+    "tags": [
+      "api",
+      "rate-limit",
+      "security"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "createRateLimiter": {
+        "summary": "创建内存限流中间件(滑动窗口)。",
+        "tags": [
+          "rate-limit",
+          "security"
+        ],
+        "complexity": "moderate"
+      },
+      "getClientIp": {
+        "summary": "提取客户端 IP。",
+        "tags": [
+          "rate-limit",
+          "util"
+        ],
+        "complexity": "simple"
+      },
+      "createPBRateLimiter": {
+        "summary": "创建基于 PB 的分布式限流。",
+        "tags": [
+          "rate-limit",
+          "pocketbase"
+        ],
+        "complexity": "moderate"
+      },
+      "cleanupExpiredRateLimits": {
+        "summary": "清理过期限流记录。",
+        "tags": [
+          "rate-limit",
+          "cleanup"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  },
+  "infra/docker/api/src/rbac.ts": {
+    "summary": "RBAC 服务：角色权限 getUserRole/setUserRole/hasPermission/hasAnyPermission/getUserPermissions+initRBACCollection。",
+    "tags": [
+      "api",
+      "rbac",
+      "security"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "getUserRole": {
+        "summary": "读取用户角色。",
+        "tags": [
+          "rbac",
+          "security"
+        ],
+        "complexity": "simple"
+      },
+      "setUserRole": {
+        "summary": "设置用户角色。",
+        "tags": [
+          "rbac",
+          "security"
+        ],
+        "complexity": "moderate"
+      },
+      "hasPermission": {
+        "summary": "判断单项权限。",
+        "tags": [
+          "rbac",
+          "permission"
+        ],
+        "complexity": "simple"
+      },
+      "hasAnyPermission": {
+        "summary": "判断任一权限。",
+        "tags": [
+          "rbac",
+          "permission"
+        ],
+        "complexity": "simple"
+      },
+      "getUserPermissions": {
+        "summary": "列出用户全部权限。",
+        "tags": [
+          "rbac",
+          "permission"
+        ],
+        "complexity": "simple"
+      },
+      "initRBACCollection": {
+        "summary": "初始化 RBAC 集合 schema。",
+        "tags": [
+          "pocketbase",
+          "init"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  },
+  "infra/docker/api/src/setup.ts": {
+    "summary": "初始化/Setup 路由：HMAC signature(crypto)+timingSafeEqual+verifyPbSetupHook+getPb。",
+    "tags": [
+      "api",
+      "setup",
+      "security"
+    ],
+    "complexity": "simple"
+  },
+  "infra/docker/api/src/token-blacklist.ts": {
+    "summary": "令牌黑名单：isTokenBlacklisted/blacklistToken/cleanupExpiredTokens/initTokenBlacklistCollection。",
+    "tags": [
+      "api",
+      "auth",
+      "token",
+      "security"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "isTokenBlacklisted": {
+        "summary": "校验 JWT 是否在黑名单。",
+        "tags": [
+          "token",
+          "security"
+        ],
+        "complexity": "simple"
+      },
+      "blacklistToken": {
+        "summary": "将 JWT 加入黑名单。",
+        "tags": [
+          "token",
+          "security"
+        ],
+        "complexity": "simple"
+      },
+      "cleanupExpiredTokens": {
+        "summary": "清理过期黑名单记录。",
+        "tags": [
+          "token",
+          "cleanup"
+        ],
+        "complexity": "moderate"
+      },
+      "initTokenBlacklistCollection": {
+        "summary": "初始化黑名单集合 schema。",
+        "tags": [
+          "pocketbase",
+          "init"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  },
+  "infra/docker/api/src/token-refresh-rotation.ts": {
+    "summary": "刷新令牌轮换：generateNonce/generateRefreshToken/createRefreshToken/validateAndRevokeRefreshToken/validateRefreshToken/revokeRefreshToken/revokeAllUserRefreshTokens/cleanupExpiredRefreshTokens/initRefreshTokenCollection+randomBytes。",
+    "tags": [
+      "api",
+      "auth",
+      "token",
+      "rotation"
+    ],
+    "complexity": "complex",
+    "functions": {
+      "generateRefreshToken": {
+        "summary": "生成加密随机 refresh token。",
+        "tags": [
+          "token",
+          "crypto"
+        ],
+        "complexity": "simple"
+      },
+      "createRefreshToken": {
+        "summary": "为用户创建并存储 refresh token。",
+        "tags": [
+          "token",
+          "create"
+        ],
+        "complexity": "simple"
+      },
+      "validateAndRevokeRefreshToken": {
+        "summary": "校验并单次消费 refresh token。",
+        "tags": [
+          "token",
+          "rotation"
+        ],
+        "complexity": "moderate"
+      },
+      "revokeRefreshToken": {
+        "summary": "撤销指定 refresh token。",
+        "tags": [
+          "token",
+          "revoke"
+        ],
+        "complexity": "simple"
+      },
+      "revokeAllUserRefreshTokens": {
+        "summary": "撤销用户全部 refresh token。",
+        "tags": [
+          "token",
+          "revoke"
+        ],
+        "complexity": "moderate"
+      },
+      "cleanupExpiredRefreshTokens": {
+        "summary": "清理过期 refresh token。",
+        "tags": [
+          "token",
+          "cleanup"
+        ],
+        "complexity": "moderate"
+      },
+      "initRefreshTokenCollection": {
+        "summary": "初始化 refresh 集合 schema。",
+        "tags": [
+          "pocketbase",
+          "init"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  },
+  "infra/docker/api/src/verification-code.ts": {
+    "summary": "验证码服务：save/get/delete/canSendCode/cleanupExpiredCodes/initVerificationCodeCollection。",
+    "tags": [
+      "api",
+      "auth",
+      "verification"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "saveVerificationCode": {
+        "summary": "保存验证码(含 TTL)。",
+        "tags": [
+          "verification",
+          "create"
+        ],
+        "complexity": "simple"
+      },
+      "getVerificationCode": {
+        "summary": "读取并校验验证码。",
+        "tags": [
+          "verification",
+          "query"
+        ],
+        "complexity": "simple"
+      },
+      "deleteVerificationCode": {
+        "summary": "删除已用验证码。",
+        "tags": [
+          "verification",
+          "delete"
+        ],
+        "complexity": "simple"
+      },
+      "cleanupExpiredCodes": {
+        "summary": "清理过期验证码。",
+        "tags": [
+          "verification",
+          "cleanup"
+        ],
+        "complexity": "moderate"
+      },
+      "canSendCode": {
+        "summary": "判断是否可重发(频率限制)。",
+        "tags": [
+          "verification",
+          "rate"
+        ],
+        "complexity": "simple"
+      },
+      "initVerificationCodeCollection": {
+        "summary": "初始化验证码集合 schema。",
+        "tags": [
+          "pocketbase",
+          "init"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  }
+}

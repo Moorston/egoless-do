@@ -1,0 +1,77 @@
+{
+  "nodes": [
+    {
+      "id": "document:.trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/design.md",
+      "type": "document",
+      "name": "design.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/design.md",
+      "summary": "用户资料页增强的设计文档，规划 ProfileScreen 三大需求：新增 POST /api/auth/change-password 后端端点与前端修改密码 Modal（含旧密码验证、密码强度校验、token 吊销流程）、以及将座右铭从 Journey 卡片迁移至顶部用户资料卡片的布局调整方案与兼容性分析。",
+      "tags": ["documentation", "design-doc", "ui", "auth", "profile"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:.trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/implement.md",
+      "type": "document",
+      "name": "implement.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/implement.md",
+      "summary": "用户资料页增强的执行计划，分 5 个阶段实施：后端新增 change-password 端点、前端 Core 层新增 apiChangePassword、ProfileScreen 修改密码 Modal、座右铭迁移的 UI 调整、最终验证，附验证命令、风险点与回滚方案。",
+      "tags": ["documentation", "implementation-plan", "auth", "profile"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/prd.md",
+      "summary": "用户资料页增强的产品需求，通过代码审计确认 avatar/weight/height 持久化链路正确无需修改，聚焦已登录用户的密码修改（全栈实现 apiChangePassword 与 /api/auth/change-password 端点）以及座右铭从 Journey 卡片迁移到用户资料卡片的 UI 优化，含验收标准与范围边界。",
+      "tags": ["documentation", "prd", "requirements", "auth", "profile"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:.trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/task.json",
+      "summary": "enhance-profile-screen 任务的元数据配置，记录任务标识、标题（用户资料页增强：数据持久化、密码重置、座右铭迁移）、状态 completed、优先级 P2、创建者与负责人为 freebytes、时间 2026-07-12 等治理任务跟踪字段。",
+      "tags": ["configuration", "task-metadata", "project-management"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/prd.md",
+      "target": "document:.trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/design.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/design.md",
+      "target": "document:.trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/implement.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/prd.md",
+      "target": "config:.trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/task.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/design.md",
+      "target": "config:.trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/task.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/implement.md",
+      "target": "config:.trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/task.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

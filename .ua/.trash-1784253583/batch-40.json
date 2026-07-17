@@ -1,0 +1,83 @@
+{
+  "nodes": [
+    {
+      "id": "document:.trellis/tasks/archive/2026-07/07-03-sync-pull-audit/design.md",
+      "type": "document",
+      "name": "design.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-03-sync-pull-audit/design.md",
+      "summary": "数据同步修复技术设计：为 14 个同步集合补充 created autodate 字段，以及实现 POST /api/push 推送令牌注册端点，含接口定义、去重策略与数据流图。",
+      "tags": [
+        "documentation",
+        "design-doc",
+        "sync",
+        "mobile"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:.trellis/tasks/archive/2026-07/07-03-sync-pull-audit/implement.md",
+      "type": "document",
+      "name": "implement.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-03-sync-pull-audit/implement.md",
+      "summary": "数据同步修复实施计划：迁移 015 新增 created 字段、新增 POST /api/push 端点的实施顺序、风险回滚点与 Review Gate 清单。",
+      "tags": [
+        "documentation",
+        "implementation-plan",
+        "sync",
+        "mobile"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/tasks/archive/2026-07/07-03-sync-pull-audit/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-03-sync-pull-audit/prd.md",
+      "summary": "数据同步审查需求文档：修复同步拉取因缺失 created 字段导致的排序错误、以及推送令牌注册因缺少后端端点而超时失败，列确认事实与验收标准。",
+      "tags": [
+        "documentation",
+        "prd",
+        "sync",
+        "mobile"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:.trellis/tasks/archive/2026-07/07-03-sync-pull-audit/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-03-sync-pull-audit/task.json",
+      "summary": "同步拉取审查任务清单的 JSON 元数据（状态 completed，P2，2026-07-03 创建并当日完成），含分支、提交、子任务等字段。",
+      "tags": [
+        "configuration",
+        "task-manifest",
+        "trellis",
+        "sync"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-03-sync-pull-audit/prd.md",
+      "target": "document:.trellis/tasks/archive/2026-07/07-03-sync-pull-audit/design.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-03-sync-pull-audit/prd.md",
+      "target": "document:.trellis/tasks/archive/2026-07/07-03-sync-pull-audit/implement.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-03-sync-pull-audit/prd.md",
+      "target": "config:.trellis/tasks/archive/2026-07/07-03-sync-pull-audit/task.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

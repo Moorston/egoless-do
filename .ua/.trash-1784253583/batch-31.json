@@ -1,0 +1,32 @@
+{
+  "nodes": [
+    {
+      "id": "config:.trellis/.template-hashes.json",
+      "type": "config",
+      "name": ".template-hashes.json",
+      "filePath": ".trellis/.template-hashes.json",
+      "summary": "Trellis 模板文件的 SHA-256 哈希清单，记录 .claude、.opencode、.trellis、AGENTS.md 等平台文件的指纹，用于模板更新时检测变更。版本 2，以文件路径为键、哈希为值。",
+      "tags": ["configuration", "template-management", "hash-registry", "trellis"],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:.trellis/config.yaml",
+      "type": "config",
+      "name": "config.yaml",
+      "filePath": ".trellis/config.yaml",
+      "summary": "Trellis 工作流系统的全局配置文件，定义 session 提交信息、日志轮转行数、monorepo 包清单、channel worker 空闲超时与并发上限、Codex 调度模式等项目级设置。",
+      "tags": ["configuration", "trellis", "workflow", "monorepo"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:.trellis/workflow.md",
+      "type": "document",
+      "name": "workflow.md",
+      "filePath": ".trellis/workflow.md",
+      "summary": "Trellis 开发工作流的权威文档，定义 Plan→Execute→Finish 三阶段流程、任务生命周期（create/start/finish/archive）、workspace 与 journal 规则、每轮 workflow-state breadcrumb 协议、各平台（Claude Code、Cursor、Codex 等）执行细则以及自定义扩展方式。",
+      "tags": ["documentation", "workflow", "trellis", "development-process", "agent-protocol"],
+      "complexity": "complex"
+    }
+  ],
+  "edges": []
+}

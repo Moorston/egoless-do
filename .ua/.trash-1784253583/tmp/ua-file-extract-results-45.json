@@ -1,0 +1,275 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 3,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-12-sync-goerror/implement.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 24,
+      "nonEmptyLines": 18,
+      "sections": [
+        {
+          "heading": "PB 同步 GoError 排查修复 — 执行计划",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "执行顺序清单",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "Step 1: 修复 `safeFindRecords`（3 个文件）",
+          "level": 3,
+          "line": 5
+        },
+        {
+          "heading": "Step 2: 改进错误日志",
+          "level": 3,
+          "line": 12
+        },
+        {
+          "heading": "Step 3: PB schema 添加 `updated_at` 字段",
+          "level": 3,
+          "line": 17
+        },
+        {
+          "heading": "验证",
+          "level": 2,
+          "line": 21
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 6
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-12-sync-goerror/prd.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 82,
+      "nonEmptyLines": 59,
+      "sections": [
+        {
+          "heading": "PB 同步 GoError 排查修复",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Goal",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "Background / 调研发现",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "错误日志分析",
+          "level": 3,
+          "line": 9
+        },
+        {
+          "heading": "客户端行为",
+          "level": 3,
+          "line": 24
+        },
+        {
+          "heading": "服务端代码分析",
+          "level": 3,
+          "line": 30
+        },
+        {
+          "heading": "Requirements",
+          "level": 2,
+          "line": 49
+        },
+        {
+          "heading": "R1: 修复 `safeFindRecords` 最后 fallback 的异常处理",
+          "level": 3,
+          "line": 51
+        },
+        {
+          "heading": "R2: 改进错误日志",
+          "level": 3,
+          "line": 55
+        },
+        {
+          "heading": "R3: 排查 `profile`/`aiConfig` 持续失败的根因",
+          "level": 3,
+          "line": 59
+        },
+        {
+          "heading": "R4: 为 `user_profiles` 和 `ai_configs` 添加 `updated_at` 顶级字段",
+          "level": 3,
+          "line": 63
+        },
+        {
+          "heading": "Acceptance Criteria",
+          "level": 2,
+          "line": 67
+        },
+        {
+          "heading": "Out of Scope",
+          "level": 2,
+          "line": 73
+        },
+        {
+          "heading": "Open Questions (已确认)",
+          "level": 2,
+          "line": 79
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 14
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-12-sync-goerror/task.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 26,
+      "nonEmptyLines": 26,
+      "sections": [
+        {
+          "heading": "id",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "title",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "status",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dev_type",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "scope",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "package",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "priority",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "creator",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "assignee",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "createdAt",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "completedAt",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "branch",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "base_branch",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "worktree_path",
+          "level": 1,
+          "line": 17
+        },
+        {
+          "heading": "commit",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "pr_url",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "subtasks",
+          "level": 1,
+          "line": 20
+        },
+        {
+          "heading": "children",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "parent",
+          "level": 1,
+          "line": 22
+        },
+        {
+          "heading": "relatedFiles",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "notes",
+          "level": 1,
+          "line": 24
+        },
+        {
+          "heading": "meta",
+          "level": 1,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    }
+  ]
+}

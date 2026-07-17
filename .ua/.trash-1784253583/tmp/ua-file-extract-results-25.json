@@ -1,0 +1,154 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 5,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "packages/core/src/i18n/en.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 1246,
+      "nonEmptyLines": 1177,
+      "exports": [
+        {
+          "name": "en",
+          "line": 3,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/i18n/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 31,
+      "nonEmptyLines": 27,
+      "functions": [
+        {
+          "name": "getT",
+          "startLine": 17,
+          "endLine": 17,
+          "params": [
+            "lang"
+          ]
+        },
+        {
+          "name": "t",
+          "startLine": 26,
+          "endLine": 31,
+          "params": [
+            "key",
+            "lang"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "I18nKeys",
+          "line": 1,
+          "isDefault": false
+        },
+        {
+          "name": "I18nKey",
+          "line": 1,
+          "isDefault": false
+        },
+        {
+          "name": "zh",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "en",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "zhHant",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "translations",
+          "line": 11,
+          "isDefault": false
+        },
+        {
+          "name": "getT",
+          "line": 17,
+          "isDefault": false
+        },
+        {
+          "name": "t",
+          "line": 26,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 8,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/i18n/types.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 1087,
+      "nonEmptyLines": 1062,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/i18n/zh-Hant.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 1224,
+      "nonEmptyLines": 1161,
+      "exports": [
+        {
+          "name": "zhHant",
+          "line": 3,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/i18n/zh.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 1245,
+      "nonEmptyLines": 1172,
+      "exports": [
+        {
+          "name": "zh",
+          "line": 3,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    }
+  ]
+}

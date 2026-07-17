@@ -1,0 +1,182 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": "backend/pb_migrations/1782352478_created_global_checkins.js",
+      "language": "javascript",
+      "sizeLines": 160,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1782352495_created_global_stats.js",
+      "language": "javascript",
+      "sizeLines": 96,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1782445175_created_push_tokens.js",
+      "language": "javascript",
+      "sizeLines": 90,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1782500000_create_all_sync_collections.js",
+      "language": "javascript",
+      "sizeLines": 333,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1782600000_add_body_collections.js",
+      "language": "javascript",
+      "sizeLines": 120,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1782700000_add_vow_collections.js",
+      "language": "javascript",
+      "sizeLines": 91,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1782800000_add_mantra_collections.js",
+      "language": "javascript",
+      "sizeLines": 73,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1782900000_add_sleep_and_give_collections.js",
+      "language": "javascript",
+      "sizeLines": 73,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1782910000_add_diet_collections.js",
+      "language": "javascript",
+      "sizeLines": 73,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1782920000_add_sutra_reading_collection.js",
+      "language": "javascript",
+      "sizeLines": 64,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1782930000_add_fear_collections.js",
+      "language": "javascript",
+      "sizeLines": 80,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1782940000_add_zhiguan_and_breath_collections.js",
+      "language": "javascript",
+      "sizeLines": 79,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1782950000_fix_collection_permissions.js",
+      "language": "javascript",
+      "sizeLines": 37,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1783352556_created_account_lockouts.js",
+      "language": "javascript",
+      "sizeLines": 118,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1783352556_created_audit_logs.js",
+      "language": "javascript",
+      "sizeLines": 151,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1783352556_created_refresh_tokens.js",
+      "language": "javascript",
+      "sizeLines": 117,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1783352556_created_token_blacklist.js",
+      "language": "javascript",
+      "sizeLines": 79,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1783352556_created_user_mfa.js",
+      "language": "javascript",
+      "sizeLines": 115,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1783352556_created_user_roles.js",
+      "language": "javascript",
+      "sizeLines": 94,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1783352556_created_verification_codes.js",
+      "language": "javascript",
+      "sizeLines": 94,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1783660940_updated_refresh_tokens.js",
+      "language": "javascript",
+      "sizeLines": 34,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1783661066_updated_audit_logs.js",
+      "language": "javascript",
+      "sizeLines": 174,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1783661086_updated_user_mfa.js",
+      "language": "javascript",
+      "sizeLines": 34,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1783689997_deleted_map_pins.js",
+      "language": "javascript",
+      "sizeLines": 106,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1783689998_deleted_intents.js",
+      "language": "javascript",
+      "sizeLines": 102,
+      "fileCategory": "code"
+    }
+  ],
+  "batchImportData": {
+    "backend/pb_migrations/1782352478_created_global_checkins.js": [],
+    "backend/pb_migrations/1782352495_created_global_stats.js": [],
+    "backend/pb_migrations/1782445175_created_push_tokens.js": [],
+    "backend/pb_migrations/1782500000_create_all_sync_collections.js": [],
+    "backend/pb_migrations/1782600000_add_body_collections.js": [],
+    "backend/pb_migrations/1782700000_add_vow_collections.js": [],
+    "backend/pb_migrations/1782800000_add_mantra_collections.js": [],
+    "backend/pb_migrations/1782900000_add_sleep_and_give_collections.js": [],
+    "backend/pb_migrations/1782910000_add_diet_collections.js": [],
+    "backend/pb_migrations/1782920000_add_sutra_reading_collection.js": [],
+    "backend/pb_migrations/1782930000_add_fear_collections.js": [],
+    "backend/pb_migrations/1782940000_add_zhiguan_and_breath_collections.js": [],
+    "backend/pb_migrations/1782950000_fix_collection_permissions.js": [],
+    "backend/pb_migrations/1783352556_created_account_lockouts.js": [],
+    "backend/pb_migrations/1783352556_created_audit_logs.js": [],
+    "backend/pb_migrations/1783352556_created_refresh_tokens.js": [],
+    "backend/pb_migrations/1783352556_created_token_blacklist.js": [],
+    "backend/pb_migrations/1783352556_created_user_mfa.js": [],
+    "backend/pb_migrations/1783352556_created_user_roles.js": [],
+    "backend/pb_migrations/1783352556_created_verification_codes.js": [],
+    "backend/pb_migrations/1783660940_updated_refresh_tokens.js": [],
+    "backend/pb_migrations/1783661066_updated_audit_logs.js": [],
+    "backend/pb_migrations/1783661086_updated_user_mfa.js": [],
+    "backend/pb_migrations/1783689997_deleted_map_pins.js": [],
+    "backend/pb_migrations/1783689998_deleted_intents.js": []
+  }
+}

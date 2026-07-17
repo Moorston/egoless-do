@@ -1,0 +1,349 @@
+{
+  "nodes": [
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-platform-audit/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-platform-audit/check.jsonl",
+      "summary": "Trellis 归档任务「平台兼容性审查」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-platform-audit/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-platform-audit/implement.jsonl",
+      "summary": "Trellis 归档任务「平台兼容性审查」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-platform-audit/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-platform-audit/prd.md",
+      "summary": "Trellis 归档任务「平台兼容性审查」的需求文档（prd.md）。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "prd",
+        "archive"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-platform-audit/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-platform-audit/task.json",
+      "summary": "Trellis 归档任务「平台兼容性审查」的元数据（task.json）：id、标题、状态、优先级。",
+      "tags": [
+        "config",
+        "trellis",
+        "task",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-round2-audit-fixes/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-round2-audit-fixes/check.jsonl",
+      "summary": "Trellis 归档任务「Fix round 2 audit — 36 issues across sync, store, core, security」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-round2-audit-fixes/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-round2-audit-fixes/implement.jsonl",
+      "summary": "Trellis 归档任务「Fix round 2 audit — 36 issues across sync, store, core, security」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-round2-audit-fixes/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-round2-audit-fixes/prd.md",
+      "summary": "Trellis 归档任务「Fix round 2 audit — 36 issues across sync, store, core, security」的需求文档（prd.md）。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "prd",
+        "archive"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-round2-audit-fixes/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-round2-audit-fixes/task.json",
+      "summary": "Trellis 归档任务「Fix round 2 audit — 36 issues across sync, store, core, security」的元数据（task.json）：id、标题、状态、优先级。",
+      "tags": [
+        "config",
+        "trellis",
+        "task",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-arch-m1m2m3-refactor/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-arch-m1m2m3-refactor/check.jsonl",
+      "summary": "Trellis 归档任务「架构重构 M1-M3: CheckinSlice拆分/Settings统一/错误状态」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-arch-m1m2m3-refactor/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-arch-m1m2m3-refactor/implement.jsonl",
+      "summary": "Trellis 归档任务「架构重构 M1-M3: CheckinSlice拆分/Settings统一/错误状态」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-arch-m1m2m3-refactor/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-arch-m1m2m3-refactor/prd.md",
+      "summary": "Trellis 归档任务「架构重构 M1-M3: CheckinSlice拆分/Settings统一/错误状态」的需求文档（prd.md）。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "prd",
+        "archive"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-arch-m1m2m3-refactor/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-arch-m1m2m3-refactor/task.json",
+      "summary": "Trellis 归档任务「架构重构 M1-M3: CheckinSlice拆分/Settings统一/错误状态」的元数据（task.json）：id、标题、状态、优先级。",
+      "tags": [
+        "config",
+        "trellis",
+        "task",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-arch-refactor-deferred/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-arch-refactor-deferred/check.jsonl",
+      "summary": "Trellis 归档任务「架构重构 — CheckinSlice拆分/Settings统一/错误状态」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-arch-refactor-deferred/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-arch-refactor-deferred/implement.jsonl",
+      "summary": "Trellis 归档任务「架构重构 — CheckinSlice拆分/Settings统一/错误状态」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-arch-refactor-deferred/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-arch-refactor-deferred/prd.md",
+      "summary": "Trellis 归档任务「架构重构 — CheckinSlice拆分/Settings统一/错误状态」的需求文档（prd.md）。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "prd",
+        "archive"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-arch-refactor-deferred/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-arch-refactor-deferred/task.json",
+      "summary": "Trellis 归档任务「架构重构 — CheckinSlice拆分/Settings统一/错误状态」的元数据（task.json）：id、标题、状态、优先级。",
+      "tags": [
+        "config",
+        "trellis",
+        "task",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-architecture-analysis/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-architecture-analysis/check.jsonl",
+      "summary": "Trellis 归档任务「项目架构分析」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-architecture-analysis/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-architecture-analysis/implement.jsonl",
+      "summary": "Trellis 归档任务「项目架构分析」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-architecture-analysis/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-architecture-analysis/prd.md",
+      "summary": "Trellis 归档任务「项目架构分析」的需求文档（prd.md）。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "prd",
+        "archive"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-architecture-analysis/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-architecture-analysis/task.json",
+      "summary": "Trellis 归档任务「项目架构分析」的元数据（task.json）：id、标题、状态、优先级。",
+      "tags": [
+        "config",
+        "trellis",
+        "task",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-architecture-deep-analysis/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-architecture-deep-analysis/check.jsonl",
+      "summary": "Trellis 归档任务「架构深度分析 Section 2-6」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-architecture-deep-analysis/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-architecture-deep-analysis/implement.jsonl",
+      "summary": "Trellis 归档任务「架构深度分析 Section 2-6」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-architecture-deep-analysis/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-architecture-deep-analysis/prd.md",
+      "summary": "Trellis 归档任务「架构深度分析 Section 2-6」的需求文档（prd.md）。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "prd",
+        "archive"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-architecture-deep-analysis/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-architecture-deep-analysis/task.json",
+      "summary": "Trellis 归档任务「架构深度分析 Section 2-6」的元数据（task.json）：id、标题、状态、优先级。",
+      "tags": [
+        "config",
+        "trellis",
+        "task",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-architecture-improvements/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-architecture-improvements/check.jsonl",
+      "summary": "Trellis 归档任务「架构改进实施 — 数据流/安全/部署」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": []
+}

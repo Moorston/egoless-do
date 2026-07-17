@@ -1,0 +1,4967 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 30,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "apps/mobile/src/config.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 16,
+      "nonEmptyLines": 13,
+      "exports": [
+        {
+          "name": "API_URL",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "PB_URL",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "PROJECT_ID",
+          "line": 16,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 3,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/components/ActiveMarker.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 162,
+      "nonEmptyLines": 150,
+      "functions": [
+        {
+          "name": "formatDuration",
+          "startLine": 18,
+          "endLine": 30,
+          "params": [
+            "startedAt"
+          ]
+        },
+        {
+          "name": "ActiveMarker",
+          "startLine": 32,
+          "endLine": 102,
+          "params": [
+            "{ session, city }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ActiveMarker",
+          "line": 32,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "formatDuration",
+          "callee": "new Date(startedAt).getTime",
+          "lineNumber": 19
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "Date.now",
+          "lineNumber": 20
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "Math.floor",
+          "lineNumber": 21
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "Math.floor",
+          "lineNumber": 22
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "Math.floor",
+          "lineNumber": 23
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "String(minutes).padStart",
+          "lineNumber": 27
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "String",
+          "lineNumber": 27
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "String(seconds).padStart",
+          "lineNumber": 27
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "String",
+          "lineNumber": 27
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "String(seconds).padStart",
+          "lineNumber": 29
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "String",
+          "lineNumber": 29
+        },
+        {
+          "caller": "ActiveMarker",
+          "callee": "useRef",
+          "lineNumber": 33
+        },
+        {
+          "caller": "ActiveMarker",
+          "callee": "useRef",
+          "lineNumber": 34
+        },
+        {
+          "caller": "ActiveMarker",
+          "callee": "useGlobalTick",
+          "lineNumber": 35
+        },
+        {
+          "caller": "ActiveMarker",
+          "callee": "useMemo",
+          "lineNumber": 36
+        },
+        {
+          "caller": "ActiveMarker",
+          "callee": "formatDuration",
+          "lineNumber": 36
+        },
+        {
+          "caller": "ActiveMarker",
+          "callee": "useEffect",
+          "lineNumber": 39
+        },
+        {
+          "caller": "ActiveMarker",
+          "callee": "Animated.loop",
+          "lineNumber": 40
+        },
+        {
+          "caller": "ActiveMarker",
+          "callee": "Animated.sequence",
+          "lineNumber": 41
+        },
+        {
+          "caller": "ActiveMarker",
+          "callee": "Animated.parallel",
+          "lineNumber": 42
+        },
+        {
+          "caller": "ActiveMarker",
+          "callee": "Animated.timing",
+          "lineNumber": 43
+        },
+        {
+          "caller": "ActiveMarker",
+          "callee": "Animated.timing",
+          "lineNumber": 48
+        },
+        {
+          "caller": "ActiveMarker",
+          "callee": "Animated.parallel",
+          "lineNumber": 54
+        },
+        {
+          "caller": "ActiveMarker",
+          "callee": "Animated.timing",
+          "lineNumber": 55
+        },
+        {
+          "caller": "ActiveMarker",
+          "callee": "Animated.timing",
+          "lineNumber": 60
+        },
+        {
+          "caller": "ActiveMarker",
+          "callee": "pulse.start",
+          "lineNumber": 68
+        },
+        {
+          "caller": "ActiveMarker",
+          "callee": "pulse.stop",
+          "lineNumber": 69
+        },
+        {
+          "caller": "ActiveMarker",
+          "callee": "useMemo",
+          "lineNumber": 72
+        },
+        {
+          "caller": "ActiveMarker",
+          "callee": "formatDisplayName",
+          "lineNumber": 73
+        },
+        {
+          "caller": "ActiveMarker",
+          "callee": "getCheckinTypeIcon",
+          "lineNumber": 77
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/components/ActiveUserItem.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 208,
+      "nonEmptyLines": 193,
+      "functions": [
+        {
+          "name": "formatDuration",
+          "startLine": 21,
+          "endLine": 33,
+          "params": [
+            "startedAt"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ActiveUserItem",
+          "line": 35,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "formatDuration",
+          "callee": "new Date(startedAt).getTime",
+          "lineNumber": 22
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "Date.now",
+          "lineNumber": 23
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "Math.floor",
+          "lineNumber": 24
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "Math.floor",
+          "lineNumber": 25
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "Math.floor",
+          "lineNumber": 26
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "String(minutes).padStart",
+          "lineNumber": 30
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "String",
+          "lineNumber": 30
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "String(seconds).padStart",
+          "lineNumber": 30
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "String",
+          "lineNumber": 30
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "String(seconds).padStart",
+          "lineNumber": 32
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "String",
+          "lineNumber": 32
+        }
+      ],
+      "metrics": {
+        "importCount": 5,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/components/ActiveUsersList.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 146,
+      "nonEmptyLines": 130,
+      "functions": [
+        {
+          "name": "ActiveUsersList",
+          "startLine": 34,
+          "endLine": 107,
+          "params": [
+            "{\r\n  sessions,\r\n  onlineCount,\r\n  onUserPress,\r\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ActiveUsersList",
+          "line": 34,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "ActiveUsersList",
+          "callee": "useTheme",
+          "lineNumber": 39
+        },
+        {
+          "caller": "ActiveUsersList",
+          "callee": "useT",
+          "lineNumber": 40
+        },
+        {
+          "caller": "ActiveUsersList",
+          "callee": "useAppStore",
+          "lineNumber": 41
+        },
+        {
+          "caller": "ActiveUsersList",
+          "callee": "useMemo",
+          "lineNumber": 43
+        },
+        {
+          "caller": "ActiveUsersList",
+          "callee": "grouped.set",
+          "lineNumber": 46
+        },
+        {
+          "caller": "ActiveUsersList",
+          "callee": "grouped.get(s.type)?.push",
+          "lineNumber": 49
+        },
+        {
+          "caller": "ActiveUsersList",
+          "callee": "grouped.get",
+          "lineNumber": 49
+        },
+        {
+          "caller": "ActiveUsersList",
+          "callee": "TYPE_ORDER\r\n      .map(type => ({\r\n        title: t(`globalPulse.activeType.${type}`),\r\n        icon: getCheckinTypeIcon(type),\r\n        color: getCheckinTypeColor(type),\r\n        count: onlineCount[type],\r\n        type,\r\n        data: grouped.get(type) || [],\r\n      }))\r\n      .filter",
+          "lineNumber": 52
+        },
+        {
+          "caller": "ActiveUsersList",
+          "callee": "TYPE_ORDER\r\n      .map",
+          "lineNumber": 52
+        },
+        {
+          "caller": "ActiveUsersList",
+          "callee": "t",
+          "lineNumber": 54
+        },
+        {
+          "caller": "ActiveUsersList",
+          "callee": "getCheckinTypeIcon",
+          "lineNumber": 55
+        },
+        {
+          "caller": "ActiveUsersList",
+          "callee": "getCheckinTypeColor",
+          "lineNumber": 56
+        },
+        {
+          "caller": "ActiveUsersList",
+          "callee": "grouped.get",
+          "lineNumber": 59
+        },
+        {
+          "caller": "renderSectionHeader",
+          "callee": "String",
+          "lineNumber": 72
+        },
+        {
+          "caller": "ActiveUsersList",
+          "callee": "t",
+          "lineNumber": 90
+        }
+      ],
+      "metrics": {
+        "importCount": 5,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/components/BottomPanel.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 297,
+      "nonEmptyLines": 282,
+      "functions": [
+        {
+          "name": "BottomPanel",
+          "startLine": 31,
+          "endLine": 210,
+          "params": [
+            "{\r\n  sessions,\r\n  onlineCount,\r\n  checkins,\r\n  type,\r\n  onUserPress,\r\n  onLeaderboardUserPress,\r\n  selectedUserId,\r\n  onRefresh,\r\n  isRefreshing,\r\n  myHash,\r\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "BottomPanel",
+          "line": 31,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "BottomPanel",
+          "callee": "useTheme",
+          "lineNumber": 43
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "useT",
+          "lineNumber": 44
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "useShallowStore",
+          "lineNumber": 45
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "useState",
+          "lineNumber": 46
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "t",
+          "lineNumber": 49
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "t",
+          "lineNumber": 50
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "t",
+          "lineNumber": 51
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "useMemo",
+          "lineNumber": 55
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "[...checkins].sort",
+          "lineNumber": 57
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "sorted.findIndex",
+          "lineNumber": 58
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "Math.round",
+          "lineNumber": 60
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "useMemo",
+          "lineNumber": 65
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "dateStr",
+          "lineNumber": 67
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "checkins\r\n      .filter(c => c.user_hash === myHash && c.created_at && dateStr(new Date(c.created_at)) === today)\r\n      .map",
+          "lineNumber": 68
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "checkins\r\n      .filter",
+          "lineNumber": 68
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "dateStr",
+          "lineNumber": 69
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "tabs.map",
+          "lineNumber": 77
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "setActiveTab",
+          "lineNumber": 86
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "String",
+          "lineNumber": 110
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "t",
+          "lineNumber": 139
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "String",
+          "lineNumber": 142
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "t",
+          "lineNumber": 143
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "String",
+          "lineNumber": 147
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "(checkinHistory ?? []).filter",
+          "lineNumber": 147
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "t",
+          "lineNumber": 149
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "String",
+          "lineNumber": 152
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "t",
+          "lineNumber": 153
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "t",
+          "lineNumber": 161
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "String",
+          "lineNumber": 164
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "t",
+          "lineNumber": 165
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "String",
+          "lineNumber": 168
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "t",
+          "lineNumber": 169
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "t",
+          "lineNumber": 173
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "t",
+          "lineNumber": 181
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "['exercise', 'meditation', 'fasting'].map",
+          "lineNumber": 183
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "myTodayTypes.includes",
+          "lineNumber": 184
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "t",
+          "lineNumber": 187
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "t",
+          "lineNumber": 188
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "t",
+          "lineNumber": 189
+        },
+        {
+          "caller": "BottomPanel",
+          "callee": "FONT_SMALL",
+          "lineNumber": 197
+        }
+      ],
+      "metrics": {
+        "importCount": 5,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/components/CityCallout.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 81,
+      "nonEmptyLines": 73,
+      "functions": [
+        {
+          "name": "CityCallout",
+          "startLine": 17,
+          "endLine": 47,
+          "params": [
+            "{ checkin }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "CityCallout",
+          "line": 17,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "CityCallout",
+          "callee": "useTheme",
+          "lineNumber": 18
+        },
+        {
+          "caller": "CityCallout",
+          "callee": "useT",
+          "lineNumber": 19
+        },
+        {
+          "caller": "CityCallout",
+          "callee": "useCityName",
+          "lineNumber": 20
+        },
+        {
+          "caller": "CityCallout",
+          "callee": "getCheckinTypeIcon",
+          "lineNumber": 22
+        },
+        {
+          "caller": "CityCallout",
+          "callee": "formatDisplayName",
+          "lineNumber": 23
+        },
+        {
+          "caller": "CityCallout",
+          "callee": "t",
+          "lineNumber": 34
+        },
+        {
+          "caller": "CityCallout",
+          "callee": "String",
+          "lineNumber": 43
+        },
+        {
+          "caller": "CityCallout",
+          "callee": "String",
+          "lineNumber": 43
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 577,
+      "nonEmptyLines": 542,
+      "functions": [
+        {
+          "name": "GlobalPulseMap",
+          "startLine": 42,
+          "endLine": 371,
+          "params": [
+            "{\r\n  onClose,\r\n  type,\r\n  title,\r\n  showInlineLeaderboard = false\r\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "GlobalPulseMap",
+          "line": 42,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "useTheme",
+          "lineNumber": 48
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "useT",
+          "lineNumber": 49
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "useRef",
+          "lineNumber": 50
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "useGlobalPulse",
+          "lineNumber": 60
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "useActiveSessions",
+          "lineNumber": 65
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "useState",
+          "lineNumber": 67
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "useState",
+          "lineNumber": 68
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "useState",
+          "lineNumber": 69
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "useState",
+          "lineNumber": 70
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "useState",
+          "lineNumber": 71
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "useState",
+          "lineNumber": 72
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "useEffect",
+          "lineNumber": 73
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "getUserHash().then(h => { if (alive) setMyHash(h); }).catch",
+          "lineNumber": 75
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "getUserHash().then",
+          "lineNumber": 75
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "getUserHash",
+          "lineNumber": 75
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "setMyHash",
+          "lineNumber": 75
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "useMemo",
+          "lineNumber": 79
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "checkins.find",
+          "lineNumber": 81
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "useCallback",
+          "lineNumber": 84
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "Math.round",
+          "lineNumber": 85
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "Math.log2",
+          "lineNumber": 85
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "setCurrentZoom",
+          "lineNumber": 86
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "Math.max",
+          "lineNumber": 86
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "Math.min",
+          "lineNumber": 86
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "useCallback",
+          "lineNumber": 89
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "setSelectedCheckin",
+          "lineNumber": 90
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "useCallback",
+          "lineNumber": 93
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "setSelectedActiveSession",
+          "lineNumber": 94
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "checkins.find",
+          "lineNumber": 96
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "setSelectedCheckin",
+          "lineNumber": 98
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "useCallback",
+          "lineNumber": 102
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "setSelectedCheckin",
+          "lineNumber": 103
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "setSelectedActiveSession",
+          "lineNumber": 104
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "useCallback",
+          "lineNumber": 107
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "setSelectedUserId",
+          "lineNumber": 108
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "mapRef.current?.animateToRegion",
+          "lineNumber": 109
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "useMemo",
+          "lineNumber": 118
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "checkins.filter",
+          "lineNumber": 119
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "useMemo",
+          "lineNumber": 123
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "aggregateMarkers",
+          "lineNumber": 124
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "useMemo",
+          "lineNumber": 129
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "[...checkins].sort",
+          "lineNumber": 130
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "sorted.forEach",
+          "lineNumber": 132
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "map.has",
+          "lineNumber": 133
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "map.set",
+          "lineNumber": 134
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "useMemo",
+          "lineNumber": 140
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "clusters.map",
+          "lineNumber": 141
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "formatDisplayName",
+          "lineNumber": 145
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "rankMap.get",
+          "lineNumber": 146
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "String",
+          "lineNumber": 156
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "String",
+          "lineNumber": 156
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "handleMarkerPress",
+          "lineNumber": 157
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "mapRef.current?.animateToRegion",
+          "lineNumber": 177
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "setShowLeaderboard",
+          "lineNumber": 198
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "t",
+          "lineNumber": 210
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "t",
+          "lineNumber": 229
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "refresh",
+          "lineNumber": 239
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "activeSessions.map",
+          "lineNumber": 265
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "handleActiveMarkerPress",
+          "lineNumber": 274
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "t",
+          "lineNumber": 287
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "String",
+          "lineNumber": 288
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "t",
+          "lineNumber": 288
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "String",
+          "lineNumber": 288
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "t",
+          "lineNumber": 288
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "handleMarkerPress",
+          "lineNumber": 289
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "t",
+          "lineNumber": 294
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "String",
+          "lineNumber": 304
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "t",
+          "lineNumber": 304
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "String",
+          "lineNumber": 308
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "t",
+          "lineNumber": 308
+        },
+        {
+          "caller": "GlobalPulseMap",
+          "callee": "setShowLeaderboard",
+          "lineNumber": 329
+        }
+      ],
+      "metrics": {
+        "importCount": 12,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/components/Leaderboard.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 254,
+      "nonEmptyLines": 232,
+      "functions": [
+        {
+          "name": "buildLeaderboard",
+          "startLine": 32,
+          "endLine": 60,
+          "params": [
+            "checkins",
+            "sortBy"
+          ]
+        },
+        {
+          "name": "Leaderboard",
+          "startLine": 62,
+          "endLine": 177,
+          "params": [
+            "{\r\n  checkins,\r\n  type,\r\n  onBack,\r\n  onUserPress,\r\n  selectedUserId,\r\n  compact = false\r\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Leaderboard",
+          "line": 62,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "buildLeaderboard",
+          "callee": "seen.get",
+          "lineNumber": 36
+        },
+        {
+          "caller": "buildLeaderboard",
+          "callee": "seen.set",
+          "lineNumber": 38
+        },
+        {
+          "caller": "buildLeaderboard",
+          "callee": "Array.from(seen.values()).map",
+          "lineNumber": 43
+        },
+        {
+          "caller": "buildLeaderboard",
+          "callee": "Array.from",
+          "lineNumber": 43
+        },
+        {
+          "caller": "buildLeaderboard",
+          "callee": "seen.values",
+          "lineNumber": 43
+        },
+        {
+          "caller": "buildLeaderboard",
+          "callee": "entries.sort",
+          "lineNumber": 56
+        },
+        {
+          "caller": "buildLeaderboard",
+          "callee": "entries.forEach",
+          "lineNumber": 57
+        },
+        {
+          "caller": "Leaderboard",
+          "callee": "useTheme",
+          "lineNumber": 70
+        },
+        {
+          "caller": "Leaderboard",
+          "callee": "useT",
+          "lineNumber": 71
+        },
+        {
+          "caller": "Leaderboard",
+          "callee": "useState",
+          "lineNumber": 72
+        },
+        {
+          "caller": "Leaderboard",
+          "callee": "useMemo",
+          "lineNumber": 75
+        },
+        {
+          "caller": "Leaderboard",
+          "callee": "buildLeaderboard",
+          "lineNumber": 76
+        },
+        {
+          "caller": "Leaderboard",
+          "callee": "useMemo",
+          "lineNumber": 80
+        },
+        {
+          "caller": "Leaderboard",
+          "callee": "entries.slice",
+          "lineNumber": 81
+        },
+        {
+          "caller": "Leaderboard",
+          "callee": "entries.slice",
+          "lineNumber": 81
+        },
+        {
+          "caller": "renderPodium",
+          "callee": "entries.slice",
+          "lineNumber": 87
+        },
+        {
+          "caller": "renderPodium",
+          "callee": "top3.map",
+          "lineNumber": 97
+        },
+        {
+          "caller": "Leaderboard",
+          "callee": "useCallback",
+          "lineNumber": 111
+        },
+        {
+          "caller": "Leaderboard",
+          "callee": "t",
+          "lineNumber": 136
+        },
+        {
+          "caller": "Leaderboard",
+          "callee": "setSortBy",
+          "lineNumber": 147
+        },
+        {
+          "caller": "Leaderboard",
+          "callee": "t",
+          "lineNumber": 150
+        },
+        {
+          "caller": "Leaderboard",
+          "callee": "setSortBy",
+          "lineNumber": 155
+        },
+        {
+          "caller": "Leaderboard",
+          "callee": "t",
+          "lineNumber": 158
+        },
+        {
+          "caller": "Leaderboard",
+          "callee": "renderPodium",
+          "lineNumber": 165
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/components/LeaderboardItem.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 178,
+      "nonEmptyLines": 165,
+      "functions": [
+        {
+          "name": "formatDate",
+          "startLine": 22,
+          "endLine": 28,
+          "params": [
+            "dateString"
+          ]
+        },
+        {
+          "name": "daysSince",
+          "startLine": 31,
+          "endLine": 35,
+          "params": [
+            "dateString"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "LeaderboardItem",
+          "line": 37,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "formatDate",
+          "callee": "date.getFullYear",
+          "lineNumber": 24
+        },
+        {
+          "caller": "formatDate",
+          "callee": "date.getMonth",
+          "lineNumber": 25
+        },
+        {
+          "caller": "formatDate",
+          "callee": "date.getDate",
+          "lineNumber": 26
+        },
+        {
+          "caller": "daysSince",
+          "callee": "Math.max",
+          "lineNumber": 34
+        },
+        {
+          "caller": "daysSince",
+          "callee": "Math.floor",
+          "lineNumber": 34
+        },
+        {
+          "caller": "daysSince",
+          "callee": "now.getTime",
+          "lineNumber": 34
+        },
+        {
+          "caller": "daysSince",
+          "callee": "start.getTime",
+          "lineNumber": 34
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/components/MarkerDetail.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 369,
+      "nonEmptyLines": 346,
+      "functions": [
+        {
+          "name": "formatDuration",
+          "startLine": 28,
+          "endLine": 40,
+          "params": [
+            "startedAt"
+          ]
+        },
+        {
+          "name": "MarkerDetail",
+          "startLine": 42,
+          "endLine": 215,
+          "params": [
+            "{\r\n  checkin,\r\n  activeSession,\r\n  onClose\r\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "MarkerDetail",
+          "line": 42,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "formatDuration",
+          "callee": "new Date(startedAt).getTime",
+          "lineNumber": 29
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "Date.now",
+          "lineNumber": 30
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "Math.floor",
+          "lineNumber": 31
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "Math.floor",
+          "lineNumber": 32
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "Math.floor",
+          "lineNumber": 33
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "String(minutes).padStart",
+          "lineNumber": 37
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "String",
+          "lineNumber": 37
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "String(seconds).padStart",
+          "lineNumber": 37
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "String",
+          "lineNumber": 37
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "String(seconds).padStart",
+          "lineNumber": 39
+        },
+        {
+          "caller": "formatDuration",
+          "callee": "String",
+          "lineNumber": 39
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "useTheme",
+          "lineNumber": 47
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "useT",
+          "lineNumber": 48
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "useCityName",
+          "lineNumber": 59
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "formatDisplayName",
+          "lineNumber": 61
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "getCheckinTypeIcon",
+          "lineNumber": 62
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "getCheckinTypeColor",
+          "lineNumber": 63
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "useGlobalTick",
+          "lineNumber": 66
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "useMemo",
+          "lineNumber": 67
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "formatDuration",
+          "lineNumber": 68
+        },
+        {
+          "caller": "formatDate",
+          "callee": "date.getFullYear",
+          "lineNumber": 75
+        },
+        {
+          "caller": "formatDate",
+          "callee": "date.getMonth",
+          "lineNumber": 75
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "t",
+          "lineNumber": 100
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "t",
+          "lineNumber": 101
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "t",
+          "lineNumber": 118
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "t",
+          "lineNumber": 131
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "t",
+          "lineNumber": 148
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "t",
+          "lineNumber": 161
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "String",
+          "lineNumber": 175
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "t",
+          "lineNumber": 178
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "String",
+          "lineNumber": 185
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "t",
+          "lineNumber": 188
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "FONT_SMALL",
+          "lineNumber": 194
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "formatDate",
+          "lineNumber": 195
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "t",
+          "lineNumber": 198
+        },
+        {
+          "caller": "MarkerDetail",
+          "callee": "t",
+          "lineNumber": 208
+        }
+      ],
+      "metrics": {
+        "importCount": 5,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/components/OfflineBanner.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 50,
+      "nonEmptyLines": 44,
+      "functions": [
+        {
+          "name": "OfflineBanner",
+          "startLine": 12,
+          "endLine": 23,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "OfflineBanner",
+          "line": 12,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "OfflineBanner",
+          "callee": "useT",
+          "lineNumber": 13
+        },
+        {
+          "caller": "OfflineBanner",
+          "callee": "t",
+          "lineNumber": 19
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/components/PodiumItem.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 126,
+      "nonEmptyLines": 117,
+      "functions": [
+        {
+          "name": "formatDate",
+          "startLine": 22,
+          "endLine": 25,
+          "params": [
+            "dateString"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "PodiumItem",
+          "line": 27,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "formatDate",
+          "callee": "date.getFullYear",
+          "lineNumber": 24
+        },
+        {
+          "caller": "formatDate",
+          "callee": "date.getMonth",
+          "lineNumber": 24
+        },
+        {
+          "caller": "formatDate",
+          "callee": "date.getDate",
+          "lineNumber": 24
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/components/PrivacyControl.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 244,
+      "nonEmptyLines": 224,
+      "functions": [
+        {
+          "name": "PrivacyControl",
+          "startLine": 32,
+          "endLine": 178,
+          "params": [
+            "{\r\n  isVisible,\r\n  onOptOut,\r\n  onOptIn,\r\n  onDelete\r\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "PrivacyControl",
+          "line": 32,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "PrivacyControl",
+          "callee": "useTheme",
+          "lineNumber": 38
+        },
+        {
+          "caller": "PrivacyControl",
+          "callee": "useT",
+          "lineNumber": 39
+        },
+        {
+          "caller": "PrivacyControl",
+          "callee": "useRef",
+          "lineNumber": 40
+        },
+        {
+          "caller": "PrivacyControl",
+          "callee": "useState",
+          "lineNumber": 42
+        },
+        {
+          "caller": "PrivacyControl",
+          "callee": "useState",
+          "lineNumber": 43
+        },
+        {
+          "caller": "PrivacyControl",
+          "callee": "useState",
+          "lineNumber": 44
+        },
+        {
+          "caller": "PrivacyControl",
+          "callee": "useEffect",
+          "lineNumber": 46
+        },
+        {
+          "caller": "PrivacyControl",
+          "callee": "getUserHash().then",
+          "lineNumber": 47
+        },
+        {
+          "caller": "PrivacyControl",
+          "callee": "getUserHash",
+          "lineNumber": 47
+        },
+        {
+          "caller": "PrivacyControl",
+          "callee": "AsyncStorage.getItem(PREFERENCES_KEY).then",
+          "lineNumber": 50
+        },
+        {
+          "caller": "PrivacyControl",
+          "callee": "AsyncStorage.getItem",
+          "lineNumber": 50
+        },
+        {
+          "caller": "PrivacyControl",
+          "callee": "JSON.parse",
+          "lineNumber": 52
+        },
+        {
+          "caller": "PrivacyControl",
+          "callee": "setShowOnMap",
+          "lineNumber": 54
+        },
+        {
+          "caller": "PrivacyControl",
+          "callee": "setIsInitialized",
+          "lineNumber": 57
+        },
+        {
+          "caller": "savePref",
+          "callee": "AsyncStorage.setItem",
+          "lineNumber": 63
+        },
+        {
+          "caller": "savePref",
+          "callee": "JSON.stringify",
+          "lineNumber": 63
+        },
+        {
+          "caller": "savePref",
+          "callee": "console.warn",
+          "lineNumber": 64
+        },
+        {
+          "caller": "handleToggle",
+          "callee": "setIsLoading",
+          "lineNumber": 73
+        },
+        {
+          "caller": "handleToggle",
+          "callee": "optIn",
+          "lineNumber": 76
+        },
+        {
+          "caller": "handleToggle",
+          "callee": "optOut",
+          "lineNumber": 76
+        },
+        {
+          "caller": "handleToggle",
+          "callee": "setShowOnMap",
+          "lineNumber": 78
+        },
+        {
+          "caller": "handleToggle",
+          "callee": "savePref",
+          "lineNumber": 79
+        },
+        {
+          "caller": "handleToggle",
+          "callee": "onOptIn",
+          "lineNumber": 80
+        },
+        {
+          "caller": "handleToggle",
+          "callee": "onOptOut",
+          "lineNumber": 80
+        },
+        {
+          "caller": "handleToggle",
+          "callee": "Alert.alert",
+          "lineNumber": 82
+        },
+        {
+          "caller": "handleToggle",
+          "callee": "t",
+          "lineNumber": 82
+        },
+        {
+          "caller": "handleToggle",
+          "callee": "t",
+          "lineNumber": 82
+        },
+        {
+          "caller": "handleToggle",
+          "callee": "t",
+          "lineNumber": 82
+        },
+        {
+          "caller": "handleToggle",
+          "callee": "Alert.alert",
+          "lineNumber": 85
+        },
+        {
+          "caller": "handleToggle",
+          "callee": "t",
+          "lineNumber": 85
+        },
+        {
+          "caller": "handleToggle",
+          "callee": "t",
+          "lineNumber": 85
+        },
+        {
+          "caller": "handleToggle",
+          "callee": "setIsLoading",
+          "lineNumber": 87
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "Alert.alert",
+          "lineNumber": 93
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "t",
+          "lineNumber": 94
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "t",
+          "lineNumber": 95
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "t",
+          "lineNumber": 97
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "t",
+          "lineNumber": 99
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "setIsLoading",
+          "lineNumber": 102
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "deleteGlobalData",
+          "lineNumber": 107
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "setShowOnMap",
+          "lineNumber": 109
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "savePref",
+          "lineNumber": 110
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "onDelete",
+          "lineNumber": 111
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "Alert.alert",
+          "lineNumber": 112
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "t",
+          "lineNumber": 112
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "t",
+          "lineNumber": 112
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "Alert.alert",
+          "lineNumber": 114
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "t",
+          "lineNumber": 114
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "t",
+          "lineNumber": 114
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "Alert.alert",
+          "lineNumber": 117
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "t",
+          "lineNumber": 117
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "t",
+          "lineNumber": 117
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "setIsLoading",
+          "lineNumber": 119
+        },
+        {
+          "caller": "PrivacyControl",
+          "callee": "t",
+          "lineNumber": 133
+        },
+        {
+          "caller": "PrivacyControl",
+          "callee": "t",
+          "lineNumber": 140
+        },
+        {
+          "caller": "PrivacyControl",
+          "callee": "t",
+          "lineNumber": 143
+        },
+        {
+          "caller": "PrivacyControl",
+          "callee": "t",
+          "lineNumber": 162
+        },
+        {
+          "caller": "PrivacyControl",
+          "callee": "t",
+          "lineNumber": 173
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/components/PulseMarker.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 64,
+      "nonEmptyLines": 56,
+      "exports": [
+        {
+          "name": "PulseMarker",
+          "line": 18,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/hooks/useActiveSessions.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 138,
+      "nonEmptyLines": 122,
+      "functions": [
+        {
+          "name": "useActiveSessions",
+          "startLine": 35,
+          "endLine": 138,
+          "params": [
+            "type"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "useActiveSessions",
+          "line": 35,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useActiveSessions",
+          "callee": "useState",
+          "lineNumber": 36
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "useState",
+          "lineNumber": 37
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "useState",
+          "lineNumber": 38
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "getConnectionState",
+          "lineNumber": 38
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "useAppStore",
+          "lineNumber": 39
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "useRef",
+          "lineNumber": 40
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "useCallback",
+          "lineNumber": 42
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "getActiveSessions",
+          "lineNumber": 43
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "setSessions",
+          "lineNumber": 45
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "setIsLoading",
+          "lineNumber": 48
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "useEffect",
+          "lineNumber": 53
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "setIsLoading",
+          "lineNumber": 55
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "refresh",
+          "lineNumber": 56
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "subscribeSessions",
+          "lineNumber": 58
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "setSessions",
+          "lineNumber": 62
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "prev.some",
+          "lineNumber": 63
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "setSessions",
+          "lineNumber": 69
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "prev.map",
+          "lineNumber": 70
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "setSessions",
+          "lineNumber": 75
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "prev.filter",
+          "lineNumber": 75
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "unsubscribe",
+          "lineNumber": 81
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "useEffect",
+          "lineNumber": 86
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "onConnectionStateChange",
+          "lineNumber": 87
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "setConnectionState",
+          "lineNumber": 89
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "useEffect",
+          "lineNumber": 96
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "setInterval",
+          "lineNumber": 97
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "Date.now",
+          "lineNumber": 98
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "setSessions",
+          "lineNumber": 99
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "prev.filter",
+          "lineNumber": 100
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "new Date(s.last_heartbeat).getTime",
+          "lineNumber": 103
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "clearInterval",
+          "lineNumber": 109
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "useMemo",
+          "lineNumber": 113
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "useMemo",
+          "lineNumber": 123
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "[...sessions].sort",
+          "lineNumber": 124
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "new Date(b.started_at).getTime",
+          "lineNumber": 127
+        },
+        {
+          "caller": "useActiveSessions",
+          "callee": "new Date(a.started_at).getTime",
+          "lineNumber": 127
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/hooks/useCheckinSync.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 73,
+      "nonEmptyLines": 58,
+      "functions": [
+        {
+          "name": "useCheckinSync",
+          "startLine": 24,
+          "endLine": 71,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "useCheckinSync",
+          "line": 24,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useCheckinSync",
+          "callee": "usePrivacy",
+          "lineNumber": 25
+        },
+        {
+          "caller": "useCheckinSync",
+          "callee": "useNetworkStatus",
+          "lineNumber": 26
+        },
+        {
+          "caller": "useCheckinSync",
+          "callee": "useAppStore",
+          "lineNumber": 27
+        },
+        {
+          "caller": "useCheckinSync",
+          "callee": "useCallback",
+          "lineNumber": 29
+        },
+        {
+          "caller": "useCheckinSync",
+          "callee": "Location.requestForegroundPermissionsAsync",
+          "lineNumber": 38
+        },
+        {
+          "caller": "useCheckinSync",
+          "callee": "Location.getCurrentPositionAsync",
+          "lineNumber": 41
+        },
+        {
+          "caller": "useCheckinSync",
+          "callee": "getUserHash",
+          "lineNumber": 45
+        },
+        {
+          "caller": "useCheckinSync",
+          "callee": "getFuzzSecret",
+          "lineNumber": 46
+        },
+        {
+          "caller": "useCheckinSync",
+          "callee": "fuzzCoordinate",
+          "lineNumber": 47
+        },
+        {
+          "caller": "useCheckinSync",
+          "callee": "submitCheckin",
+          "lineNumber": 53
+        },
+        {
+          "caller": "useCheckinSync",
+          "callee": "log.error",
+          "lineNumber": 65
+        }
+      ],
+      "metrics": {
+        "importCount": 6,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/hooks/useCityName.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 193,
+      "nonEmptyLines": 166,
+      "functions": [
+        {
+          "name": "useCityName",
+          "startLine": 26,
+          "endLine": 94,
+          "params": [
+            "lat",
+            "lng",
+            "existingCity"
+          ]
+        },
+        {
+          "name": "useCityNameBatch",
+          "startLine": 101,
+          "endLine": 186,
+          "params": [
+            "coordinates"
+          ]
+        },
+        {
+          "name": "clearCityCache",
+          "startLine": 191,
+          "endLine": 193,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "useCityName",
+          "line": 26,
+          "isDefault": false
+        },
+        {
+          "name": "useCityNameBatch",
+          "line": 101,
+          "isDefault": false
+        },
+        {
+          "name": "clearCityCache",
+          "line": 191,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useCityName",
+          "callee": "useState",
+          "lineNumber": 27
+        },
+        {
+          "caller": "useCityName",
+          "callee": "useRef",
+          "lineNumber": 34
+        },
+        {
+          "caller": "useCityName",
+          "callee": "useEffect",
+          "lineNumber": 36
+        },
+        {
+          "caller": "useCityName",
+          "callee": "useEffect",
+          "lineNumber": 43
+        },
+        {
+          "caller": "useCityName",
+          "callee": "setResult",
+          "lineNumber": 46
+        },
+        {
+          "caller": "useCityName",
+          "callee": "setResult",
+          "lineNumber": 51
+        },
+        {
+          "caller": "useCityName",
+          "callee": "lat.toFixed",
+          "lineNumber": 56
+        },
+        {
+          "caller": "useCityName",
+          "callee": "lng.toFixed",
+          "lineNumber": 56
+        },
+        {
+          "caller": "useCityName",
+          "callee": "cityCache.get",
+          "lineNumber": 59
+        },
+        {
+          "caller": "useCityName",
+          "callee": "setResult",
+          "lineNumber": 61
+        },
+        {
+          "caller": "useCityName",
+          "callee": "setResult",
+          "lineNumber": 71
+        },
+        {
+          "caller": "useCityName",
+          "callee": "getCityInfo(lat, lng).then((info) => {\n      // 更新缓存\n      cityCache.set(cacheKey, info);\n\n      // 更新状态（检查组件是否仍然挂载）\n      if (mountedRef.current) {\n        setResult({\n          city: info?.city || null,\n          country: info?.country || null,\n          displayName: info?.displayName || null,\n          loading: false,\n        });\n      }\n    }).catch",
+          "lineNumber": 73
+        },
+        {
+          "caller": "useCityName",
+          "callee": "getCityInfo(lat, lng).then",
+          "lineNumber": 73
+        },
+        {
+          "caller": "useCityName",
+          "callee": "getCityInfo",
+          "lineNumber": 73
+        },
+        {
+          "caller": "useCityName",
+          "callee": "cityCache.set",
+          "lineNumber": 75
+        },
+        {
+          "caller": "useCityName",
+          "callee": "setResult",
+          "lineNumber": 79
+        },
+        {
+          "caller": "useCityName",
+          "callee": "setResult",
+          "lineNumber": 88
+        },
+        {
+          "caller": "useCityNameBatch",
+          "callee": "useState",
+          "lineNumber": 104
+        },
+        {
+          "caller": "useCityNameBatch",
+          "callee": "useMemo",
+          "lineNumber": 105
+        },
+        {
+          "caller": "useCityNameBatch",
+          "callee": "coordinates.map(c => `${c.lat.toFixed(3)},${c.lng.toFixed(3)}`).join",
+          "lineNumber": 106
+        },
+        {
+          "caller": "useCityNameBatch",
+          "callee": "coordinates.map",
+          "lineNumber": 106
+        },
+        {
+          "caller": "useCityNameBatch",
+          "callee": "c.lat.toFixed",
+          "lineNumber": 106
+        },
+        {
+          "caller": "useCityNameBatch",
+          "callee": "c.lng.toFixed",
+          "lineNumber": 106
+        },
+        {
+          "caller": "useCityNameBatch",
+          "callee": "useRef",
+          "lineNumber": 109
+        },
+        {
+          "caller": "useCityNameBatch",
+          "callee": "useEffect",
+          "lineNumber": 111
+        },
+        {
+          "caller": "useCityNameBatch",
+          "callee": "useEffect",
+          "lineNumber": 118
+        },
+        {
+          "caller": "useCityNameBatch",
+          "callee": "setResults",
+          "lineNumber": 120
+        },
+        {
+          "caller": "loadCities",
+          "callee": "lat.toFixed",
+          "lineNumber": 128
+        },
+        {
+          "caller": "loadCities",
+          "callee": "lng.toFixed",
+          "lineNumber": 128
+        },
+        {
+          "caller": "loadCities",
+          "callee": "cityCache.get",
+          "lineNumber": 131
+        },
+        {
+          "caller": "loadCities",
+          "callee": "newResults.set",
+          "lineNumber": 133
+        },
+        {
+          "caller": "loadCities",
+          "callee": "newResults.set",
+          "lineNumber": 143
+        },
+        {
+          "caller": "loadCities",
+          "callee": "getCityInfo(lat, lng).then((info) => {\n          cityCache.set(cacheKey, info);\n\n          if (mountedRef.current) {\n            setResults(prev => {\n              const updated = new Map(prev);\n              updated.set(cacheKey, {\n                city: info?.city || null,\n                country: info?.country || null,\n                displayName: info?.displayName || null,\n                loading: false,\n              });\n              return updated;\n            });\n          }\n        }).catch",
+          "lineNumber": 151
+        },
+        {
+          "caller": "loadCities",
+          "callee": "getCityInfo(lat, lng).then",
+          "lineNumber": 151
+        },
+        {
+          "caller": "loadCities",
+          "callee": "getCityInfo",
+          "lineNumber": 151
+        },
+        {
+          "caller": "loadCities",
+          "callee": "cityCache.set",
+          "lineNumber": 152
+        },
+        {
+          "caller": "loadCities",
+          "callee": "setResults",
+          "lineNumber": 155
+        },
+        {
+          "caller": "loadCities",
+          "callee": "updated.set",
+          "lineNumber": 157
+        },
+        {
+          "caller": "loadCities",
+          "callee": "setResults",
+          "lineNumber": 168
+        },
+        {
+          "caller": "loadCities",
+          "callee": "updated.set",
+          "lineNumber": 170
+        },
+        {
+          "caller": "loadCities",
+          "callee": "setResults",
+          "lineNumber": 178
+        },
+        {
+          "caller": "useCityNameBatch",
+          "callee": "loadCities",
+          "lineNumber": 182
+        },
+        {
+          "caller": "clearCityCache",
+          "callee": "cityCache.clear",
+          "lineNumber": 192
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 3,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/hooks/useGlobalPulse.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 201,
+      "nonEmptyLines": 174,
+      "functions": [
+        {
+          "name": "useGlobalPulse",
+          "startLine": 39,
+          "endLine": 199,
+          "params": [
+            "options"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "useGlobalPulse",
+          "line": 39,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useGlobalPulse",
+          "callee": "useState",
+          "lineNumber": 42
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "useState",
+          "lineNumber": 43
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "useState",
+          "lineNumber": 44
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "useState",
+          "lineNumber": 45
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "useState",
+          "lineNumber": 46
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "useState",
+          "lineNumber": 47
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "useState",
+          "lineNumber": 48
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "useRef",
+          "lineNumber": 49
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "useRef",
+          "lineNumber": 51
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "useCallback",
+          "lineNumber": 54
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "setIsLoading",
+          "lineNumber": 55
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "setError",
+          "lineNumber": 56
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "getCheckins",
+          "lineNumber": 59
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "setCheckins",
+          "lineNumber": 66
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "setIsOffline",
+          "lineNumber": 67
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "cacheCheckins",
+          "lineNumber": 71
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "updateSyncStatus",
+          "lineNumber": 74
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "Date.now",
+          "lineNumber": 74
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "setLastSync",
+          "lineNumber": 75
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "getCachedCheckins",
+          "lineNumber": 81
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "setCheckins",
+          "lineNumber": 83
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "setIsOffline",
+          "lineNumber": 84
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "setError",
+          "lineNumber": 85
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "setError",
+          "lineNumber": 87
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "setIsLoading",
+          "lineNumber": 90
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "setIsRefreshing",
+          "lineNumber": 91
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "useCallback",
+          "lineNumber": 96
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "getGlobalStats",
+          "lineNumber": 98
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "setStats",
+          "lineNumber": 101
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "cacheStats",
+          "lineNumber": 102
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "getCachedStats",
+          "lineNumber": 106
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "setStats",
+          "lineNumber": 108
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "useCallback",
+          "lineNumber": 114
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "setIsRefreshing",
+          "lineNumber": 115
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "Promise.all",
+          "lineNumber": 116
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "loadCheckins",
+          "lineNumber": 116
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "loadStats",
+          "lineNumber": 116
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "useCallback",
+          "lineNumber": 120
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "getCheckins",
+          "lineNumber": 122
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "setCheckins",
+          "lineNumber": 130
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "useEffect",
+          "lineNumber": 142
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "loadCheckins",
+          "lineNumber": 143
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "loadStats",
+          "lineNumber": 144
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "useNetworkStatus",
+          "lineNumber": 148
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "useRef",
+          "lineNumber": 149
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "useEffect",
+          "lineNumber": 151
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "refresh",
+          "lineNumber": 154
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "useEffect",
+          "lineNumber": 162
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "setInterval",
+          "lineNumber": 164
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "refresh",
+          "lineNumber": 165
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "clearInterval",
+          "lineNumber": 171
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "useEffect",
+          "lineNumber": 177
+        },
+        {
+          "caller": "restoreSyncStatus",
+          "callee": "getSyncStatus",
+          "lineNumber": 179
+        },
+        {
+          "caller": "restoreSyncStatus",
+          "callee": "setLastSync",
+          "lineNumber": 181
+        },
+        {
+          "caller": "useGlobalPulse",
+          "callee": "restoreSyncStatus",
+          "lineNumber": 185
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/hooks/useGlobalTick.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 79,
+      "nonEmptyLines": 68,
+      "functions": [
+        {
+          "name": "useGlobalTick",
+          "startLine": 70,
+          "endLine": 79,
+          "params": [
+            "ms"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "TickStore",
+          "startLine": 9,
+          "endLine": 41,
+          "methods": [
+            "constructor"
+          ],
+          "properties": [
+            "_listeners",
+            "_tick",
+            "_timer",
+            "_intervalMs",
+            "getSnapshot",
+            "subscribe"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "useGlobalTick",
+          "line": 70,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useGlobalTick",
+          "callee": "console.warn",
+          "lineNumber": 73
+        },
+        {
+          "caller": "useGlobalTick",
+          "callee": "useCallback",
+          "lineNumber": 76
+        },
+        {
+          "caller": "useGlobalTick",
+          "callee": "store.getSnapshot",
+          "lineNumber": 76
+        },
+        {
+          "caller": "useGlobalTick",
+          "callee": "useCallback",
+          "lineNumber": 77
+        },
+        {
+          "caller": "useGlobalTick",
+          "callee": "store.subscribe",
+          "lineNumber": 77
+        },
+        {
+          "caller": "useGlobalTick",
+          "callee": "useSyncExternalStore",
+          "lineNumber": 78
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/hooks/useNetworkStatus.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 66,
+      "nonEmptyLines": 55,
+      "functions": [
+        {
+          "name": "useNetworkStatus",
+          "startLine": 19,
+          "endLine": 64,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "useNetworkStatus",
+          "line": 19,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useNetworkStatus",
+          "callee": "useState",
+          "lineNumber": 20
+        },
+        {
+          "caller": "useNetworkStatus",
+          "callee": "useEffect",
+          "lineNumber": 26
+        },
+        {
+          "caller": "useNetworkStatus",
+          "callee": "NetInfo.addEventListener",
+          "lineNumber": 27
+        },
+        {
+          "caller": "useNetworkStatus",
+          "callee": "setNetworkStatus",
+          "lineNumber": 28
+        },
+        {
+          "caller": "useNetworkStatus",
+          "callee": "unsubscribe",
+          "lineNumber": 35
+        },
+        {
+          "caller": "useNetworkStatus",
+          "callee": "useCallback",
+          "lineNumber": 40
+        },
+        {
+          "caller": "useNetworkStatus",
+          "callee": "NetInfo.fetch",
+          "lineNumber": 42
+        },
+        {
+          "caller": "useNetworkStatus",
+          "callee": "setNetworkStatus",
+          "lineNumber": 45
+        },
+        {
+          "caller": "useNetworkStatus",
+          "callee": "log.error",
+          "lineNumber": 52
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/hooks/usePrivacy.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 139,
+      "nonEmptyLines": 118,
+      "functions": [
+        {
+          "name": "usePrivacy",
+          "startLine": 26,
+          "endLine": 137,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "usePrivacy",
+          "line": 26,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "usePrivacy",
+          "callee": "useState",
+          "lineNumber": 27
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "useState",
+          "lineNumber": 28
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "useRef",
+          "lineNumber": 29
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "useEffect",
+          "lineNumber": 31
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "(async () => {\n      try {\n        userHashRef.current = await getUserHash();\n      } catch (err) {\n        log.warn('getUserHash error:', err);\n      }\n    })",
+          "lineNumber": 32
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "getUserHash",
+          "lineNumber": 34
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "log.warn",
+          "lineNumber": 36
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "loadPreferences",
+          "lineNumber": 39
+        },
+        {
+          "caller": "loadPreferences",
+          "callee": "AsyncStorage.getItem",
+          "lineNumber": 44
+        },
+        {
+          "caller": "loadPreferences",
+          "callee": "JSON.parse",
+          "lineNumber": 46
+        },
+        {
+          "caller": "loadPreferences",
+          "callee": "setPreferences",
+          "lineNumber": 47
+        },
+        {
+          "caller": "loadPreferences",
+          "callee": "log.error",
+          "lineNumber": 50
+        },
+        {
+          "caller": "savePreferences",
+          "callee": "AsyncStorage.setItem",
+          "lineNumber": 56
+        },
+        {
+          "caller": "savePreferences",
+          "callee": "JSON.stringify",
+          "lineNumber": 56
+        },
+        {
+          "caller": "savePreferences",
+          "callee": "setPreferences",
+          "lineNumber": 57
+        },
+        {
+          "caller": "savePreferences",
+          "callee": "log.error",
+          "lineNumber": 59
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "useCallback",
+          "lineNumber": 63
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "setIsLoading",
+          "lineNumber": 64
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "optIn",
+          "lineNumber": 70
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "optOut",
+          "lineNumber": 70
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "savePreferences",
+          "lineNumber": 73
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "log.error",
+          "lineNumber": 80
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "log.error",
+          "lineNumber": 84
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "setIsLoading",
+          "lineNumber": 87
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "useCallback",
+          "lineNumber": 91
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "savePreferences",
+          "lineNumber": 92
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "useCallback",
+          "lineNumber": 98
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "setIsLoading",
+          "lineNumber": 99
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "deleteGlobalData",
+          "lineNumber": 105
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "savePreferences",
+          "lineNumber": 108
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "log.error",
+          "lineNumber": 114
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "log.error",
+          "lineNumber": 118
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "setIsLoading",
+          "lineNumber": 121
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "useCallback",
+          "lineNumber": 125
+        },
+        {
+          "caller": "usePrivacy",
+          "callee": "savePreferences",
+          "lineNumber": 126
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/hooks/useSessionHeartbeat.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 75,
+      "nonEmptyLines": 62,
+      "functions": [
+        {
+          "name": "useSessionHeartbeat",
+          "startLine": 15,
+          "endLine": 75,
+          "params": [
+            "recordId",
+            "type"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "useSessionHeartbeat",
+          "line": 15,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useSessionHeartbeat",
+          "callee": "useRef",
+          "lineNumber": 19
+        },
+        {
+          "caller": "useSessionHeartbeat",
+          "callee": "useRef",
+          "lineNumber": 20
+        },
+        {
+          "caller": "useSessionHeartbeat",
+          "callee": "useRef",
+          "lineNumber": 21
+        },
+        {
+          "caller": "useSessionHeartbeat",
+          "callee": "useCallback",
+          "lineNumber": 23
+        },
+        {
+          "caller": "useSessionHeartbeat",
+          "callee": "updateSession",
+          "lineNumber": 25
+        },
+        {
+          "caller": "useSessionHeartbeat",
+          "callee": "new Date().toISOString",
+          "lineNumber": 26
+        },
+        {
+          "caller": "useSessionHeartbeat",
+          "callee": "useCallback",
+          "lineNumber": 30
+        },
+        {
+          "caller": "useSessionHeartbeat",
+          "callee": "sendHeartbeat",
+          "lineNumber": 33
+        },
+        {
+          "caller": "useSessionHeartbeat",
+          "callee": "setInterval",
+          "lineNumber": 34
+        },
+        {
+          "caller": "useSessionHeartbeat",
+          "callee": "useCallback",
+          "lineNumber": 37
+        },
+        {
+          "caller": "useSessionHeartbeat",
+          "callee": "clearInterval",
+          "lineNumber": 40
+        },
+        {
+          "caller": "useSessionHeartbeat",
+          "callee": "useEffect",
+          "lineNumber": 45
+        },
+        {
+          "caller": "useSessionHeartbeat",
+          "callee": "stopHeartbeat",
+          "lineNumber": 48
+        },
+        {
+          "caller": "useSessionHeartbeat",
+          "callee": "startHeartbeat",
+          "lineNumber": 52
+        },
+        {
+          "caller": "handleAppStateChange",
+          "callee": "stopHeartbeat",
+          "lineNumber": 61
+        },
+        {
+          "caller": "handleAppStateChange",
+          "callee": "startHeartbeat",
+          "lineNumber": 64
+        },
+        {
+          "caller": "useSessionHeartbeat",
+          "callee": "AppState.addEventListener",
+          "lineNumber": 68
+        },
+        {
+          "caller": "useSessionHeartbeat",
+          "callee": "stopHeartbeat",
+          "lineNumber": 71
+        },
+        {
+          "caller": "useSessionHeartbeat",
+          "callee": "subscription.remove",
+          "lineNumber": 72
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 359,
+      "nonEmptyLines": 311,
+      "functions": [
+        {
+          "name": "getConnectionState",
+          "startLine": 21,
+          "endLine": 23,
+          "params": []
+        },
+        {
+          "name": "onConnectionStateChange",
+          "startLine": 25,
+          "endLine": 30,
+          "params": [
+            "listener"
+          ]
+        },
+        {
+          "name": "setConnectionState",
+          "startLine": 32,
+          "endLine": 40,
+          "params": [
+            "state"
+          ]
+        },
+        {
+          "name": "pbRequest",
+          "startLine": 43,
+          "endLine": 93,
+          "params": [
+            "endpoint",
+            "options"
+          ]
+        },
+        {
+          "name": "mapSession",
+          "startLine": 95,
+          "endLine": 111,
+          "params": [
+            "raw"
+          ]
+        },
+        {
+          "name": "createSession",
+          "startLine": 124,
+          "endLine": 156,
+          "params": [
+            "data"
+          ]
+        },
+        {
+          "name": "updateSession",
+          "startLine": 158,
+          "endLine": 180,
+          "params": [
+            "recordId",
+            "data"
+          ]
+        },
+        {
+          "name": "deleteSession",
+          "startLine": 182,
+          "endLine": 187,
+          "params": [
+            "recordId"
+          ]
+        },
+        {
+          "name": "deleteSessionsByUserHash",
+          "startLine": 189,
+          "endLine": 206,
+          "params": [
+            "userHash"
+          ]
+        },
+        {
+          "name": "getActiveSessions",
+          "startLine": 208,
+          "endLine": 233,
+          "params": [
+            "type"
+          ]
+        },
+        {
+          "name": "subscribeSessions",
+          "startLine": 255,
+          "endLine": 359,
+          "params": [
+            "callbacks"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "getConnectionState",
+          "line": 21,
+          "isDefault": false
+        },
+        {
+          "name": "onConnectionStateChange",
+          "line": 25,
+          "isDefault": false
+        },
+        {
+          "name": "createSession",
+          "line": 124,
+          "isDefault": false
+        },
+        {
+          "name": "updateSession",
+          "line": 158,
+          "isDefault": false
+        },
+        {
+          "name": "deleteSession",
+          "line": 182,
+          "isDefault": false
+        },
+        {
+          "name": "deleteSessionsByUserHash",
+          "line": 189,
+          "isDefault": false
+        },
+        {
+          "name": "getActiveSessions",
+          "line": 208,
+          "isDefault": false
+        },
+        {
+          "name": "subscribeSessions",
+          "line": 255,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "onConnectionStateChange",
+          "callee": "_connectionListeners.push",
+          "lineNumber": 26
+        },
+        {
+          "caller": "onConnectionStateChange",
+          "callee": "_connectionListeners.filter",
+          "lineNumber": 28
+        },
+        {
+          "caller": "setConnectionState",
+          "callee": "listener",
+          "lineNumber": 36
+        },
+        {
+          "caller": "setConnectionState",
+          "callee": "log.warn",
+          "lineNumber": 37
+        },
+        {
+          "caller": "pbRequest",
+          "callee": "setTimeout",
+          "lineNumber": 48
+        },
+        {
+          "caller": "pbRequest",
+          "callee": "controller.abort",
+          "lineNumber": 48
+        },
+        {
+          "caller": "pbRequest",
+          "callee": "fetch",
+          "lineNumber": 52
+        },
+        {
+          "caller": "pbRequest",
+          "callee": "clearTimeout",
+          "lineNumber": 61
+        },
+        {
+          "caller": "pbRequest",
+          "callee": "response.json",
+          "lineNumber": 67
+        },
+        {
+          "caller": "pbRequest",
+          "callee": "clearTimeout",
+          "lineNumber": 81
+        },
+        {
+          "caller": "mapSession",
+          "callee": "Number",
+          "lineNumber": 108
+        },
+        {
+          "caller": "mapSession",
+          "callee": "Number",
+          "lineNumber": 109
+        },
+        {
+          "caller": "createSession",
+          "callee": "Date.now",
+          "lineNumber": 127
+        },
+        {
+          "caller": "createSession",
+          "callee": "Math.random().toString(36).slice",
+          "lineNumber": 127
+        },
+        {
+          "caller": "createSession",
+          "callee": "Math.random().toString",
+          "lineNumber": 127
+        },
+        {
+          "caller": "createSession",
+          "callee": "Math.random",
+          "lineNumber": 127
+        },
+        {
+          "caller": "createSession",
+          "callee": "new Date().toISOString",
+          "lineNumber": 128
+        },
+        {
+          "caller": "createSession",
+          "callee": "await pbRequest",
+          "lineNumber": 130
+        },
+        {
+          "caller": "createSession",
+          "callee": "JSON.stringify",
+          "lineNumber": 134
+        },
+        {
+          "caller": "createSession",
+          "callee": "mapSession",
+          "lineNumber": 152
+        },
+        {
+          "caller": "updateSession",
+          "callee": "await pbRequest",
+          "lineNumber": 167
+        },
+        {
+          "caller": "updateSession",
+          "callee": "JSON.stringify",
+          "lineNumber": 171
+        },
+        {
+          "caller": "updateSession",
+          "callee": "mapSession",
+          "lineNumber": 176
+        },
+        {
+          "caller": "deleteSession",
+          "callee": "pbRequest",
+          "lineNumber": 183
+        },
+        {
+          "caller": "deleteSessionsByUserHash",
+          "callee": "encodeURIComponent",
+          "lineNumber": 190
+        },
+        {
+          "caller": "deleteSessionsByUserHash",
+          "callee": "escapeFilter",
+          "lineNumber": 190
+        },
+        {
+          "caller": "deleteSessionsByUserHash",
+          "callee": "await pbRequest",
+          "lineNumber": 196
+        },
+        {
+          "caller": "deleteSessionsByUserHash",
+          "callee": "deleteSession",
+          "lineNumber": 201
+        },
+        {
+          "caller": "getActiveSessions",
+          "callee": "filters.push",
+          "lineNumber": 213
+        },
+        {
+          "caller": "getActiveSessions",
+          "callee": "escapeFilter",
+          "lineNumber": 213
+        },
+        {
+          "caller": "getActiveSessions",
+          "callee": "queryParts.push",
+          "lineNumber": 218
+        },
+        {
+          "caller": "getActiveSessions",
+          "callee": "encodeURIComponent",
+          "lineNumber": 218
+        },
+        {
+          "caller": "getActiveSessions",
+          "callee": "filters.join",
+          "lineNumber": 218
+        },
+        {
+          "caller": "getActiveSessions",
+          "callee": "queryParts.push",
+          "lineNumber": 220
+        },
+        {
+          "caller": "getActiveSessions",
+          "callee": "queryParts.push",
+          "lineNumber": 221
+        },
+        {
+          "caller": "getActiveSessions",
+          "callee": "queryParts.join",
+          "lineNumber": 222
+        },
+        {
+          "caller": "getActiveSessions",
+          "callee": "await pbRequest",
+          "lineNumber": 223
+        },
+        {
+          "caller": "getActiveSessions",
+          "callee": "(result.data.items || []).map",
+          "lineNumber": 228
+        },
+        {
+          "caller": "getActiveSessions",
+          "callee": "mapSession",
+          "lineNumber": 228
+        },
+        {
+          "caller": "cleanup",
+          "callee": "clearTimeout",
+          "lineNumber": 267
+        },
+        {
+          "caller": "scheduleNext",
+          "callee": "setTimeout",
+          "lineNumber": 280
+        },
+        {
+          "caller": "scheduleNext",
+          "callee": "poll",
+          "lineNumber": 280
+        },
+        {
+          "caller": "scheduleNext",
+          "callee": "getInterval",
+          "lineNumber": 280
+        },
+        {
+          "caller": "poll",
+          "callee": "getActiveSessions",
+          "lineNumber": 287
+        },
+        {
+          "caller": "poll",
+          "callee": "scheduleNext",
+          "lineNumber": 289
+        },
+        {
+          "caller": "poll",
+          "callee": "previousSessions.map",
+          "lineNumber": 294
+        },
+        {
+          "caller": "poll",
+          "callee": "current.map",
+          "lineNumber": 295
+        },
+        {
+          "caller": "poll",
+          "callee": "prevMap.get",
+          "lineNumber": 301
+        },
+        {
+          "caller": "poll",
+          "callee": "callbacks.onCreate",
+          "lineNumber": 303
+        },
+        {
+          "caller": "poll",
+          "callee": "callbacks.onUpdate",
+          "lineNumber": 306
+        },
+        {
+          "caller": "poll",
+          "callee": "currMap.has",
+          "lineNumber": 313
+        },
+        {
+          "caller": "poll",
+          "callee": "callbacks.onDelete",
+          "lineNumber": 314
+        },
+        {
+          "caller": "poll",
+          "callee": "setConnectionState",
+          "lineNumber": 321
+        },
+        {
+          "caller": "poll",
+          "callee": "scheduleNext",
+          "lineNumber": 327
+        },
+        {
+          "caller": "subscribeSessions",
+          "callee": "setConnectionState",
+          "lineNumber": 330
+        },
+        {
+          "caller": "subscribeSessions",
+          "callee": "poll",
+          "lineNumber": 331
+        },
+        {
+          "caller": "subscribeSessions",
+          "callee": "require",
+          "lineNumber": 336
+        },
+        {
+          "caller": "subscribeSessions",
+          "callee": "_currentAppStateSub.remove",
+          "lineNumber": 339
+        },
+        {
+          "caller": "subscribeSessions",
+          "callee": "AppState.addEventListener",
+          "lineNumber": 342
+        },
+        {
+          "caller": "subscribeSessions",
+          "callee": "cleanup",
+          "lineNumber": 345
+        },
+        {
+          "caller": "subscribeSessions",
+          "callee": "scheduleNext",
+          "lineNumber": 346
+        },
+        {
+          "caller": "subscribeSessions",
+          "callee": "cleanup",
+          "lineNumber": 354
+        },
+        {
+          "caller": "subscribeSessions",
+          "callee": "_currentAppStateSub?.remove",
+          "lineNumber": 355
+        },
+        {
+          "caller": "subscribeSessions",
+          "callee": "setConnectionState",
+          "lineNumber": 357
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 8,
+        "functionCount": 11,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 340,
+      "nonEmptyLines": 298,
+      "functions": [
+        {
+          "name": "pbRequest",
+          "startLine": 44,
+          "endLine": 92,
+          "params": [
+            "endpoint",
+            "options"
+          ]
+        },
+        {
+          "name": "submitCheckin",
+          "startLine": 105,
+          "endLine": 122,
+          "params": [
+            "checkin"
+          ]
+        },
+        {
+          "name": "getCheckins",
+          "startLine": 127,
+          "endLine": 188,
+          "params": [
+            "params"
+          ]
+        },
+        {
+          "name": "getGlobalStats",
+          "startLine": 193,
+          "endLine": 209,
+          "params": []
+        },
+        {
+          "name": "getLeaderboard",
+          "startLine": 214,
+          "endLine": 246,
+          "params": [
+            "params"
+          ]
+        },
+        {
+          "name": "optOut",
+          "startLine": 251,
+          "endLine": 261,
+          "params": [
+            "userHash"
+          ]
+        },
+        {
+          "name": "optIn",
+          "startLine": 266,
+          "endLine": 276,
+          "params": [
+            "userHash"
+          ]
+        },
+        {
+          "name": "deleteGlobalData",
+          "startLine": 281,
+          "endLine": 291,
+          "params": [
+            "userHash"
+          ]
+        },
+        {
+          "name": "generateAnonymousId",
+          "startLine": 296,
+          "endLine": 302,
+          "params": [
+            "userHash"
+          ]
+        },
+        {
+          "name": "formatDisplayName",
+          "startLine": 308,
+          "endLine": 316,
+          "params": [
+            "nickname",
+            "userHash"
+          ]
+        },
+        {
+          "name": "getCheckinTypeIcon",
+          "startLine": 321,
+          "endLine": 328,
+          "params": [
+            "type"
+          ]
+        },
+        {
+          "name": "getCheckinTypeColor",
+          "startLine": 333,
+          "endLine": 340,
+          "params": [
+            "type"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "submitCheckin",
+          "line": 105,
+          "isDefault": false
+        },
+        {
+          "name": "getCheckins",
+          "line": 127,
+          "isDefault": false
+        },
+        {
+          "name": "getGlobalStats",
+          "line": 193,
+          "isDefault": false
+        },
+        {
+          "name": "getLeaderboard",
+          "line": 214,
+          "isDefault": false
+        },
+        {
+          "name": "optOut",
+          "line": 251,
+          "isDefault": false
+        },
+        {
+          "name": "optIn",
+          "line": 266,
+          "isDefault": false
+        },
+        {
+          "name": "deleteGlobalData",
+          "line": 281,
+          "isDefault": false
+        },
+        {
+          "name": "generateAnonymousId",
+          "line": 296,
+          "isDefault": false
+        },
+        {
+          "name": "formatDisplayName",
+          "line": 308,
+          "isDefault": false
+        },
+        {
+          "name": "getCheckinTypeIcon",
+          "line": 321,
+          "isDefault": false
+        },
+        {
+          "name": "getCheckinTypeColor",
+          "line": 333,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "pbRequest",
+          "callee": "setTimeout",
+          "lineNumber": 49
+        },
+        {
+          "caller": "pbRequest",
+          "callee": "controller.abort",
+          "lineNumber": 49
+        },
+        {
+          "caller": "pbRequest",
+          "callee": "offlineAwareFetch",
+          "lineNumber": 53
+        },
+        {
+          "caller": "pbRequest",
+          "callee": "clearTimeout",
+          "lineNumber": 58
+        },
+        {
+          "caller": "pbRequest",
+          "callee": "response.json",
+          "lineNumber": 60
+        },
+        {
+          "caller": "pbRequest",
+          "callee": "clearTimeout",
+          "lineNumber": 74
+        },
+        {
+          "caller": "submitCheckin",
+          "callee": "Date.now",
+          "lineNumber": 108
+        },
+        {
+          "caller": "submitCheckin",
+          "callee": "await pbRequest",
+          "lineNumber": 114
+        },
+        {
+          "caller": "submitCheckin",
+          "callee": "JSON.stringify",
+          "lineNumber": 118
+        },
+        {
+          "caller": "getCheckins",
+          "callee": "filters.push",
+          "lineNumber": 137
+        },
+        {
+          "caller": "getCheckins",
+          "callee": "escapeFilter",
+          "lineNumber": 137
+        },
+        {
+          "caller": "getCheckins",
+          "callee": "String",
+          "lineNumber": 137
+        },
+        {
+          "caller": "getCheckins",
+          "callee": "filters.push",
+          "lineNumber": 141
+        },
+        {
+          "caller": "getCheckins",
+          "callee": "escapeFilter",
+          "lineNumber": 141
+        },
+        {
+          "caller": "getCheckins",
+          "callee": "String",
+          "lineNumber": 141
+        },
+        {
+          "caller": "getCheckins",
+          "callee": "filters.push",
+          "lineNumber": 145
+        },
+        {
+          "caller": "getCheckins",
+          "callee": "queryParts.push",
+          "lineNumber": 149
+        },
+        {
+          "caller": "getCheckins",
+          "callee": "encodeURIComponent",
+          "lineNumber": 149
+        },
+        {
+          "caller": "getCheckins",
+          "callee": "filters.join",
+          "lineNumber": 149
+        },
+        {
+          "caller": "getCheckins",
+          "callee": "queryParts.push",
+          "lineNumber": 152
+        },
+        {
+          "caller": "getCheckins",
+          "callee": "Math.floor",
+          "lineNumber": 155
+        },
+        {
+          "caller": "getCheckins",
+          "callee": "queryParts.push",
+          "lineNumber": 156
+        },
+        {
+          "caller": "getCheckins",
+          "callee": "queryParts.push",
+          "lineNumber": 159
+        },
+        {
+          "caller": "getCheckins",
+          "callee": "queryParts.join",
+          "lineNumber": 160
+        },
+        {
+          "caller": "getCheckins",
+          "callee": "await pbRequest",
+          "lineNumber": 162
+        },
+        {
+          "caller": "getCheckins",
+          "callee": "(result.data.items || []).map",
+          "lineNumber": 168
+        },
+        {
+          "caller": "getCheckins",
+          "callee": "Number",
+          "lineNumber": 172
+        },
+        {
+          "caller": "getCheckins",
+          "callee": "Number",
+          "lineNumber": 173
+        },
+        {
+          "caller": "getCheckins",
+          "callee": "Number",
+          "lineNumber": 174
+        },
+        {
+          "caller": "getCheckins",
+          "callee": "Number",
+          "lineNumber": 175
+        },
+        {
+          "caller": "getGlobalStats",
+          "callee": "await pbRequest",
+          "lineNumber": 194
+        },
+        {
+          "caller": "getLeaderboard",
+          "callee": "await pbRequest",
+          "lineNumber": 223
+        },
+        {
+          "caller": "getLeaderboard",
+          "callee": "(result.data.items || []).map",
+          "lineNumber": 228
+        },
+        {
+          "caller": "getLeaderboard",
+          "callee": "Number",
+          "lineNumber": 233
+        },
+        {
+          "caller": "getLeaderboard",
+          "callee": "Number",
+          "lineNumber": 234
+        },
+        {
+          "caller": "optOut",
+          "callee": "await pbRequest",
+          "lineNumber": 252
+        },
+        {
+          "caller": "optOut",
+          "callee": "JSON.stringify",
+          "lineNumber": 254
+        },
+        {
+          "caller": "optIn",
+          "callee": "await pbRequest",
+          "lineNumber": 267
+        },
+        {
+          "caller": "optIn",
+          "callee": "JSON.stringify",
+          "lineNumber": 269
+        },
+        {
+          "caller": "deleteGlobalData",
+          "callee": "await pbRequest",
+          "lineNumber": 282
+        },
+        {
+          "caller": "deleteGlobalData",
+          "callee": "JSON.stringify",
+          "lineNumber": 284
+        },
+        {
+          "caller": "generateAnonymousId",
+          "callee": "parseInt",
+          "lineNumber": 298
+        },
+        {
+          "caller": "generateAnonymousId",
+          "callee": "userHash.substring",
+          "lineNumber": 298
+        },
+        {
+          "caller": "generateAnonymousId",
+          "callee": "isNaN",
+          "lineNumber": 299
+        },
+        {
+          "caller": "generateAnonymousId",
+          "callee": "id.toString().padStart",
+          "lineNumber": 301
+        },
+        {
+          "caller": "generateAnonymousId",
+          "callee": "id.toString",
+          "lineNumber": 301
+        },
+        {
+          "caller": "formatDisplayName",
+          "callee": "generateAnonymousId",
+          "lineNumber": 309
+        },
+        {
+          "caller": "formatDisplayName",
+          "callee": "id.replace",
+          "lineNumber": 310
+        },
+        {
+          "caller": "formatDisplayName",
+          "callee": "nickname.slice",
+          "lineNumber": 312
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 11,
+        "functionCount": 12,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/services/offlineCache.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 315,
+      "nonEmptyLines": 268,
+      "functions": [
+        {
+          "name": "openDatabase",
+          "startLine": 21,
+          "endLine": 23,
+          "params": []
+        },
+        {
+          "name": "initDatabase",
+          "startLine": 28,
+          "endLine": 69,
+          "params": []
+        },
+        {
+          "name": "cacheTile",
+          "startLine": 74,
+          "endLine": 86,
+          "params": [
+            "tileKey",
+            "data"
+          ]
+        },
+        {
+          "name": "getCachedTile",
+          "startLine": 91,
+          "endLine": 109,
+          "params": [
+            "tileKey"
+          ]
+        },
+        {
+          "name": "cleanupTileCache",
+          "startLine": 114,
+          "endLine": 130,
+          "params": []
+        },
+        {
+          "name": "cacheCheckins",
+          "startLine": 135,
+          "endLine": 161,
+          "params": [
+            "checkins"
+          ]
+        },
+        {
+          "name": "getCachedCheckins",
+          "startLine": 166,
+          "endLine": 193,
+          "params": [
+            "limit"
+          ]
+        },
+        {
+          "name": "cleanupCheckinCache",
+          "startLine": 198,
+          "endLine": 214,
+          "params": []
+        },
+        {
+          "name": "cacheStats",
+          "startLine": 219,
+          "endLine": 227,
+          "params": [
+            "stats"
+          ]
+        },
+        {
+          "name": "getCachedStats",
+          "startLine": 232,
+          "endLine": 256,
+          "params": []
+        },
+        {
+          "name": "updateSyncStatus",
+          "startLine": 261,
+          "endLine": 269,
+          "params": [
+            "lastSync",
+            "pendingCount"
+          ]
+        },
+        {
+          "name": "getSyncStatus",
+          "startLine": 274,
+          "endLine": 288,
+          "params": []
+        },
+        {
+          "name": "clearAllCache",
+          "startLine": 293,
+          "endLine": 302,
+          "params": []
+        },
+        {
+          "name": "getCacheSize",
+          "startLine": 307,
+          "endLine": 315,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "initDatabase",
+          "line": 28,
+          "isDefault": false
+        },
+        {
+          "name": "cacheTile",
+          "line": 74,
+          "isDefault": false
+        },
+        {
+          "name": "getCachedTile",
+          "line": 91,
+          "isDefault": false
+        },
+        {
+          "name": "cacheCheckins",
+          "line": 135,
+          "isDefault": false
+        },
+        {
+          "name": "getCachedCheckins",
+          "line": 166,
+          "isDefault": false
+        },
+        {
+          "name": "cacheStats",
+          "line": 219,
+          "isDefault": false
+        },
+        {
+          "name": "getCachedStats",
+          "line": 232,
+          "isDefault": false
+        },
+        {
+          "name": "updateSyncStatus",
+          "line": 261,
+          "isDefault": false
+        },
+        {
+          "name": "getSyncStatus",
+          "line": 274,
+          "isDefault": false
+        },
+        {
+          "name": "clearAllCache",
+          "line": 293,
+          "isDefault": false
+        },
+        {
+          "name": "getCacheSize",
+          "line": 307,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "openDatabase",
+          "callee": "SQLite.openDatabaseAsync",
+          "lineNumber": 22
+        },
+        {
+          "caller": "initDatabase",
+          "callee": "openDatabase",
+          "lineNumber": 29
+        },
+        {
+          "caller": "initDatabase",
+          "callee": "db.execAsync",
+          "lineNumber": 31
+        },
+        {
+          "caller": "cacheTile",
+          "callee": "openDatabase",
+          "lineNumber": 75
+        },
+        {
+          "caller": "cacheTile",
+          "callee": "Date.now",
+          "lineNumber": 76
+        },
+        {
+          "caller": "cacheTile",
+          "callee": "db.runAsync",
+          "lineNumber": 78
+        },
+        {
+          "caller": "cacheTile",
+          "callee": "cleanupTileCache",
+          "lineNumber": 85
+        },
+        {
+          "caller": "getCachedTile",
+          "callee": "openDatabase",
+          "lineNumber": 92
+        },
+        {
+          "caller": "getCachedTile",
+          "callee": "await db.getFirstAsync",
+          "lineNumber": 94
+        },
+        {
+          "caller": "getCachedTile",
+          "callee": "db.runAsync",
+          "lineNumber": 101
+        },
+        {
+          "caller": "getCachedTile",
+          "callee": "Date.now",
+          "lineNumber": 103
+        },
+        {
+          "caller": "cleanupTileCache",
+          "callee": "openDatabase",
+          "lineNumber": 115
+        },
+        {
+          "caller": "cleanupTileCache",
+          "callee": "await db.getFirstAsync",
+          "lineNumber": 117
+        },
+        {
+          "caller": "cleanupTileCache",
+          "callee": "db.runAsync",
+          "lineNumber": 123
+        },
+        {
+          "caller": "cacheCheckins",
+          "callee": "openDatabase",
+          "lineNumber": 138
+        },
+        {
+          "caller": "cacheCheckins",
+          "callee": "db.withTransactionAsync",
+          "lineNumber": 140
+        },
+        {
+          "caller": "cacheCheckins",
+          "callee": "db.runAsync",
+          "lineNumber": 142
+        },
+        {
+          "caller": "cacheCheckins",
+          "callee": "new Date(checkin.created_at).getTime",
+          "lineNumber": 154
+        },
+        {
+          "caller": "cacheCheckins",
+          "callee": "Date.now",
+          "lineNumber": 154
+        },
+        {
+          "caller": "cacheCheckins",
+          "callee": "cleanupCheckinCache",
+          "lineNumber": 160
+        },
+        {
+          "caller": "getCachedCheckins",
+          "callee": "openDatabase",
+          "lineNumber": 167
+        },
+        {
+          "caller": "getCachedCheckins",
+          "callee": "await db.getAllAsync",
+          "lineNumber": 169
+        },
+        {
+          "caller": "getCachedCheckins",
+          "callee": "results.map",
+          "lineNumber": 183
+        },
+        {
+          "caller": "getCachedCheckins",
+          "callee": "new Date(row.created_at).toISOString",
+          "lineNumber": 191
+        },
+        {
+          "caller": "getCachedCheckins",
+          "callee": "new Date(0).toISOString",
+          "lineNumber": 191
+        },
+        {
+          "caller": "cleanupCheckinCache",
+          "callee": "openDatabase",
+          "lineNumber": 199
+        },
+        {
+          "caller": "cleanupCheckinCache",
+          "callee": "await db.getFirstAsync",
+          "lineNumber": 201
+        },
+        {
+          "caller": "cleanupCheckinCache",
+          "callee": "db.runAsync",
+          "lineNumber": 207
+        },
+        {
+          "caller": "cacheStats",
+          "callee": "openDatabase",
+          "lineNumber": 220
+        },
+        {
+          "caller": "cacheStats",
+          "callee": "db.runAsync",
+          "lineNumber": 222
+        },
+        {
+          "caller": "cacheStats",
+          "callee": "Date.now",
+          "lineNumber": 225
+        },
+        {
+          "caller": "getCachedStats",
+          "callee": "openDatabase",
+          "lineNumber": 233
+        },
+        {
+          "caller": "getCachedStats",
+          "callee": "await db.getFirstAsync",
+          "lineNumber": 235
+        },
+        {
+          "caller": "getCachedStats",
+          "callee": "new Date(result.updated_at).toISOString",
+          "lineNumber": 251
+        },
+        {
+          "caller": "getCachedStats",
+          "callee": "new Date(0).toISOString",
+          "lineNumber": 251
+        },
+        {
+          "caller": "updateSyncStatus",
+          "callee": "openDatabase",
+          "lineNumber": 262
+        },
+        {
+          "caller": "updateSyncStatus",
+          "callee": "db.runAsync",
+          "lineNumber": 264
+        },
+        {
+          "caller": "getSyncStatus",
+          "callee": "openDatabase",
+          "lineNumber": 275
+        },
+        {
+          "caller": "getSyncStatus",
+          "callee": "await db.getFirstAsync",
+          "lineNumber": 277
+        },
+        {
+          "caller": "clearAllCache",
+          "callee": "openDatabase",
+          "lineNumber": 294
+        },
+        {
+          "caller": "clearAllCache",
+          "callee": "db.execAsync",
+          "lineNumber": 296
+        },
+        {
+          "caller": "getCacheSize",
+          "callee": "openDatabase",
+          "lineNumber": 308
+        },
+        {
+          "caller": "getCacheSize",
+          "callee": "await db.getFirstAsync",
+          "lineNumber": 310
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 11,
+        "functionCount": 14,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/services/pbFilterEscape.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 22,
+      "nonEmptyLines": 21,
+      "functions": [
+        {
+          "name": "escapeFilter",
+          "startLine": 11,
+          "endLine": 22,
+          "params": [
+            "value"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "escapeFilter",
+          "line": 11,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "escapeFilter",
+          "callee": "value.slice",
+          "lineNumber": 13
+        },
+        {
+          "caller": "escapeFilter",
+          "callee": "value\r\n    .replace(/\\\\/g, '\\\\\\\\')\r\n    .replace(/\"/g, '\\\\\"')\r\n    .replace(/'/g, \"\\\\'\")\r\n    .replace(/\\(/g, '\\\\(')\r\n    .replace(/\\)/g, '\\\\)')\r\n    .replace",
+          "lineNumber": 15
+        },
+        {
+          "caller": "escapeFilter",
+          "callee": "value\r\n    .replace(/\\\\/g, '\\\\\\\\')\r\n    .replace(/\"/g, '\\\\\"')\r\n    .replace(/'/g, \"\\\\'\")\r\n    .replace(/\\(/g, '\\\\(')\r\n    .replace",
+          "lineNumber": 15
+        },
+        {
+          "caller": "escapeFilter",
+          "callee": "value\r\n    .replace(/\\\\/g, '\\\\\\\\')\r\n    .replace(/\"/g, '\\\\\"')\r\n    .replace(/'/g, \"\\\\'\")\r\n    .replace",
+          "lineNumber": 15
+        },
+        {
+          "caller": "escapeFilter",
+          "callee": "value\r\n    .replace(/\\\\/g, '\\\\\\\\')\r\n    .replace(/\"/g, '\\\\\"')\r\n    .replace",
+          "lineNumber": 15
+        },
+        {
+          "caller": "escapeFilter",
+          "callee": "value\r\n    .replace(/\\\\/g, '\\\\\\\\')\r\n    .replace",
+          "lineNumber": 15
+        },
+        {
+          "caller": "escapeFilter",
+          "callee": "value\r\n    .replace",
+          "lineNumber": 15
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/services/userHash.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 61,
+      "nonEmptyLines": 55,
+      "functions": [
+        {
+          "name": "generateSecureRandomHex",
+          "startLine": 8,
+          "endLine": 13,
+          "params": [
+            "length"
+          ]
+        },
+        {
+          "name": "getUserHash",
+          "startLine": 20,
+          "endLine": 44,
+          "params": []
+        },
+        {
+          "name": "getFuzzSecret",
+          "startLine": 51,
+          "endLine": 61,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "getUserHash",
+          "line": 20,
+          "isDefault": false
+        },
+        {
+          "name": "getFuzzSecret",
+          "line": 51,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "generateSecureRandomHex",
+          "callee": "crypto.getRandomValues",
+          "lineNumber": 11
+        },
+        {
+          "caller": "generateSecureRandomHex",
+          "callee": "Array.from(arr, b => b.toString(16).padStart(2, '0')).join",
+          "lineNumber": 12
+        },
+        {
+          "caller": "generateSecureRandomHex",
+          "callee": "Array.from",
+          "lineNumber": 12
+        },
+        {
+          "caller": "generateSecureRandomHex",
+          "callee": "b.toString(16).padStart",
+          "lineNumber": 12
+        },
+        {
+          "caller": "generateSecureRandomHex",
+          "callee": "b.toString",
+          "lineNumber": 12
+        },
+        {
+          "caller": "getUserHash",
+          "callee": "SecureStore.getItemAsync",
+          "lineNumber": 23
+        },
+        {
+          "caller": "getUserHash",
+          "callee": "AsyncStorage.getItem",
+          "lineNumber": 27
+        },
+        {
+          "caller": "getUserHash",
+          "callee": "SecureStore.setItemAsync",
+          "lineNumber": 30
+        },
+        {
+          "caller": "getUserHash",
+          "callee": "generateSecureRandomHex",
+          "lineNumber": 35
+        },
+        {
+          "caller": "getUserHash",
+          "callee": "SecureStore.setItemAsync",
+          "lineNumber": 36
+        },
+        {
+          "caller": "getUserHash",
+          "callee": "AsyncStorage.setItem(USER_HASH_KEY, hash).catch",
+          "lineNumber": 38
+        },
+        {
+          "caller": "getUserHash",
+          "callee": "AsyncStorage.setItem",
+          "lineNumber": 38
+        },
+        {
+          "caller": "getUserHash",
+          "callee": "generateSecureRandomHex",
+          "lineNumber": 42
+        },
+        {
+          "caller": "getFuzzSecret",
+          "callee": "SecureStore.getItemAsync",
+          "lineNumber": 53
+        },
+        {
+          "caller": "getFuzzSecret",
+          "callee": "generateSecureRandomHex",
+          "lineNumber": 55
+        },
+        {
+          "caller": "getFuzzSecret",
+          "callee": "SecureStore.setItemAsync",
+          "lineNumber": 56
+        },
+        {
+          "caller": "getFuzzSecret",
+          "callee": "generateSecureRandomHex",
+          "lineNumber": 59
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/net/offlineAware.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 45,
+      "nonEmptyLines": 39,
+      "functions": [
+        {
+          "name": "offlineAwareFetch",
+          "startLine": 22,
+          "endLine": 45,
+          "params": [
+            "url",
+            "options"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "OfflineError",
+          "startLine": 6,
+          "endLine": 11,
+          "methods": [
+            "constructor"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "OfflineError",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "offlineAwareFetch",
+          "line": 22,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "constructor",
+          "callee": "super",
+          "lineNumber": 8
+        },
+        {
+          "caller": "offlineAwareFetch",
+          "callee": "useNetworkStatus.getState",
+          "lineNumber": 26
+        },
+        {
+          "caller": "offlineAwareFetch",
+          "callee": "getAuthToken",
+          "lineNumber": 38
+        },
+        {
+          "caller": "offlineAwareFetch",
+          "callee": "fetch",
+          "lineNumber": 44
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 2,
+        "functionCount": 1,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "apps/mobile/src/store/authToken.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 15,
+      "nonEmptyLines": 13,
+      "functions": [
+        {
+          "name": "getAuthToken",
+          "startLine": 6,
+          "endLine": 9,
+          "params": []
+        },
+        {
+          "name": "getAuthUserId",
+          "startLine": 12,
+          "endLine": 15,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "getAuthToken",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "getAuthUserId",
+          "line": 12,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getAuthToken",
+          "callee": "useAppStore.getState",
+          "lineNumber": 7
+        },
+        {
+          "caller": "getAuthUserId",
+          "callee": "useAppStore.getState",
+          "lineNumber": 13
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/store/useNetworkStatus.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 32,
+      "nonEmptyLines": 28,
+      "exports": [
+        {
+          "name": "useNetworkStatus",
+          "line": 11,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    }
+  ]
+}

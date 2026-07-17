@@ -1,0 +1,216 @@
+{
+  "_archive/web-legacy/src/app/(auth)/login/page.tsx": {
+    "summary": "Web 端登录页：邮箱+密码表单，含邮箱格式校验、未注册提示(apiCheckEmail)，登录成功后跳转首页。",
+    "tags": ["web-legacy", "auth", "login", "page"],
+    "complexity": "simple",
+    "functions": {"LoginPage": {"summary": "登录表单组件，校验邮箱并调用 useWebStore.login，出错显示错误文案。", "tags": ["auth", "form"], "complexity": "simple"}}
+  },
+  "_archive/web-legacy/src/app/(auth)/register/page.tsx": {
+    "summary": "Web 端注册页：邮箱/密码/验证码表单，含密码强度校验(validatePassword)、邮箱唯一性检查与倒计时发送验证码。",
+    "tags": ["web-legacy", "auth", "register", "page"],
+    "complexity": "moderate",
+    "functions": {"RegisterPage": {"summary": "注册表单组件，处理密码确认、校验码发送与注册提交。", "tags": ["auth", "form"], "complexity": "moderate"}}
+  },
+  "_archive/web-legacy/src/components/AmapContainer.tsx": {
+    "summary": "高德地图容器组件：通过 loadAMap 动态加载脚本并初始化地图实例，提供全局地图宿主。",
+    "tags": ["web-legacy", "map", "amap", "geolocation"],
+    "complexity": "simple",
+    "functions": {"AmapContainer": {"summary": "动态加载高德 SDK 并挂载地图容器 ref。", "tags": ["amap", "loader"], "complexity": "simple"}}
+  },
+  "_archive/web-legacy/src/components/AppHeader.tsx": {
+    "summary": "应用顶栏：显示应用名、今日 streak(Flame)、grac 状态(Shield)与主题色。",
+    "tags": ["web-legacy", "layout", "header"],
+    "complexity": "simple",
+    "functions": {"AppHeader": {"summary": "渲染 Logo、t 函数文案与 streak/grace 图标指示。", "tags": ["header", "i18n"], "complexity": "simple"}}
+  },
+  "_archive/web-legacy/src/components/AppShell.tsx": {
+    "summary": "应用外壳布局：含 HeaderTabs/BottomNav/OverlayContext、动态加载子 Tab、StarfieldBackground；含 OverlayWrapper 与 FabButton。",
+    "tags": ["web-legacy", "layout", "shell"],
+    "complexity": "complex",
+    "functions": {
+      "AppShell": {"summary": "主布局容器，组装 HeaderTabs/BottomNav/Overlay 与动态 Tab 子视图。", "tags": ["layout", "shell"], "complexity": "moderate"},
+      "OverlayWrapper": {"summary": "覆盖层容器，基于 OverlayContext 渲染弹窗。", "tags": ["overlay", "layout"], "complexity": "simple"},
+      "FabButton": {"summary": "浮动操作按钮组件。", "tags": ["fab", "ui"], "complexity": "simple"}
+    }
+  },
+  "_archive/web-legacy/src/components/BottomNav.tsx": {
+    "summary": "底部导航栏：按 activeTab 切换 Home/Fasting/Meditate/Exercise/Settings 五个 Tab。",
+    "tags": ["web-legacy", "layout", "navigation"],
+    "complexity": "simple",
+    "functions": {"BottomNav": {"summary": "渲染底部 Tab 按钮组并切换 store.activeTab。", "tags": ["navigation"], "complexity": "simple"}}
+  },
+  "_archive/web-legacy/src/components/CheckinDetailPage.tsx": {
+    "summary": "打卡详情页：展示单条 CheckinEntry 的日期、streak、体重、喝水、饮食、grace、完成情况与未完成原因。",
+    "tags": ["web-legacy", "checkin", "detail"],
+    "complexity": "moderate",
+    "functions": {"CheckinDetailPage": {"summary": "从 store 中按日期取 checkin 详情并用 Lucide 图标渲染各维度。", "tags": ["checkin", "detail"], "complexity": "moderate"}}
+  },
+  "_archive/web-legacy/src/components/CheckinPage.tsx": {
+    "summary": "综合打卡页：今日食物/计划任务/喝水/体重/grace/笔记一次性提交，含热量汇总、任务完成度校验(parseCheckinNote)与提交逻辑。",
+    "tags": ["web-legacy", "checkin", "form"],
+    "complexity": "complex",
+    "functions": {
+      "CheckinPage": {"summary": "今日打卡表单：食物/体重/喝水/任务勾选/笔记提交，调用 submitCheckin。", "tags": ["checkin", "form"], "complexity": "complex"},
+      "parseExistingNote": {"summary": "解析已有打卡 note JSON 恢复表单初始值。", "tags": ["checkin", "parse"], "complexity": "simple"}
+    }
+  },
+  "_archive/web-legacy/src/components/CheckinStatsModal.tsx": {
+    "summary": "打卡统计弹窗：展示最长连续天数(computeLongestStreak)、日历热力图(CalendarGrid)与打卡日历。",
+    "tags": ["web-legacy", "checkin", "stats", "modal"],
+    "complexity": "moderate",
+    "functions": {"CheckinStatsModal": {"summary": "渲染 streak 摘要与 CalendarGrid 日历热力图。", "tags": ["checkin", "stats"], "complexity": "moderate"}}
+  },
+  "_archive/web-legacy/src/components/DateRangePickerModal.tsx": {
+    "summary": "日期范围选择弹窗：月历翻页(上月/下月)，选择起止日期，用于打卡/计划筛选。",
+    "tags": ["web-legacy", "date", "picker", "modal"],
+    "complexity": "moderate",
+    "functions": {"DateRangePickerModal": {"summary": "日历月历翻页 + 起止日期选择回调。", "tags": ["date", "picker"], "complexity": "moderate"}}
+  },
+  "_archive/web-legacy/src/components/ExerciseHistoryPage.tsx": {
+    "summary": "运动历史页：展示运动详情卡片(含配速 formatPage)与高德地图轨迹(DetailCard)。",
+    "tags": ["web-legacy", "exercise", "history", "map"],
+    "complexity": "moderate",
+    "functions": {
+      "ExerciseHistoryPage": {"summary": "展示运动记录列表与所选记录的详情。", "tags": ["exercise", "history"], "complexity": "moderate"},
+      "DetailCard": {"summary": "单条运动详情卡片，含地图轨迹与配速。", "tags": ["exercise", "map"], "complexity": "moderate"}
+    }
+  },
+  "_archive/web-legacy/src/components/ExerciseTab.tsx": {
+    "summary": "运动 Tab：按肌群分组(SPORT_GROUPS)列出项目，支持折叠展开，跳转运动世界页(LinkWorldBtn)。",
+    "tags": ["web-legacy", "exercise", "tab"],
+    "complexity": "moderate",
+    "functions": {"ExerciseTab": {"summary": "按 SPORT_GROUPS 渲染运动类型列表与跳转链接。", "tags": ["exercise", "ui"], "complexity": "moderate"}}
+  },
+  "_archive/web-legacy/src/components/FastHistoryPage.tsx": {
+    "summary": "禁食历史页：列出禁食记录及日期、时长与状态标签。",
+    "tags": ["web-legacy", "fasting", "history"],
+    "complexity": "simple",
+    "functions": {"FastHistoryPage": {"summary": "渲染 fastingHistory 列表与徽章样式。", "tags": ["fasting", "list"], "complexity": "simple"}}
+  },
+  "_archive/web-legacy/src/components/FastingTab.tsx": {
+    "summary": "禁食 Tab：含开始/结束禁食、计时器、热量消耗(Flame)、体重趋势、成就(Trophy)与统计卡片。",
+    "tags": ["web-legacy", "fasting", "tab"],
+    "complexity": "moderate",
+    "functions": {"FastingTab": {"summary": "禁食计时器面板：开始/暂停/结束禁食与统计。", "tags": ["fasting", "timer"], "complexity": "moderate"}}
+  },
+  "_archive/web-legacy/src/components/FoodLogPage.tsx": {
+    "summary": "饮食记录页：展示今日食物日志、热量汇总、食物搜索(useFoodSearch)与 FOOD_ICON_MAP 图标。",
+    "tags": ["web-legacy", "food", "log", "search"],
+    "complexity": "moderate",
+    "functions": {"FoodLogPage": {"summary": "展示 getTodayFoodLog 食物列表与热量合计，含搜索入口。", "tags": ["food", "search"], "complexity": "moderate"}}
+  },
+  "_archive/web-legacy/src/components/GlobalMapPage.tsx": {
+    "summary": "全球用户地图页：AmapContainer 渲染 GLOBAL_USERS 分布与排行榜(LeaderboardPage)，含 hashSeed 伪随机位置。",
+    "tags": ["web-legacy", "map", "global-pulse", "leaderboard"],
+    "complexity": "moderate",
+    "functions": {
+      "GlobalMapPage": {"summary": "渲染全球用户地图与统计卡片。", "tags": ["map", "global"], "complexity": "moderate"},
+      "LeaderboardPage": {"summary": "渲染全球用户排行榜列表。", "tags": ["leaderboard"], "complexity": "simple"}
+    }
+  },
+  "_archive/web-legacy/src/components/GracePage.tsx": {
+    "summary": "Grace(回向/宽限)页：展示本月 grace 次数、剩余次数(getRemainingGrace/isGraceAvailable)，用回向打卡补签。",
+    "tags": ["web-legacy", "grace", "checkin"],
+    "complexity": "moderate",
+    "functions": {"GracePage": {"summary": "展示 grace 余额与补签 UI，调用 grace 打卡。", "tags": ["grace", "checkin"], "complexity": "moderate"}}
+  },
+  "_archive/web-legacy/src/components/HabitsTab.tsx": {
+    "summary": "习惯 Tab：习惯列表(打卡/编辑/删除/铃声)、日历热力图(HabitCalendarModal)、状态流转。",
+    "tags": ["web-legacy", "habit", "tab"],
+    "complexity": "complex",
+    "functions": {
+      "HabitsTab": {"summary": "习惯打卡列表与操作(编辑/暂停/放弃/提醒)。", "tags": ["habit", "crub"], "complexity": "moderate"},
+      "HabitCalendarModal": {"summary": "习惯日历弹窗，展示打卡热力图。", "tags": ["habit", "calendar"], "complexity": "moderate"}
+    }
+  },
+  "_archive/web-legacy/src/components/HeaderTabs.tsx": {
+    "summary": "顶部 Tab 条：Home/Checklist/Target/Sparkles 四个主导航图标按钮。",
+    "tags": ["web-legacy", "layout", "navigation"],
+    "complexity": "simple",
+    "functions": {"HeaderTabs": {"summary": "渲染顶部图标式 Tab 导航。", "tags": ["navigation"], "complexity": "simple"}}
+  },
+  "_archive/web-legacy/src/components/HistoryPage.tsx": {
+    "summary": "历史记录页：展示打卡历史列表，含 grace 标记与 parseCheckinNote 解析结果，跳转详情。",
+    "tags": ["web-legacy", "checkin", "history"],
+    "complexity": "moderate",
+    "functions": {"HistoryPage": {"summary": "渲染 checkinHistory 列表与详情链接。", "tags": ["checkin", "list"], "complexity": "moderate"}}
+  },
+  "_archive/web-legacy/src/components/HomeTab.tsx": {
+    "summary": "首页 Tab：综合仪表盘，含 streak 摘要、今日热量/体重/喝水、打卡入口、食物搜索、计划入口、CheckinStatsModal。",
+    "tags": ["web-legacy", "home", "tab", "dashboard"],
+    "complexity": "complex",
+    "functions": {"HomeTab": {"summary": "首页仪表盘：streak/热量/体重/喝水/计划卡片与快捷打卡。", "tags": ["home", "dashboard"], "complexity": "complex"}}
+  },
+  "_archive/web-legacy/src/components/ItemHeatmap.tsx": {
+    "summary": "计划任务热力图组件(memo)：按计划任务打卡日期渲染格子与悬浮提示。",
+    "tags": ["web-legacy", "plan", "heatmap", "memo"],
+    "complexity": "simple"
+  },
+  "_archive/web-legacy/src/components/ManagerPanelShared.tsx": {
+    "summary": "管理面板共享工具：ConfirmDialog 二次确认弹窗 + useWebDragReorder 拖拽排序 Hook。",
+    "tags": ["web-legacy", "shared", "drag", "dialog"],
+    "complexity": "simple",
+    "functions": {
+      "ConfirmDialog": {"summary": "确认/取消二次确认对话框。", "tags": ["dialog", "confirm"], "complexity": "simple"},
+      "useWebDragReorder": {"summary": "拖拽排序 Hook，用于面板项序重排。", "tags": ["drag", "reorder"], "complexity": "simple"}
+    }
+  },
+  "_archive/web-legacy/src/components/MedHistoryPage.tsx": {
+    "summary": "冥想历史页：展示冥想记录列表及时长徽章。",
+    "tags": ["web-legacy", "meditation", "history"],
+    "complexity": "simple",
+    "functions": {"MedHistoryPage": {"summary": "渲染 medHistory 列表与统计徽章。", "tags": ["meditation", "list"], "complexity": "simple"}}
+  },
+  "_archive/web-legacy/src/components/MeditateTab.tsx": {
+    "summary": "冥想 Tab：含今日冥想时长、useAudio 音频控制、开始冥想与统计卡片。",
+    "tags": ["web-legacy", "meditation", "tab", "audio"],
+    "complexity": "moderate",
+    "functions": {
+      "MeditateTab": {"summary": "冥想面板：计时/音频/今日时长统计。", "tags": ["meditation", "audio"], "complexity": "moderate"},
+      "useAudio": {"summary": "音频播放控制 Hook(播放/暂停/进度)。", "tags": ["audio", "hook"], "complexity": "moderate"}
+    }
+  },
+  "_archive/web-legacy/src/components/MoodManagerPanel.tsx": {
+    "summary": "心情管理面板：自定义心情增删改、排序(ensureOrderContains/drag-reorder)。",
+    "tags": ["web-legacy", "mood", "manager"]
+  },
+  "_archive/web-legacy/src/components/PlanCreatePage.tsx": {
+    "summary": "计划创建页：计划名/目标/起止日期/任务动态列表(FrequencyInput)、优先级、频率、表单校验(validatePlanForm)。",
+    "tags": ["web-legacy", "plan", "create", "form"],
+    "complexity": "complex",
+    "functions": {
+      "PlanCreatePage": {"summary": "计划创建表单：基本信息 + 任务列表(DateRangePickerModal)。", "tags": ["plan", "form"], "complexity": "complex"},
+      "FrequencyInput": {"summary": "任务频率输入子组件(每日/每周/自定义)。", "tags": ["plan", "frequency"], "complexity": "moderate"}
+    }
+  },
+  "_archive/web-legacy/src/components/PlanDetailContent.tsx": {
+    "summary": "计划详情内容：任务列表/进度(computeItemProgress)/状态(PLAN_STATUS_COLORS)/延期(isPlanDelayed)/打卡(ItemHeatmap)/删除(canDeletePlan)。",
+    "tags": ["web-legacy", "plan", "detail"],
+    "complexity": "complex",
+    "functions": {"PlanDetailContent": {"summary": "计划详情主任务列表，含状态流转、进度条、热力图与子项操作。", "tags": ["plan", "detail"], "complexity": "complex"}}
+  },
+  "_archive/web-legacy/src/components/PlanDetailPage.tsx": {
+    "summary": "计划详情页壳：薄封装，注入 THEMES 与 store 状态后委托 PlanDetailContent 渲染。",
+    "tags": ["web-legacy", "plan", "page"],
+    "complexity": "simple",
+    "functions": {"PlanDetailPage": {"summary": "计划详情页入口，连接 store 并渲染 PlanDetailContent。", "tags": ["plan", "shell"], "complexity": "simple"}}
+  },
+  "_archive/web-legacy/src/components/PlanHistoryPage.tsx": {
+    "summary": "计划历史页：列出已完成/取消的计划(getHistoryPlans)，按 PLAN_STATUS_COLORS 着色。",
+    "tags": ["web-legacy", "plan", "history"],
+    "complexity": "simple",
+    "functions": {"PlanHistoryPage": {"summary": "渲染历史计划列表，含状态徽章与进度。", "tags": ["plan", "list"], "complexity": "simple"}}
+  },
+  "_archive/web-legacy/src/components/PlanTab.tsx": {
+    "summary": "计划 Tab：展示当前活动计划(getActivePlan)卡片，跳转计划详情(PlanDetailContent)。",
+    "tags": ["web-legacy", "plan", "tab"],
+    "complexity": "simple",
+    "functions": {"PlanTab": {"summary": "渲染活动计划摘要卡片与操作入口。", "tags": ["plan", "summary"], "complexity": "simple"}}
+  },
+  "_archive/web-legacy/src/components/PlanTodoListModal.tsx": {
+    "summary": "计划每日待办弹窗：展示今日任务(getTodayItems)、状态(getTodoItemStatus)、统计(computeDailyTodoStats)与勾选。",
+    "tags": ["web-legacy", "plan", "todo", "modal"],
+    "complexity": "simple",
+    "functions": {"PlanTodoListModal": {"summary": "渲染今日计划任务列表与完成度统计。", "tags": ["plan", "todo"], "complexity": "simple"}}
+  }
+}

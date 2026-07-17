@@ -1,0 +1,49 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": ".trellis/spec/core/backend/database-guidelines.md",
+      "language": "markdown",
+      "sizeLines": 88,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/spec/core/backend/directory-structure.md",
+      "language": "markdown",
+      "sizeLines": 96,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/spec/core/backend/error-handling.md",
+      "language": "markdown",
+      "sizeLines": 78,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/spec/core/backend/index.md",
+      "language": "markdown",
+      "sizeLines": 38,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/spec/core/backend/logging-guidelines.md",
+      "language": "markdown",
+      "sizeLines": 83,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/spec/core/backend/quality-guidelines.md",
+      "language": "markdown",
+      "sizeLines": 111,
+      "fileCategory": "docs"
+    }
+  ],
+  "batchImportData": {
+    ".trellis/spec/core/backend/database-guidelines.md": [],
+    ".trellis/spec/core/backend/directory-structure.md": [],
+    ".trellis/spec/core/backend/error-handling.md": [],
+    ".trellis/spec/core/backend/index.md": [],
+    ".trellis/spec/core/backend/logging-guidelines.md": [],
+    ".trellis/spec/core/backend/quality-guidelines.md": []
+  }
+}

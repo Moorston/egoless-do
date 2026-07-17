@@ -1,0 +1,339 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 7,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": ".trellis/spec/core/frontend/component-guidelines.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 21,
+      "nonEmptyLines": 15,
+      "sections": [
+        {
+          "heading": "Component Guidelines",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Note",
+          "level": 2,
+          "line": 7
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 2
+      }
+    },
+    {
+      "path": ".trellis/spec/core/frontend/directory-structure.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 68,
+      "nonEmptyLines": 50,
+      "sections": [
+        {
+          "heading": "Directory Structure",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Directory Layout",
+          "level": 2,
+          "line": 20
+        },
+        {
+          "heading": "Module Responsibilities",
+          "level": 2,
+          "line": 40
+        },
+        {
+          "heading": "Naming Conventions",
+          "level": 2,
+          "line": 52
+        },
+        {
+          "heading": "Examples",
+          "level": 2,
+          "line": 64
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 6
+      }
+    },
+    {
+      "path": ".trellis/spec/core/frontend/hook-guidelines.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 20,
+      "nonEmptyLines": 14,
+      "sections": [
+        {
+          "heading": "Hook Guidelines",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Note",
+          "level": 2,
+          "line": 7
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 2
+      }
+    },
+    {
+      "path": ".trellis/spec/core/frontend/index.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 39,
+      "nonEmptyLines": 25,
+      "sections": [
+        {
+          "heading": "Frontend Development Guidelines",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Guidelines Summary",
+          "level": 2,
+          "line": 13
+        },
+        {
+          "heading": "How to Fill These Guidelines",
+          "level": 2,
+          "line": 26
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 4
+      }
+    },
+    {
+      "path": ".trellis/spec/core/frontend/quality-guidelines.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 111,
+      "nonEmptyLines": 81,
+      "sections": [
+        {
+          "heading": "Quality Guidelines",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Forbidden Patterns",
+          "level": 2,
+          "line": 13
+        },
+        {
+          "heading": "Platform Coupling",
+          "level": 3,
+          "line": 15
+        },
+        {
+          "heading": "Impurity",
+          "level": 3,
+          "line": 21
+        },
+        {
+          "heading": "Type Safety",
+          "level": 3,
+          "line": 27
+        },
+        {
+          "heading": "Required Patterns",
+          "level": 2,
+          "line": 34
+        },
+        {
+          "heading": "Pure Functions (business/)",
+          "level": 3,
+          "line": 36
+        },
+        {
+          "heading": "Slice Factories (store/)",
+          "level": 3,
+          "line": 54
+        },
+        {
+          "heading": "Type Exports",
+          "level": 3,
+          "line": 62
+        },
+        {
+          "heading": "Testing",
+          "level": 2,
+          "line": 74
+        },
+        {
+          "heading": "Code Review Checklist",
+          "level": 2,
+          "line": 94
+        },
+        {
+          "heading": "Examples",
+          "level": 2,
+          "line": 107
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 13
+      }
+    },
+    {
+      "path": ".trellis/spec/core/frontend/state-management.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 107,
+      "nonEmptyLines": 80,
+      "sections": [
+        {
+          "heading": "State Management",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Slice Factory Pattern",
+          "level": 2,
+          "line": 24
+        },
+        {
+          "heading": "Rules:",
+          "level": 3,
+          "line": 48
+        },
+        {
+          "heading": "Slice Contract (Types)",
+          "level": 2,
+          "line": 59
+        },
+        {
+          "heading": "Entity Sync Flow (Slice → Adapter)",
+          "level": 2,
+          "line": 78
+        },
+        {
+          "heading": "Forbidden Patterns",
+          "level": 2,
+          "line": 92
+        },
+        {
+          "heading": "Examples",
+          "level": 2,
+          "line": 102
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 8
+      }
+    },
+    {
+      "path": ".trellis/spec/core/frontend/type-safety.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 127,
+      "nonEmptyLines": 92,
+      "sections": [
+        {
+          "heading": "Type Safety",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Type Export Structure",
+          "level": 2,
+          "line": 13
+        },
+        {
+          "heading": "Type Location Rules",
+          "level": 2,
+          "line": 38
+        },
+        {
+          "heading": "Discriminated Unions",
+          "level": 2,
+          "line": 50
+        },
+        {
+          "heading": "Slice Types",
+          "level": 2,
+          "line": 78
+        },
+        {
+          "heading": "Zod Validation at Sync Boundary",
+          "level": 2,
+          "line": 95
+        },
+        {
+          "heading": "Forbidden Patterns",
+          "level": 2,
+          "line": 111
+        },
+        {
+          "heading": "Examples",
+          "level": 2,
+          "line": 121
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 9
+      }
+    }
+  ]
+}

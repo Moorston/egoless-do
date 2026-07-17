@@ -1,0 +1,275 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 3,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/implement.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 42,
+      "nonEmptyLines": 32,
+      "sections": [
+        {
+          "heading": "PB 创建 custom_food_presets collection — 执行计划",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "执行顺序清单",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "Step 1: 创建 PB 初始化 hook",
+          "level": 3,
+          "line": 5
+        },
+        {
+          "heading": "Step 2: 创建备用脚本",
+          "level": 3,
+          "line": 11
+        },
+        {
+          "heading": "Step 3: 验证",
+          "level": 3,
+          "line": 16
+        },
+        {
+          "heading": "验证命令",
+          "level": 2,
+          "line": 21
+        },
+        {
+          "heading": "使用方式",
+          "level": 2,
+          "line": 27
+        },
+        {
+          "heading": "方式 A：自动创建（推荐）",
+          "level": 3,
+          "line": 29
+        },
+        {
+          "heading": "方式 B：手动脚本",
+          "level": 3,
+          "line": 33
+        },
+        {
+          "heading": "方式 C：Admin UI",
+          "level": 3,
+          "line": 38
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 10
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/prd.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 44,
+      "nonEmptyLines": 29,
+      "sections": [
+        {
+          "heading": "PB 创建 custom_food_presets collection",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Goal",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "Background",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Requirements",
+          "level": 2,
+          "line": 14
+        },
+        {
+          "heading": "R1: 在 PB 实例中创建 `custom_food_presets` collection",
+          "level": 3,
+          "line": 16
+        },
+        {
+          "heading": "R2: 提供创建脚本或文档",
+          "level": 3,
+          "line": 21
+        },
+        {
+          "heading": "Acceptance Criteria",
+          "level": 2,
+          "line": 24
+        },
+        {
+          "heading": "Out of Scope",
+          "level": 2,
+          "line": 30
+        },
+        {
+          "heading": "Open Questions (已解决)",
+          "level": 2,
+          "line": 35
+        },
+        {
+          "heading": "设计要点",
+          "level": 2,
+          "line": 39
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 10
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/task.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 26,
+      "nonEmptyLines": 26,
+      "sections": [
+        {
+          "heading": "id",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "title",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "status",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dev_type",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "scope",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "package",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "priority",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "creator",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "assignee",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "createdAt",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "completedAt",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "branch",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "base_branch",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "worktree_path",
+          "level": 1,
+          "line": 17
+        },
+        {
+          "heading": "commit",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "pr_url",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "subtasks",
+          "level": 1,
+          "line": 20
+        },
+        {
+          "heading": "children",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "parent",
+          "level": 1,
+          "line": 22
+        },
+        {
+          "heading": "relatedFiles",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "notes",
+          "level": 1,
+          "line": 24
+        },
+        {
+          "heading": "meta",
+          "level": 1,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    }
+  ]
+}

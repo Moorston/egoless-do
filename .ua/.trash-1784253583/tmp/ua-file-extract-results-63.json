@@ -1,0 +1,418 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 25,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "apps/mobile/android/app/debug.keystore",
+      "language": "keystore",
+      "fileCategory": "code",
+      "totalLines": 9,
+      "nonEmptyLines": 9,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/proguard-rules.pro",
+      "language": "pro",
+      "fileCategory": "code",
+      "totalLines": 14,
+      "nonEmptyLines": 12,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/debug/AndroidManifest.xml",
+      "language": "xml",
+      "fileCategory": "config",
+      "totalLines": 7,
+      "nonEmptyLines": 5,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/debugOptimized/AndroidManifest.xml",
+      "language": "xml",
+      "fileCategory": "config",
+      "totalLines": 7,
+      "nonEmptyLines": 5,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/AndroidManifest.xml",
+      "language": "xml",
+      "fileCategory": "config",
+      "totalLines": 40,
+      "nonEmptyLines": 40,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt",
+      "language": "kotlin",
+      "fileCategory": "code",
+      "totalLines": 61,
+      "nonEmptyLines": 53,
+      "functions": [
+        {
+          "name": "onCreate",
+          "startLine": 14,
+          "endLine": 20,
+          "params": [
+            "savedInstanceState"
+          ]
+        },
+        {
+          "name": "getMainComponentName",
+          "startLine": 26,
+          "endLine": 26,
+          "params": []
+        },
+        {
+          "name": "createReactActivityDelegate",
+          "startLine": 32,
+          "endLine": 41,
+          "params": []
+        },
+        {
+          "name": "invokeDefaultOnBackPressed",
+          "startLine": 48,
+          "endLine": 60,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "MainActivity",
+          "startLine": 13,
+          "endLine": 61,
+          "methods": [
+            "onCreate",
+            "getMainComponentName",
+            "createReactActivityDelegate",
+            "invokeDefaultOnBackPressed"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "onCreate",
+          "line": 14,
+          "isDefault": false
+        },
+        {
+          "name": "getMainComponentName",
+          "line": 26,
+          "isDefault": false
+        },
+        {
+          "name": "createReactActivityDelegate",
+          "line": 32,
+          "isDefault": false
+        },
+        {
+          "name": "invokeDefaultOnBackPressed",
+          "line": 48,
+          "isDefault": false
+        },
+        {
+          "name": "MainActivity",
+          "line": 13,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "onCreate",
+          "callee": "setTheme",
+          "lineNumber": 18
+        },
+        {
+          "caller": "onCreate",
+          "callee": "onCreate",
+          "lineNumber": 19
+        },
+        {
+          "caller": "createReactActivityDelegate",
+          "callee": "ReactActivityDelegateWrapper",
+          "lineNumber": 33
+        },
+        {
+          "caller": "invokeDefaultOnBackPressed",
+          "callee": "invokeDefaultOnBackPressed",
+          "lineNumber": 52
+        },
+        {
+          "caller": "invokeDefaultOnBackPressed",
+          "callee": "invokeDefaultOnBackPressed",
+          "lineNumber": 59
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 5,
+        "functionCount": 4,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt",
+      "language": "kotlin",
+      "fileCategory": "code",
+      "totalLines": 56,
+      "nonEmptyLines": 45,
+      "functions": [
+        {
+          "name": "onCreate",
+          "startLine": 41,
+          "endLine": 50,
+          "params": []
+        },
+        {
+          "name": "onConfigurationChanged",
+          "startLine": 52,
+          "endLine": 55,
+          "params": [
+            "newConfig"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "MainApplication",
+          "startLine": 19,
+          "endLine": 56,
+          "methods": [
+            "onCreate",
+            "onConfigurationChanged"
+          ],
+          "properties": [
+            "reactNativeHost",
+            "reactHost"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "reactNativeHost",
+          "line": 21,
+          "isDefault": false
+        },
+        {
+          "name": "reactHost",
+          "line": 38,
+          "isDefault": false
+        },
+        {
+          "name": "onCreate",
+          "line": 41,
+          "isDefault": false
+        },
+        {
+          "name": "onConfigurationChanged",
+          "line": 52,
+          "isDefault": false
+        },
+        {
+          "name": "MainApplication",
+          "line": 19,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getPackages",
+          "callee": "apply",
+          "lineNumber": 25
+        },
+        {
+          "caller": "getPackages",
+          "callee": "PackageList",
+          "lineNumber": 25
+        },
+        {
+          "caller": "onCreate",
+          "callee": "onCreate",
+          "lineNumber": 42
+        },
+        {
+          "caller": "onCreate",
+          "callee": "valueOf",
+          "lineNumber": 44
+        },
+        {
+          "caller": "onCreate",
+          "callee": "uppercase",
+          "lineNumber": 44
+        },
+        {
+          "caller": "onCreate",
+          "callee": "loadReactNative",
+          "lineNumber": 48
+        },
+        {
+          "caller": "onCreate",
+          "callee": "onApplicationCreate",
+          "lineNumber": 49
+        },
+        {
+          "caller": "onConfigurationChanged",
+          "callee": "onConfigurationChanged",
+          "lineNumber": 53
+        },
+        {
+          "caller": "onConfigurationChanged",
+          "callee": "onConfigurationChanged",
+          "lineNumber": 54
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 5,
+        "functionCount": 2,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/drawable/ic_launcher_background.xml",
+      "language": "xml",
+      "fileCategory": "config",
+      "totalLines": 6,
+      "nonEmptyLines": 6,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/drawable/rn_edit_text_material.xml",
+      "language": "xml",
+      "fileCategory": "config",
+      "totalLines": 37,
+      "nonEmptyLines": 30,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml",
+      "language": "xml",
+      "fileCategory": "config",
+      "totalLines": 5,
+      "nonEmptyLines": 5,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
+      "language": "xml",
+      "fileCategory": "config",
+      "totalLines": 5,
+      "nonEmptyLines": 5,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.webp",
+      "language": "webp",
+      "fileCategory": "code",
+      "totalLines": 50,
+      "nonEmptyLines": 50,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher_round.webp",
+      "language": "webp",
+      "fileCategory": "code",
+      "totalLines": 22,
+      "nonEmptyLines": 22,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher.webp",
+      "language": "webp",
+      "fileCategory": "code",
+      "totalLines": 15,
+      "nonEmptyLines": 15,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.webp",
+      "language": "webp",
+      "fileCategory": "code",
+      "totalLines": 6,
+      "nonEmptyLines": 6,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher_round.webp",
+      "language": "webp",
+      "fileCategory": "code",
+      "totalLines": 13,
+      "nonEmptyLines": 13,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher.webp",
+      "language": "webp",
+      "fileCategory": "code",
+      "totalLines": 3,
+      "nonEmptyLines": 3,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.webp",
+      "language": "webp",
+      "fileCategory": "code",
+      "totalLines": 39,
+      "nonEmptyLines": 39,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp",
+      "language": "webp",
+      "fileCategory": "code",
+      "totalLines": 61,
+      "nonEmptyLines": 61,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher.webp",
+      "language": "webp",
+      "fileCategory": "code",
+      "totalLines": 9,
+      "nonEmptyLines": 9,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.webp",
+      "language": "webp",
+      "fileCategory": "code",
+      "totalLines": 71,
+      "nonEmptyLines": 70,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.webp",
+      "language": "webp",
+      "fileCategory": "code",
+      "totalLines": 107,
+      "nonEmptyLines": 107,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.webp",
+      "language": "webp",
+      "fileCategory": "code",
+      "totalLines": 36,
+      "nonEmptyLines": 36,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.webp",
+      "language": "webp",
+      "fileCategory": "code",
+      "totalLines": 162,
+      "nonEmptyLines": 152,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp",
+      "language": "webp",
+      "fileCategory": "code",
+      "totalLines": 59,
+      "nonEmptyLines": 59,
+      "metrics": {}
+    }
+  ]
+}

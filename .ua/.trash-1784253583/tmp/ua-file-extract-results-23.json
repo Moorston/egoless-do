@@ -1,0 +1,2858 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 19,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "_archive/web-legacy/src/app/api/_auth.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 77,
+      "nonEmptyLines": 66,
+      "functions": [
+        {
+          "name": "base64UrlDecode",
+          "startLine": 5,
+          "endLine": 9,
+          "params": [
+            "str"
+          ]
+        },
+        {
+          "name": "jwtPayload",
+          "startLine": 11,
+          "endLine": 19,
+          "params": [
+            "token"
+          ]
+        },
+        {
+          "name": "jwtExp",
+          "startLine": 21,
+          "endLine": 24,
+          "params": [
+            "token"
+          ]
+        },
+        {
+          "name": "isBlacklisted",
+          "startLine": 28,
+          "endLine": 37,
+          "params": [
+            "token"
+          ]
+        },
+        {
+          "name": "verifyAuth",
+          "startLine": 43,
+          "endLine": 77,
+          "params": [
+            "authHeader"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "jwtPayload",
+          "line": 11,
+          "isDefault": false
+        },
+        {
+          "name": "jwtExp",
+          "line": 21,
+          "isDefault": false
+        },
+        {
+          "name": "isBlacklisted",
+          "line": 28,
+          "isDefault": false
+        },
+        {
+          "name": "verifyAuth",
+          "line": 43,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "base64UrlDecode",
+          "callee": "str.replace(/-/g, '+').replace",
+          "lineNumber": 6
+        },
+        {
+          "caller": "base64UrlDecode",
+          "callee": "str.replace",
+          "lineNumber": 6
+        },
+        {
+          "caller": "base64UrlDecode",
+          "callee": "'='.repeat",
+          "lineNumber": 7
+        },
+        {
+          "caller": "base64UrlDecode",
+          "callee": "atob",
+          "lineNumber": 8
+        },
+        {
+          "caller": "jwtPayload",
+          "callee": "token.split",
+          "lineNumber": 13
+        },
+        {
+          "caller": "jwtPayload",
+          "callee": "JSON.parse",
+          "lineNumber": 15
+        },
+        {
+          "caller": "jwtPayload",
+          "callee": "base64UrlDecode",
+          "lineNumber": 15
+        },
+        {
+          "caller": "jwtExp",
+          "callee": "jwtPayload",
+          "lineNumber": 22
+        },
+        {
+          "caller": "isBlacklisted",
+          "callee": "db.prepare('SELECT 1 FROM token_blacklist WHERE token = ? LIMIT 1').get",
+          "lineNumber": 29
+        },
+        {
+          "caller": "isBlacklisted",
+          "callee": "db.prepare",
+          "lineNumber": 29
+        },
+        {
+          "caller": "isBlacklisted",
+          "callee": "Date.now",
+          "lineNumber": 31
+        },
+        {
+          "caller": "isBlacklisted",
+          "callee": "db.prepare('DELETE FROM token_blacklist WHERE expires_at < ?').run",
+          "lineNumber": 34
+        },
+        {
+          "caller": "isBlacklisted",
+          "callee": "db.prepare",
+          "lineNumber": 34
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "authHeader?.startsWith",
+          "lineNumber": 44
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "authHeader.slice",
+          "lineNumber": 45
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "jwtPayload",
+          "lineNumber": 48
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "isBlacklisted",
+          "lineNumber": 53
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "getPb",
+          "lineNumber": 57
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "pb.authStore.save",
+          "lineNumber": 58
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "pb.collection('users').authRefresh",
+          "lineNumber": 59
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "pb.collection",
+          "lineNumber": 59
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "pb.collection('users').getOne",
+          "lineNumber": 65
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "pb.collection",
+          "lineNumber": 65
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 4,
+        "functionCount": 5,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/_db.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 32,
+      "nonEmptyLines": 26,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/_errors.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 9,
+      "nonEmptyLines": 9,
+      "functions": [
+        {
+          "name": "sanitizeError",
+          "startLine": 4,
+          "endLine": 9,
+          "params": [
+            "err",
+            "fallback"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "sanitizeError",
+          "line": 4,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/_pb.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 72,
+      "nonEmptyLines": 61,
+      "functions": [
+        {
+          "name": "getPb",
+          "startLine": 7,
+          "endLine": 11,
+          "params": []
+        },
+        {
+          "name": "authenticateAdmin",
+          "startLine": 19,
+          "endLine": 30,
+          "params": []
+        },
+        {
+          "name": "getAdminPb",
+          "startLine": 32,
+          "endLine": 59,
+          "params": []
+        },
+        {
+          "name": "escapeFilter",
+          "startLine": 62,
+          "endLine": 70,
+          "params": [
+            "value"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "getPb",
+          "line": 7,
+          "isDefault": false
+        },
+        {
+          "name": "getAdminPb",
+          "line": 32,
+          "isDefault": false
+        },
+        {
+          "name": "escapeFilter",
+          "line": 62,
+          "isDefault": false
+        },
+        {
+          "name": "PocketBase",
+          "line": 72,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getPb",
+          "callee": "pb.autoCancellation",
+          "lineNumber": 9
+        },
+        {
+          "caller": "authenticateAdmin",
+          "callee": "getPb",
+          "lineNumber": 20
+        },
+        {
+          "caller": "authenticateAdmin",
+          "callee": "pb.collection('_superusers').authWithPassword",
+          "lineNumber": 28
+        },
+        {
+          "caller": "authenticateAdmin",
+          "callee": "pb.collection",
+          "lineNumber": 28
+        },
+        {
+          "caller": "getAdminPb",
+          "callee": "Date.now",
+          "lineNumber": 33
+        },
+        {
+          "caller": "getAdminPb",
+          "callee": "getPb",
+          "lineNumber": 35
+        },
+        {
+          "caller": "getAdminPb",
+          "callee": "pb.authStore.save",
+          "lineNumber": 36
+        },
+        {
+          "caller": "getAdminPb",
+          "callee": "authenticateAdmin().then",
+          "lineNumber": 42
+        },
+        {
+          "caller": "getAdminPb",
+          "callee": "authenticateAdmin",
+          "lineNumber": 42
+        },
+        {
+          "caller": "getAdminPb",
+          "callee": "Date.now",
+          "lineNumber": 43
+        },
+        {
+          "caller": "getAdminPb",
+          "callee": "getPb",
+          "lineNumber": 56
+        },
+        {
+          "caller": "getAdminPb",
+          "callee": "adminPb.authStore.save",
+          "lineNumber": 57
+        },
+        {
+          "caller": "escapeFilter",
+          "callee": "value\n    .replace(/\\\\/g, '\\\\\\\\')\n    .replace(/\"/g, '\\\\\"')\n    .replace(/'/g, \"\\\\'\")\n    .replace(/\\(/g, '\\\\(')\n    .replace(/\\)/g, '\\\\)')\n    .replace",
+          "lineNumber": 63
+        },
+        {
+          "caller": "escapeFilter",
+          "callee": "value\n    .replace(/\\\\/g, '\\\\\\\\')\n    .replace(/\"/g, '\\\\\"')\n    .replace(/'/g, \"\\\\'\")\n    .replace(/\\(/g, '\\\\(')\n    .replace",
+          "lineNumber": 63
+        },
+        {
+          "caller": "escapeFilter",
+          "callee": "value\n    .replace(/\\\\/g, '\\\\\\\\')\n    .replace(/\"/g, '\\\\\"')\n    .replace(/'/g, \"\\\\'\")\n    .replace",
+          "lineNumber": 63
+        },
+        {
+          "caller": "escapeFilter",
+          "callee": "value\n    .replace(/\\\\/g, '\\\\\\\\')\n    .replace(/\"/g, '\\\\\"')\n    .replace",
+          "lineNumber": 63
+        },
+        {
+          "caller": "escapeFilter",
+          "callee": "value\n    .replace(/\\\\/g, '\\\\\\\\')\n    .replace",
+          "lineNumber": 63
+        },
+        {
+          "caller": "escapeFilter",
+          "callee": "value\n    .replace",
+          "lineNumber": 63
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 4,
+        "functionCount": 4,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/_rateLimit.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 51,
+      "nonEmptyLines": 45,
+      "functions": [
+        {
+          "name": "getClientIp",
+          "startLine": 4,
+          "endLine": 10,
+          "params": [
+            "req"
+          ]
+        },
+        {
+          "name": "createRateLimiter",
+          "startLine": 24,
+          "endLine": 46,
+          "params": [
+            "maxAttempts",
+            "windowMs"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "getClientIp",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "createRateLimiter",
+          "line": 24,
+          "isDefault": false
+        },
+        {
+          "name": "loginRateLimit",
+          "line": 49,
+          "isDefault": false
+        },
+        {
+          "name": "sendCodeRateLimit",
+          "line": 50,
+          "isDefault": false
+        },
+        {
+          "name": "checkEmailRateLimit",
+          "line": 51,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getClientIp",
+          "callee": "req.headers.get",
+          "lineNumber": 6
+        },
+        {
+          "caller": "getClientIp",
+          "callee": "req.headers.get('x-forwarded-for')?.split(',')[0]?.trim",
+          "lineNumber": 7
+        },
+        {
+          "caller": "getClientIp",
+          "callee": "req.headers.get('x-forwarded-for')?.split",
+          "lineNumber": 7
+        },
+        {
+          "caller": "getClientIp",
+          "callee": "req.headers.get",
+          "lineNumber": 7
+        },
+        {
+          "caller": "createRateLimiter",
+          "callee": "Date.now",
+          "lineNumber": 29
+        },
+        {
+          "caller": "createRateLimiter",
+          "callee": "attempts.delete",
+          "lineNumber": 33
+        },
+        {
+          "caller": "createRateLimiter",
+          "callee": "attempts.get",
+          "lineNumber": 37
+        },
+        {
+          "caller": "createRateLimiter",
+          "callee": "attempts.set",
+          "lineNumber": 39
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 5,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/_validation.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 9,
+      "nonEmptyLines": 8,
+      "functions": [
+        {
+          "name": "validatePassword",
+          "startLine": 3,
+          "endLine": 9,
+          "params": [
+            "pwd"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "validatePassword",
+          "line": 3,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "validatePassword",
+          "callee": "/[a-zA-Z]/.test",
+          "lineNumber": 5
+        },
+        {
+          "caller": "validatePassword",
+          "callee": "/[0-9]/.test",
+          "lineNumber": 6
+        },
+        {
+          "caller": "validatePassword",
+          "callee": "/^[a-zA-Z0-9]+$/.test",
+          "lineNumber": 7
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/auth/check-email/route.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 35,
+      "nonEmptyLines": 31,
+      "functions": [
+        {
+          "name": "POST",
+          "startLine": 8,
+          "endLine": 35,
+          "params": [
+            "req"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "POST",
+          "line": 8,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "POST",
+          "callee": "getClientIp",
+          "lineNumber": 9
+        },
+        {
+          "caller": "POST",
+          "callee": "checkEmailRateLimit",
+          "lineNumber": 10
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 11
+        },
+        {
+          "caller": "POST",
+          "callee": "req.json",
+          "lineNumber": 15
+        },
+        {
+          "caller": "POST",
+          "callee": "/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test",
+          "lineNumber": 16
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 17
+        },
+        {
+          "caller": "POST",
+          "callee": "getAdminPb",
+          "lineNumber": 20
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection('users').getFirstListItem",
+          "lineNumber": 22
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection",
+          "lineNumber": 22
+        },
+        {
+          "caller": "POST",
+          "callee": "escapeFilter",
+          "lineNumber": 22
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 23
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 26
+        },
+        {
+          "caller": "POST",
+          "callee": "log.error",
+          "lineNumber": 28
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 29
+        },
+        {
+          "caller": "POST",
+          "callee": "log.error",
+          "lineNumber": 32
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 33
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/auth/login/route.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 47,
+      "nonEmptyLines": 41,
+      "functions": [
+        {
+          "name": "POST",
+          "startLine": 9,
+          "endLine": 47,
+          "params": [
+            "req"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "POST",
+          "line": 9,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "POST",
+          "callee": "getClientIp",
+          "lineNumber": 10
+        },
+        {
+          "caller": "POST",
+          "callee": "loginRateLimit",
+          "lineNumber": 11
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 12
+        },
+        {
+          "caller": "POST",
+          "callee": "req.json",
+          "lineNumber": 16
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 18
+        },
+        {
+          "caller": "POST",
+          "callee": "/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test",
+          "lineNumber": 20
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 21
+        },
+        {
+          "caller": "POST",
+          "callee": "emailRateLimit",
+          "lineNumber": 25
+        },
+        {
+          "caller": "POST",
+          "callee": "email.toLowerCase",
+          "lineNumber": 25
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 26
+        },
+        {
+          "caller": "POST",
+          "callee": "getPb",
+          "lineNumber": 29
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection('users').authWithPassword",
+          "lineNumber": 30
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection",
+          "lineNumber": 30
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 34
+        },
+        {
+          "caller": "POST",
+          "callee": "new Date(authData.record.created).getTime",
+          "lineNumber": 35
+        },
+        {
+          "caller": "POST",
+          "callee": "Date.now",
+          "lineNumber": 35
+        },
+        {
+          "caller": "POST",
+          "callee": "Date.now",
+          "lineNumber": 38
+        },
+        {
+          "caller": "POST",
+          "callee": "msg.includes",
+          "lineNumber": 42
+        },
+        {
+          "caller": "POST",
+          "callee": "msg.includes",
+          "lineNumber": 42
+        },
+        {
+          "caller": "POST",
+          "callee": "msg.includes",
+          "lineNumber": 42
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 43
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 45
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/auth/logout/route.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 30,
+      "nonEmptyLines": 28,
+      "functions": [
+        {
+          "name": "POST",
+          "startLine": 8,
+          "endLine": 30,
+          "params": [
+            "req"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "POST",
+          "line": 8,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "POST",
+          "callee": "getClientIp",
+          "lineNumber": 9
+        },
+        {
+          "caller": "POST",
+          "callee": "logoutRateLimit",
+          "lineNumber": 10
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 11
+        },
+        {
+          "caller": "POST",
+          "callee": "req.headers.get",
+          "lineNumber": 13
+        },
+        {
+          "caller": "POST",
+          "callee": "verifyAuth",
+          "lineNumber": 14
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 16
+        },
+        {
+          "caller": "POST",
+          "callee": "auth?.startsWith",
+          "lineNumber": 18
+        },
+        {
+          "caller": "POST",
+          "callee": "auth.slice",
+          "lineNumber": 19
+        },
+        {
+          "caller": "POST",
+          "callee": "jwtExp",
+          "lineNumber": 20
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 22
+        },
+        {
+          "caller": "POST",
+          "callee": "db.prepare('INSERT OR IGNORE INTO token_blacklist(token, expires_at) VALUES(?, ?)').run",
+          "lineNumber": 25
+        },
+        {
+          "caller": "POST",
+          "callee": "db.prepare",
+          "lineNumber": 25
+        },
+        {
+          "caller": "POST",
+          "callee": "db.prepare('DELETE FROM token_blacklist WHERE expires_at < ?').run",
+          "lineNumber": 27
+        },
+        {
+          "caller": "POST",
+          "callee": "db.prepare",
+          "lineNumber": 27
+        },
+        {
+          "caller": "POST",
+          "callee": "Date.now",
+          "lineNumber": 27
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 29
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/auth/me/route.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 29,
+      "nonEmptyLines": 26,
+      "functions": [
+        {
+          "name": "GET",
+          "startLine": 8,
+          "endLine": 29,
+          "params": [
+            "req"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "GET",
+          "line": 8,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "GET",
+          "callee": "getClientIp",
+          "lineNumber": 9
+        },
+        {
+          "caller": "GET",
+          "callee": "meRateLimit",
+          "lineNumber": 10
+        },
+        {
+          "caller": "GET",
+          "callee": "NextResponse.json",
+          "lineNumber": 11
+        },
+        {
+          "caller": "GET",
+          "callee": "req.headers.get('authorization')?.slice",
+          "lineNumber": 13
+        },
+        {
+          "caller": "GET",
+          "callee": "req.headers.get",
+          "lineNumber": 13
+        },
+        {
+          "caller": "GET",
+          "callee": "verifyAuth",
+          "lineNumber": 14
+        },
+        {
+          "caller": "GET",
+          "callee": "req.headers.get",
+          "lineNumber": 14
+        },
+        {
+          "caller": "GET",
+          "callee": "NextResponse.json",
+          "lineNumber": 15
+        },
+        {
+          "caller": "GET",
+          "callee": "getPb",
+          "lineNumber": 18
+        },
+        {
+          "caller": "GET",
+          "callee": "pb.authStore.save",
+          "lineNumber": 19
+        },
+        {
+          "caller": "GET",
+          "callee": "pb.collection('users').getOne",
+          "lineNumber": 20
+        },
+        {
+          "caller": "GET",
+          "callee": "pb.collection",
+          "lineNumber": 20
+        },
+        {
+          "caller": "GET",
+          "callee": "NextResponse.json",
+          "lineNumber": 21
+        },
+        {
+          "caller": "GET",
+          "callee": "new Date(user.created).getTime",
+          "lineNumber": 22
+        },
+        {
+          "caller": "GET",
+          "callee": "Date.now",
+          "lineNumber": 22
+        },
+        {
+          "caller": "GET",
+          "callee": "NextResponse.json",
+          "lineNumber": 26
+        },
+        {
+          "caller": "GET",
+          "callee": "NextResponse.json",
+          "lineNumber": 27
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/auth/refresh/route.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 44,
+      "nonEmptyLines": 38,
+      "functions": [
+        {
+          "name": "POST",
+          "startLine": 9,
+          "endLine": 44,
+          "params": [
+            "req"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "POST",
+          "line": 9,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "POST",
+          "callee": "getClientIp",
+          "lineNumber": 10
+        },
+        {
+          "caller": "POST",
+          "callee": "refreshRateLimit",
+          "lineNumber": 11
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 12
+        },
+        {
+          "caller": "POST",
+          "callee": "req.headers.get",
+          "lineNumber": 14
+        },
+        {
+          "caller": "POST",
+          "callee": "auth?.startsWith",
+          "lineNumber": 15
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 16
+        },
+        {
+          "caller": "POST",
+          "callee": "auth.slice",
+          "lineNumber": 18
+        },
+        {
+          "caller": "POST",
+          "callee": "jwtPayload",
+          "lineNumber": 21
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 22
+        },
+        {
+          "caller": "POST",
+          "callee": "isBlacklisted",
+          "lineNumber": 25
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 26
+        },
+        {
+          "caller": "POST",
+          "callee": "getPb",
+          "lineNumber": 31
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.authStore.save",
+          "lineNumber": 32
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection('users').authRefresh",
+          "lineNumber": 33
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection",
+          "lineNumber": 33
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 36
+        },
+        {
+          "caller": "POST",
+          "callee": "Date.now",
+          "lineNumber": 39
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 42
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/auth/register/route.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 73,
+      "nonEmptyLines": 63,
+      "functions": [
+        {
+          "name": "POST",
+          "startLine": 12,
+          "endLine": 73,
+          "params": [
+            "req"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "POST",
+          "line": 12,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "POST",
+          "callee": "getClientIp",
+          "lineNumber": 13
+        },
+        {
+          "caller": "POST",
+          "callee": "registerRateLimit",
+          "lineNumber": 14
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 15
+        },
+        {
+          "caller": "POST",
+          "callee": "req.json",
+          "lineNumber": 19
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 21
+        },
+        {
+          "caller": "POST",
+          "callee": "name.trim",
+          "lineNumber": 23
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 24
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 27
+        },
+        {
+          "caller": "POST",
+          "callee": "/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test",
+          "lineNumber": 29
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 30
+        },
+        {
+          "caller": "POST",
+          "callee": "validatePassword",
+          "lineNumber": 33
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 34
+        },
+        {
+          "caller": "POST",
+          "callee": "db.prepare(\n      'SELECT code, expires_at FROM verification_codes WHERE email = ? ORDER BY created_at DESC LIMIT 1'\n    ).get",
+          "lineNumber": 36
+        },
+        {
+          "caller": "POST",
+          "callee": "db.prepare",
+          "lineNumber": 36
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 40
+        },
+        {
+          "caller": "POST",
+          "callee": "Date.now",
+          "lineNumber": 41
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 41
+        },
+        {
+          "caller": "POST",
+          "callee": "Buffer.from",
+          "lineNumber": 43
+        },
+        {
+          "caller": "POST",
+          "callee": "code.padEnd",
+          "lineNumber": 43
+        },
+        {
+          "caller": "POST",
+          "callee": "Buffer.from",
+          "lineNumber": 44
+        },
+        {
+          "caller": "POST",
+          "callee": "record.code.padEnd",
+          "lineNumber": 44
+        },
+        {
+          "caller": "POST",
+          "callee": "crypto.timingSafeEqual",
+          "lineNumber": 45
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 46
+        },
+        {
+          "caller": "POST",
+          "callee": "db.prepare('DELETE FROM verification_codes WHERE email = ? OR expires_at < ?').run",
+          "lineNumber": 50
+        },
+        {
+          "caller": "POST",
+          "callee": "db.prepare",
+          "lineNumber": 50
+        },
+        {
+          "caller": "POST",
+          "callee": "Date.now",
+          "lineNumber": 50
+        },
+        {
+          "caller": "POST",
+          "callee": "getPb",
+          "lineNumber": 52
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection('users').create",
+          "lineNumber": 53
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection",
+          "lineNumber": 53
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection('users').authWithPassword",
+          "lineNumber": 57
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection",
+          "lineNumber": 57
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 61
+        },
+        {
+          "caller": "POST",
+          "callee": "new Date(user.created).getTime",
+          "lineNumber": 62
+        },
+        {
+          "caller": "POST",
+          "callee": "Date.now",
+          "lineNumber": 62
+        },
+        {
+          "caller": "POST",
+          "callee": "Date.now",
+          "lineNumber": 65
+        },
+        {
+          "caller": "POST",
+          "callee": "msg.includes",
+          "lineNumber": 70
+        },
+        {
+          "caller": "POST",
+          "callee": "msg.includes",
+          "lineNumber": 70
+        },
+        {
+          "caller": "POST",
+          "callee": "msg.includes",
+          "lineNumber": 70
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 71
+        },
+        {
+          "caller": "POST",
+          "callee": "sanitizeError",
+          "lineNumber": 71
+        }
+      ],
+      "metrics": {
+        "importCount": 6,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/auth/reset-password/route.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 79,
+      "nonEmptyLines": 68,
+      "functions": [
+        {
+          "name": "POST",
+          "startLine": 14,
+          "endLine": 79,
+          "params": [
+            "req"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "POST",
+          "line": 14,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "POST",
+          "callee": "getClientIp",
+          "lineNumber": 15
+        },
+        {
+          "caller": "POST",
+          "callee": "resetRateLimit",
+          "lineNumber": 16
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 17
+        },
+        {
+          "caller": "POST",
+          "callee": "req.json",
+          "lineNumber": 21
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 23
+        },
+        {
+          "caller": "POST",
+          "callee": "/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test",
+          "lineNumber": 25
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 26
+        },
+        {
+          "caller": "POST",
+          "callee": "validatePassword",
+          "lineNumber": 29
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 30
+        },
+        {
+          "caller": "POST",
+          "callee": "db.prepare(\n      'SELECT code, expires_at FROM verification_codes WHERE email = ? ORDER BY created_at DESC LIMIT 1'\n    ).get",
+          "lineNumber": 32
+        },
+        {
+          "caller": "POST",
+          "callee": "db.prepare",
+          "lineNumber": 32
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 36
+        },
+        {
+          "caller": "POST",
+          "callee": "Buffer.from",
+          "lineNumber": 37
+        },
+        {
+          "caller": "POST",
+          "callee": "code.padEnd",
+          "lineNumber": 37
+        },
+        {
+          "caller": "POST",
+          "callee": "Buffer.from",
+          "lineNumber": 38
+        },
+        {
+          "caller": "POST",
+          "callee": "record.code.padEnd",
+          "lineNumber": 38
+        },
+        {
+          "caller": "POST",
+          "callee": "crypto.timingSafeEqual",
+          "lineNumber": 39
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 40
+        },
+        {
+          "caller": "POST",
+          "callee": "Date.now",
+          "lineNumber": 42
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 42
+        },
+        {
+          "caller": "POST",
+          "callee": "db.prepare('DELETE FROM verification_codes WHERE email = ?').run",
+          "lineNumber": 45
+        },
+        {
+          "caller": "POST",
+          "callee": "db.prepare",
+          "lineNumber": 45
+        },
+        {
+          "caller": "POST",
+          "callee": "getAdminPb",
+          "lineNumber": 48
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection('users').getFirstListItem",
+          "lineNumber": 49
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection",
+          "lineNumber": 49
+        },
+        {
+          "caller": "POST",
+          "callee": "escapeFilter",
+          "lineNumber": 49
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection('users').update",
+          "lineNumber": 50
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection",
+          "lineNumber": 50
+        },
+        {
+          "caller": "POST",
+          "callee": "Date.now",
+          "lineNumber": 53
+        },
+        {
+          "caller": "POST",
+          "callee": "req.headers.get",
+          "lineNumber": 58
+        },
+        {
+          "caller": "POST",
+          "callee": "authHeader?.startsWith",
+          "lineNumber": 59
+        },
+        {
+          "caller": "POST",
+          "callee": "authHeader.slice",
+          "lineNumber": 60
+        },
+        {
+          "caller": "POST",
+          "callee": "token.split",
+          "lineNumber": 61
+        },
+        {
+          "caller": "POST",
+          "callee": "JSON.parse",
+          "lineNumber": 63
+        },
+        {
+          "caller": "POST",
+          "callee": "Buffer.from(parts[1], 'base64url').toString",
+          "lineNumber": 63
+        },
+        {
+          "caller": "POST",
+          "callee": "Buffer.from",
+          "lineNumber": 63
+        },
+        {
+          "caller": "POST",
+          "callee": "Date.now",
+          "lineNumber": 64
+        },
+        {
+          "caller": "POST",
+          "callee": "db.prepare('INSERT OR IGNORE INTO token_blacklist (token, expires_at) VALUES (?, ?)').run",
+          "lineNumber": 65
+        },
+        {
+          "caller": "POST",
+          "callee": "db.prepare",
+          "lineNumber": 65
+        },
+        {
+          "caller": "POST",
+          "callee": "log.error",
+          "lineNumber": 69
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 72
+        },
+        {
+          "caller": "POST",
+          "callee": "msg.includes",
+          "lineNumber": 76
+        },
+        {
+          "caller": "POST",
+          "callee": "msg.includes",
+          "lineNumber": 76
+        },
+        {
+          "caller": "POST",
+          "callee": "msg.includes",
+          "lineNumber": 76
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 77
+        },
+        {
+          "caller": "POST",
+          "callee": "sanitizeError",
+          "lineNumber": 77
+        }
+      ],
+      "metrics": {
+        "importCount": 6,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/auth/send-code/route.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 112,
+      "nonEmptyLines": 96,
+      "functions": [
+        {
+          "name": "generateCode",
+          "startLine": 14,
+          "endLine": 16,
+          "params": []
+        },
+        {
+          "name": "getTransporter",
+          "startLine": 18,
+          "endLine": 28,
+          "params": []
+        },
+        {
+          "name": "POST",
+          "startLine": 30,
+          "endLine": 112,
+          "params": [
+            "req"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "POST",
+          "line": 30,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "generateCode",
+          "callee": "String(crypto.randomInt(0, 10 ** CODE_LENGTH)).padStart",
+          "lineNumber": 15
+        },
+        {
+          "caller": "generateCode",
+          "callee": "String",
+          "lineNumber": 15
+        },
+        {
+          "caller": "generateCode",
+          "callee": "crypto.randomInt",
+          "lineNumber": 15
+        },
+        {
+          "caller": "getTransporter",
+          "callee": "nodemailer.createTransport",
+          "lineNumber": 19
+        },
+        {
+          "caller": "getTransporter",
+          "callee": "Number",
+          "lineNumber": 21
+        },
+        {
+          "caller": "POST",
+          "callee": "getClientIp",
+          "lineNumber": 31
+        },
+        {
+          "caller": "POST",
+          "callee": "sendCodeRateLimit",
+          "lineNumber": 32
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 33
+        },
+        {
+          "caller": "POST",
+          "callee": "req.json",
+          "lineNumber": 37
+        },
+        {
+          "caller": "POST",
+          "callee": "/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test",
+          "lineNumber": 39
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 40
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 43
+        },
+        {
+          "caller": "POST",
+          "callee": "getAdminPb",
+          "lineNumber": 47
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection('users').getFirstListItem",
+          "lineNumber": 50
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection",
+          "lineNumber": 50
+        },
+        {
+          "caller": "POST",
+          "callee": "escapeFilter",
+          "lineNumber": 50
+        },
+        {
+          "caller": "POST",
+          "callee": "log.error",
+          "lineNumber": 54
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 62
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 64
+        },
+        {
+          "caller": "POST",
+          "callee": "db.prepare(\n      'SELECT created_at FROM verification_codes WHERE email = ? ORDER BY created_at DESC LIMIT 1'\n    ).get",
+          "lineNumber": 68
+        },
+        {
+          "caller": "POST",
+          "callee": "db.prepare",
+          "lineNumber": 68
+        },
+        {
+          "caller": "POST",
+          "callee": "Date.now",
+          "lineNumber": 72
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 73
+        },
+        {
+          "caller": "POST",
+          "callee": "generateCode",
+          "lineNumber": 76
+        },
+        {
+          "caller": "POST",
+          "callee": "Date.now",
+          "lineNumber": 77
+        },
+        {
+          "caller": "POST",
+          "callee": "db.prepare('DELETE FROM verification_codes WHERE email = ?').run",
+          "lineNumber": 79
+        },
+        {
+          "caller": "POST",
+          "callee": "db.prepare",
+          "lineNumber": 79
+        },
+        {
+          "caller": "POST",
+          "callee": "db.prepare(\n      'INSERT INTO verification_codes(email, code, expires_at) VALUES(?,?,?)'\n    ).run",
+          "lineNumber": 80
+        },
+        {
+          "caller": "POST",
+          "callee": "db.prepare",
+          "lineNumber": 80
+        },
+        {
+          "caller": "POST",
+          "callee": "db.prepare('DELETE FROM verification_codes WHERE expires_at < ?').run",
+          "lineNumber": 84
+        },
+        {
+          "caller": "POST",
+          "callee": "db.prepare",
+          "lineNumber": 84
+        },
+        {
+          "caller": "POST",
+          "callee": "Date.now",
+          "lineNumber": 84
+        },
+        {
+          "caller": "POST",
+          "callee": "getTransporter",
+          "lineNumber": 86
+        },
+        {
+          "caller": "POST",
+          "callee": "transporter.sendMail",
+          "lineNumber": 90
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 107
+        },
+        {
+          "caller": "POST",
+          "callee": "log.error",
+          "lineNumber": 109
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 110
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/auth/wechat/route.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 81,
+      "nonEmptyLines": 71,
+      "functions": [
+        {
+          "name": "wechatPassword",
+          "startLine": 10,
+          "endLine": 16,
+          "params": [
+            "openid"
+          ]
+        },
+        {
+          "name": "POST",
+          "startLine": 18,
+          "endLine": 81,
+          "params": [
+            "req"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "POST",
+          "line": 18,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "wechatPassword",
+          "callee": "crypto.createHash('sha256').update(openid + salt).digest('hex').slice",
+          "lineNumber": 15
+        },
+        {
+          "caller": "wechatPassword",
+          "callee": "crypto.createHash('sha256').update(openid + salt).digest",
+          "lineNumber": 15
+        },
+        {
+          "caller": "wechatPassword",
+          "callee": "crypto.createHash('sha256').update",
+          "lineNumber": 15
+        },
+        {
+          "caller": "wechatPassword",
+          "callee": "crypto.createHash",
+          "lineNumber": 15
+        },
+        {
+          "caller": "POST",
+          "callee": "getClientIp",
+          "lineNumber": 19
+        },
+        {
+          "caller": "POST",
+          "callee": "wechatRateLimit",
+          "lineNumber": 20
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 21
+        },
+        {
+          "caller": "POST",
+          "callee": "req.json",
+          "lineNumber": 25
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 26
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 30
+        },
+        {
+          "caller": "POST",
+          "callee": "fetch",
+          "lineNumber": 32
+        },
+        {
+          "caller": "POST",
+          "callee": "encodeURIComponent",
+          "lineNumber": 33
+        },
+        {
+          "caller": "POST",
+          "callee": "wxRes.json",
+          "lineNumber": 35
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 36
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 39
+        },
+        {
+          "caller": "POST",
+          "callee": "getPb",
+          "lineNumber": 40
+        },
+        {
+          "caller": "POST",
+          "callee": "wechatPassword",
+          "lineNumber": 41
+        },
+        {
+          "caller": "POST",
+          "callee": "getAdminPb",
+          "lineNumber": 46
+        },
+        {
+          "caller": "POST",
+          "callee": "adminPb.collection('users').getFirstListItem",
+          "lineNumber": 47
+        },
+        {
+          "caller": "POST",
+          "callee": "adminPb.collection",
+          "lineNumber": 47
+        },
+        {
+          "caller": "POST",
+          "callee": "escapeFilter",
+          "lineNumber": 47
+        },
+        {
+          "caller": "POST",
+          "callee": "getAdminPb",
+          "lineNumber": 51
+        },
+        {
+          "caller": "POST",
+          "callee": "adminPbForCreate.collection('users').create",
+          "lineNumber": 52
+        },
+        {
+          "caller": "POST",
+          "callee": "adminPbForCreate.collection",
+          "lineNumber": 52
+        },
+        {
+          "caller": "POST",
+          "callee": "openid.slice",
+          "lineNumber": 55
+        },
+        {
+          "caller": "POST",
+          "callee": "createErr?.message?.includes",
+          "lineNumber": 60
+        },
+        {
+          "caller": "POST",
+          "callee": "getAdminPb",
+          "lineNumber": 61
+        },
+        {
+          "caller": "POST",
+          "callee": "adminPb.collection('users').getFirstListItem",
+          "lineNumber": 62
+        },
+        {
+          "caller": "POST",
+          "callee": "adminPb.collection",
+          "lineNumber": 62
+        },
+        {
+          "caller": "POST",
+          "callee": "escapeFilter",
+          "lineNumber": 62
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection('users').authWithPassword",
+          "lineNumber": 69
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection",
+          "lineNumber": 69
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 72
+        },
+        {
+          "caller": "POST",
+          "callee": "new Date(user.created).getTime",
+          "lineNumber": 73
+        },
+        {
+          "caller": "POST",
+          "callee": "Date.now",
+          "lineNumber": 73
+        },
+        {
+          "caller": "POST",
+          "callee": "Date.now",
+          "lineNumber": 76
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 79
+        },
+        {
+          "caller": "POST",
+          "callee": "sanitizeError",
+          "lineNumber": 79
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/constants.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "exports": [
+        {
+          "name": "TOKEN_EXPIRES_IN",
+          "line": 1,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/plan/notify-delayed/route.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 93,
+      "nonEmptyLines": 80,
+      "functions": [
+        {
+          "name": "escapeHtml",
+          "startLine": 12,
+          "endLine": 14,
+          "params": [
+            "s"
+          ]
+        },
+        {
+          "name": "getTransporter",
+          "startLine": 16,
+          "endLine": 26,
+          "params": []
+        },
+        {
+          "name": "POST",
+          "startLine": 28,
+          "endLine": 93,
+          "params": [
+            "req"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "POST",
+          "line": 28,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "escapeHtml",
+          "callee": "s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace",
+          "lineNumber": 13
+        },
+        {
+          "caller": "escapeHtml",
+          "callee": "s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace",
+          "lineNumber": 13
+        },
+        {
+          "caller": "escapeHtml",
+          "callee": "s.replace(/&/g, '&amp;').replace",
+          "lineNumber": 13
+        },
+        {
+          "caller": "escapeHtml",
+          "callee": "s.replace",
+          "lineNumber": 13
+        },
+        {
+          "caller": "getTransporter",
+          "callee": "nodemailer.createTransport",
+          "lineNumber": 17
+        },
+        {
+          "caller": "getTransporter",
+          "callee": "Number",
+          "lineNumber": 19
+        },
+        {
+          "caller": "POST",
+          "callee": "getClientIp",
+          "lineNumber": 29
+        },
+        {
+          "caller": "POST",
+          "callee": "notifyRateLimit",
+          "lineNumber": 30
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 31
+        },
+        {
+          "caller": "POST",
+          "callee": "verifyAuth",
+          "lineNumber": 36
+        },
+        {
+          "caller": "POST",
+          "callee": "req.headers.get",
+          "lineNumber": 36
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 37
+        },
+        {
+          "caller": "POST",
+          "callee": "req.json",
+          "lineNumber": 39
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 42
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 45
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 50
+        },
+        {
+          "caller": "POST",
+          "callee": "getAdminPb",
+          "lineNumber": 54
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection('users').getOne",
+          "lineNumber": 57
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection",
+          "lineNumber": 57
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 60
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 61
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 65
+        },
+        {
+          "caller": "POST",
+          "callee": "getTransporter",
+          "lineNumber": 69
+        },
+        {
+          "caller": "POST",
+          "callee": "transporter.sendMail",
+          "lineNumber": 70
+        },
+        {
+          "caller": "POST",
+          "callee": "escapeHtml",
+          "lineNumber": 80
+        },
+        {
+          "caller": "POST",
+          "callee": "escapeHtml",
+          "lineNumber": 81
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 88
+        },
+        {
+          "caller": "POST",
+          "callee": "log.error",
+          "lineNumber": 90
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 91
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/push/route.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 224,
+      "nonEmptyLines": 187,
+      "functions": [
+        {
+          "name": "POST",
+          "startLine": 50,
+          "endLine": 95,
+          "params": [
+            "req"
+          ]
+        },
+        {
+          "name": "PUT",
+          "startLine": 98,
+          "endLine": 158,
+          "params": [
+            "req"
+          ]
+        },
+        {
+          "name": "sendExpoPush",
+          "startLine": 162,
+          "endLine": 224,
+          "params": [
+            "tokens",
+            "payload"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "POST",
+          "line": 50,
+          "isDefault": false
+        },
+        {
+          "name": "PUT",
+          "line": 98,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "POST",
+          "callee": "getClientIp",
+          "lineNumber": 51
+        },
+        {
+          "caller": "POST",
+          "callee": "pushRateLimit",
+          "lineNumber": 52
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 53
+        },
+        {
+          "caller": "POST",
+          "callee": "req.headers.get('authorization')?.slice",
+          "lineNumber": 56
+        },
+        {
+          "caller": "POST",
+          "callee": "req.headers.get",
+          "lineNumber": 56
+        },
+        {
+          "caller": "POST",
+          "callee": "verifyAuth",
+          "lineNumber": 57
+        },
+        {
+          "caller": "POST",
+          "callee": "req.headers.get",
+          "lineNumber": 57
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 58
+        },
+        {
+          "caller": "POST",
+          "callee": "req.json",
+          "lineNumber": 61
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 64
+        },
+        {
+          "caller": "POST",
+          "callee": "['web', 'android', 'ios'].includes",
+          "lineNumber": 66
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 67
+        },
+        {
+          "caller": "POST",
+          "callee": "getPb",
+          "lineNumber": 70
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.authStore.save",
+          "lineNumber": 71
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection('push_tokens').getFirstListItem",
+          "lineNumber": 75
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection",
+          "lineNumber": 75
+        },
+        {
+          "caller": "POST",
+          "callee": "escapeFilter",
+          "lineNumber": 76
+        },
+        {
+          "caller": "POST",
+          "callee": "escapeFilter",
+          "lineNumber": 76
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection('push_tokens').update",
+          "lineNumber": 78
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection",
+          "lineNumber": 78
+        },
+        {
+          "caller": "POST",
+          "callee": "new Date().toISOString",
+          "lineNumber": 80
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection('push_tokens').create",
+          "lineNumber": 84
+        },
+        {
+          "caller": "POST",
+          "callee": "pb.collection",
+          "lineNumber": 84
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 91
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 93
+        },
+        {
+          "caller": "PUT",
+          "callee": "getClientIp",
+          "lineNumber": 99
+        },
+        {
+          "caller": "PUT",
+          "callee": "pushRateLimit",
+          "lineNumber": 100
+        },
+        {
+          "caller": "PUT",
+          "callee": "NextResponse.json",
+          "lineNumber": 101
+        },
+        {
+          "caller": "PUT",
+          "callee": "req.headers.get('authorization')?.slice",
+          "lineNumber": 104
+        },
+        {
+          "caller": "PUT",
+          "callee": "req.headers.get",
+          "lineNumber": 104
+        },
+        {
+          "caller": "PUT",
+          "callee": "verifyAuth",
+          "lineNumber": 105
+        },
+        {
+          "caller": "PUT",
+          "callee": "req.headers.get",
+          "lineNumber": 105
+        },
+        {
+          "caller": "PUT",
+          "callee": "NextResponse.json",
+          "lineNumber": 106
+        },
+        {
+          "caller": "PUT",
+          "callee": "req.json",
+          "lineNumber": 109
+        },
+        {
+          "caller": "PUT",
+          "callee": "NextResponse.json",
+          "lineNumber": 112
+        },
+        {
+          "caller": "PUT",
+          "callee": "NextResponse.json",
+          "lineNumber": 115
+        },
+        {
+          "caller": "PUT",
+          "callee": "NextResponse.json",
+          "lineNumber": 120
+        },
+        {
+          "caller": "PUT",
+          "callee": "getPb",
+          "lineNumber": 123
+        },
+        {
+          "caller": "PUT",
+          "callee": "pb.authStore.save",
+          "lineNumber": 124
+        },
+        {
+          "caller": "PUT",
+          "callee": "pb.collection('push_tokens').getFullList",
+          "lineNumber": 127
+        },
+        {
+          "caller": "PUT",
+          "callee": "pb.collection",
+          "lineNumber": 127
+        },
+        {
+          "caller": "PUT",
+          "callee": "escapeFilter",
+          "lineNumber": 128
+        },
+        {
+          "caller": "PUT",
+          "callee": "NextResponse.json",
+          "lineNumber": 132
+        },
+        {
+          "caller": "PUT",
+          "callee": "sendExpoPush",
+          "lineNumber": 136
+        },
+        {
+          "caller": "PUT",
+          "callee": "Promise.all",
+          "lineNumber": 143
+        },
+        {
+          "caller": "PUT",
+          "callee": "failedTokenIds.map",
+          "lineNumber": 144
+        },
+        {
+          "caller": "PUT",
+          "callee": "pb.collection('push_tokens').delete(id).catch",
+          "lineNumber": 145
+        },
+        {
+          "caller": "PUT",
+          "callee": "pb.collection('push_tokens').delete",
+          "lineNumber": 145
+        },
+        {
+          "caller": "PUT",
+          "callee": "pb.collection",
+          "lineNumber": 145
+        },
+        {
+          "caller": "PUT",
+          "callee": "log.error",
+          "lineNumber": 145
+        },
+        {
+          "caller": "PUT",
+          "callee": "NextResponse.json",
+          "lineNumber": 150
+        },
+        {
+          "caller": "PUT",
+          "callee": "NextResponse.json",
+          "lineNumber": 156
+        },
+        {
+          "caller": "sendExpoPush",
+          "callee": "tokens.map",
+          "lineNumber": 166
+        },
+        {
+          "caller": "sendExpoPush",
+          "callee": "messages.slice",
+          "lineNumber": 179
+        },
+        {
+          "caller": "sendExpoPush",
+          "callee": "tokens.slice",
+          "lineNumber": 180
+        },
+        {
+          "caller": "sendExpoPush",
+          "callee": "fetch",
+          "lineNumber": 192
+        },
+        {
+          "caller": "sendExpoPush",
+          "callee": "JSON.stringify",
+          "lineNumber": 195
+        },
+        {
+          "caller": "sendExpoPush",
+          "callee": "response.text().catch",
+          "lineNumber": 199
+        },
+        {
+          "caller": "sendExpoPush",
+          "callee": "response.text",
+          "lineNumber": 199
+        },
+        {
+          "caller": "sendExpoPush",
+          "callee": "log.error",
+          "lineNumber": 200
+        },
+        {
+          "caller": "sendExpoPush",
+          "callee": "response.json",
+          "lineNumber": 205
+        },
+        {
+          "caller": "sendExpoPush",
+          "callee": "failedTokenIds.push",
+          "lineNumber": 215
+        },
+        {
+          "caller": "sendExpoPush",
+          "callee": "log.warn",
+          "lineNumber": 217
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 2,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/setup/route.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 104,
+      "nonEmptyLines": 93,
+      "functions": [
+        {
+          "name": "GET",
+          "startLine": 38,
+          "endLine": 104,
+          "params": [
+            "request"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "GET",
+          "line": 38,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "GET",
+          "callee": "request.headers.get",
+          "lineNumber": 40
+        },
+        {
+          "caller": "GET",
+          "callee": "request.headers.get('x-forwarded-for')?.split(',')[0]?.trim",
+          "lineNumber": 40
+        },
+        {
+          "caller": "GET",
+          "callee": "request.headers.get('x-forwarded-for')?.split",
+          "lineNumber": 40
+        },
+        {
+          "caller": "GET",
+          "callee": "request.headers.get",
+          "lineNumber": 40
+        },
+        {
+          "caller": "GET",
+          "callee": "setupRateLimit",
+          "lineNumber": 41
+        },
+        {
+          "caller": "GET",
+          "callee": "NextResponse.json",
+          "lineNumber": 42
+        },
+        {
+          "caller": "GET",
+          "callee": "NextResponse.json",
+          "lineNumber": 48
+        },
+        {
+          "caller": "GET",
+          "callee": "request.headers.get",
+          "lineNumber": 50
+        },
+        {
+          "caller": "GET",
+          "callee": "NextResponse.json",
+          "lineNumber": 52
+        },
+        {
+          "caller": "GET",
+          "callee": "createHmac('sha256', 'setup-secret-compare').update(token).digest",
+          "lineNumber": 55
+        },
+        {
+          "caller": "GET",
+          "callee": "createHmac('sha256', 'setup-secret-compare').update",
+          "lineNumber": 55
+        },
+        {
+          "caller": "GET",
+          "callee": "createHmac",
+          "lineNumber": 55
+        },
+        {
+          "caller": "GET",
+          "callee": "createHmac('sha256', 'setup-secret-compare').update(setupSecret).digest",
+          "lineNumber": 56
+        },
+        {
+          "caller": "GET",
+          "callee": "createHmac('sha256', 'setup-secret-compare').update",
+          "lineNumber": 56
+        },
+        {
+          "caller": "GET",
+          "callee": "createHmac",
+          "lineNumber": 56
+        },
+        {
+          "caller": "GET",
+          "callee": "timingSafeEqual",
+          "lineNumber": 57
+        },
+        {
+          "caller": "GET",
+          "callee": "NextResponse.json",
+          "lineNumber": 58
+        },
+        {
+          "caller": "GET",
+          "callee": "NextResponse.json",
+          "lineNumber": 64
+        },
+        {
+          "caller": "GET",
+          "callee": "getPb",
+          "lineNumber": 67
+        },
+        {
+          "caller": "GET",
+          "callee": "pb.collection('_superusers').authWithPassword",
+          "lineNumber": 72
+        },
+        {
+          "caller": "GET",
+          "callee": "pb.collection",
+          "lineNumber": 72
+        },
+        {
+          "caller": "GET",
+          "callee": "pb.collections.getOne",
+          "lineNumber": 77
+        },
+        {
+          "caller": "GET",
+          "callee": "results.push",
+          "lineNumber": 78
+        },
+        {
+          "caller": "GET",
+          "callee": "pb.collections.create",
+          "lineNumber": 81
+        },
+        {
+          "caller": "GET",
+          "callee": "results.push",
+          "lineNumber": 95
+        },
+        {
+          "caller": "GET",
+          "callee": "NextResponse.json",
+          "lineNumber": 99
+        },
+        {
+          "caller": "GET",
+          "callee": "log.error",
+          "lineNumber": 101
+        },
+        {
+          "caller": "GET",
+          "callee": "NextResponse.json",
+          "lineNumber": 102
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    }
+  ]
+}

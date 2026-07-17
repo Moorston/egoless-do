@@ -1,0 +1,893 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 11,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": ".dockerignore",
+      "language": "unknown",
+      "fileCategory": "infra",
+      "totalLines": 13,
+      "nonEmptyLines": 13,
+      "metrics": {}
+    },
+    {
+      "path": ".env.example",
+      "language": "config",
+      "fileCategory": "config",
+      "totalLines": 70,
+      "nonEmptyLines": 56,
+      "definitions": [
+        {
+          "name": "PB_URL",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 8,
+          "endLine": 8
+        },
+        {
+          "name": "PB_ADMIN_EMAIL",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 9,
+          "endLine": 9
+        },
+        {
+          "name": "PB_ADMIN_PASSWORD",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 10,
+          "endLine": 10
+        },
+        {
+          "name": "PB_ENCRYPTION_KEY",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 12,
+          "endLine": 12
+        },
+        {
+          "name": "INTERNAL_SECRET",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 17,
+          "endLine": 17
+        },
+        {
+          "name": "SMTP_HOST",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 20,
+          "endLine": 20
+        },
+        {
+          "name": "SMTP_PORT",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 21,
+          "endLine": 21
+        },
+        {
+          "name": "SMTP_USER",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 22,
+          "endLine": 22
+        },
+        {
+          "name": "SMTP_PASS",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 23,
+          "endLine": 23
+        },
+        {
+          "name": "CORS_ORIGIN",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 26,
+          "endLine": 26
+        },
+        {
+          "name": "RATE_LIMIT_WINDOW_MS",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 29,
+          "endLine": 29
+        },
+        {
+          "name": "RATE_LIMIT_FILE",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 30,
+          "endLine": 30
+        },
+        {
+          "name": "WECHAT_APPID",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 33,
+          "endLine": 33
+        },
+        {
+          "name": "WECHAT_SECRET",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 34,
+          "endLine": 34
+        },
+        {
+          "name": "EXPO_PUBLIC_PB_URL",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 37,
+          "endLine": 37
+        },
+        {
+          "name": "EXPO_PUBLIC_API_URL",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 38,
+          "endLine": 38
+        },
+        {
+          "name": "CLOUDFLARE_TUNNEL_TOKEN",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 41,
+          "endLine": 41
+        },
+        {
+          "name": "RESEND_API_KEY",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 44,
+          "endLine": 44
+        },
+        {
+          "name": "SENTRY_DSN",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 47,
+          "endLine": 47
+        },
+        {
+          "name": "SENTRY_ORG",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 48,
+          "endLine": 48
+        },
+        {
+          "name": "SENTRY_PROJECT",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 49,
+          "endLine": 49
+        },
+        {
+          "name": "SENTRY_AUTH_TOKEN",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 50,
+          "endLine": 50
+        },
+        {
+          "name": "EXPO_PUBLIC_SENTRY_DSN",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 51,
+          "endLine": 51
+        },
+        {
+          "name": "EXPO_TOKEN",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 54,
+          "endLine": 54
+        },
+        {
+          "name": "EXPO_ACCESS_TOKEN",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 55,
+          "endLine": 55
+        },
+        {
+          "name": "EXPO_PUBLIC_AMAP_KEY_ANDROID",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 58,
+          "endLine": 58
+        },
+        {
+          "name": "EXPO_PUBLIC_AMAP_KEY_IOS",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 59,
+          "endLine": 59
+        },
+        {
+          "name": "SETUP_SECRET",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 62,
+          "endLine": 62
+        },
+        {
+          "name": "PB_ADMIN_EMAIL",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 65,
+          "endLine": 65
+        },
+        {
+          "name": "PB_ADMIN_PASSWORD",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 66,
+          "endLine": 66
+        },
+        {
+          "name": "SMTP_HOST",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 67,
+          "endLine": 67
+        },
+        {
+          "name": "SMTP_PORT",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 68,
+          "endLine": 68
+        },
+        {
+          "name": "SMTP_USER",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 69,
+          "endLine": 69
+        },
+        {
+          "name": "SMTP_PASS",
+          "kind": "variable",
+          "fields": [],
+          "startLine": 70,
+          "endLine": 70
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "definitionCount": 34
+      }
+    },
+    {
+      "path": "AGENTS.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 597,
+      "nonEmptyLines": 474,
+      "sections": [
+        {
+          "heading": "Trellis Instructions",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "Egoless-Do Project Constitution — 项目宪法 & 工程规范",
+          "level": 1,
+          "line": 25
+        },
+        {
+          "heading": "一、项目定位与核心原则",
+          "level": 2,
+          "line": 34
+        },
+        {
+          "heading": "1.1 产品定位",
+          "level": 3,
+          "line": 36
+        },
+        {
+          "heading": "1.2 核心原则（不可妥协的底线）",
+          "level": 3,
+          "line": 40
+        },
+        {
+          "heading": "二、目录结构与职责划分",
+          "level": 2,
+          "line": 53
+        },
+        {
+          "heading": "2.1 新代码该放哪 —— 决策树",
+          "level": 3,
+          "line": 92
+        },
+        {
+          "heading": "2.2 Forbidden Imports（红线）",
+          "level": 3,
+          "line": 131
+        },
+        {
+          "heading": "三、开发流程规范",
+          "level": 2,
+          "line": 144
+        },
+        {
+          "heading": "3.1 功能开发工作流",
+          "level": 3,
+          "line": 146
+        },
+        {
+          "heading": "3.2 Commit Message 规范",
+          "level": 3,
+          "line": 168
+        },
+        {
+          "heading": "3.3 PR / Code Review Checklist",
+          "level": 3,
+          "line": 191
+        },
+        {
+          "heading": "结构性（Structural）",
+          "level": 4,
+          "line": 195
+        },
+        {
+          "heading": "质量性（Quality）",
+          "level": 4,
+          "line": 201
+        },
+        {
+          "heading": "兼容性（Compatibility）",
+          "level": 4,
+          "line": 208
+        },
+        {
+          "heading": "测试性（Testability）",
+          "level": 4,
+          "line": 214
+        },
+        {
+          "heading": "四、代码质量标准",
+          "level": 2,
+          "line": 220
+        },
+        {
+          "heading": "4.1 文件规模限制",
+          "level": 3,
+          "line": 222
+        },
+        {
+          "heading": "4.2 函数复杂度限制",
+          "level": 3,
+          "line": 239
+        },
+        {
+          "heading": "4.3 TypeScript 规范",
+          "level": 3,
+          "line": 248
+        },
+        {
+          "heading": "4.4 React / RN 规范",
+          "level": 3,
+          "line": 283
+        },
+        {
+          "heading": "4.5 Store 规范",
+          "level": 3,
+          "line": 303
+        },
+        {
+          "heading": "4.6 Sync 子系统规范",
+          "level": 3,
+          "line": 324
+        },
+        {
+          "heading": "4.7 测试要求",
+          "level": 3,
+          "line": 336
+        },
+        {
+          "heading": "五、技术栈与依赖治理",
+          "level": 2,
+          "line": 355
+        },
+        {
+          "heading": "5.1 正式技术栈",
+          "level": 3,
+          "line": 357
+        },
+        {
+          "heading": "5.2 依赖添加规则",
+          "level": 3,
+          "line": 373
+        },
+        {
+          "heading": "六、架构重构清单",
+          "level": 2,
+          "line": 382
+        },
+        {
+          "heading": "P0 — 紧急（阻塞后续开发的瓶颈）",
+          "level": 3,
+          "line": 386
+        },
+        {
+          "heading": "AR-01: SyncEngine 巨型类拆分 ✅ 已完成",
+          "level": 4,
+          "line": 388
+        },
+        {
+          "heading": "AR-02: 消除 core → mobile 反向依赖 ✅ 已完成",
+          "level": 4,
+          "line": 401
+        },
+        {
+          "heading": "AR-03: 消除 mobile → web 依赖 ✅ 已完成",
+          "level": 4,
+          "line": 410
+        },
+        {
+          "heading": "P1 — 高优先级（显著降低复杂度）",
+          "level": 3,
+          "line": 419
+        },
+        {
+          "heading": "AR-04: Navigation 路由表拆分",
+          "level": 4,
+          "line": 421
+        },
+        {
+          "heading": "AR-05: Store Slice 数量规范化",
+          "level": 4,
+          "line": 427
+        },
+        {
+          "heading": "AR-06: Reflections 模块解构",
+          "level": 4,
+          "line": 436
+        },
+        {
+          "heading": "AR-07: Web 归档 ✅ 已完成 (见 AR-03)",
+          "level": 4,
+          "line": 450
+        },
+        {
+          "heading": "P2 — 中优先级（技术债偿还）",
+          "level": 3,
+          "line": 455
+        },
+        {
+          "heading": "AR-08: 统一 i18n 类型安全机制",
+          "level": 4,
+          "line": 457
+        },
+        {
+          "heading": "AR-09: Engine 类拆分",
+          "level": 4,
+          "line": 463
+        },
+        {
+          "heading": "AR-10: Test 目录收敛",
+          "level": 4,
+          "line": 469
+        },
+        {
+          "heading": "AR-11: Backend Hooks TypeScript 化",
+          "level": 4,
+          "line": 475
+        },
+        {
+          "heading": "七、代码重构清单",
+          "level": 2,
+          "line": 483
+        },
+        {
+          "heading": "7.1 超大文件瘦身（直接降行数）",
+          "level": 3,
+          "line": 487
+        },
+        {
+          "heading": "7.2 重复模式抽取",
+          "level": 3,
+          "line": 499
+        },
+        {
+          "heading": "7.3 类型改进",
+          "level": 3,
+          "line": 509
+        },
+        {
+          "heading": "7.4 性能优化（已在进行中）",
+          "level": 3,
+          "line": 518
+        },
+        {
+          "heading": "八、自动化保障",
+          "level": 2,
+          "line": 532
+        },
+        {
+          "heading": "8.1 Pre-commit Hooks（建议配置）",
+          "level": 3,
+          "line": 534
+        },
+        {
+          "heading": "8.2 CI Pipeline 建议",
+          "level": 3,
+          "line": 546
+        },
+        {
+          "heading": "8.3 代码审查辅助",
+          "level": 3,
+          "line": 557
+        },
+        {
+          "heading": "九、术语表",
+          "level": 2,
+          "line": 574
+        },
+        {
+          "heading": "十、变更日志",
+          "level": 2,
+          "line": 592
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 53
+      }
+    },
+    {
+      "path": "CLAUDE.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 46,
+      "nonEmptyLines": 39,
+      "sections": [
+        {
+          "heading": "egoless-do — Claude Memory",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "What this project is",
+          "level": 2,
+          "line": 5
+        },
+        {
+          "heading": "心流纪 · Egoless Do  跨平台正念修行 + 习惯追踪 + 思维记录综合应用。帮助用户养成健康饮食、规律冥想、运动习惯，同时捕捉内心感悟，实现身、心、思全面提升。",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "Quick reference",
+          "level": 2,
+          "line": 8
+        },
+        {
+          "heading": "Memory files (read these, not source files)",
+          "level": 2,
+          "line": 14
+        },
+        {
+          "heading": "Instruction",
+          "level": 2,
+          "line": 24
+        },
+        {
+          "heading": "Skill routing",
+          "level": 2,
+          "line": 29
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 7
+      }
+    },
+    {
+      "path": "PRIVACY_POLICY.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 44,
+      "nonEmptyLines": 30,
+      "sections": [
+        {
+          "heading": "隐私政策 · Privacy Policy",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "核心承诺",
+          "level": 2,
+          "line": 5
+        },
+        {
+          "heading": "我们不做的事",
+          "level": 2,
+          "line": 15
+        },
+        {
+          "heading": "匿名社区功能",
+          "level": 2,
+          "line": 23
+        },
+        {
+          "heading": "PocketBase 自托管",
+          "level": 2,
+          "line": 32
+        },
+        {
+          "heading": "数据删除",
+          "level": 2,
+          "line": 37
+        },
+        {
+          "heading": "联系方式",
+          "level": 2,
+          "line": 42
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 7
+      }
+    },
+    {
+      "path": "README.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 272,
+      "nonEmptyLines": 231,
+      "sections": [
+        {
+          "heading": "心流纪 · Egoless Do",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "平台支持",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "功能模块",
+          "level": 2,
+          "line": 15
+        },
+        {
+          "heading": "技术架构",
+          "level": 2,
+          "line": 35
+        },
+        {
+          "heading": "存储架构（统一 SQLite）",
+          "level": 3,
+          "line": 88
+        },
+        {
+          "heading": "数据同步架构",
+          "level": 2,
+          "line": 115
+        },
+        {
+          "heading": "快速开始",
+          "level": 2,
+          "line": 175
+        },
+        {
+          "heading": "后端 (PocketBase)",
+          "level": 3,
+          "line": 198
+        },
+        {
+          "heading": "测试覆盖",
+          "level": 2,
+          "line": 219
+        },
+        {
+          "heading": "监控",
+          "level": 3,
+          "line": 240
+        },
+        {
+          "heading": "月度运营成本",
+          "level": 2,
+          "line": 248
+        },
+        {
+          "heading": "隐私承诺",
+          "level": 2,
+          "line": 261
+        },
+        {
+          "heading": "License",
+          "level": 2,
+          "line": 270
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 13
+      }
+    },
+    {
+      "path": "package.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 56,
+      "nonEmptyLines": 56,
+      "sections": [
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "private",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "scripts",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "devDependencies",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "packageManager",
+          "level": 1,
+          "line": 36
+        },
+        {
+          "heading": "pnpm",
+          "level": 1,
+          "line": 37
+        },
+        {
+          "heading": "dependencies",
+          "level": 1,
+          "line": 51
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 7
+      }
+    },
+    {
+      "path": "pnpm-workspace.yaml",
+      "language": "yaml",
+      "fileCategory": "config",
+      "totalLines": 4,
+      "nonEmptyLines": 4,
+      "sections": [
+        {
+          "heading": "packages",
+          "level": 1,
+          "line": 1
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 1
+      }
+    },
+    {
+      "path": "skills-lock.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 23,
+      "nonEmptyLines": 23,
+      "sections": [
+        {
+          "heading": "version",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "skills",
+          "level": 1,
+          "line": 3
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 2
+      }
+    },
+    {
+      "path": "tsconfig.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 5,
+      "nonEmptyLines": 5,
+      "sections": [
+        {
+          "heading": "compilerOptions",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "extends",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "exclude",
+          "level": 1,
+          "line": 4
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 3
+      }
+    },
+    {
+      "path": "turbo.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 14,
+      "nonEmptyLines": 14,
+      "sections": [
+        {
+          "heading": "$schema",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "globalDependencies",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "tasks",
+          "level": 1,
+          "line": 4
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 3
+      }
+    }
+  ]
+}

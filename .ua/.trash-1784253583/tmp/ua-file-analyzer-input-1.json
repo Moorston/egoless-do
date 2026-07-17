@@ -1,0 +1,1974 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": "_archive/web-legacy/src/app/(auth)/forgot-password/page.tsx",
+      "language": "typescript",
+      "sizeLines": 161,
+      "fileCategory": "code"
+    },
+    {
+      "path": "_archive/web-legacy/src/components/styles.ts",
+      "language": "typescript",
+      "sizeLines": 17,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/components/AddFoodModal.tsx",
+      "language": "typescript",
+      "sizeLines": 750,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/components/AppHeader.tsx",
+      "language": "typescript",
+      "sizeLines": 191,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/components/ConfirmationDialog.tsx",
+      "language": "typescript",
+      "sizeLines": 129,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/components/DatePickerModal.tsx",
+      "language": "typescript",
+      "sizeLines": 169,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/components/DateRangePickerModal.tsx",
+      "language": "typescript",
+      "sizeLines": 218,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/components/EmptyState.tsx",
+      "language": "typescript",
+      "sizeLines": 71,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/components/ItemManagerPanel.tsx",
+      "language": "typescript",
+      "sizeLines": 432,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/components/PlanCountdown.tsx",
+      "language": "typescript",
+      "sizeLines": 197,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/components/SyncConflictPanel.tsx",
+      "language": "typescript",
+      "sizeLines": 105,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/components/TimePickerModal.tsx",
+      "language": "typescript",
+      "sizeLines": 146,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/components/UI.tsx",
+      "language": "typescript",
+      "sizeLines": 334,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/components/VirtualList.tsx",
+      "language": "typescript",
+      "sizeLines": 53,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/components/charts/BarChart.tsx",
+      "language": "typescript",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/components/charts/CalendarGrid.tsx",
+      "language": "typescript",
+      "sizeLines": 144,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/components/charts/HeatmapGrid.tsx",
+      "language": "typescript",
+      "sizeLines": 73,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/components/charts/LineChart.tsx",
+      "language": "typescript",
+      "sizeLines": 81,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/auth/ForgotPasswordScreen.tsx",
+      "language": "typescript",
+      "sizeLines": 205,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/auth/LoginScreen.tsx",
+      "language": "typescript",
+      "sizeLines": 141,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/auth/RegisterScreen.tsx",
+      "language": "typescript",
+      "sizeLines": 203,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/auth/pushTokenRegistration.ts",
+      "language": "typescript",
+      "sizeLines": 48,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/breathing/BreathHistoryPage.tsx",
+      "language": "typescript",
+      "sizeLines": 191,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/breathing/BreathingEngine.tsx",
+      "language": "typescript",
+      "sizeLines": 464,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/breathing/BreathingScreen.tsx",
+      "language": "typescript",
+      "sizeLines": 151,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/breathing/breathStyles.ts",
+      "language": "typescript",
+      "sizeLines": 256,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/breathing/hooks/useBreathSettings.ts",
+      "language": "typescript",
+      "sizeLines": 107,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/breathing/pages/BreathActivePage.tsx",
+      "language": "typescript",
+      "sizeLines": 134,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/breathing/pages/BreathPreparePage.tsx",
+      "language": "typescript",
+      "sizeLines": 168,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/breathing/pages/BreathReportPage.tsx",
+      "language": "typescript",
+      "sizeLines": 158,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/breathing/useBreathAudio.ts",
+      "language": "typescript",
+      "sizeLines": 101,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/diet/DietScreen.tsx",
+      "language": "typescript",
+      "sizeLines": 546,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/diet/WuxingCalendar.tsx",
+      "language": "typescript",
+      "sizeLines": 138,
+      "fileCategory": "code"
+    }
+  ],
+  "batchImportData": {
+    "_archive/web-legacy/src/app/(auth)/forgot-password/page.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "_archive/web-legacy/src/components/styles.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/AddFoodModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/AppHeader.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/ConfirmationDialog.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/DatePickerModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/DateRangePickerModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/EmptyState.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/ItemManagerPanel.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/PlanCountdown.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/SyncConflictPanel.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/syncStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/TimePickerModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/UI.tsx": [
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/VirtualList.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/charts/BarChart.tsx": [],
+    "apps/mobile/src/components/charts/CalendarGrid.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/charts/HeatmapGrid.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/components/charts/LineChart.tsx": [],
+    "apps/mobile/src/features/auth/ForgotPasswordScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/auth/LoginScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/auth/pushTokenRegistration.ts",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/auth/RegisterScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/auth/pushTokenRegistration.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/breathing/BreathHistoryPage.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/breathing/BreathingEngine.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/breathing/breathStyles.ts",
+      "apps/mobile/src/features/breathing/hooks/useBreathSettings.ts",
+      "apps/mobile/src/features/breathing/pages/BreathActivePage.tsx",
+      "apps/mobile/src/features/breathing/pages/BreathPreparePage.tsx",
+      "apps/mobile/src/features/breathing/pages/BreathReportPage.tsx",
+      "apps/mobile/src/features/breathing/useBreathAudio.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/breathing/BreathingScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/store/safeAsyncStorage.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/breathing/breathStyles.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/breathing/hooks/useBreathSettings.ts": [
+      "apps/mobile/src/store/safeAsyncStorage.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/breathing/pages/BreathActivePage.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/breathing/breathStyles.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/breathing/pages/BreathPreparePage.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/breathing/breathStyles.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/breathing/pages/BreathReportPage.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/breathing/breathStyles.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/breathing/useBreathAudio.ts": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/diet/DietScreen.tsx": [
+      "apps/mobile/src/components/AddFoodModal.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/diet/WuxingCalendar.tsx",
+      "apps/mobile/src/features/diet/WuxingRadarChart.tsx",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/diet/WuxingCalendar.tsx": [
+      "packages/core/src/index.ts"
+    ]
+  },
+  "neighborMap": {
+    "_archive/web-legacy/src/app/(auth)/forgot-password/page.tsx": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "_archive/web-legacy/src/components/styles.ts": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/components/AddFoodModal.tsx": [
+      {
+        "path": "apps/mobile/src/store/useAppStore.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "flushAllPendingTimers",
+          "useShallowStore",
+          "setAutoSyncCallback",
+          "useAppStore",
+          "initMobileStore"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/home/components/HomeFoodSection.tsx",
+        "batchIndex": 3,
+        "symbols": []
+      },
+      {
+        "path": "apps/mobile/src/features/home/screens/FoodLogPage.tsx",
+        "batchIndex": 3,
+        "symbols": [
+          "FoodLogPage"
+        ]
+      }
+    ],
+    "apps/mobile/src/components/AppHeader.tsx": [
+      {
+        "path": "apps/mobile/src/store/useAppStore.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "flushAllPendingTimers",
+          "useShallowStore",
+          "setAutoSyncCallback",
+          "useAppStore",
+          "initMobileStore"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/components/ConfirmationDialog.tsx": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/components/DatePickerModal.tsx": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/plan/PlanCreateScreen.tsx",
+        "batchIndex": 3,
+        "symbols": [
+          "PlanCreateScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/core/CreatePlanFromReflectionModal.tsx",
+        "batchIndex": 5,
+        "symbols": [
+          "CreatePlanFromReflectionModal"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/core/CreatePlanFromTrailModal.tsx",
+        "batchIndex": 5,
+        "symbols": [
+          "CreatePlanFromTrailModal"
+        ]
+      }
+    ],
+    "apps/mobile/src/components/DateRangePickerModal.tsx": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/plan/PlanCreateScreen.tsx",
+        "batchIndex": 3,
+        "symbols": [
+          "PlanCreateScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/core/FilterDrawer.tsx",
+        "batchIndex": 5,
+        "symbols": []
+      }
+    ],
+    "apps/mobile/src/components/EmptyState.tsx": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/components/ItemManagerPanel.tsx": [
+      {
+        "path": "apps/mobile/src/store/useAppStore.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "flushAllPendingTimers",
+          "useShallowStore",
+          "setAutoSyncCallback",
+          "useAppStore",
+          "initMobileStore"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/core/ReflectionsScreen.tsx",
+        "batchIndex": 5,
+        "symbols": [
+          "ReflectionsScreen"
+        ]
+      }
+    ],
+    "apps/mobile/src/components/PlanCountdown.tsx": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/plan/PlanDetailContent.tsx",
+        "batchIndex": 3,
+        "symbols": [
+          "PlanDetailContent"
+        ]
+      }
+    ],
+    "apps/mobile/src/components/SyncConflictPanel.tsx": [
+      {
+        "path": "apps/mobile/src/store/syncStore.ts",
+        "batchIndex": 19,
+        "symbols": [
+          "useSyncStore"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/settings/SettingsScreen.tsx",
+        "batchIndex": 7,
+        "symbols": [
+          "SettingsScreen"
+        ]
+      }
+    ],
+    "apps/mobile/src/components/TimePickerModal.tsx": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/habits/components/HabitFormModal.tsx",
+        "batchIndex": 2,
+        "symbols": [
+          "HabitFormModal"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/habits/HabitDetailScreen.tsx",
+        "batchIndex": 2,
+        "symbols": [
+          "HabitDetailScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/settings/SettingsScreen.tsx",
+        "batchIndex": 7,
+        "symbols": [
+          "SettingsScreen"
+        ]
+      }
+    ],
+    "apps/mobile/src/components/UI.tsx": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/store/useAppStore.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "flushAllPendingTimers",
+          "useShallowStore",
+          "setAutoSyncCallback",
+          "useAppStore",
+          "initMobileStore"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/exercise/SportPage.tsx",
+        "batchIndex": 20,
+        "symbols": [
+          "SportPage"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/navigation/SimpleHeader.tsx",
+        "batchIndex": 16,
+        "symbols": [
+          "SimpleHeader"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/core/ReflectionsScreen.tsx",
+        "batchIndex": 5,
+        "symbols": [
+          "ReflectionsScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+        "batchIndex": 7,
+        "symbols": [
+          "ThoughtTrailDetailScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/navigation/index.tsx",
+        "batchIndex": 19,
+        "symbols": [
+          "RootStackParamList",
+          "MainTabParamList",
+          "useRootNavigation",
+          "useTabNavigation",
+          "SimpleHeader",
+          "AppNavigator"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/habits/HabitsScreen.tsx",
+        "batchIndex": 2,
+        "symbols": [
+          "HabitsScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+        "batchIndex": 4,
+        "symbols": [
+          "BodyDashboard"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/home/screens/HomeScreen.tsx",
+        "batchIndex": 3,
+        "symbols": [
+          "HomeScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/meditation/MeditationScreen.tsx",
+        "batchIndex": 21,
+        "symbols": [
+          "MeditationScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/plan/PlanDetailContent.tsx",
+        "batchIndex": 3,
+        "symbols": [
+          "PlanDetailContent"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx",
+        "batchIndex": 14,
+        "symbols": [
+          "GlobalPulseMap"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/mantra/MantraEngine.tsx",
+        "batchIndex": 3,
+        "symbols": [
+          "MantraEngine"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/sleep/SleepEngine.tsx",
+        "batchIndex": 7,
+        "symbols": [
+          "SleepEngine"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/trails/QuickCreateTrailScreen.tsx",
+        "batchIndex": 7,
+        "symbols": [
+          "QuickCreateTrailScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx",
+        "batchIndex": 21,
+        "symbols": [
+          "ZhiguanScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/components/MeditationMusicBar.tsx",
+        "batchIndex": 20,
+        "symbols": [
+          "MeditationMusicBar"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/habits/HabitDetailScreen.tsx",
+        "batchIndex": 2,
+        "symbols": [
+          "HabitDetailScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/music/screens/MusicScreen.tsx",
+        "batchIndex": 21,
+        "symbols": [
+          "MusicScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/practice/BodyScreen.tsx",
+        "batchIndex": 4,
+        "symbols": [
+          "BodyScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/insights/RelationMapView.tsx",
+        "batchIndex": 24,
+        "symbols": [
+          "RelationMapView"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/fasting/FastingScreen.tsx",
+        "batchIndex": 2,
+        "symbols": [
+          "FastingScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/music/components/PlayerBar.tsx",
+        "batchIndex": 21,
+        "symbols": [
+          "PlayerBar"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/music/components/TrackListItem.tsx",
+        "batchIndex": 21,
+        "symbols": []
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/trails/MindTrailScreen.tsx",
+        "batchIndex": 7,
+        "symbols": [
+          "MindTrailScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/settings/SettingsScreen.tsx",
+        "batchIndex": 7,
+        "symbols": [
+          "SettingsScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/sutra/SutraScreen.tsx",
+        "batchIndex": 16,
+        "symbols": [
+          "SutraScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/music/components/MusicPickerModal.tsx",
+        "batchIndex": 21,
+        "symbols": [
+          "MusicPickerModal"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/plan/PlanCreateScreen.tsx",
+        "batchIndex": 3,
+        "symbols": [
+          "PlanCreateScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/core/ReflectionDetailContent.tsx",
+        "batchIndex": 5,
+        "symbols": [
+          "ReflectionDetailContent"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/stats/StatsScreen.tsx",
+        "batchIndex": 7,
+        "symbols": [
+          "StatsScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/vow/VowScreen.tsx",
+        "batchIndex": 16,
+        "symbols": [
+          "VowScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/components/SyncBanner.tsx",
+        "batchIndex": 17,
+        "symbols": [
+          "SyncBanner"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/exercise/ExerciseHistoryScreen.tsx",
+        "batchIndex": 2,
+        "symbols": [
+          "ExerciseHistoryScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/global-pulse/components/ActiveUserItem.tsx",
+        "batchIndex": 14,
+        "symbols": [
+          "ActiveUserItem"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/global-pulse/components/ActiveUsersList.tsx",
+        "batchIndex": 14,
+        "symbols": [
+          "ActiveUsersList"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/global-pulse/components/BottomPanel.tsx",
+        "batchIndex": 14,
+        "symbols": [
+          "BottomPanel"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/global-pulse/components/Leaderboard.tsx",
+        "batchIndex": 14,
+        "symbols": [
+          "Leaderboard"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/global-pulse/components/MarkerDetail.tsx",
+        "batchIndex": 14,
+        "symbols": [
+          "MarkerDetail"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/home/screens/CheckinHistoryScreen.tsx",
+        "batchIndex": 3,
+        "symbols": [
+          "CheckinHistoryScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/music/screens/MusicCategoryScreen.tsx",
+        "batchIndex": 21,
+        "symbols": [
+          "MusicCategoryScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/plan/PlanDetailScreen.tsx",
+        "batchIndex": 3,
+        "symbols": [
+          "PlanDetailScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/plan/PlanScreen.tsx",
+        "batchIndex": 4,
+        "symbols": [
+          "PlanScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/practice/body/BodyFlow.tsx",
+        "batchIndex": 4,
+        "symbols": [
+          "BodyFlow"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/core/CreatePlanFromReflectionModal.tsx",
+        "batchIndex": 5,
+        "symbols": [
+          "CreatePlanFromReflectionModal"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/core/CreatePlanFromTrailModal.tsx",
+        "batchIndex": 5,
+        "symbols": [
+          "CreatePlanFromTrailModal"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/core/ReflectionDetailScreen.tsx",
+        "batchIndex": 5,
+        "symbols": [
+          "ReflectionDetailScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/timeline/TimelineList.tsx",
+        "batchIndex": 6,
+        "symbols": [
+          "TimelineList"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/trails/TrailSuggestionBanner.tsx",
+        "batchIndex": 7,
+        "symbols": [
+          "TrailSuggestionBanner"
+        ]
+      }
+    ],
+    "apps/mobile/src/components/VirtualList.tsx": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/components/charts/BarChart.tsx": [
+      {
+        "path": "apps/mobile/src/features/habits/HabitStatsSection.tsx",
+        "batchIndex": 2,
+        "symbols": [
+          "HabitStatsSection"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/stats/StatsScreen.tsx",
+        "batchIndex": 7,
+        "symbols": [
+          "StatsScreen"
+        ]
+      }
+    ],
+    "apps/mobile/src/components/charts/CalendarGrid.tsx": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/habits/components/HabitCalendarModal.tsx",
+        "batchIndex": 2,
+        "symbols": [
+          "HabitCalendarModal"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/habits/HabitDetailScreen.tsx",
+        "batchIndex": 2,
+        "symbols": [
+          "HabitDetailScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/home/components/CheckinStatsModal.tsx",
+        "batchIndex": 2,
+        "symbols": [
+          "CheckinStatsModal"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/insights/ReflectionStatsScreen.tsx",
+        "batchIndex": 6,
+        "symbols": [
+          "ReflectionStatsScreen"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/stats/StatsScreen.tsx",
+        "batchIndex": 7,
+        "symbols": [
+          "StatsScreen"
+        ]
+      }
+    ],
+    "apps/mobile/src/components/charts/HeatmapGrid.tsx": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/components/charts/LineChart.tsx": [
+      {
+        "path": "apps/mobile/src/features/habits/HabitStatsSection.tsx",
+        "batchIndex": 2,
+        "symbols": [
+          "HabitStatsSection"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/stats/StatsScreen.tsx",
+        "batchIndex": 7,
+        "symbols": [
+          "StatsScreen"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/auth/ForgotPasswordScreen.tsx": [
+      {
+        "path": "apps/mobile/src/navigation/hooks.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "RootStackParamList",
+          "MainTabParamList",
+          "useRootNavigation",
+          "useTabNavigation"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/auth/LoginScreen.tsx": [
+      {
+        "path": "apps/mobile/src/navigation/hooks.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "RootStackParamList",
+          "MainTabParamList",
+          "useRootNavigation",
+          "useTabNavigation"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/store/useAppStore.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "flushAllPendingTimers",
+          "useShallowStore",
+          "setAutoSyncCallback",
+          "useAppStore",
+          "initMobileStore"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/auth/RegisterScreen.tsx": [
+      {
+        "path": "apps/mobile/src/navigation/hooks.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "RootStackParamList",
+          "MainTabParamList",
+          "useRootNavigation",
+          "useTabNavigation"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/store/useAppStore.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "flushAllPendingTimers",
+          "useShallowStore",
+          "setAutoSyncCallback",
+          "useAppStore",
+          "initMobileStore"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/auth/pushTokenRegistration.ts": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/breathing/BreathHistoryPage.tsx": [
+      {
+        "path": "apps/mobile/src/navigation/hooks.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "RootStackParamList",
+          "MainTabParamList",
+          "useRootNavigation",
+          "useTabNavigation"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/store/useAppStore.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "flushAllPendingTimers",
+          "useShallowStore",
+          "setAutoSyncCallback",
+          "useAppStore",
+          "initMobileStore"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/breathing/BreathingEngine.tsx": [
+      {
+        "path": "apps/mobile/src/store/useAppStore.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "flushAllPendingTimers",
+          "useShallowStore",
+          "setAutoSyncCallback",
+          "useAppStore",
+          "initMobileStore"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/breathing/BreathingScreen.tsx": [
+      {
+        "path": "apps/mobile/src/navigation/hooks.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "RootStackParamList",
+          "MainTabParamList",
+          "useRootNavigation",
+          "useTabNavigation"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/navigation/SimpleHeader.tsx",
+        "batchIndex": 16,
+        "symbols": [
+          "SimpleHeader"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/store/safeAsyncStorage.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "safeGetItem",
+          "safeSetItem",
+          "safeMultiGet",
+          "safeMultiSet"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/breathing/breathStyles.ts": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/breathing/hooks/useBreathSettings.ts": [
+      {
+        "path": "apps/mobile/src/store/safeAsyncStorage.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "safeGetItem",
+          "safeSetItem",
+          "safeMultiGet",
+          "safeMultiSet"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/breathing/pages/BreathActivePage.tsx": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/breathing/pages/BreathPreparePage.tsx": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/breathing/pages/BreathReportPage.tsx": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/breathing/useBreathAudio.ts": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/diet/DietScreen.tsx": [
+      {
+        "path": "apps/mobile/src/features/diet/WuxingRadarChart.tsx",
+        "batchIndex": 2,
+        "symbols": [
+          "WuxingRadarChart"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/navigation/SimpleHeader.tsx",
+        "batchIndex": 16,
+        "symbols": [
+          "SimpleHeader"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/store/useAppStore.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "flushAllPendingTimers",
+          "useShallowStore",
+          "setAutoSyncCallback",
+          "useAppStore",
+          "initMobileStore"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/diet/WuxingCalendar.tsx": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ]
+  }
+}

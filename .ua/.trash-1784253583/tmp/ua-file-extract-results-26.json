@@ -1,0 +1,228 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 3,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "packages/core/src/business/markerAggregation.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 94,
+      "nonEmptyLines": 82,
+      "functions": [
+        {
+          "name": "makeCheckin",
+          "startLine": 5,
+          "endLine": 16,
+          "params": [
+            "overrides"
+          ]
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "makeCheckin",
+          "callee": "new Date().toISOString",
+          "lineNumber": 13
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 0,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/markerAggregation.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 166,
+      "nonEmptyLines": 150,
+      "functions": [
+        {
+          "name": "getGridSize",
+          "startLine": 33,
+          "endLine": 37,
+          "params": [
+            "zoom"
+          ]
+        },
+        {
+          "name": "getGridId",
+          "startLine": 42,
+          "endLine": 46,
+          "params": [
+            "lat",
+            "lng",
+            "gridSize"
+          ]
+        },
+        {
+          "name": "calculateClusterCenter",
+          "startLine": 51,
+          "endLine": 66,
+          "params": [
+            "checkins"
+          ]
+        },
+        {
+          "name": "aggregateMarkers",
+          "startLine": 74,
+          "endLine": 128,
+          "params": [
+            "checkins",
+            "zoom"
+          ]
+        },
+        {
+          "name": "shouldCluster",
+          "startLine": 133,
+          "endLine": 143,
+          "params": [
+            "marker1",
+            "marker2",
+            "zoom",
+            "screenWidth"
+          ]
+        },
+        {
+          "name": "getClusterStyle",
+          "startLine": 148,
+          "endLine": 166,
+          "params": [
+            "count"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "aggregateMarkers",
+          "line": 74,
+          "isDefault": false
+        },
+        {
+          "name": "shouldCluster",
+          "line": 133,
+          "isDefault": false
+        },
+        {
+          "name": "getClusterStyle",
+          "line": 148,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getGridId",
+          "callee": "Math.floor",
+          "lineNumber": 43
+        },
+        {
+          "caller": "getGridId",
+          "callee": "Math.floor",
+          "lineNumber": 44
+        },
+        {
+          "caller": "getGridId",
+          "callee": "gridLat.toFixed",
+          "lineNumber": 45
+        },
+        {
+          "caller": "getGridId",
+          "callee": "gridLng.toFixed",
+          "lineNumber": 45
+        },
+        {
+          "caller": "calculateClusterCenter",
+          "callee": "checkins.reduce",
+          "lineNumber": 54
+        },
+        {
+          "caller": "aggregateMarkers",
+          "callee": "checkins.map",
+          "lineNumber": 80
+        },
+        {
+          "caller": "aggregateMarkers",
+          "callee": "getGridSize",
+          "lineNumber": 89
+        },
+        {
+          "caller": "aggregateMarkers",
+          "callee": "getGridId",
+          "lineNumber": 94
+        },
+        {
+          "caller": "aggregateMarkers",
+          "callee": "clusters.has",
+          "lineNumber": 95
+        },
+        {
+          "caller": "aggregateMarkers",
+          "callee": "clusters.set",
+          "lineNumber": 96
+        },
+        {
+          "caller": "aggregateMarkers",
+          "callee": "clusters.get(gridId)!.push",
+          "lineNumber": 98
+        },
+        {
+          "caller": "aggregateMarkers",
+          "callee": "clusters.get",
+          "lineNumber": 98
+        },
+        {
+          "caller": "aggregateMarkers",
+          "callee": "result.push",
+          "lineNumber": 107
+        },
+        {
+          "caller": "aggregateMarkers",
+          "callee": "calculateClusterCenter",
+          "lineNumber": 116
+        },
+        {
+          "caller": "aggregateMarkers",
+          "callee": "result.push",
+          "lineNumber": 117
+        },
+        {
+          "caller": "shouldCluster",
+          "callee": "getGridSize",
+          "lineNumber": 139
+        },
+        {
+          "caller": "shouldCluster",
+          "callee": "getGridId",
+          "lineNumber": 140
+        },
+        {
+          "caller": "shouldCluster",
+          "callee": "getGridId",
+          "lineNumber": 141
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 3,
+        "functionCount": 6,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/types/globalPulse.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 125,
+      "nonEmptyLines": 111,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    }
+  ]
+}

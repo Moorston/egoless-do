@@ -1,0 +1,609 @@
+{
+  "nodes": [
+    {
+      "id": "file:packages/core/src/types/app.ts",
+      "type": "file",
+      "name": "app.ts",
+      "summary": "应用顶层类型定义文件，定义年龄分段 AgeBracket、体脂估算纯函数（bracketMidpoint/ageToBracket/estimateBodyFat）、用户资料 UserProfile、全球用户 GlobalUser，以及聚合全应用状态的 AppState 接口。",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "domain-types",
+        "app-state",
+        "user-profile"
+      ],
+      "complexity": "moderate",
+      "filePath": "packages/core/src/types/app.ts"
+    },
+    {
+      "id": "file:packages/core/src/types/auth.ts",
+      "type": "file",
+      "name": "auth.ts",
+      "summary": "认证领域类型文件，定义认证用户 AuthUser 接口与认证态 AuthState 接口，并提供默认认证状态常量 defaultAuthState。",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "domain-types",
+        "auth"
+      ],
+      "complexity": "simple",
+      "filePath": "packages/core/src/types/auth.ts"
+    },
+    {
+      "id": "file:packages/core/src/types/body.ts",
+      "type": "file",
+      "name": "body.ts",
+      "summary": "调身/健身领域核心类型文件，定义身体策略 BodyStrategy、身体目标/计划/体重记录、训练动作 ExerciseDef 统一动作库、训练计划 BodyTrainingPlan 与当日覆盖 DayOverride 机制，以及预置健身模板 PlanTemplate。",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "domain-types",
+        "body",
+        "exercise"
+      ],
+      "complexity": "complex",
+      "filePath": "packages/core/src/types/body.ts"
+    },
+    {
+      "id": "file:packages/core/src/types/checkin.ts",
+      "type": "file",
+      "name": "checkin.ts",
+      "summary": "打卡领域类型文件，定义每日打卡 CheckinEntry、冥想历史 MedHistoryEntry 与宽限历史 GraceHistoryEntry 三个同步数据模型接口。",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "domain-types",
+        "checkin"
+      ],
+      "complexity": "simple",
+      "filePath": "packages/core/src/types/checkin.ts"
+    },
+    {
+      "id": "file:packages/core/src/types/diet.ts",
+      "type": "file",
+      "name": "diet.ts",
+      "summary": "饮食/五行食养领域类型文件，定义五行元素、五味、食材性质、脏腑等枚举，以及食材五行映射 FoodWuxingItem、进食动机 EatingMotivation 记录、自定义五行映射与多维统计结果类型。",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "domain-types",
+        "diet",
+        "wuxing"
+      ],
+      "complexity": "moderate",
+      "filePath": "packages/core/src/types/diet.ts"
+    },
+    {
+      "id": "file:packages/core/src/types/exercise.ts",
+      "type": "file",
+      "name": "exercise.ts",
+      "summary": "运动记录领域类型文件，定义地理轨迹点 GeoPoint、运动组 ExerciseSet、运动记录 ExerciseEntry，以及运动项目 SportItem 与运动分组 SportGroup 接口。",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "domain-types",
+        "exercise"
+      ],
+      "complexity": "moderate",
+      "filePath": "packages/core/src/types/exercise.ts"
+    },
+    {
+      "id": "file:packages/core/src/types/fasting.ts",
+      "type": "file",
+      "name": "fasting.ts",
+      "summary": "禁食领域类型文件，定义单个禁食会话 FastingSession 数据模型，包含目标时长、起止时间、预估热量与感悟字段。",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "domain-types",
+        "fasting"
+      ],
+      "complexity": "simple",
+      "filePath": "packages/core/src/types/fasting.ts"
+    },
+    {
+      "id": "file:packages/core/src/types/food.ts",
+      "type": "file",
+      "name": "food.ts",
+      "summary": "食物领域类型文件，定义食物记录 FoodEntry、食物预设 FoodPreset、食物分类 FoodCategory 与用户自定义食物预设 CustomFoodPreset 接口。",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "domain-types",
+        "food"
+      ],
+      "complexity": "simple",
+      "filePath": "packages/core/src/types/food.ts"
+    },
+    {
+      "id": "file:packages/core/src/types/give.ts",
+      "type": "file",
+      "name": "give.ts",
+      "summary": "布施/给予领域类型文件，定义布施类型 GiveType 枚举、布施记录 GiveEntry 接口与布施类型配置 GIVE_TYPE_CONFIG 常量映射。",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "domain-types",
+        "give"
+      ],
+      "complexity": "simple",
+      "filePath": "packages/core/src/types/give.ts"
+    },
+    {
+      "id": "file:packages/core/src/types/habit.ts",
+      "type": "file",
+      "name": "habit.ts",
+      "summary": "习惯养成领域类型文件，定义习惯可关联模块 HabitLink 枚举与习惯 Habit 数据模型，支持目标天数、打卡日期、关联模块自动打卡及关联愿景等字段。",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "domain-types",
+        "habit"
+      ],
+      "complexity": "simple",
+      "filePath": "packages/core/src/types/habit.ts"
+    },
+    {
+      "id": "file:packages/core/src/types/mantra.ts",
+      "type": "file",
+      "name": "mantra.ts",
+      "summary": "经文/咒语领域类型文件，定义咒语定义 MantraDef、咒语念诵会话 MantraSession、经文阅读会话 SutraReadingSession，以及经文库预设清单 PRESET_SUTRAS（含心经/金刚经等核心经文与咒语佛号）。",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "domain-types",
+        "mantra",
+        "sutra"
+      ],
+      "complexity": "moderate",
+      "filePath": "packages/core/src/types/mantra.ts"
+    },
+    {
+      "id": "file:packages/core/src/types/mind.ts",
+      "type": "file",
+      "name": "mind.ts",
+      "summary": "心理/恐惧调节领域类型文件，定义恐惧分类/躯体区域/体态形状等枚举，以及恐惧记录 FearEntry、勇气行动 CourageEntry、成就 FearAchievement 数据模型，并提供成就定义 ACHIEVEMENT_DEFS、恐惧分类与躯体区域定义。",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "domain-types",
+        "mind",
+        "fear"
+      ],
+      "complexity": "moderate",
+      "filePath": "packages/core/src/types/mind.ts"
+    },
+    {
+      "id": "file:packages/core/src/types/plan.ts",
+      "type": "file",
+      "name": "plan.ts",
+      "summary": "计划管理领域类型文件，定义计划状态、任务状态、任务关联来源与打卡频率等枚举类型，以及计划 Plan、计划任务 PlanItem、任务打卡 PlanItemCheckin、每日待办与历史等数据模型。",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "domain-types",
+        "plan"
+      ],
+      "complexity": "moderate",
+      "filePath": "packages/core/src/types/plan.ts"
+    },
+    {
+      "id": "file:packages/core/src/types/recycle.ts",
+      "type": "file",
+      "name": "recycle.ts",
+      "summary": "回收站领域类型文件，定义可回收实体类型 RecycleBinEntityType 枚举与回收站项 RecycleBinItem 接口，其 data 字段为习惯/感念/食物/运动/计划/呼吸/任务联合类型。",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "domain-types",
+        "recycle"
+      ],
+      "complexity": "simple",
+      "filePath": "packages/core/src/types/recycle.ts"
+    },
+    {
+      "id": "file:packages/core/src/types/reflection-link.ts",
+      "type": "file",
+      "name": "reflection-link.ts",
+      "summary": "感念链接领域类型文件，定义链接类型 LinkType 枚举（引发/演进/对比/回应/相关）与感念链接 ReflectionLink 数据模型。",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "domain-types",
+        "reflection"
+      ],
+      "complexity": "simple",
+      "filePath": "packages/core/src/types/reflection-link.ts"
+    },
+    {
+      "id": "file:packages/core/src/types/review.ts",
+      "type": "file",
+      "name": "review.ts",
+      "summary": "复盘回顾领域类型文件，定义未完成原因统计、习惯进度、计划进度、复盘指标 ReviewMetrics、对比 ReviewComparison 与打卡复盘记录 CheckinReview 数据模型，涵盖 AI 生成总结与改进建议字段。",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "domain-types",
+        "review"
+      ],
+      "complexity": "moderate",
+      "filePath": "packages/core/src/types/review.ts"
+    },
+    {
+      "id": "file:packages/core/src/types/shared.ts",
+      "type": "file",
+      "name": "shared.ts",
+      "summary": "共享基础类型文件，定义通用情绪 KnownMood/Mood、习惯状态 HabitStatus、主题名 ThemeName 枚举，所有同步实体的基础接口 Syncable，以及主题配置 Theme 接口。",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "domain-types",
+        "shared"
+      ],
+      "complexity": "simple",
+      "filePath": "packages/core/src/types/shared.ts"
+    },
+    {
+      "id": "file:packages/core/src/types/sleep.ts",
+      "type": "file",
+      "name": "sleep.ts",
+      "summary": "睡眠领域类型文件，定义睡眠质量 SleepQuality 与工作状态 WorkState 枚举，以及睡眠记录 SleepEntry、睡眠目标 SleepGoal 数据模型，并提供默认睡眠目标与身心状态预设常量。",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "domain-types",
+        "sleep"
+      ],
+      "complexity": "moderate",
+      "filePath": "packages/core/src/types/sleep.ts"
+    },
+    {
+      "id": "file:packages/core/src/types/vow.ts",
+      "type": "file",
+      "name": "vow.ts",
+      "summary": "愿景/发愿领域类型文件，定义愿景类型/状态/时间跨度枚举，以及愿景 Vision、愿景实践 VisionPractice、回向 Dedication、回向设置 DedicationSettings 数据模型，并提供时间跨度与默认回向设置常量。",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "domain-types",
+        "vow",
+        "dedication"
+      ],
+      "complexity": "moderate",
+      "filePath": "packages/core/src/types/vow.ts"
+    },
+    {
+      "id": "file:packages/core/src/types/zhiguan.ts",
+      "type": "file",
+      "name": "zhiguan.ts",
+      "summary": "止观双修领域核心类型文件，基于智者大师《小止观》四阶段环绕模型，定义坐禅阶段/法门/状态枚举、五盖雷达 FiveHindranceRadar、八触觉受 EightTactile、定阶位次 SamStage、坐禅会话 ZhiguanSession 与推荐结果等类型。",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "domain-types",
+        "zhiguan",
+        "meditation"
+      ],
+      "complexity": "complex",
+      "filePath": "packages/core/src/types/zhiguan.ts"
+    },
+    {
+      "id": "func:packages/core/src/types/app.ts:bracketMidpoint",
+      "type": "function",
+      "name": "bracketMidpoint",
+      "summary": "根据年龄分段字符串返回该分段的中点数值，用于体脂估算的年龄因子计算。",
+      "tags": [
+        "type-definition",
+        "domain-types"
+      ],
+      "complexity": "simple",
+      "filePath": "packages/core/src/types/app.ts"
+    },
+    {
+      "id": "func:packages/core/src/types/app.ts:ageToBracket",
+      "type": "function",
+      "name": "ageToBracket",
+      "summary": "将数值年龄映射到对应的 AgeBracket 年龄分段，输入为空时返回 undefined。",
+      "tags": [
+        "type-definition",
+        "domain-types"
+      ],
+      "complexity": "simple",
+      "filePath": "packages/core/src/types/app.ts"
+    },
+    {
+      "id": "func:packages/core/src/types/app.ts:estimateBodyFat",
+      "type": "function",
+      "name": "estimateBodyFat",
+      "summary": "根据性别、年龄分段、身高体重估算体脂百分比，基于 BMI 公式并做上下限钳制，输入不足时回退到人口基线值。",
+      "tags": [
+        "type-definition",
+        "domain-types"
+      ],
+      "complexity": "moderate",
+      "filePath": "packages/core/src/types/app.ts"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:packages/core/src/types/app.ts",
+      "target": "file:packages/core/src/types/auth.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/app.ts",
+      "target": "file:packages/core/src/types/checkin.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/app.ts",
+      "target": "file:packages/core/src/types/exercise.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/app.ts",
+      "target": "file:packages/core/src/types/fasting.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/app.ts",
+      "target": "file:packages/core/src/types/food.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/app.ts",
+      "target": "file:packages/core/src/types/habit.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/app.ts",
+      "target": "file:packages/core/src/types/plan.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/app.ts",
+      "target": "file:packages/core/src/types/recycle.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/app.ts",
+      "target": "file:packages/core/src/types/reflection-link.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/app.ts",
+      "target": "file:packages/core/src/types/reflection.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/app.ts",
+      "target": "file:packages/core/src/types/shared.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/app.ts",
+      "target": "file:packages/core/src/types/thought-trail.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/body.ts",
+      "target": "file:packages/core/src/types/shared.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/checkin.ts",
+      "target": "file:packages/core/src/types/shared.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/diet.ts",
+      "target": "file:packages/core/src/types/shared.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/exercise.ts",
+      "target": "file:packages/core/src/types/shared.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/fasting.ts",
+      "target": "file:packages/core/src/types/shared.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/food.ts",
+      "target": "file:packages/core/src/types/shared.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/give.ts",
+      "target": "file:packages/core/src/types/shared.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/habit.ts",
+      "target": "file:packages/core/src/types/shared.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/mantra.ts",
+      "target": "file:packages/core/src/types/shared.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/mind.ts",
+      "target": "file:packages/core/src/types/shared.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/plan.ts",
+      "target": "file:packages/core/src/types/shared.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/recycle.ts",
+      "target": "file:packages/core/src/types/breath.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/recycle.ts",
+      "target": "file:packages/core/src/types/exercise.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/recycle.ts",
+      "target": "file:packages/core/src/types/food.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/recycle.ts",
+      "target": "file:packages/core/src/types/habit.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/recycle.ts",
+      "target": "file:packages/core/src/types/plan.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/recycle.ts",
+      "target": "file:packages/core/src/types/reflection.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/reflection-link.ts",
+      "target": "file:packages/core/src/types/shared.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/review.ts",
+      "target": "file:packages/core/src/types/shared.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/sleep.ts",
+      "target": "file:packages/core/src/types/shared.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/vow.ts",
+      "target": "file:packages/core/src/types/shared.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/zhiguan.ts",
+      "target": "file:packages/core/src/types/shared.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/app.ts",
+      "target": "func:packages/core/src/types/app.ts:bracketMidpoint",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/app.ts",
+      "target": "func:packages/core/src/types/app.ts:ageToBracket",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/app.ts",
+      "target": "func:packages/core/src/types/app.ts:estimateBodyFat",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/app.ts",
+      "target": "func:packages/core/src/types/app.ts:bracketMidpoint",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/app.ts",
+      "target": "func:packages/core/src/types/app.ts:ageToBracket",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:packages/core/src/types/app.ts",
+      "target": "func:packages/core/src/types/app.ts:estimateBodyFat",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    }
+  ]
+}

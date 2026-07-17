@@ -1,0 +1,25 @@
+{
+  "fixed_count": 18,
+  "added_nodes": [],
+  "restored_edges": [
+    {"source": "file:packages/core/src/store/createPlanSlice.ts", "target": "function:packages/core/src/business/plan.ts:addPlan", "type": "calls"},
+    {"source": "file:packages/core/src/store/createPlanSlice.ts", "target": "function:packages/core/src/business/plan.ts:updatePlan", "type": "calls"},
+    {"source": "file:packages/core/src/store/createPlanSlice.ts", "target": "function:packages/core/src/business/plan.ts:deletePlan", "type": "calls"},
+    {"source": "file:packages/core/src/store/createPlanSlice.ts", "target": "function:packages/core/src/business/plan.ts:startPlan", "type": "calls"},
+    {"source": "file:packages/core/src/store/createPlanSlice.ts", "target": "function:packages/core/src/business/plan.ts:pausePlan", "type": "calls"},
+    {"source": "file:packages/core/src/store/createPlanSlice.ts", "target": "function:packages/core/src/business/plan.ts:resumePlan", "type": "calls"},
+    {"source": "file:packages/core/src/store/createPlanSlice.ts", "target": "function:packages/core/src/business/plan.ts:completePlan", "type": "calls"},
+    {"source": "file:packages/core/src/store/createPlanSlice.ts", "target": "function:packages/core/src/business/plan.ts:cancelPlan", "type": "calls"},
+    {"source": "file:packages/core/src/store/createPlanSlice.ts", "target": "function:packages/core/src/business/plan.ts:addPlanItem", "type": "calls"},
+    {"source": "file:packages/core/src/store/createPlanSlice.ts", "target": "function:packages/core/src/business/plan.ts:updatePlanItem", "type": "calls"},
+    {"source": "file:packages/core/src/store/createPlanSlice.ts", "target": "function:packages/core/src/business/plan.ts:deletePlanItem", "type": "calls"},
+    {"source": "file:packages/core/src/store/createPlanSlice.ts", "target": "function:packages/core/src/business/plan.ts:checkinItem", "type": "calls"},
+    {"source": "file:packages/core/src/store/createPlanSlice.ts", "target": "function:packages/core/src/business/plan.ts:uncheckinItem", "type": "calls"},
+    {"source": "file:packages/core/src/store/createPlanSlice.ts", "target": "function:packages/core/src/business/plan.ts:syncPlanItemsFromModules", "type": "calls"},
+    {"source": "file:packages/core/src/store/createPlanSlice.ts", "target": "function:packages/core/src/business/plan.ts:computePlanProgress", "type": "calls"},
+    {"source": "file:packages/core/src/store/createPlanSlice.ts", "target": "function:packages/core/src/business/plan.ts:refreshPlanItemStats", "type": "calls"},
+    {"source": "file:packages/core/src/store/createPlanSlice.ts", "target": "function:packages/core/src/business/plan.ts:canDeletePlan", "type": "calls"},
+    {"source": "file:packages/core/src/store/createHabitSlice.ts", "target": "function:packages/core/src/defaults.ts:createHabitFromForm", "type": "calls"}
+  ],
+  "notes": "Correction to merge-script report: the 18 dropped calls-edge targets were NOT missing nodes. The batch analyzer had already captured all 18 function nodes at their true definition sites (packages/core/src/business/plan.ts for the 17 plan helpers, packages/core/src/defaults.ts for createHabitFromForm), and all corresponding 'contains' and 'exports' edges already existed. The real defect was that the merge script authored these 18 calls edges against barrel re-export IDs (function:packages/core/src/business/index.ts:<name>) — which do not exist as nodes, since business/index.ts is a barrel that re-exports from plan.ts/defaults.ts. With no matching target node, the script dropped the edges. Resolution: read the source (business/plan.ts, business/index.ts, defaults.ts, store/createPlanSlice.ts, store/createHabitSlice.ts), confirmed each target function's definition location and line range, and re-pointed the 18 calls edges at the existing definition-site nodes. No nodes or other edges needed adding — the graph already contained them. Final: 2623 nodes, 5039 edges (was 5021). All 18 calls edges verified present and dedup-clean."
+}

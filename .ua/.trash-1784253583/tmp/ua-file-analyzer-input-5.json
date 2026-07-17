@@ -1,0 +1,2267 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": "apps/mobile/src/features/practice/body/hooks/useTodayPlan.ts",
+      "language": "typescript",
+      "sizeLines": 82,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/practice/body/modals/AdjustExerciseModal.tsx",
+      "language": "typescript",
+      "sizeLines": 129,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/practice/body/modals/AssessmentModal.tsx",
+      "language": "typescript",
+      "sizeLines": 64,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/practice/body/modals/BodyCheckinModal.tsx",
+      "language": "typescript",
+      "sizeLines": 142,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/practice/body/modals/DayActionSheet.tsx",
+      "language": "typescript",
+      "sizeLines": 85,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/practice/body/modals/GoalEditLightModal.tsx",
+      "language": "typescript",
+      "sizeLines": 112,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/practice/body/modals/GoalEditModal.tsx",
+      "language": "typescript",
+      "sizeLines": 63,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/practice/body/modals/PlanEditModal.tsx",
+      "language": "typescript",
+      "sizeLines": 129,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/practice/body/modals/QuickSwapModal.tsx",
+      "language": "typescript",
+      "sizeLines": 136,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/practice/body/modals/TemplatePickerModal.tsx",
+      "language": "typescript",
+      "sizeLines": 106,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/practice/body/modals/WeightRecordModal.tsx",
+      "language": "typescript",
+      "sizeLines": 78,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/practice/body/modals/WeightTrendModal.tsx",
+      "language": "typescript",
+      "sizeLines": 35,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/practice/body/screens/BodyCheckinHistoryScreen.tsx",
+      "language": "typescript",
+      "sizeLines": 141,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/practice/body/screens/BodyPlanEditorScreen.tsx",
+      "language": "typescript",
+      "sizeLines": 527,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/practice/body/screens/CelebrationOverlay.tsx",
+      "language": "typescript",
+      "sizeLines": 227,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/practice/body/screens/PlanManagementScreen.tsx",
+      "language": "typescript",
+      "sizeLines": 225,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/core/AddReflectionBar.tsx",
+      "language": "typescript",
+      "sizeLines": 83,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/core/AddReflectionFAB.tsx",
+      "language": "typescript",
+      "sizeLines": 43,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/core/BatchActionBar.tsx",
+      "language": "typescript",
+      "sizeLines": 162,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/core/CreatePlanFromReflectionModal.tsx",
+      "language": "typescript",
+      "sizeLines": 155,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/core/CreatePlanFromTrailModal.tsx",
+      "language": "typescript",
+      "sizeLines": 188,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/core/CreateReflectionModal.tsx",
+      "language": "typescript",
+      "sizeLines": 312,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/core/DayGroup.tsx",
+      "language": "typescript",
+      "sizeLines": 177,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/core/FilterDrawer.tsx",
+      "language": "typescript",
+      "sizeLines": 359,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/core/FilterTags.tsx",
+      "language": "typescript",
+      "sizeLines": 114,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/core/PlanTaskCard.tsx",
+      "language": "typescript",
+      "sizeLines": 147,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/core/PlanTasksSection.tsx",
+      "language": "typescript",
+      "sizeLines": 92,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/core/ReflectionCard.tsx",
+      "language": "typescript",
+      "sizeLines": 260,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/core/ReflectionDetailContent.tsx",
+      "language": "typescript",
+      "sizeLines": 203,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/core/ReflectionDetailScreen.tsx",
+      "language": "typescript",
+      "sizeLines": 88,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/core/ReflectionForm.tsx",
+      "language": "typescript",
+      "sizeLines": 277,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/core/ReflectionsScreen.tsx",
+      "language": "typescript",
+      "sizeLines": 861,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/core/SearchFilterBar.tsx",
+      "language": "typescript",
+      "sizeLines": 93,
+      "fileCategory": "code"
+    }
+  ],
+  "batchImportData": {
+    "apps/mobile/src/features/practice/body/hooks/useTodayPlan.ts": [
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/modals/AdjustExerciseModal.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/modals/AssessmentModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/modals/BodyCheckinModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/modals/DayActionSheet.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/modals/GoalEditLightModal.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/modals/GoalEditModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/modals/PlanEditModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/modals/QuickSwapModal.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/modals/TemplatePickerModal.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/modals/WeightRecordModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/modals/WeightTrendModal.tsx": [
+      "apps/mobile/src/features/practice/body/WeightTrendChart.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/screens/BodyCheckinHistoryScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/screens/BodyPlanEditorScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/practice/body/modals/TemplatePickerModal.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/screens/CelebrationOverlay.tsx": [
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/practice/body/screens/PlanManagementScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/AddReflectionBar.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/AddReflectionFAB.tsx": [
+      "apps/mobile/src/components/UI.tsx"
+    ],
+    "apps/mobile/src/features/reflections/core/BatchActionBar.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/CreatePlanFromReflectionModal.tsx": [
+      "apps/mobile/src/components/DatePickerModal.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/plan/components/PlanItemForm.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/CreatePlanFromTrailModal.tsx": [
+      "apps/mobile/src/components/DatePickerModal.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/plan/components/PlanItemForm.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/CreateReflectionModal.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/DayGroup.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/core/ReflectionCard.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/FilterDrawer.tsx": [
+      "apps/mobile/src/components/DateRangePickerModal.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/FilterTags.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/PlanTaskCard.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/navigation/types.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/PlanTasksSection.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/core/PlanTaskCard.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/ReflectionCard.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/ReflectionDetailContent.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/trails/index.ts",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/ReflectionDetailScreen.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/core/ReflectionDetailContent.tsx",
+      "apps/mobile/src/features/reflections/core/ShareCard.tsx",
+      "apps/mobile/src/navigation/types.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/ReflectionForm.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/ReflectionsScreen.tsx": [
+      "apps/mobile/src/components/ItemManagerPanel.tsx",
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/core/CreatePlanFromReflectionModal.tsx",
+      "apps/mobile/src/features/reflections/core/FilterDrawer.tsx",
+      "apps/mobile/src/features/reflections/core/ReflectionDetailContent.tsx",
+      "apps/mobile/src/features/reflections/core/ReflectionForm.tsx",
+      "apps/mobile/src/features/reflections/core/SearchFilterBar.tsx",
+      "apps/mobile/src/features/reflections/core/ShareCard.tsx",
+      "apps/mobile/src/features/reflections/hooks/useReflections.ts",
+      "apps/mobile/src/features/reflections/trails/MindTrailEntryCard.tsx",
+      "apps/mobile/src/features/reflections/trails/TrailPickerModal.tsx",
+      "apps/mobile/src/features/reflections/trails/TrailSuggestionBanner.tsx",
+      "apps/mobile/src/navigation/hooks.ts",
+      "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "apps/mobile/src/store/safeAsyncStorage.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/core/SearchFilterBar.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ]
+  },
+  "neighborMap": {
+    "apps/mobile/src/features/practice/body/hooks/useTodayPlan.ts": [
+      {
+        "path": "apps/mobile/src/store/useAppStore.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "flushAllPendingTimers",
+          "useShallowStore",
+          "setAutoSyncCallback",
+          "useAppStore",
+          "initMobileStore"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+        "batchIndex": 4,
+        "symbols": [
+          "BodyDashboard"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/practice/BodyScreen.tsx",
+        "batchIndex": 4,
+        "symbols": [
+          "BodyScreen"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/practice/body/modals/AdjustExerciseModal.tsx": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+        "batchIndex": 4,
+        "symbols": [
+          "BodyDashboard"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/practice/body/modals/AssessmentModal.tsx": [
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+        "batchIndex": 4,
+        "symbols": [
+          "BodyDashboard"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/practice/body/modals/BodyCheckinModal.tsx": [
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+        "batchIndex": 4,
+        "symbols": [
+          "BodyDashboard"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/practice/body/modals/DayActionSheet.tsx": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+        "batchIndex": 4,
+        "symbols": [
+          "BodyDashboard"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/practice/body/modals/GoalEditLightModal.tsx": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+        "batchIndex": 4,
+        "symbols": [
+          "BodyDashboard"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/practice/body/modals/GoalEditModal.tsx": [
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+        "batchIndex": 4,
+        "symbols": [
+          "BodyDashboard"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/practice/body/modals/PlanEditModal.tsx": [
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/practice/body/modals/QuickSwapModal.tsx": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+        "batchIndex": 4,
+        "symbols": [
+          "BodyDashboard"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/practice/body/modals/TemplatePickerModal.tsx": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/practice/body/modals/WeightRecordModal.tsx": [
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+        "batchIndex": 4,
+        "symbols": [
+          "BodyDashboard"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/practice/body/modals/WeightTrendModal.tsx": [
+      {
+        "path": "apps/mobile/src/features/practice/body/WeightTrendChart.tsx",
+        "batchIndex": 4,
+        "symbols": [
+          "WeightTrendChart"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+        "batchIndex": 4,
+        "symbols": [
+          "BodyDashboard"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/practice/body/screens/BodyCheckinHistoryScreen.tsx": [
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/navigation/hooks.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "RootStackParamList",
+          "MainTabParamList",
+          "useRootNavigation",
+          "useTabNavigation"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/store/useAppStore.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "flushAllPendingTimers",
+          "useShallowStore",
+          "setAutoSyncCallback",
+          "useAppStore",
+          "initMobileStore"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/practice/body/screens/BodyPlanEditorScreen.tsx": [
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/navigation/hooks.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "RootStackParamList",
+          "MainTabParamList",
+          "useRootNavigation",
+          "useTabNavigation"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/store/useAppStore.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "flushAllPendingTimers",
+          "useShallowStore",
+          "setAutoSyncCallback",
+          "useAppStore",
+          "initMobileStore"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/practice/body/screens/CelebrationOverlay.tsx": [
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+        "batchIndex": 4,
+        "symbols": [
+          "BodyDashboard"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/practice/body/screens/PlanManagementScreen.tsx": [
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/navigation/hooks.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "RootStackParamList",
+          "MainTabParamList",
+          "useRootNavigation",
+          "useTabNavigation"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/store/useAppStore.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "flushAllPendingTimers",
+          "useShallowStore",
+          "setAutoSyncCallback",
+          "useAppStore",
+          "initMobileStore"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/reflections/core/AddReflectionBar.tsx": [
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/reflections/core/AddReflectionFAB.tsx": [
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+        "batchIndex": 7,
+        "symbols": [
+          "ThoughtTrailDetailScreen"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/reflections/core/BatchActionBar.tsx": [
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/reflections/core/CreatePlanFromReflectionModal.tsx": [
+      {
+        "path": "apps/mobile/src/components/DatePickerModal.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "DatePickerModal"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/plan/components/PlanItemForm.tsx",
+        "batchIndex": 4,
+        "symbols": [
+          "validatePlanItemForm",
+          "PlanItemFormValue",
+          "PlanItemForm"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/store/useAppStore.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "flushAllPendingTimers",
+          "useShallowStore",
+          "setAutoSyncCallback",
+          "useAppStore",
+          "initMobileStore"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/reflections/core/CreatePlanFromTrailModal.tsx": [
+      {
+        "path": "apps/mobile/src/components/DatePickerModal.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "DatePickerModal"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/plan/components/PlanItemForm.tsx",
+        "batchIndex": 4,
+        "symbols": [
+          "validatePlanItemForm",
+          "PlanItemFormValue",
+          "PlanItemForm"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/store/useAppStore.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "flushAllPendingTimers",
+          "useShallowStore",
+          "setAutoSyncCallback",
+          "useAppStore",
+          "initMobileStore"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+        "batchIndex": 7,
+        "symbols": [
+          "ThoughtTrailDetailScreen"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/reflections/core/CreateReflectionModal.tsx": [
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/store/useAppStore.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "flushAllPendingTimers",
+          "useShallowStore",
+          "setAutoSyncCallback",
+          "useAppStore",
+          "initMobileStore"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/reflections/core/DayGroup.tsx": [
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/store/useAppStore.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "flushAllPendingTimers",
+          "useShallowStore",
+          "setAutoSyncCallback",
+          "useAppStore",
+          "initMobileStore"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/reflections/core/FilterDrawer.tsx": [
+      {
+        "path": "apps/mobile/src/components/DateRangePickerModal.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "DateRangePickerModal"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/reflections/core/FilterTags.tsx": [
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/trails/QuickCreateTrailScreen.tsx",
+        "batchIndex": 7,
+        "symbols": [
+          "QuickCreateTrailScreen"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/reflections/core/PlanTaskCard.tsx": [
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/navigation/types.ts",
+        "batchIndex": 16,
+        "symbols": []
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/reflections/core/PlanTasksSection.tsx": [
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/trails/ThoughtTrailDetailScreen.tsx",
+        "batchIndex": 7,
+        "symbols": [
+          "ThoughtTrailDetailScreen"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/reflections/core/ReflectionCard.tsx": [
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/store/useAppStore.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "flushAllPendingTimers",
+          "useShallowStore",
+          "setAutoSyncCallback",
+          "useAppStore",
+          "initMobileStore"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/reflections/core/ReflectionDetailContent.tsx": [
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/trails/index.ts",
+        "batchIndex": 7,
+        "symbols": [
+          "MindTrailScreen",
+          "ThoughtTrailDetailScreen",
+          "QuickCreateTrailScreen",
+          "CreateThoughtTrailModal",
+          "LinkReflectionModal",
+          "MindTrailEntryCard",
+          "RelatedTrailsSection",
+          "ReviewAIPanel",
+          "TrailOverviewCard",
+          "TrailPickerModal",
+          "TrailSuggestionBanner"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/navigation/hooks.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "RootStackParamList",
+          "MainTabParamList",
+          "useRootNavigation",
+          "useTabNavigation"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/store/useAppStore.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "flushAllPendingTimers",
+          "useShallowStore",
+          "setAutoSyncCallback",
+          "useAppStore",
+          "initMobileStore"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/reflections/core/ReflectionDetailScreen.tsx": [
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/core/ShareCard.tsx",
+        "batchIndex": 6,
+        "symbols": [
+          "ShareCard"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/navigation/types.ts",
+        "batchIndex": 16,
+        "symbols": []
+      },
+      {
+        "path": "apps/mobile/src/store/useAppStore.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "flushAllPendingTimers",
+          "useShallowStore",
+          "setAutoSyncCallback",
+          "useAppStore",
+          "initMobileStore"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/reflections/core/ReflectionForm.tsx": [
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/reflections/core/ReflectionsScreen.tsx": [
+      {
+        "path": "apps/mobile/src/components/ItemManagerPanel.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "ItemManagerPanel"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/core/ShareCard.tsx",
+        "batchIndex": 6,
+        "symbols": [
+          "ShareCard"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/hooks/useReflections.ts",
+        "batchIndex": 6,
+        "symbols": [
+          "useReflections"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/trails/MindTrailEntryCard.tsx",
+        "batchIndex": 7,
+        "symbols": []
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/trails/TrailPickerModal.tsx",
+        "batchIndex": 7,
+        "symbols": [
+          "TrailPickerModal"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/features/reflections/trails/TrailSuggestionBanner.tsx",
+        "batchIndex": 7,
+        "symbols": [
+          "TrailSuggestionBanner"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/navigation/hooks.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "RootStackParamList",
+          "MainTabParamList",
+          "useRootNavigation",
+          "useTabNavigation"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/navigation/SimpleHeader.tsx",
+        "batchIndex": 16,
+        "symbols": [
+          "SimpleHeader"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/store/safeAsyncStorage.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "safeGetItem",
+          "safeSetItem",
+          "safeMultiGet",
+          "safeMultiSet"
+        ]
+      },
+      {
+        "path": "apps/mobile/src/store/useAppStore.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "flushAllPendingTimers",
+          "useShallowStore",
+          "setAutoSyncCallback",
+          "useAppStore",
+          "initMobileStore"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ],
+    "apps/mobile/src/features/reflections/core/SearchFilterBar.tsx": [
+      {
+        "path": "apps/mobile/src/components/UI.tsx",
+        "batchIndex": 1,
+        "symbols": [
+          "useTheme",
+          "useT",
+          "Card",
+          "PrimaryButton",
+          "OutlineButton",
+          "Toggle",
+          "Checkbox",
+          "RowItem",
+          "ScreenHeader",
+          "ThemedInput",
+          "PillSelector",
+          "TagPill",
+          "ProgressBar",
+          "BigTimer"
+        ]
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "batchIndex": 16,
+        "symbols": [
+          "configureFontScale",
+          "scaleFontSize",
+          "FONT_TITLE",
+          "FONT_BODY",
+          "FONT_BUTTON",
+          "FONT_EMPTY",
+          "FONT_LABEL",
+          "FONT_CARD_TITLE",
+          "FONT_SUB",
+          "FONT_BADGE",
+          "FONT_ERROR",
+          "FONT_BACK",
+          "FONT_CLOSE",
+          "FONT_STAT_CARD",
+          "FONT_STAT_SECTION",
+          "FONT_HERO",
+          "FONT_CHART_AXIS",
+          "FONT_CHART_TOOLTIP",
+          "FONT_SMALL",
+          "FONT_TINY",
+          "I18nKey",
+          "I18nKeys"
+        ]
+      }
+    ]
+  }
+}

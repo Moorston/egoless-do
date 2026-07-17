@@ -1,0 +1,83 @@
+{
+  "nodes": [
+    {
+      "id": "document:.trellis/tasks/archive/2026-07/07-03-habits-page-optimization/design.md",
+      "type": "document",
+      "name": "design.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/design.md",
+      "summary": "习惯页优化技术设计：共享常量迁移、FlatList 修复、日历复用、打卡动画、统计图表与高级筛选排序的方案与数据流设计。",
+      "tags": [
+        "documentation",
+        "design-doc",
+        "habits",
+        "mobile"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:.trellis/tasks/archive/2026-07/07-03-habits-page-optimization/implement.md",
+      "type": "document",
+      "name": "implement.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/implement.md",
+      "summary": "习惯页优化实施计划：Phase 1 代码重构（提取常量/Hook/Modal/组件）、Phase 2 UI 优化、Phase 3 功能增强，含验证命令与风险文件。",
+      "tags": [
+        "documentation",
+        "implementation-plan",
+        "habits",
+        "mobile"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:.trellis/tasks/archive/2026-07/07-03-habits-page-optimization/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/prd.md",
+      "summary": "习惯页优化需求文档：针对 HabitsScreen/HabitDetailScreen 的代码重构、UI 重新设计与功能增强，列出已确认技术问题与验收标准。",
+      "tags": [
+        "documentation",
+        "prd",
+        "habits",
+        "mobile"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:.trellis/tasks/archive/2026-07/07-03-habits-page-optimization/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/task.json",
+      "summary": "习惯页优化任务清单的 JSON 元数据（状态 completed，P2，2026-07-03 创建），含分支、提交、子任务等字段。",
+      "tags": [
+        "configuration",
+        "task-manifest",
+        "trellis",
+        "habits"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-03-habits-page-optimization/prd.md",
+      "target": "document:.trellis/tasks/archive/2026-07/07-03-habits-page-optimization/design.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-03-habits-page-optimization/prd.md",
+      "target": "document:.trellis/tasks/archive/2026-07/07-03-habits-page-optimization/implement.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-03-habits-page-optimization/prd.md",
+      "target": "config:.trellis/tasks/archive/2026-07/07-03-habits-page-optimization/task.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

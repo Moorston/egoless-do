@@ -1,0 +1,6885 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 27,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "apps/mobile/src/features/sutra/SutraScreen.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 735,
+      "nonEmptyLines": 664,
+      "functions": [
+        {
+          "name": "SutraScreen",
+          "startLine": 25,
+          "endLine": 27,
+          "params": []
+        },
+        {
+          "name": "SutraScreenInner",
+          "startLine": 29,
+          "endLine": 735,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "SutraScreen",
+          "line": 25,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useRootNavigation",
+          "lineNumber": 30
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useTheme",
+          "lineNumber": 31
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useT",
+          "lineNumber": 32
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useShallowStore",
+          "lineNumber": 33
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useKeepAwake",
+          "lineNumber": 44
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useSutraAudio",
+          "lineNumber": 45
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useEffect",
+          "lineNumber": 46
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "stopSutra",
+          "lineNumber": 46
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useAudioCache",
+          "lineNumber": 47
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useState",
+          "lineNumber": 49
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useState",
+          "lineNumber": 50
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useState",
+          "lineNumber": 51
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useState",
+          "lineNumber": 52
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useState",
+          "lineNumber": 53
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useRef",
+          "lineNumber": 54
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useState",
+          "lineNumber": 55
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useState",
+          "lineNumber": 56
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useRef",
+          "lineNumber": 57
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useState",
+          "lineNumber": 58
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useRef",
+          "lineNumber": 59
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useRef",
+          "lineNumber": 60
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useRef",
+          "lineNumber": 61
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useRef",
+          "lineNumber": 62
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useRef",
+          "lineNumber": 63
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useState",
+          "lineNumber": 64
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useState",
+          "lineNumber": 65
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useState",
+          "lineNumber": 66
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useState",
+          "lineNumber": 67
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useState",
+          "lineNumber": 68
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useState",
+          "lineNumber": 69
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useState",
+          "lineNumber": 70
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useState",
+          "lineNumber": 71
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useState",
+          "lineNumber": 72
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useState",
+          "lineNumber": 75
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useMemo",
+          "lineNumber": 78
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "(mantraDefs ?? [])\r\n      .filter((d: MantraDef) => !d.deleted && d.preset !== true && d.category === 'sutra')\r\n      .sort",
+          "lineNumber": 79
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "(mantraDefs ?? [])\r\n      .filter",
+          "lineNumber": 79
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useMemo",
+          "lineNumber": 85
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "(mantraDefs ?? []).filter",
+          "lineNumber": 86
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useState",
+          "lineNumber": 90
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useEffect",
+          "lineNumber": 91
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "initializePresetsIncremental",
+          "lineNumber": 95
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setPresetsReady",
+          "lineNumber": 96
+        },
+        {
+          "caller": "pad2",
+          "callee": "String(n).padStart",
+          "lineNumber": 100
+        },
+        {
+          "caller": "pad2",
+          "callee": "String",
+          "lineNumber": 100
+        },
+        {
+          "caller": "formatTime",
+          "callee": "Math.floor",
+          "lineNumber": 102
+        },
+        {
+          "caller": "formatTime",
+          "callee": "pad2",
+          "lineNumber": 103
+        },
+        {
+          "caller": "formatTime",
+          "callee": "Math.floor",
+          "lineNumber": 103
+        },
+        {
+          "caller": "formatTime",
+          "callee": "pad2",
+          "lineNumber": 103
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useEffect",
+          "lineNumber": 106
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setInterval",
+          "lineNumber": 108
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "Date.now",
+          "lineNumber": 109
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setElapsed",
+          "lineNumber": 111
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "clearInterval",
+          "lineNumber": 114
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useCallback",
+          "lineNumber": 117
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setSelectedSutra",
+          "lineNumber": 119
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setCount",
+          "lineNumber": 120
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setStartTime",
+          "lineNumber": 121
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setElapsed",
+          "lineNumber": 122
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setIsPaused",
+          "lineNumber": 123
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "isCached",
+          "lineNumber": 124
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setAudioCached",
+          "lineNumber": 126
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setPage",
+          "lineNumber": 127
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useCallback",
+          "lineNumber": 130
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setFoldedCategories",
+          "lineNumber": 131
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useCallback",
+          "lineNumber": 134
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "mySutras.some",
+          "lineNumber": 134
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useCallback",
+          "lineNumber": 136
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "addPresetSutra",
+          "lineNumber": 137
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useCallback",
+          "lineNumber": 140
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "removeMantraDef",
+          "lineNumber": 140
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useCallback",
+          "lineNumber": 142
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "customName.trim",
+          "lineNumber": 143
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "addMantraDef",
+          "lineNumber": 144
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "customName.trim",
+          "lineNumber": 145
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "customSubtitle.trim",
+          "lineNumber": 146
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "customText.trim",
+          "lineNumber": 149
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setShowAddCustom",
+          "lineNumber": 151
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setCustomName",
+          "lineNumber": 152
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setCustomSubtitle",
+          "lineNumber": 152
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setCustomText",
+          "lineNumber": 152
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useCallback",
+          "lineNumber": 155
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "Date.now",
+          "lineNumber": 156
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setStartTime",
+          "lineNumber": 157
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setElapsed",
+          "lineNumber": 158
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setIsPaused",
+          "lineNumber": 159
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setPage",
+          "lineNumber": 160
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useCallback",
+          "lineNumber": 163
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "Haptics.impactAsync",
+          "lineNumber": 165
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setCount",
+          "lineNumber": 166
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "Haptics.notificationAsync",
+          "lineNumber": 170
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useCallback",
+          "lineNumber": 176
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "Haptics.impactAsync",
+          "lineNumber": 177
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setCount",
+          "lineNumber": 178
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "Math.max",
+          "lineNumber": 179
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useCallback",
+          "lineNumber": 185
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "Date.now",
+          "lineNumber": 187
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "Date.now",
+          "lineNumber": 189
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "stopSutra",
+          "lineNumber": 190
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setIsPaused",
+          "lineNumber": 192
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useCallback",
+          "lineNumber": 195
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "Date.now",
+          "lineNumber": 196
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "clearInterval",
+          "lineNumber": 197
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "stopSutra().catch",
+          "lineNumber": 198
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "stopSutra",
+          "lineNumber": 198
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "Math.floor",
+          "lineNumber": 200
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "Math.floor",
+          "lineNumber": 201
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setPendingSessionData",
+          "lineNumber": 202
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setShowDedication",
+          "lineNumber": 203
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setPage",
+          "lineNumber": 204
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useCallback",
+          "lineNumber": 208
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "clearInterval",
+          "lineNumber": 209
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "stopSutra().catch",
+          "lineNumber": 210
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "stopSutra",
+          "lineNumber": 210
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setCount",
+          "lineNumber": 211
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setStartTime",
+          "lineNumber": 212
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setElapsed",
+          "lineNumber": 213
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setIsPaused",
+          "lineNumber": 215
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setShowDedication",
+          "lineNumber": 216
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setPendingSessionData",
+          "lineNumber": 217
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setDedicationText",
+          "lineNumber": 218
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setPage",
+          "lineNumber": 219
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useCallback",
+          "lineNumber": 223
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "Alert.alert",
+          "lineNumber": 225
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 225
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 226
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "resetSession",
+          "lineNumber": 226
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "Alert.alert",
+          "lineNumber": 229
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 229
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 229
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 230
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 231
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useCallback",
+          "lineNumber": 236
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setShowDedication",
+          "lineNumber": 237
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setPage",
+          "lineNumber": 237
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "addMantraSession",
+          "lineNumber": 238
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "dateStr",
+          "lineNumber": 240
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setShowDedication",
+          "lineNumber": 249
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setPendingSessionData",
+          "lineNumber": 250
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setPage",
+          "lineNumber": 251
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useCallback",
+          "lineNumber": 254
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "SUTRA_CATEGORIES.find",
+          "lineNumber": 255
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 256
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useCallback",
+          "lineNumber": 259
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useMemo",
+          "lineNumber": 264
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "presetSutras.filter",
+          "lineNumber": 265
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "presetSearch.toLowerCase",
+          "lineNumber": 267
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "p.name.toLowerCase().includes",
+          "lineNumber": 268
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "p.name.toLowerCase",
+          "lineNumber": 268
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "(p.subtitle || '').toLowerCase().includes",
+          "lineNumber": 268
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "(p.subtitle || '').toLowerCase",
+          "lineNumber": 268
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useMemo",
+          "lineNumber": 273
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "map[cat].push",
+          "lineNumber": 278
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useCallback",
+          "lineNumber": 284
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "getMantraTotalCount",
+          "lineNumber": 285
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "getMantraTodayCount",
+          "lineNumber": 286
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "getMantraStreak",
+          "lineNumber": 287
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "Math.min",
+          "lineNumber": 288
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "Math.round",
+          "lineNumber": 288
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "startSession",
+          "lineNumber": 290
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 294
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SMALL",
+          "lineNumber": 295
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SMALL",
+          "lineNumber": 296
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 296
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_STAT_SECTION",
+          "lineNumber": 299
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "total.toLocaleString",
+          "lineNumber": 299
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SMALL",
+          "lineNumber": 300
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 300
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SMALL",
+          "lineNumber": 308
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "total.toLocaleString",
+          "lineNumber": 309
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "m.targetCount.toLocaleString",
+          "lineNumber": 309
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SMALL",
+          "lineNumber": 314
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "removeFromMy",
+          "lineNumber": 315
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SMALL",
+          "lineNumber": 316
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 316
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useMemo",
+          "lineNumber": 323
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 326
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 326
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "[1, 3, 7, 21, 108].map",
+          "lineNumber": 328
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setTargetRounds",
+          "lineNumber": 329
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 331
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 337
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 337
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useMemo",
+          "lineNumber": 341
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "scaleFontSize",
+          "lineNumber": 343
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 344
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 344
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SMALL",
+          "lineNumber": 345
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 345
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "useMemo",
+          "lineNumber": 349
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 351
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 351
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SUB",
+          "lineNumber": 352
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 353
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "SUTRA_CATEGORY_ORDER.map",
+          "lineNumber": 355
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "categoryColor",
+          "lineNumber": 359
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "toggleCategoryFold",
+          "lineNumber": 362
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 364
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "categoryLabel",
+          "lineNumber": 364
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "list.map",
+          "lineNumber": 368
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "isPresetInMy",
+          "lineNumber": 369
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "addPresetToMy",
+          "lineNumber": 371
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 375
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SMALL",
+          "lineNumber": 377
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "categoryLabel",
+          "lineNumber": 377
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SMALL",
+          "lineNumber": 379
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SMALL",
+          "lineNumber": 381
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SMALL",
+          "lineNumber": 384
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 384
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setShowAddCustom",
+          "lineNumber": 395
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 398
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 398
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_TITLE",
+          "lineNumber": 408
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 408
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "nav.navigate",
+          "lineNumber": 409
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_TITLE",
+          "lineNumber": 432
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 432
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setShowAddCustom",
+          "lineNumber": 433
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 435
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 435
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 437
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 438
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 438
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 440
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 441
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 441
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "SUTRA_CATEGORY_ORDER.map",
+          "lineNumber": 443
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setCustomCategory",
+          "lineNumber": 444
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "categoryColor",
+          "lineNumber": 445
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SUB",
+          "lineNumber": 446
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "categoryLabel",
+          "lineNumber": 446
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 450
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 450
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 451
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 452
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "customName.trim",
+          "lineNumber": 453
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "customName.trim",
+          "lineNumber": 454
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 455
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 455
+        },
+        {
+          "caller": "handleDownloadAudio",
+          "callee": "downloadAudio",
+          "lineNumber": 469
+        },
+        {
+          "caller": "handleDownloadAudio",
+          "callee": "setAudioCached",
+          "lineNumber": 470
+        },
+        {
+          "caller": "handleDownloadAudio",
+          "callee": "Alert.alert",
+          "lineNumber": 472
+        },
+        {
+          "caller": "handleDownloadAudio",
+          "callee": "T",
+          "lineNumber": 472
+        },
+        {
+          "caller": "handlePreviewAudio",
+          "callee": "stopSutra",
+          "lineNumber": 478
+        },
+        {
+          "caller": "handlePreviewAudio",
+          "callee": "playSutra",
+          "lineNumber": 480
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "stopSutra",
+          "lineNumber": 487
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setPage",
+          "lineNumber": 487
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_STAT_CARD",
+          "lineNumber": 489
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 490
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 490
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_TITLE",
+          "lineNumber": 494
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SUB",
+          "lineNumber": 496
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 499
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SUB",
+          "lineNumber": 502
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SMALL",
+          "lineNumber": 505
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 505
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 513
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 513
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "Math.round",
+          "lineNumber": 513
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BACK",
+          "lineNumber": 521
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 522
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 523
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 523
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 523
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SMALL",
+          "lineNumber": 528
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 529
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SUB",
+          "lineNumber": 534
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 534
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 537
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 537
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "[1, 3, 7, 21, 108].map",
+          "lineNumber": 539
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setTargetRounds",
+          "lineNumber": 540
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 542
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SUB",
+          "lineNumber": 547
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 548
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_TITLE",
+          "lineNumber": 553
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 553
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "Math.floor",
+          "lineNumber": 562
+        },
+        {
+          "caller": "handleToggleAudio",
+          "callee": "stopSutra",
+          "lineNumber": 567
+        },
+        {
+          "caller": "handleToggleAudio",
+          "callee": "playSutra",
+          "lineNumber": 569
+        },
+        {
+          "caller": "handleToggleAudio",
+          "callee": "Alert.alert",
+          "lineNumber": 570
+        },
+        {
+          "caller": "handleToggleAudio",
+          "callee": "T",
+          "lineNumber": 570
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 579
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 579
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SUB",
+          "lineNumber": 587
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SMALL",
+          "lineNumber": 589
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "String",
+          "lineNumber": 599
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 600
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SUB",
+          "lineNumber": 603
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "formatTime",
+          "lineNumber": 604
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 604
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SMALL",
+          "lineNumber": 607
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 608
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 615
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 615
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 620
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 628
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 628
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 633
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 633
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 639
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 639
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "getMantraTotalCount",
+          "lineNumber": 652
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "getMantraStreak",
+          "lineNumber": 653
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_STAT_CARD",
+          "lineNumber": 659
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_TITLE",
+          "lineNumber": 661
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 661
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_HERO",
+          "lineNumber": 667
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_TITLE",
+          "lineNumber": 668
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "scaleFontSize",
+          "lineNumber": 669
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "reportCount.toLocaleString",
+          "lineNumber": 670
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SUB",
+          "lineNumber": 672
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "Math.floor",
+          "lineNumber": 673
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_STAT_SECTION",
+          "lineNumber": 681
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "totalAfter.toLocaleString",
+          "lineNumber": 681
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SUB",
+          "lineNumber": 682
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 682
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_STAT_SECTION",
+          "lineNumber": 685
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SUB",
+          "lineNumber": 686
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 686
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_STAT_SECTION",
+          "lineNumber": 689
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "Math.floor",
+          "lineNumber": 690
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SUB",
+          "lineNumber": 692
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 692
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setShowDedication",
+          "lineNumber": 697
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_STAT_CARD",
+          "lineNumber": 699
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 701
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 701
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SMALL",
+          "lineNumber": 702
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 702
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 706
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_TITLE",
+          "lineNumber": 712
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 712
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "DEDICATION_TEMPLATES.map",
+          "lineNumber": 714
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setDedicationText",
+          "lineNumber": 715
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_SMALL",
+          "lineNumber": 717
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "FONT_BODY",
+          "lineNumber": 722
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 727
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "setShowDedication",
+          "lineNumber": 727
+        },
+        {
+          "caller": "SutraScreenInner",
+          "callee": "T",
+          "lineNumber": 728
+        }
+      ],
+      "metrics": {
+        "importCount": 8,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/sutra/useSutraAudio.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 65,
+      "nonEmptyLines": 53,
+      "functions": [
+        {
+          "name": "useSutraAudio",
+          "startLine": 10,
+          "endLine": 65,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "useSutraAudio",
+          "line": 10,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useSutraAudio",
+          "callee": "useState",
+          "lineNumber": 11
+        },
+        {
+          "caller": "useSutraAudio",
+          "callee": "useState",
+          "lineNumber": 12
+        },
+        {
+          "caller": "useSutraAudio",
+          "callee": "useAudioCache",
+          "lineNumber": 13
+        },
+        {
+          "caller": "useSutraAudio",
+          "callee": "useAudioPlayer",
+          "lineNumber": 15
+        },
+        {
+          "caller": "useSutraAudio",
+          "callee": "useAudioPlayerStatus",
+          "lineNumber": 16
+        },
+        {
+          "caller": "useSutraAudio",
+          "callee": "useEffect",
+          "lineNumber": 19
+        },
+        {
+          "caller": "useSutraAudio",
+          "callee": "useEffect",
+          "lineNumber": 27
+        },
+        {
+          "caller": "useSutraAudio",
+          "callee": "useCallback",
+          "lineNumber": 33
+        },
+        {
+          "caller": "useSutraAudio",
+          "callee": "player.pause",
+          "lineNumber": 35
+        },
+        {
+          "caller": "useSutraAudio",
+          "callee": "setSource",
+          "lineNumber": 37
+        },
+        {
+          "caller": "useSutraAudio",
+          "callee": "useCallback",
+          "lineNumber": 41
+        },
+        {
+          "caller": "useSutraAudio",
+          "callee": "stopAudio",
+          "lineNumber": 45
+        },
+        {
+          "caller": "useSutraAudio",
+          "callee": "getCachedPath",
+          "lineNumber": 47
+        },
+        {
+          "caller": "useSutraAudio",
+          "callee": "setAudioModeAsync",
+          "lineNumber": 51
+        },
+        {
+          "caller": "useSutraAudio",
+          "callee": "setShouldLoop",
+          "lineNumber": 52
+        },
+        {
+          "caller": "useSutraAudio",
+          "callee": "setSource",
+          "lineNumber": 53
+        },
+        {
+          "caller": "useSutraAudio",
+          "callee": "useCallback",
+          "lineNumber": 60
+        },
+        {
+          "caller": "useSutraAudio",
+          "callee": "stopAudio",
+          "lineNumber": 61
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/vow/DedicationTab.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 173,
+      "nonEmptyLines": 160,
+      "functions": [
+        {
+          "name": "DedicationTab",
+          "startLine": 17,
+          "endLine": 173,
+          "params": [
+            "{ TH, T, onNavigateToWrite }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "DedicationTab",
+          "line": 17,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "DedicationTab",
+          "callee": "useShallowStore",
+          "lineNumber": 18
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "useState",
+          "lineNumber": 19
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "useState",
+          "lineNumber": 20
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "useMemo",
+          "lineNumber": 23
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "(dedications ?? [])\r\n      .filter((d: Dedication) => !d.deleted)\r\n      .sort",
+          "lineNumber": 24
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "(dedications ?? [])\r\n      .filter",
+          "lineNumber": 24
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "b.date.localeCompare",
+          "lineNumber": 26
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "useMemo",
+          "lineNumber": 31
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "Math.floor",
+          "lineNumber": 36
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "now.getTime",
+          "lineNumber": 36
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "latestDate.getTime",
+          "lineNumber": 36
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "useMemo",
+          "lineNumber": 44
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "T",
+          "lineNumber": 46
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "T",
+          "lineNumber": 47
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "T",
+          "lineNumber": 48
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "T",
+          "lineNumber": 49
+        },
+        {
+          "caller": "handleSaveSettings",
+          "callee": "updateDedicationSettings",
+          "lineNumber": 55
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "FONT_SUB",
+          "lineNumber": 75
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "T",
+          "lineNumber": 76
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "FONT_BADGE",
+          "lineNumber": 78
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "T",
+          "lineNumber": 80
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "setShowSettings",
+          "lineNumber": 85
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "FONT_BADGE",
+          "lineNumber": 91
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "T",
+          "lineNumber": 92
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "FONT_BODY",
+          "lineNumber": 110
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "T",
+          "lineNumber": 113
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "FONT_SMALL",
+          "lineNumber": 120
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "T",
+          "lineNumber": 121
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "FONT_SUB",
+          "lineNumber": 133
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "T",
+          "lineNumber": 134
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "FONT_BADGE",
+          "lineNumber": 136
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "scaleFontSize",
+          "lineNumber": 144
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "FONT_BODY",
+          "lineNumber": 145
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "T",
+          "lineNumber": 146
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "filteredDedications.map",
+          "lineNumber": 150
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "setExpandedId",
+          "lineNumber": 157
+        },
+        {
+          "caller": "DedicationTab",
+          "callee": "setShowSettings",
+          "lineNumber": 168
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/vow/DedicationWriteScreen.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 358,
+      "nonEmptyLines": 338,
+      "functions": [
+        {
+          "name": "DedicationWriteScreen",
+          "startLine": 18,
+          "endLine": 220,
+          "params": [
+            "{ onBack }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "DedicationWriteScreen",
+          "line": 18,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "useTheme",
+          "lineNumber": 19
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "useT",
+          "lineNumber": 20
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "useShallowStore",
+          "lineNumber": 21
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "useVowProgress",
+          "lineNumber": 22
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "useState",
+          "lineNumber": 24
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "useState",
+          "lineNumber": 25
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "useMemo",
+          "lineNumber": 31
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "dateStr",
+          "lineNumber": 33
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "T",
+          "lineNumber": 35
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "T",
+          "lineNumber": 36
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "T",
+          "lineNumber": 37
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "T",
+          "lineNumber": 38
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "Math.round",
+          "lineNumber": 43
+        },
+        {
+          "caller": "handleSave",
+          "callee": "addDedication",
+          "lineNumber": 46
+        },
+        {
+          "caller": "handleSave",
+          "callee": "dateStr",
+          "lineNumber": 47
+        },
+        {
+          "caller": "handleSave",
+          "callee": "insight.trim",
+          "lineNumber": 55
+        },
+        {
+          "caller": "handleSave",
+          "callee": "adjustment.trim",
+          "lineNumber": 56
+        },
+        {
+          "caller": "handleSave",
+          "callee": "Alert.alert",
+          "lineNumber": 58
+        },
+        {
+          "caller": "handleSave",
+          "callee": "T",
+          "lineNumber": 58
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "T",
+          "lineNumber": 70
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "T",
+          "lineNumber": 83
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "T",
+          "lineNumber": 95
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "T",
+          "lineNumber": 99
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "T",
+          "lineNumber": 105
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "T",
+          "lineNumber": 115
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "habitStats.map",
+          "lineNumber": 117
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "String",
+          "lineNumber": 122
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "String",
+          "lineNumber": 122
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "String",
+          "lineNumber": 126
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "T",
+          "lineNumber": 139
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "planProgress.map",
+          "lineNumber": 141
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "T",
+          "lineNumber": 156
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "visionProgressData.map",
+          "lineNumber": 158
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "progress.visionProgress.find",
+          "lineNumber": 159
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "T",
+          "lineNumber": 178
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "T",
+          "lineNumber": 183
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "T",
+          "lineNumber": 194
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "T",
+          "lineNumber": 199
+        },
+        {
+          "caller": "DedicationWriteScreen",
+          "callee": "T",
+          "lineNumber": 214
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/vow/ProgressTab.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 93,
+      "nonEmptyLines": 86,
+      "functions": [
+        {
+          "name": "ProgressTab",
+          "startLine": 16,
+          "endLine": 93,
+          "params": [
+            "{ TH, T, progress }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ProgressTab",
+          "line": 16,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "ProgressTab",
+          "callee": "FONT_SUB",
+          "lineNumber": 40
+        },
+        {
+          "caller": "ProgressTab",
+          "callee": "T",
+          "lineNumber": 41
+        },
+        {
+          "caller": "ProgressTab",
+          "callee": "todayCompleted.map",
+          "lineNumber": 43
+        },
+        {
+          "caller": "ProgressTab",
+          "callee": "FONT_BODY",
+          "lineNumber": 62
+        },
+        {
+          "caller": "ProgressTab",
+          "callee": "FONT_SUB",
+          "lineNumber": 63
+        },
+        {
+          "caller": "ProgressTab",
+          "callee": "T",
+          "lineNumber": 64
+        },
+        {
+          "caller": "ProgressTab",
+          "callee": "T",
+          "lineNumber": 64
+        },
+        {
+          "caller": "ProgressTab",
+          "callee": "scaleFontSize",
+          "lineNumber": 82
+        },
+        {
+          "caller": "ProgressTab",
+          "callee": "FONT_BODY",
+          "lineNumber": 83
+        },
+        {
+          "caller": "ProgressTab",
+          "callee": "T",
+          "lineNumber": 84
+        },
+        {
+          "caller": "ProgressTab",
+          "callee": "T",
+          "lineNumber": 84
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/vow/VowScreen.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 293,
+      "nonEmptyLines": 271,
+      "functions": [
+        {
+          "name": "VowScreen",
+          "startLine": 18,
+          "endLine": 293,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "VowScreen",
+          "line": 18,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "VowScreen",
+          "callee": "useTheme",
+          "lineNumber": 19
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "useT",
+          "lineNumber": 20
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "useRootNavigation",
+          "lineNumber": 21
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "useShallowStore",
+          "lineNumber": 24
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "useState",
+          "lineNumber": 39
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "useState",
+          "lineNumber": 40
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "useState",
+          "lineNumber": 41
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "useMemo",
+          "lineNumber": 47
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "(visionsRaw ?? []).filter",
+          "lineNumber": 48
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "useMemo",
+          "lineNumber": 52
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "map.set",
+          "lineNumber": 55
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "map.get(v.type)?.push",
+          "lineNumber": 56
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "map.get",
+          "lineNumber": 56
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "order.filter(t => (map.get(t)?.length ?? 0) > 0).map",
+          "lineNumber": 57
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "order.filter",
+          "lineNumber": 57
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "map.get",
+          "lineNumber": 57
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "map.get",
+          "lineNumber": 57
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "useMemo",
+          "lineNumber": 60
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "(visionsRaw ?? []).filter",
+          "lineNumber": 61
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "useCallback",
+          "lineNumber": 65
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "setEditingVision",
+          "lineNumber": 66
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "setShowModal",
+          "lineNumber": 67
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "useCallback",
+          "lineNumber": 70
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "setEditingVision",
+          "lineNumber": 71
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "setShowModal",
+          "lineNumber": 72
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "useCallback",
+          "lineNumber": 75
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "updateVision",
+          "lineNumber": 77
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "(plans ?? []).filter(\r\n        (p: Plan) => p.visionId === editingVision.id\r\n      ).map",
+          "lineNumber": 79
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "(plans ?? []).filter",
+          "lineNumber": 79
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "data.linkedPlanIds.includes",
+          "lineNumber": 83
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "updatePlan",
+          "lineNumber": 83
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "currentLinkedPlanIds.includes",
+          "lineNumber": 86
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "updatePlan",
+          "lineNumber": 86
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "(habits ?? []).filter(\r\n        (h: any) => h.visionId === editingVision.id\r\n      ).map",
+          "lineNumber": 89
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "(habits ?? []).filter",
+          "lineNumber": 89
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "data.linkedHabitIds.includes",
+          "lineNumber": 93
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "updateHabit",
+          "lineNumber": 93
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "currentLinkedHabitIds.includes",
+          "lineNumber": 96
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "updateHabit",
+          "lineNumber": 96
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "(visionsRaw ?? []).filter",
+          "lineNumber": 100
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "existing.find",
+          "lineNumber": 101
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "Alert.alert",
+          "lineNumber": 103
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 104
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T('vowNeedArchive').replace",
+          "lineNumber": 105
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 105
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 105
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "addVision",
+          "lineNumber": 109
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "dateStr",
+          "lineNumber": 113
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "updatePlan",
+          "lineNumber": 118
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "updateHabit",
+          "lineNumber": 121
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "setShowModal",
+          "lineNumber": 125
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "setEditingVision",
+          "lineNumber": 126
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "useCallback",
+          "lineNumber": 129
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "Alert.alert",
+          "lineNumber": 130
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 130
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 131
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 132
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "achieveVision",
+          "lineNumber": 132
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "useCallback",
+          "lineNumber": 136
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "Alert.alert",
+          "lineNumber": 137
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 137
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 138
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 139
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "archiveVision",
+          "lineNumber": 139
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "useCallback",
+          "lineNumber": 143
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "Alert.alert",
+          "lineNumber": 144
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 144
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 145
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 146
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "removeVision",
+          "lineNumber": 146
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "useCallback",
+          "lineNumber": 150
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "nav.navigate",
+          "lineNumber": 151
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "useCallback",
+          "lineNumber": 154
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "setShowModal",
+          "lineNumber": 155
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "setEditingVision",
+          "lineNumber": 156
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "useMemo",
+          "lineNumber": 160
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "map.get",
+          "lineNumber": 164
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "existing.push",
+          "lineNumber": 165
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "map.set",
+          "lineNumber": 166
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "FONT_TITLE",
+          "lineNumber": 176
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 176
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "FONT_SUB",
+          "lineNumber": 179
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 179
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "FONT_SUB",
+          "lineNumber": 193
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 193
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "FONT_TITLE",
+          "lineNumber": 194
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "String",
+          "lineNumber": 194
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "(['active', 'achieved', 'archived', 'all'] as const).map",
+          "lineNumber": 200
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 202
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 202
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 202
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 202
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "setFilterStatus",
+          "lineNumber": 206
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "FONT_BADGE",
+          "lineNumber": 212
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "FONT_HERO",
+          "lineNumber": 222
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "FONT_TITLE",
+          "lineNumber": 223
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 223
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "FONT_BODY",
+          "lineNumber": 224
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 224
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "FONT_BODY",
+          "lineNumber": 226
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 226
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "grouped.map",
+          "lineNumber": 230
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "React.createElement",
+          "lineNumber": 233
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "FONT_SUB",
+          "lineNumber": 237
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "T",
+          "lineNumber": 238
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "FONT_BADGE",
+          "lineNumber": 240
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "items.map",
+          "lineNumber": 242
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "plans.filter",
+          "lineNumber": 243
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "planItemsByPlanId.get",
+          "lineNumber": 249
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "pi.filter",
+          "lineNumber": 250
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "Math.min",
+          "lineNumber": 253
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "Math.round",
+          "lineNumber": 253
+        },
+        {
+          "caller": "VowScreen",
+          "callee": "linked.filter",
+          "lineNumber": 255
+        }
+      ],
+      "metrics": {
+        "importCount": 7,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/vow/components/DailyDetail.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 105,
+      "nonEmptyLines": 97,
+      "functions": [
+        {
+          "name": "DailyDetail",
+          "startLine": 14,
+          "endLine": 105,
+          "params": [
+            "{ TH, T, dailyData }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "DailyDetail",
+          "line": 14,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "DailyDetail",
+          "callee": "FONT_SUB",
+          "lineNumber": 24
+        },
+        {
+          "caller": "DailyDetail",
+          "callee": "T",
+          "lineNumber": 25
+        },
+        {
+          "caller": "DailyDetail",
+          "callee": "dailyData.map",
+          "lineNumber": 28
+        },
+        {
+          "caller": "DailyDetail",
+          "callee": "day.habits.every",
+          "lineNumber": 31
+        },
+        {
+          "caller": "DailyDetail",
+          "callee": "day.plans.every",
+          "lineNumber": 31
+        },
+        {
+          "caller": "DailyDetail",
+          "callee": "FONT_BADGE",
+          "lineNumber": 51
+        },
+        {
+          "caller": "DailyDetail",
+          "callee": "T",
+          "lineNumber": 55
+        },
+        {
+          "caller": "DailyDetail",
+          "callee": "FONT_BODY",
+          "lineNumber": 80
+        },
+        {
+          "caller": "DailyDetail",
+          "callee": "day.habits.map(h => h.name).concat(day.plans.map(p => p.name)).join",
+          "lineNumber": 81
+        },
+        {
+          "caller": "DailyDetail",
+          "callee": "day.habits.map(h => h.name).concat",
+          "lineNumber": 81
+        },
+        {
+          "caller": "DailyDetail",
+          "callee": "day.habits.map",
+          "lineNumber": 81
+        },
+        {
+          "caller": "DailyDetail",
+          "callee": "day.plans.map",
+          "lineNumber": 81
+        },
+        {
+          "caller": "DailyDetail",
+          "callee": "FONT_BODY",
+          "lineNumber": 84
+        },
+        {
+          "caller": "DailyDetail",
+          "callee": "FONT_SMALL",
+          "lineNumber": 95
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/vow/components/DedicationCard.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 137,
+      "nonEmptyLines": 128,
+      "functions": [
+        {
+          "name": "DedicationCard",
+          "startLine": 15,
+          "endLine": 135,
+          "params": [
+            "{ TH, T, dedication, expanded, onToggle }"
+          ]
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "DedicationCard",
+          "callee": "dedication.habitStats.filter",
+          "lineNumber": 16
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "FONT_SUB",
+          "lineNumber": 32
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "FONT_BADGE",
+          "lineNumber": 36
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "T",
+          "lineNumber": 37
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "FONT_BADGE",
+          "lineNumber": 40
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "T",
+          "lineNumber": 41
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "FONT_BADGE",
+          "lineNumber": 60
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "T",
+          "lineNumber": 61
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "dedication.habitStats.map",
+          "lineNumber": 63
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "FONT_BODY",
+          "lineNumber": 65
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "FONT_BODY",
+          "lineNumber": 66
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "String",
+          "lineNumber": 67
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "String",
+          "lineNumber": 67
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "FONT_BADGE",
+          "lineNumber": 77
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "T",
+          "lineNumber": 78
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "dedication.planProgress.map",
+          "lineNumber": 80
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "FONT_BODY",
+          "lineNumber": 82
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "FONT_BODY",
+          "lineNumber": 83
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "FONT_BADGE",
+          "lineNumber": 94
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "T",
+          "lineNumber": 95
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "dedication.visionProgress.map",
+          "lineNumber": 97
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "FONT_BODY",
+          "lineNumber": 99
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "FONT_BODY",
+          "lineNumber": 100
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "FONT_BADGE",
+          "lineNumber": 111
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "T",
+          "lineNumber": 112
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "FONT_BODY",
+          "lineNumber": 114
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "FONT_BADGE",
+          "lineNumber": 123
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "T",
+          "lineNumber": 124
+        },
+        {
+          "caller": "DedicationCard",
+          "callee": "FONT_BODY",
+          "lineNumber": 126
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/vow/components/ProgressOverview.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 85,
+      "nonEmptyLines": 79,
+      "functions": [
+        {
+          "name": "ProgressOverview",
+          "startLine": 17,
+          "endLine": 85,
+          "params": [
+            "{ TH, T, thisWeekPracticeDays, thisMonthPracticeDays, longestStreak }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ProgressOverview",
+          "line": 17,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "ProgressOverview",
+          "callee": "Math.round",
+          "lineNumber": 18
+        },
+        {
+          "caller": "ProgressOverview",
+          "callee": "FONT_TITLE",
+          "lineNumber": 30
+        },
+        {
+          "caller": "ProgressOverview",
+          "callee": "T",
+          "lineNumber": 31
+        },
+        {
+          "caller": "ProgressOverview",
+          "callee": "FONT_SUB",
+          "lineNumber": 37
+        },
+        {
+          "caller": "ProgressOverview",
+          "callee": "T",
+          "lineNumber": 38
+        },
+        {
+          "caller": "ProgressOverview",
+          "callee": "FONT_SUB",
+          "lineNumber": 40
+        },
+        {
+          "caller": "ProgressOverview",
+          "callee": "FONT_STAT_CARD",
+          "lineNumber": 56
+        },
+        {
+          "caller": "ProgressOverview",
+          "callee": "FONT_SUB",
+          "lineNumber": 59
+        },
+        {
+          "caller": "ProgressOverview",
+          "callee": "T",
+          "lineNumber": 60
+        },
+        {
+          "caller": "ProgressOverview",
+          "callee": "FONT_STAT_CARD",
+          "lineNumber": 65
+        },
+        {
+          "caller": "ProgressOverview",
+          "callee": "FONT_SUB",
+          "lineNumber": 68
+        },
+        {
+          "caller": "ProgressOverview",
+          "callee": "T",
+          "lineNumber": 69
+        },
+        {
+          "caller": "ProgressOverview",
+          "callee": "FONT_STAT_CARD",
+          "lineNumber": 74
+        },
+        {
+          "caller": "ProgressOverview",
+          "callee": "FONT_SUB",
+          "lineNumber": 77
+        },
+        {
+          "caller": "ProgressOverview",
+          "callee": "T",
+          "lineNumber": 78
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/vow/components/VisionCard.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 499,
+      "nonEmptyLines": 475,
+      "functions": [
+        {
+          "name": "computeEndDate",
+          "startLine": 14,
+          "endLine": 18,
+          "params": [
+            "start",
+            "tf"
+          ]
+        },
+        {
+          "name": "VisionCard",
+          "startLine": 60,
+          "endLine": 332,
+          "params": [
+            "{ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone = 0, taskTotal = 0, onEdit, onAchieve, onArchive, onDelete, onTimeFrameChange, linkedPlans = [], planItems = [], planItemCheckins = [], onNavigateToPlan }"
+          ]
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "computeEndDate",
+          "callee": "d.setMonth",
+          "lineNumber": 16
+        },
+        {
+          "caller": "computeEndDate",
+          "callee": "d.getMonth",
+          "lineNumber": 16
+        },
+        {
+          "caller": "computeEndDate",
+          "callee": "dateStr",
+          "lineNumber": 17
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "useState",
+          "lineNumber": 61
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "useState",
+          "lineNumber": 62
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "useMemo",
+          "lineNumber": 66
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "VISION_TIME_FRAMES.find",
+          "lineNumber": 68
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "T",
+          "lineNumber": 69
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "useMemo",
+          "lineNumber": 72
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "useMemo",
+          "lineNumber": 80
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "computeEndDate",
+          "lineNumber": 84
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_BADGE",
+          "lineNumber": 95
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "T",
+          "lineNumber": 96
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "setShowTfPicker",
+          "lineNumber": 101
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_SMALL",
+          "lineNumber": 104
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "T",
+          "lineNumber": 105
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_BODY",
+          "lineNumber": 114
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_SUB",
+          "lineNumber": 118
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "availableTimeFrames.map",
+          "lineNumber": 124
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "VISION_TIME_FRAMES.find",
+          "lineNumber": 125
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "onTimeFrameChange",
+          "lineNumber": 132
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "setShowTfPicker",
+          "lineNumber": 133
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_BADGE",
+          "lineNumber": 140
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "T",
+          "lineNumber": 141
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "onEdit",
+          "lineNumber": 149
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_BADGE",
+          "lineNumber": 150
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "T",
+          "lineNumber": 150
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_SUB",
+          "lineNumber": 158
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "T",
+          "lineNumber": 158
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_SUB",
+          "lineNumber": 159
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_SUB",
+          "lineNumber": 170
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_SUB",
+          "lineNumber": 171
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "T",
+          "lineNumber": 171
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_SUB",
+          "lineNumber": 172
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_SUB",
+          "lineNumber": 177
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_SUB",
+          "lineNumber": 178
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "T",
+          "lineNumber": 178
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_SUB",
+          "lineNumber": 179
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "onAchieve",
+          "lineNumber": 189
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_BADGE",
+          "lineNumber": 190
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "T",
+          "lineNumber": 190
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "onArchive",
+          "lineNumber": 192
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_BADGE",
+          "lineNumber": 193
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "T",
+          "lineNumber": 193
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "onDelete",
+          "lineNumber": 196
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_BADGE",
+          "lineNumber": 197
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "T",
+          "lineNumber": 197
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_BADGE",
+          "lineNumber": 204
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "T",
+          "lineNumber": 204
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_BADGE",
+          "lineNumber": 209
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "T",
+          "lineNumber": 209
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "setExpanded",
+          "lineNumber": 218
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_SUB",
+          "lineNumber": 224
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "T",
+          "lineNumber": 225
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "linkedPlans.map",
+          "lineNumber": 229
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "planItems.filter",
+          "lineNumber": 230
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "dateStr",
+          "lineNumber": 231
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "computePlanProgress",
+          "lineNumber": 233
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "countItemDoneDays",
+          "lineNumber": 239
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "computeItemProgress",
+          "lineNumber": 240
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "itemProgressMap.set",
+          "lineNumber": 241
+        },
+        {
+          "caller": "getEffectiveStatus",
+          "callee": "itemProgressMap.get",
+          "lineNumber": 248
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "[...items].sort",
+          "lineNumber": 253
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "getEffectiveStatus",
+          "lineNumber": 254
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "getEffectiveStatus",
+          "lineNumber": 255
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "onNavigateToPlan",
+          "lineNumber": 262
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_SMALL",
+          "lineNumber": 279
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "T",
+          "lineNumber": 279
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_SMALL",
+          "lineNumber": 280
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_SMALL",
+          "lineNumber": 292
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "sortedItems.map",
+          "lineNumber": 300
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "getEffectiveStatus",
+          "lineNumber": 301
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "itemProgressMap.get",
+          "lineNumber": 302
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "React.createElement",
+          "lineNumber": 306
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_SUB",
+          "lineNumber": 307
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_SMALL",
+          "lineNumber": 308
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "T",
+          "lineNumber": 308
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_TINY",
+          "lineNumber": 313
+        },
+        {
+          "caller": "VisionCard",
+          "callee": "FONT_TINY",
+          "lineNumber": 314
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 0,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/vow/modals/DedicationSettingsModal.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 248,
+      "nonEmptyLines": 235,
+      "functions": [
+        {
+          "name": "DedicationSettingsModal",
+          "startLine": 33,
+          "endLine": 248,
+          "params": [
+            "{ visible, TH, T, settings, onClose, onSave }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "DedicationSettingsModal",
+          "line": 33,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "useState",
+          "lineNumber": 34
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "useState",
+          "lineNumber": 35
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "useState",
+          "lineNumber": 36
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "useState",
+          "lineNumber": 37
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "useState",
+          "lineNumber": 38
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "useEffect",
+          "lineNumber": 40
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "setFrequency",
+          "lineNumber": 42
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "setDayOfWeek",
+          "lineNumber": 43
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "setDayOfMonth",
+          "lineNumber": 44
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "setCustomDays",
+          "lineNumber": 45
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "setRemindEnabled",
+          "lineNumber": 46
+        },
+        {
+          "caller": "handleSave",
+          "callee": "onSave",
+          "lineNumber": 51
+        },
+        {
+          "caller": "handleSave",
+          "callee": "onClose",
+          "lineNumber": 58
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "FONT_TITLE",
+          "lineNumber": 74
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "T",
+          "lineNumber": 75
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "FONT_SUB",
+          "lineNumber": 83
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "T",
+          "lineNumber": 84
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "FREQUENCY_OPTIONS.map",
+          "lineNumber": 87
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "setFrequency",
+          "lineNumber": 92
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "FONT_BADGE",
+          "lineNumber": 100
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "T",
+          "lineNumber": 103
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "FONT_SUB",
+          "lineNumber": 113
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "T",
+          "lineNumber": 114
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "DAY_OPTIONS.map",
+          "lineNumber": 117
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "setDayOfWeek",
+          "lineNumber": 122
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "FONT_BADGE",
+          "lineNumber": 130
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "FONT_SUB",
+          "lineNumber": 146
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "T",
+          "lineNumber": 147
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "[1, 7, 14, 21, 28].map",
+          "lineNumber": 150
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "setDayOfMonth",
+          "lineNumber": 155
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "FONT_BADGE",
+          "lineNumber": 163
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "FONT_SUB",
+          "lineNumber": 179
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "[7, 14, 21, 30].map",
+          "lineNumber": 183
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "setCustomDays",
+          "lineNumber": 188
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "FONT_BADGE",
+          "lineNumber": 196
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "FONT_BODY",
+          "lineNumber": 214
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "T",
+          "lineNumber": 214
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "FONT_BODY",
+          "lineNumber": 232
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "T",
+          "lineNumber": 232
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "FONT_BODY",
+          "lineNumber": 241
+        },
+        {
+          "caller": "DedicationSettingsModal",
+          "callee": "T",
+          "lineNumber": 241
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/vow/modals/VisionEditModal.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 515,
+      "nonEmptyLines": 477,
+      "functions": [
+        {
+          "name": "MonthPicker",
+          "startLine": 21,
+          "endLine": 96,
+          "params": [
+            "{ value, onChange, TH, T }"
+          ]
+        },
+        {
+          "name": "VisionEditModal",
+          "startLine": 108,
+          "endLine": 425,
+          "params": [
+            "{ visible, TH, T, vision, type: initialType, onClose, onSave }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "VisionEditModal",
+          "line": 108,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "MonthPicker",
+          "callee": "useState",
+          "lineNumber": 23
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "initDate.getFullYear",
+          "lineNumber": 23
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "useState",
+          "lineNumber": 24
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "initDate.getMonth",
+          "lineNumber": 24
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "new Date(year, month + 1, 0).getDate",
+          "lineNumber": 26
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "new Date(year, month, 1).getDay",
+          "lineNumber": 27
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "dateStr",
+          "lineNumber": 28
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "useMemo",
+          "lineNumber": 30
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "new Array(firstDay === 0 ? 6 : firstDay - 1).fill",
+          "lineNumber": 32
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "row.push",
+          "lineNumber": 34
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "rows.push",
+          "lineNumber": 35
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "row.push",
+          "lineNumber": 37
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "rows.push",
+          "lineNumber": 37
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "String(month + 1).padStart",
+          "lineNumber": 41
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "String",
+          "lineNumber": 41
+        },
+        {
+          "caller": "selectDay",
+          "callee": "onChange",
+          "lineNumber": 44
+        },
+        {
+          "caller": "selectDay",
+          "callee": "String(month + 1).padStart",
+          "lineNumber": 44
+        },
+        {
+          "caller": "selectDay",
+          "callee": "String",
+          "lineNumber": 44
+        },
+        {
+          "caller": "selectDay",
+          "callee": "String(d).padStart",
+          "lineNumber": 44
+        },
+        {
+          "caller": "selectDay",
+          "callee": "String",
+          "lineNumber": 44
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "setYear",
+          "lineNumber": 51
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "setMonth",
+          "lineNumber": 51
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "setMonth",
+          "lineNumber": 51
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "FONT_BODY",
+          "lineNumber": 54
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "setYear",
+          "lineNumber": 55
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "setMonth",
+          "lineNumber": 55
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "setMonth",
+          "lineNumber": 55
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "['一', '二', '三', '四', '五', '六', '日'].map",
+          "lineNumber": 61
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "FONT_TINY",
+          "lineNumber": 63
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "weeks.map",
+          "lineNumber": 68
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "wk.map",
+          "lineNumber": 70
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "String(month + 1).padStart",
+          "lineNumber": 72
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "String",
+          "lineNumber": 72
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "String(d).padStart",
+          "lineNumber": 72
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "String",
+          "lineNumber": 72
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "selectDay",
+          "lineNumber": 78
+        },
+        {
+          "caller": "MonthPicker",
+          "callee": "FONT_SUB",
+          "lineNumber": 84
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "useShallowStore",
+          "lineNumber": 109
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "useState",
+          "lineNumber": 110
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "useState",
+          "lineNumber": 111
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "useState",
+          "lineNumber": 112
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "useState",
+          "lineNumber": 113
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "useState",
+          "lineNumber": 114
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "useState",
+          "lineNumber": 115
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "useState",
+          "lineNumber": 116
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "useState",
+          "lineNumber": 117
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "useState",
+          "lineNumber": 118
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "(habits ?? []).filter",
+          "lineNumber": 120
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "(plans ?? []).filter",
+          "lineNumber": 121
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "useRef",
+          "lineNumber": 125
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "useEffect",
+          "lineNumber": 127
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setText",
+          "lineNumber": 133
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setTimeFrame",
+          "lineNumber": 134
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setStartDate",
+          "lineNumber": 135
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setDeadline",
+          "lineNumber": 136
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setText",
+          "lineNumber": 138
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setTimeFrame",
+          "lineNumber": 139
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setStartDate",
+          "lineNumber": 140
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "dateStr",
+          "lineNumber": 140
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setDeadline",
+          "lineNumber": 141
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setLinkedHabits",
+          "lineNumber": 146
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "(habits ?? []).filter((h: Habit) => !h.deleted && h.visionId === vision.id).map",
+          "lineNumber": 146
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "(habits ?? []).filter",
+          "lineNumber": 146
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setLinkedPlans",
+          "lineNumber": 147
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "(plans ?? []).filter((p: Plan) => !p.deleted && p.visionId === vision.id).map",
+          "lineNumber": 147
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "(plans ?? []).filter",
+          "lineNumber": 147
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setLinkedHabits",
+          "lineNumber": 149
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setLinkedPlans",
+          "lineNumber": 150
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "useCallback",
+          "lineNumber": 156
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setTimeFrame",
+          "lineNumber": 158
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setTimeFrame",
+          "lineNumber": 161
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "d.setMonth",
+          "lineNumber": 165
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "d.getMonth",
+          "lineNumber": 165
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setDeadline",
+          "lineNumber": 166
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "dateStr",
+          "lineNumber": 166
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "useCallback",
+          "lineNumber": 170
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setLinkedHabits",
+          "lineNumber": 171
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "prev.includes",
+          "lineNumber": 171
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "prev.filter",
+          "lineNumber": 171
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "useCallback",
+          "lineNumber": 174
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setLinkedPlans",
+          "lineNumber": 175
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "prev.includes",
+          "lineNumber": 175
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "prev.filter",
+          "lineNumber": 175
+        },
+        {
+          "caller": "handleSave",
+          "callee": "text.trim",
+          "lineNumber": 179
+        },
+        {
+          "caller": "handleSave",
+          "callee": "onSave",
+          "lineNumber": 180
+        },
+        {
+          "caller": "handleSave",
+          "callee": "text.trim",
+          "lineNumber": 181
+        },
+        {
+          "caller": "handleSave",
+          "callee": "onClose",
+          "lineNumber": 189
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "text.trim",
+          "lineNumber": 192
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "VISION_TIME_FRAMES.filter",
+          "lineNumber": 195
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "['2years', '3years', '5years', '10years'].includes",
+          "lineNumber": 196
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "['3months', '6months', '1year'].includes",
+          "lineNumber": 197
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "FONT_TITLE",
+          "lineNumber": 208
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "T",
+          "lineNumber": 209
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "T",
+          "lineNumber": 209
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "FONT_SUB",
+          "lineNumber": 220
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "T",
+          "lineNumber": 220
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "(Object.keys(TYPE_CONFIG) as VisionType[]).map",
+          "lineNumber": 222
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "Object.keys",
+          "lineNumber": 222
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setSelectedType",
+          "lineNumber": 228
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "React.createElement",
+          "lineNumber": 234
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "FONT_BADGE",
+          "lineNumber": 235
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "T",
+          "lineNumber": 236
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "FONT_SUB",
+          "lineNumber": 246
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "T",
+          "lineNumber": 246
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "T",
+          "lineNumber": 250
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "FONT_BODY",
+          "lineNumber": 258
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "FONT_SUB",
+          "lineNumber": 267
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "T",
+          "lineNumber": 267
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "availableTimeFrames.map",
+          "lineNumber": 272
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "handleTimeFrameSelect",
+          "lineNumber": 277
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "FONT_BADGE",
+          "lineNumber": 283
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "T",
+          "lineNumber": 284
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setShowStartPicker",
+          "lineNumber": 294
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setShowEndPicker",
+          "lineNumber": 294
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "FONT_SUB",
+          "lineNumber": 302
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "T",
+          "lineNumber": 302
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "FONT_BODY",
+          "lineNumber": 304
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setStartDate",
+          "lineNumber": 309
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setShowStartPicker",
+          "lineNumber": 309
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setShowEndPicker",
+          "lineNumber": 314
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setShowStartPicker",
+          "lineNumber": 314
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "FONT_SUB",
+          "lineNumber": 323
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "T",
+          "lineNumber": 323
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "FONT_BODY",
+          "lineNumber": 325
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setDeadline",
+          "lineNumber": 331
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "setShowEndPicker",
+          "lineNumber": 331
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "FONT_SUB",
+          "lineNumber": 339
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "T",
+          "lineNumber": 339
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "FONT_BODY",
+          "lineNumber": 341
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "T",
+          "lineNumber": 341
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "filteredHabits.map",
+          "lineNumber": 344
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "linkedHabits.includes",
+          "lineNumber": 345
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "toggleHabit",
+          "lineNumber": 349
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "FONT_BADGE",
+          "lineNumber": 356
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "FONT_SUB",
+          "lineNumber": 369
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "T",
+          "lineNumber": 369
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "FONT_BODY",
+          "lineNumber": 371
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "T",
+          "lineNumber": 371
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "filteredPlans.map",
+          "lineNumber": 374
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "linkedPlans.includes",
+          "lineNumber": 375
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "togglePlan",
+          "lineNumber": 379
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "FONT_BADGE",
+          "lineNumber": 386
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "FONT_BODY",
+          "lineNumber": 404
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "T",
+          "lineNumber": 404
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "FONT_BODY",
+          "lineNumber": 415
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "T",
+          "lineNumber": 416
+        },
+        {
+          "caller": "VisionEditModal",
+          "callee": "T",
+          "lineNumber": 416
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/vow/useVowProgress.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 239,
+      "nonEmptyLines": 209,
+      "functions": [
+        {
+          "name": "useVowProgress",
+          "startLine": 34,
+          "endLine": 238,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "useVowProgress",
+          "line": 34,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useVowProgress",
+          "callee": "useShallowStore",
+          "lineNumber": 35
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "useMemo",
+          "lineNumber": 42
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "dateStr",
+          "lineNumber": 44
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "today.getDay",
+          "lineNumber": 47
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "monday.setDate",
+          "lineNumber": 50
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "today.getDate",
+          "lineNumber": 50
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "monday.setHours",
+          "lineNumber": 51
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "sunday.setDate",
+          "lineNumber": 54
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "monday.getDate",
+          "lineNumber": 54
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "d.setDate",
+          "lineNumber": 59
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "monday.getDate",
+          "lineNumber": 59
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "weekDates.push",
+          "lineNumber": 60
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "dateStr",
+          "lineNumber": 60
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "(habits ?? []).filter",
+          "lineNumber": 64
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "(plans ?? []).filter",
+          "lineNumber": 65
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "dateToHabits.has",
+          "lineNumber": 74
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "dateToHabits.set",
+          "lineNumber": 74
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "dateToHabits.get(date)!.push",
+          "lineNumber": 75
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "dateToHabits.get",
+          "lineNumber": 75
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "weekDates.filter",
+          "lineNumber": 86
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "dateToHabits.get",
+          "lineNumber": 87
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "dateToPlans.get",
+          "lineNumber": 88
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "today.getFullYear",
+          "lineNumber": 93
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "String(today.getMonth() + 1).padStart",
+          "lineNumber": 93
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "String",
+          "lineNumber": 93
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "today.getMonth",
+          "lineNumber": 93
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "dateToHabits.keys",
+          "lineNumber": 96
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "allPracticeDates.add",
+          "lineNumber": 96
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "dateToPlans.keys",
+          "lineNumber": 97
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "allPracticeDates.add",
+          "lineNumber": 97
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "[...allPracticeDates].sort",
+          "lineNumber": 98
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "[...allPracticeDates].sort",
+          "lineNumber": 106
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "curr.getTime",
+          "lineNumber": 113
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "prev.getTime",
+          "lineNumber": 113
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "Math.max",
+          "lineNumber": 121
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "dateToHabits.get",
+          "lineNumber": 126
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "todayCompleted.push",
+          "lineNumber": 127
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "dateToPlans.get",
+          "lineNumber": 129
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "todayCompleted.push",
+          "lineNumber": 130
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "weekDates.map",
+          "lineNumber": 134
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "dateToHabits.get",
+          "lineNumber": 137
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "dateToPlans.get",
+          "lineNumber": 138
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "(visions ?? []).filter",
+          "lineNumber": 143
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "(planItems ?? []).filter",
+          "lineNumber": 144
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "planToItems.get",
+          "lineNumber": 149
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "existing.push",
+          "lineNumber": 150
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "planToItems.set",
+          "lineNumber": 151
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "activeVisions.map",
+          "lineNumber": 154
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "vision => {\r\n      let totalCompleted = 0;\r\n      let totalExpected = 0;\r\n\r\n      // Plans linked via direct FK (plan.visionId)\r\n      const linkedPlans = activePlans.filter((p: Plan) => p.visionId === vision.id && !p.deleted);\r\n      for (const plan of linkedPlans) {\r\n        const items = planToItems.get(plan.id) ?? [];\r\n        const done = items.filter((i: PlanItem) => i.status === 'completed').length;\r\n        totalCompleted += done;\r\n        totalExpected += items.length || 1;\r\n      }\r\n\r\n      // Habits linked via direct FK (habit.visionId)\r\n      const linkedHabits = activeHabits.filter((h: Habit) => !h.deleted && h.visionId === vision.id);\r\n      for (const habit of linkedHabits) {\r\n        const dates: string[] = habit.checkedDates ?? [];\r\n        const completed = dates.length;\r\n        totalCompleted += completed;\r\n        totalExpected += Math.max(completed, 30);\r\n      }\r\n        }",
+          "lineNumber": 154
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "activePlans.filter",
+          "lineNumber": 159
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "planToItems.get",
+          "lineNumber": 161
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "items.filter",
+          "lineNumber": 162
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "activeHabits.filter",
+          "lineNumber": 168
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "Math.max",
+          "lineNumber": 173
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "Math.round",
+          "lineNumber": 179
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "Math.min",
+          "lineNumber": 180
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "d.setDate",
+          "lineNumber": 188
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "today.getDate",
+          "lineNumber": 188
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "dateStr",
+          "lineNumber": 189
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "dateToHabits.get",
+          "lineNumber": 190
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "dateToPlans.get",
+          "lineNumber": 191
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "activeHabits.map",
+          "lineNumber": 195
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "Object.entries(history).filter",
+          "lineNumber": 198
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "Object.entries",
+          "lineNumber": 198
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "activePlans.map",
+          "lineNumber": 207
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "items.filter",
+          "lineNumber": 209
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "Math.round",
+          "lineNumber": 213
+        },
+        {
+          "caller": "useVowProgress",
+          "callee": "visionProgress.map",
+          "lineNumber": 217
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/zhiguan/ZhiguanHistoryScreen.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 259,
+      "nonEmptyLines": 236,
+      "functions": [
+        {
+          "name": "ZhiguanHistoryScreen",
+          "startLine": 19,
+          "endLine": 181,
+          "params": []
+        },
+        {
+          "name": "DetailRow",
+          "startLine": 183,
+          "endLine": 190,
+          "params": [
+            "{ label, value }"
+          ]
+        },
+        {
+          "name": "HeatmapBlock",
+          "startLine": 192,
+          "endLine": 211,
+          "params": [
+            "{ sessions, year, month }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ZhiguanHistoryScreen",
+          "line": 19,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "useT",
+          "lineNumber": 20
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "useShallowStore",
+          "lineNumber": 21
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "useShallowStore",
+          "lineNumber": 22
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "useState",
+          "lineNumber": 23
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "computeZhiguanStats",
+          "lineNumber": 25
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "useCallback",
+          "lineNumber": 28
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "Alert.alert",
+          "lineNumber": 29
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 29
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 29
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 30
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 31
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "deleteSession",
+          "lineNumber": 31
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "useCallback",
+          "lineNumber": 35
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "sessions.filter",
+          "lineNumber": 36
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "JSON.stringify",
+          "lineNumber": 37
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "Share.share({ message: json, title: 'zhiguan-export.json' }).catch",
+          "lineNumber": 38
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "Share.share",
+          "lineNumber": 38
+        },
+        {
+          "caller": "getMethodLabel",
+          "callee": "ZHIGUAN_METHOD_DEFS.find",
+          "lineNumber": 42
+        },
+        {
+          "caller": "getMethodLabel",
+          "callee": "T",
+          "lineNumber": 43
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 49
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 51
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T('zhiguanStatSessions').replace",
+          "lineNumber": 60
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 60
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T('zhiguanStatTotalMin').replace",
+          "lineNumber": 64
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 64
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T('zhiguanStatLongestMin').replace",
+          "lineNumber": 68
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 68
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T('zhiguanStatStreak').replace",
+          "lineNumber": 74
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 74
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T('zhiguanStatLongestStreak').replace",
+          "lineNumber": 78
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 78
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "today.getFullYear",
+          "lineNumber": 84
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "today.getMonth",
+          "lineNumber": 84
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 90
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 91
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "sessions.filter(s => !s.deleted).slice(0, 50).map",
+          "lineNumber": 95
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "sessions.filter(s => !s.deleted).slice",
+          "lineNumber": 95
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "sessions.filter",
+          "lineNumber": 95
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "setSelRecord",
+          "lineNumber": 96
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "new Date(s.startTs).toLocaleDateString",
+          "lineNumber": 98
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "getMethodLabel",
+          "lineNumber": 100
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "Math.round",
+          "lineNumber": 100
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "handleDelete",
+          "lineNumber": 103
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "setSelRecord",
+          "lineNumber": 112
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "setSelRecord",
+          "lineNumber": 113
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "e.stopPropagation",
+          "lineNumber": 114
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 118
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 120
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "getMethodLabel",
+          "lineNumber": 120
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 121
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "Math.round",
+          "lineNumber": 121
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 122
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 123
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "new Date(selRecord.startTs).toLocaleString",
+          "lineNumber": 123
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 127
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 134
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "FIVE_HINDRANCE_KEYS.map",
+          "lineNumber": 135
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 137
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 145
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "EIGHT_TACTILE_KEYS.filter(k => selRecord.eightTactile[k]).map(k => T(EIGHT_TACTILE_LABEL_KEYS[k])).join",
+          "lineNumber": 147
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "EIGHT_TACTILE_KEYS.filter(k => selRecord.eightTactile[k]).map",
+          "lineNumber": 147
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "EIGHT_TACTILE_KEYS.filter",
+          "lineNumber": 147
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 147
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 154
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 155
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 161
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "handleDelete",
+          "lineNumber": 167
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "setSelRecord",
+          "lineNumber": 167
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 168
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "setSelRecord",
+          "lineNumber": 170
+        },
+        {
+          "caller": "ZhiguanHistoryScreen",
+          "callee": "T",
+          "lineNumber": 171
+        },
+        {
+          "caller": "DetailRow",
+          "callee": "FONT_SUB",
+          "lineNumber": 186
+        },
+        {
+          "caller": "DetailRow",
+          "callee": "FONT_SUB",
+          "lineNumber": 187
+        },
+        {
+          "caller": "HeatmapBlock",
+          "callee": "new Date(year, month, 0).getDate",
+          "lineNumber": 193
+        },
+        {
+          "caller": "HeatmapBlock",
+          "callee": "String(month).padStart",
+          "lineNumber": 196
+        },
+        {
+          "caller": "HeatmapBlock",
+          "callee": "String",
+          "lineNumber": 196
+        },
+        {
+          "caller": "HeatmapBlock",
+          "callee": "String(d).padStart",
+          "lineNumber": 196
+        },
+        {
+          "caller": "HeatmapBlock",
+          "callee": "String",
+          "lineNumber": 196
+        },
+        {
+          "caller": "HeatmapBlock",
+          "callee": "sessions\r\n      .filter(s => !s.deleted && toLocalDateStr(new Date(s.startTs)) === dateStr)\r\n      .reduce",
+          "lineNumber": 197
+        },
+        {
+          "caller": "HeatmapBlock",
+          "callee": "sessions\r\n      .filter",
+          "lineNumber": 197
+        },
+        {
+          "caller": "HeatmapBlock",
+          "callee": "toLocalDateStr",
+          "lineNumber": 198
+        },
+        {
+          "caller": "HeatmapBlock",
+          "callee": "Math.max",
+          "lineNumber": 199
+        },
+        {
+          "caller": "HeatmapBlock",
+          "callee": "Date.now",
+          "lineNumber": 199
+        },
+        {
+          "caller": "HeatmapBlock",
+          "callee": "cells.push",
+          "lineNumber": 200
+        },
+        {
+          "caller": "HeatmapBlock",
+          "callee": "Math.floor",
+          "lineNumber": 200
+        },
+        {
+          "caller": "HeatmapBlock",
+          "callee": "cells.map",
+          "lineNumber": 205
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/hooks/usePagination.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 85,
+      "nonEmptyLines": 74,
+      "functions": [
+        {
+          "name": "usePagination",
+          "startLine": 43,
+          "endLine": 85,
+          "params": [
+            "{\n  data,\n  pageSize = 20,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "usePagination",
+          "line": 43,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "usePagination",
+          "callee": "useState",
+          "lineNumber": 47
+        },
+        {
+          "caller": "usePagination",
+          "callee": "useState",
+          "lineNumber": 48
+        },
+        {
+          "caller": "usePagination",
+          "callee": "useRef",
+          "lineNumber": 49
+        },
+        {
+          "caller": "usePagination",
+          "callee": "useEffect",
+          "lineNumber": 52
+        },
+        {
+          "caller": "usePagination",
+          "callee": "setPage",
+          "lineNumber": 55
+        },
+        {
+          "caller": "usePagination",
+          "callee": "setIsLoading",
+          "lineNumber": 56
+        },
+        {
+          "caller": "usePagination",
+          "callee": "Math.ceil",
+          "lineNumber": 61
+        },
+        {
+          "caller": "usePagination",
+          "callee": "useMemo",
+          "lineNumber": 63
+        },
+        {
+          "caller": "usePagination",
+          "callee": "data.slice",
+          "lineNumber": 64
+        },
+        {
+          "caller": "usePagination",
+          "callee": "useCallback",
+          "lineNumber": 69
+        },
+        {
+          "caller": "usePagination",
+          "callee": "setIsLoading",
+          "lineNumber": 71
+        },
+        {
+          "caller": "usePagination",
+          "callee": "setTimeout",
+          "lineNumber": 73
+        },
+        {
+          "caller": "usePagination",
+          "callee": "setPage",
+          "lineNumber": 74
+        },
+        {
+          "caller": "usePagination",
+          "callee": "setIsLoading",
+          "lineNumber": 75
+        },
+        {
+          "caller": "usePagination",
+          "callee": "useCallback",
+          "lineNumber": 79
+        },
+        {
+          "caller": "usePagination",
+          "callee": "setPage",
+          "lineNumber": 80
+        },
+        {
+          "caller": "usePagination",
+          "callee": "setIsLoading",
+          "lineNumber": 81
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 78,
+      "nonEmptyLines": 73,
+      "functions": [
+        {
+          "name": "SimpleHeader",
+          "startLine": 23,
+          "endLine": 78,
+          "params": [
+            "{ routeName }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "SimpleHeader",
+          "line": 23,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "SimpleHeader",
+          "callee": "useShallowStore",
+          "lineNumber": 24
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "useShallowStore",
+          "lineNumber": 25
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "useShallowStore",
+          "lineNumber": 26
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "useTheme",
+          "lineNumber": 27
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "useSafeAreaInsets",
+          "lineNumber": 28
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "useNavigation",
+          "lineNumber": 29
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "formatDate",
+          "lineNumber": 30
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "Object.values(HEADER_TAB_ROUTES).includes",
+          "lineNumber": 31
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "Object.values",
+          "lineNumber": 31
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "Object.entries(HEADER_TAB_ROUTES).find",
+          "lineNumber": 32
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "Object.entries",
+          "lineNumber": 32
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "require",
+          "lineNumber": 38
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "FONT_SUB",
+          "lineNumber": 43
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "t",
+          "lineNumber": 43
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "FONT_STAT_SECTION",
+          "lineNumber": 44
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "String",
+          "lineNumber": 45
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "t",
+          "lineNumber": 45
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "HEADER_TAB_KEYS.map",
+          "lineNumber": 51
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "navigation.navigate",
+          "lineNumber": 54
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "(() => {\r\n                  const Icon = HEADER_TAB_ICONS[key];\r\n                  return Icon ? <Icon size={14} color={key === activeKey ? '#fff' : TH.sub} strokeWidth={key === activeKey ? 2.2 : 1.5} /> : null;\r\n                })",
+          "lineNumber": 59
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "FONT_BODY",
+          "lineNumber": 63
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "t",
+          "lineNumber": 64
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "FONT_SUB",
+          "lineNumber": 72
+        },
+        {
+          "caller": "SimpleHeader",
+          "callee": "t",
+          "lineNumber": 73
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/navigation/hooks.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 16,
+      "nonEmptyLines": 12,
+      "functions": [
+        {
+          "name": "useRootNavigation",
+          "startLine": 9,
+          "endLine": 11,
+          "params": []
+        },
+        {
+          "name": "useTabNavigation",
+          "startLine": 14,
+          "endLine": 16,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "RootStackParamList",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "MainTabParamList",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "useRootNavigation",
+          "line": 9,
+          "isDefault": false
+        },
+        {
+          "name": "useTabNavigation",
+          "line": 14,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useRootNavigation",
+          "callee": "useNavigation",
+          "lineNumber": 10
+        },
+        {
+          "caller": "useTabNavigation",
+          "callee": "useNavigation",
+          "lineNumber": 15
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 4,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/navigation/types.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 72,
+      "nonEmptyLines": 71,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/navigation/useAppNavigation.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 38,
+      "nonEmptyLines": 32,
+      "functions": [
+        {
+          "name": "useAppNavigation",
+          "startLine": 12,
+          "endLine": 14,
+          "params": []
+        },
+        {
+          "name": "useNavigateToTab",
+          "startLine": 21,
+          "endLine": 27,
+          "params": []
+        },
+        {
+          "name": "useGoToMainTab",
+          "startLine": 32,
+          "endLine": 38,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "useAppNavigation",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "useNavigateToTab",
+          "line": 21,
+          "isDefault": false
+        },
+        {
+          "name": "useGoToMainTab",
+          "line": 32,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useAppNavigation",
+          "callee": "useNavigation",
+          "lineNumber": 13
+        },
+        {
+          "caller": "useNavigateToTab",
+          "callee": "useAppNavigation",
+          "lineNumber": 22
+        },
+        {
+          "caller": "useNavigateToTab",
+          "callee": "nav.navigate",
+          "lineNumber": 25
+        },
+        {
+          "caller": "useGoToMainTab",
+          "callee": "useAppNavigation",
+          "lineNumber": 33
+        },
+        {
+          "caller": "useGoToMainTab",
+          "callee": "nav.navigate",
+          "lineNumber": 36
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 3,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/store/createMobileUiSlice.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 104,
+      "nonEmptyLines": 91,
+      "functions": [
+        {
+          "name": "createMobileUiSlice",
+          "startLine": 32,
+          "endLine": 104,
+          "params": [
+            "adapter",
+            "foodSlice",
+            "checkinSlice",
+            "profileSlice",
+            "settingsSlice",
+            "reflectionSlice",
+            "onReset",
+            "onSettingsPersist",
+            "onResetSyncState"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "createMobileUiSlice",
+          "line": 32,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "createMobileUiSlice",
+          "callee": "foodSlice",
+          "lineNumber": 44
+        },
+        {
+          "caller": "createMobileUiSlice",
+          "callee": "checkinSlice",
+          "lineNumber": 45
+        },
+        {
+          "caller": "createMobileUiSlice",
+          "callee": "profileSlice",
+          "lineNumber": 46
+        },
+        {
+          "caller": "createMobileUiSlice",
+          "callee": "settingsSlice",
+          "lineNumber": 47
+        },
+        {
+          "caller": "createMobileUiSlice",
+          "callee": "reflectionSlice",
+          "lineNumber": 48
+        },
+        {
+          "caller": "addPersistError",
+          "callee": "set",
+          "lineNumber": 55
+        },
+        {
+          "caller": "addPersistError",
+          "callee": "Date.now",
+          "lineNumber": 57
+        },
+        {
+          "caller": "addPersistError",
+          "callee": "(s.persistErrors ?? []).slice",
+          "lineNumber": 58
+        },
+        {
+          "caller": "clearPersistErrors",
+          "callee": "set",
+          "lineNumber": 64
+        },
+        {
+          "caller": "setHealthSyncEnabled",
+          "callee": "set",
+          "lineNumber": 67
+        },
+        {
+          "caller": "setHealthSyncEnabled",
+          "callee": "onSettingsPersist",
+          "lineNumber": 67
+        },
+        {
+          "caller": "setTodaySteps",
+          "callee": "set",
+          "lineNumber": 68
+        },
+        {
+          "caller": "syncWeightFromHealth",
+          "callee": "get",
+          "lineNumber": 71
+        },
+        {
+          "caller": "syncWeightFromHealth",
+          "callee": "submitCheckinEntry",
+          "lineNumber": 72
+        },
+        {
+          "caller": "syncWeightFromHealth",
+          "callee": "Date.now",
+          "lineNumber": 73
+        },
+        {
+          "caller": "syncWeightFromHealth",
+          "callee": "set",
+          "lineNumber": 74
+        },
+        {
+          "caller": "syncWeightFromHealth",
+          "callee": "adapter.persistChange('checkin', entry.date, entry).catch",
+          "lineNumber": 80
+        },
+        {
+          "caller": "syncWeightFromHealth",
+          "callee": "adapter.persistChange",
+          "lineNumber": 80
+        },
+        {
+          "caller": "syncWeightFromHealth",
+          "callee": "log.error",
+          "lineNumber": 80
+        },
+        {
+          "caller": "syncWeightFromHealth",
+          "callee": "adapter.persistChange('profile', 'self', updatedProfile).catch",
+          "lineNumber": 81
+        },
+        {
+          "caller": "syncWeightFromHealth",
+          "callee": "adapter.persistChange",
+          "lineNumber": 81
+        },
+        {
+          "caller": "syncWeightFromHealth",
+          "callee": "log.error",
+          "lineNumber": 81
+        },
+        {
+          "caller": "resetData",
+          "callee": "get",
+          "lineNumber": 85
+        },
+        {
+          "caller": "resetData",
+          "callee": "set",
+          "lineNumber": 86
+        },
+        {
+          "caller": "resetData",
+          "callee": "createResetDataPatch",
+          "lineNumber": 86
+        },
+        {
+          "caller": "resetData",
+          "callee": "onReset",
+          "lineNumber": 87
+        },
+        {
+          "caller": "clearLocalData",
+          "callee": "onResetSyncState",
+          "lineNumber": 93
+        },
+        {
+          "caller": "clearLocalData",
+          "callee": "get",
+          "lineNumber": 97
+        },
+        {
+          "caller": "clearLocalData",
+          "callee": "set",
+          "lineNumber": 98
+        },
+        {
+          "caller": "clearLocalData",
+          "callee": "createResetDataPatch",
+          "lineNumber": 98
+        },
+        {
+          "caller": "clearLocalData",
+          "callee": "get().pullServerData",
+          "lineNumber": 101
+        },
+        {
+          "caller": "clearLocalData",
+          "callee": "get",
+          "lineNumber": 101
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/store/safeAsyncStorage.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 63,
+      "nonEmptyLines": 56,
+      "functions": [
+        {
+          "name": "isNativeAvailable",
+          "startLine": 10,
+          "endLine": 19,
+          "params": []
+        },
+        {
+          "name": "safeGetItem",
+          "startLine": 21,
+          "endLine": 28,
+          "params": [
+            "key"
+          ]
+        },
+        {
+          "name": "safeSetItem",
+          "startLine": 30,
+          "endLine": 40,
+          "params": [
+            "key",
+            "value"
+          ]
+        },
+        {
+          "name": "safeMultiGet",
+          "startLine": 42,
+          "endLine": 51,
+          "params": [
+            "keys"
+          ]
+        },
+        {
+          "name": "safeMultiSet",
+          "startLine": 53,
+          "endLine": 63,
+          "params": [
+            "pairs"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "safeGetItem",
+          "line": 21,
+          "isDefault": false
+        },
+        {
+          "name": "safeSetItem",
+          "line": 30,
+          "isDefault": false
+        },
+        {
+          "name": "safeMultiGet",
+          "line": 42,
+          "isDefault": false
+        },
+        {
+          "name": "safeMultiSet",
+          "line": 53,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "safeGetItem",
+          "callee": "isNativeAvailable",
+          "lineNumber": 22
+        },
+        {
+          "caller": "safeGetItem",
+          "callee": "_memoryCache.get",
+          "lineNumber": 22
+        },
+        {
+          "caller": "safeGetItem",
+          "callee": "AsyncStorage.getItem",
+          "lineNumber": 24
+        },
+        {
+          "caller": "safeGetItem",
+          "callee": "_memoryCache.get",
+          "lineNumber": 26
+        },
+        {
+          "caller": "safeSetItem",
+          "callee": "isNativeAvailable",
+          "lineNumber": 31
+        },
+        {
+          "caller": "safeSetItem",
+          "callee": "_memoryCache.set",
+          "lineNumber": 32
+        },
+        {
+          "caller": "safeSetItem",
+          "callee": "AsyncStorage.setItem",
+          "lineNumber": 36
+        },
+        {
+          "caller": "safeSetItem",
+          "callee": "_memoryCache.set",
+          "lineNumber": 38
+        },
+        {
+          "caller": "safeMultiGet",
+          "callee": "isNativeAvailable",
+          "lineNumber": 43
+        },
+        {
+          "caller": "safeMultiGet",
+          "callee": "keys.map",
+          "lineNumber": 44
+        },
+        {
+          "caller": "safeMultiGet",
+          "callee": "_memoryCache.get",
+          "lineNumber": 44
+        },
+        {
+          "caller": "safeMultiGet",
+          "callee": "AsyncStorage.multiGet",
+          "lineNumber": 47
+        },
+        {
+          "caller": "safeMultiGet",
+          "callee": "keys.map",
+          "lineNumber": 49
+        },
+        {
+          "caller": "safeMultiGet",
+          "callee": "_memoryCache.get",
+          "lineNumber": 49
+        },
+        {
+          "caller": "safeMultiSet",
+          "callee": "isNativeAvailable",
+          "lineNumber": 54
+        },
+        {
+          "caller": "safeMultiSet",
+          "callee": "_memoryCache.set",
+          "lineNumber": 55
+        },
+        {
+          "caller": "safeMultiSet",
+          "callee": "AsyncStorage.multiSet",
+          "lineNumber": 59
+        },
+        {
+          "caller": "safeMultiSet",
+          "callee": "_memoryCache.set",
+          "lineNumber": 61
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 4,
+        "functionCount": 5,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/store/useAppStore.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 276,
+      "nonEmptyLines": 249,
+      "functions": [
+        {
+          "name": "flushAllPendingTimers",
+          "startLine": 59,
+          "endLine": 62,
+          "params": []
+        },
+        {
+          "name": "flushProfileSettings",
+          "startLine": 64,
+          "endLine": 101,
+          "params": []
+        },
+        {
+          "name": "persistProfileSettings",
+          "startLine": 103,
+          "endLine": 106,
+          "params": []
+        },
+        {
+          "name": "flushAIConfig",
+          "startLine": 114,
+          "endLine": 127,
+          "params": []
+        },
+        {
+          "name": "persistAIConfig",
+          "startLine": 129,
+          "endLine": 132,
+          "params": []
+        },
+        {
+          "name": "useShallowStore",
+          "startLine": 149,
+          "endLine": 151,
+          "params": [
+            "selector"
+          ]
+        },
+        {
+          "name": "setAutoSyncCallback",
+          "startLine": 156,
+          "endLine": 156,
+          "params": [
+            "cb"
+          ]
+        },
+        {
+          "name": "triggerAutoSync",
+          "startLine": 157,
+          "endLine": 157,
+          "params": []
+        },
+        {
+          "name": "handleAppStateChange",
+          "startLine": 256,
+          "endLine": 262,
+          "params": [
+            "state"
+          ]
+        },
+        {
+          "name": "initMobileStore",
+          "startLine": 274,
+          "endLine": 276,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "flushAllPendingTimers",
+          "line": 59,
+          "isDefault": false
+        },
+        {
+          "name": "useShallowStore",
+          "line": 149,
+          "isDefault": false
+        },
+        {
+          "name": "setAutoSyncCallback",
+          "line": 156,
+          "isDefault": false
+        },
+        {
+          "name": "useAppStore",
+          "line": 159,
+          "isDefault": false
+        },
+        {
+          "name": "initMobileStore",
+          "line": 274,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "flushAllPendingTimers",
+          "callee": "clearTimeout",
+          "lineNumber": 60
+        },
+        {
+          "caller": "flushAllPendingTimers",
+          "callee": "flushProfileSettings",
+          "lineNumber": 60
+        },
+        {
+          "caller": "flushAllPendingTimers",
+          "callee": "clearTimeout",
+          "lineNumber": 61
+        },
+        {
+          "caller": "flushAllPendingTimers",
+          "callee": "flushAIConfig",
+          "lineNumber": 61
+        },
+        {
+          "caller": "flushProfileSettings",
+          "callee": "clearTimeout",
+          "lineNumber": 66
+        },
+        {
+          "caller": "flushProfileSettings",
+          "callee": "useAppStore.getState",
+          "lineNumber": 69
+        },
+        {
+          "caller": "flushProfileSettings",
+          "callee": "Object.keys",
+          "lineNumber": 72
+        },
+        {
+          "caller": "flushProfileSettings",
+          "callee": "Object.keys",
+          "lineNumber": 72
+        },
+        {
+          "caller": "flushProfileSettings",
+          "callee": "useMusicStore.getState",
+          "lineNumber": 76
+        },
+        {
+          "caller": "flushProfileSettings",
+          "callee": "adapter.persistChange('profile', 'self', {\r\n    ...s.userProfile,\r\n    waterMl: s.waterMl,\r\n    waterGoal: s.waterGoal,\r\n    weightUnit: s.weightUnit,\r\n    calGoal: s.calGoal,\r\n    customFoodPresets: s.customFoodPresets,\r\n    theme: s.theme,\r\n    language: s.language,\r\n    remindEnabled: s.remindEnabled,\r\n    remindTime: s.remindTime,\r\n    healthSyncEnabled: s.healthSyncEnabled,\r\n    customTags: s.customTags,\r\n    customMoods: s.customMoods,\r\n    allTagsOrder: s.allTagsOrder,\r\n    allMoodsOrder: s.allMoodsOrder,\r\n    reflectionFilters: s.reflectionFilters,\r\n    ignoredRecPatterns: s.ignoredRecPatterns,\r\n    musicFavorites: ms.favorites,\r\n    musicUserTracks: ms.userTracks.map(t => ({ id: t.id, name: t.name, nameEn: t.nameEn, category: t.category })),\r\n    musicVolume: ms.volume,\r\n    musicPlayMode: ms.playMode,\r\n    updatedAt: Date.now(),\r\n  } as Record<string, unknown>).catch",
+          "lineNumber": 77
+        },
+        {
+          "caller": "flushProfileSettings",
+          "callee": "adapter.persistChange",
+          "lineNumber": 77
+        },
+        {
+          "caller": "flushProfileSettings",
+          "callee": "ms.userTracks.map",
+          "lineNumber": 96
+        },
+        {
+          "caller": "flushProfileSettings",
+          "callee": "Date.now",
+          "lineNumber": 99
+        },
+        {
+          "caller": "flushProfileSettings",
+          "callee": "log.error",
+          "lineNumber": 100
+        },
+        {
+          "caller": "persistProfileSettings",
+          "callee": "clearTimeout",
+          "lineNumber": 104
+        },
+        {
+          "caller": "persistProfileSettings",
+          "callee": "setTimeout",
+          "lineNumber": 105
+        },
+        {
+          "caller": "flushAIConfig",
+          "callee": "clearTimeout",
+          "lineNumber": 116
+        },
+        {
+          "caller": "flushAIConfig",
+          "callee": "useAppStore.getState",
+          "lineNumber": 119
+        },
+        {
+          "caller": "flushAIConfig",
+          "callee": "adapter.persistChange('aiConfig', 'self', {\r\n    config_id: 'self',\r\n    mode: s.aiMode,\r\n    models: s.aiModels,\r\n    updatedAt: Date.now(),\r\n    deleted: false,\r\n  }).catch",
+          "lineNumber": 120
+        },
+        {
+          "caller": "flushAIConfig",
+          "callee": "adapter.persistChange",
+          "lineNumber": 120
+        },
+        {
+          "caller": "flushAIConfig",
+          "callee": "Date.now",
+          "lineNumber": 124
+        },
+        {
+          "caller": "flushAIConfig",
+          "callee": "log.error",
+          "lineNumber": 126
+        },
+        {
+          "caller": "persistAIConfig",
+          "callee": "clearTimeout",
+          "lineNumber": 130
+        },
+        {
+          "caller": "persistAIConfig",
+          "callee": "setTimeout",
+          "lineNumber": 131
+        },
+        {
+          "caller": "useShallowStore",
+          "callee": "useAppStore",
+          "lineNumber": 150
+        },
+        {
+          "caller": "useShallowStore",
+          "callee": "useShallow",
+          "lineNumber": 150
+        },
+        {
+          "caller": "triggerAutoSync",
+          "callee": "_autoSyncCallback",
+          "lineNumber": 157
+        },
+        {
+          "caller": "handleAppStateChange",
+          "callee": "flushProfileSettings",
+          "lineNumber": 258
+        },
+        {
+          "caller": "handleAppStateChange",
+          "callee": "flushAIConfig",
+          "lineNumber": 259
+        },
+        {
+          "caller": "handleAppStateChange",
+          "callee": "flushWrites",
+          "lineNumber": 260
+        },
+        {
+          "caller": "initMobileStore",
+          "callee": "AppState.addEventListener",
+          "lineNumber": 275
+        }
+      ],
+      "metrics": {
+        "importCount": 6,
+        "exportCount": 5,
+        "functionCount": 10,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/zhiguanCountingRound.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 64,
+      "nonEmptyLines": 58,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/zhiguanHintEngine.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 69,
+      "nonEmptyLines": 58,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/zhiguanHistory.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 53,
+      "nonEmptyLines": 47,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/zhiguanTimer.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 56,
+      "nonEmptyLines": 50,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 26,
+      "nonEmptyLines": 26,
+      "exports": [
+        {
+          "name": "configureFontScale",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "scaleFontSize",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_TITLE",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_BODY",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_BUTTON",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_EMPTY",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_LABEL",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_CARD_TITLE",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_SUB",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_BADGE",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_ERROR",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_BACK",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_CLOSE",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_STAT_CARD",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_STAT_SECTION",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_HERO",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_CHART_AXIS",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_CHART_TOOLTIP",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_SMALL",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_TINY",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "I18nKey",
+          "line": 25,
+          "isDefault": false
+        },
+        {
+          "name": "I18nKeys",
+          "line": 25,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 22,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    }
+  ]
+}

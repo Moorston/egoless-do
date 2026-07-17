@@ -1,0 +1,98 @@
+{
+  "nodes": [
+    {
+      "id": "document:.trellis/tasks/archive/2026-07/07-09-code-arch-governance/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-code-arch-governance/prd.md",
+      "summary": "构建项目全局代码规范与架构约束文档的产品需求，明确 Goal（产出 GLOBAL-CODE-STANDARDS 与 ARCHITECTURE-CONSTRAINTS 两份全局文档），覆盖 9 个代码规范维度和 8 个架构约束维度，并定义 ESLint 增强建议、非需求边界与验收标准。",
+      "tags": [
+        "documentation",
+        "prd",
+        "specification",
+        "governance",
+        "requirements"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:.trellis/tasks/archive/2026-07/07-09-code-arch-governance/design.md",
+      "type": "document",
+      "name": "design.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-code-arch-governance/design.md",
+      "summary": "全局代码规范与架构约束的设计文档，规划三层文档架构（governance/guides/mobile 等），定义规则分类法（强制等级 MUST/SHOULD/MAY、自动化程度 Auto/Manual、适用范围 core/mobile/api/pb/ALL），并梳理包依赖方向、数据流、Store 契约、Feature 自治等核心约束来源及 ESLint 增强建议。",
+      "tags": [
+        "documentation",
+        "architecture",
+        "specification",
+        "governance",
+        "design-doc"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:.trellis/tasks/archive/2026-07/07-09-code-arch-governance/implement.md",
+      "type": "document",
+      "name": "implement.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-code-arch-governance/implement.md",
+      "summary": "全局代码规范与架构约束的实施计划，划分为三个阶段：产出 GLOBAL-CODE-STANDARDS.md（全局代码规范）、产出 ARCHITECTURE-CONSTRAINTS.md（架构约束）、关联更新 INDEX.md 与 .claude/rules 链接，附文件清单、时间估计和验证标准。",
+      "tags": [
+        "documentation",
+        "implementation-plan",
+        "specification",
+        "governance"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:.trellis/tasks/archive/2026-07/07-09-code-arch-governance/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-code-arch-governance/task.json",
+      "summary": "code-arch-governance 任务的元数据配置，记录任务标识、标题（构建项目全局代码规范与架构约束文档）、状态 completed、优先级 P2、创建者与负责人为 freebytes",
+      "tags": [
+        "configuration",
+        "task-metadata",
+        "project-management"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-09-code-arch-governance/design.md",
+      "target": "document:.trellis/tasks/archive/2026-07/07-09-code-arch-governance/implement.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-09-code-arch-governance/implement.md",
+      "target": "document:.trellis/tasks/archive/2026-07/07-09-code-arch-governance/prd.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-09-code-arch-governance/design.md",
+      "target": "config:.trellis/tasks/archive/2026-07/07-09-code-arch-governance/task.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-09-code-arch-governance/implement.md",
+      "target": "config:.trellis/tasks/archive/2026-07/07-09-code-arch-governance/task.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/tasks/archive/2026-07/07-09-code-arch-governance/prd.md",
+      "target": "config:.trellis/tasks/archive/2026-07/07-09-code-arch-governance/task.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

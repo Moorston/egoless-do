@@ -192,7 +192,7 @@ function BodyWeekPlanCard({ TH, T, plans, exerciseLog, onEdit, onPressSport }: P
 
                   {/* Kcal */}
                   {day.matched ? (
-                    <Text style={{ fontSize: FONT_SMALL(), color: '#10b981', marginTop: 2 }}>{day.kcal}</Text>
+                    <Text style={{ fontSize: FONT_SMALL(), color: '#10b981', marginTop: 2 }}>{String(day.kcal)}</Text>
                   ) : null}
                 </View>
               );
@@ -218,11 +218,11 @@ function BodyWeekPlanCard({ TH, T, plans, exerciseLog, onEdit, onPressSport }: P
           {/* Stats row */}
           <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: TH.border }}>
             <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#f59e0b' }}>{completedDays}/{totalPlanned}</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#f59e0b' }}>{String(completedDays)}/{String(totalPlanned)}</Text>
               <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('bodyCompletedDays')}</Text>
             </View>
             <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#f59e0b' }}>{totalKcal}</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#f59e0b' }}>{String(totalKcal)}</Text>
               <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('bodyKcal')}</Text>
             </View>
           </View>

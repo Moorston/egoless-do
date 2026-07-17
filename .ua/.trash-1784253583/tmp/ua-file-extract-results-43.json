@@ -1,0 +1,366 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 4,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/design.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 109,
+      "nonEmptyLines": 86,
+      "sections": [
+        {
+          "heading": "设计文档：用户资料页增强",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "架构概览",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "需求2: 修改密码",
+          "level": 2,
+          "line": 25
+        },
+        {
+          "heading": "数据流",
+          "level": 3,
+          "line": 27
+        },
+        {
+          "heading": "后端端点",
+          "level": 3,
+          "line": 39
+        },
+        {
+          "heading": "后端实现细节",
+          "level": 3,
+          "line": 50
+        },
+        {
+          "heading": "前端 Core 层",
+          "level": 3,
+          "line": 60
+        },
+        {
+          "heading": "前端 UI 层",
+          "level": 3,
+          "line": 64
+        },
+        {
+          "heading": "需求3: 座右铭迁移",
+          "level": 2,
+          "line": 74
+        },
+        {
+          "heading": "布局变更",
+          "level": 3,
+          "line": 76
+        },
+        {
+          "heading": "具体改动",
+          "level": 3,
+          "line": 100
+        },
+        {
+          "heading": "兼容性",
+          "level": 2,
+          "line": 105
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 12
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/implement.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 64,
+      "nonEmptyLines": 47,
+      "sections": [
+        {
+          "heading": "执行计划：用户资料页增强",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "任务清单",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "Phase 1: 后端 — 新增 change-password 端点",
+          "level": 3,
+          "line": 5
+        },
+        {
+          "heading": "Phase 2: 前端 Core — 新增 apiChangePassword",
+          "level": 3,
+          "line": 18
+        },
+        {
+          "heading": "Phase 3: 前端 ProfileScreen — 修改密码 Modal",
+          "level": 3,
+          "line": 23
+        },
+        {
+          "heading": "Phase 4: 座右铭迁移",
+          "level": 3,
+          "line": 30
+        },
+        {
+          "heading": "Phase 5: 验证",
+          "level": 3,
+          "line": 35
+        },
+        {
+          "heading": "验证命令",
+          "level": 2,
+          "line": 41
+        },
+        {
+          "heading": "风险点",
+          "level": 2,
+          "line": 50
+        },
+        {
+          "heading": "回滚点",
+          "level": 2,
+          "line": 59
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 10
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/prd.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 81,
+      "nonEmptyLines": 61,
+      "sections": [
+        {
+          "heading": "用户资料页增强：数据持久化、密码重置、座右铭迁移",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Goal",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "调研结论",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "需求1: 数据持久化 — 代码分析结论：链路正确，无需修改",
+          "level": 3,
+          "line": 9
+        },
+        {
+          "heading": "需求2: 密码重置（已登录改密）— 需全栈实现",
+          "level": 3,
+          "line": 34
+        },
+        {
+          "heading": "需求3: 座右铭迁移 — 需调整 UI",
+          "level": 3,
+          "line": 36
+        },
+        {
+          "heading": "Requirements",
+          "level": 2,
+          "line": 38
+        },
+        {
+          "heading": "R1: 后端 — 新增 change-password 端点",
+          "level": 3,
+          "line": 40
+        },
+        {
+          "heading": "R2: 前端 Core — 新增 apiChangePassword",
+          "level": 3,
+          "line": 49
+        },
+        {
+          "heading": "R3: 前端 ProfileScreen — 修改密码模态框",
+          "level": 3,
+          "line": 52
+        },
+        {
+          "heading": "R4: 座右铭迁移",
+          "level": 3,
+          "line": 62
+        },
+        {
+          "heading": "Acceptance Criteria",
+          "level": 2,
+          "line": 67
+        },
+        {
+          "heading": "Out of Scope",
+          "level": 2,
+          "line": 78
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 13
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/task.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 26,
+      "nonEmptyLines": 26,
+      "sections": [
+        {
+          "heading": "id",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "title",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "status",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dev_type",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "scope",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "package",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "priority",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "creator",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "assignee",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "createdAt",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "completedAt",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "branch",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "base_branch",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "worktree_path",
+          "level": 1,
+          "line": 17
+        },
+        {
+          "heading": "commit",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "pr_url",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "subtasks",
+          "level": 1,
+          "line": 20
+        },
+        {
+          "heading": "children",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "parent",
+          "level": 1,
+          "line": 22
+        },
+        {
+          "heading": "relatedFiles",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "notes",
+          "level": 1,
+          "line": 24
+        },
+        {
+          "heading": "meta",
+          "level": 1,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    }
+  ]
+}

@@ -1,0 +1,2607 @@
+{
+  "nodes": [
+    {
+      "id": "file:apps/mobile/App.tsx",
+      "type": "file",
+      "name": "App.tsx",
+      "filePath": "apps/mobile/App.tsx",
+      "summary": "应用根组件入口，负责懒预加载、启动初始化与全局Provider装配。",
+      "tags": [
+        "entry-point",
+        "app-root"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/index.js",
+      "type": "file",
+      "name": "index.js",
+      "filePath": "apps/mobile/index.js",
+      "summary": "Expo注册根组件入口，先初始化Sentry再注册App。",
+      "tags": [
+        "entry-point",
+        "expo"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/components/ErrorBoundary.tsx",
+      "type": "file",
+      "name": "ErrorBoundary.tsx",
+      "filePath": "apps/mobile/src/components/ErrorBoundary.tsx",
+      "summary": "错误边界组件与withErrorBoundary高阶组件，捕获渲染异常。",
+      "tags": [
+        "error-boundary",
+        "component"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/components/FabButton.tsx",
+      "type": "file",
+      "name": "FabButton.tsx",
+      "filePath": "apps/mobile/src/components/FabButton.tsx",
+      "summary": "可拖拽浮动操作按钮，支持Sparkles图标与边缘吸附。",
+      "tags": [
+        "fab",
+        "component",
+        "drag"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/components/KickOutModal.tsx",
+      "type": "file",
+      "name": "KickOutModal.tsx",
+      "filePath": "apps/mobile/src/components/KickOutModal.tsx",
+      "summary": "被其他设备踢出登录时的提示弹窗。",
+      "tags": [
+        "auth",
+        "modal",
+        "kickout"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/components/StarfieldBackground.tsx",
+      "type": "file",
+      "name": "StarfieldBackground.tsx",
+      "filePath": "apps/mobile/src/components/StarfieldBackground.tsx",
+      "summary": "星空背景组件，含多层星星、流星、星座连线与低端设备降级。",
+      "tags": [
+        "visual",
+        "background",
+        "animation"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/components/SyncBanner.tsx",
+      "type": "file",
+      "name": "SyncBanner.tsx",
+      "filePath": "apps/mobile/src/components/SyncBanner.tsx",
+      "summary": "后台同步阶段的轻量横幅，显示同步进度。",
+      "tags": [
+        "sync",
+        "banner",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/components/SyncProgressOverlay.tsx",
+      "type": "file",
+      "name": "SyncProgressOverlay.tsx",
+      "filePath": "apps/mobile/src/components/SyncProgressOverlay.tsx",
+      "summary": "初始同步阶段的全屏进度浮层，分实体展示状态。",
+      "tags": [
+        "sync",
+        "overlay",
+        "component"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/db/queries.ts",
+      "type": "file",
+      "name": "queries.ts",
+      "filePath": "apps/mobile/src/db/queries.ts",
+      "summary": "SQLite查询辅助函数集合（习惯/回忆/禁食/饮食/打卡/思维路径）。",
+      "tags": [
+        "database",
+        "query",
+        "sqlite"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/db/schema.ts",
+      "type": "file",
+      "name": "schema.ts",
+      "filePath": "apps/mobile/src/db/schema.ts",
+      "summary": "SQLite schema与数据库初始化/迁移/写锁getState/setState。",
+      "tags": [
+        "database",
+        "schema",
+        "sqlite"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/db/sqlHelper.ts",
+      "type": "file",
+      "name": "sqlHelper.ts",
+      "filePath": "apps/mobile/src/db/sqlHelper.ts",
+      "summary": "SQL语句构造辅助（INSERT/UPDATE/DELETE/SELECT/SET子句）含注入校验。",
+      "tags": [
+        "database",
+        "sql",
+        "utility"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/db/syncQueue.test.ts",
+      "type": "file",
+      "name": "syncQueue.test.ts",
+      "filePath": "apps/mobile/src/db/syncQueue.test.ts",
+      "summary": "同步队列单元测试（入队/时间戳/队列计数/失败标记）。",
+      "tags": [
+        "sync",
+        "test",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/db/syncQueue.ts",
+      "type": "file",
+      "name": "syncQueue.ts",
+      "filePath": "apps/mobile/src/db/syncQueue.ts",
+      "summary": "SQLite回写同步队列，含入队去重、出队、失败/冲突管理与进度跟踪。",
+      "tags": [
+        "sync",
+        "queue",
+        "database"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/db/useDatabase.ts",
+      "type": "file",
+      "name": "useDatabase.ts",
+      "filePath": "apps/mobile/src/db/useDatabase.ts",
+      "summary": "React hook：异步打开数据库并暴露实例/就绪态/错误。",
+      "tags": [
+        "database",
+        "hook"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "apps/mobile/src/features/music/index.ts",
+      "summary": "music模块barrel导出文件。",
+      "tags": [
+        "music",
+        "barrel"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/splash/SplashScreen.tsx",
+      "type": "file",
+      "name": "SplashScreen.tsx",
+      "filePath": "apps/mobile/src/features/splash/SplashScreen.tsx",
+      "summary": "启动屏组件，含星星、流星、星云、呼吸文字动画。",
+      "tags": [
+        "splash",
+        "animation",
+        "component"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sync/RealtimeAgent.ts",
+      "type": "file",
+      "name": "RealtimeAgent.ts",
+      "filePath": "apps/mobile/src/features/sync/RealtimeAgent.ts",
+      "summary": "SSE实时同步代理，含心跳、重连与事件分发。",
+      "tags": [
+        "sync",
+        "realtime",
+        "sse"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sync/SyncApplyService.test.ts",
+      "type": "file",
+      "name": "SyncApplyService.test.ts",
+      "filePath": "apps/mobile/src/features/sync/SyncApplyService.test.ts",
+      "summary": "同步应用服务单元测试（服务端变更落本地）。",
+      "tags": [
+        "sync",
+        "test"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sync/SyncApplyService.ts",
+      "type": "file",
+      "name": "SyncApplyService.ts",
+      "filePath": "apps/mobile/src/features/sync/SyncApplyService.ts",
+      "summary": "将服务端变更应用至本地SQLite并生成store patch的服务类。",
+      "tags": [
+        "sync",
+        "apply",
+        "service"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sync/SyncEngine.test.ts",
+      "type": "file",
+      "name": "SyncEngine.test.ts",
+      "filePath": "apps/mobile/src/features/sync/SyncEngine.test.ts",
+      "summary": "同步引擎单元测试。",
+      "tags": [
+        "sync",
+        "test"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sync/SyncEngine.ts",
+      "type": "file",
+      "name": "SyncEngine.ts",
+      "filePath": "apps/mobile/src/features/sync/SyncEngine.ts",
+      "summary": "同步引擎主类，协调拉取、冲突、水合与重试逻辑。",
+      "tags": [
+        "sync",
+        "engine",
+        "core"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sync/SyncRealtimeController.ts",
+      "type": "file",
+      "name": "SyncRealtimeController.ts",
+      "filePath": "apps/mobile/src/features/sync/SyncRealtimeController.ts",
+      "summary": "同步实时控制器，桥接RealtimeAgent与同步引擎。",
+      "tags": [
+        "sync",
+        "realtime",
+        "controller"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sync/SyncRehydrationManager.test.ts",
+      "type": "file",
+      "name": "SyncRehydrationManager.test.ts",
+      "filePath": "apps/mobile/src/features/sync/SyncRehydrationManager.test.ts",
+      "summary": "同步水合管理器单元测试。",
+      "tags": [
+        "sync",
+        "test",
+        "rehydration"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sync/SyncRehydrationManager.ts",
+      "type": "file",
+      "name": "SyncRehydrationManager.ts",
+      "filePath": "apps/mobile/src/features/sync/SyncRehydrationManager.ts",
+      "summary": "同步水合管理器，负责从本地DB重组store状态。",
+      "tags": [
+        "sync",
+        "rehydration",
+        "manager"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sync/SyncResetService.ts",
+      "type": "file",
+      "name": "SyncResetService.ts",
+      "filePath": "apps/mobile/src/features/sync/SyncResetService.ts",
+      "summary": "同步重置服务，清空同步相关状态。",
+      "tags": [
+        "sync",
+        "reset",
+        "service"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sync/SyncService.test.ts",
+      "type": "file",
+      "name": "SyncService.test.ts",
+      "filePath": "apps/mobile/src/features/sync/SyncService.test.ts",
+      "summary": "Mobile SyncService门面单元测试。",
+      "tags": [
+        "sync",
+        "test"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/App.tsx:staggerPreload",
+      "type": "function",
+      "name": "staggerPreload",
+      "filePath": "apps/mobile/App.tsx",
+      "lineRange": [
+        74,
+        83
+      ],
+      "summary": "staggerPreload 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/App.tsx:App",
+      "type": "function",
+      "name": "App",
+      "filePath": "apps/mobile/App.tsx",
+      "lineRange": [
+        85,
+        130
+      ],
+      "summary": "应用根组件实现。",
+      "tags": [
+        "entry-point",
+        "app-root"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/components/ErrorBoundary.tsx:ErrorBoundary",
+      "type": "function",
+      "name": "ErrorBoundary",
+      "filePath": "apps/mobile/src/components/ErrorBoundary.tsx",
+      "lineRange": [
+        60,
+        65
+      ],
+      "summary": "ErrorBoundary 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/ErrorBoundary.tsx:withErrorBoundary",
+      "type": "function",
+      "name": "withErrorBoundary",
+      "filePath": "apps/mobile/src/components/ErrorBoundary.tsx",
+      "lineRange": [
+        68,
+        76
+      ],
+      "summary": "withErrorBoundary 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:apps/mobile/src/components/ErrorBoundary.tsx:_ErrorBoundary",
+      "type": "class",
+      "name": "_ErrorBoundary",
+      "filePath": "apps/mobile/src/components/ErrorBoundary.tsx",
+      "lineRange": [
+        22,
+        52
+      ],
+      "summary": "错误边界内部类组件。",
+      "tags": [
+        "error-boundary"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/components/FabButton.tsx:FabButton",
+      "type": "function",
+      "name": "FabButton",
+      "filePath": "apps/mobile/src/components/FabButton.tsx",
+      "lineRange": [
+        14,
+        75
+      ],
+      "summary": "可拖拽浮动操作按钮实现。",
+      "tags": [
+        "fab",
+        "component"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/components/KickOutModal.tsx:KickOutModal",
+      "type": "function",
+      "name": "KickOutModal",
+      "filePath": "apps/mobile/src/components/KickOutModal.tsx",
+      "lineRange": [
+        16,
+        56
+      ],
+      "summary": "KickOutModal 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/StarfieldBackground.tsx:BrightStar",
+      "type": "function",
+      "name": "BrightStar",
+      "filePath": "apps/mobile/src/components/StarfieldBackground.tsx",
+      "lineRange": [
+        65,
+        172
+      ],
+      "summary": "BrightStar 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/components/StarfieldBackground.tsx:Star",
+      "type": "function",
+      "name": "Star",
+      "filePath": "apps/mobile/src/components/StarfieldBackground.tsx",
+      "lineRange": [
+        175,
+        235
+      ],
+      "summary": "Star 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/components/StarfieldBackground.tsx:ShootingStar",
+      "type": "function",
+      "name": "ShootingStar",
+      "filePath": "apps/mobile/src/components/StarfieldBackground.tsx",
+      "lineRange": [
+        238,
+        298
+      ],
+      "summary": "ShootingStar 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/components/StarfieldBackground.tsx:generateConstellations",
+      "type": "function",
+      "name": "generateConstellations",
+      "filePath": "apps/mobile/src/components/StarfieldBackground.tsx",
+      "lineRange": [
+        301,
+        346
+      ],
+      "summary": "generateConstellations 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/StarfieldBackground.tsx:StarfieldBackground",
+      "type": "function",
+      "name": "StarfieldBackground",
+      "filePath": "apps/mobile/src/components/StarfieldBackground.tsx",
+      "lineRange": [
+        349,
+        426
+      ],
+      "summary": "星空背景组件实现。",
+      "tags": [
+        "visual",
+        "background"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/components/SyncBanner.tsx:SyncBanner",
+      "type": "function",
+      "name": "SyncBanner",
+      "filePath": "apps/mobile/src/components/SyncBanner.tsx",
+      "lineRange": [
+        17,
+        61
+      ],
+      "summary": "SyncBanner 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/components/SyncProgressOverlay.tsx:SyncProgressOverlay",
+      "type": "function",
+      "name": "SyncProgressOverlay",
+      "filePath": "apps/mobile/src/components/SyncProgressOverlay.tsx",
+      "lineRange": [
+        26,
+        76
+      ],
+      "summary": "SyncProgressOverlay 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/db/queries.ts:dbGetAllHabits",
+      "type": "function",
+      "name": "dbGetAllHabits",
+      "filePath": "apps/mobile/src/db/queries.ts",
+      "lineRange": [
+        8,
+        11
+      ],
+      "summary": "dbGetAllHabits 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/queries.ts:dbGetAllReflections",
+      "type": "function",
+      "name": "dbGetAllReflections",
+      "filePath": "apps/mobile/src/db/queries.ts",
+      "lineRange": [
+        14,
+        19
+      ],
+      "summary": "dbGetAllReflections 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/queries.ts:dbGetFastingSessions",
+      "type": "function",
+      "name": "dbGetFastingSessions",
+      "filePath": "apps/mobile/src/db/queries.ts",
+      "lineRange": [
+        22,
+        36
+      ],
+      "summary": "查询禁食会话记录。",
+      "tags": [
+        "database",
+        "query"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/queries.ts:dbGetFoodEntries",
+      "type": "function",
+      "name": "dbGetFoodEntries",
+      "filePath": "apps/mobile/src/db/queries.ts",
+      "lineRange": [
+        39,
+        49
+      ],
+      "summary": "按日期查询饮食记录。",
+      "tags": [
+        "database",
+        "query"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/queries.ts:dbGetAllFoodEntries",
+      "type": "function",
+      "name": "dbGetAllFoodEntries",
+      "filePath": "apps/mobile/src/db/queries.ts",
+      "lineRange": [
+        51,
+        61
+      ],
+      "summary": "dbGetAllFoodEntries 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/queries.ts:dbGetCheckins",
+      "type": "function",
+      "name": "dbGetCheckins",
+      "filePath": "apps/mobile/src/db/queries.ts",
+      "lineRange": [
+        64,
+        69
+      ],
+      "summary": "dbGetCheckins 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/queries.ts:dbGetAllThoughtTrails",
+      "type": "function",
+      "name": "dbGetAllThoughtTrails",
+      "filePath": "apps/mobile/src/db/queries.ts",
+      "lineRange": [
+        78,
+        83
+      ],
+      "summary": "dbGetAllThoughtTrails 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/schema.ts:withDbLock",
+      "type": "function",
+      "name": "withDbLock",
+      "filePath": "apps/mobile/src/db/schema.ts",
+      "lineRange": [
+        16,
+        26
+      ],
+      "summary": "withDbLock 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/schema.ts:openDatabase",
+      "type": "function",
+      "name": "openDatabase",
+      "filePath": "apps/mobile/src/db/schema.ts",
+      "lineRange": [
+        30,
+        43
+      ],
+      "summary": "openDatabase 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/schema.ts:initDatabase",
+      "type": "function",
+      "name": "initDatabase",
+      "filePath": "apps/mobile/src/db/schema.ts",
+      "lineRange": [
+        516,
+        518
+      ],
+      "summary": "initDatabase 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/schema.ts:migrateDatabase",
+      "type": "function",
+      "name": "migrateDatabase",
+      "filePath": "apps/mobile/src/db/schema.ts",
+      "lineRange": [
+        520,
+        1209
+      ],
+      "summary": "数据库迁移主函数。",
+      "tags": [
+        "database",
+        "migration"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/db/schema.ts:getState",
+      "type": "function",
+      "name": "getState",
+      "filePath": "apps/mobile/src/db/schema.ts",
+      "lineRange": [
+        1211,
+        1216
+      ],
+      "summary": "getState 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/schema.ts:setState",
+      "type": "function",
+      "name": "setState",
+      "filePath": "apps/mobile/src/db/schema.ts",
+      "lineRange": [
+        1218,
+        1222
+      ],
+      "summary": "setState 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/sqlHelper.ts:isValidSqlName",
+      "type": "function",
+      "name": "isValidSqlName",
+      "filePath": "apps/mobile/src/db/sqlHelper.ts",
+      "lineRange": [
+        8,
+        10
+      ],
+      "summary": "isValidSqlName 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/sqlHelper.ts:buildSetClause",
+      "type": "function",
+      "name": "buildSetClause",
+      "filePath": "apps/mobile/src/db/sqlHelper.ts",
+      "lineRange": [
+        15,
+        26
+      ],
+      "summary": "buildSetClause 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/sqlHelper.ts:buildInsertStatement",
+      "type": "function",
+      "name": "buildInsertStatement",
+      "filePath": "apps/mobile/src/db/sqlHelper.ts",
+      "lineRange": [
+        30,
+        46
+      ],
+      "summary": "buildInsertStatement 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/sqlHelper.ts:buildUpdateStatement",
+      "type": "function",
+      "name": "buildUpdateStatement",
+      "filePath": "apps/mobile/src/db/sqlHelper.ts",
+      "lineRange": [
+        49,
+        65
+      ],
+      "summary": "buildUpdateStatement 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/sqlHelper.ts:buildDeleteInStatement",
+      "type": "function",
+      "name": "buildDeleteInStatement",
+      "filePath": "apps/mobile/src/db/sqlHelper.ts",
+      "lineRange": [
+        68,
+        85
+      ],
+      "summary": "buildDeleteInStatement 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/sqlHelper.ts:buildSelectInStatement",
+      "type": "function",
+      "name": "buildSelectInStatement",
+      "filePath": "apps/mobile/src/db/sqlHelper.ts",
+      "lineRange": [
+        88,
+        106
+      ],
+      "summary": "buildSelectInStatement 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/syncQueue.ts:setOnEnqueuedCallback",
+      "type": "function",
+      "name": "setOnEnqueuedCallback",
+      "filePath": "apps/mobile/src/db/syncQueue.ts",
+      "lineRange": [
+        15,
+        15
+      ],
+      "summary": "setOnEnqueuedCallback 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/syncQueue.ts:enqueueChange",
+      "type": "function",
+      "name": "enqueueChange",
+      "filePath": "apps/mobile/src/db/syncQueue.ts",
+      "lineRange": [
+        31,
+        57
+      ],
+      "summary": "入队一条变更请求。",
+      "tags": [
+        "sync",
+        "queue"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/db/syncQueue.ts:drainQueue",
+      "type": "function",
+      "name": "drainQueue",
+      "filePath": "apps/mobile/src/db/syncQueue.ts",
+      "lineRange": [
+        60,
+        78
+      ],
+      "summary": "消费并取出待同步队列项。",
+      "tags": [
+        "sync",
+        "queue"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/db/syncQueue.ts:getQueueItemsByStatus",
+      "type": "function",
+      "name": "getQueueItemsByStatus",
+      "filePath": "apps/mobile/src/db/syncQueue.ts",
+      "lineRange": [
+        81,
+        90
+      ],
+      "summary": "getQueueItemsByStatus 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/syncQueue.ts:removeQueueItems",
+      "type": "function",
+      "name": "removeQueueItems",
+      "filePath": "apps/mobile/src/db/syncQueue.ts",
+      "lineRange": [
+        93,
+        98
+      ],
+      "summary": "removeQueueItems 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/syncQueue.ts:markQueueItemFailed",
+      "type": "function",
+      "name": "markQueueItemFailed",
+      "filePath": "apps/mobile/src/db/syncQueue.ts",
+      "lineRange": [
+        101,
+        107
+      ],
+      "summary": "markQueueItemFailed 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/syncQueue.ts:markQueueItemRetry",
+      "type": "function",
+      "name": "markQueueItemRetry",
+      "filePath": "apps/mobile/src/db/syncQueue.ts",
+      "lineRange": [
+        110,
+        116
+      ],
+      "summary": "markQueueItemRetry 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/syncQueue.ts:markQueueItemConflict",
+      "type": "function",
+      "name": "markQueueItemConflict",
+      "filePath": "apps/mobile/src/db/syncQueue.ts",
+      "lineRange": [
+        119,
+        125
+      ],
+      "summary": "markQueueItemConflict 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/syncQueue.ts:resetQueueItemsForRetry",
+      "type": "function",
+      "name": "resetQueueItemsForRetry",
+      "filePath": "apps/mobile/src/db/syncQueue.ts",
+      "lineRange": [
+        128,
+        138
+      ],
+      "summary": "resetQueueItemsForRetry 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/syncQueue.ts:resetAllPendingForRetry",
+      "type": "function",
+      "name": "resetAllPendingForRetry",
+      "filePath": "apps/mobile/src/db/syncQueue.ts",
+      "lineRange": [
+        141,
+        151
+      ],
+      "summary": "resetAllPendingForRetry 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/syncQueue.ts:getQueueCount",
+      "type": "function",
+      "name": "getQueueCount",
+      "filePath": "apps/mobile/src/db/syncQueue.ts",
+      "lineRange": [
+        154,
+        160
+      ],
+      "summary": "getQueueCount 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/syncQueue.ts:getTotalQueueCount",
+      "type": "function",
+      "name": "getTotalQueueCount",
+      "filePath": "apps/mobile/src/db/syncQueue.ts",
+      "lineRange": [
+        163,
+        169
+      ],
+      "summary": "getTotalQueueCount 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/syncQueue.ts:clearQueue",
+      "type": "function",
+      "name": "clearQueue",
+      "filePath": "apps/mobile/src/db/syncQueue.ts",
+      "lineRange": [
+        172,
+        175
+      ],
+      "summary": "clearQueue 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/syncQueue.ts:pruneStaleQueueItems",
+      "type": "function",
+      "name": "pruneStaleQueueItems",
+      "filePath": "apps/mobile/src/db/syncQueue.ts",
+      "lineRange": [
+        182,
+        190
+      ],
+      "summary": "pruneStaleQueueItems 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/syncQueue.ts:getLastSyncTimestamp",
+      "type": "function",
+      "name": "getLastSyncTimestamp",
+      "filePath": "apps/mobile/src/db/syncQueue.ts",
+      "lineRange": [
+        195,
+        202
+      ],
+      "summary": "getLastSyncTimestamp 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/syncQueue.ts:setLastSyncTimestamp",
+      "type": "function",
+      "name": "setLastSyncTimestamp",
+      "filePath": "apps/mobile/src/db/syncQueue.ts",
+      "lineRange": [
+        205,
+        213
+      ],
+      "summary": "setLastSyncTimestamp 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/syncQueue.ts:getAllSyncMetadata",
+      "type": "function",
+      "name": "getAllSyncMetadata",
+      "filePath": "apps/mobile/src/db/syncQueue.ts",
+      "lineRange": [
+        216,
+        221
+      ],
+      "summary": "getAllSyncMetadata 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/syncQueue.ts:getSyncProgress",
+      "type": "function",
+      "name": "getSyncProgress",
+      "filePath": "apps/mobile/src/db/syncQueue.ts",
+      "lineRange": [
+        239,
+        245
+      ],
+      "summary": "getSyncProgress 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/syncQueue.ts:getAllSyncProgress",
+      "type": "function",
+      "name": "getAllSyncProgress",
+      "filePath": "apps/mobile/src/db/syncQueue.ts",
+      "lineRange": [
+        248,
+        251
+      ],
+      "summary": "getAllSyncProgress 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/syncQueue.ts:updateSyncProgress",
+      "type": "function",
+      "name": "updateSyncProgress",
+      "filePath": "apps/mobile/src/db/syncQueue.ts",
+      "lineRange": [
+        254,
+        280
+      ],
+      "summary": "更新指定实体的同步进度。",
+      "tags": [
+        "sync",
+        "queue"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/db/syncQueue.ts:resetSyncProgress",
+      "type": "function",
+      "name": "resetSyncProgress",
+      "filePath": "apps/mobile/src/db/syncQueue.ts",
+      "lineRange": [
+        283,
+        286
+      ],
+      "summary": "resetSyncProgress 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/db/useDatabase.ts:useDatabase",
+      "type": "function",
+      "name": "useDatabase",
+      "filePath": "apps/mobile/src/db/useDatabase.ts",
+      "lineRange": [
+        10,
+        33
+      ],
+      "summary": "useDatabase 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/splash/SplashScreen.tsx:Star",
+      "type": "function",
+      "name": "Star",
+      "filePath": "apps/mobile/src/features/splash/SplashScreen.tsx",
+      "lineRange": [
+        16,
+        78
+      ],
+      "summary": "Star 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/splash/SplashScreen.tsx:Meteor",
+      "type": "function",
+      "name": "Meteor",
+      "filePath": "apps/mobile/src/features/splash/SplashScreen.tsx",
+      "lineRange": [
+        80,
+        148
+      ],
+      "summary": "Meteor 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/splash/SplashScreen.tsx:Nebula",
+      "type": "function",
+      "name": "Nebula",
+      "filePath": "apps/mobile/src/features/splash/SplashScreen.tsx",
+      "lineRange": [
+        150,
+        247
+      ],
+      "summary": "Nebula 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/splash/SplashScreen.tsx:GlowText",
+      "type": "function",
+      "name": "GlowText",
+      "filePath": "apps/mobile/src/features/splash/SplashScreen.tsx",
+      "lineRange": [
+        253,
+        298
+      ],
+      "summary": "GlowText 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/splash/SplashScreen.tsx:BreathingText",
+      "type": "function",
+      "name": "BreathingText",
+      "filePath": "apps/mobile/src/features/splash/SplashScreen.tsx",
+      "lineRange": [
+        300,
+        339
+      ],
+      "summary": "BreathingText 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/splash/SplashScreen.tsx:SplashScreen",
+      "type": "function",
+      "name": "SplashScreen",
+      "filePath": "apps/mobile/src/features/splash/SplashScreen.tsx",
+      "lineRange": [
+        341,
+        444
+      ],
+      "summary": "启动屏动画组件实现。",
+      "tags": [
+        "splash",
+        "animation"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:apps/mobile/src/features/sync/RealtimeAgent.ts:RealtimeAgent",
+      "type": "class",
+      "name": "RealtimeAgent",
+      "filePath": "apps/mobile/src/features/sync/RealtimeAgent.ts",
+      "lineRange": [
+        24,
+        235
+      ],
+      "summary": "SSE实时同步代理类。",
+      "tags": [
+        "sync",
+        "realtime"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:apps/mobile/src/features/sync/SyncApplyService.ts:SyncApplyService",
+      "type": "class",
+      "name": "SyncApplyService",
+      "filePath": "apps/mobile/src/features/sync/SyncApplyService.ts",
+      "lineRange": [
+        140,
+        409
+      ],
+      "summary": "服务端变更应用服务类。",
+      "tags": [
+        "sync",
+        "apply"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:apps/mobile/src/features/sync/SyncEngine.ts:SyncEngine",
+      "type": "class",
+      "name": "SyncEngine",
+      "filePath": "apps/mobile/src/features/sync/SyncEngine.ts",
+      "lineRange": [
+        78,
+        881
+      ],
+      "summary": "同步引擎主类定义。",
+      "tags": [
+        "sync",
+        "engine"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:apps/mobile/src/features/sync/SyncRealtimeController.ts:SyncRealtimeController",
+      "type": "class",
+      "name": "SyncRealtimeController",
+      "filePath": "apps/mobile/src/features/sync/SyncRealtimeController.ts",
+      "lineRange": [
+        16,
+        285
+      ],
+      "summary": "SyncRealtimeController 类定义。",
+      "tags": [
+        "class"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:apps/mobile/src/features/sync/SyncRehydrationManager.ts:SyncRehydrationManager",
+      "type": "class",
+      "name": "SyncRehydrationManager",
+      "filePath": "apps/mobile/src/features/sync/SyncRehydrationManager.ts",
+      "lineRange": [
+        27,
+        308
+      ],
+      "summary": "SyncRehydrationManager 类定义。",
+      "tags": [
+        "class"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:apps/mobile/src/features/sync/SyncResetService.ts:SyncResetService",
+      "type": "class",
+      "name": "SyncResetService",
+      "filePath": "apps/mobile/src/features/sync/SyncResetService.ts",
+      "lineRange": [
+        13,
+        56
+      ],
+      "summary": "SyncResetService 类定义。",
+      "tags": [
+        "class"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:apps/mobile/App.tsx",
+      "target": "function:apps/mobile/App.tsx:staggerPreload",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/App.tsx",
+      "target": "function:apps/mobile/App.tsx:App",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/App.tsx",
+      "target": "function:apps/mobile/App.tsx:App",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/ErrorBoundary.tsx",
+      "target": "function:apps/mobile/src/components/ErrorBoundary.tsx:ErrorBoundary",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/components/ErrorBoundary.tsx",
+      "target": "function:apps/mobile/src/components/ErrorBoundary.tsx:ErrorBoundary",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/ErrorBoundary.tsx",
+      "target": "function:apps/mobile/src/components/ErrorBoundary.tsx:withErrorBoundary",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/components/ErrorBoundary.tsx",
+      "target": "function:apps/mobile/src/components/ErrorBoundary.tsx:withErrorBoundary",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/ErrorBoundary.tsx",
+      "target": "class:apps/mobile/src/components/ErrorBoundary.tsx:_ErrorBoundary",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/components/FabButton.tsx",
+      "target": "function:apps/mobile/src/components/FabButton.tsx:FabButton",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/components/FabButton.tsx",
+      "target": "function:apps/mobile/src/components/FabButton.tsx:FabButton",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/KickOutModal.tsx",
+      "target": "function:apps/mobile/src/components/KickOutModal.tsx:KickOutModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/components/KickOutModal.tsx",
+      "target": "function:apps/mobile/src/components/KickOutModal.tsx:KickOutModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/StarfieldBackground.tsx",
+      "target": "function:apps/mobile/src/components/StarfieldBackground.tsx:BrightStar",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/components/StarfieldBackground.tsx",
+      "target": "function:apps/mobile/src/components/StarfieldBackground.tsx:Star",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/components/StarfieldBackground.tsx",
+      "target": "function:apps/mobile/src/components/StarfieldBackground.tsx:ShootingStar",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/components/StarfieldBackground.tsx",
+      "target": "function:apps/mobile/src/components/StarfieldBackground.tsx:generateConstellations",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/components/StarfieldBackground.tsx",
+      "target": "function:apps/mobile/src/components/StarfieldBackground.tsx:StarfieldBackground",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/components/StarfieldBackground.tsx",
+      "target": "function:apps/mobile/src/components/StarfieldBackground.tsx:StarfieldBackground",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/SyncBanner.tsx",
+      "target": "function:apps/mobile/src/components/SyncBanner.tsx:SyncBanner",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/components/SyncBanner.tsx",
+      "target": "function:apps/mobile/src/components/SyncBanner.tsx:SyncBanner",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/components/SyncProgressOverlay.tsx",
+      "target": "function:apps/mobile/src/components/SyncProgressOverlay.tsx:SyncProgressOverlay",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/components/SyncProgressOverlay.tsx",
+      "target": "function:apps/mobile/src/components/SyncProgressOverlay.tsx:SyncProgressOverlay",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/queries.ts",
+      "target": "function:apps/mobile/src/db/queries.ts:dbGetAllHabits",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/queries.ts",
+      "target": "function:apps/mobile/src/db/queries.ts:dbGetAllHabits",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/queries.ts",
+      "target": "function:apps/mobile/src/db/queries.ts:dbGetAllReflections",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/queries.ts",
+      "target": "function:apps/mobile/src/db/queries.ts:dbGetAllReflections",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/queries.ts",
+      "target": "function:apps/mobile/src/db/queries.ts:dbGetFastingSessions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/queries.ts",
+      "target": "function:apps/mobile/src/db/queries.ts:dbGetFastingSessions",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/queries.ts",
+      "target": "function:apps/mobile/src/db/queries.ts:dbGetFoodEntries",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/queries.ts",
+      "target": "function:apps/mobile/src/db/queries.ts:dbGetFoodEntries",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/queries.ts",
+      "target": "function:apps/mobile/src/db/queries.ts:dbGetAllFoodEntries",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/queries.ts",
+      "target": "function:apps/mobile/src/db/queries.ts:dbGetAllFoodEntries",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/queries.ts",
+      "target": "function:apps/mobile/src/db/queries.ts:dbGetCheckins",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/queries.ts",
+      "target": "function:apps/mobile/src/db/queries.ts:dbGetCheckins",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/queries.ts",
+      "target": "function:apps/mobile/src/db/queries.ts:dbGetAllThoughtTrails",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/queries.ts",
+      "target": "function:apps/mobile/src/db/queries.ts:dbGetAllThoughtTrails",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/schema.ts",
+      "target": "function:apps/mobile/src/db/schema.ts:withDbLock",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/schema.ts",
+      "target": "function:apps/mobile/src/db/schema.ts:withDbLock",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/schema.ts",
+      "target": "function:apps/mobile/src/db/schema.ts:openDatabase",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/schema.ts",
+      "target": "function:apps/mobile/src/db/schema.ts:openDatabase",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/schema.ts",
+      "target": "function:apps/mobile/src/db/schema.ts:initDatabase",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/schema.ts",
+      "target": "function:apps/mobile/src/db/schema.ts:initDatabase",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/schema.ts",
+      "target": "function:apps/mobile/src/db/schema.ts:migrateDatabase",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/schema.ts",
+      "target": "function:apps/mobile/src/db/schema.ts:migrateDatabase",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/schema.ts",
+      "target": "function:apps/mobile/src/db/schema.ts:getState",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/schema.ts",
+      "target": "function:apps/mobile/src/db/schema.ts:getState",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/schema.ts",
+      "target": "function:apps/mobile/src/db/schema.ts:setState",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/schema.ts",
+      "target": "function:apps/mobile/src/db/schema.ts:setState",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/sqlHelper.ts",
+      "target": "function:apps/mobile/src/db/sqlHelper.ts:isValidSqlName",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/sqlHelper.ts",
+      "target": "function:apps/mobile/src/db/sqlHelper.ts:isValidSqlName",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/sqlHelper.ts",
+      "target": "function:apps/mobile/src/db/sqlHelper.ts:buildSetClause",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/sqlHelper.ts",
+      "target": "function:apps/mobile/src/db/sqlHelper.ts:buildSetClause",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/sqlHelper.ts",
+      "target": "function:apps/mobile/src/db/sqlHelper.ts:buildInsertStatement",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/sqlHelper.ts",
+      "target": "function:apps/mobile/src/db/sqlHelper.ts:buildInsertStatement",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/sqlHelper.ts",
+      "target": "function:apps/mobile/src/db/sqlHelper.ts:buildUpdateStatement",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/sqlHelper.ts",
+      "target": "function:apps/mobile/src/db/sqlHelper.ts:buildUpdateStatement",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/sqlHelper.ts",
+      "target": "function:apps/mobile/src/db/sqlHelper.ts:buildDeleteInStatement",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/sqlHelper.ts",
+      "target": "function:apps/mobile/src/db/sqlHelper.ts:buildDeleteInStatement",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/sqlHelper.ts",
+      "target": "function:apps/mobile/src/db/sqlHelper.ts:buildSelectInStatement",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/sqlHelper.ts",
+      "target": "function:apps/mobile/src/db/sqlHelper.ts:buildSelectInStatement",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:setOnEnqueuedCallback",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:setOnEnqueuedCallback",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:enqueueChange",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:enqueueChange",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:drainQueue",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:drainQueue",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:getQueueItemsByStatus",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:getQueueItemsByStatus",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:removeQueueItems",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:removeQueueItems",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:markQueueItemFailed",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:markQueueItemFailed",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:markQueueItemRetry",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:markQueueItemRetry",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:markQueueItemConflict",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:markQueueItemConflict",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:resetQueueItemsForRetry",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:resetQueueItemsForRetry",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:resetAllPendingForRetry",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:resetAllPendingForRetry",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:getQueueCount",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:getQueueCount",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:getTotalQueueCount",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:getTotalQueueCount",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:clearQueue",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:clearQueue",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:pruneStaleQueueItems",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:pruneStaleQueueItems",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:getLastSyncTimestamp",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:getLastSyncTimestamp",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:setLastSyncTimestamp",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:setLastSyncTimestamp",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:getAllSyncMetadata",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:getAllSyncMetadata",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:getSyncProgress",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:getSyncProgress",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:getAllSyncProgress",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:getAllSyncProgress",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:updateSyncProgress",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:updateSyncProgress",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:resetSyncProgress",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "function:apps/mobile/src/db/syncQueue.ts:resetSyncProgress",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/db/useDatabase.ts",
+      "target": "function:apps/mobile/src/db/useDatabase.ts:useDatabase",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/db/useDatabase.ts",
+      "target": "function:apps/mobile/src/db/useDatabase.ts:useDatabase",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/splash/SplashScreen.tsx",
+      "target": "function:apps/mobile/src/features/splash/SplashScreen.tsx:Star",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/splash/SplashScreen.tsx",
+      "target": "function:apps/mobile/src/features/splash/SplashScreen.tsx:Meteor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/splash/SplashScreen.tsx",
+      "target": "function:apps/mobile/src/features/splash/SplashScreen.tsx:Nebula",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/splash/SplashScreen.tsx",
+      "target": "function:apps/mobile/src/features/splash/SplashScreen.tsx:GlowText",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/splash/SplashScreen.tsx",
+      "target": "function:apps/mobile/src/features/splash/SplashScreen.tsx:BreathingText",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/splash/SplashScreen.tsx",
+      "target": "function:apps/mobile/src/features/splash/SplashScreen.tsx:SplashScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/splash/SplashScreen.tsx",
+      "target": "function:apps/mobile/src/features/splash/SplashScreen.tsx:SplashScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/RealtimeAgent.ts",
+      "target": "class:apps/mobile/src/features/sync/RealtimeAgent.ts:RealtimeAgent",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncApplyService.ts",
+      "target": "class:apps/mobile/src/features/sync/SyncApplyService.ts:SyncApplyService",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncEngine.ts",
+      "target": "class:apps/mobile/src/features/sync/SyncEngine.ts:SyncEngine",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncRealtimeController.ts",
+      "target": "class:apps/mobile/src/features/sync/SyncRealtimeController.ts:SyncRealtimeController",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncRehydrationManager.ts",
+      "target": "class:apps/mobile/src/features/sync/SyncRehydrationManager.ts:SyncRehydrationManager",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncResetService.ts",
+      "target": "class:apps/mobile/src/features/sync/SyncResetService.ts:SyncResetService",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/App.tsx",
+      "target": "file:apps/mobile/src/features/music/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/App.tsx",
+      "target": "file:apps/mobile/src/features/splash/SplashScreen.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/App.tsx",
+      "target": "file:apps/mobile/src/i18n/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/App.tsx",
+      "target": "file:apps/mobile/src/navigation/index.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/App.tsx",
+      "target": "file:apps/mobile/src/store/initApp.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/index.js",
+      "target": "file:apps/mobile/App.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/index.js",
+      "target": "file:apps/mobile/src/sentry.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/ErrorBoundary.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/ErrorBoundary.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/KickOutModal.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/KickOutModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/SyncBanner.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/SyncBanner.tsx",
+      "target": "file:apps/mobile/src/db/schema.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/SyncBanner.tsx",
+      "target": "file:apps/mobile/src/db/syncQueue.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/SyncBanner.tsx",
+      "target": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/SyncBanner.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/SyncProgressOverlay.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/SyncProgressOverlay.tsx",
+      "target": "file:apps/mobile/src/db/syncQueue.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/components/SyncProgressOverlay.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/db/queries.ts",
+      "target": "file:apps/mobile/src/store/rowMappers.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/db/queries.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/db/schema.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.test.ts",
+      "target": "file:apps/mobile/src/db/syncQueue.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "file:apps/mobile/src/db/schema.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "file:apps/mobile/src/db/sqlHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/db/syncQueue.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/db/useDatabase.ts",
+      "target": "file:apps/mobile/src/db/schema.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/db/useDatabase.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/splash/SplashScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/RealtimeAgent.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncApplyService.test.ts",
+      "target": "file:apps/mobile/src/features/sync/SyncApplyService.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncApplyService.ts",
+      "target": "file:apps/mobile/src/db/schema.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncApplyService.ts",
+      "target": "file:apps/mobile/src/db/sqlHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncApplyService.ts",
+      "target": "file:apps/mobile/src/features/sync/orphanRecovery.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncApplyService.ts",
+      "target": "file:apps/mobile/src/store/rowMappers.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncApplyService.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncEngine.test.ts",
+      "target": "file:apps/mobile/src/features/sync/SyncEngine.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncEngine.ts",
+      "target": "file:apps/mobile/src/db/schema.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncEngine.ts",
+      "target": "file:apps/mobile/src/db/sqlHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncEngine.ts",
+      "target": "file:apps/mobile/src/db/syncQueue.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncEngine.ts",
+      "target": "file:apps/mobile/src/features/sync/orphanRecovery.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncEngine.ts",
+      "target": "file:apps/mobile/src/features/sync/SyncApplyService.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncEngine.ts",
+      "target": "file:apps/mobile/src/features/sync/SyncRealtimeController.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncEngine.ts",
+      "target": "file:apps/mobile/src/features/sync/SyncRehydrationManager.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncEngine.ts",
+      "target": "file:apps/mobile/src/features/sync/SyncResetService.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncEngine.ts",
+      "target": "file:apps/mobile/src/features/sync/SyncTimestampManager.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncEngine.ts",
+      "target": "file:apps/mobile/src/store/storageAdapter.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncEngine.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncRealtimeController.ts",
+      "target": "file:apps/mobile/src/db/schema.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncRealtimeController.ts",
+      "target": "file:apps/mobile/src/db/syncQueue.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncRealtimeController.ts",
+      "target": "file:apps/mobile/src/features/sync/RealtimeAgent.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncRealtimeController.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncRehydrationManager.test.ts",
+      "target": "file:apps/mobile/src/features/sync/SyncRehydrationManager.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncRehydrationManager.ts",
+      "target": "file:apps/mobile/src/db/queries.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncRehydrationManager.ts",
+      "target": "file:apps/mobile/src/db/schema.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncRehydrationManager.ts",
+      "target": "file:apps/mobile/src/db/syncQueue.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncRehydrationManager.ts",
+      "target": "file:apps/mobile/src/store/rowMappers.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncRehydrationManager.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncResetService.ts",
+      "target": "file:apps/mobile/src/db/schema.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncResetService.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.test.ts",
+      "target": "file:apps/mobile/src/db/syncQueue.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.test.ts",
+      "target": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    }
+  ]
+}

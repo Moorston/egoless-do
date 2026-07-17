@@ -1,0 +1,31 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 3,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "apps/mobile/android/app/src/main/res/values/colors.xml",
+      "language": "xml",
+      "fileCategory": "config",
+      "totalLines": 6,
+      "nonEmptyLines": 6,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/values/strings.xml",
+      "language": "xml",
+      "fileCategory": "config",
+      "totalLines": 5,
+      "nonEmptyLines": 5,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/values/styles.xml",
+      "language": "xml",
+      "fileCategory": "config",
+      "totalLines": 11,
+      "nonEmptyLines": 11,
+      "metrics": {}
+    }
+  ]
+}

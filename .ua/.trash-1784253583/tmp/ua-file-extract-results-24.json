@@ -1,0 +1,685 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 6,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "apps/mobile/src/features/reflections/insights/InsightsPanel.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 42,
+      "nonEmptyLines": 35,
+      "functions": [
+        {
+          "name": "InsightsPanel",
+          "startLine": 13,
+          "endLine": 34,
+          "params": [
+            "{ insights }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "InsightsPanel",
+          "line": 13,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "InsightsPanel",
+          "callee": "useTheme",
+          "lineNumber": 14
+        },
+        {
+          "caller": "InsightsPanel",
+          "callee": "insights.map",
+          "lineNumber": 26
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/insights/NodeDetailPanel.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 97,
+      "nonEmptyLines": 88,
+      "functions": [
+        {
+          "name": "NodeDetailPanel",
+          "startLine": 33,
+          "endLine": 59,
+          "params": [
+            "{ node, onNavigate, linkedVision }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "NodeDetailPanel",
+          "line": 33,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "NodeDetailPanel",
+          "callee": "useTheme",
+          "lineNumber": 34
+        },
+        {
+          "caller": "NodeDetailPanel",
+          "callee": "onNavigate",
+          "lineNumber": 54
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/insights/RelationMapView.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 468,
+      "nonEmptyLines": 422,
+      "functions": [
+        {
+          "name": "RelationMapView",
+          "startLine": 36,
+          "endLine": 410,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "RelationMapView",
+          "line": 36,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "RelationMapView",
+          "callee": "useTheme",
+          "lineNumber": 37
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useNavigation",
+          "lineNumber": 38
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useRoute",
+          "lineNumber": 39
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useRelationGraph",
+          "lineNumber": 44
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useShallowStore",
+          "lineNumber": 45
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useState",
+          "lineNumber": 48
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useState",
+          "lineNumber": 49
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useState",
+          "lineNumber": 50
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useState",
+          "lineNumber": 51
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useRef",
+          "lineNumber": 54
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useRef",
+          "lineNumber": 55
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useRef",
+          "lineNumber": 56
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useRef",
+          "lineNumber": 57
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useRef",
+          "lineNumber": 58
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useRef",
+          "lineNumber": 59
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useRef",
+          "lineNumber": 60
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useRef",
+          "lineNumber": 61
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useRef",
+          "lineNumber": 62
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useRef",
+          "lineNumber": 63
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useRef",
+          "lineNumber": 64
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useRef",
+          "lineNumber": 65
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useEffect",
+          "lineNumber": 68
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useEffect",
+          "lineNumber": 69
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useEffect",
+          "lineNumber": 70
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useEffect",
+          "lineNumber": 73
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "nodes.forEach",
+          "lineNumber": 76
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "map.set",
+          "lineNumber": 76
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useCallback",
+          "lineNumber": 83
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "setSelectedNode",
+          "lineNumber": 84
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useMemo",
+          "lineNumber": 88
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "nodes.find",
+          "lineNumber": 90
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "(visions ?? []).find",
+          "lineNumber": 94
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useCallback",
+          "lineNumber": 99
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "nav.navigate",
+          "lineNumber": 102
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "nav.navigate",
+          "lineNumber": 105
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "nav.navigate",
+          "lineNumber": 108
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "nav.navigate",
+          "lineNumber": 111
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "(nodes ?? []).find",
+          "lineNumber": 114
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "nav.navigate",
+          "lineNumber": 115
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useMemo",
+          "lineNumber": 123
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "nodes.find",
+          "lineNumber": 125
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useMemo",
+          "lineNumber": 128
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useEffect",
+          "lineNumber": 134
+        },
+        {
+          "caller": "simulate",
+          "callee": "fixedNodeIdsRef.current.has",
+          "lineNumber": 146
+        },
+        {
+          "caller": "simulate",
+          "callee": "Math.sqrt",
+          "lineNumber": 157
+        },
+        {
+          "caller": "simulate",
+          "callee": "edgesRef.current.forEach",
+          "lineNumber": 163
+        },
+        {
+          "caller": "simulate",
+          "callee": "nodeMapRef.current.get",
+          "lineNumber": 165
+        },
+        {
+          "caller": "simulate",
+          "callee": "nodeMapRef.current.get",
+          "lineNumber": 166
+        },
+        {
+          "caller": "simulate",
+          "callee": "Math.sqrt",
+          "lineNumber": 170
+        },
+        {
+          "caller": "simulate",
+          "callee": "Math.max",
+          "lineNumber": 185
+        },
+        {
+          "caller": "simulate",
+          "callee": "Math.min",
+          "lineNumber": 185
+        },
+        {
+          "caller": "simulate",
+          "callee": "Math.max",
+          "lineNumber": 186
+        },
+        {
+          "caller": "simulate",
+          "callee": "Math.min",
+          "lineNumber": 186
+        },
+        {
+          "caller": "simulate",
+          "callee": "Math.abs",
+          "lineNumber": 187
+        },
+        {
+          "caller": "simulate",
+          "callee": "Math.abs",
+          "lineNumber": 187
+        },
+        {
+          "caller": "simulate",
+          "callee": "setRenderTick",
+          "lineNumber": 197
+        },
+        {
+          "caller": "simulate",
+          "callee": "requestAnimationFrame",
+          "lineNumber": 201
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "requestAnimationFrame",
+          "lineNumber": 204
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "cancelAnimationFrame",
+          "lineNumber": 205
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useRef",
+          "lineNumber": 209
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useCallback",
+          "lineNumber": 216
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "Math.sqrt",
+          "lineNumber": 222
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "Math.pow",
+          "lineNumber": 222
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "Math.pow",
+          "lineNumber": 222
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "Date.now",
+          "lineNumber": 232
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useCallback",
+          "lineNumber": 239
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "Math.sqrt",
+          "lineNumber": 245
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "Math.pow",
+          "lineNumber": 245
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "Math.pow",
+          "lineNumber": 245
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "Math.max",
+          "lineNumber": 246
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "Math.min",
+          "lineNumber": 246
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "setZoom",
+          "lineNumber": 248
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "setPanOffset",
+          "lineNumber": 260
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "useCallback",
+          "lineNumber": 263
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "nav.goBack",
+          "lineNumber": 273
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "edges.map",
+          "lineNumber": 308
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "nodeMapRef.current.get",
+          "lineNumber": 309
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "nodeMapRef.current.get",
+          "lineNumber": 310
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "nodes.map",
+          "lineNumber": 337
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "node.label.slice",
+          "lineNumber": 342
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "handleNodeTap",
+          "lineNumber": 348
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "handleNodeTap",
+          "lineNumber": 355
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "Math.min",
+          "lineNumber": 374
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "setZoom",
+          "lineNumber": 376
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "Math.max",
+          "lineNumber": 384
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "setZoom",
+          "lineNumber": 386
+        },
+        {
+          "caller": "RelationMapView",
+          "callee": "handleNavigateToDetail",
+          "lineNumber": 401
+        }
+      ],
+      "metrics": {
+        "importCount": 9,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/insights/StatsBar.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 58,
+      "nonEmptyLines": 50,
+      "functions": [
+        {
+          "name": "StatsBar",
+          "startLine": 29,
+          "endLine": 46,
+          "params": [
+            "{ nodes }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "StatsBar",
+          "line": 29,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "StatsBar",
+          "callee": "useTheme",
+          "lineNumber": 30
+        },
+        {
+          "caller": "StatsBar",
+          "callee": "(['reflection', 'plan', 'habit', 'trail', 'planItem'] as NodeType[]).map",
+          "lineNumber": 34
+        },
+        {
+          "caller": "StatsBar",
+          "callee": "nodes.filter",
+          "lineNumber": 35
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/insights/hooks/useRelationGraph.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 39,
+      "nonEmptyLines": 35,
+      "functions": [
+        {
+          "name": "useRelationGraph",
+          "startLine": 12,
+          "endLine": 39,
+          "params": [
+            "context"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "useRelationGraph",
+          "line": 12,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useRelationGraph",
+          "callee": "useShallowStore",
+          "lineNumber": 13
+        },
+        {
+          "caller": "useRelationGraph",
+          "callee": "useMemo",
+          "lineNumber": 23
+        },
+        {
+          "caller": "useRelationGraph",
+          "callee": "buildRelationGraph",
+          "lineNumber": 28
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/insights/types.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 137,
+      "nonEmptyLines": 124,
+      "exports": [
+        {
+          "name": "NODE_COLORS",
+          "line": 101,
+          "isDefault": false
+        },
+        {
+          "name": "NODE_LABELS",
+          "line": 110,
+          "isDefault": false
+        },
+        {
+          "name": "NODE_ICONS",
+          "line": 119,
+          "isDefault": false
+        },
+        {
+          "name": "EDGE_STYLES",
+          "line": 127,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 4,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    }
+  ]
+}

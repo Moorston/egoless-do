@@ -1,0 +1,110 @@
+{
+  "nodes": [
+    {
+      "id": "document:.trellis/spec/core/backend/index.md",
+      "type": "document",
+      "name": "index.md",
+      "filePath": ".trellis/spec/core/backend/index.md",
+      "summary": "Core 包 Backend 层开发指南的总入口，列出 Directory Structure、Database、Error Handling、Quality、Logging 五份指南及其状态，并说明规范的填写方法。",
+      "tags": ["documentation", "backend", "guidelines-index", "core-package"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.trellis/spec/core/backend/database-guidelines.md",
+      "type": "document",
+      "name": "database-guidelines.md",
+      "filePath": ".trellis/spec/core/backend/database-guidelines.md",
+      "summary": "Core 包的持久化与同步规范：通过 StorageAdapter 接口抽象 SQLite/PocketBase，定义同步协议（conflict、merge、entitySchemas、types）、entityRegistry 元数据、迁移职责划分，以及 ensureCollection 的常见陷阱。",
+      "tags": ["documentation", "backend", "database", "storage-adapter", "sync-protocol", "core-package"],
+      "complexity": "moderate",
+      "languageNotes": "明确 Core 不持有具体 DB，持久化通过 StorageAdapter 接口由平台实现；同步冲突解决必须保持纯函数。"
+    },
+    {
+      "id": "document:.trellis/spec/core/backend/directory-structure.md",
+      "type": "document",
+      "name": "directory-structure.md",
+      "filePath": ".trellis/spec/core/backend/directory-structure.md",
+      "summary": "详细说明 packages/core/src 的目录布局与三层职责划分（business/store/sync/data/ai/utils），列出模块组织、命名约定和禁止在 core 中引入 React/平台 API 等约束。",
+      "tags": ["documentation", "backend", "directory-structure", "core-package", "architecture"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:.trellis/spec/core/backend/error-handling.md",
+      "type": "document",
+      "name": "error-handling.md",
+      "filePath": ".trellis/spec/core/backend/error-handling.md",
+      "summary": "Core 包错误处理模式：以 null 表示未找到、边界处 log + 重抛、同步边界 Zod 校验，定义 debug/info/warn/error 四级用途，并禁止静默吞错与 Alert/Toast 等 UI 操作。",
+      "tags": ["documentation", "backend", "error-handling", "core-package"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:.trellis/spec/core/backend/logging-guidelines.md",
+      "type": "document",
+      "name": "logging-guidelines.md",
+      "filePath": ".trellis/spec/core/backend/logging-guidelines.md",
+      "summary": "Core 包的日志规范：统一使用 createLogger(tag) 工厂，定义 debug/info/warn/error 四级可见性、Tag 命名约定、应记录与不应记录的内容（禁止记录 token/PII/secrets），以及结构化上下文传参。",
+      "tags": ["documentation", "backend", "logging", "create-logger", "core-package"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:.trellis/spec/core/backend/quality-guidelines.md",
+      "type": "document",
+      "name": "quality-guidelines.md",
+      "filePath": ".trellis/spec/core/backend/quality-guidelines.md",
+      "summary": "Core 包质量标准：列出纯度/架构层面的禁止模式（React 导入、slice 内业务逻辑、apps 导入、any、@ts-ignore 无注释等），定义 business/纯函数、Slice 工厂、冲突解决的必备模式及代码审查清单。",
+      "tags": ["documentation", "backend", "quality", "code-standards", "core-package"],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:.trellis/spec/core/backend/index.md",
+      "target": "document:.trellis/spec/core/backend/directory-structure.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/core/backend/index.md",
+      "target": "document:.trellis/spec/core/backend/database-guidelines.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/core/backend/index.md",
+      "target": "document:.trellis/spec/core/backend/error-handling.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/core/backend/index.md",
+      "target": "document:.trellis/spec/core/backend/quality-guidelines.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/core/backend/index.md",
+      "target": "document:.trellis/spec/core/backend/logging-guidelines.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/core/backend/quality-guidelines.md",
+      "target": "document:.trellis/spec/core/backend/directory-structure.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.trellis/spec/core/backend/error-handling.md",
+      "target": "document:.trellis/spec/core/backend/logging-guidelines.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

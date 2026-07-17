@@ -1,0 +1,96 @@
+{
+  "nodes": [
+    {
+      "id": "document:backend/README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "backend/README.md",
+      "summary": "PocketBase 后端快速启动文档，讲解下载 PocketBase、以 systemd 部署到甲骨文云 VPS、通过 Admin API 导入集合 Schema 的步骤，并列出土 users/checkins/map_pins/published_minds 四个核心集合与隐私设计原则。",
+      "tags": ["documentation", "deployment", "pocketbase", "getting-started"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/create-collection.ps1",
+      "type": "file",
+      "name": "create-collection.ps1",
+      "filePath": "backend/create-collection.ps1",
+      "summary": "PowerShell 脚本，通过 PocketBase Admin API 完成管理员认证并幂等创建所需集合（如 custom_food_presets），已存在则跳过。",
+      "tags": ["automation", "pocketbase", "setup", "script"],
+      "complexity": "moderate",
+      "languageNotes": "Windows PowerShell 脚本，使用 Invoke-WebRequest 调用 pb admin REST API。"
+    },
+    {
+      "id": "service:backend/docker-compose.yml",
+      "type": "service",
+      "name": "docker-compose.yml",
+      "filePath": "backend/docker-compose.yml",
+      "summary": "PocketBase 与 Cloudflare Tunnel 的 Docker Compose 服务定义，挂载 pb_data/pb_migrations/pb_hooks 卷，配置 PB_ENCRYPTION_KEY 与 30s 健康检查。",
+      "tags": ["containerization", "infrastructure", "pocketbase", "deployment"],
+      "complexity": "simple",
+      "languageNotes": "docker-compose 3.9，pocketbase 0.38.2 + cloudflared 2024.12.2 双服务，depends_on 串联。"
+    },
+    {
+      "id": "config:backend/pb_schema.json",
+      "type": "config",
+      "name": "pb_schema.json",
+      "filePath": "backend/pb_schema.json",
+      "summary": "PocketBase 完整后端数据 Schema，定义 41 个 base 集合及其字段与读写规则，是 habits/reflections/fasting_sessions/published_minds 等所有同步实体在服务端的权威结构。",
+      "tags": ["configuration", "schema", "pocketbase", "data-model"],
+      "complexity": "complex",
+      "languageNotes": "41 个 base 集合 JSON；auth 集合由 PB 运行时隐式创建，未包含在此导出文件中。"
+    },
+    {
+      "id": "file:backend/setup.ps1",
+      "type": "file",
+      "name": "setup.ps1",
+      "filePath": "backend/setup.ps1",
+      "summary": "PowerShell 脚本，自动从 GitHub releases 下载指定版本 PocketBase 到 backend/ 目录并解压，支持 -Force 重新下载。",
+      "tags": ["automation", "setup", "pocketbase", "script"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:backend/README.md",
+      "target": "service:backend/docker-compose.yml",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:backend/README.md",
+      "target": "config:backend/pb_schema.json",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:backend/README.md",
+      "target": "file:backend/setup.ps1",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:backend/README.md",
+      "target": "file:backend/create-collection.ps1",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "service:backend/docker-compose.yml",
+      "target": "config:backend/pb_schema.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:backend/create-collection.ps1",
+      "target": "config:backend/pb_schema.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

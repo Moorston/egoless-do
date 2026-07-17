@@ -1,0 +1,4285 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 29,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "infra/docker/api/src/account-lockout.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 244,
+      "nonEmptyLines": 221,
+      "functions": [
+        {
+          "name": "withEmailLock",
+          "startLine": 17,
+          "endLine": 32,
+          "params": [
+            "email",
+            "fn"
+          ]
+        },
+        {
+          "name": "isAccountLocked",
+          "startLine": 47,
+          "endLine": 77,
+          "params": [
+            "email"
+          ]
+        },
+        {
+          "name": "recordLoginAttempt",
+          "startLine": 82,
+          "endLine": 84,
+          "params": [
+            "email",
+            "success"
+          ]
+        },
+        {
+          "name": "recordLoginAttemptLocked",
+          "startLine": 86,
+          "endLine": 155,
+          "params": [
+            "email",
+            "success"
+          ]
+        },
+        {
+          "name": "cleanupExpiredLockouts",
+          "startLine": 160,
+          "endLine": 196,
+          "params": []
+        },
+        {
+          "name": "initAccountLockoutCollection",
+          "startLine": 201,
+          "endLine": 236,
+          "params": []
+        },
+        {
+          "name": "getRemainingLockoutTime",
+          "startLine": 241,
+          "endLine": 244,
+          "params": [
+            "lockoutUntil"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "isAccountLocked",
+          "line": 47,
+          "isDefault": false
+        },
+        {
+          "name": "recordLoginAttempt",
+          "line": 82,
+          "isDefault": false
+        },
+        {
+          "name": "cleanupExpiredLockouts",
+          "line": 160,
+          "isDefault": false
+        },
+        {
+          "name": "initAccountLockoutCollection",
+          "line": 201,
+          "isDefault": false
+        },
+        {
+          "name": "getRemainingLockoutTime",
+          "line": 241,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "withEmailLock",
+          "callee": "emailLocks.get",
+          "lineNumber": 18
+        },
+        {
+          "caller": "withEmailLock",
+          "callee": "Promise.resolve",
+          "lineNumber": 18
+        },
+        {
+          "caller": "withEmailLock",
+          "callee": "Promise.withResolvers",
+          "lineNumber": 19
+        },
+        {
+          "caller": "withEmailLock",
+          "callee": "prev.then",
+          "lineNumber": 20
+        },
+        {
+          "caller": "withEmailLock",
+          "callee": "emailLocks.set",
+          "lineNumber": 21
+        },
+        {
+          "caller": "withEmailLock",
+          "callee": "fn",
+          "lineNumber": 24
+        },
+        {
+          "caller": "withEmailLock",
+          "callee": "resolve",
+          "lineNumber": 26
+        },
+        {
+          "caller": "withEmailLock",
+          "callee": "emailLocks.get",
+          "lineNumber": 28
+        },
+        {
+          "caller": "withEmailLock",
+          "callee": "emailLocks.delete",
+          "lineNumber": 29
+        },
+        {
+          "caller": "isAccountLocked",
+          "callee": "getAdminPb",
+          "lineNumber": 49
+        },
+        {
+          "caller": "isAccountLocked",
+          "callee": "pb.collection(COLLECTION_NAME).getFirstListItem",
+          "lineNumber": 50
+        },
+        {
+          "caller": "isAccountLocked",
+          "callee": "pb.collection",
+          "lineNumber": 50
+        },
+        {
+          "caller": "isAccountLocked",
+          "callee": "escapeFilter",
+          "lineNumber": 51
+        },
+        {
+          "caller": "isAccountLocked",
+          "callee": "Date.now",
+          "lineNumber": 55
+        },
+        {
+          "caller": "isAccountLocked",
+          "callee": "Date.now",
+          "lineNumber": 60
+        },
+        {
+          "caller": "isAccountLocked",
+          "callee": "pb.collection(COLLECTION_NAME).update",
+          "lineNumber": 63
+        },
+        {
+          "caller": "isAccountLocked",
+          "callee": "pb.collection",
+          "lineNumber": 63
+        },
+        {
+          "caller": "isAccountLocked",
+          "callee": "Date.now",
+          "lineNumber": 66
+        },
+        {
+          "caller": "isAccountLocked",
+          "callee": "errStatus",
+          "lineNumber": 73
+        },
+        {
+          "caller": "isAccountLocked",
+          "callee": "console.warn",
+          "lineNumber": 74
+        },
+        {
+          "caller": "isAccountLocked",
+          "callee": "errMessage",
+          "lineNumber": 74
+        },
+        {
+          "caller": "recordLoginAttempt",
+          "callee": "withEmailLock",
+          "lineNumber": 83
+        },
+        {
+          "caller": "recordLoginAttempt",
+          "callee": "recordLoginAttemptLocked",
+          "lineNumber": 83
+        },
+        {
+          "caller": "recordLoginAttemptLocked",
+          "callee": "getAdminPb",
+          "lineNumber": 88
+        },
+        {
+          "caller": "recordLoginAttemptLocked",
+          "callee": "pb.collection(COLLECTION_NAME).getFirstListItem",
+          "lineNumber": 93
+        },
+        {
+          "caller": "recordLoginAttemptLocked",
+          "callee": "pb.collection",
+          "lineNumber": 93
+        },
+        {
+          "caller": "recordLoginAttemptLocked",
+          "callee": "escapeFilter",
+          "lineNumber": 94
+        },
+        {
+          "caller": "recordLoginAttemptLocked",
+          "callee": "errStatus",
+          "lineNumber": 97
+        },
+        {
+          "caller": "recordLoginAttemptLocked",
+          "callee": "pb.collection(COLLECTION_NAME).create",
+          "lineNumber": 99
+        },
+        {
+          "caller": "recordLoginAttemptLocked",
+          "callee": "pb.collection",
+          "lineNumber": 99
+        },
+        {
+          "caller": "recordLoginAttemptLocked",
+          "callee": "Date.now",
+          "lineNumber": 102
+        },
+        {
+          "caller": "recordLoginAttemptLocked",
+          "callee": "Date.now",
+          "lineNumber": 104
+        },
+        {
+          "caller": "recordLoginAttemptLocked",
+          "callee": "Date.now",
+          "lineNumber": 105
+        },
+        {
+          "caller": "recordLoginAttemptLocked",
+          "callee": "pb.collection(COLLECTION_NAME).update",
+          "lineNumber": 114
+        },
+        {
+          "caller": "recordLoginAttemptLocked",
+          "callee": "pb.collection",
+          "lineNumber": 114
+        },
+        {
+          "caller": "recordLoginAttemptLocked",
+          "callee": "Date.now",
+          "lineNumber": 117
+        },
+        {
+          "caller": "recordLoginAttemptLocked",
+          "callee": "Date.now",
+          "lineNumber": 118
+        },
+        {
+          "caller": "recordLoginAttemptLocked",
+          "callee": "Date.now",
+          "lineNumber": 124
+        },
+        {
+          "caller": "recordLoginAttemptLocked",
+          "callee": "Date.now",
+          "lineNumber": 137
+        },
+        {
+          "caller": "recordLoginAttemptLocked",
+          "callee": "pb.collection(COLLECTION_NAME).update",
+          "lineNumber": 140
+        },
+        {
+          "caller": "recordLoginAttemptLocked",
+          "callee": "pb.collection",
+          "lineNumber": 140
+        },
+        {
+          "caller": "recordLoginAttemptLocked",
+          "callee": "Date.now",
+          "lineNumber": 142
+        },
+        {
+          "caller": "recordLoginAttemptLocked",
+          "callee": "Date.now",
+          "lineNumber": 144
+        },
+        {
+          "caller": "recordLoginAttemptLocked",
+          "callee": "console.warn",
+          "lineNumber": 152
+        },
+        {
+          "caller": "recordLoginAttemptLocked",
+          "callee": "errMessage",
+          "lineNumber": 152
+        },
+        {
+          "caller": "cleanupExpiredLockouts",
+          "callee": "getAdminPb",
+          "lineNumber": 162
+        },
+        {
+          "caller": "cleanupExpiredLockouts",
+          "callee": "pb.collection(COLLECTION_NAME).getFullList",
+          "lineNumber": 169
+        },
+        {
+          "caller": "cleanupExpiredLockouts",
+          "callee": "pb.collection",
+          "lineNumber": 169
+        },
+        {
+          "caller": "cleanupExpiredLockouts",
+          "callee": "Date.now",
+          "lineNumber": 170
+        },
+        {
+          "caller": "cleanupExpiredLockouts",
+          "callee": "console.warn",
+          "lineNumber": 174
+        },
+        {
+          "caller": "cleanupExpiredLockouts",
+          "callee": "errMessage",
+          "lineNumber": 174
+        },
+        {
+          "caller": "cleanupExpiredLockouts",
+          "callee": "pb.collection(COLLECTION_NAME).update",
+          "lineNumber": 181
+        },
+        {
+          "caller": "cleanupExpiredLockouts",
+          "callee": "pb.collection",
+          "lineNumber": 181
+        },
+        {
+          "caller": "cleanupExpiredLockouts",
+          "callee": "Date.now",
+          "lineNumber": 184
+        },
+        {
+          "caller": "cleanupExpiredLockouts",
+          "callee": "console.warn",
+          "lineNumber": 188
+        },
+        {
+          "caller": "cleanupExpiredLockouts",
+          "callee": "errMessage",
+          "lineNumber": 188
+        },
+        {
+          "caller": "cleanupExpiredLockouts",
+          "callee": "console.warn",
+          "lineNumber": 193
+        },
+        {
+          "caller": "cleanupExpiredLockouts",
+          "callee": "errMessage",
+          "lineNumber": 193
+        },
+        {
+          "caller": "initAccountLockoutCollection",
+          "callee": "getAdminPb",
+          "lineNumber": 203
+        },
+        {
+          "caller": "initAccountLockoutCollection",
+          "callee": "pb.collections.getOne",
+          "lineNumber": 204
+        },
+        {
+          "caller": "initAccountLockoutCollection",
+          "callee": "console.info",
+          "lineNumber": 205
+        },
+        {
+          "caller": "initAccountLockoutCollection",
+          "callee": "errStatus",
+          "lineNumber": 207
+        },
+        {
+          "caller": "initAccountLockoutCollection",
+          "callee": "console.info",
+          "lineNumber": 208
+        },
+        {
+          "caller": "initAccountLockoutCollection",
+          "callee": "getAdminPb",
+          "lineNumber": 210
+        },
+        {
+          "caller": "initAccountLockoutCollection",
+          "callee": "pb.collections.create",
+          "lineNumber": 211
+        },
+        {
+          "caller": "initAccountLockoutCollection",
+          "callee": "console.info",
+          "lineNumber": 228
+        },
+        {
+          "caller": "initAccountLockoutCollection",
+          "callee": "console.error",
+          "lineNumber": 230
+        },
+        {
+          "caller": "initAccountLockoutCollection",
+          "callee": "errMessage",
+          "lineNumber": 230
+        },
+        {
+          "caller": "initAccountLockoutCollection",
+          "callee": "console.error",
+          "lineNumber": 233
+        },
+        {
+          "caller": "initAccountLockoutCollection",
+          "callee": "errMessage",
+          "lineNumber": 233
+        },
+        {
+          "caller": "getRemainingLockoutTime",
+          "callee": "Date.now",
+          "lineNumber": 242
+        },
+        {
+          "caller": "getRemainingLockoutTime",
+          "callee": "Math.ceil",
+          "lineNumber": 243
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 5,
+        "functionCount": 7,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/audit-log.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 209,
+      "nonEmptyLines": 193,
+      "functions": [
+        {
+          "name": "logAuditEvent",
+          "startLine": 46,
+          "endLine": 63,
+          "params": [
+            "entry"
+          ]
+        },
+        {
+          "name": "getUserAuditLogs",
+          "startLine": 68,
+          "endLine": 95,
+          "params": [
+            "userId",
+            "limit",
+            "offset"
+          ]
+        },
+        {
+          "name": "getRecentSecurityEvents",
+          "startLine": 100,
+          "endLine": 127,
+          "params": [
+            "limit",
+            "hours"
+          ]
+        },
+        {
+          "name": "cleanupExpiredAuditLogs",
+          "startLine": 132,
+          "endLine": 156,
+          "params": []
+        },
+        {
+          "name": "initAuditLogCollection",
+          "startLine": 161,
+          "endLine": 198,
+          "params": []
+        },
+        {
+          "name": "extractClientInfo",
+          "startLine": 203,
+          "endLine": 209,
+          "params": [
+            "c"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "logAuditEvent",
+          "line": 46,
+          "isDefault": false
+        },
+        {
+          "name": "getUserAuditLogs",
+          "line": 68,
+          "isDefault": false
+        },
+        {
+          "name": "getRecentSecurityEvents",
+          "line": 100,
+          "isDefault": false
+        },
+        {
+          "name": "cleanupExpiredAuditLogs",
+          "line": 132,
+          "isDefault": false
+        },
+        {
+          "name": "initAuditLogCollection",
+          "line": 161,
+          "isDefault": false
+        },
+        {
+          "name": "extractClientInfo",
+          "line": 203,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "logAuditEvent",
+          "callee": "getAdminPb",
+          "lineNumber": 48
+        },
+        {
+          "caller": "logAuditEvent",
+          "callee": "pb.collection(COLLECTION_NAME).create",
+          "lineNumber": 49
+        },
+        {
+          "caller": "logAuditEvent",
+          "callee": "pb.collection",
+          "lineNumber": 49
+        },
+        {
+          "caller": "logAuditEvent",
+          "callee": "Date.now",
+          "lineNumber": 55
+        },
+        {
+          "caller": "logAuditEvent",
+          "callee": "JSON.stringify",
+          "lineNumber": 56
+        },
+        {
+          "caller": "logAuditEvent",
+          "callee": "console.warn",
+          "lineNumber": 61
+        },
+        {
+          "caller": "logAuditEvent",
+          "callee": "errMessage",
+          "lineNumber": 61
+        },
+        {
+          "caller": "getUserAuditLogs",
+          "callee": "getAdminPb",
+          "lineNumber": 74
+        },
+        {
+          "caller": "getUserAuditLogs",
+          "callee": "pb.collection(COLLECTION_NAME).getList",
+          "lineNumber": 75
+        },
+        {
+          "caller": "getUserAuditLogs",
+          "callee": "pb.collection",
+          "lineNumber": 75
+        },
+        {
+          "caller": "getUserAuditLogs",
+          "callee": "escapeFilter",
+          "lineNumber": 76
+        },
+        {
+          "caller": "getUserAuditLogs",
+          "callee": "records.items.map",
+          "lineNumber": 80
+        },
+        {
+          "caller": "getUserAuditLogs",
+          "callee": "JSON.parse",
+          "lineNumber": 88
+        },
+        {
+          "caller": "getUserAuditLogs",
+          "callee": "console.warn",
+          "lineNumber": 92
+        },
+        {
+          "caller": "getUserAuditLogs",
+          "callee": "errMessage",
+          "lineNumber": 92
+        },
+        {
+          "caller": "getRecentSecurityEvents",
+          "callee": "getAdminPb",
+          "lineNumber": 105
+        },
+        {
+          "caller": "getRecentSecurityEvents",
+          "callee": "Date.now",
+          "lineNumber": 106
+        },
+        {
+          "caller": "getRecentSecurityEvents",
+          "callee": "pb.collection(COLLECTION_NAME).getList",
+          "lineNumber": 107
+        },
+        {
+          "caller": "getRecentSecurityEvents",
+          "callee": "pb.collection",
+          "lineNumber": 107
+        },
+        {
+          "caller": "getRecentSecurityEvents",
+          "callee": "records.items.map",
+          "lineNumber": 112
+        },
+        {
+          "caller": "getRecentSecurityEvents",
+          "callee": "JSON.parse",
+          "lineNumber": 120
+        },
+        {
+          "caller": "getRecentSecurityEvents",
+          "callee": "console.warn",
+          "lineNumber": 124
+        },
+        {
+          "caller": "getRecentSecurityEvents",
+          "callee": "errMessage",
+          "lineNumber": 124
+        },
+        {
+          "caller": "cleanupExpiredAuditLogs",
+          "callee": "getAdminPb",
+          "lineNumber": 134
+        },
+        {
+          "caller": "cleanupExpiredAuditLogs",
+          "callee": "Date.now",
+          "lineNumber": 136
+        },
+        {
+          "caller": "cleanupExpiredAuditLogs",
+          "callee": "pb.collection(COLLECTION_NAME).getFullList",
+          "lineNumber": 138
+        },
+        {
+          "caller": "cleanupExpiredAuditLogs",
+          "callee": "pb.collection",
+          "lineNumber": 138
+        },
+        {
+          "caller": "cleanupExpiredAuditLogs",
+          "callee": "pb.collection(COLLECTION_NAME).delete",
+          "lineNumber": 145
+        },
+        {
+          "caller": "cleanupExpiredAuditLogs",
+          "callee": "pb.collection",
+          "lineNumber": 145
+        },
+        {
+          "caller": "cleanupExpiredAuditLogs",
+          "callee": "console.warn",
+          "lineNumber": 148
+        },
+        {
+          "caller": "cleanupExpiredAuditLogs",
+          "callee": "errMessage",
+          "lineNumber": 148
+        },
+        {
+          "caller": "cleanupExpiredAuditLogs",
+          "callee": "console.warn",
+          "lineNumber": 153
+        },
+        {
+          "caller": "cleanupExpiredAuditLogs",
+          "callee": "errMessage",
+          "lineNumber": 153
+        },
+        {
+          "caller": "initAuditLogCollection",
+          "callee": "getAdminPb",
+          "lineNumber": 163
+        },
+        {
+          "caller": "initAuditLogCollection",
+          "callee": "pb.collections.getOne",
+          "lineNumber": 164
+        },
+        {
+          "caller": "initAuditLogCollection",
+          "callee": "console.info",
+          "lineNumber": 165
+        },
+        {
+          "caller": "initAuditLogCollection",
+          "callee": "errStatus",
+          "lineNumber": 167
+        },
+        {
+          "caller": "initAuditLogCollection",
+          "callee": "console.info",
+          "lineNumber": 168
+        },
+        {
+          "caller": "initAuditLogCollection",
+          "callee": "getAdminPb",
+          "lineNumber": 170
+        },
+        {
+          "caller": "initAuditLogCollection",
+          "callee": "pb.collections.create",
+          "lineNumber": 171
+        },
+        {
+          "caller": "initAuditLogCollection",
+          "callee": "console.info",
+          "lineNumber": 190
+        },
+        {
+          "caller": "initAuditLogCollection",
+          "callee": "console.error",
+          "lineNumber": 192
+        },
+        {
+          "caller": "initAuditLogCollection",
+          "callee": "errMessage",
+          "lineNumber": 192
+        },
+        {
+          "caller": "initAuditLogCollection",
+          "callee": "console.error",
+          "lineNumber": 195
+        },
+        {
+          "caller": "initAuditLogCollection",
+          "callee": "errMessage",
+          "lineNumber": 195
+        },
+        {
+          "caller": "extractClientInfo",
+          "callee": "c.req.header",
+          "lineNumber": 204
+        },
+        {
+          "caller": "extractClientInfo",
+          "callee": "c.req.header('x-forwarded-for')?.split(',')[0]?.trim",
+          "lineNumber": 205
+        },
+        {
+          "caller": "extractClientInfo",
+          "callee": "c.req.header('x-forwarded-for')?.split",
+          "lineNumber": 205
+        },
+        {
+          "caller": "extractClientInfo",
+          "callee": "c.req.header",
+          "lineNumber": 205
+        },
+        {
+          "caller": "extractClientInfo",
+          "callee": "c.req.header",
+          "lineNumber": 207
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 6,
+        "functionCount": 6,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/auth-middleware.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 158,
+      "nonEmptyLines": 143,
+      "functions": [
+        {
+          "name": "base64UrlDecode",
+          "startLine": 4,
+          "endLine": 8,
+          "params": [
+            "str"
+          ]
+        },
+        {
+          "name": "jwtPayload",
+          "startLine": 10,
+          "endLine": 18,
+          "params": [
+            "token"
+          ]
+        },
+        {
+          "name": "jwtExp",
+          "startLine": 20,
+          "endLine": 23,
+          "params": [
+            "token"
+          ]
+        },
+        {
+          "name": "isBlacklisted",
+          "startLine": 28,
+          "endLine": 30,
+          "params": [
+            "token"
+          ]
+        },
+        {
+          "name": "verifyAuth",
+          "startLine": 40,
+          "endLine": 125,
+          "params": [
+            "authHeader"
+          ]
+        },
+        {
+          "name": "sanitizeError",
+          "startLine": 128,
+          "endLine": 133,
+          "params": [
+            "err",
+            "fallback"
+          ]
+        },
+        {
+          "name": "validatePassword",
+          "startLine": 150,
+          "endLine": 158,
+          "params": [
+            "pwd"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "jwtPayload",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "jwtExp",
+          "line": 20,
+          "isDefault": false
+        },
+        {
+          "name": "isBlacklisted",
+          "line": 28,
+          "isDefault": false
+        },
+        {
+          "name": "verifyAuth",
+          "line": 40,
+          "isDefault": false
+        },
+        {
+          "name": "sanitizeError",
+          "line": 128,
+          "isDefault": false
+        },
+        {
+          "name": "validatePassword",
+          "line": 150,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "base64UrlDecode",
+          "callee": "str.replace(/-/g, '+').replace",
+          "lineNumber": 5
+        },
+        {
+          "caller": "base64UrlDecode",
+          "callee": "str.replace",
+          "lineNumber": 5
+        },
+        {
+          "caller": "base64UrlDecode",
+          "callee": "'='.repeat",
+          "lineNumber": 6
+        },
+        {
+          "caller": "base64UrlDecode",
+          "callee": "Buffer.from(padded, 'base64').toString",
+          "lineNumber": 7
+        },
+        {
+          "caller": "base64UrlDecode",
+          "callee": "Buffer.from",
+          "lineNumber": 7
+        },
+        {
+          "caller": "jwtPayload",
+          "callee": "token.split",
+          "lineNumber": 12
+        },
+        {
+          "caller": "jwtPayload",
+          "callee": "JSON.parse",
+          "lineNumber": 14
+        },
+        {
+          "caller": "jwtPayload",
+          "callee": "base64UrlDecode",
+          "lineNumber": 14
+        },
+        {
+          "caller": "jwtExp",
+          "callee": "jwtPayload",
+          "lineNumber": 21
+        },
+        {
+          "caller": "isBlacklisted",
+          "callee": "isTokenBlacklisted",
+          "lineNumber": 29
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "authHeader?.startsWith",
+          "lineNumber": 41
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "console.warn",
+          "lineNumber": 41
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "authHeader.slice",
+          "lineNumber": 42
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "jwtPayload",
+          "lineNumber": 45
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "console.warn",
+          "lineNumber": 46
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "isBlacklisted",
+          "lineNumber": 49
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "console.warn",
+          "lineNumber": 49
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "import",
+          "lineNumber": 53
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "getPb",
+          "lineNumber": 54
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "pb.authStore.save",
+          "lineNumber": 55
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "pb.collection('users').authRefresh",
+          "lineNumber": 58
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "pb.collection",
+          "lineNumber": 58
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "console.warn",
+          "lineNumber": 60
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "console.warn",
+          "lineNumber": 63
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "import",
+          "lineNumber": 71
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "getAdminPb",
+          "lineNumber": 72
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "console.warn",
+          "lineNumber": 74
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "adminPb.collection('users').getOne",
+          "lineNumber": 82
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "adminPb.collection",
+          "lineNumber": 82
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "console.warn",
+          "lineNumber": 88
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "adminPb.collection('user_profiles').getFirstListItem",
+          "lineNumber": 100
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "adminPb.collection",
+          "lineNumber": 100
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "JSON.parse",
+          "lineNumber": 103
+        },
+        {
+          "caller": "verifyAuth",
+          "callee": "console.warn",
+          "lineNumber": 115
+        },
+        {
+          "caller": "validatePassword",
+          "callee": "/[a-zA-Z]/.test",
+          "lineNumber": 153
+        },
+        {
+          "caller": "validatePassword",
+          "callee": "/[0-9]/.test",
+          "lineNumber": 154
+        },
+        {
+          "caller": "validatePassword",
+          "callee": "/[^a-zA-Z0-9]/.test",
+          "lineNumber": 155
+        },
+        {
+          "caller": "validatePassword",
+          "callee": "COMMON_PASSWORDS.some",
+          "lineNumber": 156
+        },
+        {
+          "caller": "validatePassword",
+          "callee": "pwd.toLowerCase().includes",
+          "lineNumber": 156
+        },
+        {
+          "caller": "validatePassword",
+          "callee": "pwd.toLowerCase",
+          "lineNumber": 156
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 6,
+        "functionCount": 7,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/auth/change-password.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 116,
+      "nonEmptyLines": 103,
+      "metrics": {
+        "importCount": 5,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/auth/check-email.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 50,
+      "nonEmptyLines": 44,
+      "functions": [
+        {
+          "name": "captchaDelay",
+          "startLine": 10,
+          "endLine": 13,
+          "params": []
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "captchaDelay",
+          "callee": "Math.random",
+          "lineNumber": 11
+        },
+        {
+          "caller": "captchaDelay",
+          "callee": "setTimeout",
+          "lineNumber": 12
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 0,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/auth/login.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 146,
+      "nonEmptyLines": 129,
+      "metrics": {
+        "importCount": 5,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/auth/logout.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 88,
+      "nonEmptyLines": 81,
+      "metrics": {
+        "importCount": 5,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/auth/me.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 63,
+      "nonEmptyLines": 58,
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/auth/mfa.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 118,
+      "nonEmptyLines": 94,
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/auth/rbac.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 92,
+      "nonEmptyLines": 71,
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/auth/refresh.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 77,
+      "nonEmptyLines": 67,
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/auth/register.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 119,
+      "nonEmptyLines": 102,
+      "metrics": {
+        "importCount": 7,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/auth/reset-password.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 106,
+      "nonEmptyLines": 94,
+      "metrics": {
+        "importCount": 7,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/auth/send-code.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 117,
+      "nonEmptyLines": 100,
+      "functions": [
+        {
+          "name": "generateCode",
+          "startLine": 14,
+          "endLine": 16,
+          "params": []
+        },
+        {
+          "name": "getTransporter",
+          "startLine": 18,
+          "endLine": 31,
+          "params": []
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "generateCode",
+          "callee": "String(crypto.randomInt(0, 10 ** CODE_LENGTH)).padStart",
+          "lineNumber": 15
+        },
+        {
+          "caller": "generateCode",
+          "callee": "String",
+          "lineNumber": 15
+        },
+        {
+          "caller": "generateCode",
+          "callee": "crypto.randomInt",
+          "lineNumber": 15
+        },
+        {
+          "caller": "getTransporter",
+          "callee": "nodemailer.createTransport",
+          "lineNumber": 22
+        }
+      ],
+      "metrics": {
+        "importCount": 5,
+        "exportCount": 0,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/auth/wechat.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 93,
+      "nonEmptyLines": 80,
+      "functions": [
+        {
+          "name": "wechatPassword",
+          "startLine": 13,
+          "endLine": 17,
+          "params": [
+            "openid"
+          ]
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "wechatPassword",
+          "callee": "crypto.createHash('sha256').update(openid + salt).digest('hex').slice",
+          "lineNumber": 16
+        },
+        {
+          "caller": "wechatPassword",
+          "callee": "crypto.createHash('sha256').update(openid + salt).digest",
+          "lineNumber": 16
+        },
+        {
+          "caller": "wechatPassword",
+          "callee": "crypto.createHash('sha256').update",
+          "lineNumber": 16
+        },
+        {
+          "caller": "wechatPassword",
+          "callee": "crypto.createHash",
+          "lineNumber": 16
+        }
+      ],
+      "metrics": {
+        "importCount": 5,
+        "exportCount": 0,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/config.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 88,
+      "nonEmptyLines": 70,
+      "functions": [
+        {
+          "name": "env",
+          "startLine": 19,
+          "endLine": 21,
+          "params": [
+            "key",
+            "fallback"
+          ]
+        },
+        {
+          "name": "envRequired",
+          "startLine": 23,
+          "endLine": 29,
+          "params": [
+            "key"
+          ]
+        },
+        {
+          "name": "getInternalSecret",
+          "startLine": 85,
+          "endLine": 88,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "cfg",
+          "line": 32,
+          "isDefault": false
+        },
+        {
+          "name": "getInternalSecret",
+          "line": 85,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "envRequired",
+          "callee": "env",
+          "lineNumber": 24
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/errors.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 18,
+      "nonEmptyLines": 16,
+      "functions": [
+        {
+          "name": "errMessage",
+          "startLine": 5,
+          "endLine": 9,
+          "params": [
+            "err"
+          ]
+        },
+        {
+          "name": "errStatus",
+          "startLine": 12,
+          "endLine": 18,
+          "params": [
+            "err"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "errMessage",
+          "line": 5,
+          "isDefault": false
+        },
+        {
+          "name": "errStatus",
+          "line": 12,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 130,
+      "nonEmptyLines": 112,
+      "metrics": {
+        "importCount": 24,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/mfa.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 284,
+      "nonEmptyLines": 257,
+      "functions": [
+        {
+          "name": "generateMFASecret",
+          "startLine": 24,
+          "endLine": 26,
+          "params": []
+        },
+        {
+          "name": "generateTOTP",
+          "startLine": 31,
+          "endLine": 49,
+          "params": [
+            "secret",
+            "timeStep"
+          ]
+        },
+        {
+          "name": "verifyTOTP",
+          "startLine": 54,
+          "endLine": 82,
+          "params": [
+            "secret",
+            "code"
+          ]
+        },
+        {
+          "name": "generateBackupCodes",
+          "startLine": 87,
+          "endLine": 93,
+          "params": [
+            "count"
+          ]
+        },
+        {
+          "name": "isMFAEnabled",
+          "startLine": 98,
+          "endLine": 110,
+          "params": [
+            "userId"
+          ]
+        },
+        {
+          "name": "getMFAConfig",
+          "startLine": 115,
+          "endLine": 135,
+          "params": [
+            "userId"
+          ]
+        },
+        {
+          "name": "enableMFA",
+          "startLine": 140,
+          "endLine": 184,
+          "params": [
+            "userId"
+          ]
+        },
+        {
+          "name": "disableMFA",
+          "startLine": 189,
+          "endLine": 205,
+          "params": [
+            "userId"
+          ]
+        },
+        {
+          "name": "verifyMFACode",
+          "startLine": 210,
+          "endLine": 244,
+          "params": [
+            "userId",
+            "code"
+          ]
+        },
+        {
+          "name": "initMFACollection",
+          "startLine": 249,
+          "endLine": 284,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "generateMFASecret",
+          "line": 24,
+          "isDefault": false
+        },
+        {
+          "name": "generateTOTP",
+          "line": 31,
+          "isDefault": false
+        },
+        {
+          "name": "verifyTOTP",
+          "line": 54,
+          "isDefault": false
+        },
+        {
+          "name": "generateBackupCodes",
+          "line": 87,
+          "isDefault": false
+        },
+        {
+          "name": "isMFAEnabled",
+          "line": 98,
+          "isDefault": false
+        },
+        {
+          "name": "getMFAConfig",
+          "line": 115,
+          "isDefault": false
+        },
+        {
+          "name": "enableMFA",
+          "line": 140,
+          "isDefault": false
+        },
+        {
+          "name": "disableMFA",
+          "line": 189,
+          "isDefault": false
+        },
+        {
+          "name": "verifyMFACode",
+          "line": 210,
+          "isDefault": false
+        },
+        {
+          "name": "initMFACollection",
+          "line": 249,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "generateMFASecret",
+          "callee": "crypto.randomBytes(20).toString",
+          "lineNumber": 25
+        },
+        {
+          "caller": "generateMFASecret",
+          "callee": "crypto.randomBytes",
+          "lineNumber": 25
+        },
+        {
+          "caller": "generateTOTP",
+          "callee": "Math.floor",
+          "lineNumber": 32
+        },
+        {
+          "caller": "generateTOTP",
+          "callee": "Date.now",
+          "lineNumber": 32
+        },
+        {
+          "caller": "generateTOTP",
+          "callee": "Buffer.alloc",
+          "lineNumber": 33
+        },
+        {
+          "caller": "generateTOTP",
+          "callee": "timeBuffer.writeBigInt64BE",
+          "lineNumber": 34
+        },
+        {
+          "caller": "generateTOTP",
+          "callee": "BigInt",
+          "lineNumber": 34
+        },
+        {
+          "caller": "generateTOTP",
+          "callee": "crypto.createHmac",
+          "lineNumber": 36
+        },
+        {
+          "caller": "generateTOTP",
+          "callee": "Buffer.from",
+          "lineNumber": 36
+        },
+        {
+          "caller": "generateTOTP",
+          "callee": "hmac.update",
+          "lineNumber": 37
+        },
+        {
+          "caller": "generateTOTP",
+          "callee": "hmac.digest",
+          "lineNumber": 38
+        },
+        {
+          "caller": "generateTOTP",
+          "callee": "code.toString().padStart",
+          "lineNumber": 48
+        },
+        {
+          "caller": "generateTOTP",
+          "callee": "code.toString",
+          "lineNumber": 48
+        },
+        {
+          "caller": "verifyTOTP",
+          "callee": "Math.floor",
+          "lineNumber": 57
+        },
+        {
+          "caller": "verifyTOTP",
+          "callee": "Date.now",
+          "lineNumber": 57
+        },
+        {
+          "caller": "verifyTOTP",
+          "callee": "Buffer.alloc",
+          "lineNumber": 61
+        },
+        {
+          "caller": "verifyTOTP",
+          "callee": "timeBuffer.writeBigInt64BE",
+          "lineNumber": 62
+        },
+        {
+          "caller": "verifyTOTP",
+          "callee": "BigInt",
+          "lineNumber": 62
+        },
+        {
+          "caller": "verifyTOTP",
+          "callee": "crypto.createHmac",
+          "lineNumber": 64
+        },
+        {
+          "caller": "verifyTOTP",
+          "callee": "Buffer.from",
+          "lineNumber": 64
+        },
+        {
+          "caller": "verifyTOTP",
+          "callee": "hmac.update",
+          "lineNumber": 65
+        },
+        {
+          "caller": "verifyTOTP",
+          "callee": "hmac.digest",
+          "lineNumber": 66
+        },
+        {
+          "caller": "verifyTOTP",
+          "callee": "expectedCode.toString().padStart",
+          "lineNumber": 76
+        },
+        {
+          "caller": "verifyTOTP",
+          "callee": "expectedCode.toString",
+          "lineNumber": 76
+        },
+        {
+          "caller": "generateBackupCodes",
+          "callee": "codes.push",
+          "lineNumber": 90
+        },
+        {
+          "caller": "generateBackupCodes",
+          "callee": "crypto.randomBytes(4).toString('hex').toUpperCase",
+          "lineNumber": 90
+        },
+        {
+          "caller": "generateBackupCodes",
+          "callee": "crypto.randomBytes(4).toString",
+          "lineNumber": 90
+        },
+        {
+          "caller": "generateBackupCodes",
+          "callee": "crypto.randomBytes",
+          "lineNumber": 90
+        },
+        {
+          "caller": "isMFAEnabled",
+          "callee": "getAdminPb",
+          "lineNumber": 100
+        },
+        {
+          "caller": "isMFAEnabled",
+          "callee": "pb.collection(COLLECTION_NAME).getFirstListItem",
+          "lineNumber": 101
+        },
+        {
+          "caller": "isMFAEnabled",
+          "callee": "pb.collection",
+          "lineNumber": 101
+        },
+        {
+          "caller": "isMFAEnabled",
+          "callee": "escapeFilter",
+          "lineNumber": 102
+        },
+        {
+          "caller": "isMFAEnabled",
+          "callee": "errStatus",
+          "lineNumber": 106
+        },
+        {
+          "caller": "isMFAEnabled",
+          "callee": "console.warn",
+          "lineNumber": 107
+        },
+        {
+          "caller": "isMFAEnabled",
+          "callee": "errMessage",
+          "lineNumber": 107
+        },
+        {
+          "caller": "getMFAConfig",
+          "callee": "getAdminPb",
+          "lineNumber": 117
+        },
+        {
+          "caller": "getMFAConfig",
+          "callee": "pb.collection(COLLECTION_NAME).getFirstListItem",
+          "lineNumber": 118
+        },
+        {
+          "caller": "getMFAConfig",
+          "callee": "pb.collection",
+          "lineNumber": 118
+        },
+        {
+          "caller": "getMFAConfig",
+          "callee": "escapeFilter",
+          "lineNumber": 119
+        },
+        {
+          "caller": "getMFAConfig",
+          "callee": "errStatus",
+          "lineNumber": 131
+        },
+        {
+          "caller": "getMFAConfig",
+          "callee": "console.warn",
+          "lineNumber": 132
+        },
+        {
+          "caller": "getMFAConfig",
+          "callee": "errMessage",
+          "lineNumber": 132
+        },
+        {
+          "caller": "enableMFA",
+          "callee": "generateMFASecret",
+          "lineNumber": 141
+        },
+        {
+          "caller": "enableMFA",
+          "callee": "generateBackupCodes",
+          "lineNumber": 142
+        },
+        {
+          "caller": "enableMFA",
+          "callee": "Promise.all",
+          "lineNumber": 144
+        },
+        {
+          "caller": "enableMFA",
+          "callee": "plainCodes.map",
+          "lineNumber": 144
+        },
+        {
+          "caller": "enableMFA",
+          "callee": "bcrypt.hash",
+          "lineNumber": 144
+        },
+        {
+          "caller": "enableMFA",
+          "callee": "getAdminPb",
+          "lineNumber": 147
+        },
+        {
+          "caller": "enableMFA",
+          "callee": "pb.collection(COLLECTION_NAME).getFirstListItem",
+          "lineNumber": 152
+        },
+        {
+          "caller": "enableMFA",
+          "callee": "pb.collection",
+          "lineNumber": 152
+        },
+        {
+          "caller": "enableMFA",
+          "callee": "escapeFilter",
+          "lineNumber": 153
+        },
+        {
+          "caller": "enableMFA",
+          "callee": "errStatus",
+          "lineNumber": 156
+        },
+        {
+          "caller": "enableMFA",
+          "callee": "pb.collection(COLLECTION_NAME).update",
+          "lineNumber": 161
+        },
+        {
+          "caller": "enableMFA",
+          "callee": "pb.collection",
+          "lineNumber": 161
+        },
+        {
+          "caller": "enableMFA",
+          "callee": "Date.now",
+          "lineNumber": 165
+        },
+        {
+          "caller": "enableMFA",
+          "callee": "pb.collection(COLLECTION_NAME).create",
+          "lineNumber": 169
+        },
+        {
+          "caller": "enableMFA",
+          "callee": "pb.collection",
+          "lineNumber": 169
+        },
+        {
+          "caller": "enableMFA",
+          "callee": "Date.now",
+          "lineNumber": 174
+        },
+        {
+          "caller": "enableMFA",
+          "callee": "Date.now",
+          "lineNumber": 175
+        },
+        {
+          "caller": "enableMFA",
+          "callee": "console.error",
+          "lineNumber": 181
+        },
+        {
+          "caller": "enableMFA",
+          "callee": "errMessage",
+          "lineNumber": 181
+        },
+        {
+          "caller": "disableMFA",
+          "callee": "getAdminPb",
+          "lineNumber": 191
+        },
+        {
+          "caller": "disableMFA",
+          "callee": "pb.collection(COLLECTION_NAME).getFirstListItem",
+          "lineNumber": 192
+        },
+        {
+          "caller": "disableMFA",
+          "callee": "pb.collection",
+          "lineNumber": 192
+        },
+        {
+          "caller": "disableMFA",
+          "callee": "escapeFilter",
+          "lineNumber": 193
+        },
+        {
+          "caller": "disableMFA",
+          "callee": "pb.collection(COLLECTION_NAME).update",
+          "lineNumber": 195
+        },
+        {
+          "caller": "disableMFA",
+          "callee": "pb.collection",
+          "lineNumber": 195
+        },
+        {
+          "caller": "disableMFA",
+          "callee": "Date.now",
+          "lineNumber": 197
+        },
+        {
+          "caller": "disableMFA",
+          "callee": "errStatus",
+          "lineNumber": 200
+        },
+        {
+          "caller": "disableMFA",
+          "callee": "console.error",
+          "lineNumber": 201
+        },
+        {
+          "caller": "disableMFA",
+          "callee": "errMessage",
+          "lineNumber": 201
+        },
+        {
+          "caller": "verifyMFACode",
+          "callee": "getMFAConfig",
+          "lineNumber": 211
+        },
+        {
+          "caller": "verifyMFACode",
+          "callee": "code.toUpperCase",
+          "lineNumber": 215
+        },
+        {
+          "caller": "verifyMFACode",
+          "callee": "stored.startsWith",
+          "lineNumber": 219
+        },
+        {
+          "caller": "verifyMFACode",
+          "callee": "bcrypt.compare",
+          "lineNumber": 221
+        },
+        {
+          "caller": "verifyMFACode",
+          "callee": "config.backup_codes.filter",
+          "lineNumber": 229
+        },
+        {
+          "caller": "verifyMFACode",
+          "callee": "getAdminPb",
+          "lineNumber": 231
+        },
+        {
+          "caller": "verifyMFACode",
+          "callee": "pb.collection(COLLECTION_NAME).update",
+          "lineNumber": 232
+        },
+        {
+          "caller": "verifyMFACode",
+          "callee": "pb.collection",
+          "lineNumber": 232
+        },
+        {
+          "caller": "verifyMFACode",
+          "callee": "Date.now",
+          "lineNumber": 234
+        },
+        {
+          "caller": "verifyMFACode",
+          "callee": "console.warn",
+          "lineNumber": 237
+        },
+        {
+          "caller": "verifyMFACode",
+          "callee": "verifyTOTP",
+          "lineNumber": 243
+        },
+        {
+          "caller": "initMFACollection",
+          "callee": "getAdminPb",
+          "lineNumber": 251
+        },
+        {
+          "caller": "initMFACollection",
+          "callee": "pb.collections.getOne",
+          "lineNumber": 252
+        },
+        {
+          "caller": "initMFACollection",
+          "callee": "console.info",
+          "lineNumber": 253
+        },
+        {
+          "caller": "initMFACollection",
+          "callee": "errStatus",
+          "lineNumber": 255
+        },
+        {
+          "caller": "initMFACollection",
+          "callee": "console.info",
+          "lineNumber": 256
+        },
+        {
+          "caller": "initMFACollection",
+          "callee": "getAdminPb",
+          "lineNumber": 258
+        },
+        {
+          "caller": "initMFACollection",
+          "callee": "pb.collections.create",
+          "lineNumber": 259
+        },
+        {
+          "caller": "initMFACollection",
+          "callee": "console.info",
+          "lineNumber": 276
+        },
+        {
+          "caller": "initMFACollection",
+          "callee": "console.error",
+          "lineNumber": 278
+        },
+        {
+          "caller": "initMFACollection",
+          "callee": "errMessage",
+          "lineNumber": 278
+        },
+        {
+          "caller": "initMFACollection",
+          "callee": "console.error",
+          "lineNumber": 281
+        },
+        {
+          "caller": "initMFACollection",
+          "callee": "errMessage",
+          "lineNumber": 281
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 10,
+        "functionCount": 10,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/monitoring.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 46,
+      "nonEmptyLines": 38,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/pb.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 72,
+      "nonEmptyLines": 61,
+      "functions": [
+        {
+          "name": "getPb",
+          "startLine": 8,
+          "endLine": 12,
+          "params": []
+        },
+        {
+          "name": "authenticateAdmin",
+          "startLine": 20,
+          "endLine": 31,
+          "params": []
+        },
+        {
+          "name": "getAdminPb",
+          "startLine": 33,
+          "endLine": 59,
+          "params": []
+        },
+        {
+          "name": "escapeFilter",
+          "startLine": 62,
+          "endLine": 70,
+          "params": [
+            "value"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "getPb",
+          "line": 8,
+          "isDefault": false
+        },
+        {
+          "name": "getAdminPb",
+          "line": 33,
+          "isDefault": false
+        },
+        {
+          "name": "escapeFilter",
+          "line": 62,
+          "isDefault": false
+        },
+        {
+          "name": "PocketBase",
+          "line": 72,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getPb",
+          "callee": "pb.autoCancellation",
+          "lineNumber": 10
+        },
+        {
+          "caller": "authenticateAdmin",
+          "callee": "getPb",
+          "lineNumber": 21
+        },
+        {
+          "caller": "authenticateAdmin",
+          "callee": "pb.collection('_superusers').authWithPassword",
+          "lineNumber": 29
+        },
+        {
+          "caller": "authenticateAdmin",
+          "callee": "pb.collection",
+          "lineNumber": 29
+        },
+        {
+          "caller": "getAdminPb",
+          "callee": "Date.now",
+          "lineNumber": 34
+        },
+        {
+          "caller": "getAdminPb",
+          "callee": "getPb",
+          "lineNumber": 36
+        },
+        {
+          "caller": "getAdminPb",
+          "callee": "pb.authStore.save",
+          "lineNumber": 37
+        },
+        {
+          "caller": "getAdminPb",
+          "callee": "authenticateAdmin().then",
+          "lineNumber": 43
+        },
+        {
+          "caller": "getAdminPb",
+          "callee": "authenticateAdmin",
+          "lineNumber": 43
+        },
+        {
+          "caller": "getAdminPb",
+          "callee": "Date.now",
+          "lineNumber": 44
+        },
+        {
+          "caller": "getAdminPb",
+          "callee": "getPb",
+          "lineNumber": 56
+        },
+        {
+          "caller": "getAdminPb",
+          "callee": "adminPb.authStore.save",
+          "lineNumber": 57
+        },
+        {
+          "caller": "escapeFilter",
+          "callee": "value\n    .replace(/\\\\/g, '\\\\\\\\')\n    .replace(/\"/g, '\\\\\"')\n    .replace(/'/g, \"\\\\'\")\n    .replace(/\\(/g, '\\\\(')\n    .replace(/\\)/g, '\\\\)')\n    .replace",
+          "lineNumber": 63
+        },
+        {
+          "caller": "escapeFilter",
+          "callee": "value\n    .replace(/\\\\/g, '\\\\\\\\')\n    .replace(/\"/g, '\\\\\"')\n    .replace(/'/g, \"\\\\'\")\n    .replace(/\\(/g, '\\\\(')\n    .replace",
+          "lineNumber": 63
+        },
+        {
+          "caller": "escapeFilter",
+          "callee": "value\n    .replace(/\\\\/g, '\\\\\\\\')\n    .replace(/\"/g, '\\\\\"')\n    .replace(/'/g, \"\\\\'\")\n    .replace",
+          "lineNumber": 63
+        },
+        {
+          "caller": "escapeFilter",
+          "callee": "value\n    .replace(/\\\\/g, '\\\\\\\\')\n    .replace(/\"/g, '\\\\\"')\n    .replace",
+          "lineNumber": 63
+        },
+        {
+          "caller": "escapeFilter",
+          "callee": "value\n    .replace(/\\\\/g, '\\\\\\\\')\n    .replace",
+          "lineNumber": 63
+        },
+        {
+          "caller": "escapeFilter",
+          "callee": "value\n    .replace",
+          "lineNumber": 63
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 4,
+        "functionCount": 4,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/plan.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 122,
+      "nonEmptyLines": 108,
+      "functions": [
+        {
+          "name": "escapeHtml",
+          "startLine": 11,
+          "endLine": 13,
+          "params": [
+            "s"
+          ]
+        },
+        {
+          "name": "getTransporter",
+          "startLine": 15,
+          "endLine": 28,
+          "params": []
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "escapeHtml",
+          "callee": "s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace",
+          "lineNumber": 12
+        },
+        {
+          "caller": "escapeHtml",
+          "callee": "s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace",
+          "lineNumber": 12
+        },
+        {
+          "caller": "escapeHtml",
+          "callee": "s.replace(/&/g, '&amp;').replace",
+          "lineNumber": 12
+        },
+        {
+          "caller": "escapeHtml",
+          "callee": "s.replace",
+          "lineNumber": 12
+        },
+        {
+          "caller": "getTransporter",
+          "callee": "nodemailer.createTransport",
+          "lineNumber": 19
+        }
+      ],
+      "metrics": {
+        "importCount": 5,
+        "exportCount": 0,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/push.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 277,
+      "nonEmptyLines": 235,
+      "functions": [
+        {
+          "name": "sendExpoPush",
+          "startLine": 215,
+          "endLine": 275,
+          "params": [
+            "tokens",
+            "payload"
+          ]
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "sendExpoPush",
+          "callee": "tokens.map",
+          "lineNumber": 219
+        },
+        {
+          "caller": "sendExpoPush",
+          "callee": "messages.slice",
+          "lineNumber": 232
+        },
+        {
+          "caller": "sendExpoPush",
+          "callee": "tokens.slice",
+          "lineNumber": 233
+        },
+        {
+          "caller": "sendExpoPush",
+          "callee": "fetch",
+          "lineNumber": 245
+        },
+        {
+          "caller": "sendExpoPush",
+          "callee": "JSON.stringify",
+          "lineNumber": 248
+        },
+        {
+          "caller": "sendExpoPush",
+          "callee": "console.error",
+          "lineNumber": 252
+        },
+        {
+          "caller": "sendExpoPush",
+          "callee": "response.json",
+          "lineNumber": 256
+        },
+        {
+          "caller": "sendExpoPush",
+          "callee": "failedTokenIds.push",
+          "lineNumber": 266
+        },
+        {
+          "caller": "sendExpoPush",
+          "callee": "console.warn",
+          "lineNumber": 268
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 0,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/rate-limit.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 238,
+      "nonEmptyLines": 215,
+      "functions": [
+        {
+          "name": "loadPersistedState",
+          "startLine": 33,
+          "endLine": 41,
+          "params": []
+        },
+        {
+          "name": "savePersistedState",
+          "startLine": 43,
+          "endLine": 60,
+          "params": []
+        },
+        {
+          "name": "initPersistence",
+          "startLine": 63,
+          "endLine": 76,
+          "params": []
+        },
+        {
+          "name": "createRateLimiter",
+          "startLine": 80,
+          "endLine": 115,
+          "params": [
+            "maxAttempts",
+            "windowMs",
+            "name"
+          ]
+        },
+        {
+          "name": "getClientIp",
+          "startLine": 131,
+          "endLine": 137,
+          "params": [
+            "c"
+          ]
+        },
+        {
+          "name": "createPBRateLimiter",
+          "startLine": 154,
+          "endLine": 207,
+          "params": [
+            "maxCount",
+            "windowMs"
+          ]
+        },
+        {
+          "name": "cleanupExpiredRateLimits",
+          "startLine": 209,
+          "endLine": 233,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "createRateLimiter",
+          "line": 80,
+          "isDefault": false
+        },
+        {
+          "name": "loginRateLimit",
+          "line": 118,
+          "isDefault": false
+        },
+        {
+          "name": "emailRateLimit",
+          "line": 119,
+          "isDefault": false
+        },
+        {
+          "name": "registerRateLimit",
+          "line": 120,
+          "isDefault": false
+        },
+        {
+          "name": "sendCodeRateLimit",
+          "line": 121,
+          "isDefault": false
+        },
+        {
+          "name": "checkEmailRateLimit",
+          "line": 122,
+          "isDefault": false
+        },
+        {
+          "name": "resetRateLimit",
+          "line": 123,
+          "isDefault": false
+        },
+        {
+          "name": "wechatRateLimit",
+          "line": 124,
+          "isDefault": false
+        },
+        {
+          "name": "meRateLimit",
+          "line": 125,
+          "isDefault": false
+        },
+        {
+          "name": "refreshRateLimit",
+          "line": 126,
+          "isDefault": false
+        },
+        {
+          "name": "getClientIp",
+          "line": 131,
+          "isDefault": false
+        },
+        {
+          "name": "createPBRateLimiter",
+          "line": 154,
+          "isDefault": false
+        },
+        {
+          "name": "cleanupExpiredRateLimits",
+          "line": 209,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "loadPersistedState",
+          "callee": "existsSync",
+          "lineNumber": 35
+        },
+        {
+          "caller": "loadPersistedState",
+          "callee": "readFile",
+          "lineNumber": 36
+        },
+        {
+          "caller": "loadPersistedState",
+          "callee": "JSON.parse",
+          "lineNumber": 37
+        },
+        {
+          "caller": "savePersistedState",
+          "callee": "dirname",
+          "lineNumber": 47
+        },
+        {
+          "caller": "savePersistedState",
+          "callee": "mkdir",
+          "lineNumber": 48
+        },
+        {
+          "caller": "savePersistedState",
+          "callee": "Date.now",
+          "lineNumber": 50
+        },
+        {
+          "caller": "savePersistedState",
+          "callee": "Object.keys",
+          "lineNumber": 56
+        },
+        {
+          "caller": "savePersistedState",
+          "callee": "writeFile",
+          "lineNumber": 58
+        },
+        {
+          "caller": "savePersistedState",
+          "callee": "JSON.stringify",
+          "lineNumber": 58
+        },
+        {
+          "caller": "initPersistence",
+          "callee": "loadPersistedState",
+          "lineNumber": 64
+        },
+        {
+          "caller": "initPersistence",
+          "callee": "Date.now",
+          "lineNumber": 65
+        },
+        {
+          "caller": "initPersistence",
+          "callee": "Object.entries",
+          "lineNumber": 69
+        },
+        {
+          "caller": "initPersistence",
+          "callee": "attempts.set",
+          "lineNumber": 70
+        },
+        {
+          "caller": "initPersistence",
+          "callee": "setInterval",
+          "lineNumber": 74
+        },
+        {
+          "caller": "initPersistence",
+          "callee": "savePersistedState().catch",
+          "lineNumber": 74
+        },
+        {
+          "caller": "initPersistence",
+          "callee": "savePersistedState",
+          "lineNumber": 74
+        },
+        {
+          "caller": "initPersistence",
+          "callee": "timer.unref",
+          "lineNumber": 75
+        },
+        {
+          "caller": "createRateLimiter",
+          "callee": "_namedLimiters.set",
+          "lineNumber": 86
+        },
+        {
+          "caller": "createRateLimiter",
+          "callee": "queueMicrotask",
+          "lineNumber": 90
+        },
+        {
+          "caller": "createRateLimiter",
+          "callee": "Date.now",
+          "lineNumber": 95
+        },
+        {
+          "caller": "createRateLimiter",
+          "callee": "attempts.delete",
+          "lineNumber": 99
+        },
+        {
+          "caller": "createRateLimiter",
+          "callee": "attempts.get",
+          "lineNumber": 104
+        },
+        {
+          "caller": "createRateLimiter",
+          "callee": "attempts.set",
+          "lineNumber": 106
+        },
+        {
+          "caller": "getClientIp",
+          "callee": "c.req.header",
+          "lineNumber": 133
+        },
+        {
+          "caller": "getClientIp",
+          "callee": "c.req.header('x-forwarded-for')?.split(',')[0]?.trim",
+          "lineNumber": 134
+        },
+        {
+          "caller": "getClientIp",
+          "callee": "c.req.header('x-forwarded-for')?.split",
+          "lineNumber": 134
+        },
+        {
+          "caller": "getClientIp",
+          "callee": "c.req.header",
+          "lineNumber": 134
+        },
+        {
+          "caller": "createPBRateLimiter",
+          "callee": "import",
+          "lineNumber": 157
+        },
+        {
+          "caller": "createPBRateLimiter",
+          "callee": "getAdminPb",
+          "lineNumber": 158
+        },
+        {
+          "caller": "createPBRateLimiter",
+          "callee": "Date.now",
+          "lineNumber": 159
+        },
+        {
+          "caller": "createPBRateLimiter",
+          "callee": "pb.collections.getOne",
+          "lineNumber": 164
+        },
+        {
+          "caller": "createPBRateLimiter",
+          "callee": "pb.collections.create",
+          "lineNumber": 167
+        },
+        {
+          "caller": "createPBRateLimiter",
+          "callee": "pb.collection(RATE_LIMIT_COLLECTION).getList",
+          "lineNumber": 184
+        },
+        {
+          "caller": "createPBRateLimiter",
+          "callee": "pb.collection",
+          "lineNumber": 184
+        },
+        {
+          "caller": "createPBRateLimiter",
+          "callee": "escapeFilter",
+          "lineNumber": 185
+        },
+        {
+          "caller": "createPBRateLimiter",
+          "callee": "pb.collection(RATE_LIMIT_COLLECTION).update",
+          "lineNumber": 192
+        },
+        {
+          "caller": "createPBRateLimiter",
+          "callee": "pb.collection",
+          "lineNumber": 192
+        },
+        {
+          "caller": "createPBRateLimiter",
+          "callee": "pb.collection(RATE_LIMIT_COLLECTION).create",
+          "lineNumber": 198
+        },
+        {
+          "caller": "createPBRateLimiter",
+          "callee": "pb.collection",
+          "lineNumber": 198
+        },
+        {
+          "caller": "cleanupExpiredRateLimits",
+          "callee": "import",
+          "lineNumber": 211
+        },
+        {
+          "caller": "cleanupExpiredRateLimits",
+          "callee": "getAdminPb",
+          "lineNumber": 212
+        },
+        {
+          "caller": "cleanupExpiredRateLimits",
+          "callee": "pb.collection(RATE_LIMIT_COLLECTION).getList",
+          "lineNumber": 214
+        },
+        {
+          "caller": "cleanupExpiredRateLimits",
+          "callee": "pb.collection",
+          "lineNumber": 214
+        },
+        {
+          "caller": "cleanupExpiredRateLimits",
+          "callee": "Date.now",
+          "lineNumber": 215
+        },
+        {
+          "caller": "cleanupExpiredRateLimits",
+          "callee": "Math.ceil",
+          "lineNumber": 218
+        },
+        {
+          "caller": "cleanupExpiredRateLimits",
+          "callee": "pb.collection(RATE_LIMIT_COLLECTION).getList",
+          "lineNumber": 220
+        },
+        {
+          "caller": "cleanupExpiredRateLimits",
+          "callee": "pb.collection",
+          "lineNumber": 220
+        },
+        {
+          "caller": "cleanupExpiredRateLimits",
+          "callee": "Date.now",
+          "lineNumber": 221
+        },
+        {
+          "caller": "cleanupExpiredRateLimits",
+          "callee": "pb.collection(RATE_LIMIT_COLLECTION).delete",
+          "lineNumber": 224
+        },
+        {
+          "caller": "cleanupExpiredRateLimits",
+          "callee": "pb.collection",
+          "lineNumber": 224
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 13,
+        "functionCount": 7,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/rbac.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 189,
+      "nonEmptyLines": 173,
+      "functions": [
+        {
+          "name": "getUserRole",
+          "startLine": 74,
+          "endLine": 86,
+          "params": [
+            "userId"
+          ]
+        },
+        {
+          "name": "setUserRole",
+          "startLine": 91,
+          "endLine": 125,
+          "params": [
+            "userId",
+            "role"
+          ]
+        },
+        {
+          "name": "hasPermission",
+          "startLine": 130,
+          "endLine": 134,
+          "params": [
+            "userId",
+            "permission"
+          ]
+        },
+        {
+          "name": "hasAnyPermission",
+          "startLine": 139,
+          "endLine": 143,
+          "params": [
+            "userId",
+            "permissions"
+          ]
+        },
+        {
+          "name": "getUserPermissions",
+          "startLine": 148,
+          "endLine": 151,
+          "params": [
+            "userId"
+          ]
+        },
+        {
+          "name": "initRBACCollection",
+          "startLine": 156,
+          "endLine": 189,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "getUserRole",
+          "line": 74,
+          "isDefault": false
+        },
+        {
+          "name": "setUserRole",
+          "line": 91,
+          "isDefault": false
+        },
+        {
+          "name": "hasPermission",
+          "line": 130,
+          "isDefault": false
+        },
+        {
+          "name": "hasAnyPermission",
+          "line": 139,
+          "isDefault": false
+        },
+        {
+          "name": "getUserPermissions",
+          "line": 148,
+          "isDefault": false
+        },
+        {
+          "name": "initRBACCollection",
+          "line": 156,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getUserRole",
+          "callee": "getAdminPb",
+          "lineNumber": 76
+        },
+        {
+          "caller": "getUserRole",
+          "callee": "pb.collection(COLLECTION_NAME).getFirstListItem",
+          "lineNumber": 77
+        },
+        {
+          "caller": "getUserRole",
+          "callee": "pb.collection",
+          "lineNumber": 77
+        },
+        {
+          "caller": "getUserRole",
+          "callee": "escapeFilter",
+          "lineNumber": 78
+        },
+        {
+          "caller": "getUserRole",
+          "callee": "errStatus",
+          "lineNumber": 82
+        },
+        {
+          "caller": "getUserRole",
+          "callee": "console.warn",
+          "lineNumber": 83
+        },
+        {
+          "caller": "getUserRole",
+          "callee": "errMessage",
+          "lineNumber": 83
+        },
+        {
+          "caller": "setUserRole",
+          "callee": "getAdminPb",
+          "lineNumber": 93
+        },
+        {
+          "caller": "setUserRole",
+          "callee": "pb.collection(COLLECTION_NAME).getFirstListItem",
+          "lineNumber": 99
+        },
+        {
+          "caller": "setUserRole",
+          "callee": "pb.collection",
+          "lineNumber": 99
+        },
+        {
+          "caller": "setUserRole",
+          "callee": "escapeFilter",
+          "lineNumber": 100
+        },
+        {
+          "caller": "setUserRole",
+          "callee": "errStatus",
+          "lineNumber": 103
+        },
+        {
+          "caller": "setUserRole",
+          "callee": "pb.collection(COLLECTION_NAME).update",
+          "lineNumber": 108
+        },
+        {
+          "caller": "setUserRole",
+          "callee": "pb.collection",
+          "lineNumber": 108
+        },
+        {
+          "caller": "setUserRole",
+          "callee": "Date.now",
+          "lineNumber": 110
+        },
+        {
+          "caller": "setUserRole",
+          "callee": "pb.collection(COLLECTION_NAME).create",
+          "lineNumber": 114
+        },
+        {
+          "caller": "setUserRole",
+          "callee": "pb.collection",
+          "lineNumber": 114
+        },
+        {
+          "caller": "setUserRole",
+          "callee": "Date.now",
+          "lineNumber": 117
+        },
+        {
+          "caller": "setUserRole",
+          "callee": "Date.now",
+          "lineNumber": 118
+        },
+        {
+          "caller": "setUserRole",
+          "callee": "console.error",
+          "lineNumber": 122
+        },
+        {
+          "caller": "setUserRole",
+          "callee": "errMessage",
+          "lineNumber": 122
+        },
+        {
+          "caller": "hasPermission",
+          "callee": "getUserRole",
+          "lineNumber": 131
+        },
+        {
+          "caller": "hasPermission",
+          "callee": "permissions.includes",
+          "lineNumber": 133
+        },
+        {
+          "caller": "hasAnyPermission",
+          "callee": "getUserRole",
+          "lineNumber": 140
+        },
+        {
+          "caller": "hasAnyPermission",
+          "callee": "permissions.some",
+          "lineNumber": 142
+        },
+        {
+          "caller": "hasAnyPermission",
+          "callee": "userPermissions.includes",
+          "lineNumber": 142
+        },
+        {
+          "caller": "getUserPermissions",
+          "callee": "getUserRole",
+          "lineNumber": 149
+        },
+        {
+          "caller": "initRBACCollection",
+          "callee": "getAdminPb",
+          "lineNumber": 158
+        },
+        {
+          "caller": "initRBACCollection",
+          "callee": "pb.collections.getOne",
+          "lineNumber": 159
+        },
+        {
+          "caller": "initRBACCollection",
+          "callee": "console.info",
+          "lineNumber": 160
+        },
+        {
+          "caller": "initRBACCollection",
+          "callee": "errStatus",
+          "lineNumber": 162
+        },
+        {
+          "caller": "initRBACCollection",
+          "callee": "console.info",
+          "lineNumber": 163
+        },
+        {
+          "caller": "initRBACCollection",
+          "callee": "getAdminPb",
+          "lineNumber": 165
+        },
+        {
+          "caller": "initRBACCollection",
+          "callee": "pb.collections.create",
+          "lineNumber": 166
+        },
+        {
+          "caller": "initRBACCollection",
+          "callee": "console.info",
+          "lineNumber": 181
+        },
+        {
+          "caller": "initRBACCollection",
+          "callee": "console.error",
+          "lineNumber": 183
+        },
+        {
+          "caller": "initRBACCollection",
+          "callee": "errMessage",
+          "lineNumber": 183
+        },
+        {
+          "caller": "initRBACCollection",
+          "callee": "console.error",
+          "lineNumber": 186
+        },
+        {
+          "caller": "initRBACCollection",
+          "callee": "errMessage",
+          "lineNumber": 186
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 6,
+        "functionCount": 6,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/setup.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 122,
+      "nonEmptyLines": 111,
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/token-blacklist.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 134,
+      "nonEmptyLines": 125,
+      "functions": [
+        {
+          "name": "isTokenBlacklisted",
+          "startLine": 21,
+          "endLine": 43,
+          "params": [
+            "token"
+          ]
+        },
+        {
+          "name": "blacklistToken",
+          "startLine": 48,
+          "endLine": 60,
+          "params": [
+            "token",
+            "expiresAt"
+          ]
+        },
+        {
+          "name": "cleanupExpiredTokens",
+          "startLine": 65,
+          "endLine": 96,
+          "params": []
+        },
+        {
+          "name": "initTokenBlacklistCollection",
+          "startLine": 102,
+          "endLine": 134,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "failOpenMetrics",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "isTokenBlacklisted",
+          "line": 21,
+          "isDefault": false
+        },
+        {
+          "name": "blacklistToken",
+          "line": 48,
+          "isDefault": false
+        },
+        {
+          "name": "cleanupExpiredTokens",
+          "line": 65,
+          "isDefault": false
+        },
+        {
+          "name": "initTokenBlacklistCollection",
+          "line": 102,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "isTokenBlacklisted",
+          "callee": "getAdminPb",
+          "lineNumber": 23
+        },
+        {
+          "caller": "isTokenBlacklisted",
+          "callee": "pb.collection(COLLECTION_NAME).getFirstListItem",
+          "lineNumber": 24
+        },
+        {
+          "caller": "isTokenBlacklisted",
+          "callee": "pb.collection",
+          "lineNumber": 24
+        },
+        {
+          "caller": "isTokenBlacklisted",
+          "callee": "escapeFilter",
+          "lineNumber": 25
+        },
+        {
+          "caller": "isTokenBlacklisted",
+          "callee": "Date.now",
+          "lineNumber": 25
+        },
+        {
+          "caller": "isTokenBlacklisted",
+          "callee": "errStatus",
+          "lineNumber": 29
+        },
+        {
+          "caller": "isTokenBlacklisted",
+          "callee": "Date.now",
+          "lineNumber": 34
+        },
+        {
+          "caller": "isTokenBlacklisted",
+          "callee": "console.warn",
+          "lineNumber": 37
+        },
+        {
+          "caller": "isTokenBlacklisted",
+          "callee": "new Date(failOpenMetrics.lastFailAt).toISOString",
+          "lineNumber": 37
+        },
+        {
+          "caller": "isTokenBlacklisted",
+          "callee": "errMessage",
+          "lineNumber": 37
+        },
+        {
+          "caller": "isTokenBlacklisted",
+          "callee": "console.warn",
+          "lineNumber": 39
+        },
+        {
+          "caller": "isTokenBlacklisted",
+          "callee": "errMessage",
+          "lineNumber": 39
+        },
+        {
+          "caller": "blacklistToken",
+          "callee": "getAdminPb",
+          "lineNumber": 50
+        },
+        {
+          "caller": "blacklistToken",
+          "callee": "pb.collection(COLLECTION_NAME).create",
+          "lineNumber": 51
+        },
+        {
+          "caller": "blacklistToken",
+          "callee": "pb.collection",
+          "lineNumber": 51
+        },
+        {
+          "caller": "blacklistToken",
+          "callee": "Date.now",
+          "lineNumber": 54
+        },
+        {
+          "caller": "blacklistToken",
+          "callee": "console.error",
+          "lineNumber": 57
+        },
+        {
+          "caller": "blacklistToken",
+          "callee": "errMessage",
+          "lineNumber": 57
+        },
+        {
+          "caller": "cleanupExpiredTokens",
+          "callee": "getAdminPb",
+          "lineNumber": 67
+        },
+        {
+          "caller": "cleanupExpiredTokens",
+          "callee": "pb.collection(COLLECTION_NAME).getList",
+          "lineNumber": 74
+        },
+        {
+          "caller": "cleanupExpiredTokens",
+          "callee": "pb.collection",
+          "lineNumber": 74
+        },
+        {
+          "caller": "cleanupExpiredTokens",
+          "callee": "Date.now",
+          "lineNumber": 75
+        },
+        {
+          "caller": "cleanupExpiredTokens",
+          "callee": "pb.collection(COLLECTION_NAME).delete",
+          "lineNumber": 81
+        },
+        {
+          "caller": "cleanupExpiredTokens",
+          "callee": "pb.collection",
+          "lineNumber": 81
+        },
+        {
+          "caller": "cleanupExpiredTokens",
+          "callee": "console.warn",
+          "lineNumber": 84
+        },
+        {
+          "caller": "cleanupExpiredTokens",
+          "callee": "errMessage",
+          "lineNumber": 84
+        },
+        {
+          "caller": "cleanupExpiredTokens",
+          "callee": "console.warn",
+          "lineNumber": 93
+        },
+        {
+          "caller": "cleanupExpiredTokens",
+          "callee": "errMessage",
+          "lineNumber": 93
+        },
+        {
+          "caller": "initTokenBlacklistCollection",
+          "callee": "getAdminPb",
+          "lineNumber": 104
+        },
+        {
+          "caller": "initTokenBlacklistCollection",
+          "callee": "pb.collections.getOne",
+          "lineNumber": 105
+        },
+        {
+          "caller": "initTokenBlacklistCollection",
+          "callee": "console.info",
+          "lineNumber": 106
+        },
+        {
+          "caller": "initTokenBlacklistCollection",
+          "callee": "errStatus",
+          "lineNumber": 108
+        },
+        {
+          "caller": "initTokenBlacklistCollection",
+          "callee": "console.info",
+          "lineNumber": 109
+        },
+        {
+          "caller": "initTokenBlacklistCollection",
+          "callee": "getAdminPb",
+          "lineNumber": 111
+        },
+        {
+          "caller": "initTokenBlacklistCollection",
+          "callee": "pb.collections.create",
+          "lineNumber": 112
+        },
+        {
+          "caller": "initTokenBlacklistCollection",
+          "callee": "console.info",
+          "lineNumber": 126
+        },
+        {
+          "caller": "initTokenBlacklistCollection",
+          "callee": "console.error",
+          "lineNumber": 128
+        },
+        {
+          "caller": "initTokenBlacklistCollection",
+          "callee": "errMessage",
+          "lineNumber": 128
+        },
+        {
+          "caller": "initTokenBlacklistCollection",
+          "callee": "console.error",
+          "lineNumber": 131
+        },
+        {
+          "caller": "initTokenBlacklistCollection",
+          "callee": "errMessage",
+          "lineNumber": 131
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 5,
+        "functionCount": 4,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/token-refresh-rotation.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 266,
+      "nonEmptyLines": 245,
+      "functions": [
+        {
+          "name": "generateNonce",
+          "startLine": 13,
+          "endLine": 15,
+          "params": []
+        },
+        {
+          "name": "safeErrId",
+          "startLine": 18,
+          "endLine": 23,
+          "params": [
+            "err"
+          ]
+        },
+        {
+          "name": "generateRefreshToken",
+          "startLine": 29,
+          "endLine": 31,
+          "params": []
+        },
+        {
+          "name": "createRefreshToken",
+          "startLine": 46,
+          "endLine": 60,
+          "params": [
+            "userId",
+            "token",
+            "expiresAt"
+          ]
+        },
+        {
+          "name": "validateAndRevokeRefreshToken",
+          "startLine": 73,
+          "endLine": 120,
+          "params": [
+            "token"
+          ]
+        },
+        {
+          "name": "validateRefreshToken",
+          "startLine": 126,
+          "endLine": 138,
+          "params": [
+            "token"
+          ]
+        },
+        {
+          "name": "revokeRefreshToken",
+          "startLine": 143,
+          "endLine": 158,
+          "params": [
+            "token"
+          ]
+        },
+        {
+          "name": "revokeAllUserRefreshTokens",
+          "startLine": 164,
+          "endLine": 200,
+          "params": [
+            "userId"
+          ]
+        },
+        {
+          "name": "cleanupExpiredRefreshTokens",
+          "startLine": 205,
+          "endLine": 226,
+          "params": []
+        },
+        {
+          "name": "initRefreshTokenCollection",
+          "startLine": 231,
+          "endLine": 266,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "generateRefreshToken",
+          "line": 29,
+          "isDefault": false
+        },
+        {
+          "name": "createRefreshToken",
+          "line": 46,
+          "isDefault": false
+        },
+        {
+          "name": "validateAndRevokeRefreshToken",
+          "line": 73,
+          "isDefault": false
+        },
+        {
+          "name": "validateRefreshToken",
+          "line": 126,
+          "isDefault": false
+        },
+        {
+          "name": "revokeRefreshToken",
+          "line": 143,
+          "isDefault": false
+        },
+        {
+          "name": "revokeAllUserRefreshTokens",
+          "line": 164,
+          "isDefault": false
+        },
+        {
+          "name": "cleanupExpiredRefreshTokens",
+          "line": 205,
+          "isDefault": false
+        },
+        {
+          "name": "initRefreshTokenCollection",
+          "line": 231,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "generateNonce",
+          "callee": "Number",
+          "lineNumber": 14
+        },
+        {
+          "caller": "generateNonce",
+          "callee": "BigInt",
+          "lineNumber": 14
+        },
+        {
+          "caller": "generateNonce",
+          "callee": "randomBytes(6).toString",
+          "lineNumber": 14
+        },
+        {
+          "caller": "generateNonce",
+          "callee": "randomBytes",
+          "lineNumber": 14
+        },
+        {
+          "caller": "safeErrId",
+          "callee": "errStatus",
+          "lineNumber": 19
+        },
+        {
+          "caller": "generateRefreshToken",
+          "callee": "randomBytes(32).toString",
+          "lineNumber": 30
+        },
+        {
+          "caller": "generateRefreshToken",
+          "callee": "randomBytes",
+          "lineNumber": 30
+        },
+        {
+          "caller": "createRefreshToken",
+          "callee": "getAdminPb",
+          "lineNumber": 48
+        },
+        {
+          "caller": "createRefreshToken",
+          "callee": "pb.collection(COLLECTION_NAME).create",
+          "lineNumber": 49
+        },
+        {
+          "caller": "createRefreshToken",
+          "callee": "pb.collection",
+          "lineNumber": 49
+        },
+        {
+          "caller": "createRefreshToken",
+          "callee": "Date.now",
+          "lineNumber": 53
+        },
+        {
+          "caller": "createRefreshToken",
+          "callee": "console.error",
+          "lineNumber": 57
+        },
+        {
+          "caller": "createRefreshToken",
+          "callee": "safeErrId",
+          "lineNumber": 57
+        },
+        {
+          "caller": "validateAndRevokeRefreshToken",
+          "callee": "getAdminPb",
+          "lineNumber": 75
+        },
+        {
+          "caller": "validateAndRevokeRefreshToken",
+          "callee": "pb.collection(COLLECTION_NAME).getFirstListItem",
+          "lineNumber": 77
+        },
+        {
+          "caller": "validateAndRevokeRefreshToken",
+          "callee": "pb.collection",
+          "lineNumber": 77
+        },
+        {
+          "caller": "validateAndRevokeRefreshToken",
+          "callee": "escapeFilter",
+          "lineNumber": 78
+        },
+        {
+          "caller": "validateAndRevokeRefreshToken",
+          "callee": "Date.now",
+          "lineNumber": 78
+        },
+        {
+          "caller": "validateAndRevokeRefreshToken",
+          "callee": "Date.now",
+          "lineNumber": 84
+        },
+        {
+          "caller": "validateAndRevokeRefreshToken",
+          "callee": "console.warn",
+          "lineNumber": 85
+        },
+        {
+          "caller": "validateAndRevokeRefreshToken",
+          "callee": "generateNonce",
+          "lineNumber": 90
+        },
+        {
+          "caller": "validateAndRevokeRefreshToken",
+          "callee": "pb.collection(COLLECTION_NAME).update",
+          "lineNumber": 92
+        },
+        {
+          "caller": "validateAndRevokeRefreshToken",
+          "callee": "pb.collection",
+          "lineNumber": 92
+        },
+        {
+          "caller": "validateAndRevokeRefreshToken",
+          "callee": "console.warn",
+          "lineNumber": 98
+        },
+        {
+          "caller": "validateAndRevokeRefreshToken",
+          "callee": "safeErrId",
+          "lineNumber": 98
+        },
+        {
+          "caller": "validateAndRevokeRefreshToken",
+          "callee": "pb.collection(COLLECTION_NAME).getOne",
+          "lineNumber": 104
+        },
+        {
+          "caller": "validateAndRevokeRefreshToken",
+          "callee": "pb.collection",
+          "lineNumber": 104
+        },
+        {
+          "caller": "validateAndRevokeRefreshToken",
+          "callee": "console.warn",
+          "lineNumber": 106
+        },
+        {
+          "caller": "validateAndRevokeRefreshToken",
+          "callee": "console.warn",
+          "lineNumber": 111
+        },
+        {
+          "caller": "validateAndRevokeRefreshToken",
+          "callee": "safeErrId",
+          "lineNumber": 111
+        },
+        {
+          "caller": "validateAndRevokeRefreshToken",
+          "callee": "errStatus",
+          "lineNumber": 116
+        },
+        {
+          "caller": "validateAndRevokeRefreshToken",
+          "callee": "console.warn",
+          "lineNumber": 117
+        },
+        {
+          "caller": "validateAndRevokeRefreshToken",
+          "callee": "safeErrId",
+          "lineNumber": 117
+        },
+        {
+          "caller": "validateRefreshToken",
+          "callee": "getAdminPb",
+          "lineNumber": 128
+        },
+        {
+          "caller": "validateRefreshToken",
+          "callee": "pb.collection(COLLECTION_NAME).getFirstListItem",
+          "lineNumber": 129
+        },
+        {
+          "caller": "validateRefreshToken",
+          "callee": "pb.collection",
+          "lineNumber": 129
+        },
+        {
+          "caller": "validateRefreshToken",
+          "callee": "escapeFilter",
+          "lineNumber": 130
+        },
+        {
+          "caller": "validateRefreshToken",
+          "callee": "Date.now",
+          "lineNumber": 130
+        },
+        {
+          "caller": "validateRefreshToken",
+          "callee": "errStatus",
+          "lineNumber": 134
+        },
+        {
+          "caller": "validateRefreshToken",
+          "callee": "console.warn",
+          "lineNumber": 135
+        },
+        {
+          "caller": "validateRefreshToken",
+          "callee": "safeErrId",
+          "lineNumber": 135
+        },
+        {
+          "caller": "revokeRefreshToken",
+          "callee": "getAdminPb",
+          "lineNumber": 145
+        },
+        {
+          "caller": "revokeRefreshToken",
+          "callee": "pb.collection(COLLECTION_NAME).getFirstListItem",
+          "lineNumber": 146
+        },
+        {
+          "caller": "revokeRefreshToken",
+          "callee": "pb.collection",
+          "lineNumber": 146
+        },
+        {
+          "caller": "revokeRefreshToken",
+          "callee": "escapeFilter",
+          "lineNumber": 147
+        },
+        {
+          "caller": "revokeRefreshToken",
+          "callee": "pb.collection(COLLECTION_NAME).update",
+          "lineNumber": 149
+        },
+        {
+          "caller": "revokeRefreshToken",
+          "callee": "pb.collection",
+          "lineNumber": 149
+        },
+        {
+          "caller": "revokeRefreshToken",
+          "callee": "Date.now",
+          "lineNumber": 151
+        },
+        {
+          "caller": "revokeRefreshToken",
+          "callee": "errStatus",
+          "lineNumber": 154
+        },
+        {
+          "caller": "revokeRefreshToken",
+          "callee": "console.warn",
+          "lineNumber": 155
+        },
+        {
+          "caller": "revokeRefreshToken",
+          "callee": "safeErrId",
+          "lineNumber": 155
+        },
+        {
+          "caller": "revokeAllUserRefreshTokens",
+          "callee": "getAdminPb",
+          "lineNumber": 165
+        },
+        {
+          "caller": "revokeAllUserRefreshTokens",
+          "callee": "pb.collection(COLLECTION_NAME).getFullList",
+          "lineNumber": 168
+        },
+        {
+          "caller": "revokeAllUserRefreshTokens",
+          "callee": "pb.collection",
+          "lineNumber": 168
+        },
+        {
+          "caller": "revokeAllUserRefreshTokens",
+          "callee": "escapeFilter",
+          "lineNumber": 169
+        },
+        {
+          "caller": "revokeAllUserRefreshTokens",
+          "callee": "safeErrId",
+          "lineNumber": 172
+        },
+        {
+          "caller": "revokeAllUserRefreshTokens",
+          "callee": "pb.collection(COLLECTION_NAME).update",
+          "lineNumber": 181
+        },
+        {
+          "caller": "revokeAllUserRefreshTokens",
+          "callee": "pb.collection",
+          "lineNumber": 181
+        },
+        {
+          "caller": "revokeAllUserRefreshTokens",
+          "callee": "Date.now",
+          "lineNumber": 183
+        },
+        {
+          "caller": "revokeAllUserRefreshTokens",
+          "callee": "console.warn",
+          "lineNumber": 188
+        },
+        {
+          "caller": "revokeAllUserRefreshTokens",
+          "callee": "safeErrId",
+          "lineNumber": 188
+        },
+        {
+          "caller": "revokeAllUserRefreshTokens",
+          "callee": "safeErrId",
+          "lineNumber": 194
+        },
+        {
+          "caller": "revokeAllUserRefreshTokens",
+          "callee": "console.warn",
+          "lineNumber": 198
+        },
+        {
+          "caller": "cleanupExpiredRefreshTokens",
+          "callee": "getAdminPb",
+          "lineNumber": 207
+        },
+        {
+          "caller": "cleanupExpiredRefreshTokens",
+          "callee": "pb.collection(COLLECTION_NAME).getFullList",
+          "lineNumber": 208
+        },
+        {
+          "caller": "cleanupExpiredRefreshTokens",
+          "callee": "pb.collection",
+          "lineNumber": 208
+        },
+        {
+          "caller": "cleanupExpiredRefreshTokens",
+          "callee": "Date.now",
+          "lineNumber": 209
+        },
+        {
+          "caller": "cleanupExpiredRefreshTokens",
+          "callee": "pb.collection(COLLECTION_NAME).delete",
+          "lineNumber": 215
+        },
+        {
+          "caller": "cleanupExpiredRefreshTokens",
+          "callee": "pb.collection",
+          "lineNumber": 215
+        },
+        {
+          "caller": "cleanupExpiredRefreshTokens",
+          "callee": "console.warn",
+          "lineNumber": 218
+        },
+        {
+          "caller": "cleanupExpiredRefreshTokens",
+          "callee": "safeErrId",
+          "lineNumber": 218
+        },
+        {
+          "caller": "cleanupExpiredRefreshTokens",
+          "callee": "console.warn",
+          "lineNumber": 223
+        },
+        {
+          "caller": "cleanupExpiredRefreshTokens",
+          "callee": "safeErrId",
+          "lineNumber": 223
+        },
+        {
+          "caller": "initRefreshTokenCollection",
+          "callee": "getAdminPb",
+          "lineNumber": 233
+        },
+        {
+          "caller": "initRefreshTokenCollection",
+          "callee": "pb.collections.getOne",
+          "lineNumber": 234
+        },
+        {
+          "caller": "initRefreshTokenCollection",
+          "callee": "console.info",
+          "lineNumber": 235
+        },
+        {
+          "caller": "initRefreshTokenCollection",
+          "callee": "errStatus",
+          "lineNumber": 237
+        },
+        {
+          "caller": "initRefreshTokenCollection",
+          "callee": "console.info",
+          "lineNumber": 238
+        },
+        {
+          "caller": "initRefreshTokenCollection",
+          "callee": "getAdminPb",
+          "lineNumber": 240
+        },
+        {
+          "caller": "initRefreshTokenCollection",
+          "callee": "pb.collections.create",
+          "lineNumber": 241
+        },
+        {
+          "caller": "initRefreshTokenCollection",
+          "callee": "console.info",
+          "lineNumber": 258
+        },
+        {
+          "caller": "initRefreshTokenCollection",
+          "callee": "console.error",
+          "lineNumber": 260
+        },
+        {
+          "caller": "initRefreshTokenCollection",
+          "callee": "safeErrId",
+          "lineNumber": 260
+        },
+        {
+          "caller": "initRefreshTokenCollection",
+          "callee": "console.error",
+          "lineNumber": 263
+        },
+        {
+          "caller": "initRefreshTokenCollection",
+          "callee": "safeErrId",
+          "lineNumber": 263
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 8,
+        "functionCount": 10,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/api/src/verification-code.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 165,
+      "nonEmptyLines": 153,
+      "functions": [
+        {
+          "name": "saveVerificationCode",
+          "startLine": 20,
+          "endLine": 42,
+          "params": [
+            "email",
+            "code",
+            "expiresAt"
+          ]
+        },
+        {
+          "name": "getVerificationCode",
+          "startLine": 47,
+          "endLine": 65,
+          "params": [
+            "email"
+          ]
+        },
+        {
+          "name": "deleteVerificationCode",
+          "startLine": 70,
+          "endLine": 82,
+          "params": [
+            "email"
+          ]
+        },
+        {
+          "name": "cleanupExpiredCodes",
+          "startLine": 87,
+          "endLine": 108,
+          "params": []
+        },
+        {
+          "name": "canSendCode",
+          "startLine": 113,
+          "endLine": 126,
+          "params": [
+            "email"
+          ]
+        },
+        {
+          "name": "initVerificationCodeCollection",
+          "startLine": 132,
+          "endLine": 165,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "saveVerificationCode",
+          "line": 20,
+          "isDefault": false
+        },
+        {
+          "name": "getVerificationCode",
+          "line": 47,
+          "isDefault": false
+        },
+        {
+          "name": "deleteVerificationCode",
+          "line": 70,
+          "isDefault": false
+        },
+        {
+          "name": "cleanupExpiredCodes",
+          "line": 87,
+          "isDefault": false
+        },
+        {
+          "name": "canSendCode",
+          "line": 113,
+          "isDefault": false
+        },
+        {
+          "name": "initVerificationCodeCollection",
+          "line": 132,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "saveVerificationCode",
+          "callee": "getAdminPb",
+          "lineNumber": 21
+        },
+        {
+          "caller": "saveVerificationCode",
+          "callee": "pb.collection(COLLECTION_NAME).getFirstListItem",
+          "lineNumber": 25
+        },
+        {
+          "caller": "saveVerificationCode",
+          "callee": "pb.collection",
+          "lineNumber": 25
+        },
+        {
+          "caller": "saveVerificationCode",
+          "callee": "escapeFilter",
+          "lineNumber": 26
+        },
+        {
+          "caller": "saveVerificationCode",
+          "callee": "pb.collection(COLLECTION_NAME).delete",
+          "lineNumber": 28
+        },
+        {
+          "caller": "saveVerificationCode",
+          "callee": "pb.collection",
+          "lineNumber": 28
+        },
+        {
+          "caller": "saveVerificationCode",
+          "callee": "errStatus",
+          "lineNumber": 30
+        },
+        {
+          "caller": "saveVerificationCode",
+          "callee": "console.warn",
+          "lineNumber": 31
+        },
+        {
+          "caller": "saveVerificationCode",
+          "callee": "errMessage",
+          "lineNumber": 31
+        },
+        {
+          "caller": "saveVerificationCode",
+          "callee": "pb.collection(COLLECTION_NAME).create",
+          "lineNumber": 36
+        },
+        {
+          "caller": "saveVerificationCode",
+          "callee": "pb.collection",
+          "lineNumber": 36
+        },
+        {
+          "caller": "saveVerificationCode",
+          "callee": "Date.now",
+          "lineNumber": 40
+        },
+        {
+          "caller": "getVerificationCode",
+          "callee": "getAdminPb",
+          "lineNumber": 49
+        },
+        {
+          "caller": "getVerificationCode",
+          "callee": "pb.collection(COLLECTION_NAME).getFirstListItem",
+          "lineNumber": 50
+        },
+        {
+          "caller": "getVerificationCode",
+          "callee": "pb.collection",
+          "lineNumber": 50
+        },
+        {
+          "caller": "getVerificationCode",
+          "callee": "escapeFilter",
+          "lineNumber": 51
+        },
+        {
+          "caller": "getVerificationCode",
+          "callee": "errStatus",
+          "lineNumber": 61
+        },
+        {
+          "caller": "getVerificationCode",
+          "callee": "console.warn",
+          "lineNumber": 62
+        },
+        {
+          "caller": "getVerificationCode",
+          "callee": "errMessage",
+          "lineNumber": 62
+        },
+        {
+          "caller": "deleteVerificationCode",
+          "callee": "getAdminPb",
+          "lineNumber": 72
+        },
+        {
+          "caller": "deleteVerificationCode",
+          "callee": "pb.collection(COLLECTION_NAME).getFirstListItem",
+          "lineNumber": 73
+        },
+        {
+          "caller": "deleteVerificationCode",
+          "callee": "pb.collection",
+          "lineNumber": 73
+        },
+        {
+          "caller": "deleteVerificationCode",
+          "callee": "escapeFilter",
+          "lineNumber": 74
+        },
+        {
+          "caller": "deleteVerificationCode",
+          "callee": "pb.collection(COLLECTION_NAME).delete",
+          "lineNumber": 76
+        },
+        {
+          "caller": "deleteVerificationCode",
+          "callee": "pb.collection",
+          "lineNumber": 76
+        },
+        {
+          "caller": "deleteVerificationCode",
+          "callee": "errStatus",
+          "lineNumber": 78
+        },
+        {
+          "caller": "deleteVerificationCode",
+          "callee": "console.warn",
+          "lineNumber": 79
+        },
+        {
+          "caller": "deleteVerificationCode",
+          "callee": "errMessage",
+          "lineNumber": 79
+        },
+        {
+          "caller": "cleanupExpiredCodes",
+          "callee": "getAdminPb",
+          "lineNumber": 89
+        },
+        {
+          "caller": "cleanupExpiredCodes",
+          "callee": "pb.collection(COLLECTION_NAME).getFullList",
+          "lineNumber": 90
+        },
+        {
+          "caller": "cleanupExpiredCodes",
+          "callee": "pb.collection",
+          "lineNumber": 90
+        },
+        {
+          "caller": "cleanupExpiredCodes",
+          "callee": "Date.now",
+          "lineNumber": 91
+        },
+        {
+          "caller": "cleanupExpiredCodes",
+          "callee": "pb.collection(COLLECTION_NAME).delete",
+          "lineNumber": 97
+        },
+        {
+          "caller": "cleanupExpiredCodes",
+          "callee": "pb.collection",
+          "lineNumber": 97
+        },
+        {
+          "caller": "cleanupExpiredCodes",
+          "callee": "console.warn",
+          "lineNumber": 105
+        },
+        {
+          "caller": "cleanupExpiredCodes",
+          "callee": "errMessage",
+          "lineNumber": 105
+        },
+        {
+          "caller": "canSendCode",
+          "callee": "getAdminPb",
+          "lineNumber": 115
+        },
+        {
+          "caller": "canSendCode",
+          "callee": "pb.collection(COLLECTION_NAME).getFirstListItem",
+          "lineNumber": 116
+        },
+        {
+          "caller": "canSendCode",
+          "callee": "pb.collection",
+          "lineNumber": 116
+        },
+        {
+          "caller": "canSendCode",
+          "callee": "escapeFilter",
+          "lineNumber": 117
+        },
+        {
+          "caller": "canSendCode",
+          "callee": "Date.now",
+          "lineNumber": 120
+        },
+        {
+          "caller": "canSendCode",
+          "callee": "errStatus",
+          "lineNumber": 122
+        },
+        {
+          "caller": "canSendCode",
+          "callee": "console.warn",
+          "lineNumber": 123
+        },
+        {
+          "caller": "canSendCode",
+          "callee": "errMessage",
+          "lineNumber": 123
+        },
+        {
+          "caller": "initVerificationCodeCollection",
+          "callee": "getAdminPb",
+          "lineNumber": 134
+        },
+        {
+          "caller": "initVerificationCodeCollection",
+          "callee": "pb.collections.getOne",
+          "lineNumber": 135
+        },
+        {
+          "caller": "initVerificationCodeCollection",
+          "callee": "console.info",
+          "lineNumber": 136
+        },
+        {
+          "caller": "initVerificationCodeCollection",
+          "callee": "errStatus",
+          "lineNumber": 138
+        },
+        {
+          "caller": "initVerificationCodeCollection",
+          "callee": "console.info",
+          "lineNumber": 139
+        },
+        {
+          "caller": "initVerificationCodeCollection",
+          "callee": "getAdminPb",
+          "lineNumber": 141
+        },
+        {
+          "caller": "initVerificationCodeCollection",
+          "callee": "pb.collections.create",
+          "lineNumber": 142
+        },
+        {
+          "caller": "initVerificationCodeCollection",
+          "callee": "console.info",
+          "lineNumber": 157
+        },
+        {
+          "caller": "initVerificationCodeCollection",
+          "callee": "console.error",
+          "lineNumber": 159
+        },
+        {
+          "caller": "initVerificationCodeCollection",
+          "callee": "errMessage",
+          "lineNumber": 159
+        },
+        {
+          "caller": "initVerificationCodeCollection",
+          "callee": "console.error",
+          "lineNumber": 162
+        },
+        {
+          "caller": "initVerificationCodeCollection",
+          "callee": "errMessage",
+          "lineNumber": 162
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 6,
+        "functionCount": 6,
+        "classCount": 0
+      }
+    }
+  ]
+}

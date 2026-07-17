@@ -1,0 +1,716 @@
+{
+  "apps/mobile/src/config.ts": {
+    "summary": "移动应用配置入口：导出 API_URL 等运行时常量。",
+    "tags": [
+      "mobile",
+      "config",
+      "entry"
+    ],
+    "complexity": "simple"
+  },
+  "apps/mobile/src/features/global-pulse/components/ActiveMarker.tsx": {
+    "summary": "地图活动 marker：展示用户/打卡类型图标，useGlobalTick 驱动脉搏动画。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "map",
+      "marker"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "ActiveMarker": {
+        "summary": "渲染脉搏动画 marker，使用 Animated 缩放。",
+        "tags": [
+          "marker",
+          "animation"
+        ],
+        "complexity": "moderate"
+      },
+      "formatDuration": {
+        "summary": "格式化持续时长为 mm:ss。",
+        "tags": [
+          "format",
+          "duration"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/components/ActiveUserItem.tsx": {
+    "summary": "活动用户列表项：展示用户名(formatDisplayName)、城市(useCityName)、打卡类型图标/颜色、相对时长(useGlobalTick)。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "list",
+      "user"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "formatDuration": {
+        "summary": "格式化持续时长。",
+        "tags": [
+          "format",
+          "duration"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/components/ActiveUsersList.tsx": {
+    "summary": "活动用户分组列表(SectionList)：按类型分组，渲染 ActiveUserItem。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "list",
+      "section"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "ActiveUsersList": {
+        "summary": "渲染分组活动用户列表。",
+        "tags": [
+          "list",
+          "section"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/components/BottomPanel.tsx": {
+    "summary": "底部面板：嵌入 ActiveUsersList/Leadboard，展示今日/统计概览。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "panel",
+      "bottom"
+    ],
+    "complexity": "complex",
+    "functions": {
+      "BottomPanel": {
+        "summary": "底部抽屉面板：活动用户+排行榜+统计。",
+        "tags": [
+          "panel",
+          "dashboard"
+        ],
+        "complexity": "complex"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/components/CityCallout.tsx": {
+    "summary": "城市标注城市：调用 useCityName 反查城市名并渲染 callout。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "map",
+      "city"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "CityCallout": {
+        "summary": "渲染地图城市气泡(反查城市名)。",
+        "tags": [
+          "city",
+          "callout"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/components/GlobalPulseMap.tsx": {
+    "summary": "全球脉动主地图(MapView)：aggregateMarkers 聚合、UrlTile 瓦片、MarkerDetail/OfflineBanner/PulseMarker、getUserHash 匿名。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "map",
+      "main"
+    ],
+    "complexity": "complex",
+    "functions": {
+      "GlobalPulseMap": {
+        "summary": "主地图组件：聚合 marker 与详情面板。",
+        "tags": [
+          "map",
+          "marker"
+        ],
+        "complexity": "complex"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/components/Leaderboard.tsx": {
+    "summary": "排行榜：排序切换(LeaderboardSort)、PodiumItem 前三名、LeaderboardItem 列表。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "leaderboard",
+      "sort"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "buildLeaderboard": {
+        "summary": "按排序规则聚合排行榜数据。",
+        "tags": [
+          "leaderboard",
+          "aggregate"
+        ],
+        "complexity": "simple"
+      },
+      "Leaderboard": {
+        "summary": "渲染排序切换与排行榜列表。",
+        "tags": [
+          "leaderboard",
+          "ui"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/components/LeaderboardItem.tsx": {
+    "summary": "排行榜行项：展示名次/用户名/城市/天数、daysSince、ActivityIndicator。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "leaderboard",
+      "item"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "daysSince": {
+        "summary": "计算距今天数。",
+        "tags": [
+          "date"
+        ],
+        "complexity": "simple"
+      },
+      "formatDate": {
+        "summary": "格式化日期。",
+        "tags": [
+          "date",
+          "format"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/components/MarkerDetail.tsx": {
+    "summary": "Marker 详情面板：展示打卡详情/活动会话/城市/时长(useGlobalTick)+scaleFontSize。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "detail",
+      "panel"
+    ],
+    "complexity": "complex",
+    "functions": {
+      "MarkerDetail": {
+        "summary": "渲染选中 marker 详情与活跃会话列表。",
+        "tags": [
+          "detail",
+          "panel"
+        ],
+        "complexity": "complex"
+      },
+      "formatDuration": {
+        "summary": "格式化时长。",
+        "tags": [
+          "format",
+          "duration"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/components/OfflineBanner.tsx": {
+    "summary": "离线横幅提示组件。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "offline",
+      "banner"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "OfflineBanner": {
+        "summary": "渲染网络离线提示横幅。",
+        "tags": [
+          "offline",
+          "banner"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/components/PodiumItem.tsx": {
+    "summary": "领奖台项：前三名金银铜样式。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "leaderboard",
+      "podium"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "formatDate": {
+        "summary": "格式化日期。",
+        "tags": [
+          "date",
+          "format"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/components/PrivacyControl.tsx": {
+    "summary": "隐私控制：optIn/optOut/deleteGlobalData(AsyncStorage)+getUserHash。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "privacy",
+      "settings"
+    ],
+    "complexity": "complex",
+    "functions": {
+      "PrivacyControl": {
+        "summary": "渲染 opt-in/opt-out/删除全球数据操作。",
+        "tags": [
+          "privacy",
+          "settings"
+        ],
+        "complexity": "complex"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/components/PulseMarker.tsx": {
+    "summary": "打卡类型 marker(memo)：按 CheckinType 着色图标。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "map",
+      "marker"
+    ],
+    "complexity": "simple"
+  },
+  "apps/mobile/src/features/global-pulse/hooks/useActiveSessions.ts": {
+    "summary": "活动会话 Hook：订阅活跃会话、连接状态、增量更新。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "hook",
+      "session"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "useActiveSessions": {
+        "summary": "订阅活跃会话流并维护本地列表。",
+        "tags": [
+          "session",
+          "hook"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/hooks/useCheckinSync.ts": {
+    "summary": "打卡同步 Hook：fuzzCoordinate 模糊定位+expo-location+submitCheckin，用 useNetworkStatus/usePrivacy。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "hook",
+      "sync",
+      "checkin"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "useCheckinSync": {
+        "summary": "定位模糊化并提交全球打卡。",
+        "tags": [
+          "checkin",
+          "geo",
+          "privacy"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/hooks/useCityName.ts": {
+    "summary": "城市名 Hook：getCityInfo 反向地理编码，单条(useCityName)/批量(useCityNameBatch)/clearCityCache。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "hook",
+      "geo",
+      "city"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "useCityName": {
+        "summary": "单个坐标→城市名(缓存)。",
+        "tags": [
+          "geo",
+          "city"
+        ],
+        "complexity": "moderate"
+      },
+      "useCityNameBatch": {
+        "summary": "批量坐标→城市名。",
+        "tags": [
+          "geo",
+          "city",
+          "batch"
+        ],
+        "complexity": "moderate"
+      },
+      "clearCityCache": {
+        "summary": "清空城市名缓存。",
+        "tags": [
+          "cache"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/hooks/useGlobalPulse.ts": {
+    "summary": "全球脉动数据 Hook：getCheckins/getGlobalStats，依赖 useNetworkStatus。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "hook",
+      "data"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "useGlobalPulse": {
+        "summary": "拉取打卡与全局统计。",
+        "tags": [
+          "data",
+          "hook"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/hooks/useGlobalTick.ts": {
+    "summary": "全局节拍 Hook：useSyncExternalStore 订阅定时 tick，驱动实时相对时间，自动清理。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "hook",
+      "tick"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "useGlobalTick": {
+        "summary": "订阅全局 tick 派发相对时间。",
+        "tags": [
+          "tick",
+          "sync-external-store"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/hooks/useNetworkStatus.ts": {
+    "summary": "网络状态 Hook：NetInfo 订阅 NetworkStatus 变化。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "hook",
+      "network"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "useNetworkStatus": {
+        "summary": "NetInfo 订阅并映射为 NetworkStatus。",
+        "tags": [
+          "network",
+          "hook"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/hooks/usePrivacy.ts": {
+    "summary": "隐私 Hook：读写 AsyncStorage 匿名偏好、optIn/optOut/deleteGlobalData。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "hook",
+      "privacy"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "usePrivacy": {
+        "summary": "管理匿名数据偏好与删除。",
+        "tags": [
+          "privacy",
+          "hook"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/hooks/useSessionHeartbeat.ts": {
+    "summary": "会话心跳 Hook：AppState 切换时更新活跃会话(updateSession)，保持心跳。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "hook",
+      "heartbeat"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "useSessionHeartbeat": {
+        "summary": "应用前后台切换时维持会话心跳。",
+        "tags": [
+          "heartbeat",
+          "session"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/services/activeSessionApi.ts": {
+    "summary": "活跃会话 API：CRUD(create/update/delete/deleteSessionsByUserHash/getActiveSessions)+subscribeSessions 实时订阅+pbRequest。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "api",
+      "session"
+    ],
+    "complexity": "complex",
+    "functions": {
+      "createSession": {
+        "summary": "创建活跃会话。",
+        "tags": [
+          "session",
+          "api"
+        ],
+        "complexity": "simple"
+      },
+      "updateSession": {
+        "summary": "更新会话心跳。",
+        "tags": [
+          "session",
+          "api"
+        ],
+        "complexity": "simple"
+      },
+      "deleteSessionsByUserHash": {
+        "summary": "按用户 hash 删除会话。",
+        "tags": [
+          "session",
+          "api"
+        ],
+        "complexity": "simple"
+      },
+      "getActiveSessions": {
+        "summary": "拉取活跃会话列表。",
+        "tags": [
+          "session",
+          "api"
+        ],
+        "complexity": "moderate"
+      },
+      "subscribeSessions": {
+        "summary": "订阅会话变更流(pb)。",
+        "tags": [
+          "session",
+          "subscribe"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/services/globalPulseApi.ts": {
+    "summary": "全球脉动 API：submitCheckin/getCheckins/getGlobalStats/getLeaderboard/optOut/optIn/deleteGlobalData+formatDisplayName/getCheckinTypeIcon/Color。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "api",
+      "data"
+    ],
+    "complexity": "complex",
+    "functions": {
+      "submitCheckin": {
+        "summary": "提交全球打卡。",
+        "tags": [
+          "checkin",
+          "api"
+        ],
+        "complexity": "simple"
+      },
+      "getCheckins": {
+        "summary": "拉取打卡列表(离线感知)。",
+        "tags": [
+          "checkin",
+          "api"
+        ],
+        "complexity": "moderate"
+      },
+      "getLeaderboard": {
+        "summary": "拉取排行榜。",
+        "tags": [
+          "leaderboard",
+          "api"
+        ],
+        "complexity": "simple"
+      },
+      "formatDisplayName": {
+        "summary": "匿名化显示用户名。",
+        "tags": [
+          "privacy",
+          "format"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/services/offlineCache.ts": {
+    "summary": "离线缓存(SQLite)：瓦片/打卡/统计/同步状态表 CACHE，initDatabase+CRUD+cleanup。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "cache",
+      "sqlite"
+    ],
+    "complexity": "complex",
+    "functions": {
+      "initDatabase": {
+        "summary": "初始化 SQLite 缓存表。",
+        "tags": [
+          "sqlite",
+          "init"
+        ],
+        "complexity": "moderate"
+      },
+      "cacheCheckins": {
+        "summary": "缓存打卡数据。",
+        "tags": [
+          "cache",
+          "checkin"
+        ],
+        "complexity": "moderate"
+      },
+      "getCachedCheckins": {
+        "summary": "读取缓存打卡。",
+        "tags": [
+          "cache",
+          "checkin"
+        ],
+        "complexity": "moderate"
+      },
+      "clearAllCache": {
+        "summary": "清空所有缓存。",
+        "tags": [
+          "cache"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/services/pbFilterEscape.ts": {
+    "summary": "PocketBase filter 转义：escapeFilter 防注入。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "util",
+      "security"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "escapeFilter": {
+        "summary": "转义 PB filter 参数防注入。",
+        "tags": [
+          "security",
+          "pb"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "apps/mobile/src/features/global-pulse/services/userHash.ts": {
+    "summary": "用户匿名 hash：SecureStore/AsyncStorage 持久化 userID+fuzzSecret 定位密钥。",
+    "tags": [
+      "mobile",
+      "global-pulse",
+      "privacy",
+      "hash"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "getUserHash": {
+        "summary": "读取/创建匿名用户 hash。",
+        "tags": [
+          "privacy",
+          "hash"
+        ],
+        "complexity": "simple"
+      },
+      "getFuzzSecret": {
+        "summary": "读取定位模糊密钥。",
+        "tags": [
+          "geo",
+          "privacy"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "apps/mobile/src/net/offlineAware.ts": {
+    "summary": "离线感知 fetch：自动附加 authToken、失败时走离线缓存。",
+    "tags": [
+      "mobile",
+      "net",
+      "offline",
+      "fetch"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "offlineAwareFetch": {
+        "summary": "带 token、离线回退的网络请求封装。",
+        "tags": [
+          "fetch",
+          "offline"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "apps/mobile/src/store/authToken.ts": {
+    "summary": "认证 token 工具：从 useAppStore 取 token/userId。",
+    "tags": [
+      "mobile",
+      "store",
+      "auth",
+      "token"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "getAuthToken": {
+        "summary": "从 store 读取 auth token。",
+        "tags": [
+          "auth",
+          "token"
+        ],
+        "complexity": "simple"
+      },
+      "getAuthUserId": {
+        "summary": "从 store 读取用户 id。",
+        "tags": [
+          "auth",
+          "token"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "apps/mobile/src/store/useNetworkStatus.ts": {
+    "summary": "网络状态 store：zustand+NetInfo 维护 NetworkStatus。",
+    "tags": [
+      "mobile",
+      "store",
+      "network",
+      "zustand"
+    ],
+    "complexity": "simple"
+  }
+}

@@ -1,0 +1,1415 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 14,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "docs/API.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 246,
+      "nonEmptyLines": 197,
+      "sections": [
+        {
+          "heading": "API 文档",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "概述",
+          "level": 2,
+          "line": 5
+        },
+        {
+          "heading": "基础信息",
+          "level": 2,
+          "line": 9
+        },
+        {
+          "heading": "认证 API",
+          "level": 2,
+          "line": 15
+        },
+        {
+          "heading": "POST /api/auth/register",
+          "level": 3,
+          "line": 17
+        },
+        {
+          "heading": "POST /api/auth/login",
+          "level": 3,
+          "line": 43
+        },
+        {
+          "heading": "POST /api/auth/refresh",
+          "level": 3,
+          "line": 56
+        },
+        {
+          "heading": "POST /api/auth/logout",
+          "level": 3,
+          "line": 75
+        },
+        {
+          "heading": "GET /api/auth/me",
+          "level": 3,
+          "line": 90
+        },
+        {
+          "heading": "数据同步 API",
+          "level": 2,
+          "line": 107
+        },
+        {
+          "heading": "POST /api/sync/push",
+          "level": 3,
+          "line": 109
+        },
+        {
+          "heading": "GET /api/sync/pull",
+          "level": 3,
+          "line": 145
+        },
+        {
+          "heading": "推送通知 API",
+          "level": 2,
+          "line": 167
+        },
+        {
+          "heading": "POST /api/push/register",
+          "level": 3,
+          "line": 169
+        },
+        {
+          "heading": "POST /api/push/send",
+          "level": 3,
+          "line": 185
+        },
+        {
+          "heading": "计划通知 API",
+          "level": 2,
+          "line": 197
+        },
+        {
+          "heading": "POST /api/plan/notify",
+          "level": 3,
+          "line": 199
+        },
+        {
+          "heading": "监控 API",
+          "level": 2,
+          "line": 211
+        },
+        {
+          "heading": "POST /api/monitoring/sentry",
+          "level": 3,
+          "line": 213
+        },
+        {
+          "heading": "错误响应",
+          "level": 2,
+          "line": 218
+        },
+        {
+          "heading": "常见错误码",
+          "level": 3,
+          "line": 231
+        },
+        {
+          "heading": "限流",
+          "level": 2,
+          "line": 242
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 22
+      }
+    },
+    {
+      "path": "docs/DEPLOY.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 136,
+      "nonEmptyLines": 93,
+      "sections": [
+        {
+          "heading": "egoless-do 部署指南",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "前置要求",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "快速部署",
+          "level": 2,
+          "line": 9
+        },
+        {
+          "heading": "1. 配置环境变量",
+          "level": 3,
+          "line": 11
+        },
+        {
+          "heading": "2. 执行部署",
+          "level": 3,
+          "line": 26
+        },
+        {
+          "heading": "3. 初始化 PocketBase",
+          "level": 3,
+          "line": 36
+        },
+        {
+          "heading": "服务端口",
+          "level": 2,
+          "line": 44
+        },
+        {
+          "heading": "常用命令",
+          "level": 2,
+          "line": 52
+        },
+        {
+          "heading": "配置域名",
+          "level": 2,
+          "line": 70
+        },
+        {
+          "heading": "1. 修改 Nginx 配置",
+          "level": 3,
+          "line": 72
+        },
+        {
+          "heading": "2. 配置 SSL（推荐）",
+          "level": 3,
+          "line": 76
+        },
+        {
+          "heading": "3. 重启 Nginx",
+          "level": 3,
+          "line": 89
+        },
+        {
+          "heading": "Mobile App 配置",
+          "level": 2,
+          "line": 95
+        },
+        {
+          "heading": "故障排查",
+          "level": 2,
+          "line": 109
+        },
+        {
+          "heading": "PocketBase 无法启动",
+          "level": 3,
+          "line": 111
+        },
+        {
+          "heading": "Web 应用无法连接 PocketBase",
+          "level": 3,
+          "line": 121
+        },
+        {
+          "heading": "邮件发送失败",
+          "level": 3,
+          "line": 132
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 17
+      }
+    },
+    {
+      "path": "docs/MIGRATION_GUIDE.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 86,
+      "nonEmptyLines": 67,
+      "sections": [
+        {
+          "heading": "迁移指南：unified-storage-refactor",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "概述",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "变更内容",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "存储架构",
+          "level": 3,
+          "line": 9
+        },
+        {
+          "heading": "新增功能",
+          "level": 3,
+          "line": 13
+        },
+        {
+          "heading": "移除的功能",
+          "level": 3,
+          "line": 19
+        },
+        {
+          "heading": "迁移步骤",
+          "level": 2,
+          "line": 25
+        },
+        {
+          "heading": "自动迁移（首次启动）",
+          "level": 3,
+          "line": 27
+        },
+        {
+          "heading": "手动迁移（如自动迁移失败）",
+          "level": 3,
+          "line": 34
+        },
+        {
+          "heading": "开发者指南",
+          "level": 2,
+          "line": 39
+        },
+        {
+          "heading": "新的持久化模式",
+          "level": 3,
+          "line": 41
+        },
+        {
+          "heading": "新的 Store 订阅",
+          "level": 3,
+          "line": 53
+        },
+        {
+          "heading": "新的定时器模式",
+          "level": 3,
+          "line": 65
+        },
+        {
+          "heading": "回滚计划",
+          "level": 2,
+          "line": 78
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 14
+      }
+    },
+    {
+      "path": "docs/architecture-analysis-2026-07-12.html",
+      "language": "html",
+      "fileCategory": "markup",
+      "totalLines": 264,
+      "nonEmptyLines": 241,
+      "metrics": {}
+    },
+    {
+      "path": "docs/architecture-analysis-2026-07-13.html",
+      "language": "html",
+      "fileCategory": "markup",
+      "totalLines": 223,
+      "nonEmptyLines": 209,
+      "metrics": {}
+    },
+    {
+      "path": "docs/architecture-analysis.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 271,
+      "nonEmptyLines": 225,
+      "sections": [
+        {
+          "heading": "Egoless-Do 项目架构分析",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "1. 包结构",
+          "level": 2,
+          "line": 9
+        },
+        {
+          "heading": "依赖方向",
+          "level": 3,
+          "line": 59
+        },
+        {
+          "heading": "依赖注入关键",
+          "level": 3,
+          "line": 71
+        },
+        {
+          "heading": "2. 数据流",
+          "level": 2,
+          "line": 83
+        },
+        {
+          "heading": "写入路径",
+          "level": 3,
+          "line": 85
+        },
+        {
+          "heading": "读取路径（启动恢复）",
+          "level": 3,
+          "line": 108
+        },
+        {
+          "heading": "同步链路",
+          "level": 3,
+          "line": 124
+        },
+        {
+          "heading": "3. 状态管理",
+          "level": 2,
+          "line": 144
+        },
+        {
+          "heading": "Store 结构",
+          "level": 3,
+          "line": 146
+        },
+        {
+          "heading": "切片模式",
+          "level": 3,
+          "line": 160
+        },
+        {
+          "heading": "持久化策略",
+          "level": 3,
+          "line": 172
+        },
+        {
+          "heading": "4. 认证架构",
+          "level": 2,
+          "line": 184
+        },
+        {
+          "heading": "5. 安全架构",
+          "level": 2,
+          "line": 198
+        },
+        {
+          "heading": "层次保护",
+          "level": 3,
+          "line": 200
+        },
+        {
+          "heading": "错误类层次",
+          "level": 3,
+          "line": 212
+        },
+        {
+          "heading": "日志链路",
+          "level": 3,
+          "line": 225
+        },
+        {
+          "heading": "6. 部署架构",
+          "level": 2,
+          "line": 237
+        },
+        {
+          "heading": "7. 架构风险点与建议",
+          "level": 2,
+          "line": 257
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 19
+      }
+    },
+    {
+      "path": "docs/architecture-risk-solutions.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 287,
+      "nonEmptyLines": 235,
+      "sections": [
+        {
+          "heading": "架构风险点分析与修复方案",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "风险点 1：速率限制内存 Map",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "现状",
+          "level": 3,
+          "line": 5
+        },
+        {
+          "heading": "方案对比",
+          "level": 3,
+          "line": 17
+        },
+        {
+          "heading": "推荐方案 A：PocketBase 持久化",
+          "level": 3,
+          "line": 25
+        },
+        {
+          "heading": "风险点 2：createAuthSlice 责任过重",
+          "level": 2,
+          "line": 76
+        },
+        {
+          "heading": "现状",
+          "level": 3,
+          "line": 78
+        },
+        {
+          "heading": "方案：拆分职责",
+          "level": 3,
+          "line": 94
+        },
+        {
+          "heading": "风险点 3：实体配置 5 副本",
+          "level": 2,
+          "line": 138
+        },
+        {
+          "heading": "现状",
+          "level": 3,
+          "line": 140
+        },
+        {
+          "heading": "剩余问题",
+          "level": 3,
+          "line": 151
+        },
+        {
+          "heading": "方案：从 SCHEMAS 自动派生",
+          "level": 3,
+          "line": 155
+        },
+        {
+          "heading": "风险点 4：SyncEngine 可测试性",
+          "level": 2,
+          "line": 183
+        },
+        {
+          "heading": "现状",
+          "level": 3,
+          "line": 185
+        },
+        {
+          "heading": "方案：依赖注入 + 接口抽象",
+          "level": 3,
+          "line": 199
+        },
+        {
+          "heading": "风险点 5：as any / as unknown 类型绕过",
+          "level": 2,
+          "line": 249
+        },
+        {
+          "heading": "状态",
+          "level": 3,
+          "line": 251
+        },
+        {
+          "heading": "长期建议",
+          "level": 3,
+          "line": 254
+        },
+        {
+          "heading": "风险点 6：Dockerfile.web 不可构建",
+          "level": 2,
+          "line": 261
+        },
+        {
+          "heading": "状态",
+          "level": 3,
+          "line": 263
+        },
+        {
+          "heading": "方案",
+          "level": 3,
+          "line": 266
+        },
+        {
+          "heading": "优先级排序",
+          "level": 2,
+          "line": 278
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 22
+      }
+    },
+    {
+      "path": "docs/architecture-rules.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 277,
+      "nonEmptyLines": 204,
+      "sections": [
+        {
+          "heading": "Architecture Rules & Boundaries",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "1. 分层规则",
+          "level": 2,
+          "line": 5
+        },
+        {
+          "heading": "1.1 依赖方向（单向）",
+          "level": 3,
+          "line": 7
+        },
+        {
+          "heading": "1.2 接口所有权规则",
+          "level": 3,
+          "line": 17
+        },
+        {
+          "heading": "1.3 跨层通信",
+          "level": 3,
+          "line": 24
+        },
+        {
+          "heading": "2. 文件大小约束",
+          "level": 2,
+          "line": 35
+        },
+        {
+          "heading": "2.1 组件（.tsx）",
+          "level": 3,
+          "line": 37
+        },
+        {
+          "heading": "2.2 Store Slice（.ts）",
+          "level": 3,
+          "line": 46
+        },
+        {
+          "heading": "2.3 Hook（.ts）",
+          "level": 3,
+          "line": 54
+        },
+        {
+          "heading": "3. 模块边界规则",
+          "level": 2,
+          "line": 63
+        },
+        {
+          "heading": "3.1 Feature 模块结构",
+          "level": 3,
+          "line": 65
+        },
+        {
+          "heading": "3.2 模块间依赖",
+          "level": 3,
+          "line": 77
+        },
+        {
+          "heading": "3.3 反射模块特殊规则",
+          "level": 3,
+          "line": 83
+        },
+        {
+          "heading": "4. 状态管理规则",
+          "level": 2,
+          "line": 92
+        },
+        {
+          "heading": "4.1 Zustand Store 组织",
+          "level": 3,
+          "line": 94
+        },
+        {
+          "heading": "4.2 Slice 拆分规则",
+          "level": 3,
+          "line": 109
+        },
+        {
+          "heading": "4.3 持久化规则",
+          "level": 3,
+          "line": 121
+        },
+        {
+          "heading": "5. 复杂度治理规则",
+          "level": 2,
+          "line": 130
+        },
+        {
+          "heading": "5.1 新代码约束",
+          "level": 3,
+          "line": 132
+        },
+        {
+          "heading": "5.2 存量代码治理",
+          "level": 3,
+          "line": 142
+        },
+        {
+          "heading": "5.3 禁止的模式",
+          "level": 3,
+          "line": 149
+        },
+        {
+          "heading": "6. 测试规则",
+          "level": 2,
+          "line": 159
+        },
+        {
+          "heading": "6.1 覆盖率要求",
+          "level": 3,
+          "line": 161
+        },
+        {
+          "heading": "6.2 测试类型",
+          "level": 3,
+          "line": 171
+        },
+        {
+          "heading": "6.3 必须测试的场景",
+          "level": 3,
+          "line": 180
+        },
+        {
+          "heading": "7. 包结构边界",
+          "level": 2,
+          "line": 190
+        },
+        {
+          "heading": "7.1 包职责",
+          "level": 3,
+          "line": 192
+        },
+        {
+          "heading": "7.2 禁止的跨包依赖",
+          "level": 3,
+          "line": 220
+        },
+        {
+          "heading": "8. 命名与组织约定",
+          "level": 2,
+          "line": 233
+        },
+        {
+          "heading": "8.1 文件命名",
+          "level": 3,
+          "line": 235
+        },
+        {
+          "heading": "8.2 导出规则",
+          "level": 3,
+          "line": 247
+        },
+        {
+          "heading": "9. 性能规则",
+          "level": 2,
+          "line": 257
+        },
+        {
+          "heading": "9.1 渲染优化",
+          "level": 3,
+          "line": 259
+        },
+        {
+          "heading": "9.2 写入优化",
+          "level": 3,
+          "line": 267
+        },
+        {
+          "heading": "9.3 包大小",
+          "level": 3,
+          "line": 273
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 35
+      }
+    },
+    {
+      "path": "docs/architecture-section2-6-analysis.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 154,
+      "nonEmptyLines": 126,
+      "sections": [
+        {
+          "heading": "架构深度分析 Section 2-6",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Section 2: 数据流",
+          "level": 2,
+          "line": 9
+        },
+        {
+          "heading": "写入路径",
+          "level": 3,
+          "line": 11
+        },
+        {
+          "heading": "读取路径（启动恢复）",
+          "level": 3,
+          "line": 21
+        },
+        {
+          "heading": "同步路径",
+          "level": 3,
+          "line": 31
+        },
+        {
+          "heading": "Section 3: 状态管理",
+          "level": 2,
+          "line": 45
+        },
+        {
+          "heading": "20+ 切片清单",
+          "level": 3,
+          "line": 47
+        },
+        {
+          "heading": "跨切片依赖",
+          "level": 3,
+          "line": 63
+        },
+        {
+          "heading": "改进建议",
+          "level": 3,
+          "line": 71
+        },
+        {
+          "heading": "Section 4: 认证架构",
+          "level": 2,
+          "line": 81
+        },
+        {
+          "heading": "Token 生命周期",
+          "level": 3,
+          "line": 83
+        },
+        {
+          "heading": "并发守卫",
+          "level": 3,
+          "line": 89
+        },
+        {
+          "heading": "刷新策略",
+          "level": 3,
+          "line": 96
+        },
+        {
+          "heading": "Section 5: 安全架构",
+          "level": 2,
+          "line": 105
+        },
+        {
+          "heading": "7 层保护",
+          "level": 3,
+          "line": 107
+        },
+        {
+          "heading": "Token 存储",
+          "level": 3,
+          "line": 118
+        },
+        {
+          "heading": "Section 6: 部署架构",
+          "level": 2,
+          "line": 127
+        },
+        {
+          "heading": "Docker Compose 服务",
+          "level": 3,
+          "line": 129
+        },
+        {
+          "heading": "CI/CD",
+          "level": 3,
+          "line": 136
+        },
+        {
+          "heading": "备份策略",
+          "level": 3,
+          "line": 141
+        },
+        {
+          "heading": "改进建议",
+          "level": 3,
+          "line": 147
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 21
+      }
+    },
+    {
+      "path": "docs/audit-2026-07-08.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 257,
+      "nonEmptyLines": 191,
+      "sections": [
+        {
+          "heading": "egoless-do 全面审查报告",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "总体统计",
+          "level": 2,
+          "line": 10
+        },
+        {
+          "heading": "🚨 P0 — 立即修复（5项）",
+          "level": 2,
+          "line": 22
+        },
+        {
+          "heading": "P0-1：`.env` 生产凭据被提交到仓库 🔥",
+          "level": 3,
+          "line": 26
+        },
+        {
+          "heading": "P0-2：SyncEngine 并发守卫竞态",
+          "level": 3,
+          "line": 42
+        },
+        {
+          "heading": "P0-3：服务端 SQL 列名拼接（深度防御违规）",
+          "level": 3,
+          "line": 53
+        },
+        {
+          "heading": "P0-4：Sentry 发送 PII（用户 email/姓名）",
+          "level": 3,
+          "line": 65
+        },
+        {
+          "heading": "P0-5：drainQueue 异步缺口导致 sync 项永久卡住",
+          "level": 3,
+          "line": 76
+        },
+        {
+          "heading": "🔴 P1 — 高优先级（18项）",
+          "level": 2,
+          "line": 87
+        },
+        {
+          "heading": "安全类（5项）",
+          "level": 3,
+          "line": 89
+        },
+        {
+          "heading": "架构类（5项）",
+          "level": 3,
+          "line": 99
+        },
+        {
+          "heading": "Bug 类（8项）",
+          "level": 3,
+          "line": 109
+        },
+        {
+          "heading": "🟠 P2 — 中优先级（28项）",
+          "level": 2,
+          "line": 124
+        },
+        {
+          "heading": "安全类（7项）",
+          "level": 3,
+          "line": 126
+        },
+        {
+          "heading": "架构类（8项）",
+          "level": 3,
+          "line": 138
+        },
+        {
+          "heading": "Bug 类（13项）",
+          "level": 3,
+          "line": 151
+        },
+        {
+          "heading": "🟡 P3 — 低优先级（20项）",
+          "level": 2,
+          "line": 171
+        },
+        {
+          "heading": "安全类（3项）",
+          "level": 3,
+          "line": 173
+        },
+        {
+          "heading": "架构类（3项）",
+          "level": 3,
+          "line": 181
+        },
+        {
+          "heading": "Bug 类（14项）",
+          "level": 3,
+          "line": 189
+        },
+        {
+          "heading": "问题分布热力图",
+          "level": 2,
+          "line": 208
+        },
+        {
+          "heading": "核心结论",
+          "level": 2,
+          "line": 238
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 22
+      }
+    },
+    {
+      "path": "docs/full-dimension-audit-2026-07-09.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 162,
+      "nonEmptyLines": 116,
+      "sections": [
+        {
+          "heading": "全维度审查报告 — 依赖/无障碍/平台/性能/i18n",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "总体统计",
+          "level": 2,
+          "line": 9
+        },
+        {
+          "heading": "🔴 CRITICAL（10项）",
+          "level": 2,
+          "line": 22
+        },
+        {
+          "heading": "依赖（3项）",
+          "level": 3,
+          "line": 24
+        },
+        {
+          "heading": "无障碍（1项）",
+          "level": 3,
+          "line": 32
+        },
+        {
+          "heading": "平台（1项）",
+          "level": 3,
+          "line": 38
+        },
+        {
+          "heading": "性能（2项）",
+          "level": 3,
+          "line": 44
+        },
+        {
+          "heading": "i18n（3项）",
+          "level": 3,
+          "line": 51
+        },
+        {
+          "heading": "🟠 HIGH（11项）",
+          "level": 2,
+          "line": 61
+        },
+        {
+          "heading": "依赖（1项）",
+          "level": 3,
+          "line": 63
+        },
+        {
+          "heading": "无障碍（3项）",
+          "level": 3,
+          "line": 69
+        },
+        {
+          "heading": "平台（2项）",
+          "level": 3,
+          "line": 77
+        },
+        {
+          "heading": "性能（3项）",
+          "level": 3,
+          "line": 84
+        },
+        {
+          "heading": "i18n（2项）",
+          "level": 3,
+          "line": 92
+        },
+        {
+          "heading": "🟡 MEDIUM（10项）",
+          "level": 2,
+          "line": 101
+        },
+        {
+          "heading": "依赖（2项）",
+          "level": 3,
+          "line": 103
+        },
+        {
+          "heading": "无障碍（1项）",
+          "level": 3,
+          "line": 110
+        },
+        {
+          "heading": "平台（2项）",
+          "level": 3,
+          "line": 116
+        },
+        {
+          "heading": "性能（3项）",
+          "level": 3,
+          "line": 123
+        },
+        {
+          "heading": "i18n（2项）",
+          "level": 3,
+          "line": 131
+        },
+        {
+          "heading": "⚪ LOW（6项）",
+          "level": 2,
+          "line": 140
+        },
+        {
+          "heading": "修复优先级建议",
+          "level": 2,
+          "line": 153
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 22
+      }
+    },
+    {
+      "path": "docs/package-structure-analysis.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 120,
+      "nonEmptyLines": 85,
+      "sections": [
+        {
+          "heading": "Egoless-Do Monorepo 包结构深度分析",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "1. 包依赖图",
+          "level": 2,
+          "line": 8
+        },
+        {
+          "heading": "2. 模块边界违规（1 处）",
+          "level": 2,
+          "line": 23
+        },
+        {
+          "heading": "🔴 `packages/core/src/hooks/usePagination.ts` 导入 `react`",
+          "level": 3,
+          "line": 25
+        },
+        {
+          "heading": "3. 循环依赖",
+          "level": 2,
+          "line": 37
+        },
+        {
+          "heading": "`store ↔ features/sync` 循环",
+          "level": 3,
+          "line": 39
+        },
+        {
+          "heading": "4. Barrel 导出分析",
+          "level": 2,
+          "line": 61
+        },
+        {
+          "heading": "`packages/core/src/index.ts`（21 行）",
+          "level": 3,
+          "line": 63
+        },
+        {
+          "heading": "5. 改进建议",
+          "level": 2,
+          "line": 85
+        },
+        {
+          "heading": "建议 1：将 `usePagination` 迁移到 `apps/mobile/src/hooks/`（消除唯一边界违规）",
+          "level": 3,
+          "line": 87
+        },
+        {
+          "heading": "建议 2：将 `WriteBatcher` 迁移到 `store/` 层（打破循环）",
+          "level": 3,
+          "line": 96
+        },
+        {
+          "heading": "建议 3：拆分 barrel 导出",
+          "level": 3,
+          "line": 103
+        },
+        {
+          "heading": "6. 总结",
+          "level": 2,
+          "line": 112
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 13
+      }
+    },
+    {
+      "path": "docs/remaining-dimension-audit-2026-07-09.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 126,
+      "nonEmptyLines": 91,
+      "sections": [
+        {
+          "heading": "剩余维度审查报告 — 测试覆盖/CI-CD/错误边界",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "总体统计",
+          "level": 2,
+          "line": 9
+        },
+        {
+          "heading": "🔴 P0 — 立即修复（9项）",
+          "level": 2,
+          "line": 20
+        },
+        {
+          "heading": "测试覆盖（6项）",
+          "level": 3,
+          "line": 22
+        },
+        {
+          "heading": "CI/CD（2项）",
+          "level": 3,
+          "line": 33
+        },
+        {
+          "heading": "错误边界（1项）",
+          "level": 3,
+          "line": 40
+        },
+        {
+          "heading": "🟠 P1 — 高优先级（12项）",
+          "level": 2,
+          "line": 48
+        },
+        {
+          "heading": "测试覆盖（5项）",
+          "level": 3,
+          "line": 50
+        },
+        {
+          "heading": "CI/CD（5项）",
+          "level": 3,
+          "line": 60
+        },
+        {
+          "heading": "错误边界（2项）",
+          "level": 3,
+          "line": 70
+        },
+        {
+          "heading": "🟡 P2 — 中优先级（8项）",
+          "level": 2,
+          "line": 79
+        },
+        {
+          "heading": "测试覆盖（3项）",
+          "level": 3,
+          "line": 81
+        },
+        {
+          "heading": "CI/CD（4项）",
+          "level": 3,
+          "line": 89
+        },
+        {
+          "heading": "错误边界（1项）",
+          "level": 3,
+          "line": 98
+        },
+        {
+          "heading": "⚪ P3 — 低优先级（4项）",
+          "level": 2,
+          "line": 106
+        },
+        {
+          "heading": "与之前审查的对比",
+          "level": 2,
+          "line": 117
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 16
+      }
+    },
+    {
+      "path": "docs/round2-audit-2026-07-09.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 143,
+      "nonEmptyLines": 105,
+      "sections": [
+        {
+          "heading": "第二轮全面审查报告（回归审查）",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "总体统计",
+          "level": 2,
+          "line": 10
+        },
+        {
+          "heading": "🚨 CRITICAL（2项）",
+          "level": 2,
+          "line": 22
+        },
+        {
+          "heading": "C-1: 生产凭据仍在 git 历史中",
+          "level": 3,
+          "line": 24
+        },
+        {
+          "heading": "C-2: PocketBase 同步集合权限规则过松",
+          "level": 3,
+          "line": 34
+        },
+        {
+          "heading": "🟠 HIGH（16项）",
+          "level": 2,
+          "line": 46
+        },
+        {
+          "heading": "Core 业务逻辑（5项）",
+          "level": 3,
+          "line": 48
+        },
+        {
+          "heading": "Store/Init/安全（3项）",
+          "level": 3,
+          "line": 58
+        },
+        {
+          "heading": "Sync 引擎（5项）",
+          "level": 3,
+          "line": 66
+        },
+        {
+          "heading": "Backend/Infra（3项）",
+          "level": 3,
+          "line": 76
+        },
+        {
+          "heading": "🟡 MEDIUM（14项）",
+          "level": 2,
+          "line": 86
+        },
+        {
+          "heading": "Core 业务逻辑（3项）",
+          "level": 3,
+          "line": 88
+        },
+        {
+          "heading": "Store/Init/安全（4项）",
+          "level": 3,
+          "line": 96
+        },
+        {
+          "heading": "Sync 引擎（5项）",
+          "level": 3,
+          "line": 106
+        },
+        {
+          "heading": "Backend/Infra（2项）",
+          "level": 3,
+          "line": 116
+        },
+        {
+          "heading": "⚪ LOW（4项）",
+          "level": 2,
+          "line": 125
+        },
+        {
+          "heading": "修复优先级建议",
+          "level": 2,
+          "line": 136
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 17
+      }
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "nodes": [
+    {
+      "id": "file:infra/scripts/backup-pb.sh",
+      "type": "file",
+      "name": "backup-pb.sh",
+      "filePath": "infra/scripts/backup-pb.sh",
+      "summary": "PocketBase 自动备份脚本，凭管理员凭证调用 PB backup API 下载 zip，可选经 rclone 上传远端并清理超过保留天数的旧备份。",
+      "tags": ["automation", "backup", "pocketbase", "script"],
+      "complexity": "moderate",
+      "languageNotes": "bash 脚本，jq/heredoc 双路径构造 JSON，curl 鉴权 + 下载备份 + rclone 上传 + find 清理。"
+    },
+    {
+      "id": "file:infra/scripts/deploy.sh",
+      "type": "file",
+      "name": "deploy.sh",
+      "filePath": "infra/scripts/deploy.sh",
+      "summary": "egoless-do 一键部署脚本，校验 .env.production 后以 docker compose down/pull/up 重启服务，轮询 PocketBase 健康检查直至启动完成。",
+      "tags": ["automation", "deployment", "docker", "script"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:infra/scripts/restore-pb.sh",
+      "type": "file",
+      "name": "restore-pb.sh",
+      "filePath": "infra/scripts/restore-pb.sh",
+      "summary": "PocketBase 备份恢复脚本，停止容器后先做安全备份，再解压备份文件替换 data.db 并重启容器，含交互确认。",
+      "tags": ["automation", "restore", "pocketbase", "script"],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:infra/scripts/backup-pb.sh",
+      "target": "file:infra/scripts/restore-pb.sh",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

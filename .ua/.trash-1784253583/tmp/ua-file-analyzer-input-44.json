@@ -1,0 +1,13 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {"path": ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/implement.md", "language": "markdown", "sizeLines": 41, "fileCategory": "docs"},
+    {"path": ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/prd.md", "language": "markdown", "sizeLines": 43, "fileCategory": "docs"},
+    {"path": ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/task.json", "language": "json", "sizeLines": 25, "fileCategory": "config"}
+  ],
+  "batchImportData": {
+    ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/implement.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/task.json": []
+  }
+}

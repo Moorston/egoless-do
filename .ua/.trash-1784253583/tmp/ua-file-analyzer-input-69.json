@@ -1,0 +1,188 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": "packages/core/src/business/coordinateFuzzing.ts",
+      "language": "typescript",
+      "sizeLines": 112,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/business/customLists.ts",
+      "language": "typescript",
+      "sizeLines": 34,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/business/dateUtils.test.ts",
+      "language": "typescript",
+      "sizeLines": 32,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/business/dateUtils.ts",
+      "language": "typescript",
+      "sizeLines": 12,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/business/precepts.ts",
+      "language": "typescript",
+      "sizeLines": 53,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/business/sleep.ts",
+      "language": "typescript",
+      "sizeLines": 88,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/business/zhiguanConstants.ts",
+      "language": "typescript",
+      "sizeLines": 4,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/business/zhiguanCountingRound.ts",
+      "language": "typescript",
+      "sizeLines": 48,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/business/zhiguanTimer.ts",
+      "language": "typescript",
+      "sizeLines": 24,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/constants/music.ts",
+      "language": "typescript",
+      "sizeLines": 54,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/constants/sutraTexts.ts",
+      "language": "typescript",
+      "sizeLines": 133,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/data/DataGateway.test.ts",
+      "language": "typescript",
+      "sizeLines": 36,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/data/DataGateway.ts",
+      "language": "typescript",
+      "sizeLines": 35,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/data/index.ts",
+      "language": "typescript",
+      "sizeLines": 2,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/i18n.ts",
+      "language": "typescript",
+      "sizeLines": 5,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/icons.ts",
+      "language": "typescript",
+      "sizeLines": 104,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/pocketbase.ts",
+      "language": "typescript",
+      "sizeLines": 14,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/store/index.ts",
+      "language": "typescript",
+      "sizeLines": 35,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/store/storageAdapter.ts",
+      "language": "typescript",
+      "sizeLines": 3,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/sync/index.ts",
+      "language": "typescript",
+      "sizeLines": 5,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/types/index.ts",
+      "language": "typescript",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/types/music.ts",
+      "language": "typescript",
+      "sizeLines": 10,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/typography.ts",
+      "language": "typescript",
+      "sizeLines": 85,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/utils/index.ts",
+      "language": "typescript",
+      "sizeLines": 2,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/utils/transform.ts",
+      "language": "typescript",
+      "sizeLines": 51,
+      "fileCategory": "code"
+    }
+  ],
+  "batchImportData": {
+    "packages/core/src/business/coordinateFuzzing.ts": [],
+    "packages/core/src/business/customLists.ts": [],
+    "packages/core/src/business/dateUtils.test.ts": [
+      "packages/core/src/business/dateUtils.ts"
+    ],
+    "packages/core/src/business/dateUtils.ts": [],
+    "packages/core/src/business/precepts.ts": [],
+    "packages/core/src/business/sleep.ts": [],
+    "packages/core/src/business/zhiguanConstants.ts": [],
+    "packages/core/src/business/zhiguanCountingRound.ts": [],
+    "packages/core/src/business/zhiguanTimer.ts": [],
+    "packages/core/src/constants/music.ts": [
+      "packages/core/src/types/music.ts"
+    ],
+    "packages/core/src/constants/sutraTexts.ts": [],
+    "packages/core/src/data/DataGateway.test.ts": [
+      "packages/core/src/data/DataGateway.ts"
+    ],
+    "packages/core/src/data/DataGateway.ts": [],
+    "packages/core/src/data/index.ts": [],
+    "packages/core/src/i18n.ts": [],
+    "packages/core/src/icons.ts": [],
+    "packages/core/src/pocketbase.ts": [],
+    "packages/core/src/store/index.ts": [],
+    "packages/core/src/store/storageAdapter.ts": [],
+    "packages/core/src/sync/index.ts": [],
+    "packages/core/src/types/index.ts": [],
+    "packages/core/src/types/music.ts": [],
+    "packages/core/src/typography.ts": [],
+    "packages/core/src/utils/index.ts": [],
+    "packages/core/src/utils/transform.ts": []
+  }
+}

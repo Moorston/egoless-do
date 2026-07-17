@@ -1,0 +1,460 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 3,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 444,
+      "nonEmptyLines": 338,
+      "sections": [
+        {
+          "heading": "Egoless-Do 架构约束",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "目录",
+          "level": 2,
+          "line": 10
+        },
+        {
+          "heading": "规则格式说明",
+          "level": 2,
+          "line": 24
+        },
+        {
+          "heading": "1. 项目全景图",
+          "level": 2,
+          "line": 32
+        },
+        {
+          "heading": "2. 包依赖方向",
+          "level": 2,
+          "line": 83
+        },
+        {
+          "heading": "2.1 单向依赖",
+          "level": 3,
+          "line": 85
+        },
+        {
+          "heading": "2.2 包间导出契约",
+          "level": 3,
+          "line": 99
+        },
+        {
+          "heading": "2.3 跨包类型共享",
+          "level": 3,
+          "line": 113
+        },
+        {
+          "heading": "3. 层间边界与职责",
+          "level": 2,
+          "line": 121
+        },
+        {
+          "heading": "3.1 三层架构（packages/core）",
+          "level": 3,
+          "line": 123
+        },
+        {
+          "heading": "3.2 移动端分层",
+          "level": 3,
+          "line": 151
+        },
+        {
+          "heading": "4. 数据流",
+          "level": 2,
+          "line": 181
+        },
+        {
+          "heading": "4.1 写入路径",
+          "level": 3,
+          "line": 183
+        },
+        {
+          "heading": "4.2 读取路径",
+          "level": 3,
+          "line": 206
+        },
+        {
+          "heading": "4.3 同步全路径",
+          "level": 3,
+          "line": 221
+        },
+        {
+          "heading": "5. 模块内聚规则",
+          "level": 2,
+          "line": 243
+        },
+        {
+          "heading": "5.1 Feature 模块自治",
+          "level": 3,
+          "line": 245
+        },
+        {
+          "heading": "5.2 跨 Feature 共享规则",
+          "level": 3,
+          "line": 265
+        },
+        {
+          "heading": "6. Store 契约",
+          "level": 2,
+          "line": 279
+        },
+        {
+          "heading": "6.1 Slice 工厂签名",
+          "level": 3,
+          "line": 281
+        },
+        {
+          "heading": "6.2 持久化规则",
+          "level": 3,
+          "line": 298
+        },
+        {
+          "heading": "6.3 同步触发规则",
+          "level": 3,
+          "line": 306
+        },
+        {
+          "heading": "6.4 Store 读取规则",
+          "level": 3,
+          "line": 313
+        },
+        {
+          "heading": "7. 后端/PocketBase 边界",
+          "level": 2,
+          "line": 334
+        },
+        {
+          "heading": "7.1 职责分离",
+          "level": 3,
+          "line": 336
+        },
+        {
+          "heading": "7.2 同步协议约束",
+          "level": 3,
+          "line": 346
+        },
+        {
+          "heading": "7.3 API 认证协同",
+          "level": 3,
+          "line": 354
+        },
+        {
+          "heading": "8. 禁止架构模式黑名单",
+          "level": 2,
+          "line": 363
+        },
+        {
+          "heading": "🔴 P0 — 导致崩溃或数据丢失",
+          "level": 3,
+          "line": 367
+        },
+        {
+          "heading": "🔴 P1 — 导致状态不一致",
+          "level": 3,
+          "line": 376
+        },
+        {
+          "heading": "🟡 P2 — 降低可维护性",
+          "level": 3,
+          "line": 384
+        },
+        {
+          "heading": "9. ESLint 规则映射",
+          "level": 2,
+          "line": 396
+        },
+        {
+          "heading": "建议新增 ESLint 配置",
+          "level": 3,
+          "line": 411
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 33
+      }
+    },
+    {
+      "path": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 493,
+      "nonEmptyLines": 347,
+      "sections": [
+        {
+          "heading": "Egoless-Do 全局代码规范",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "目录",
+          "level": 2,
+          "line": 10
+        },
+        {
+          "heading": "规则格式说明",
+          "level": 2,
+          "line": 25
+        },
+        {
+          "heading": "1. 类型安全",
+          "level": 2,
+          "line": 44
+        },
+        {
+          "heading": "1.1 `any` 禁止",
+          "level": 3,
+          "line": 46
+        },
+        {
+          "heading": "1.2 `as` 转型限制",
+          "level": 3,
+          "line": 70
+        },
+        {
+          "heading": "1.3 `@ts-ignore` / `@ts-expect-error` 管理",
+          "level": 3,
+          "line": 88
+        },
+        {
+          "heading": "1.4 优先使用 `import type`",
+          "level": 3,
+          "line": 104
+        },
+        {
+          "heading": "1.5 禁止在 mobile 中重复定义 core 已有类型",
+          "level": 3,
+          "line": 117
+        },
+        {
+          "heading": "2. 副作用管控",
+          "level": 2,
+          "line": 134
+        },
+        {
+          "heading": "2.1 Pure Function 纯度要求",
+          "level": 3,
+          "line": 136
+        },
+        {
+          "heading": "2.2 时间/随机数参数化",
+          "level": 3,
+          "line": 156
+        },
+        {
+          "heading": "2.3 禁止在 Render 中执行副作用",
+          "level": 3,
+          "line": 170
+        },
+        {
+          "heading": "2.4 禁止直接修改状态",
+          "level": 3,
+          "line": 193
+        },
+        {
+          "heading": "3. 日志规范",
+          "level": 2,
+          "line": 210
+        },
+        {
+          "heading": "3.1 统一使用 `createLogger`",
+          "level": 3,
+          "line": 212
+        },
+        {
+          "heading": "3.2 Logger Tag 命名规范",
+          "level": 3,
+          "line": 233
+        },
+        {
+          "heading": "4. 导入规范",
+          "level": 2,
+          "line": 252
+        },
+        {
+          "heading": "4.1 导入顺序",
+          "level": 3,
+          "line": 254
+        },
+        {
+          "heading": "4.2 禁止导入 core → app",
+          "level": 3,
+          "line": 273
+        },
+        {
+          "heading": "4.3 禁止导入 core → react/react-native",
+          "level": 3,
+          "line": 280
+        },
+        {
+          "heading": "4.4 禁止跨 Feature 直接引用",
+          "level": 3,
+          "line": 287
+        },
+        {
+          "heading": "5. 命名规范",
+          "level": 2,
+          "line": 304
+        },
+        {
+          "heading": "5.1 文件命名",
+          "level": 3,
+          "line": 306
+        },
+        {
+          "heading": "5.2 标识符命名",
+          "level": 3,
+          "line": 319
+        },
+        {
+          "heading": "6. 错误处理",
+          "level": 2,
+          "line": 333
+        },
+        {
+          "heading": "6.1 异步错误必须捕获",
+          "level": 3,
+          "line": 335
+        },
+        {
+          "heading": "6.2 错误边界",
+          "level": 3,
+          "line": 352
+        },
+        {
+          "heading": "6.3 错误信息分级",
+          "level": 3,
+          "line": 365
+        },
+        {
+          "heading": "7. 测试规范",
+          "level": 2,
+          "line": 379
+        },
+        {
+          "heading": "7.1 测试位置",
+          "level": 3,
+          "line": 381
+        },
+        {
+          "heading": "7.2 Mock 模式",
+          "level": 3,
+          "line": 388
+        },
+        {
+          "heading": "7.3 避免测试生产代码中的 `any`",
+          "level": 3,
+          "line": 409
+        },
+        {
+          "heading": "8. 国际化规范",
+          "level": 2,
+          "line": 418
+        },
+        {
+          "heading": "8.1 所有用户可见字符串走 `t()`",
+          "level": 3,
+          "line": 420
+        },
+        {
+          "heading": "8.2 i18n Key 命名",
+          "level": 3,
+          "line": 437
+        },
+        {
+          "heading": "8.3 颜色/字号走 Token",
+          "level": 3,
+          "line": 444
+        },
+        {
+          "heading": "9. ESLint 配置联动",
+          "level": 2,
+          "line": 461
+        },
+        {
+          "heading": "建议新增规则（按优先级）",
+          "level": 3,
+          "line": 477
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 39
+      }
+    },
+    {
+      "path": ".trellis/spec/governance/INDEX.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 122,
+      "nonEmptyLines": 100,
+      "sections": [
+        {
+          "heading": "Egoless-Do 规范文档索引",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "文档体系总览",
+          "level": 2,
+          "line": 9
+        },
+        {
+          "heading": "阅读路线",
+          "level": 2,
+          "line": 56
+        },
+        {
+          "heading": "如果你是：新加入开发者",
+          "level": 3,
+          "line": 58
+        },
+        {
+          "heading": "如果你是：AI 编码助手",
+          "level": 3,
+          "line": 65
+        },
+        {
+          "heading": "如果你是：Code Reviewer",
+          "level": 3,
+          "line": 71
+        },
+        {
+          "heading": "如果你是：架构师",
+          "level": 3,
+          "line": 77
+        },
+        {
+          "heading": "文档关系图",
+          "level": 2,
+          "line": 85
+        },
+        {
+          "heading": "快速链接",
+          "level": 2,
+          "line": 109
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 9
+      }
+    }
+  ]
+}

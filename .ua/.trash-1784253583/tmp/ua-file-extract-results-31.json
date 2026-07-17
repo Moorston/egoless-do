@@ -1,0 +1,285 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 3,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": ".trellis/.template-hashes.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 99,
+      "nonEmptyLines": 99,
+      "sections": [
+        {
+          "heading": "__version",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "hashes",
+          "level": 1,
+          "line": 3
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 2
+      }
+    },
+    {
+      "path": ".trellis/config.yaml",
+      "language": "yaml",
+      "fileCategory": "config",
+      "totalLines": 110,
+      "nonEmptyLines": 98,
+      "sections": [
+        {
+          "heading": "session_commit_message",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "max_journal_lines",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "channel",
+          "level": 1,
+          "line": 94
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 3
+      }
+    },
+    {
+      "path": ".trellis/workflow.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 708,
+      "nonEmptyLines": 489,
+      "sections": [
+        {
+          "heading": "Development Workflow",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Core Principles",
+          "level": 2,
+          "line": 5
+        },
+        {
+          "heading": "Trellis System",
+          "level": 2,
+          "line": 15
+        },
+        {
+          "heading": "Developer Identity",
+          "level": 3,
+          "line": 17
+        },
+        {
+          "heading": "Spec System",
+          "level": 3,
+          "line": 27
+        },
+        {
+          "heading": "Task System",
+          "level": 3,
+          "line": 40
+        },
+        {
+          "heading": "Workspace System",
+          "level": 3,
+          "line": 78
+        },
+        {
+          "heading": "Context Script",
+          "level": 3,
+          "line": 89
+        },
+        {
+          "heading": "Phase Index",
+          "level": 2,
+          "line": 144
+        },
+        {
+          "heading": "Request Triage",
+          "level": 3,
+          "line": 152
+        },
+        {
+          "heading": "Planning Artifacts",
+          "level": 3,
+          "line": 158
+        },
+        {
+          "heading": "Parent / Child Task Trees",
+          "level": 3,
+          "line": 166
+        },
+        {
+          "heading": "Phase 1: Plan",
+          "level": 3,
+          "line": 182
+        },
+        {
+          "heading": "Phase 2: Execute",
+          "level": 3,
+          "line": 212
+        },
+        {
+          "heading": "Phase 3: Finish",
+          "level": 3,
+          "line": 243
+        },
+        {
+          "heading": "Rules",
+          "level": 3,
+          "line": 263
+        },
+        {
+          "heading": "Active Task Routing",
+          "level": 3,
+          "line": 271
+        },
+        {
+          "heading": "Guardrails",
+          "level": 3,
+          "line": 291
+        },
+        {
+          "heading": "Loading Step Detail",
+          "level": 3,
+          "line": 297
+        },
+        {
+          "heading": "Phase 1: Plan",
+          "level": 2,
+          "line": 308
+        },
+        {
+          "heading": "1.0 Create task `[required · once]`",
+          "level": 4,
+          "line": 312
+        },
+        {
+          "heading": "1.1 Requirement exploration `[required · repeatable]`",
+          "level": 4,
+          "line": 330
+        },
+        {
+          "heading": "1.2 Research `[optional · repeatable]`",
+          "level": 4,
+          "line": 352
+        },
+        {
+          "heading": "1.3 Configure context `[required · once]`",
+          "level": 4,
+          "line": 381
+        },
+        {
+          "heading": "1.4 Activate task `[required · once]`",
+          "level": 4,
+          "line": 436
+        },
+        {
+          "heading": "1.5 Completion criteria",
+          "level": 4,
+          "line": 450
+        },
+        {
+          "heading": "Phase 2: Execute",
+          "level": 2,
+          "line": 469
+        },
+        {
+          "heading": "2.1 Implement `[required · repeatable]`",
+          "level": 4,
+          "line": 473
+        },
+        {
+          "heading": "2.2 Quality check `[required · repeatable]`",
+          "level": 4,
+          "line": 527
+        },
+        {
+          "heading": "2.3 Rollback `[on demand]`",
+          "level": 4,
+          "line": 558
+        },
+        {
+          "heading": "Phase 3: Finish",
+          "level": 2,
+          "line": 566
+        },
+        {
+          "heading": "3.2 Debug retrospective `[on demand]`",
+          "level": 4,
+          "line": 570
+        },
+        {
+          "heading": "3.3 Spec update `[required · once]`",
+          "level": 4,
+          "line": 579
+        },
+        {
+          "heading": "3.4 Commit changes `[required · once]`",
+          "level": 4,
+          "line": 588
+        },
+        {
+          "heading": "3.5 Wrap-up reminder",
+          "level": 4,
+          "line": 640
+        },
+        {
+          "heading": "Customizing Trellis (for forks)",
+          "level": 2,
+          "line": 646
+        },
+        {
+          "heading": "Changing what a step means",
+          "level": 3,
+          "line": 650
+        },
+        {
+          "heading": "Changing the per-turn prompt text",
+          "level": 3,
+          "line": 668
+        },
+        {
+          "heading": "Adding a custom status",
+          "level": 3,
+          "line": 672
+        },
+        {
+          "heading": "Adding a lifecycle hook",
+          "level": 3,
+          "line": 687
+        },
+        {
+          "heading": "Full contract",
+          "level": 3,
+          "line": 703
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 41
+      }
+    }
+  ]
+}

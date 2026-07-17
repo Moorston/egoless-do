@@ -1,0 +1,188 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": "backend/pb_migrations/1783689998_deleted_published_minds.js",
+      "language": "javascript",
+      "sizeLines": 109,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1783689999_deleted_checkins.js",
+      "language": "javascript",
+      "sizeLines": 121,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1783691974_updated_account_lockouts.js",
+      "language": "javascript",
+      "sizeLines": 130,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1783691975_updated_audit_logs.js",
+      "language": "javascript",
+      "sizeLines": 40,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1783843612_created_custom_food_presets.js",
+      "language": "javascript",
+      "sizeLines": 109,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/1783843763_updated_custom_food_presets.js",
+      "language": "javascript",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pb_migrations/20260710_fix_trail_notes_note_id.js",
+      "language": "javascript",
+      "sizeLines": 35,
+      "fileCategory": "code"
+    },
+    {
+      "path": "backend/pocketbase.exe",
+      "language": "exe",
+      "sizeLines": 152901,
+      "fileCategory": "code"
+    },
+    {
+      "path": "infra/docker/api/src/db.ts",
+      "language": "typescript",
+      "sizeLines": 36,
+      "fileCategory": "code"
+    },
+    {
+      "path": "infra/docker/docker-compose.yml",
+      "language": "yaml",
+      "sizeLines": 82,
+      "fileCategory": "infra"
+    },
+    {
+      "path": "infra/docker/Dockerfile.web",
+      "language": "dockerfile",
+      "sizeLines": 64,
+      "fileCategory": "infra"
+    },
+    {
+      "path": "infra/nginx/nginx.conf",
+      "language": "conf",
+      "sizeLines": 137,
+      "fileCategory": "code"
+    },
+    {
+      "path": "openspec/archive/comprehensive-audit-fix/report.md",
+      "language": "markdown",
+      "sizeLines": 89,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "openspec/archive/perf-systematic/proposal.md",
+      "language": "markdown",
+      "sizeLines": 37,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "packages/config/eslint.base.js",
+      "language": "javascript",
+      "sizeLines": 36,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/config/package.json",
+      "language": "json",
+      "sizeLines": 5,
+      "fileCategory": "config"
+    },
+    {
+      "path": "packages/config/tsconfig.base.json",
+      "language": "json",
+      "sizeLines": 18,
+      "fileCategory": "config"
+    },
+    {
+      "path": "packages/core/package.json",
+      "language": "json",
+      "sizeLines": 23,
+      "fileCategory": "config"
+    },
+    {
+      "path": "packages/core/src/ai/index.ts",
+      "language": "typescript",
+      "sizeLines": 98,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/ai/layout-algorithms.test.ts",
+      "language": "typescript",
+      "sizeLines": 53,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/ai/layout-algorithms.ts",
+      "language": "typescript",
+      "sizeLines": 298,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/ai/rag/index.ts",
+      "language": "typescript",
+      "sizeLines": 5,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/business/breathing.test.ts",
+      "language": "typescript",
+      "sizeLines": 62,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/business/breathing.ts",
+      "language": "typescript",
+      "sizeLines": 99,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/business/coordinateFuzzing.test.ts",
+      "language": "typescript",
+      "sizeLines": 80,
+      "fileCategory": "code"
+    }
+  ],
+  "batchImportData": {
+    "backend/pb_migrations/1783689998_deleted_published_minds.js": [],
+    "backend/pb_migrations/1783689999_deleted_checkins.js": [],
+    "backend/pb_migrations/1783691974_updated_account_lockouts.js": [],
+    "backend/pb_migrations/1783691975_updated_audit_logs.js": [],
+    "backend/pb_migrations/1783843612_created_custom_food_presets.js": [],
+    "backend/pb_migrations/1783843763_updated_custom_food_presets.js": [],
+    "backend/pb_migrations/20260710_fix_trail_notes_note_id.js": [],
+    "backend/pocketbase.exe": [],
+    "infra/docker/api/src/db.ts": [],
+    "infra/docker/docker-compose.yml": [],
+    "infra/docker/Dockerfile.web": [],
+    "infra/nginx/nginx.conf": [],
+    "openspec/archive/comprehensive-audit-fix/report.md": [],
+    "openspec/archive/perf-systematic/proposal.md": [],
+    "packages/config/eslint.base.js": [],
+    "packages/config/package.json": [],
+    "packages/config/tsconfig.base.json": [],
+    "packages/core/package.json": [],
+    "packages/core/src/ai/index.ts": [],
+    "packages/core/src/ai/layout-algorithms.test.ts": [
+      "packages/core/src/ai/layout-algorithms.ts"
+    ],
+    "packages/core/src/ai/layout-algorithms.ts": [],
+    "packages/core/src/ai/rag/index.ts": [],
+    "packages/core/src/business/breathing.test.ts": [
+      "packages/core/src/business/breathing.ts"
+    ],
+    "packages/core/src/business/breathing.ts": [],
+    "packages/core/src/business/coordinateFuzzing.test.ts": [
+      "packages/core/src/business/coordinateFuzzing.ts"
+    ]
+  }
+}

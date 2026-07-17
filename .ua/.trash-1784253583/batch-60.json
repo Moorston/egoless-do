@@ -1,0 +1,347 @@
+{
+  "nodes": [
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-architecture-improvements/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-architecture-improvements/implement.jsonl",
+      "summary": "Trellis 归档任务「架构改进实施 — 数据流/安全/部署」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-architecture-improvements/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-architecture-improvements/prd.md",
+      "summary": "Trellis 归档任务「架构改进实施 — 数据流/安全/部署」的需求文档（prd.md）。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "prd",
+        "archive"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-architecture-improvements/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-architecture-improvements/task.json",
+      "summary": "Trellis 归档任务「架构改进实施 — 数据流/安全/部署」的元数据（task.json）：id、标题、状态、优先级。",
+      "tags": [
+        "config",
+        "trellis",
+        "task",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-auth-architecture-fixes/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-auth-architecture-fixes/check.jsonl",
+      "summary": "Trellis 归档任务「登录注册架构深度修复」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-auth-architecture-fixes/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-auth-architecture-fixes/implement.jsonl",
+      "summary": "Trellis 归档任务「登录注册架构深度修复」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-auth-architecture-fixes/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-auth-architecture-fixes/prd.md",
+      "summary": "Trellis 归档任务「登录注册架构深度修复」的需求文档（prd.md）。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "prd",
+        "archive"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-auth-architecture-fixes/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-auth-architecture-fixes/task.json",
+      "summary": "Trellis 归档任务「登录注册架构深度修复」的元数据（task.json）：id、标题、状态、优先级。",
+      "tags": [
+        "config",
+        "trellis",
+        "task",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-auth-flow-fixes/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-auth-flow-fixes/check.jsonl",
+      "summary": "Trellis 归档任务「登录注册流程深度修复」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-auth-flow-fixes/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-auth-flow-fixes/implement.jsonl",
+      "summary": "Trellis 归档任务「登录注册流程深度修复」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-auth-flow-fixes/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-auth-flow-fixes/prd.md",
+      "summary": "Trellis 归档任务「登录注册流程深度修复」的需求文档（prd.md）。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "prd",
+        "archive"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-auth-flow-fixes/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-auth-flow-fixes/task.json",
+      "summary": "Trellis 归档任务「登录注册流程深度修复」的元数据（task.json）：id、标题、状态、优先级。",
+      "tags": [
+        "config",
+        "trellis",
+        "task",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-package-structure-analysis/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-package-structure-analysis/check.jsonl",
+      "summary": "Trellis 归档任务「包结构深度分析」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-package-structure-analysis/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-package-structure-analysis/implement.jsonl",
+      "summary": "Trellis 归档任务「包结构深度分析」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-package-structure-analysis/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-package-structure-analysis/prd.md",
+      "summary": "Trellis 归档任务「包结构深度分析」的需求文档（prd.md）。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "prd",
+        "archive"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-10-package-structure-analysis/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-10-package-structure-analysis/task.json",
+      "summary": "Trellis 归档任务「包结构深度分析」的元数据（task.json）：id、标题、状态、优先级。",
+      "tags": [
+        "config",
+        "trellis",
+        "task",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/check.jsonl",
+      "summary": "Trellis 归档任务「饮食弹窗页我的tab数据持久化+PB同步」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-diet-my-tab-persist/implement.jsonl",
+      "summary": "Trellis 归档任务「饮食弹窗页我的tab数据持久化+PB同步」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/check.jsonl",
+      "summary": "Trellis 归档任务「用户资料页增强：数据持久化、密码重置、座右铭迁移」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/implement.jsonl",
+      "summary": "Trellis 归档任务「用户资料页增强：数据持久化、密码重置、座右铭迁移」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-12-fix-asyncstorage-notifications/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-fix-asyncstorage-notifications/check.jsonl",
+      "summary": "Trellis 归档任务「修复 AsyncStorage 错误和 expo-notifications 废弃警告」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-12-fix-asyncstorage-notifications/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-fix-asyncstorage-notifications/implement.jsonl",
+      "summary": "Trellis 归档任务「修复 AsyncStorage 错误和 expo-notifications 废弃警告」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-12-fix-asyncstorage-notifications/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-fix-asyncstorage-notifications/prd.md",
+      "summary": "Trellis 归档任务「修复 AsyncStorage 错误和 expo-notifications 废弃警告」的需求文档（prd.md）。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "prd",
+        "archive"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-12-fix-asyncstorage-notifications/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-fix-asyncstorage-notifications/task.json",
+      "summary": "Trellis 归档任务「修复 AsyncStorage 错误和 expo-notifications 废弃警告」的元数据（task.json）：id、标题、状态、优先级。",
+      "tags": [
+        "config",
+        "trellis",
+        "task",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-12-fix-profile-screen-crash/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-fix-profile-screen-crash/check.jsonl",
+      "summary": "Trellis 归档任务「修复 ProfileScreen 因 expo-image-picker 导入 createPermissionHook 报错」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-12-fix-profile-screen-crash/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-fix-profile-screen-crash/implement.jsonl",
+      "summary": "Trellis 归档任务「修复 ProfileScreen 因 expo-image-picker 导入 createPermissionHook 报错」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": []
+}

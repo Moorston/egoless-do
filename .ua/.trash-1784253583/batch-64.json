@@ -1,0 +1,708 @@
+{
+  "nodes": [
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp",
+      "type": "file",
+      "name": "ic_launcher.webp",
+      "filePath": "apps/mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp",
+      "summary": "xxxhdpi 密度启动器图标（webp 格式）。",
+      "tags": [
+        "asset",
+        "android",
+        "icon",
+        "webp"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/values-night/colors.xml",
+      "type": "config",
+      "name": "colors.xml",
+      "filePath": "apps/mobile/android/app/src/main/res/values-night/colors.xml",
+      "summary": "Android 夜间模式颜色资源定义（values-night）。",
+      "tags": [
+        "configuration",
+        "android",
+        "color"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/gradle/wrapper/gradle-wrapper.jar",
+      "type": "file",
+      "name": "gradle-wrapper.jar",
+      "filePath": "apps/mobile/android/gradle/wrapper/gradle-wrapper.jar",
+      "summary": "Gradle Wrapper 的 JAR 可执行包，用于在项目中运行统一版本的 Gradle 构建。",
+      "tags": [
+        "configuration",
+        "android",
+        "gradle",
+        "build"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/gradle/wrapper/gradle-wrapper.properties",
+      "type": "config",
+      "name": "gradle-wrapper.properties",
+      "filePath": "apps/mobile/android/gradle/wrapper/gradle-wrapper.properties",
+      "summary": "Gradle Wrapper 属性文件，指定 Gradle 发行版版本与下载地址。",
+      "tags": [
+        "configuration",
+        "android",
+        "gradle"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/gradlew",
+      "type": "file",
+      "name": "gradlew",
+      "filePath": "apps/mobile/android/gradlew",
+      "summary": "Gradle Wrapper 的 Unix shell 启动脚本（约 251 行），用于命令行执行 Gradle 任务。",
+      "tags": [
+        "script",
+        "android",
+        "gradle",
+        "build"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/babel.config.js",
+      "type": "file",
+      "name": "babel.config.js",
+      "filePath": "apps/mobile/babel.config.js",
+      "summary": "移动端 Babel 配置文件（约 9 行），配置 babel-preset-expo 与必要插件。",
+      "tags": [
+        "configuration",
+        "babel",
+        "build"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/ios/.xcode.env",
+      "type": "config",
+      "name": ".xcode.env",
+      "filePath": "apps/mobile/ios/.xcode.env",
+      "summary": "Xcode 环境变量配置脚本（约 11 行），设置 NODE_BINARY 等 iOS 构建环境变量。",
+      "tags": [
+        "configuration",
+        "ios",
+        "xcode"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/ios/app.xcodeproj/project.pbxproj",
+      "type": "file",
+      "name": "project.pbxproj",
+      "filePath": "apps/mobile/ios/app.xcodeproj/project.pbxproj",
+      "summary": "Xcode 项目文件（约 436 行）：定义 target、build setting、文件引用与编译阶段。",
+      "tags": [
+        "configuration",
+        "ios",
+        "xcode"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/ios/app.xcodeproj/xcshareddata/xcschemes/app.xcscheme",
+      "type": "file",
+      "name": "app.xcscheme",
+      "filePath": "apps/mobile/ios/app.xcodeproj/xcshareddata/xcschemes/app.xcscheme",
+      "summary": "Xcode 共享编译方案（scheme）文件，配置 app target 的 build/test/profile 行为。",
+      "tags": [
+        "configuration",
+        "ios",
+        "xcode"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/ios/app/app-Bridging-Header.h",
+      "type": "file",
+      "name": "app-Bridging-Header.h",
+      "filePath": "apps/mobile/ios/app/app-Bridging-Header.h",
+      "summary": "Objective-C 桥接头文件，暴露 React Native 所需的 OC 头文件给 Swift。",
+      "tags": [
+        "configuration",
+        "ios",
+        "bridge"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/ios/app/app.entitlements",
+      "type": "file",
+      "name": "app.entitlements",
+      "filePath": "apps/mobile/ios/app/app.entitlements",
+      "summary": "iOS 应用权限配置（entitlements），声明应用能力如 keychain、associated domains。",
+      "tags": [
+        "configuration",
+        "ios",
+        "entitlements"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/ios/app/AppDelegate.swift",
+      "type": "file",
+      "name": "AppDelegate.swift",
+      "filePath": "apps/mobile/ios/app/AppDelegate.swift",
+      "summary": "iOS 应用委托（约 70 行）：配置 Expo/React Native 启动、URL 链接与 Universal Links 处理，含 ReactNativeDelegate 类。",
+      "tags": [
+        "entry-point",
+        "ios",
+        "expo",
+        "swift"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/ios/app/AppDelegate.swift:application",
+      "type": "function",
+      "name": "application",
+      "filePath": "apps/mobile/ios/app/AppDelegate.swift",
+      "lineRange": [
+        12,
+        33
+      ],
+      "summary": "应用启动完成处理，初始化 React Native 工厂并启动 main 模块。",
+      "tags": [
+        "ios",
+        "lifecycle",
+        "setup"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/ios/app/AppDelegate.swift:application_36",
+      "type": "function",
+      "name": "application_36",
+      "filePath": "apps/mobile/ios/app/AppDelegate.swift",
+      "lineRange": [
+        36,
+        42
+      ],
+      "summary": "处理 URL Scheme 打开请求，委托给 RCTLinkingManager。",
+      "tags": [
+        "ios",
+        "linking",
+        "url"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/ios/app/AppDelegate.swift:application_45",
+      "type": "function",
+      "name": "application_45",
+      "filePath": "apps/mobile/ios/app/AppDelegate.swift",
+      "lineRange": [
+        45,
+        52
+      ],
+      "summary": "处理 Universal Links 继续活动请求。",
+      "tags": [
+        "ios",
+        "linking",
+        "universal-link"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/ios/app/AppDelegate.swift:bundleURL",
+      "type": "function",
+      "name": "bundleURL",
+      "filePath": "apps/mobile/ios/app/AppDelegate.swift",
+      "lineRange": [
+        63,
+        69
+      ],
+      "summary": "按 DEBUG/RELEASE 返回正确的 JS bundle 路径。",
+      "tags": [
+        "ios",
+        "react-native",
+        "bundle"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:apps/mobile/ios/app/AppDelegate.swift:AppDelegate",
+      "type": "class",
+      "name": "AppDelegate",
+      "filePath": "apps/mobile/ios/app/AppDelegate.swift",
+      "lineRange": [
+        5,
+        53
+      ],
+      "summary": "iOS 应用委托：初始化 React Native 工厂，处理启动/URL/Universal Links。",
+      "tags": [
+        "ios",
+        "app-delegate",
+        "entry-point"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:apps/mobile/ios/app/AppDelegate.swift:ReactNativeDelegate",
+      "type": "class",
+      "name": "ReactNativeDelegate",
+      "filePath": "apps/mobile/ios/app/AppDelegate.swift",
+      "lineRange": [
+        55,
+        70
+      ],
+      "summary": "React Native 工厂委托：配置 dev/prod 环境 sourceURL/bundleURL。",
+      "tags": [
+        "ios",
+        "react-native",
+        "delegate"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/ios/app/Images.xcassets/AppIcon.appiconset/Contents.json",
+      "type": "config",
+      "name": "Contents.json",
+      "filePath": "apps/mobile/ios/app/Images.xcassets/AppIcon.appiconset/Contents.json",
+      "summary": "iOS AppIcon 资源目录的 Contents.json，声明各尺寸图标引用。",
+      "tags": [
+        "configuration",
+        "ios",
+        "asset"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/ios/app/Images.xcassets/Contents.json",
+      "type": "config",
+      "name": "Contents.json",
+      "filePath": "apps/mobile/ios/app/Images.xcassets/Contents.json",
+      "summary": "iOS Asset Catalog 根 Contents.json，声明 catalog 元数据。",
+      "tags": [
+        "configuration",
+        "ios",
+        "asset"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/ios/app/Images.xcassets/SplashScreenBackground.colorset/Contents.json",
+      "type": "config",
+      "name": "Contents.json",
+      "filePath": "apps/mobile/ios/app/Images.xcassets/SplashScreenBackground.colorset/Contents.json",
+      "summary": "启动屏背景颜色集合的 Contents.json（深色/浅色双模式）。",
+      "tags": [
+        "configuration",
+        "ios",
+        "asset"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/ios/app/Images.xcassets/SplashScreenLegacy.imageset/Contents.json",
+      "type": "config",
+      "name": "Contents.json",
+      "filePath": "apps/mobile/ios/app/Images.xcassets/SplashScreenLegacy.imageset/Contents.json",
+      "summary": "旧版启动屏图片集的 Contents.json，声明多分辨率图片引用。",
+      "tags": [
+        "configuration",
+        "ios",
+        "asset"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/ios/app/Info.plist",
+      "type": "config",
+      "name": "Info.plist",
+      "filePath": "apps/mobile/ios/app/Info.plist",
+      "summary": "iOS 主信息属性列表（约 93 行）：配置应用名称、URL scheme、权限描述、屏幕方向等。",
+      "tags": [
+        "configuration",
+        "ios",
+        "plist"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/ios/app/SplashScreen.storyboard",
+      "type": "file",
+      "name": "SplashScreen.storyboard",
+      "filePath": "apps/mobile/ios/app/SplashScreen.storyboard",
+      "summary": "iOS 启动屏 Storyboard 文件，定义启动画面布局与动画。",
+      "tags": [
+        "configuration",
+        "ios",
+        "splash"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/ios/app/Supporting/Expo.plist",
+      "type": "config",
+      "name": "Expo.plist",
+      "filePath": "apps/mobile/ios/app/Supporting/Expo.plist",
+      "summary": "Expo 支持配置文件，配置 Expo SDK 相关参数（如 release channel）。",
+      "tags": [
+        "configuration",
+        "ios",
+        "expo"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/ios/Podfile",
+      "type": "file",
+      "name": "Podfile",
+      "filePath": "apps/mobile/ios/Podfile",
+      "summary": "CocoaPods 依赖配置文件（约 63 行），声明 iOS 原生模块依赖与编译 flag。",
+      "tags": [
+        "configuration",
+        "ios",
+        "cocoapods"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/ios/Podfile.properties.json",
+      "type": "config",
+      "name": "Podfile.properties.json",
+      "filePath": "apps/mobile/ios/Podfile.properties.json",
+      "summary": "CocoaPods 属性配置文件，声明 iOS 构建相关属性（如新架构开关、iOS 部署目标）。",
+      "tags": [
+        "configuration",
+        "ios",
+        "cocoapods"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/metro.config.js",
+      "type": "file",
+      "name": "metro.config.js",
+      "filePath": "apps/mobile/metro.config.js",
+      "summary": "Metro 打包配置（约 43 行）：配置 monorepo 包解析、watch 目录、symbol link 与 @egoless-do/core 源码解析。",
+      "tags": [
+        "configuration",
+        "metro",
+        "build"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/__tests__/helpers/syncMocks.ts",
+      "type": "file",
+      "name": "syncMocks.ts",
+      "filePath": "apps/mobile/src/__tests__/helpers/syncMocks.ts",
+      "summary": "同步测试共享 mock 工厂（约 136 行）：提供 createMockDb、createMockRowMappers 等可复用测试桩。",
+      "tags": [
+        "test",
+        "sync",
+        "mock",
+        "helper"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/__tests__/helpers/syncMocks.ts:createMockDb",
+      "type": "function",
+      "name": "createMockDb",
+      "filePath": "apps/mobile/src/__tests__/helpers/syncMocks.ts",
+      "lineRange": [
+        9,
+        19
+      ],
+      "summary": "创建模拟数据库句柄（getAllAsync/runAsync 等），返回空结果。",
+      "tags": [
+        "test",
+        "mock",
+        "database"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/__tests__/helpers/syncMocks.ts:createMockRowMappers",
+      "type": "function",
+      "name": "createMockRowMappers",
+      "filePath": "apps/mobile/src/__tests__/helpers/syncMocks.ts",
+      "lineRange": [
+        27,
+        69
+      ],
+      "summary": "创建 identity 行映射器集合，跳过真实 buildRowToEntity 流水线。",
+      "tags": [
+        "test",
+        "mock",
+        "mapper"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/__tests__/helpers/syncMocks.ts:createMockSyncProgressStore",
+      "type": "function",
+      "name": "createMockSyncProgressStore",
+      "filePath": "apps/mobile/src/__tests__/helpers/syncMocks.ts",
+      "lineRange": [
+        73,
+        95
+      ],
+      "summary": "创建模拟同步进度 store，用于同步测试。",
+      "tags": [
+        "test",
+        "mock",
+        "sync"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/__tests__/helpers/syncMocks.ts:createMockStateStore",
+      "type": "function",
+      "name": "createMockStateStore",
+      "filePath": "apps/mobile/src/__tests__/helpers/syncMocks.ts",
+      "lineRange": [
+        99,
+        114
+      ],
+      "summary": "创建模拟状态 store，提供测试用状态读写。",
+      "tags": [
+        "test",
+        "mock",
+        "store"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/__tests__/helpers/syncMocks.ts:createMockApiSyncPullEntity",
+      "type": "function",
+      "name": "createMockApiSyncPullEntity",
+      "filePath": "apps/mobile/src/__tests__/helpers/syncMocks.ts",
+      "lineRange": [
+        118,
+        124
+      ],
+      "summary": "创建模拟 API 同步 pull 实体工厂。",
+      "tags": [
+        "test",
+        "mock",
+        "sync"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/__tests__/helpers/syncMocks.ts:createAllSyncMocks",
+      "type": "function",
+      "name": "createAllSyncMocks",
+      "filePath": "apps/mobile/src/__tests__/helpers/syncMocks.ts",
+      "lineRange": [
+        128,
+        136
+      ],
+      "summary": "聚合工厂，一次性生成全部同步相关 mock。",
+      "tags": [
+        "test",
+        "mock",
+        "sync"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/__tests__/integration.test.ts",
+      "type": "file",
+      "name": "integration.test.ts",
+      "filePath": "apps/mobile/src/__tests__/integration.test.ts",
+      "summary": "应用集成测试文件（约 180 行）：mock 全局依赖后验证核心模块协作行为。",
+      "tags": [
+        "test",
+        "integration",
+        "unit-test"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/__tests__/performance.test.ts",
+      "type": "file",
+      "name": "performance.test.ts",
+      "filePath": "apps/mobile/src/__tests__/performance.test.ts",
+      "summary": "性能回归测试文件（约 86 行）：验证关键操作耗时与资源占用符合基准。",
+      "tags": [
+        "test",
+        "performance",
+        "unit-test"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:apps/mobile/ios/app/AppDelegate.swift",
+      "target": "function:apps/mobile/ios/app/AppDelegate.swift:application",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/ios/app/AppDelegate.swift",
+      "target": "function:apps/mobile/ios/app/AppDelegate.swift:application",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/ios/app/AppDelegate.swift",
+      "target": "function:apps/mobile/ios/app/AppDelegate.swift:application_36",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/ios/app/AppDelegate.swift",
+      "target": "function:apps/mobile/ios/app/AppDelegate.swift:application_36",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/ios/app/AppDelegate.swift",
+      "target": "function:apps/mobile/ios/app/AppDelegate.swift:application_45",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/ios/app/AppDelegate.swift",
+      "target": "function:apps/mobile/ios/app/AppDelegate.swift:application_45",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/ios/app/AppDelegate.swift",
+      "target": "function:apps/mobile/ios/app/AppDelegate.swift:bundleURL",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/ios/app/AppDelegate.swift",
+      "target": "function:apps/mobile/ios/app/AppDelegate.swift:bundleURL",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/ios/app/AppDelegate.swift",
+      "target": "class:apps/mobile/ios/app/AppDelegate.swift:AppDelegate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/ios/app/AppDelegate.swift",
+      "target": "class:apps/mobile/ios/app/AppDelegate.swift:AppDelegate",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/ios/app/AppDelegate.swift",
+      "target": "class:apps/mobile/ios/app/AppDelegate.swift:ReactNativeDelegate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/ios/app/AppDelegate.swift",
+      "target": "class:apps/mobile/ios/app/AppDelegate.swift:ReactNativeDelegate",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/__tests__/helpers/syncMocks.ts",
+      "target": "function:apps/mobile/src/__tests__/helpers/syncMocks.ts:createMockDb",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/__tests__/helpers/syncMocks.ts",
+      "target": "function:apps/mobile/src/__tests__/helpers/syncMocks.ts:createMockDb",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/__tests__/helpers/syncMocks.ts",
+      "target": "function:apps/mobile/src/__tests__/helpers/syncMocks.ts:createMockRowMappers",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/__tests__/helpers/syncMocks.ts",
+      "target": "function:apps/mobile/src/__tests__/helpers/syncMocks.ts:createMockRowMappers",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/__tests__/helpers/syncMocks.ts",
+      "target": "function:apps/mobile/src/__tests__/helpers/syncMocks.ts:createMockSyncProgressStore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/__tests__/helpers/syncMocks.ts",
+      "target": "function:apps/mobile/src/__tests__/helpers/syncMocks.ts:createMockSyncProgressStore",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/__tests__/helpers/syncMocks.ts",
+      "target": "function:apps/mobile/src/__tests__/helpers/syncMocks.ts:createMockStateStore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/__tests__/helpers/syncMocks.ts",
+      "target": "function:apps/mobile/src/__tests__/helpers/syncMocks.ts:createMockStateStore",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/__tests__/helpers/syncMocks.ts",
+      "target": "function:apps/mobile/src/__tests__/helpers/syncMocks.ts:createMockApiSyncPullEntity",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/__tests__/helpers/syncMocks.ts",
+      "target": "function:apps/mobile/src/__tests__/helpers/syncMocks.ts:createMockApiSyncPullEntity",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/__tests__/helpers/syncMocks.ts",
+      "target": "function:apps/mobile/src/__tests__/helpers/syncMocks.ts:createAllSyncMocks",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/__tests__/helpers/syncMocks.ts",
+      "target": "function:apps/mobile/src/__tests__/helpers/syncMocks.ts:createAllSyncMocks",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ]
+}

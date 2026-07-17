@@ -1,0 +1,334 @@
+{
+  "nodes": [
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/task.json",
+      "summary": "optimize-vow-edit 任务元数据。",
+      "tags": [
+        "configuration",
+        "task",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/check.jsonl",
+      "summary": "vision-link-plan-habit 任务校验记录。",
+      "tags": [
+        "documentation",
+        "task-record",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/implement.jsonl",
+      "summary": "vision-link-plan-habit 任务实现记录。",
+      "tags": [
+        "documentation",
+        "task-record",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/prd.md",
+      "summary": "vision-link-plan-habit 的 PRD，记录愿景关联到计划与习惯的需求与方案。",
+      "tags": [
+        "documentation",
+        "vision",
+        "habit",
+        "prd"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-vision-link-plan-habit/task.json",
+      "summary": "vision-link-plan-habit 任务元数据。",
+      "tags": [
+        "configuration",
+        "task",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-15-body-page-optimization/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-15-body-page-optimization/check.jsonl",
+      "summary": "body-page-optimization 任务校验记录（调身页优化）。",
+      "tags": [
+        "documentation",
+        "task-record",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-15-body-page-optimization/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-15-body-page-optimization/implement.jsonl",
+      "summary": "body-page-optimization 任务实现记录。",
+      "tags": [
+        "documentation",
+        "task-record",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/check.jsonl",
+      "summary": "body-wave1-enhance 任务校验记录（Wave1 功能增强）。",
+      "tags": [
+        "documentation",
+        "task-record",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/implement.jsonl",
+      "summary": "body-wave1-enhance 任务实现记录。",
+      "tags": [
+        "documentation",
+        "task-record",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/prd.md",
+      "summary": "调身页 Wave1 功能增强 PRD，记录类型修复、历史入口、动作描述、PR 记录与动作多选等改进。",
+      "tags": [
+        "documentation",
+        "body",
+        "enhancement",
+        "prd"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-15-body-wave1-enhance/task.json",
+      "summary": "body-wave1-enhance 任务元数据。",
+      "tags": [
+        "configuration",
+        "task",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/check.jsonl",
+      "summary": "fix-text-strings-error 任务校验记录。",
+      "tags": [
+        "documentation",
+        "task-record",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/implement.jsonl",
+      "summary": "fix-text-strings-error 任务实现记录。",
+      "tags": [
+        "documentation",
+        "task-record",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/prd.md",
+      "summary": "修复 home/review 页 Text strings 必须使用 JSX 的 PRD，含多个数值转换修复项（约 48 行）。",
+      "tags": [
+        "documentation",
+        "bugfix",
+        "i18n",
+        "prd"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-16-fix-text-strings-error/task.json",
+      "summary": "fix-text-strings-error 任务元数据。",
+      "tags": [
+        "configuration",
+        "task",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/ar-06-reflection-map-refactor/design.md",
+      "type": "document",
+      "name": "design.md",
+      "filePath": ".trellis/tasks/archive/2026-07/ar-06-reflection-map-refactor/design.md",
+      "summary": "reflection-map-refactor 设计文档（约 295 行）：感悟地图重构方案、数据模型与界面设计，属架构级设计记录。",
+      "tags": [
+        "documentation",
+        "design",
+        "reflections",
+        "architecture"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/type-error-fix-plan.md",
+      "type": "document",
+      "name": "type-error-fix-plan.md",
+      "filePath": ".trellis/tasks/archive/2026-07/type-error-fix-plan.md",
+      "summary": "type-error-fix-plan：汇总 TypeScript 类型错误修复计划（约 65 行），列出类型问题与对应修复策略。",
+      "tags": [
+        "documentation",
+        "typescript",
+        "type-safety"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/workspace/freebytes/index.md",
+      "type": "document",
+      "name": "index.md",
+      "filePath": ".trellis/workspace/freebytes/index.md",
+      "summary": "freebytes 开发者工作空间索引，记录其参与的 session 历史。",
+      "tags": [
+        "documentation",
+        "workspace",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/workspace/freebytes/journal-1.md",
+      "type": "document",
+      "name": "journal-1.md",
+      "filePath": ".trellis/workspace/freebytes/journal-1.md",
+      "summary": "freebytes 第一本工作日志（约 1187 行），按日期记录每日开发活动、决策与进展。",
+      "tags": [
+        "documentation",
+        "journal",
+        "workspace"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:.trellis/workspace/index.md",
+      "type": "document",
+      "name": "index.md",
+      "filePath": ".trellis/workspace/index.md",
+      "summary": "Workspace 总览索引（约 125 行），说明 AI Agent 工作记录的文件结构与开发者目录约定。",
+      "tags": [
+        "documentation",
+        "workspace",
+        "index"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.ua/.understandignore",
+      "type": "file",
+      "name": ".understandignore",
+      "filePath": ".ua/.understandignore",
+      "summary": "Understand-Anything 分析忽略规则（约 87 行注释），定义需排除的目录与文件模式（node_modules、dist、.env 等）。",
+      "tags": [
+        "configuration",
+        "analysis",
+        "ua"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.ua/config.json",
+      "type": "config",
+      "name": "config.json",
+      "filePath": ".ua/config.json",
+      "summary": "Understand-Anything 运行配置文件（空文件/占位）。",
+      "tags": [
+        "configuration",
+        "ua"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.workbuddy/memory/2026-07-12.md",
+      "type": "document",
+      "name": "2026-07-12.md",
+      "filePath": ".workbuddy/memory/2026-07-12.md",
+      "summary": "workbuddy 工作记忆：2026-07-12 日的开发活动简要记录。",
+      "tags": [
+        "documentation",
+        "memory",
+        "workbuddy"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.workbuddy/memory/2026-07-13.md",
+      "type": "document",
+      "name": "2026-07-13.md",
+      "filePath": ".workbuddy/memory/2026-07-13.md",
+      "summary": "workbuddy 工作记忆：2026-07-13 日的开发活动简要记录。",
+      "tags": [
+        "documentation",
+        "memory",
+        "workbuddy"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/build.gradle",
+      "type": "config",
+      "name": "build.gradle",
+      "filePath": "apps/mobile/android/app/build.gradle",
+      "summary": "Android 应用级 Gradle 构建脚本（约 182 行）：配置包名、依赖、签名与 compileSdk 等构建参数。",
+      "tags": [
+        "configuration",
+        "android",
+        "gradle",
+        "build"
+      ],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": []
+}

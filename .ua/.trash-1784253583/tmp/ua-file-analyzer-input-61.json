@@ -1,0 +1,182 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-12-fix-profile-screen-crash/prd.md",
+      "language": "markdown",
+      "sizeLines": 24,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-12-fix-profile-screen-crash/task.json",
+      "language": "json",
+      "sizeLines": 25,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/check.jsonl",
+      "language": "jsonl",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/implement.jsonl",
+      "language": "jsonl",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-12-sync-goerror/check.jsonl",
+      "language": "jsonl",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-12-sync-goerror/implement.jsonl",
+      "language": "jsonl",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/check.jsonl",
+      "language": "jsonl",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/implement.jsonl",
+      "language": "jsonl",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/prd.md",
+      "language": "markdown",
+      "sizeLines": 32,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/task.json",
+      "language": "json",
+      "sizeLines": 25,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/check.jsonl",
+      "language": "jsonl",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/implement.jsonl",
+      "language": "jsonl",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/prd.md",
+      "language": "markdown",
+      "sizeLines": 29,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/task.json",
+      "language": "json",
+      "sizeLines": 25,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/check.jsonl",
+      "language": "jsonl",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/implement.jsonl",
+      "language": "jsonl",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/prd.md",
+      "language": "markdown",
+      "sizeLines": 19,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/task.json",
+      "language": "json",
+      "sizeLines": 25,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/check.jsonl",
+      "language": "jsonl",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/implement.jsonl",
+      "language": "jsonl",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/prd.md",
+      "language": "markdown",
+      "sizeLines": 19,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/task.json",
+      "language": "json",
+      "sizeLines": 25,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/check.jsonl",
+      "language": "jsonl",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/implement.jsonl",
+      "language": "jsonl",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/prd.md",
+      "language": "markdown",
+      "sizeLines": 56,
+      "fileCategory": "docs"
+    }
+  ],
+  "batchImportData": {
+    ".trellis/tasks/archive/2026-07/07-12-fix-profile-screen-crash/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-fix-profile-screen-crash/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-12-sync-goerror/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-12-sync-goerror/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/task.json": [],
+    ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/check.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/implement.jsonl": [],
+    ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/prd.md": []
+  }
+}

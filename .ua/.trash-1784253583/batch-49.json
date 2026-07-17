@@ -1,0 +1,80 @@
+{
+  "nodes": [
+    {
+      "id": "file:apps/mobile/android/build.gradle",
+      "type": "config",
+      "name": "build.gradle",
+      "filePath": "apps/mobile/android/build.gradle",
+      "summary": "Android 顶层构建脚本，声明 buildscript 仓库与依赖（Android Gradle 插件、React Native Gradle 插件、Kotlin 插件），并应用 expo-root-project 与 react.rootproject 插件。",
+      "tags": [
+        "configuration",
+        "android",
+        "gradle"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/gradle.properties",
+      "type": "config",
+      "name": "gradle.properties",
+      "filePath": "apps/mobile/android/gradle.properties",
+      "summary": "Gradle 构建属性配置，设定 JVM 内存、并行构建、Hermes 启用、新架构 (newArchEnabled) 与多架构打包 (armeabi-v7a/arm64/x86/x86_64) 等关键开关。",
+      "tags": [
+        "configuration",
+        "android",
+        "gradle"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/android/gradlew.bat",
+      "type": "file",
+      "name": "gradlew.bat",
+      "filePath": "apps/mobile/android/gradlew.bat",
+      "summary": "Windows 平台的 Gradle Wrapper 批处理启动脚本 (gradlew.bat)，负责定位 JAVA_HOME、拼接 JVM 选项并启动 Gradle wrapper。",
+      "tags": [
+        "script",
+        "gradle",
+        "android",
+        "wrapper"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/android/settings.gradle",
+      "type": "config",
+      "name": "settings.gradle",
+      "filePath": "apps/mobile/android/settings.gradle",
+      "summary": "Android 项目设置文件，通过 pluginManagement 解析 React Native 与 Expo Gradle 插件路径，配置 autolinking 并将 rootProject 命名为「心流纪」。",
+      "tags": [
+        "configuration",
+        "android",
+        "gradle"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:apps/mobile/android/gradlew.bat",
+      "target": "file:apps/mobile/android/gradle.properties",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:apps/mobile/android/settings.gradle",
+      "target": "file:apps/mobile/android/build.gradle",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:apps/mobile/android/build.gradle",
+      "target": "file:apps/mobile/android/gradle.properties",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

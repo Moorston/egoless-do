@@ -1,0 +1,151 @@
+{
+  "packages/core/src/zod/index.ts": {
+    "summary": "zod 模块 barrel 文件，重导出运行时校验相关 schema 与辅助函数。",
+    "tags": [
+      "zod",
+      "barrel",
+      "exports",
+      "validation"
+    ],
+    "complexity": "simple"
+  },
+  "packages/core/src/zod/schemas.test.ts": {
+    "summary": "Zod schema 运行时校验（safeParse/validate/validateRows）的单元测试。",
+    "tags": [
+      "zod",
+      "test",
+      "validation"
+    ],
+    "complexity": "moderate"
+  },
+  "packages/core/src/zod/schemas.ts": {
+    "summary": "Zod 运行时校验 schema 集：含 Auth/Sync/Checkin/Habit/Reflection/Fasting/Food/Exercise/Plan/Sleep/ThoughtTrail/Profile 等及安全 parse 包装。",
+    "tags": [
+      "zod",
+      "validation",
+      "schema-definition",
+      "data-model"
+    ],
+    "complexity": "moderate"
+  },
+  "packages/core/tsconfig.json": {
+    "summary": "packages/core 的 TypeScript 配置，继承 base 并设定 CommonJS/node 模块解析、输出 dist 与 vitest/node 类型。",
+    "tags": [
+      "configuration",
+      "typescript",
+      "build-system"
+    ],
+    "complexity": "simple"
+  },
+  "packages/core/vitest.config.ts": {
+    "summary": "packages/core 的 Vitest 配置，匹配 src 下 *.test.ts 测试文件并启用全局测试 API。",
+    "tags": [
+      "configuration",
+      "test",
+      "vitest"
+    ],
+    "complexity": "simple"
+  },
+  "patches/expo-audio@57.0.0.patch": {
+    "summary": "expo-audio 补丁，移除 useAudioPlayer 中多余的 preferredForwardBufferDuration 参数以兼容新版原生模块。",
+    "tags": [
+      "patch",
+      "expo",
+      "audio",
+      "maintenance"
+    ],
+    "complexity": "simple"
+  },
+  "patches/expo-image-picker@57.0.2.patch": {
+    "summary": "expo-image-picker 补丁，修复 ImagePicker 中从 expo 包导入权限钩子的路径/接口差异。",
+    "tags": [
+      "patch",
+      "expo",
+      "image-picker",
+      "maintenance"
+    ],
+    "complexity": "simple"
+  },
+  "scripts/cleanup_all_ghosts.mjs": {
+    "summary": "服务端幽灵数据清理脚本：遍历所有同步集合，删除 deleted=true、空 name 或数据无法解析的异常记录。",
+    "tags": [
+      "script",
+      "cleanup",
+      "maintenance",
+      "data-integrity"
+    ],
+    "complexity": "complex"
+  },
+  "scripts/cleanup_completed_plans.mjs": {
+    "summary": "级联清理已完成计划的脚本：删除 plans(status=completed) 及其关联 plan_items、plan_item_checkins、daily_custom_todos 与 history。",
+    "tags": [
+      "script",
+      "cleanup",
+      "maintenance",
+      "data-integrity"
+    ],
+    "complexity": "complex"
+  },
+  "scripts/cleanup_ghost_foods.mjs": {
+    "summary": "清理食物空名幽灵记录脚本：处理 data 字段为字节数组或 JSON 字符串的异常 food_entries。",
+    "tags": [
+      "script",
+      "cleanup",
+      "maintenance",
+      "data-integrity"
+    ],
+    "complexity": "moderate"
+  },
+  "scripts/clear-business-data.sh": {
+    "summary": "Shell 脚本：登录 PB 管理员后批量清空所有业务集合（保留系统/配置集合如 user_profiles、push_tokens、ai_configs）。",
+    "tags": [
+      "script",
+      "maintenance",
+      "data-reset",
+      "deployment"
+    ],
+    "complexity": "moderate"
+  },
+  "scripts/clear-business-data.sql": {
+    "summary": "SQL 脚本：在事务内 DELETE 所有业务表数据（habits、reflections、food_entries 等），供数据库直连重置使用。",
+    "tags": [
+      "database",
+      "sql",
+      "data-reset",
+      "maintenance"
+    ],
+    "complexity": "moderate"
+  },
+  "setup.ts": {
+    "summary": "全局测试初始化：设置 __DEV__ 与 mock expo-sqlite、@react-native-community/netinfo，供 Vitest 加载。",
+    "tags": [
+      "test",
+      "configuration",
+      "mock",
+      "setup"
+    ],
+    "complexity": "simple"
+  },
+  "vitest.config.ts": {
+    "summary": "根 Vitest 配置：启用 node 环境与全局 API，匹配 packages/apps 及 __tests__ 测试，注册 setup 与路径别名。",
+    "tags": [
+      "configuration",
+      "test",
+      "vitest",
+      "build-system"
+    ],
+    "complexity": "simple"
+  },
+  "_funcs": {
+    "packages/core/src/zod/schemas.ts:safeParse": "安全解析包装：调用 schema.safeParse 并返回标准化结果，避免异常抛出。",
+    "packages/core/src/zod/schemas.ts:validate": "严格校验包装：调用 schema.parse，失败时抛出带详细信息的错误。",
+    "packages/core/src/zod/schemas.ts:validateRows": "批量校验多行数据，过滤失败项并收集错误，返回合法行集合。",
+    "scripts/cleanup_all_ghosts.mjs:decodeUtf8": "将 PB data 字段中的 UTF-8 字节数组解码为字符串（处理 BMP 与对代理对）。",
+    "scripts/cleanup_all_ghosts.mjs:main": "遍历所有同步集合，识别并删除幽灵/异常记录的主流程。",
+    "scripts/cleanup_completed_plans.mjs:decodeUtf8": "将 PB data 字段中的 UTF-8 字节数组解码为字符串。",
+    "scripts/cleanup_completed_plans.mjs:fetchAll": "分页拉取指定集合下所有记录（处理 PB 分页 limit）。",
+    "scripts/cleanup_completed_plans.mjs:main": "逐级查询并删除已完成计划及其关联数据的主流程。",
+    "scripts/cleanup_ghost_foods.mjs:decodeUtf8": "将 PB data 字段中的 UTF-8 字节数组解码为字符串。",
+    "scripts/cleanup_ghost_foods.mjs:main": "识别并删除空名食物幽灵记录的主流程。"
+  }
+}

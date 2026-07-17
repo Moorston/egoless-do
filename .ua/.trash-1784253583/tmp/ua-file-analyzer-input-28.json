@@ -1,0 +1,1 @@
+{"projectRoot": "D:/MyProject/2026/egoless-do", "batchFiles": [{"path": "infra/docker/api/Dockerfile", "language": "dockerfile", "sizeLines": 18, "fileCategory": "infra"}], "batchImportData": {"infra/docker/api/Dockerfile": []}, "neighborMap": {}, "exportsByPath": {"infra/docker/api/Dockerfile": []}}

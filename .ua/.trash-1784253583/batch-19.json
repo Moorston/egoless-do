@@ -1,0 +1,2810 @@
+{
+  "nodes": [
+    {
+      "id": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "type": "file",
+      "name": "SyncService.ts",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "summary": "移动端SyncEngine向后兼容门面，创建单例并重导出方法。",
+      "tags": [
+        "sync",
+        "facade",
+        "service"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sync/SyncTimestampManager.ts",
+      "type": "file",
+      "name": "SyncTimestampManager.ts",
+      "filePath": "apps/mobile/src/features/sync/SyncTimestampManager.ts",
+      "summary": "管理时钟偏移与最后同步时间戳持久化的工具类。",
+      "tags": [
+        "sync",
+        "timestamp",
+        "clock"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sync/mergeSyncPatch.test.ts",
+      "type": "file",
+      "name": "mergeSyncPatch.test.ts",
+      "filePath": "apps/mobile/src/features/sync/mergeSyncPatch.test.ts",
+      "summary": "mergeSyncPatch纯函数单元测试。",
+      "tags": [
+        "sync",
+        "test",
+        "merge"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sync/mergeSyncPatch.ts",
+      "type": "file",
+      "name": "mergeSyncPatch.ts",
+      "filePath": "apps/mobile/src/features/sync/mergeSyncPatch.ts",
+      "summary": "将同步增量patch合并到当前store状态的纯函数。",
+      "tags": [
+        "sync",
+        "merge",
+        "pure-function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sync/migrateToSyncQueue.ts",
+      "type": "file",
+      "name": "migrateToSyncQueue.ts",
+      "filePath": "apps/mobile/src/features/sync/migrateToSyncQueue.ts",
+      "summary": "一次性迁移脚本：将未同步记录移入同步队列。",
+      "tags": [
+        "sync",
+        "migration",
+        "one-time"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sync/orphanRecovery.ts",
+      "type": "file",
+      "name": "orphanRecovery.ts",
+      "filePath": "apps/mobile/src/features/sync/orphanRecovery.ts",
+      "summary": "孤立恢复逻辑，查找SQLite中未入队记录并重新入队。",
+      "tags": [
+        "sync",
+        "orphan",
+        "recovery"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sync/useSync.ts",
+      "type": "file",
+      "name": "useSync.ts",
+      "filePath": "apps/mobile/src/features/sync/useSync.ts",
+      "summary": "连接SyncService与应用生命周期的hook，前台触发同步。",
+      "tags": [
+        "sync",
+        "hook",
+        "lifecycle"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/i18n/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "apps/mobile/src/i18n/index.ts",
+      "summary": "i18n初始化（intl-pluralrules、中/英/繁中资源与react-i18next）。",
+      "tags": [
+        "i18n",
+        "initialization"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/navigation/LazyScreen.tsx",
+      "type": "file",
+      "name": "LazyScreen.tsx",
+      "filePath": "apps/mobile/src/navigation/LazyScreen.tsx",
+      "summary": "LoadingFallback与LazyScreen懒加载辅助工具。",
+      "tags": [
+        "navigation",
+        "lazy",
+        "suspense"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/navigation/index.tsx",
+      "type": "file",
+      "name": "index.tsx",
+      "filePath": "apps/mobile/src/navigation/index.tsx",
+      "summary": "导航主装配文件，含MainTabs、MainTabBar与AppNavigator。",
+      "tags": [
+        "navigation",
+        "router",
+        "composition"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/navigation/screens.ts",
+      "type": "file",
+      "name": "screens.ts",
+      "filePath": "apps/mobile/src/navigation/screens.ts",
+      "summary": "屏幕注册表，映射路由名到组件配置。",
+      "tags": [
+        "navigation",
+        "screens",
+        "registry"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/sentry.ts",
+      "type": "file",
+      "name": "sentry.ts",
+      "filePath": "apps/mobile/src/sentry.ts",
+      "summary": "Sentry监控初始化与封装（异常/消息/breadcrumb/用户）。",
+      "tags": [
+        "monitoring",
+        "sentry",
+        "error-tracking"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/store/WriteBatcher.test.ts",
+      "type": "file",
+      "name": "WriteBatcher.test.ts",
+      "filePath": "apps/mobile/src/store/WriteBatcher.test.ts",
+      "summary": "WriteBatcher批量写入单元测试。",
+      "tags": [
+        "store",
+        "test",
+        "write-batcher"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/store/WriteBatcher.ts",
+      "type": "file",
+      "name": "WriteBatcher.ts",
+      "filePath": "apps/mobile/src/store/WriteBatcher.ts",
+      "summary": "批量写入封装，缓冲写入请求并定时flush到SQLite。",
+      "tags": [
+        "store",
+        "write-batcher",
+        "buffer"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/store/entityTableMap.ts",
+      "type": "file",
+      "name": "entityTableMap.ts",
+      "filePath": "apps/mobile/src/store/entityTableMap.ts",
+      "summary": "实体类型到SQLite表名的映射表。",
+      "tags": [
+        "store",
+        "entity",
+        "mapping"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/store/initApp.ts",
+      "type": "file",
+      "name": "initApp.ts",
+      "filePath": "apps/mobile/src/store/initApp.ts",
+      "summary": "应用启动初始化，含加载设置、数据库与鉴权。",
+      "tags": [
+        "store",
+        "initialization",
+        "bootstrap"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/store/migrateAsyncStorage.test.ts",
+      "type": "file",
+      "name": "migrateAsyncStorage.test.ts",
+      "filePath": "apps/mobile/src/store/migrateAsyncStorage.test.ts",
+      "summary": "AsyncStorage到SQLite迁移逻辑单元测试。",
+      "tags": [
+        "store",
+        "test",
+        "migration"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/store/migrateAsyncStorage.ts",
+      "type": "file",
+      "name": "migrateAsyncStorage.ts",
+      "filePath": "apps/mobile/src/store/migrateAsyncStorage.ts",
+      "summary": "将旧AsyncStorage数据迁移到SQLite的实现。",
+      "tags": [
+        "store",
+        "migration",
+        "async-storage"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/store/rowMappers.test.ts",
+      "type": "file",
+      "name": "rowMappers.test.ts",
+      "filePath": "apps/mobile/src/store/rowMappers.test.ts",
+      "summary": "行映射器单元测试（覆盖所有实体）。",
+      "tags": [
+        "store",
+        "test",
+        "row-mapper"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/store/rowMappers.ts",
+      "type": "file",
+      "name": "rowMappers.ts",
+      "filePath": "apps/mobile/src/store/rowMappers.ts",
+      "summary": "SQLite行到领域对象的映射器集合。",
+      "tags": [
+        "store",
+        "row-mapper",
+        "mapping"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/store/secureAuth.ts",
+      "type": "file",
+      "name": "secureAuth.ts",
+      "filePath": "apps/mobile/src/store/secureAuth.ts",
+      "summary": "安全令牌存取（保存/加载/清除）。",
+      "tags": [
+        "store",
+        "auth",
+        "secure-storage"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/store/storageAdapter.test.ts",
+      "type": "file",
+      "name": "storageAdapter.test.ts",
+      "filePath": "apps/mobile/src/store/storageAdapter.test.ts",
+      "summary": "apps/mobile/src/store/storageAdapter.test.ts 文件。",
+      "tags": [
+        "code",
+        "test"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/store/storageAdapter.ts",
+      "type": "file",
+      "name": "storageAdapter.ts",
+      "filePath": "apps/mobile/src/store/storageAdapter.ts",
+      "summary": "存储适配器，桥接Zustand persist与SQLite。",
+      "tags": [
+        "store",
+        "storage-adapter",
+        "persistence"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/store/syncStore.ts",
+      "type": "file",
+      "name": "syncStore.ts",
+      "filePath": "apps/mobile/src/store/syncStore.ts",
+      "summary": "同步相关store状态切片。",
+      "tags": [
+        "store",
+        "sync",
+        "slice"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/store/useAppStore.test.ts",
+      "type": "file",
+      "name": "useAppStore.test.ts",
+      "filePath": "apps/mobile/src/store/useAppStore.test.ts",
+      "summary": "useAppStore集成单元测试。",
+      "tags": [
+        "store",
+        "test",
+        "integration"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:setSyncTokenProvider",
+      "type": "function",
+      "name": "setSyncTokenProvider",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        18,
+        18
+      ],
+      "summary": "setSyncTokenProvider 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:setSyncUserIdProvider",
+      "type": "function",
+      "name": "setSyncUserIdProvider",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        19,
+        19
+      ],
+      "summary": "setSyncUserIdProvider 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:setSyncChangeHandler",
+      "type": "function",
+      "name": "setSyncChangeHandler",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        20,
+        20
+      ],
+      "summary": "setSyncChangeHandler 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:setDeletedIdsProvider",
+      "type": "function",
+      "name": "setDeletedIdsProvider",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        21,
+        21
+      ],
+      "summary": "setDeletedIdsProvider 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:setKickedOutHandler",
+      "type": "function",
+      "name": "setKickedOutHandler",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        22,
+        22
+      ],
+      "summary": "setKickedOutHandler 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:setTokenRecoveryFn",
+      "type": "function",
+      "name": "setTokenRecoveryFn",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        23,
+        23
+      ],
+      "summary": "setTokenRecoveryFn 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:setRealtimeLogoutHandler",
+      "type": "function",
+      "name": "setRealtimeLogoutHandler",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        24,
+        24
+      ],
+      "summary": "setRealtimeLogoutHandler 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:setRealtimeUserIdProvider",
+      "type": "function",
+      "name": "setRealtimeUserIdProvider",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        25,
+        25
+      ],
+      "summary": "setRealtimeUserIdProvider 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:setRealtimeRunSync",
+      "type": "function",
+      "name": "setRealtimeRunSync",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        26,
+        26
+      ],
+      "summary": "setRealtimeRunSync 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:setRealtimeApplyServerChanges",
+      "type": "function",
+      "name": "setRealtimeApplyServerChanges",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        27,
+        27
+      ],
+      "summary": "setRealtimeApplyServerChanges 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:setSyncErrorHandler",
+      "type": "function",
+      "name": "setSyncErrorHandler",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        28,
+        28
+      ],
+      "summary": "setSyncErrorHandler 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:setLastSyncAt",
+      "type": "function",
+      "name": "setLastSyncAt",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        29,
+        29
+      ],
+      "summary": "setLastSyncAt 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:runSync",
+      "type": "function",
+      "name": "runSync",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        31,
+        31
+      ],
+      "summary": "runSync 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:isSyncing",
+      "type": "function",
+      "name": "isSyncing",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        32,
+        32
+      ],
+      "summary": "isSyncing 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:getClockOffset",
+      "type": "function",
+      "name": "getClockOffset",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        33,
+        33
+      ],
+      "summary": "getClockOffset 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:isDeviceSyncedBefore",
+      "type": "function",
+      "name": "isDeviceSyncedBefore",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        34,
+        34
+      ],
+      "summary": "isDeviceSyncedBefore 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:getSyncMetrics",
+      "type": "function",
+      "name": "getSyncMetrics",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        35,
+        35
+      ],
+      "summary": "getSyncMetrics 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:getSyncStatus",
+      "type": "function",
+      "name": "getSyncStatus",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        36,
+        36
+      ],
+      "summary": "getSyncStatus 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:connectRealtime",
+      "type": "function",
+      "name": "connectRealtime",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        40,
+        40
+      ],
+      "summary": "connectRealtime 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:disconnectRealtime",
+      "type": "function",
+      "name": "disconnectRealtime",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        41,
+        41
+      ],
+      "summary": "disconnectRealtime 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:isRealtimeConnected",
+      "type": "function",
+      "name": "isRealtimeConnected",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        42,
+        42
+      ],
+      "summary": "isRealtimeConnected 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:softResetSyncState",
+      "type": "function",
+      "name": "softResetSyncState",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        45,
+        45
+      ],
+      "summary": "softResetSyncState 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:resetSyncState",
+      "type": "function",
+      "name": "resetSyncState",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        46,
+        46
+      ],
+      "summary": "resetSyncState 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:forceFullSync",
+      "type": "function",
+      "name": "forceFullSync",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        47,
+        47
+      ],
+      "summary": "forceFullSync 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:rehydrateFromDb",
+      "type": "function",
+      "name": "rehydrateFromDb",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        50,
+        50
+      ],
+      "summary": "rehydrateFromDb 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:registerLocalDelete",
+      "type": "function",
+      "name": "registerLocalDelete",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        53,
+        53
+      ],
+      "summary": "registerLocalDelete 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:initialSync",
+      "type": "function",
+      "name": "initialSync",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        56,
+        56
+      ],
+      "summary": "initialSync 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:resumeInitialSync",
+      "type": "function",
+      "name": "resumeInitialSync",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        57,
+        57
+      ],
+      "summary": "resumeInitialSync 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:setSyncTriggerCallback",
+      "type": "function",
+      "name": "setSyncTriggerCallback",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        60,
+        60
+      ],
+      "summary": "setSyncTriggerCallback 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:triggerSyncDebounced",
+      "type": "function",
+      "name": "triggerSyncDebounced",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        61,
+        61
+      ],
+      "summary": "triggerSyncDebounced 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:clearSyncTrigger",
+      "type": "function",
+      "name": "clearSyncTrigger",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        62,
+        62
+      ],
+      "summary": "clearSyncTrigger 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:resetMigrationFlag",
+      "type": "function",
+      "name": "resetMigrationFlag",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        65,
+        65
+      ],
+      "summary": "resetMigrationFlag 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:setMigrationDone",
+      "type": "function",
+      "name": "setMigrationDone",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        66,
+        66
+      ],
+      "summary": "setMigrationDone 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:isMigrationDone",
+      "type": "function",
+      "name": "isMigrationDone",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        67,
+        67
+      ],
+      "summary": "isMigrationDone 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/SyncService.ts:applyServerChanges",
+      "type": "function",
+      "name": "applyServerChanges",
+      "filePath": "apps/mobile/src/features/sync/SyncService.ts",
+      "lineRange": [
+        70,
+        72
+      ],
+      "summary": "applyServerChanges 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:apps/mobile/src/features/sync/SyncTimestampManager.ts:SyncTimestampManager",
+      "type": "class",
+      "name": "SyncTimestampManager",
+      "filePath": "apps/mobile/src/features/sync/SyncTimestampManager.ts",
+      "lineRange": [
+        12,
+        70
+      ],
+      "summary": "时钟偏移与同步时间戳管理类。",
+      "tags": [
+        "sync",
+        "timestamp"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/mergeSyncPatch.ts:mergeSyncPatch",
+      "type": "function",
+      "name": "mergeSyncPatch",
+      "filePath": "apps/mobile/src/features/sync/mergeSyncPatch.ts",
+      "lineRange": [
+        36,
+        127
+      ],
+      "summary": "合并同步增量patch的纯函数。",
+      "tags": [
+        "sync",
+        "merge"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/migrateToSyncQueue.ts:isMigrationDone",
+      "type": "function",
+      "name": "isMigrationDone",
+      "filePath": "apps/mobile/src/features/sync/migrateToSyncQueue.ts",
+      "lineRange": [
+        15,
+        21
+      ],
+      "summary": "isMigrationDone 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/migrateToSyncQueue.ts:migrateToSyncQueue",
+      "type": "function",
+      "name": "migrateToSyncQueue",
+      "filePath": "apps/mobile/src/features/sync/migrateToSyncQueue.ts",
+      "lineRange": [
+        24,
+        255
+      ],
+      "summary": "旧记录迁入同步队列的迁移函数。",
+      "tags": [
+        "sync",
+        "migration"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/orphanRecovery.ts:recoverOrphans",
+      "type": "function",
+      "name": "recoverOrphans",
+      "filePath": "apps/mobile/src/features/sync/orphanRecovery.ts",
+      "lineRange": [
+        35,
+        85
+      ],
+      "summary": "执行孤立记录恢复。",
+      "tags": [
+        "sync",
+        "orphan"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/orphanRecovery.ts:shouldRunOrphanRecovery",
+      "type": "function",
+      "name": "shouldRunOrphanRecovery",
+      "filePath": "apps/mobile/src/features/sync/orphanRecovery.ts",
+      "lineRange": [
+        90,
+        92
+      ],
+      "summary": "shouldRunOrphanRecovery 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sync/useSync.ts:useSync",
+      "type": "function",
+      "name": "useSync",
+      "filePath": "apps/mobile/src/features/sync/useSync.ts",
+      "lineRange": [
+        28,
+        269
+      ],
+      "summary": "连接SyncService与前端生命周期的hook。",
+      "tags": [
+        "sync",
+        "hook"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/navigation/LazyScreen.tsx:LoadingFallback",
+      "type": "function",
+      "name": "LoadingFallback",
+      "filePath": "apps/mobile/src/navigation/LazyScreen.tsx",
+      "lineRange": [
+        9,
+        17
+      ],
+      "summary": "LoadingFallback 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/navigation/LazyScreen.tsx:LazyScreen",
+      "type": "function",
+      "name": "LazyScreen",
+      "filePath": "apps/mobile/src/navigation/LazyScreen.tsx",
+      "lineRange": [
+        19,
+        21
+      ],
+      "summary": "LazyScreen 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/navigation/LazyScreen.tsx:withLazy",
+      "type": "function",
+      "name": "withLazy",
+      "filePath": "apps/mobile/src/navigation/LazyScreen.tsx",
+      "lineRange": [
+        24,
+        26
+      ],
+      "summary": "withLazy 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/navigation/index.tsx:MainTabBar",
+      "type": "function",
+      "name": "MainTabBar",
+      "filePath": "apps/mobile/src/navigation/index.tsx",
+      "lineRange": [
+        111,
+        172
+      ],
+      "summary": "MainTabBar 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/navigation/index.tsx:MainTabs",
+      "type": "function",
+      "name": "MainTabs",
+      "filePath": "apps/mobile/src/navigation/index.tsx",
+      "lineRange": [
+        174,
+        204
+      ],
+      "summary": "MainTabs 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/navigation/index.tsx:AppNavigator",
+      "type": "function",
+      "name": "AppNavigator",
+      "filePath": "apps/mobile/src/navigation/index.tsx",
+      "lineRange": [
+        206,
+        363
+      ],
+      "summary": "应用导航根装配。",
+      "tags": [
+        "navigation",
+        "router"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/sentry.ts:initSentry",
+      "type": "function",
+      "name": "initSentry",
+      "filePath": "apps/mobile/src/sentry.ts",
+      "lineRange": [
+        16,
+        74
+      ],
+      "summary": "初始化Sentry监控。",
+      "tags": [
+        "monitoring",
+        "sentry"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/sentry.ts:captureException",
+      "type": "function",
+      "name": "captureException",
+      "filePath": "apps/mobile/src/sentry.ts",
+      "lineRange": [
+        80,
+        86
+      ],
+      "summary": "captureException 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/sentry.ts:captureMessage",
+      "type": "function",
+      "name": "captureMessage",
+      "filePath": "apps/mobile/src/sentry.ts",
+      "lineRange": [
+        92,
+        98
+      ],
+      "summary": "captureMessage 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/sentry.ts:addBreadcrumb",
+      "type": "function",
+      "name": "addBreadcrumb",
+      "filePath": "apps/mobile/src/sentry.ts",
+      "lineRange": [
+        104,
+        112
+      ],
+      "summary": "addBreadcrumb 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/sentry.ts:setSentryUser",
+      "type": "function",
+      "name": "setSentryUser",
+      "filePath": "apps/mobile/src/sentry.ts",
+      "lineRange": [
+        119,
+        122
+      ],
+      "summary": "setSentryUser 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/sentry.ts:clearSentryUser",
+      "type": "function",
+      "name": "clearSentryUser",
+      "filePath": "apps/mobile/src/sentry.ts",
+      "lineRange": [
+        128,
+        131
+      ],
+      "summary": "clearSentryUser 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:apps/mobile/src/store/WriteBatcher.ts:WriteBatcher",
+      "type": "class",
+      "name": "WriteBatcher",
+      "filePath": "apps/mobile/src/store/WriteBatcher.ts",
+      "lineRange": [
+        18,
+        232
+      ],
+      "summary": "批量写入封装类。",
+      "tags": [
+        "store",
+        "write-batcher"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/store/entityTableMap.ts:buildEntityTableMap",
+      "type": "function",
+      "name": "buildEntityTableMap",
+      "filePath": "apps/mobile/src/store/entityTableMap.ts",
+      "lineRange": [
+        14,
+        24
+      ],
+      "summary": "buildEntityTableMap 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/initApp.ts:loadSettingsPatch",
+      "type": "function",
+      "name": "loadSettingsPatch",
+      "filePath": "apps/mobile/src/store/initApp.ts",
+      "lineRange": [
+        40,
+        53
+      ],
+      "summary": "loadSettingsPatch 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/initApp.ts:initApp",
+      "type": "function",
+      "name": "initApp",
+      "filePath": "apps/mobile/src/store/initApp.ts",
+      "lineRange": [
+        67,
+        353
+      ],
+      "summary": "应用启动初始化主函数。",
+      "tags": [
+        "store",
+        "initialization"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/store/migrateAsyncStorage.test.ts:seedSettings",
+      "type": "function",
+      "name": "seedSettings",
+      "filePath": "apps/mobile/src/store/migrateAsyncStorage.test.ts",
+      "lineRange": [
+        63,
+        84
+      ],
+      "summary": "seedSettings 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/migrateAsyncStorage.ts:migrateAsyncStorageToSQLite",
+      "type": "function",
+      "name": "migrateAsyncStorageToSQLite",
+      "filePath": "apps/mobile/src/store/migrateAsyncStorage.ts",
+      "lineRange": [
+        49,
+        195
+      ],
+      "summary": "AsyncStorage迁移到SQLite主函数。",
+      "tags": [
+        "store",
+        "migration"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/store/migrateAsyncStorage.ts:migrateSettingsToSQLite",
+      "type": "function",
+      "name": "migrateSettingsToSQLite",
+      "filePath": "apps/mobile/src/store/migrateAsyncStorage.ts",
+      "lineRange": [
+        215,
+        259
+      ],
+      "summary": "migrateSettingsToSQLite 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/secureAuth.ts:saveSecureTokens",
+      "type": "function",
+      "name": "saveSecureTokens",
+      "filePath": "apps/mobile/src/store/secureAuth.ts",
+      "lineRange": [
+        14,
+        25
+      ],
+      "summary": "saveSecureTokens 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/secureAuth.ts:loadSecureTokens",
+      "type": "function",
+      "name": "loadSecureTokens",
+      "filePath": "apps/mobile/src/store/secureAuth.ts",
+      "lineRange": [
+        28,
+        46
+      ],
+      "summary": "loadSecureTokens 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/secureAuth.ts:clearSecureTokens",
+      "type": "function",
+      "name": "clearSecureTokens",
+      "filePath": "apps/mobile/src/store/secureAuth.ts",
+      "lineRange": [
+        49,
+        59
+      ],
+      "summary": "clearSecureTokens 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/storageAdapter.ts:setStorageAdapterTrigger",
+      "type": "function",
+      "name": "setStorageAdapterTrigger",
+      "filePath": "apps/mobile/src/store/storageAdapter.ts",
+      "lineRange": [
+        13,
+        13
+      ],
+      "summary": "setStorageAdapterTrigger 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/storageAdapter.ts:setRegisterLocalDelete",
+      "type": "function",
+      "name": "setRegisterLocalDelete",
+      "filePath": "apps/mobile/src/store/storageAdapter.ts",
+      "lineRange": [
+        17,
+        17
+      ],
+      "summary": "setRegisterLocalDelete 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/storageAdapter.ts:setPersistErrorHandler",
+      "type": "function",
+      "name": "setPersistErrorHandler",
+      "filePath": "apps/mobile/src/store/storageAdapter.ts",
+      "lineRange": [
+        32,
+        34
+      ],
+      "summary": "setPersistErrorHandler 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/storageAdapter.ts:flushWrites",
+      "type": "function",
+      "name": "flushWrites",
+      "filePath": "apps/mobile/src/store/storageAdapter.ts",
+      "lineRange": [
+        36,
+        38
+      ],
+      "summary": "刷新挂起的批量写入。",
+      "tags": [
+        "store",
+        "storage-adapter"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/useAppStore.test.ts:resetStoreDefaults",
+      "type": "function",
+      "name": "resetStoreDefaults",
+      "filePath": "apps/mobile/src/store/useAppStore.test.ts",
+      "lineRange": [
+        157,
+        180
+      ],
+      "summary": "resetStoreDefaults 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setSyncTokenProvider",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setSyncTokenProvider",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setSyncUserIdProvider",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setSyncUserIdProvider",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setSyncChangeHandler",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setSyncChangeHandler",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setDeletedIdsProvider",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setDeletedIdsProvider",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setKickedOutHandler",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setKickedOutHandler",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setTokenRecoveryFn",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setTokenRecoveryFn",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setRealtimeLogoutHandler",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setRealtimeLogoutHandler",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setRealtimeUserIdProvider",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setRealtimeUserIdProvider",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setRealtimeRunSync",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setRealtimeRunSync",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setRealtimeApplyServerChanges",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setRealtimeApplyServerChanges",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setSyncErrorHandler",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setSyncErrorHandler",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setLastSyncAt",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setLastSyncAt",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:runSync",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:runSync",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:isSyncing",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:isSyncing",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:getClockOffset",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:getClockOffset",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:isDeviceSyncedBefore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:isDeviceSyncedBefore",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:getSyncMetrics",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:getSyncMetrics",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:getSyncStatus",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:getSyncStatus",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:connectRealtime",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:connectRealtime",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:disconnectRealtime",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:disconnectRealtime",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:isRealtimeConnected",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:isRealtimeConnected",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:softResetSyncState",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:softResetSyncState",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:resetSyncState",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:resetSyncState",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:forceFullSync",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:forceFullSync",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:rehydrateFromDb",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:rehydrateFromDb",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:registerLocalDelete",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:registerLocalDelete",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:initialSync",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:initialSync",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:resumeInitialSync",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:resumeInitialSync",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setSyncTriggerCallback",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setSyncTriggerCallback",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:triggerSyncDebounced",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:triggerSyncDebounced",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:clearSyncTrigger",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:clearSyncTrigger",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:resetMigrationFlag",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:resetMigrationFlag",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setMigrationDone",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:setMigrationDone",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:isMigrationDone",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:isMigrationDone",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:applyServerChanges",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "function:apps/mobile/src/features/sync/SyncService.ts:applyServerChanges",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncTimestampManager.ts",
+      "target": "class:apps/mobile/src/features/sync/SyncTimestampManager.ts:SyncTimestampManager",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/mergeSyncPatch.ts",
+      "target": "function:apps/mobile/src/features/sync/mergeSyncPatch.ts:mergeSyncPatch",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/mergeSyncPatch.ts",
+      "target": "function:apps/mobile/src/features/sync/mergeSyncPatch.ts:mergeSyncPatch",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/migrateToSyncQueue.ts",
+      "target": "function:apps/mobile/src/features/sync/migrateToSyncQueue.ts:isMigrationDone",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/migrateToSyncQueue.ts",
+      "target": "function:apps/mobile/src/features/sync/migrateToSyncQueue.ts:isMigrationDone",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/migrateToSyncQueue.ts",
+      "target": "function:apps/mobile/src/features/sync/migrateToSyncQueue.ts:migrateToSyncQueue",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/migrateToSyncQueue.ts",
+      "target": "function:apps/mobile/src/features/sync/migrateToSyncQueue.ts:migrateToSyncQueue",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/orphanRecovery.ts",
+      "target": "function:apps/mobile/src/features/sync/orphanRecovery.ts:recoverOrphans",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/orphanRecovery.ts",
+      "target": "function:apps/mobile/src/features/sync/orphanRecovery.ts:recoverOrphans",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/orphanRecovery.ts",
+      "target": "function:apps/mobile/src/features/sync/orphanRecovery.ts:shouldRunOrphanRecovery",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/orphanRecovery.ts",
+      "target": "function:apps/mobile/src/features/sync/orphanRecovery.ts:shouldRunOrphanRecovery",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/useSync.ts",
+      "target": "function:apps/mobile/src/features/sync/useSync.ts:useSync",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/useSync.ts",
+      "target": "function:apps/mobile/src/features/sync/useSync.ts:useSync",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/LazyScreen.tsx",
+      "target": "function:apps/mobile/src/navigation/LazyScreen.tsx:LoadingFallback",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/LazyScreen.tsx",
+      "target": "function:apps/mobile/src/navigation/LazyScreen.tsx:LoadingFallback",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/LazyScreen.tsx",
+      "target": "function:apps/mobile/src/navigation/LazyScreen.tsx:LazyScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/LazyScreen.tsx",
+      "target": "function:apps/mobile/src/navigation/LazyScreen.tsx:LazyScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/LazyScreen.tsx",
+      "target": "function:apps/mobile/src/navigation/LazyScreen.tsx:withLazy",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/LazyScreen.tsx",
+      "target": "function:apps/mobile/src/navigation/LazyScreen.tsx:withLazy",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/index.tsx",
+      "target": "function:apps/mobile/src/navigation/index.tsx:MainTabBar",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/index.tsx",
+      "target": "function:apps/mobile/src/navigation/index.tsx:MainTabs",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/index.tsx",
+      "target": "function:apps/mobile/src/navigation/index.tsx:AppNavigator",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/index.tsx",
+      "target": "function:apps/mobile/src/navigation/index.tsx:AppNavigator",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/sentry.ts",
+      "target": "function:apps/mobile/src/sentry.ts:initSentry",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/sentry.ts",
+      "target": "function:apps/mobile/src/sentry.ts:initSentry",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/sentry.ts",
+      "target": "function:apps/mobile/src/sentry.ts:captureException",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/sentry.ts",
+      "target": "function:apps/mobile/src/sentry.ts:captureException",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/sentry.ts",
+      "target": "function:apps/mobile/src/sentry.ts:captureMessage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/sentry.ts",
+      "target": "function:apps/mobile/src/sentry.ts:captureMessage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/sentry.ts",
+      "target": "function:apps/mobile/src/sentry.ts:addBreadcrumb",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/sentry.ts",
+      "target": "function:apps/mobile/src/sentry.ts:addBreadcrumb",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/sentry.ts",
+      "target": "function:apps/mobile/src/sentry.ts:setSentryUser",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/sentry.ts",
+      "target": "function:apps/mobile/src/sentry.ts:setSentryUser",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/sentry.ts",
+      "target": "function:apps/mobile/src/sentry.ts:clearSentryUser",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/sentry.ts",
+      "target": "function:apps/mobile/src/sentry.ts:clearSentryUser",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/store/WriteBatcher.ts",
+      "target": "class:apps/mobile/src/store/WriteBatcher.ts:WriteBatcher",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/entityTableMap.ts",
+      "target": "function:apps/mobile/src/store/entityTableMap.ts:buildEntityTableMap",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/initApp.ts",
+      "target": "function:apps/mobile/src/store/initApp.ts:loadSettingsPatch",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/initApp.ts",
+      "target": "function:apps/mobile/src/store/initApp.ts:initApp",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/initApp.ts",
+      "target": "function:apps/mobile/src/store/initApp.ts:initApp",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/store/migrateAsyncStorage.test.ts",
+      "target": "function:apps/mobile/src/store/migrateAsyncStorage.test.ts:seedSettings",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/migrateAsyncStorage.ts",
+      "target": "function:apps/mobile/src/store/migrateAsyncStorage.ts:migrateAsyncStorageToSQLite",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/migrateAsyncStorage.ts",
+      "target": "function:apps/mobile/src/store/migrateAsyncStorage.ts:migrateAsyncStorageToSQLite",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/store/migrateAsyncStorage.ts",
+      "target": "function:apps/mobile/src/store/migrateAsyncStorage.ts:migrateSettingsToSQLite",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/migrateAsyncStorage.ts",
+      "target": "function:apps/mobile/src/store/migrateAsyncStorage.ts:migrateSettingsToSQLite",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/store/secureAuth.ts",
+      "target": "function:apps/mobile/src/store/secureAuth.ts:saveSecureTokens",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/secureAuth.ts",
+      "target": "function:apps/mobile/src/store/secureAuth.ts:saveSecureTokens",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/store/secureAuth.ts",
+      "target": "function:apps/mobile/src/store/secureAuth.ts:loadSecureTokens",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/secureAuth.ts",
+      "target": "function:apps/mobile/src/store/secureAuth.ts:loadSecureTokens",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/store/secureAuth.ts",
+      "target": "function:apps/mobile/src/store/secureAuth.ts:clearSecureTokens",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/secureAuth.ts",
+      "target": "function:apps/mobile/src/store/secureAuth.ts:clearSecureTokens",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/store/storageAdapter.ts",
+      "target": "function:apps/mobile/src/store/storageAdapter.ts:setStorageAdapterTrigger",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/storageAdapter.ts",
+      "target": "function:apps/mobile/src/store/storageAdapter.ts:setStorageAdapterTrigger",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/store/storageAdapter.ts",
+      "target": "function:apps/mobile/src/store/storageAdapter.ts:setRegisterLocalDelete",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/storageAdapter.ts",
+      "target": "function:apps/mobile/src/store/storageAdapter.ts:setRegisterLocalDelete",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/store/storageAdapter.ts",
+      "target": "function:apps/mobile/src/store/storageAdapter.ts:setPersistErrorHandler",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/storageAdapter.ts",
+      "target": "function:apps/mobile/src/store/storageAdapter.ts:setPersistErrorHandler",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/store/storageAdapter.ts",
+      "target": "function:apps/mobile/src/store/storageAdapter.ts:flushWrites",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/storageAdapter.ts",
+      "target": "function:apps/mobile/src/store/storageAdapter.ts:flushWrites",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/store/useAppStore.test.ts",
+      "target": "function:apps/mobile/src/store/useAppStore.test.ts:resetStoreDefaults",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "file:apps/mobile/src/db/queries.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "file:apps/mobile/src/db/syncQueue.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "target": "file:apps/mobile/src/features/sync/SyncEngine.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncTimestampManager.ts",
+      "target": "file:apps/mobile/src/db/schema.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/SyncTimestampManager.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/mergeSyncPatch.test.ts",
+      "target": "file:apps/mobile/src/features/sync/mergeSyncPatch.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/mergeSyncPatch.test.ts",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/mergeSyncPatch.ts",
+      "target": "file:apps/mobile/src/features/sync/SyncApplyService.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/mergeSyncPatch.ts",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/mergeSyncPatch.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/migrateToSyncQueue.ts",
+      "target": "file:apps/mobile/src/db/schema.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/migrateToSyncQueue.ts",
+      "target": "file:apps/mobile/src/db/syncQueue.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/migrateToSyncQueue.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/orphanRecovery.ts",
+      "target": "file:apps/mobile/src/db/schema.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/orphanRecovery.ts",
+      "target": "file:apps/mobile/src/db/syncQueue.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/orphanRecovery.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/useSync.ts",
+      "target": "file:apps/mobile/src/db/schema.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/useSync.ts",
+      "target": "file:apps/mobile/src/db/syncQueue.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/useSync.ts",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/useSync.ts",
+      "target": "file:apps/mobile/src/features/sync/mergeSyncPatch.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/useSync.ts",
+      "target": "file:apps/mobile/src/features/sync/migrateToSyncQueue.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/useSync.ts",
+      "target": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/useSync.ts",
+      "target": "file:apps/mobile/src/store/storageAdapter.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/useSync.ts",
+      "target": "file:apps/mobile/src/store/syncStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/useSync.ts",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sync/useSync.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/i18n/index.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/LazyScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/LazyScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/index.tsx",
+      "target": "file:apps/mobile/src/components/ErrorBoundary.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/index.tsx",
+      "target": "file:apps/mobile/src/components/FabButton.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/index.tsx",
+      "target": "file:apps/mobile/src/components/KickOutModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/index.tsx",
+      "target": "file:apps/mobile/src/components/StarfieldBackground.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/index.tsx",
+      "target": "file:apps/mobile/src/components/SyncBanner.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/index.tsx",
+      "target": "file:apps/mobile/src/components/SyncProgressOverlay.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/index.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/index.tsx",
+      "target": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/index.tsx",
+      "target": "file:apps/mobile/src/features/sync/useSync.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/index.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/index.tsx",
+      "target": "file:apps/mobile/src/navigation/LazyScreen.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/index.tsx",
+      "target": "file:apps/mobile/src/navigation/screens.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/index.tsx",
+      "target": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/index.tsx",
+      "target": "file:apps/mobile/src/navigation/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/index.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/index.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/WriteBatcher.test.ts",
+      "target": "file:apps/mobile/src/store/WriteBatcher.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/WriteBatcher.ts",
+      "target": "file:apps/mobile/src/db/schema.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/WriteBatcher.ts",
+      "target": "file:apps/mobile/src/db/sqlHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/WriteBatcher.ts",
+      "target": "file:apps/mobile/src/store/entityTableMap.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/WriteBatcher.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/entityTableMap.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/initApp.ts",
+      "target": "file:apps/mobile/src/db/schema.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/initApp.ts",
+      "target": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/initApp.ts",
+      "target": "file:apps/mobile/src/sentry.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/initApp.ts",
+      "target": "file:apps/mobile/src/store/migrateAsyncStorage.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/initApp.ts",
+      "target": "file:apps/mobile/src/store/secureAuth.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/initApp.ts",
+      "target": "file:apps/mobile/src/store/storageAdapter.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/initApp.ts",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/initApp.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/migrateAsyncStorage.test.ts",
+      "target": "file:apps/mobile/src/store/migrateAsyncStorage.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/migrateAsyncStorage.test.ts",
+      "target": "file:apps/mobile/src/store/storageAdapter.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/migrateAsyncStorage.ts",
+      "target": "file:apps/mobile/src/db/schema.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/migrateAsyncStorage.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/rowMappers.test.ts",
+      "target": "file:apps/mobile/src/store/rowMappers.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/rowMappers.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/secureAuth.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/storageAdapter.test.ts",
+      "target": "file:apps/mobile/src/store/storageAdapter.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/storageAdapter.ts",
+      "target": "file:apps/mobile/src/db/schema.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/storageAdapter.ts",
+      "target": "file:apps/mobile/src/store/entityTableMap.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/storageAdapter.ts",
+      "target": "file:apps/mobile/src/store/WriteBatcher.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/storageAdapter.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/useAppStore.test.ts",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/useAppStore.test.ts",
+      "target": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/useAppStore.test.ts",
+      "target": "file:apps/mobile/src/store/storageAdapter.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/useAppStore.test.ts",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    }
+  ]
+}

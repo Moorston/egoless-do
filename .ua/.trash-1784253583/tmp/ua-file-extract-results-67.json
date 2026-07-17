@@ -1,0 +1,665 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 25,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "backend/pb_migrations/1782352478_created_global_checkins.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 160,
+      "nonEmptyLines": 156,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1782352495_created_global_stats.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 96,
+      "nonEmptyLines": 93,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1782445175_created_push_tokens.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 90,
+      "nonEmptyLines": 87,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1782500000_create_all_sync_collections.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 333,
+      "nonEmptyLines": 319,
+      "callGraph": [
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 9
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "Object.assign",
+          "lineNumber": 14
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.save",
+          "lineNumber": 23
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 26
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.save",
+          "lineNumber": 28
+        },
+        {
+          "caller": "setRules",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 34
+        },
+        {
+          "caller": "setRules",
+          "callee": "txApp.save",
+          "lineNumber": 40
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1782600000_add_body_collections.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 120,
+      "nonEmptyLines": 110,
+      "callGraph": [
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 8
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "Object.assign",
+          "lineNumber": 12
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.save",
+          "lineNumber": 21
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 23
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.save",
+          "lineNumber": 25
+        },
+        {
+          "caller": "setRules",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 31
+        },
+        {
+          "caller": "setRules",
+          "callee": "txApp.save",
+          "lineNumber": 37
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1782700000_add_vow_collections.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 91,
+      "nonEmptyLines": 82,
+      "callGraph": [
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 8
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "Object.assign",
+          "lineNumber": 12
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.save",
+          "lineNumber": 17
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 19
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.save",
+          "lineNumber": 21
+        },
+        {
+          "caller": "setRules",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 27
+        },
+        {
+          "caller": "setRules",
+          "callee": "txApp.save",
+          "lineNumber": 31
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1782800000_add_mantra_collections.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 73,
+      "nonEmptyLines": 69,
+      "callGraph": [
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 7
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "Object.assign",
+          "lineNumber": 9
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.save",
+          "lineNumber": 14
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 16
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.save",
+          "lineNumber": 18
+        },
+        {
+          "caller": "setRules",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 23
+        },
+        {
+          "caller": "setRules",
+          "callee": "txApp.save",
+          "lineNumber": 27
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1782900000_add_sleep_and_give_collections.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 73,
+      "nonEmptyLines": 69,
+      "callGraph": [
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 7
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "Object.assign",
+          "lineNumber": 9
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.save",
+          "lineNumber": 14
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 16
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.save",
+          "lineNumber": 18
+        },
+        {
+          "caller": "setRules",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 23
+        },
+        {
+          "caller": "setRules",
+          "callee": "txApp.save",
+          "lineNumber": 27
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1782910000_add_diet_collections.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 73,
+      "nonEmptyLines": 69,
+      "callGraph": [
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 7
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "Object.assign",
+          "lineNumber": 9
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.save",
+          "lineNumber": 14
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 16
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.save",
+          "lineNumber": 18
+        },
+        {
+          "caller": "setRules",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 23
+        },
+        {
+          "caller": "setRules",
+          "callee": "txApp.save",
+          "lineNumber": 27
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1782920000_add_sutra_reading_collection.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 64,
+      "nonEmptyLines": 60,
+      "callGraph": [
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 7
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "Object.assign",
+          "lineNumber": 9
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.save",
+          "lineNumber": 14
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 16
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.save",
+          "lineNumber": 18
+        },
+        {
+          "caller": "setRules",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 23
+        },
+        {
+          "caller": "setRules",
+          "callee": "txApp.save",
+          "lineNumber": 27
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1782930000_add_fear_collections.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 80,
+      "nonEmptyLines": 76,
+      "callGraph": [
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 7
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "Object.assign",
+          "lineNumber": 9
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.save",
+          "lineNumber": 14
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 16
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.save",
+          "lineNumber": 18
+        },
+        {
+          "caller": "setRules",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 23
+        },
+        {
+          "caller": "setRules",
+          "callee": "txApp.save",
+          "lineNumber": 27
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1782940000_add_zhiguan_and_breath_collections.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 79,
+      "nonEmptyLines": 75,
+      "callGraph": [
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 7
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "Object.assign",
+          "lineNumber": 10
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.save",
+          "lineNumber": 15
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 18
+        },
+        {
+          "caller": "ensureCollection",
+          "callee": "txApp.save",
+          "lineNumber": 20
+        },
+        {
+          "caller": "setRules",
+          "callee": "txApp.findCollectionByNameOrId",
+          "lineNumber": 25
+        },
+        {
+          "caller": "setRules",
+          "callee": "txApp.save",
+          "lineNumber": 29
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1782950000_fix_collection_permissions.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 37,
+      "nonEmptyLines": 31,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1783352556_created_account_lockouts.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 118,
+      "nonEmptyLines": 116,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1783352556_created_audit_logs.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 151,
+      "nonEmptyLines": 149,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1783352556_created_refresh_tokens.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 117,
+      "nonEmptyLines": 115,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1783352556_created_token_blacklist.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 79,
+      "nonEmptyLines": 77,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1783352556_created_user_mfa.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 115,
+      "nonEmptyLines": 113,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1783352556_created_user_roles.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 94,
+      "nonEmptyLines": 92,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1783352556_created_verification_codes.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 94,
+      "nonEmptyLines": 92,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1783660940_updated_refresh_tokens.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 34,
+      "nonEmptyLines": 30,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1783661066_updated_audit_logs.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 174,
+      "nonEmptyLines": 158,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1783661086_updated_user_mfa.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 34,
+      "nonEmptyLines": 30,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1783689997_deleted_map_pins.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 106,
+      "nonEmptyLines": 104,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1783689998_deleted_intents.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 102,
+      "nonEmptyLines": 100,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    }
+  ]
+}

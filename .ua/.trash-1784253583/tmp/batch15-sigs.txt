@@ -1,0 +1,115 @@
+============================================================
+FILE: infra/docker/api/src/account-lockout.ts  (244l)
+  IMPORTS: ["import { getAdminPb, escapeFilter } from './pb.js';", "import { errMessage, errStatus } from './errors.js';"]
+  fns: ['withEmailLock(17-32)', 'isAccountLocked(47-77)', 'recordLoginAttempt(82-84)', 'recordLoginAttemptLocked(86-155)', 'cleanupExpiredLockouts(160-196)', 'initAccountLockoutCollection(201-236)', 'getRemainingLockoutTime(241-244)']
+============================================================
+FILE: infra/docker/api/src/audit-log.ts  (209l)
+  IMPORTS: ["import { getAdminPb, escapeFilter } from './pb.js';", "import { errMessage, errStatus } from './errors.js';"]
+  fns: ['logAuditEvent(46-63)', 'getUserAuditLogs(68-95)', 'getRecentSecurityEvents(100-127)', 'cleanupExpiredAuditLogs(132-156)', 'initAuditLogCollection(161-198)', 'extractClientInfo(203-209)']
+============================================================
+FILE: infra/docker/api/src/auth-middleware.ts  (158l)
+  IMPORTS: ["import { isTokenBlacklisted } from './token-blacklist.js';"]
+  fns: ['base64UrlDecode(4-8)', 'jwtPayload(10-18)', 'jwtExp(20-23)', 'isBlacklisted(28-30)', 'verifyAuth(40-125)', 'sanitizeError(128-133)', 'validatePassword(150-158)']
+============================================================
+FILE: infra/docker/api/src/auth/change-password.ts  (116l)
+  IMPORTS: ["import { Hono } from 'hono';", "import { getClientIp, resetRateLimit } from '../rate-limit.js';", "import { validatePassword, sanitizeError } from '../auth-middleware.js';", "import { blacklistToken } from '../token-blacklist.js';", "import { revokeAllUserRefreshTokens } from '../token-refresh-rotation.js';", "import { getPb, getAdminPb } from '../pb.js';"]
+  fns: []
+============================================================
+FILE: infra/docker/api/src/auth/check-email.ts  (50l)
+  IMPORTS: ["import { Hono } from 'hono';", "import { getAdminPb, escapeFilter } from '../pb.js';", "import { errMessage, errStatus } from '../errors.js';", "import { getClientIp, checkEmailRateLimit } from '../rate-limit.js';"]
+  fns: ['captchaDelay(10-13)']
+============================================================
+FILE: infra/docker/api/src/auth/login.ts  (146l)
+  IMPORTS: ["import { Hono } from 'hono';", "import { getPb } from '../pb.js';", "import { getClientIp, loginRateLimit, emailRateLimit } from '../rate-limit.js';", "import { isAccountLocked, recordLoginAttempt, getRemainingLockoutTime } from '../account-lockout.js';", "import { logAuditEvent, AuditEvent, extractClientInfo } from '../audit-log.js';", "import { generateRefreshToken, createRefreshToken } from '../token-refresh-rotation.js';"]
+  fns: []
+============================================================
+FILE: infra/docker/api/src/auth/logout.ts  (88l)
+  IMPORTS: ["import { Hono } from 'hono';", "import { verifyAuth, jwtExp } from '../auth-middleware.js';", "import { blacklistToken } from '../token-blacklist.js';", "import { revokeRefreshToken, revokeAllUserRefreshTokens } from '../token-refresh-rotation.js';", "import { getClientIp } from '../rate-limit.js';", "import { logAuditEvent, AuditEvent, extractClientInfo } from '../audit-log.js';"]
+  fns: []
+============================================================
+FILE: infra/docker/api/src/auth/me.ts  (63l)
+  IMPORTS: ["import { Hono } from 'hono';", "import { verifyAuth } from '../auth-middleware.js';", "import { getPb } from '../pb.js';", "import { errStatus } from '../errors.js';", "import { getClientIp } from '../rate-limit.js';"]
+  fns: []
+============================================================
+FILE: infra/docker/api/src/auth/mfa.ts  (118l)
+  IMPORTS: ["import { Hono } from 'hono';", "import { verifyAuth } from '../auth-middleware.js';", "import { isMFAEnabled, enableMFA, disableMFA, verifyMFACode, getMFAConfig } from '../mfa.js';", "import { logAuditEvent, AuditEvent, extractClientInfo } from '../audit-log.js';"]
+  fns: []
+============================================================
+FILE: infra/docker/api/src/auth/rbac.ts  (92l)
+  IMPORTS: ["import { Hono } from 'hono';", "import { verifyAuth } from '../auth-middleware.js';", "import { getUserRole, setUserRole, hasPermission, getUserPermissions, Role, Permission } from '../rbac.js';", "import { logAuditEvent, AuditEvent, extractClientInfo } from '../audit-log.js';"]
+  fns: []
+============================================================
+FILE: infra/docker/api/src/auth/refresh.ts  (77l)
+  IMPORTS: ["import { Hono } from 'hono';", "import { getClientIp, refreshRateLimit } from '../rate-limit.js';", "import { generateRefreshToken, createRefreshToken, validateAndRevokeRefreshToken } from '../token-refresh-rotation.js';", "import { getInternalSecret } from '../config.js';"]
+  fns: []
+============================================================
+FILE: infra/docker/api/src/auth/register.ts  (119l)
+  IMPORTS: ["import { Hono } from 'hono';", "import crypto from 'crypto';", "import { getPb } from '../pb.js';", "import { errStatus } from '../errors.js';", "import { getVerificationCode, deleteVerificationCode } from '../verification-code.js';", "import { getClientIp, registerRateLimit } from '../rate-limit.js';", "import { validatePassword, sanitizeError } from '../auth-middleware.js';", "import { generateRefreshToken, createRefreshToken } from '../token-refresh-rotation.js';", "import { logAuditEvent, AuditEvent, extractClientInfo } from '../audit-log.js';"]
+  fns: []
+============================================================
+FILE: infra/docker/api/src/auth/reset-password.ts  (106l)
+  IMPORTS: ["import { Hono } from 'hono';", "import crypto from 'crypto';", "import { getAdminPb, escapeFilter } from '../pb.js';", "import { errStatus } from '../errors.js';", "import { getVerificationCode, deleteVerificationCode } from '../verification-code.js';", "import { blacklistToken } from '../token-blacklist.js';", "import { revokeAllUserRefreshTokens } from '../token-refresh-rotation.js';", "import { getClientIp, resetRateLimit } from '../rate-limit.js';", "import { validatePassword, sanitizeError } from '../auth-middleware.js';"]
+  fns: []
+============================================================
+FILE: infra/docker/api/src/auth/send-code.ts  (117l)
+  IMPORTS: ["import { Hono } from 'hono';", "import crypto from 'crypto';", "import nodemailer from 'nodemailer';", "import { getAdminPb, escapeFilter } from '../pb.js';", "import { errMessage, errStatus } from '../errors.js';", "import { saveVerificationCode, canSendCode, cleanupExpiredCodes } from '../verification-code.js';", "import { getClientIp, sendCodeRateLimit } from '../rate-limit.js';", "import { cfg } from '../config.js';"]
+  fns: ['generateCode(14-16)', 'getTransporter(18-31)']
+============================================================
+FILE: infra/docker/api/src/auth/wechat.ts  (93l)
+  IMPORTS: ["import { Hono } from 'hono';", "import crypto from 'crypto';", "import { getPb, getAdminPb, escapeFilter } from '../pb.js';", "import { errMessage, errStatus } from '../errors.js';", "import { getClientIp, wechatRateLimit } from '../rate-limit.js';", "import { sanitizeError } from '../auth-middleware.js';", "import { generateRefreshToken, createRefreshToken } from '../token-refresh-rotation.js';"]
+  fns: ['wechatPassword(13-17)']
+============================================================
+FILE: infra/docker/api/src/config.ts  (88l)
+  IMPORTS: ["import { config } from 'dotenv';", "import path from 'path';", "import { fileURLToPath } from 'url';"]
+  fns: ['env(19-21)', 'envRequired(23-29)', 'getInternalSecret(85-88)']
+============================================================
+FILE: infra/docker/api/src/errors.ts  (18l)
+  fns: ['errMessage(5-9)', 'errStatus(12-18)']
+============================================================
+FILE: infra/docker/api/src/index.ts  (130l)
+  IMPORTS: ["import { serve } from '@hono/node-server';", "import { Hono } from 'hono';", "import { cors } from 'hono/cors';", "import { cfg } from './config.js';", "import { initTokenBlacklistCollection } from './token-blacklist.js';", "import { initVerificationCodeCollection } from './verification-code.js';", "import { initRefreshTokenCollection } from './token-refresh-rotation.js';", "import { initAccountLockoutCollection } from './account-lockout.js';", "import { initAuditLogCollection } from './audit-log.js';", "import { initMFACollection } from './mfa.js';", "import { initRBACCollection } from './rbac.js';", "import loginApp from './auth/login.js';", "import registerApp from './auth/register.js';", "import refreshApp from './auth/refresh.js';", "import logoutApp from './auth/logout.js';", "import meApp from './auth/me.js';", "import sendCodeApp from './auth/send-code.js';", "import checkEmailApp from './auth/check-email.js';", "import resetPasswordApp from './auth/reset-password.js';", "import changePasswordApp from './auth/change-password.js';"]
+  fns: []
+============================================================
+FILE: infra/docker/api/src/mfa.ts  (284l)
+  IMPORTS: ["import { getAdminPb, escapeFilter } from './pb.js';", "import { errMessage, errStatus } from './errors.js';", "import crypto from 'crypto';", "import bcrypt from 'bcryptjs';"]
+  fns: ['generateMFASecret(24-26)', 'generateTOTP(31-49)', 'verifyTOTP(54-82)', 'generateBackupCodes(87-93)', 'isMFAEnabled(98-110)', 'getMFAConfig(115-135)', 'enableMFA(140-184)', 'disableMFA(189-205)', 'verifyMFACode(210-244)', 'initMFACollection(249-284)']
+============================================================
+FILE: infra/docker/api/src/monitoring.ts  (46l)
+  IMPORTS: ["import { Hono } from 'hono';"]
+  fns: []
+============================================================
+FILE: infra/docker/api/src/pb.ts  (72l)
+  IMPORTS: ["import PocketBase from 'pocketbase';"]
+  fns: ['getPb(8-12)', 'authenticateAdmin(20-31)', 'getAdminPb(33-59)', 'escapeFilter(62-70)']
+============================================================
+FILE: infra/docker/api/src/plan.ts  (122l)
+  IMPORTS: ["import { Hono } from 'hono';", "import nodemailer from 'nodemailer';", "import { verifyAuth } from './auth-middleware.js';", "import { getAdminPb } from './pb.js';", "import { errStatus } from './errors.js';", "import { getClientIp } from './rate-limit.js';", "import { cfg } from './config.js';"]
+  fns: ['escapeHtml(11-13)', 'getTransporter(15-28)']
+============================================================
+FILE: infra/docker/api/src/push.ts  (277l)
+  IMPORTS: ["import { Hono } from 'hono';", "import { verifyAuth } from './auth-middleware.js';", "import { getPb, escapeFilter } from './pb.js';", "import { errStatus } from './errors.js';", "import { getClientIp } from './rate-limit.js';"]
+  fns: ['sendExpoPush(215-275)']
+============================================================
+FILE: infra/docker/api/src/rate-limit.ts  (238l)
+  IMPORTS: ["import { readFile, writeFile, mkdir } from 'fs/promises';", "import { existsSync } from 'fs';", "import { dirname } from 'path';"]
+  fns: ['loadPersistedState(33-41)', 'savePersistedState(43-60)', 'initPersistence(63-76)', 'createRateLimiter(80-115)', 'getClientIp(131-137)', 'createPBRateLimiter(154-207)', 'cleanupExpiredRateLimits(209-233)']
+============================================================
+FILE: infra/docker/api/src/rbac.ts  (189l)
+  IMPORTS: ["import { getAdminPb, escapeFilter } from './pb.js';", "import { errMessage, errStatus } from './errors.js';"]
+  fns: ['getUserRole(74-86)', 'setUserRole(91-125)', 'hasPermission(130-134)', 'hasAnyPermission(139-143)', 'getUserPermissions(148-151)', 'initRBACCollection(156-189)']
+============================================================
+FILE: infra/docker/api/src/setup.ts  (122l)
+  IMPORTS: ["import { Hono } from 'hono';", "import { createHmac, timingSafeEqual } from 'crypto';", "import { getPb } from './pb.js';", "import { getClientIp } from './rate-limit.js';"]
+  fns: []
+============================================================
+FILE: infra/docker/api/src/token-blacklist.ts  (134l)
+  IMPORTS: ["import { getPb, getAdminPb, escapeFilter } from './pb.js';", "import { errMessage, errStatus } from './errors.js';"]
+  fns: ['isTokenBlacklisted(21-43)', 'blacklistToken(48-60)', 'cleanupExpiredTokens(65-96)', 'initTokenBlacklistCollection(102-134)']
+============================================================
+FILE: infra/docker/api/src/token-refresh-rotation.ts  (266l)
+  IMPORTS: ["import { randomBytes } from 'crypto';", "import { getAdminPb, escapeFilter } from './pb.js';", "import { errStatus } from './errors.js';"]
+  fns: ['generateNonce(13-15)', 'safeErrId(18-23)', 'generateRefreshToken(29-31)', 'createRefreshToken(46-60)', 'validateAndRevokeRefreshToken(73-120)', 'validateRefreshToken(126-138)', 'revokeRefreshToken(143-158)', 'revokeAllUserRefreshTokens(164-200)', 'cleanupExpiredRefreshTokens(205-226)', 'initRefreshTokenCollection(231-266)']
+============================================================
+FILE: infra/docker/api/src/verification-code.ts  (165l)
+  IMPORTS: ["import { getAdminPb, escapeFilter } from './pb.js';", "import { errMessage, errStatus } from './errors.js';"]
+  fns: ['saveVerificationCode(20-42)', 'getVerificationCode(47-65)', 'deleteVerificationCode(70-82)', 'cleanupExpiredCodes(87-108)', 'canSendCode(113-126)', 'initVerificationCodeCollection(132-165)']

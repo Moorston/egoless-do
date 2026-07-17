@@ -1,0 +1,47 @@
+{
+  "nodes": [
+    {
+      "id": "document:docs/claude-md-pieces/core-philosophy.md",
+      "type": "document",
+      "name": "core-philosophy.md",
+      "filePath": "docs/claude-md-pieces/core-philosophy.md",
+      "summary": "Core 哲学文档，规定 packages/core 为唯一业务真理来源，业务逻辑/类型/常量/纯函数只放 core，apps 是壳、infra 是运维，禁止 core 反向依赖 apps 或出现平台特定 API。",
+      "tags": ["documentation", "architecture", "core", "philosophy"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:docs/claude-md-pieces/decision-tree.md",
+      "type": "document",
+      "name": "decision-tree.md",
+      "filePath": "docs/claude-md-pieces/decision-tree.md",
+      "summary": "代码归属决策树，指导把文件放到 core/business、core/ui、core/types、core/constants、core/utils 还是 apps 中，是架构一致性的硬约束。",
+      "tags": ["documentation", "architecture", "decision-tree", "conventions"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:docs/claude-md-pieces/project-dir-layout.md",
+      "type": "document",
+      "name": "project-dir-layout.md",
+      "filePath": "docs/claude-md-pieces/project-dir-layout.md",
+      "summary": "项目目录结构范本项目模板，描述 monorepo 下 apps/packages/core/backend/infra/openspec 的标准布局与已知技术债清单。",
+      "tags": ["documentation", "architecture", "directory-structure", "template"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:docs/claude-md-pieces/core-philosophy.md",
+      "target": "document:docs/claude-md-pieces/decision-tree.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/claude-md-pieces/core-philosophy.md",
+      "target": "document:docs/claude-md-pieces/project-dir-layout.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

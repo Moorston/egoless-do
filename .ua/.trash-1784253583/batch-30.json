@@ -1,0 +1,251 @@
+{
+  "nodes": [
+    {
+      "id": "service:.dockerignore",
+      "type": "service",
+      "name": ".dockerignore",
+      "filePath": ".dockerignore",
+      "summary": "Docker 构建忽略规则文件，排除 node_modules、git、.env 与构建产物等无关构建上下文。",
+      "tags": [
+        "containerization",
+        "infrastructure",
+        "docker",
+        "configuration"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:.env.example",
+      "type": "config",
+      "name": ".env.example",
+      "filePath": ".env.example",
+      "summary": "环境变量模板，涵盖 PocketBase、SMTP、加密密钥、微信登录、Sentry、Expo/EAS 等配置说明。",
+      "tags": [
+        "configuration",
+        "environment",
+        "secrets",
+        "documentation"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "document:AGENTS.md",
+      "type": "document",
+      "name": "AGENTS.md",
+      "filePath": "AGENTS.md",
+      "summary": "项目宪法与工程规范：产品定位、核心原则、目录结构决策树、Forbidden Imports 红线、开发流程与 PR Review 清单。",
+      "tags": [
+        "documentation",
+        "governance",
+        "architecture",
+        "entry-point",
+        "conventions"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "document:CLAUDE.md",
+      "type": "document",
+      "name": "CLAUDE.md",
+      "filePath": "CLAUDE.md",
+      "summary": "Claude Memory 入口：描述项目、引用 memory 文件列表、指令与技能路由表。",
+      "tags": [
+        "documentation",
+        "entry-point",
+        "claude-memory",
+        "conventions"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:PRIVACY_POLICY.md",
+      "type": "document",
+      "name": "PRIVACY_POLICY.md",
+      "filePath": "PRIVACY_POLICY.md",
+      "summary": "隐私政策：感念/打卡/位置/健康数据的存储位置与上传承诺，匿名社区规则及数据删除方式。",
+      "tags": [
+        "documentation",
+        "privacy",
+        "policy",
+        "legal"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "README.md",
+      "summary": "项目总览文档：平台支持、功能模块列表、技术架构、统一存储/同步架构、快速开始与测试说明。",
+      "tags": [
+        "documentation",
+        "entry-point",
+        "overview",
+        "architecture"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "config:package.json",
+      "type": "config",
+      "name": "package.json",
+      "filePath": "package.json",
+      "summary": "Turborepo 根包配置：定义 workspace 脚本、devDependencies、pnpm overrides 与依赖。",
+      "tags": [
+        "configuration",
+        "build-system",
+        "turbo",
+        "workspace",
+        "entry-point"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:pnpm-workspace.yaml",
+      "type": "config",
+      "name": "pnpm-workspace.yaml",
+      "filePath": "pnpm-workspace.yaml",
+      "summary": "pnpm workspace 声明，指定 apps/mobile 与 packages/* 为工作区（排除 apps/web）。",
+      "tags": [
+        "configuration",
+        "workspace",
+        "pnpm",
+        "infrastructure"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:skills-lock.json",
+      "type": "config",
+      "name": "skills-lock.json",
+      "filePath": "skills-lock.json",
+      "summary": "已安装 skills 锁定文件：grill-me、improve-codebase-architecture、tdd 的来源与哈希。",
+      "tags": [
+        "configuration",
+        "skills",
+        "lockfile"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:tsconfig.json",
+      "type": "config",
+      "name": "tsconfig.json",
+      "filePath": "tsconfig.json",
+      "summary": "TypeScript 根配置，继承 expo/tsconfig.base 并排除 _archive 与 node_modules。",
+      "tags": [
+        "configuration",
+        "typescript",
+        "build-system"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:turbo.json",
+      "type": "config",
+      "name": "turbo.json",
+      "filePath": "turbo.json",
+      "summary": "Turborepo 任务定义：build 依赖链、输出缓存与 dev/test/lint/type-check 任务。",
+      "tags": [
+        "configuration",
+        "build-system",
+        "turbo",
+        "ci-cd"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "service:.dockerignore",
+      "target": "service:infra/docker/api/Dockerfile",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:.env.example",
+      "target": "config:package.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:turbo.json",
+      "target": "config:package.json",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:turbo.json",
+      "target": "config:pnpm-workspace.yaml",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:tsconfig.json",
+      "target": "config:package.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:pnpm-workspace.yaml",
+      "target": "config:package.json",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "document:CLAUDE.md",
+      "target": "document:README.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:AGENTS.md",
+      "target": "document:README.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:AGENTS.md",
+      "target": "config:package.json",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:PRIVACY_POLICY.md",
+      "target": "document:README.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:README.md",
+      "target": "config:package.json",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:README.md",
+      "target": "document:CLAUDE.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:skills-lock.json",
+      "target": "config:package.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

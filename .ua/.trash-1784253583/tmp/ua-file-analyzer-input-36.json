@@ -1,0 +1,28 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": ".trellis/spec/guides/code-reuse-thinking-guide.md",
+      "language": "markdown",
+      "sizeLines": 223,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/spec/guides/cross-layer-thinking-guide.md",
+      "language": "markdown",
+      "sizeLines": 327,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/spec/guides/index.md",
+      "language": "markdown",
+      "sizeLines": 97,
+      "fileCategory": "docs"
+    }
+  ],
+  "batchImportData": {
+    ".trellis/spec/guides/code-reuse-thinking-guide.md": [],
+    ".trellis/spec/guides/cross-layer-thinking-guide.md": [],
+    ".trellis/spec/guides/index.md": []
+  }
+}

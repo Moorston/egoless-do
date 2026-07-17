@@ -1,0 +1,1190 @@
+[
+  {
+    "path": "packages/core/src/business/coordinateFuzzing.ts",
+    "resolved": "packages\\core\\src\\business\\coordinateFuzzing.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 112,
+    "totalLines": 112,
+    "nonEmpty": 98,
+    "funcs": [
+      {
+        "name": "hashString",
+        "params": [
+          "str"
+        ],
+        "start": 16,
+        "end": 23
+      },
+      {
+        "name": "seededRandom",
+        "params": [
+          "seed"
+        ],
+        "start": 28,
+        "end": 34
+      },
+      {
+        "name": "metersToLatOffset",
+        "params": [
+          "meters"
+        ],
+        "start": 39,
+        "end": 41
+      },
+      {
+        "name": "metersToLngOffset",
+        "params": [
+          "meters",
+          "lat"
+        ],
+        "start": 46,
+        "end": 48
+      },
+      {
+        "name": "fuzzCoordinate",
+        "params": [
+          "lat",
+          "lng",
+          "secretKey"
+        ],
+        "start": 57,
+        "end": 87
+      },
+      {
+        "name": "isValidCoordinate",
+        "params": [
+          "lat",
+          "lng"
+        ],
+        "start": 92,
+        "end": 94
+      },
+      {
+        "name": "calculateDistance",
+        "params": [
+          "lat1",
+          "lng1",
+          "lat2",
+          "lng2"
+        ],
+        "start": 99,
+        "end": 112
+      }
+    ],
+    "classes": [],
+    "exports": [
+      "fuzzCoordinate",
+      "isValidCoordinate",
+      "calculateDistance"
+    ],
+    "callGraph": [
+      "hashString->str.charCodeAt@19",
+      "hashString->Math.abs@22",
+      "metersToLngOffset->Math.cos@47",
+      "fuzzCoordinate->hashString@63",
+      "fuzzCoordinate->lat.toFixed@63",
+      "fuzzCoordinate->lng.toFixed@63",
+      "fuzzCoordinate->seededRandom@64",
+      "fuzzCoordinate->rng@67",
+      "fuzzCoordinate->rng@68",
+      "fuzzCoordinate->Math.cos@71",
+      "fuzzCoordinate->Math.sin@72",
+      "fuzzCoordinate->metersToLatOffset@75",
+      "fuzzCoordinate->metersToLngOffset@76",
+      "fuzzCoordinate->Math.max@84",
+      "fuzzCoordinate->Math.min@84",
+      "fuzzCoordinate->Math.max@85",
+      "fuzzCoordinate->Math.min@85",
+      "calculateDistance->Math.sin@107",
+      "calculateDistance->Math.sin@107",
+      "calculateDistance->Math.cos@108",
+      "calculateDistance->Math.cos@108",
+      "calculateDistance->Math.sin@109",
+      "calculateDistance->Math.sin@109",
+      "calculateDistance->Math.atan2@110",
+      "calculateDistance->Math.sqrt@110",
+      "calculateDistance->Math.sqrt@110"
+    ],
+    "imports": [],
+    "headerComments": [
+      "",
+      "坐标模糊算法",
+      "在 ±500 米范围内随机偏移，保护用户隐私",
+      "使用 secret key 使模糊不可逆（即使知道 userHash 和算法）",
+      "/",
+      "地球半径（米）"
+    ],
+    "firstLines": "/**\n * 坐标模糊算法\n * 在 ±500 米范围内随机偏移，保护用户隐私\n * 使用 secret key 使模糊不可逆（即使知道 userHash 和算法）\n */\n"
+  },
+  {
+    "path": "packages/core/src/business/customLists.ts",
+    "resolved": "packages\\core\\src\\business\\customLists.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 34,
+    "totalLines": 34,
+    "nonEmpty": 29,
+    "funcs": [
+      {
+        "name": "addCustomItem",
+        "params": [
+          "list",
+          "item"
+        ],
+        "start": 3,
+        "end": 6
+      },
+      {
+        "name": "removeCustomItem",
+        "params": [
+          "list",
+          "item"
+        ],
+        "start": 8,
+        "end": 10
+      },
+      {
+        "name": "updateCustomItem",
+        "params": [
+          "list",
+          "oldItem",
+          "newItem"
+        ],
+        "start": 12,
+        "end": 16
+      },
+      {
+        "name": "reorderItem",
+        "params": [
+          "list",
+          "fromIndex",
+          "toIndex"
+        ],
+        "start": 18,
+        "end": 26
+      },
+      {
+        "name": "ensureOrderContains",
+        "params": [
+          "order",
+          "required"
+        ],
+        "start": 28,
+        "end": 34
+      }
+    ],
+    "classes": [],
+    "exports": [
+      "addCustomItem",
+      "removeCustomItem",
+      "updateCustomItem",
+      "reorderItem",
+      "ensureOrderContains"
+    ],
+    "callGraph": [
+      "addCustomItem->item.trim@4",
+      "addCustomItem->list.includes@5",
+      "removeCustomItem->list.filter@9",
+      "updateCustomItem->newItem.trim@13",
+      "updateCustomItem->list.includes@14",
+      "updateCustomItem->list.map@15",
+      "reorderItem->result.splice@23",
+      "reorderItem->result.splice@24",
+      "ensureOrderContains->order.filter@30",
+      "ensureOrderContains->requiredSet.has@30",
+      "ensureOrderContains->required.filter@32",
+      "ensureOrderContains->existingSet.has@32"
+    ],
+    "imports": [],
+    "headerComments": [
+      "─── Custom tag/mood list operations (pure functions) ──────────"
+    ],
+    "firstLines": "// ─── Custom tag/mood list operations (pure functions) ──────────\n\nexport function addCustomItem(list: string[], item: string): string[] {\n  if (!item.trim()) return list;\n  return list.includes(item) ? list : [...list, item];\n}"
+  },
+  {
+    "path": "packages/core/src/business/dateUtils.test.ts",
+    "resolved": "packages\\core\\src\\business\\dateUtils.test.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 32,
+    "totalLines": 32,
+    "nonEmpty": 26,
+    "funcs": [],
+    "classes": [],
+    "exports": [],
+    "callGraph": [],
+    "imports": [
+      "packages/core/src/business/dateUtils.ts"
+    ],
+    "headerComments": [],
+    "firstLines": "import { describe, it, expect } from 'vitest';\nimport { formatDateBar, WEEKDAYS } from './dateUtils';\n\ndescribe('formatDateBar', () => {\n  const T = (k: string) => k === 'dateBarToday' ? '今天' : k;\n"
+  },
+  {
+    "path": "packages/core/src/business/dateUtils.ts",
+    "resolved": "packages\\core\\src\\business\\dateUtils.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 12,
+    "totalLines": 12,
+    "nonEmpty": 10,
+    "funcs": [
+      {
+        "name": "formatDateBar",
+        "params": [
+          "dateStrVal",
+          "isToday",
+          "T"
+        ],
+        "start": 5,
+        "end": 12
+      }
+    ],
+    "classes": [],
+    "exports": [
+      "WEEKDAYS",
+      "formatDateBar"
+    ],
+    "callGraph": [
+      "formatDateBar->d.getMonth@7",
+      "formatDateBar->d.getDate@8",
+      "formatDateBar->d.getDay@9",
+      "formatDateBar->T@11"
+    ],
+    "imports": [],
+    "headerComments": [
+      "── Date helpers for HomeScreen ──"
+    ],
+    "firstLines": "// ── Date helpers for HomeScreen ──\n\nexport const WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六'];\n\nexport function formatDateBar(dateStrVal: string, isToday: boolean, T: (k: string) => string): string {\n  const d = new Date(dateStrVal + 'T00:00:00');"
+  },
+  {
+    "path": "packages/core/src/business/precepts.ts",
+    "resolved": "packages\\core\\src\\business\\precepts.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 53,
+    "totalLines": 53,
+    "nonEmpty": 45,
+    "funcs": [
+      {
+        "name": "isPreceptHabit",
+        "params": [
+          "name"
+        ],
+        "start": 39,
+        "end": 41
+      },
+      {
+        "name": "getPreceptDisplayName",
+        "params": [
+          "name"
+        ],
+        "start": 44,
+        "end": 46
+      },
+      {
+        "name": "getPreceptType",
+        "params": [
+          "name"
+        ],
+        "start": 49,
+        "end": 53
+      }
+    ],
+    "classes": [],
+    "exports": [
+      "PRECEPT_AVOID_PRESETS",
+      "PRACTICE_PRESETS",
+      "VIOLATION_TRIGGERS",
+      "PRECEPT_PREFIX_AVOID",
+      "PRECEPT_PREFIX_PRACTICE",
+      "isPreceptHabit",
+      "getPreceptDisplayName",
+      "getPreceptType"
+    ],
+    "callGraph": [
+      "isPreceptHabit->name.startsWith@40",
+      "isPreceptHabit->name.startsWith@40",
+      "getPreceptDisplayName->name.replace(PRECEPT_PREFIX_AVOID, '').replace@45",
+      "getPreceptDisplayName->name.replace@45",
+      "getPreceptType->name.startsWith@50",
+      "getPreceptType->name.startsWith@51"
+    ],
+    "imports": [],
+    "headerComments": [
+      "─── Precept presets (持戒预设) ─────────────────────────────",
+      "参考小止观：持戒清净为禅定之基",
+      "止持：不做恶（消极防非）  作持：行善（积极修善）"
+    ],
+    "firstLines": "// ─── Precept presets (持戒预设) ─────────────────────────────\n// 参考小止观：持戒清净为禅定之基\n// 止持：不做恶（消极防非）  作持：行善（积极修善）\n\nexport interface PreceptPreset {\n  name: string;"
+  },
+  {
+    "path": "packages/core/src/business/sleep.ts",
+    "resolved": "packages\\core\\src\\business\\sleep.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 88,
+    "totalLines": 88,
+    "nonEmpty": 78,
+    "funcs": [
+      {
+        "name": "getCurrentPeriod",
+        "params": [],
+        "start": 31,
+        "end": 43
+      },
+      {
+        "name": "getNextSleepPeriod",
+        "params": [],
+        "start": 46,
+        "end": 59
+      },
+      {
+        "name": "formatSleepDuration",
+        "params": [
+          "min"
+        ],
+        "start": 62,
+        "end": 69
+      },
+      {
+        "name": "sleepQualityLevel",
+        "params": [
+          "durationMin"
+        ],
+        "start": 72,
+        "end": 77
+      },
+      {
+        "name": "qualityEmoji",
+        "params": [
+          "level"
+        ],
+        "start": 80,
+        "end": 88
+      }
+    ],
+    "classes": [],
+    "exports": [
+      "BODY_CLOCK",
+      "getCurrentPeriod",
+      "getNextSleepPeriod",
+      "formatSleepDuration",
+      "sleepQualityLevel",
+      "qualityEmoji"
+    ],
+    "callGraph": [
+      "getCurrentPeriod->new Date().getHours@32",
+      "getNextSleepPeriod->now.getHours@48",
+      "getNextSleepPeriod->now.getMinutes@49",
+      "getNextSleepPeriod->Math.max@58",
+      "formatSleepDuration->Math.floor@64"
+    ],
+    "imports": [],
+    "headerComments": [
+      "─── Sleep & Body Clock utilities ──────────────────────────",
+      "中医十二时辰数据 */"
+    ],
+    "firstLines": "// ─── Sleep & Body Clock utilities ──────────────────────────\r\n\r\n/** 中医十二时辰数据 */\r\nexport interface BodyClockPeriod {\r\n  key: string;           // 子、丑、寅...\r\n  nameKey: string;       // i18n key (暂用中文直接)\r"
+  },
+  {
+    "path": "packages/core/src/business/zhiguanConstants.ts",
+    "resolved": "packages\\core\\src\\business\\zhiguanConstants.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 4,
+    "totalLines": 4,
+    "nonEmpty": 4,
+    "funcs": [],
+    "classes": [],
+    "exports": [
+      "BreathPattern",
+      "SankalpaTemplate",
+      "VipassanaGuides",
+      "BREATH_PATTERNS",
+      "SANKALPA_TEMPLATES",
+      "VIPASSANA_GUIDES",
+      "METHOD_TABLE"
+    ],
+    "callGraph": [],
+    "imports": [],
+    "headerComments": [
+      "─── 止观呼吸模式与方法元数据 ──────────────────────────────────",
+      "供 createZhiguanSlice 与前端 UI（BreathRing, VipassanaPanel）共用"
+    ],
+    "firstLines": "// ─── 止观呼吸模式与方法元数据 ──────────────────────────────────\n// 供 createZhiguanSlice 与前端 UI（BreathRing, VipassanaPanel）共用\nexport type { BreathPattern, SankalpaTemplate, VipassanaGuides } from './zhiguanMethods';\nexport { BREATH_PATTERNS, SANKALPA_TEMPLATES, VIPASSANA_GUIDES, METHOD_TABLE } from './zhiguanMethods';\n"
+  },
+  {
+    "path": "packages/core/src/business/zhiguanCountingRound.ts",
+    "resolved": "packages\\core\\src\\business\\zhiguanCountingRound.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 48,
+    "totalLines": 48,
+    "nonEmpty": 42,
+    "funcs": [
+      {
+        "name": "notifyBreath",
+        "params": [
+          "state"
+        ],
+        "start": 17,
+        "end": 34
+      },
+      {
+        "name": "computeRounds",
+        "params": [
+          "total"
+        ],
+        "start": 37,
+        "end": 44
+      },
+      {
+        "name": "resetRound",
+        "params": [],
+        "start": 46,
+        "end": 48
+      }
+    ],
+    "classes": [],
+    "exports": [
+      "initialRoundState",
+      "notifyBreath",
+      "computeRounds",
+      "resetRound"
+    ],
+    "callGraph": [
+      "notifyBreath->Math.max@18",
+      "notifyBreath->Math.floor@24",
+      "computeRounds->Math.max@38",
+      "computeRounds->Math.floor@38",
+      "computeRounds->Math.floor@41"
+    ],
+    "imports": [],
+    "headerComments": [
+      "─── Pure counting round logic (testable, no React) ──────────────"
+    ],
+    "firstLines": "// ─── Pure counting round logic (testable, no React) ──────────────\r\nexport interface CountingRoundState {\r\n  totalBreaths: number;\r\n  cycles: number;       // 完成的 10 息轮数（0-indexed: 0=第1轮进行中）\r\n  countedBreaths: number; // 1..10 （当前轮的息数）\r\n  currentCycle: number; // 当前在第几轮（1-indexed）\r"
+  },
+  {
+    "path": "packages/core/src/business/zhiguanTimer.ts",
+    "resolved": "packages\\core\\src\\business\\zhiguanTimer.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 24,
+    "totalLines": 24,
+    "nonEmpty": 21,
+    "funcs": [
+      {
+        "name": "calcElapsed",
+        "params": [
+          "startTs",
+          "pausedElapsed",
+          "now"
+        ],
+        "start": 2,
+        "end": 4
+      },
+      {
+        "name": "accumulatePause",
+        "params": [
+          "pausedElapsed",
+          "pauseStart",
+          "now"
+        ],
+        "start": 7,
+        "end": 9
+      },
+      {
+        "name": "formatSec",
+        "params": [
+          "totalSec"
+        ],
+        "start": 12,
+        "end": 16
+      },
+      {
+        "name": "isInClosingCountdown",
+        "params": [
+          "elapsedSecs",
+          "totalTargetSecs"
+        ],
+        "start": 19,
+        "end": 24
+      }
+    ],
+    "classes": [],
+    "exports": [
+      "calcElapsed",
+      "accumulatePause",
+      "formatSec",
+      "isInClosingCountdown"
+    ],
+    "callGraph": [
+      "calcElapsed->Math.max@3",
+      "calcElapsed->Math.floor@3",
+      "formatSec->Math.floor@13",
+      "formatSec->String(m).padStart@15",
+      "formatSec->String@15",
+      "formatSec->String(s).padStart@15",
+      "formatSec->String@15"
+    ],
+    "imports": [],
+    "headerComments": [
+      "─── 计时器纯函数部分（便于单测） ────────────────────────────────"
+    ],
+    "firstLines": "// ─── 计时器纯函数部分（便于单测） ────────────────────────────────\nexport function calcElapsed(startTs: number, pausedElapsed: number, now: number): number {\n  return Math.max(0, Math.floor((now - startTs - pausedElapsed) / 1000));\n}\n\n/** 累加一次暂停时长 */"
+  },
+  {
+    "path": "packages/core/src/constants/music.ts",
+    "resolved": "packages\\core\\src\\constants\\music.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 54,
+    "totalLines": 54,
+    "nonEmpty": 47,
+    "funcs": [],
+    "classes": [],
+    "exports": [
+      "BUILTIN_TRACKS",
+      "MUSIC_CATEGORIES",
+      "USER_MUSIC_STORAGE_KEY",
+      "MUSIC_FAVORITES_KEY",
+      "MUSIC_CATEGORY_META",
+      "TRACK_VISUAL"
+    ],
+    "callGraph": [],
+    "imports": [
+      "packages/core/src/types/music.ts"
+    ],
+    "headerComments": [],
+    "firstLines": "import type { MusicTrack, MusicCategory } from '../types/music';\n\n// 内置音乐列表，file 使用 require() 在 mobile 端加载\n// 注意：file 字段需要在 mobile 端通过 require() 填充，这里定义为 0 占位\nexport const BUILTIN_TRACKS: MusicTrack[] = [\n  { id: 'ocean',          name: '海潮',   nameEn: 'Ocean Waves',    category: 'focus',     file: 0 },"
+  },
+  {
+    "path": "packages/core/src/constants/sutraTexts.ts",
+    "resolved": "packages\\core\\src\\constants\\sutraTexts.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 133,
+    "totalLines": 133,
+    "nonEmpty": 121,
+    "funcs": [
+      {
+        "name": "getSutraText",
+        "params": [
+          "key"
+        ],
+        "start": 130,
+        "end": 133
+      }
+    ],
+    "classes": [],
+    "exports": [
+      "SUTRA_TEXTS",
+      "getSutraText"
+    ],
+    "callGraph": [],
+    "imports": [],
+    "headerComments": [
+      "",
+      "7 部核心经文全文常量",
+      "",
+      "体积估算（UTF-8，gzip 后会更小）:",
+      "总计 ~40,000 字，gzip 后约 20-25KB",
+      "",
+      "注：部分长篇经文为节选（仅录入常见流通版本开头几品/卷），",
+      "完整经文可在后续通过导入功能补充。",
+      "/"
+    ],
+    "firstLines": "/**\n * 7 部核心经文全文常量\n *\n * 体积估算（UTF-8，gzip 后会更小）:\n * 总计 ~40,000 字，gzip 后约 20-25KB\n *"
+  },
+  {
+    "path": "packages/core/src/data/DataGateway.test.ts",
+    "resolved": "packages\\core\\src\\data\\DataGateway.test.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 36,
+    "totalLines": 36,
+    "nonEmpty": 29,
+    "funcs": [],
+    "classes": [],
+    "exports": [],
+    "callGraph": [],
+    "imports": [
+      "packages/core/src/data/DataGateway.ts"
+    ],
+    "headerComments": [
+      "─── DataGateway contract tests ───────────────────────────────────"
+    ],
+    "firstLines": "// ─── DataGateway contract tests ───────────────────────────────────\nimport { describe, it, expect, beforeEach, vi } from 'vitest';\nimport { NoopDataGateway } from './DataGateway';\n\ndescribe('DataGateway Contract', () => {\n  describe('NoopDataGateway', () => {"
+  },
+  {
+    "path": "packages/core/src/data/DataGateway.ts",
+    "resolved": "packages\\core\\src\\data\\DataGateway.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 35,
+    "totalLines": 35,
+    "nonEmpty": 28,
+    "funcs": [],
+    "classes": [
+      {
+        "name": "NoopDataGateway",
+        "methods": [
+          "get",
+          "list",
+          "upsert",
+          "delete"
+        ]
+      }
+    ],
+    "exports": [
+      "NoopDataGateway"
+    ],
+    "callGraph": [],
+    "imports": [],
+    "headerComments": [
+      "─── Unified Data Gateway Interface ──────────────────────────────",
+      "Platform-agnostic data access abstraction.",
+      "Mobile implements via SQLite + sync_queue, Web via REST."
+    ],
+    "firstLines": "// ─── Unified Data Gateway Interface ──────────────────────────────\n// Platform-agnostic data access abstraction.\n// Mobile implements via SQLite + sync_queue, Web via REST.\n\nexport interface DataGateway {\n  /** Get a single entity by ID. Returns null if not found. */"
+  },
+  {
+    "path": "packages/core/src/data/index.ts",
+    "resolved": "packages\\core\\src\\data\\index.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 2,
+    "totalLines": 2,
+    "nonEmpty": 2,
+    "funcs": [],
+    "classes": [],
+    "exports": [],
+    "callGraph": [],
+    "imports": [],
+    "headerComments": [],
+    "firstLines": "export * from './DataGateway';\nexport * from './entityRegistry';\n"
+  },
+  {
+    "path": "packages/core/src/i18n.ts",
+    "resolved": "packages\\core\\src\\i18n.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 5,
+    "totalLines": 5,
+    "nonEmpty": 5,
+    "funcs": [],
+    "classes": [],
+    "exports": [
+      "zh",
+      "en",
+      "zhHant",
+      "translations",
+      "getT",
+      "t"
+    ],
+    "callGraph": [],
+    "imports": [],
+    "headerComments": [
+      "Re-export from split i18n files for backward compatibility"
+    ],
+    "firstLines": "// Re-export from split i18n files for backward compatibility\nexport { zh } from './i18n/zh';\nexport { en } from './i18n/en';\nexport { zhHant } from './i18n/zh-Hant';\nexport { translations, getT, t } from './i18n/index';\n"
+  },
+  {
+    "path": "packages/core/src/icons.ts",
+    "resolved": "packages\\core\\src\\icons.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 104,
+    "totalLines": 104,
+    "nonEmpty": 99,
+    "funcs": [],
+    "classes": [],
+    "exports": [
+      "TAB_ICONS",
+      "ACTION_ICONS",
+      "FEATURE_ICONS",
+      "FOOD_ICON_NAMES"
+    ],
+    "callGraph": [],
+    "imports": [],
+    "headerComments": [
+      "Lucide 图标名称映射 — 两端共享，core 包不依赖 lucide，只存名称字符串",
+      "各端在渲染时自行从 lucide-react / lucide-react-native 映射为组件",
+      "导航栏 Tab 图标 */"
+    ],
+    "firstLines": "// Lucide 图标名称映射 — 两端共享，core 包不依赖 lucide，只存名称字符串\n// 各端在渲染时自行从 lucide-react / lucide-react-native 映射为组件\n\n/** 导航栏 Tab 图标 */\nexport const TAB_ICONS = {\n  home: 'Home',"
+  },
+  {
+    "path": "packages/core/src/pocketbase.ts",
+    "resolved": "packages\\core\\src\\pocketbase.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 14,
+    "totalLines": 14,
+    "nonEmpty": 11,
+    "funcs": [
+      {
+        "name": "setPocketbaseUrl",
+        "params": [
+          "url"
+        ],
+        "start": 7,
+        "end": 9
+      },
+      {
+        "name": "getPb",
+        "params": [],
+        "start": 11,
+        "end": 14
+      }
+    ],
+    "classes": [],
+    "exports": [
+      "setPocketbaseUrl",
+      "getPb"
+    ],
+    "callGraph": [],
+    "imports": [],
+    "headerComments": [
+      "─── PocketBase client singleton ─────────────────────────────────",
+      "Shared across all platforms. Call setPocketbaseUrl() once at app init."
+    ],
+    "firstLines": "// ─── PocketBase client singleton ─────────────────────────────────\n// Shared across all platforms. Call setPocketbaseUrl() once at app init.\nimport PocketBase from 'pocketbase';\n\nlet _pb: PocketBase | null = null;\n"
+  },
+  {
+    "path": "packages/core/src/store/index.ts",
+    "resolved": "packages\\core\\src\\store\\index.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 35,
+    "totalLines": 35,
+    "nonEmpty": 35,
+    "funcs": [],
+    "classes": [],
+    "exports": [
+      "StorageAdapter",
+      "SyncDataMap",
+      "AuthSlice",
+      "HabitSlice",
+      "ReflectionSlice",
+      "PlanSlice",
+      "RecycleBinSlice",
+      "FoodSlice",
+      "CheckinSlice",
+      "ExerciseSlice",
+      "MeditationSlice",
+      "FastingSlice",
+      "ProfileSlice",
+      "SleepSlice",
+      "ThoughtTrailSlice",
+      "ReviewSlice",
+      "FullStore",
+      "BodySlice",
+      "DietSlice",
+      "MindSlice",
+      "MantraSlice",
+      "ZhiguanSlice",
+      "SettingsSlice",
+      "SliceError",
+      "SliceErrorState",
+      "PracticeSlice",
+      "SliceCreator",
+      "createAuthSlice",
+      "createHabitSlice",
+      "createReflectionSlice",
+      "createPlanSlice",
+      "createRecycleBinSlice",
+      "createFoodSlice",
+      "createCheckinSlice",
+      "createExerciseSlice",
+      "createMeditationSlice",
+      "createFastingSlice",
+      "createProfileSlice",
+      "createSettingsSlice",
+      "createSleepSlice",
+      "createThoughtTrailSlice",
+      "createReviewSlice",
+      "createBodySlice",
+      "createDietSlice",
+      "createPracticeSlice",
+      "createMindSlice",
+      "createMantraSlice",
+      "createZhiguanSlice",
+      "createSliceErrorSlice",
+      "buildMergePatch",
+      "ENTITY_MERGE_MAP"
+    ],
+    "callGraph": [],
+    "imports": [],
+    "headerComments": [],
+    "firstLines": "export type { StorageAdapter, SyncDataMap } from './storageAdapter';\r\nexport type {\r\n  AuthSlice, HabitSlice, ReflectionSlice, PlanSlice, RecycleBinSlice,\r\n  FoodSlice, CheckinSlice, ExerciseSlice, MeditationSlice, FastingSlice,\r\n  ProfileSlice, SleepSlice,\r\n  ThoughtTrailSlice, ReviewSlice, FullStore,\r"
+  },
+  {
+    "path": "packages/core/src/store/storageAdapter.ts",
+    "resolved": "packages\\core\\src\\store\\storageAdapter.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 3,
+    "totalLines": 3,
+    "nonEmpty": 3,
+    "funcs": [],
+    "classes": [],
+    "exports": [
+      "StorageAdapter",
+      "SyncDataMap"
+    ],
+    "callGraph": [],
+    "imports": [],
+    "headerComments": [
+      "─── Platform-agnostic storage adapter interface ───────────────",
+      "Re-export the type-safe StorageAdapter from types.ts"
+    ],
+    "firstLines": "// ─── Platform-agnostic storage adapter interface ───────────────\n// Re-export the type-safe StorageAdapter from types.ts\nexport type { StorageAdapter, SyncDataMap } from './types';\n"
+  },
+  {
+    "path": "packages/core/src/sync/index.ts",
+    "resolved": "packages\\core\\src\\sync\\index.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 5,
+    "totalLines": 5,
+    "nonEmpty": 5,
+    "funcs": [],
+    "classes": [],
+    "exports": [],
+    "callGraph": [],
+    "imports": [],
+    "headerComments": [],
+    "firstLines": "export * from './entities';\nexport * from './conflict';\nexport * from './merge';\nexport * from './types';\nexport * from './entitySchemas';\n"
+  },
+  {
+    "path": "packages/core/src/types/index.ts",
+    "resolved": "packages\\core\\src\\types\\index.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 27,
+    "totalLines": 27,
+    "nonEmpty": 27,
+    "funcs": [],
+    "classes": [],
+    "exports": [],
+    "callGraph": [],
+    "imports": [],
+    "headerComments": [
+      "─── Type re-exports ──────────────────────────────────────────────"
+    ],
+    "firstLines": "// ─── Type re-exports ──────────────────────────────────────────────\r\nexport * from './shared';\r\nexport * from './auth';\r\nexport * from './habit';\r\nexport * from './reflection';\r\nexport * from './fasting';\r"
+  },
+  {
+    "path": "packages/core/src/types/music.ts",
+    "resolved": "packages\\core\\src\\types\\music.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 10,
+    "totalLines": 10,
+    "nonEmpty": 9,
+    "funcs": [],
+    "classes": [],
+    "exports": [],
+    "callGraph": [],
+    "imports": [],
+    "headerComments": [],
+    "firstLines": "export interface MusicTrack {\n  id: string;\n  name: string;\n  nameEn: string;\n  category: 'focus' | 'meditate' | 'exercise' | 'user';\n  file?: number;   // require() 结果，内置音乐"
+  },
+  {
+    "path": "packages/core/src/typography.ts",
+    "resolved": "packages\\core\\src\\typography.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 85,
+    "totalLines": 85,
+    "nonEmpty": 79,
+    "funcs": [
+      {
+        "name": "configureFontScale",
+        "params": [
+          "scale"
+        ],
+        "start": 54,
+        "end": 56
+      },
+      {
+        "name": "scaleFontSize",
+        "params": [
+          "size"
+        ],
+        "start": 62,
+        "end": 62
+      },
+      {
+        "name": "FONT_TITLE",
+        "params": [],
+        "start": 68,
+        "end": 68
+      },
+      {
+        "name": "FONT_BODY",
+        "params": [],
+        "start": 69,
+        "end": 69
+      },
+      {
+        "name": "FONT_BUTTON",
+        "params": [],
+        "start": 70,
+        "end": 70
+      },
+      {
+        "name": "FONT_EMPTY",
+        "params": [],
+        "start": 71,
+        "end": 71
+      },
+      {
+        "name": "FONT_LABEL",
+        "params": [],
+        "start": 72,
+        "end": 72
+      },
+      {
+        "name": "FONT_CARD_TITLE",
+        "params": [],
+        "start": 73,
+        "end": 73
+      },
+      {
+        "name": "FONT_SUB",
+        "params": [],
+        "start": 74,
+        "end": 74
+      },
+      {
+        "name": "FONT_BADGE",
+        "params": [],
+        "start": 75,
+        "end": 75
+      },
+      {
+        "name": "FONT_ERROR",
+        "params": [],
+        "start": 76,
+        "end": 76
+      },
+      {
+        "name": "FONT_BACK",
+        "params": [],
+        "start": 77,
+        "end": 77
+      },
+      {
+        "name": "FONT_CLOSE",
+        "params": [],
+        "start": 78,
+        "end": 78
+      },
+      {
+        "name": "FONT_STAT_CARD",
+        "params": [],
+        "start": 79,
+        "end": 79
+      },
+      {
+        "name": "FONT_STAT_SECTION",
+        "params": [],
+        "start": 80,
+        "end": 80
+      },
+      {
+        "name": "FONT_HERO",
+        "params": [],
+        "start": 81,
+        "end": 81
+      },
+      {
+        "name": "FONT_CHART_AXIS",
+        "params": [],
+        "start": 82,
+        "end": 82
+      },
+      {
+        "name": "FONT_CHART_TOOLTIP",
+        "params": [],
+        "start": 83,
+        "end": 83
+      },
+      {
+        "name": "FONT_SMALL",
+        "params": [],
+        "start": 84,
+        "end": 84
+      },
+      {
+        "name": "FONT_TINY",
+        "params": [],
+        "start": 85,
+        "end": 85
+      }
+    ],
+    "classes": [],
+    "exports": [
+      "configureFontScale",
+      "scaleFontSize",
+      "FONT_TITLE",
+      "FONT_BODY",
+      "FONT_BUTTON",
+      "FONT_EMPTY",
+      "FONT_LABEL",
+      "FONT_CARD_TITLE",
+      "FONT_SUB",
+      "FONT_BADGE",
+      "FONT_ERROR",
+      "FONT_BACK",
+      "FONT_CLOSE",
+      "FONT_STAT_CARD",
+      "FONT_STAT_SECTION",
+      "FONT_HERO",
+      "FONT_CHART_AXIS",
+      "FONT_CHART_TOOLTIP",
+      "FONT_SMALL",
+      "FONT_TINY"
+    ],
+    "callGraph": [
+      "configureFontScale->Math.max@55",
+      "configureFontScale->Math.min@55",
+      "scaleFontSize->Math.round@62",
+      "FONT_TITLE->Math.round@68",
+      "FONT_BODY->Math.round@69",
+      "FONT_BUTTON->Math.round@70",
+      "FONT_EMPTY->Math.round@71",
+      "FONT_LABEL->Math.round@72",
+      "FONT_CARD_TITLE->Math.round@73",
+      "FONT_SUB->Math.round@74",
+      "FONT_BADGE->Math.round@75",
+      "FONT_ERROR->Math.round@76",
+      "FONT_BACK->Math.round@77",
+      "FONT_CLOSE->Math.round@78",
+      "FONT_STAT_CARD->Math.round@79",
+      "FONT_STAT_SECTION->Math.round@80",
+      "FONT_HERO->Math.round@81",
+      "FONT_CHART_AXIS->Math.round@82",
+      "FONT_CHART_TOOLTIP->Math.round@83",
+      "FONT_SMALL->Math.round@84",
+      "FONT_TINY->Math.round@85"
+    ],
+    "imports": [],
+    "headerComments": [
+      "─── Unified font size hierarchy ────────────────────────────────",
+      "Both mobile and web use these constants to ensure visual consistency.",
+      "FONT_* exports are live bindings: call configureFontScale() at startup",
+      "to make them respond to the system font scale setting.",
+      "─── Scale-aware internals ──────────────────────────────────────"
+    ],
+    "firstLines": "// ─── Unified font size hierarchy ────────────────────────────────\r\n// Both mobile and web use these constants to ensure visual consistency.\r\n// FONT_* exports are live bindings: call configureFontScale() at startup\r\n// to make them respond to the system font scale setting.\r\n\r\n// ─── Scale-aware internals ──────────────────────────────────────\r"
+  },
+  {
+    "path": "packages/core/src/utils/index.ts",
+    "resolved": "packages\\core\\src\\utils\\index.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 2,
+    "totalLines": 2,
+    "nonEmpty": 2,
+    "funcs": [],
+    "classes": [],
+    "exports": [],
+    "callGraph": [],
+    "imports": [],
+    "headerComments": [
+      "─── Core utilities exports ──────────────────────────────────────"
+    ],
+    "firstLines": "// ─── Core utilities exports ──────────────────────────────────────\nexport * from './transform';\n"
+  },
+  {
+    "path": "packages/core/src/utils/transform.ts",
+    "resolved": "packages\\core\\src\\utils\\transform.ts",
+    "language": "typescript",
+    "fileCategory": "code",
+    "sizeLines": 51,
+    "totalLines": 51,
+    "nonEmpty": 44,
+    "funcs": [
+      {
+        "name": "toCamelCase",
+        "params": [
+          "str"
+        ],
+        "start": 7,
+        "end": 9
+      },
+      {
+        "name": "toSnakeCase",
+        "params": [
+          "str"
+        ],
+        "start": 14,
+        "end": 19
+      },
+      {
+        "name": "transformKeys",
+        "params": [
+          "obj",
+          "keyFn"
+        ],
+        "start": 22,
+        "end": 37
+      },
+      {
+        "name": "keysToCamel",
+        "params": [
+          "obj"
+        ],
+        "start": 42,
+        "end": 44
+      },
+      {
+        "name": "keysToSnake",
+        "params": [
+          "obj"
+        ],
+        "start": 49,
+        "end": 51
+      }
+    ],
+    "classes": [],
+    "exports": [
+      "toCamelCase",
+      "toSnakeCase",
+      "keysToCamel",
+      "keysToSnake"
+    ],
+    "callGraph": [
+      "toCamelCase->str.replace@8",
+      "toCamelCase->letter.toUpperCase@8",
+      "toSnakeCase->str\n    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2')\n    .replace(/([a-z\\d])([A-Z])/g, '$1_$2')\n    .toLowerCase@15",
+      "toSnakeCase->str\n    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2')\n    .replace@15",
+      "toSnakeCase->str\n    .replace@15",
+      "transformKeys->Array.isArray@23",
+      "transformKeys->obj.map@24",
+      "transformKeys->transformKeys@24",
+      "transformKeys->Object.getPrototypeOf@27",
+      "transformKeys->Object.fromEntries@28",
+      "transformKeys->Object.entries(obj as Record<string, unknown>).map@29",
+      "transformKeys->Object.entries@29",
+      "transformKeys->keyFn@30",
+      "transformKeys->transformKeys@31",
+      "keysToCamel->transformKeys@43",
+      "keysToSnake->transformKeys@50"
+    ],
+    "imports": [],
+    "headerComments": [
+      "─── Data transformation utilities ───────────────────────────────",
+      "Convert between snake_case and camelCase for API compatibility.",
+      "",
+      "Convert snake_case string to camelCase",
+      "/"
+    ],
+    "firstLines": "// ─── Data transformation utilities ───────────────────────────────\n// Convert between snake_case and camelCase for API compatibility.\n\n/**\n * Convert snake_case string to camelCase\n */"
+  }
+]

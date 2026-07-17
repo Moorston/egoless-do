@@ -1,0 +1,1428 @@
+{
+  "nodes": [
+    {
+      "id": "file:packages/core/src/dailyReset.ts",
+      "type": "file",
+      "name": "dailyReset.ts",
+      "filePath": "packages/core/src/dailyReset.ts",
+      "summary": "每日重置服务：在午夜重置饮水/饮食等每日数据，提供 DailyResetManager 类基于 setTimeout 调度跨天回灌与 patch 应用。",
+      "tags": [
+        "daily-reset",
+        "service",
+        "scheduling"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/dailyReset.ts:getDailyResetPatch",
+      "type": "function",
+      "name": "getDailyResetPatch",
+      "filePath": "packages/core/src/dailyReset.ts",
+      "lineRange": [
+        12,
+        21
+      ],
+      "summary": "根据上次重置日期计算需要重置的 AppState patch（如 waterMl）。",
+      "tags": [
+        "daily-reset",
+        "patch",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/dailyReset.ts:msUntilMidnight",
+      "type": "function",
+      "name": "msUntilMidnight",
+      "filePath": "packages/core/src/dailyReset.ts",
+      "lineRange": [
+        24,
+        28
+      ],
+      "summary": "计算到下一次本地午夜的毫秒数，用于调度下次重置。",
+      "tags": [
+        "daily-reset",
+        "scheduling",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/dailyReset.ts:getTodayFoodLog",
+      "type": "function",
+      "name": "getTodayFoodLog",
+      "filePath": "packages/core/src/dailyReset.ts",
+      "lineRange": [
+        31,
+        34
+      ],
+      "summary": "从完整 foodLog 中过滤出今日未删除的饮食记录。",
+      "tags": [
+        "daily-reset",
+        "food",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/dailyReset.ts:getTodayMedMinutes",
+      "type": "function",
+      "name": "getTodayMedMinutes",
+      "filePath": "packages/core/src/dailyReset.ts",
+      "lineRange": [
+        37,
+        42
+      ],
+      "summary": "从 medHistory 累加今日冥想分钟数。",
+      "tags": [
+        "daily-reset",
+        "meditation",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:packages/core/src/dailyReset.ts:DailyResetManager",
+      "type": "class",
+      "name": "DailyResetManager",
+      "filePath": "packages/core/src/dailyReset.ts",
+      "lineRange": [
+        64,
+        222
+      ],
+      "summary": "每日重置管理器：基于 setTimeout 调度午夜检查，执行跨天回灌、patch 应用与计划/习惯/回顾回调。",
+      "tags": [
+        "daily-reset",
+        "service",
+        "scheduling",
+        "core"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/data/entityRegistry.ts",
+      "type": "file",
+      "name": "entityRegistry.ts",
+      "filePath": "packages/core/src/data/entityRegistry.ts",
+      "summary": "实体注册表：基于 sync/entitySchemas 的 SCHEMA_REGISTRY 导出 ENTITY_REGISTRY 映射与 getEntityMeta 查询。",
+      "tags": [
+        "entity",
+        "sync",
+        "registry"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/data/entityRegistry.ts:getEntityMeta",
+      "type": "function",
+      "name": "getEntityMeta",
+      "filePath": "packages/core/src/data/entityRegistry.ts",
+      "lineRange": [
+        21,
+        25
+      ],
+      "summary": "按同步实体名查询 ENTITY_REGISTRY，未知则抛错。",
+      "tags": [
+        "entity",
+        "sync",
+        "data"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/defaults.ts",
+      "type": "file",
+      "name": "defaults.ts",
+      "filePath": "packages/core/src/defaults.ts",
+      "summary": "默认数据工厂：提供 createHabitFromForm/createReflection/createFastingSession/defaultDataState/createResetDataPatch 等纯工厂函数。",
+      "tags": [
+        "defaults",
+        "factory",
+        "entity"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/defaults.ts:createHabitFromForm",
+      "type": "function",
+      "name": "createHabitFromForm",
+      "filePath": "packages/core/src/defaults.ts",
+      "lineRange": [
+        10,
+        48
+      ],
+      "summary": "由表单数据构造 Habit 对象，填充默认值与 uid。",
+      "tags": [
+        "factory",
+        "habit",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/defaults.ts:createReflection",
+      "type": "function",
+      "name": "createReflection",
+      "filePath": "packages/core/src/defaults.ts",
+      "lineRange": [
+        50,
+        62
+      ],
+      "summary": "构造 MindReflection 对象，含颜色索引与时间戳。",
+      "tags": [
+        "factory",
+        "reflection",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/defaults.ts:createFastingSession",
+      "type": "function",
+      "name": "createFastingSession",
+      "filePath": "packages/core/src/defaults.ts",
+      "lineRange": [
+        64,
+        66
+      ],
+      "summary": "构造 FastingSession 对象，使用目标时长与 uid。",
+      "tags": [
+        "factory",
+        "fasting",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/defaults.ts:createResetDataPatch",
+      "type": "function",
+      "name": "createResetDataPatch",
+      "filePath": "packages/core/src/defaults.ts",
+      "lineRange": [
+        110,
+        117
+      ],
+      "summary": "生成保留 auth/theme/language 的重置数据 patch。",
+      "tags": [
+        "factory",
+        "reset",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/fetch.test.ts",
+      "type": "file",
+      "name": "fetch.test.ts",
+      "filePath": "packages/core/src/fetch.test.ts",
+      "summary": "fetch 工具测试：覆盖 buildHeaders/fetchWithTimeout/handleJsonResponse 及各自定义错误类的行为。",
+      "tags": [
+        "test",
+        "fetch",
+        "error-handling"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/fetch.test.ts:mockResponse",
+      "type": "function",
+      "name": "mockResponse",
+      "filePath": "packages/core/src/fetch.test.ts",
+      "lineRange": [
+        18,
+        30
+      ],
+      "summary": "构造用于测试的 mock Response 对象。",
+      "tags": [
+        "test",
+        "fetch",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/fetch.ts",
+      "type": "file",
+      "name": "fetch.ts",
+      "filePath": "packages/core/src/fetch.ts",
+      "summary": "网络请求工具：封装 buildHeaders/fetchWithTimeout/handleJsonResponse 及 NetworkError/ServerError/ValidationError/AuthError/KickedOutError/ConflictError/ApiError 错误类。",
+      "tags": [
+        "fetch",
+        "infra",
+        "error-handling"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/fetch.ts:buildHeaders",
+      "type": "function",
+      "name": "buildHeaders",
+      "filePath": "packages/core/src/fetch.ts",
+      "lineRange": [
+        6,
+        10
+      ],
+      "summary": "构造请求头，带 Content-Type 与可选 Bearer token。",
+      "tags": [
+        "fetch",
+        "auth",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/fetch.ts:fetchWithTimeout",
+      "type": "function",
+      "name": "fetchWithTimeout",
+      "filePath": "packages/core/src/fetch.ts",
+      "lineRange": [
+        39,
+        66
+      ],
+      "summary": "带超时与父 signal 传播的 fetch 封装，超时抛 NetworkError。",
+      "tags": [
+        "fetch",
+        "timeout",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/fetch.ts:classifyError",
+      "type": "function",
+      "name": "classifyError",
+      "filePath": "packages/core/src/fetch.ts",
+      "lineRange": [
+        78,
+        87
+      ],
+      "summary": "根据 HTTP 状态码和响应体中的 code 字段，将错误分类为 KickedOutError、AuthError、ValidationError、ServerError 或 ApiError。",
+      "tags": [
+        "error-handling",
+        "http",
+        "error-classification"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/fetch.ts:handleJsonResponse",
+      "type": "function",
+      "name": "handleJsonResponse",
+      "filePath": "packages/core/src/fetch.ts",
+      "lineRange": [
+        89,
+        106
+      ],
+      "summary": "解析响应文本为空/JSON，非 ok 时按状态码分类抛错。",
+      "tags": [
+        "fetch",
+        "error-handling",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:packages/core/src/fetch.ts:NetworkError",
+      "type": "class",
+      "name": "NetworkError",
+      "filePath": "packages/core/src/fetch.ts",
+      "lineRange": [
+        12,
+        14
+      ],
+      "summary": "自定义错误类 NetworkError（undefined），用于分类处理网络/服务器/验证/认证/冲突等请求异常。",
+      "tags": [
+        "error-handling",
+        "fetch",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:packages/core/src/fetch.ts:ServerError",
+      "type": "class",
+      "name": "ServerError",
+      "filePath": "packages/core/src/fetch.ts",
+      "lineRange": [
+        16,
+        19
+      ],
+      "summary": "自定义错误类 ServerError（undefined），用于分类处理网络/服务器/验证/认证/冲突等请求异常。",
+      "tags": [
+        "error-handling",
+        "fetch",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:packages/core/src/fetch.ts:ValidationError",
+      "type": "class",
+      "name": "ValidationError",
+      "filePath": "packages/core/src/fetch.ts",
+      "lineRange": [
+        21,
+        24
+      ],
+      "summary": "自定义错误类 ValidationError（undefined），用于分类处理网络/服务器/验证/认证/冲突等请求异常。",
+      "tags": [
+        "error-handling",
+        "fetch",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:packages/core/src/fetch.ts:AuthError",
+      "type": "class",
+      "name": "AuthError",
+      "filePath": "packages/core/src/fetch.ts",
+      "lineRange": [
+        26,
+        29
+      ],
+      "summary": "自定义错误类 AuthError（undefined），用于分类处理网络/服务器/验证/认证/冲突等请求异常。",
+      "tags": [
+        "error-handling",
+        "fetch",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:packages/core/src/fetch.ts:KickedOutError",
+      "type": "class",
+      "name": "KickedOutError",
+      "filePath": "packages/core/src/fetch.ts",
+      "lineRange": [
+        31,
+        33
+      ],
+      "summary": "自定义错误类 KickedOutError（undefined），用于分类处理网络/服务器/验证/认证/冲突等请求异常。",
+      "tags": [
+        "error-handling",
+        "fetch",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:packages/core/src/fetch.ts:ConflictError",
+      "type": "class",
+      "name": "ConflictError",
+      "filePath": "packages/core/src/fetch.ts",
+      "lineRange": [
+        35,
+        37
+      ],
+      "summary": "自定义错误类 ConflictError（undefined），用于分类处理网络/服务器/验证/认证/冲突等请求异常。",
+      "tags": [
+        "error-handling",
+        "fetch",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:packages/core/src/fetch.ts:ApiError",
+      "type": "class",
+      "name": "ApiError",
+      "filePath": "packages/core/src/fetch.ts",
+      "lineRange": [
+        68,
+        76
+      ],
+      "summary": "自定义错误类 ApiError（undefined），用于分类处理网络/服务器/验证/认证/冲突等请求异常。",
+      "tags": [
+        "error-handling",
+        "fetch",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/logger.ts",
+      "type": "file",
+      "name": "logger.ts",
+      "filePath": "packages/core/src/logger.ts",
+      "summary": "统一日志模块：提供 setSentryBridge 注入 Sentry 与 createLogger 生成带 tag 的 debug/info/warn/error 日志器。",
+      "tags": [
+        "logger",
+        "infra",
+        "sentry"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/logger.ts:setSentryBridge",
+      "type": "function",
+      "name": "setSentryBridge",
+      "filePath": "packages/core/src/logger.ts",
+      "lineRange": [
+        18,
+        20
+      ],
+      "summary": "注入 Sentry 的 captureException/captureMessage/addBreadcrumb 桥接。",
+      "tags": [
+        "logger",
+        "sentry",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/logger.ts:logToConsole",
+      "type": "function",
+      "name": "logToConsole",
+      "filePath": "packages/core/src/logger.ts",
+      "lineRange": [
+        22,
+        38
+      ],
+      "summary": "根据日志级别将带标签的日志分发到对应的 console 方法（debug/info 仅在 __DEV__ 输出）。",
+      "tags": [
+        "logger",
+        "console",
+        "debug"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/logger.ts:createLogger",
+      "type": "function",
+      "name": "createLogger",
+      "filePath": "packages/core/src/logger.ts",
+      "lineRange": [
+        47,
+        69
+      ],
+      "summary": "创建带 tag 的 Logger，info/warn/error 同步上报 Sentry。",
+      "tags": [
+        "logger",
+        "sentry",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/push.ts",
+      "type": "file",
+      "name": "push.ts",
+      "filePath": "packages/core/src/push.ts",
+      "summary": "推送服务：封装 setPushApiBase/apiRegisterPushToken/apiSendPushNotification，以及 registerPushToken 平台适配入口。",
+      "tags": [
+        "push",
+        "infra",
+        "notification"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/push.ts:setPushApiBase",
+      "type": "function",
+      "name": "setPushApiBase",
+      "filePath": "packages/core/src/push.ts",
+      "lineRange": [
+        27,
+        29
+      ],
+      "summary": "设置推送接口基础地址。",
+      "tags": [
+        "push",
+        "config",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/push.ts:apiRegisterPushToken",
+      "type": "function",
+      "name": "apiRegisterPushToken",
+      "filePath": "packages/core/src/push.ts",
+      "lineRange": [
+        33,
+        44
+      ],
+      "summary": "向服务器注册平台推送 token。",
+      "tags": [
+        "push",
+        "api",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/push.ts:apiSendPushNotification",
+      "type": "function",
+      "name": "apiSendPushNotification",
+      "filePath": "packages/core/src/push.ts",
+      "lineRange": [
+        48,
+        59
+      ],
+      "summary": "向目标用户发送推送通知。",
+      "tags": [
+        "push",
+        "api",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/push.ts:registerPushToken",
+      "type": "function",
+      "name": "registerPushToken",
+      "filePath": "packages/core/src/push.ts",
+      "lineRange": [
+        63,
+        83
+      ],
+      "summary": "适配当前平台获取 token 并注册，处理未登录/错误分支。",
+      "tags": [
+        "push",
+        "adapter",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/services/notification.ts",
+      "type": "file",
+      "name": "notification.ts",
+      "filePath": "packages/core/src/services/notification.ts",
+      "summary": "计划延迟通知服务：setNotificationApiBase 配置接口地址，notifyDelayedPlan 向服务器发送邮件通知。",
+      "tags": [
+        "notification",
+        "infra",
+        "service"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/services/notification.ts:setNotificationApiBase",
+      "type": "function",
+      "name": "setNotificationApiBase",
+      "filePath": "packages/core/src/services/notification.ts",
+      "lineRange": [
+        10,
+        12
+      ],
+      "summary": "设置计划通知接口地址。",
+      "tags": [
+        "notification",
+        "config",
+        "service"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/services/notification.ts:notifyDelayedPlan",
+      "type": "function",
+      "name": "notifyDelayedPlan",
+      "filePath": "packages/core/src/services/notification.ts",
+      "lineRange": [
+        22,
+        43
+      ],
+      "summary": "通知服务器延迟计划，触发邮件提醒。",
+      "tags": [
+        "notification",
+        "api",
+        "service"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/checkinSlice.test.ts",
+      "type": "file",
+      "name": "checkinSlice.test.ts",
+      "filePath": "packages/core/src/store/checkinSlice.test.ts",
+      "summary": "旧版 CheckinSlice 测试（已标记 deprecated，被 createCheckinSlice.test.ts 覆盖）。",
+      "tags": [
+        "checkin",
+        "test",
+        "store"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/store/checkinSlice.test.ts:createMockAdapter",
+      "type": "function",
+      "name": "createMockAdapter",
+      "filePath": "packages/core/src/store/checkinSlice.test.ts",
+      "lineRange": [
+        11,
+        20
+      ],
+      "summary": "创建 StorageAdapter 的 mock 实例。",
+      "tags": [
+        "test",
+        "adapter",
+        "store"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/createAuthSlice.test.ts",
+      "type": "file",
+      "name": "createAuthSlice.test.ts",
+      "filePath": "packages/core/src/store/createAuthSlice.test.ts",
+      "summary": "createAuthSlice 测试：覆盖 login/register/logout/refreshAuth/pullServerData 等认证流程。",
+      "tags": [
+        "auth",
+        "test",
+        "store"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/store/createAuthSlice.test.ts:makeTestStore",
+      "type": "function",
+      "name": "makeTestStore",
+      "filePath": "packages/core/src/store/createAuthSlice.test.ts",
+      "lineRange": [
+        9,
+        39
+      ],
+      "summary": "构建 Zustand 风格的测试 store（set/get/api）。",
+      "tags": [
+        "test",
+        "store",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/createAuthSlice.ts",
+      "type": "file",
+      "name": "createAuthSlice.ts",
+      "filePath": "packages/core/src/store/createAuthSlice.ts",
+      "summary": "认证 Slice：实现 login/register/logout/clearDataAndLogout/refreshAuth/pullServerData，联动 AI 服务重置与 mergeEngine 合并。",
+      "tags": [
+        "auth",
+        "store",
+        "slice"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/store/createAuthSlice.ts:createAuthSlice",
+      "type": "function",
+      "name": "createAuthSlice",
+      "filePath": "packages/core/src/store/createAuthSlice.ts",
+      "lineRange": [
+        12,
+        229
+      ],
+      "summary": "创建认证 Slice：登录/注册/登出/刷新 token/拉取服务器数据，联动 AI 重置与 mergeEngine。",
+      "tags": [
+        "auth",
+        "store",
+        "slice"
+      ],
+      "complexity": "complex"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:packages/core/src/dailyReset.ts",
+      "target": "function:packages/core/src/dailyReset.ts:getDailyResetPatch",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/dailyReset.ts",
+      "target": "function:packages/core/src/dailyReset.ts:getDailyResetPatch",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/dailyReset.ts",
+      "target": "function:packages/core/src/dailyReset.ts:msUntilMidnight",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/dailyReset.ts",
+      "target": "function:packages/core/src/dailyReset.ts:msUntilMidnight",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/dailyReset.ts",
+      "target": "function:packages/core/src/dailyReset.ts:getTodayFoodLog",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/dailyReset.ts",
+      "target": "function:packages/core/src/dailyReset.ts:getTodayFoodLog",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/dailyReset.ts",
+      "target": "function:packages/core/src/dailyReset.ts:getTodayMedMinutes",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/dailyReset.ts",
+      "target": "function:packages/core/src/dailyReset.ts:getTodayMedMinutes",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/dailyReset.ts",
+      "target": "class:packages/core/src/dailyReset.ts:DailyResetManager",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/dailyReset.ts",
+      "target": "class:packages/core/src/dailyReset.ts:DailyResetManager",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/data/entityRegistry.ts",
+      "target": "function:packages/core/src/data/entityRegistry.ts:getEntityMeta",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/data/entityRegistry.ts",
+      "target": "function:packages/core/src/data/entityRegistry.ts:getEntityMeta",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/defaults.ts",
+      "target": "function:packages/core/src/defaults.ts:createHabitFromForm",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/defaults.ts",
+      "target": "function:packages/core/src/defaults.ts:createHabitFromForm",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/defaults.ts",
+      "target": "function:packages/core/src/defaults.ts:createReflection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/defaults.ts",
+      "target": "function:packages/core/src/defaults.ts:createReflection",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/defaults.ts",
+      "target": "function:packages/core/src/defaults.ts:createFastingSession",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/defaults.ts",
+      "target": "function:packages/core/src/defaults.ts:createFastingSession",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/defaults.ts",
+      "target": "function:packages/core/src/defaults.ts:createResetDataPatch",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/defaults.ts",
+      "target": "function:packages/core/src/defaults.ts:createResetDataPatch",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/fetch.test.ts",
+      "target": "function:packages/core/src/fetch.test.ts:mockResponse",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/fetch.ts",
+      "target": "function:packages/core/src/fetch.ts:buildHeaders",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/fetch.ts",
+      "target": "function:packages/core/src/fetch.ts:buildHeaders",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/fetch.ts",
+      "target": "function:packages/core/src/fetch.ts:fetchWithTimeout",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/fetch.ts",
+      "target": "function:packages/core/src/fetch.ts:fetchWithTimeout",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/fetch.ts",
+      "target": "function:packages/core/src/fetch.ts:classifyError",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/fetch.ts",
+      "target": "function:packages/core/src/fetch.ts:handleJsonResponse",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/fetch.ts",
+      "target": "function:packages/core/src/fetch.ts:handleJsonResponse",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/fetch.ts",
+      "target": "class:packages/core/src/fetch.ts:NetworkError",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/fetch.ts",
+      "target": "class:packages/core/src/fetch.ts:NetworkError",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/fetch.ts",
+      "target": "class:packages/core/src/fetch.ts:ServerError",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/fetch.ts",
+      "target": "class:packages/core/src/fetch.ts:ServerError",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/fetch.ts",
+      "target": "class:packages/core/src/fetch.ts:ValidationError",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/fetch.ts",
+      "target": "class:packages/core/src/fetch.ts:ValidationError",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/fetch.ts",
+      "target": "class:packages/core/src/fetch.ts:AuthError",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/fetch.ts",
+      "target": "class:packages/core/src/fetch.ts:AuthError",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/fetch.ts",
+      "target": "class:packages/core/src/fetch.ts:KickedOutError",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/fetch.ts",
+      "target": "class:packages/core/src/fetch.ts:KickedOutError",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/fetch.ts",
+      "target": "class:packages/core/src/fetch.ts:ConflictError",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/fetch.ts",
+      "target": "class:packages/core/src/fetch.ts:ConflictError",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/fetch.ts",
+      "target": "class:packages/core/src/fetch.ts:ApiError",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/fetch.ts",
+      "target": "class:packages/core/src/fetch.ts:ApiError",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/logger.ts",
+      "target": "function:packages/core/src/logger.ts:setSentryBridge",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/logger.ts",
+      "target": "function:packages/core/src/logger.ts:setSentryBridge",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/logger.ts",
+      "target": "function:packages/core/src/logger.ts:logToConsole",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/logger.ts",
+      "target": "function:packages/core/src/logger.ts:createLogger",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/logger.ts",
+      "target": "function:packages/core/src/logger.ts:createLogger",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/push.ts",
+      "target": "function:packages/core/src/push.ts:setPushApiBase",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/push.ts",
+      "target": "function:packages/core/src/push.ts:setPushApiBase",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/push.ts",
+      "target": "function:packages/core/src/push.ts:apiRegisterPushToken",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/push.ts",
+      "target": "function:packages/core/src/push.ts:apiRegisterPushToken",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/push.ts",
+      "target": "function:packages/core/src/push.ts:apiSendPushNotification",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/push.ts",
+      "target": "function:packages/core/src/push.ts:apiSendPushNotification",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/push.ts",
+      "target": "function:packages/core/src/push.ts:registerPushToken",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/push.ts",
+      "target": "function:packages/core/src/push.ts:registerPushToken",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/services/notification.ts",
+      "target": "function:packages/core/src/services/notification.ts:setNotificationApiBase",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/services/notification.ts",
+      "target": "function:packages/core/src/services/notification.ts:setNotificationApiBase",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/services/notification.ts",
+      "target": "function:packages/core/src/services/notification.ts:notifyDelayedPlan",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/services/notification.ts",
+      "target": "function:packages/core/src/services/notification.ts:notifyDelayedPlan",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/checkinSlice.test.ts",
+      "target": "function:packages/core/src/store/checkinSlice.test.ts:createMockAdapter",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.test.ts",
+      "target": "function:packages/core/src/store/createAuthSlice.test.ts:makeTestStore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.ts",
+      "target": "function:packages/core/src/store/createAuthSlice.ts:createAuthSlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.ts",
+      "target": "function:packages/core/src/store/createAuthSlice.ts:createAuthSlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/dailyReset.ts",
+      "target": "file:packages/core/src/logger.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/dailyReset.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/dailyReset.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/data/entityRegistry.ts",
+      "target": "file:packages/core/src/sync/entities.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/data/entityRegistry.ts",
+      "target": "file:packages/core/src/sync/entitySchemas.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/defaults.ts",
+      "target": "file:packages/core/src/ai/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/defaults.ts",
+      "target": "file:packages/core/src/constants.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/defaults.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/defaults.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/fetch.test.ts",
+      "target": "file:packages/core/src/fetch.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/push.ts",
+      "target": "file:packages/core/src/fetch.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/push.ts",
+      "target": "file:packages/core/src/logger.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/checkinSlice.test.ts",
+      "target": "file:packages/core/src/store/createCheckinSlice.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/checkinSlice.test.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.test.ts",
+      "target": "file:packages/core/src/auth.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.test.ts",
+      "target": "file:packages/core/src/store/createAuthSlice.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.test.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.ts",
+      "target": "file:packages/core/src/ai/ai-service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.ts",
+      "target": "file:packages/core/src/ai/trail-recommender.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.ts",
+      "target": "file:packages/core/src/auth.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.ts",
+      "target": "file:packages/core/src/fetch.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.ts",
+      "target": "file:packages/core/src/logger.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.ts",
+      "target": "file:packages/core/src/store/mergeEngine.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.ts",
+      "target": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/dailyReset.ts",
+      "target": "function:packages/core/src/utils.ts:dateStr",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/defaults.ts",
+      "target": "function:packages/core/src/utils.ts:uid",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/defaults.ts",
+      "target": "function:packages/core/src/utils.ts:dateStr",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.ts",
+      "target": "function:packages/core/src/auth.ts:apiLogin",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.ts",
+      "target": "function:packages/core/src/auth.ts:apiRegister",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.ts",
+      "target": "function:packages/core/src/auth.ts:apiLogout",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.ts",
+      "target": "function:packages/core/src/ai/trail-recommender.ts:clearAICaches",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.ts",
+      "target": "function:packages/core/src/ai/ai-service.ts:resetAIService",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.ts",
+      "target": "function:packages/core/src/auth.ts:apiRefreshToken",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.ts",
+      "target": "function:packages/core/src/auth.ts:apiSyncPull",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createAuthSlice.ts",
+      "target": "function:packages/core/src/store/mergeEngine.ts:buildMergePatch",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ]
+}

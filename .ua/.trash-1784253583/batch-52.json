@@ -1,0 +1,195 @@
+{
+  "nodes": [
+    {
+      "id": "document:docs/API.md",
+      "type": "document",
+      "name": "API.md",
+      "filePath": "docs/API.md",
+      "summary": "Hono 认证 API 文档，定义注册/登录/刷新/登出/me、数据同步 push/pull、推送注册与发送、计划通知、Sentry tunnel 等端点及其请求/响应格式、错误码与限流规则。",
+      "tags": ["documentation", "api", "authentication", "sync"],
+      "complexity": "complex"
+    },
+    {
+      "id": "document:docs/DEPLOY.md",
+      "type": "document",
+      "name": "DEPLOY.md",
+      "filePath": "docs/DEPLOY.md",
+      "summary": "应用部署指南，说明环境变量配置、运行 deploy.sh、初始化 PocketBase 与管理后台，并列出 Web/PocketBase/Nginx 服务端口与常用 docker 运维命令。",
+      "tags": ["documentation", "deployment", "operations"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:docs/MIGRATION_GUIDE.md",
+      "type": "document",
+      "name": "MIGRATION_GUIDE.md",
+      "filePath": "docs/MIGRATION_GUIDE.md",
+      "summary": "unified-storage-refactor 迁移指南，描述从 AsyncStorage + SQLite 双轨到纯 SQLite 的破坏性变更，列出 useShallowStore/useGlobalTick/usePagination/initApp 等新增能力与迁移步骤。",
+      "tags": ["documentation", "migration", "storage"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:docs/architecture-analysis-2026-07-12.html",
+      "type": "file",
+      "name": "architecture-analysis-2026-07-12.html",
+      "filePath": "docs/architecture-analysis-2026-07-12.html",
+      "summary": "2026-07-12 版项目架构分析 HTML 可视化报告，以独立网页形式呈现包结构、依赖方向与数据流分析。",
+      "tags": ["documentation", "architecture", "visualization"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:docs/architecture-analysis-2026-07-13.html",
+      "type": "file",
+      "name": "architecture-analysis-2026-07-13.html",
+      "filePath": "docs/architecture-analysis-2026-07-13.html",
+      "summary": "2026-07-13 版项目架构重新分析 HTML 报告，在前一版基础上刷新架构扫描结果并同样以可视化网页承载。",
+      "tags": ["documentation", "architecture", "visualization"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:docs/architecture-analysis.md",
+      "type": "document",
+      "name": "architecture-analysis.md",
+      "filePath": "docs/architecture-analysis.md",
+      "summary": "项目综合架构分析，覆盖包结构、依赖方向、数据流、状态管理、认证、安全、部署、错误处理等八大维度，并给出依赖方向图。",
+      "tags": ["documentation", "architecture", "analysis"],
+      "complexity": "complex"
+    },
+    {
+      "id": "document:docs/architecture-risk-solutions.md",
+      "type": "document",
+      "name": "architecture-risk-solutions.md",
+      "filePath": "docs/architecture-risk-solutions.md",
+      "summary": "架构风险点分析与修复方案，识别速率限制内存 Map 等风险点并给出对应修复建议。",
+      "tags": ["documentation", "architecture", "risk", "solutions"],
+      "complexity": "complex"
+    },
+    {
+      "id": "document:docs/architecture-rules.md",
+      "type": "document",
+      "name": "architecture-rules.md",
+      "filePath": "docs/architecture-rules.md",
+      "summary": "基于知识图谱分析生成的架构规则与分层边界文档，定义依赖方向、接口所有权、跨层通信约束等硬规则。",
+      "tags": ["documentation", "architecture", "rules", "boundaries"],
+      "complexity": "complex"
+    },
+    {
+      "id": "document:docs/architecture-section2-6-analysis.md",
+      "type": "document",
+      "name": "architecture-section2-6-analysis.md",
+      "filePath": "docs/architecture-section2-6-analysis.md",
+      "summary": "架构深度分析 Section 2-6，从数据流、状态管理、认证、安全、部署五个维度识别 13 个改进点。",
+      "tags": ["documentation", "architecture", "deep-analysis"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:docs/audit-2026-07-08.md",
+      "type": "document",
+      "name": "audit-2026-07-08.md",
+      "filePath": "docs/audit-2026-07-08.md",
+      "summary": "egoless-do 第一轮全面审查报告，覆盖 apps/mobile、packages/core、infra/docker/api 与 backend/pb_hooks，从架构、安全、Bug 三个维度并行审查。",
+      "tags": ["documentation", "audit", "review"],
+      "complexity": "complex"
+    },
+    {
+      "id": "document:docs/full-dimension-audit-2026-07-09.md",
+      "type": "document",
+      "name": "full-dimension-audit-2026-07-09.md",
+      "filePath": "docs/full-dimension-audit-2026-07-09.md",
+      "summary": "全维度审查报告，聚焦依赖、无障碍、平台兼容、性能、国际化五个维度共发现 60 项问题。",
+      "tags": ["documentation", "audit", "multi-dimension"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:docs/package-structure-analysis.md",
+      "type": "document",
+      "name": "package-structure-analysis.md",
+      "filePath": "docs/package-structure-analysis.md",
+      "summary": "Egoless-Do Monorepo 包结构深度分析，梳理 apps/packages/backend/infra 各子树职责与依赖关系。",
+      "tags": ["documentation", "architecture", "package-structure"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:docs/remaining-dimension-audit-2026-07-09.md",
+      "type": "document",
+      "name": "remaining-dimension-audit-2026-07-09.md",
+      "filePath": "docs/remaining-dimension-audit-2026-07-09.md",
+      "summary": "剩余维度审查报告，围绕测试覆盖、CI/CD、错误边界三个维度共发现 45 项问题。",
+      "tags": ["documentation", "audit", "testing", "ci-cd"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:docs/round2-audit-2026-07-09.md",
+      "type": "document",
+      "name": "round2-audit-2026-07-09.md",
+      "filePath": "docs/round2-audit-2026-07-09.md",
+      "summary": "第二轮回归审查报告，验证上一轮 46 个改动文件及 packages/core store/business/ai/data/sync 层的修复情况。",
+      "tags": ["documentation", "audit", "regression"],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:docs/architecture-analysis.md",
+      "target": "document:docs/architecture-rules.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/architecture-analysis.md",
+      "target": "document:docs/architecture-risk-solutions.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/architecture-analysis.md",
+      "target": "document:docs/architecture-section2-6-analysis.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/architecture-analysis.md",
+      "target": "document:docs/package-structure-analysis.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/architecture-analysis.md",
+      "target": "file:docs/architecture-analysis-2026-07-12.html",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:docs/architecture-analysis-2026-07-12.html",
+      "target": "file:docs/architecture-analysis-2026-07-13.html",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/audit-2026-07-08.md",
+      "target": "document:docs/full-dimension-audit-2026-07-09.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/full-dimension-audit-2026-07-09.md",
+      "target": "document:docs/remaining-dimension-audit-2026-07-09.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/full-dimension-audit-2026-07-09.md",
+      "target": "document:docs/round2-audit-2026-07-09.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

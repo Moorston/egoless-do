@@ -1,0 +1,1 @@
+{"projectRoot": "D:/MyProject/2026/egoless-do", "batchFiles": [{"path": ".github/workflows/ci.yml", "language": "yaml", "sizeLines": 84, "fileCategory": "infra"}], "batchImportData": {".github/workflows/ci.yml": []}, "neighborMap": {}, "exportsByPath": {".github/workflows/ci.yml": []}}

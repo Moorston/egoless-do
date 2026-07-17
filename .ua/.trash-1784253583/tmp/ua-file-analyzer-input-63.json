@@ -1,0 +1,182 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": "apps/mobile/android/app/debug.keystore",
+      "language": "keystore",
+      "sizeLines": 8,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/android/app/proguard-rules.pro",
+      "language": "pro",
+      "sizeLines": 14,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/android/app/src/debug/AndroidManifest.xml",
+      "language": "xml",
+      "sizeLines": 7,
+      "fileCategory": "config"
+    },
+    {
+      "path": "apps/mobile/android/app/src/debugOptimized/AndroidManifest.xml",
+      "language": "xml",
+      "sizeLines": 7,
+      "fileCategory": "config"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/AndroidManifest.xml",
+      "language": "xml",
+      "sizeLines": 39,
+      "fileCategory": "config"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt",
+      "language": "kotlin",
+      "sizeLines": 61,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt",
+      "language": "kotlin",
+      "sizeLines": 56,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/drawable/ic_launcher_background.xml",
+      "language": "xml",
+      "sizeLines": 5,
+      "fileCategory": "config"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/drawable/rn_edit_text_material.xml",
+      "language": "xml",
+      "sizeLines": 37,
+      "fileCategory": "config"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml",
+      "language": "xml",
+      "sizeLines": 4,
+      "fileCategory": "config"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
+      "language": "xml",
+      "sizeLines": 4,
+      "fileCategory": "config"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.webp",
+      "language": "webp",
+      "sizeLines": 49,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher_round.webp",
+      "language": "webp",
+      "sizeLines": 21,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher.webp",
+      "language": "webp",
+      "sizeLines": 14,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.webp",
+      "language": "webp",
+      "sizeLines": 5,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher_round.webp",
+      "language": "webp",
+      "sizeLines": 12,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher.webp",
+      "language": "webp",
+      "sizeLines": 2,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.webp",
+      "language": "webp",
+      "sizeLines": 38,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp",
+      "language": "webp",
+      "sizeLines": 60,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher.webp",
+      "language": "webp",
+      "sizeLines": 8,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.webp",
+      "language": "webp",
+      "sizeLines": 70,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.webp",
+      "language": "webp",
+      "sizeLines": 106,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.webp",
+      "language": "webp",
+      "sizeLines": 35,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.webp",
+      "language": "webp",
+      "sizeLines": 161,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp",
+      "language": "webp",
+      "sizeLines": 58,
+      "fileCategory": "code"
+    }
+  ],
+  "batchImportData": {
+    "apps/mobile/android/app/debug.keystore": [],
+    "apps/mobile/android/app/proguard-rules.pro": [],
+    "apps/mobile/android/app/src/debug/AndroidManifest.xml": [],
+    "apps/mobile/android/app/src/debugOptimized/AndroidManifest.xml": [],
+    "apps/mobile/android/app/src/main/AndroidManifest.xml": [],
+    "apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt": [],
+    "apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt": [],
+    "apps/mobile/android/app/src/main/res/drawable/ic_launcher_background.xml": [],
+    "apps/mobile/android/app/src/main/res/drawable/rn_edit_text_material.xml": [],
+    "apps/mobile/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml": [],
+    "apps/mobile/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml": [],
+    "apps/mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher_round.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher_round.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.webp": [],
+    "apps/mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp": []
+  }
+}

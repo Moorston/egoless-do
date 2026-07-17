@@ -1,0 +1,336 @@
+{
+  "nodes": [
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-12-fix-profile-screen-crash/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-fix-profile-screen-crash/prd.md",
+      "summary": "ProfileScreen 因 expo-image-picker 导入 createPermissionHook 报错的修复 PRD：目标、根因（Expo SDK 54 移除该函数）、补丁方案与验收准则。",
+      "tags": [
+        "documentation",
+        "bugfix",
+        "expo",
+        "prd"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-12-fix-profile-screen-crash/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-fix-profile-screen-crash/task.json",
+      "summary": "fix-profile-screen-crash 任务元数据，标记为已完成 P2。",
+      "tags": [
+        "configuration",
+        "task",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/check.jsonl",
+      "summary": "pb-create-food-preset 任务校验记录。",
+      "tags": [
+        "documentation",
+        "task-record",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-pb-create-food-preset/implement.jsonl",
+      "summary": "pb-create-food-preset 任务实现记录（含 PB 集合创建步骤）。",
+      "tags": [
+        "documentation",
+        "task-record",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-12-sync-goerror/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-sync-goerror/check.jsonl",
+      "summary": "sync-goerror 任务校验记录（同步错误分析）。",
+      "tags": [
+        "documentation",
+        "task-record",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-12-sync-goerror/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-12-sync-goerror/implement.jsonl",
+      "summary": "sync-goerror 任务实现记录。",
+      "tags": [
+        "documentation",
+        "task-record",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/check.jsonl",
+      "summary": "analyze-token-expiry 任务校验记录。",
+      "tags": [
+        "documentation",
+        "task-record",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/implement.jsonl",
+      "summary": "analyze-token-expiry 任务实现记录（token 刷新机制分析）。",
+      "tags": [
+        "documentation",
+        "task-record",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/prd.md",
+      "summary": "token 过期问题分析 PRD：token 刷新机制、过期导致的同步失败场景与分析结论。",
+      "tags": [
+        "documentation",
+        "auth",
+        "token",
+        "prd"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-analyze-token-expiry/task.json",
+      "summary": "analyze-token-expiry 任务元数据。",
+      "tags": [
+        "configuration",
+        "task",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/check.jsonl",
+      "summary": "analyze-vow-layout 任务校验记录。",
+      "tags": [
+        "documentation",
+        "task-record",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/implement.jsonl",
+      "summary": "analyze-vow-layout 任务实现记录。",
+      "tags": [
+        "documentation",
+        "task-record",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/prd.md",
+      "summary": "vow 布局问题分析 PRD，记录布局异常现象与建议方案。",
+      "tags": [
+        "documentation",
+        "ui",
+        "vow",
+        "prd"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-analyze-vow-layout/task.json",
+      "summary": "analyze-vow-layout 任务元数据。",
+      "tags": [
+        "configuration",
+        "task",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-fix-auth-issues/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/check.jsonl",
+      "summary": "fix-auth-issues 任务校验记录。",
+      "tags": [
+        "documentation",
+        "task-record",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-fix-auth-issues/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/implement.jsonl",
+      "summary": "fix-auth-issues 任务实现记录。",
+      "tags": [
+        "documentation",
+        "task-record",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-fix-auth-issues/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/prd.md",
+      "summary": "认证相关问题修复 PRD，记录 auth 流程缺陷与修复方案。",
+      "tags": [
+        "documentation",
+        "auth",
+        "bugfix",
+        "prd"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-fix-auth-issues/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-fix-auth-issues/task.json",
+      "summary": "fix-auth-issues 任务元数据。",
+      "tags": [
+        "configuration",
+        "task",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/check.jsonl",
+      "summary": "optimize-vision-edit 任务校验记录。",
+      "tags": [
+        "documentation",
+        "task-record",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/implement.jsonl",
+      "summary": "optimize-vision-edit 任务实现记录。",
+      "tags": [
+        "documentation",
+        "task-record",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/prd.md",
+      "summary": "vision 编辑体验优化 PRD，记录交互问题与改进方案。",
+      "tags": [
+        "documentation",
+        "vision",
+        "optimization",
+        "prd"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-optimize-vision-edit/task.json",
+      "summary": "optimize-vision-edit 任务元数据。",
+      "tags": [
+        "configuration",
+        "task",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/check.jsonl",
+      "summary": "optimize-vow-edit 任务校验记录。",
+      "tags": [
+        "documentation",
+        "task-record",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/implement.jsonl",
+      "summary": "optimize-vow-edit 任务实现记录。",
+      "tags": [
+        "documentation",
+        "task-record",
+        "trellis"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-13-optimize-vow-edit/prd.md",
+      "summary": "vow 编辑体验优化 PRD（约 56 行），记录编辑流程问题与改进方案。",
+      "tags": [
+        "documentation",
+        "vow",
+        "optimization",
+        "prd"
+      ],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": []
+}

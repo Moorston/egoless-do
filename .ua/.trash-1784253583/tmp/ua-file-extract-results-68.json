@@ -1,0 +1,1491 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 25,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "backend/pb_migrations/1783689998_deleted_published_minds.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 109,
+      "nonEmptyLines": 107,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1783689999_deleted_checkins.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 121,
+      "nonEmptyLines": 119,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1783691974_updated_account_lockouts.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 130,
+      "nonEmptyLines": 120,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1783691975_updated_audit_logs.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 40,
+      "nonEmptyLines": 36,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1783843612_created_custom_food_presets.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 109,
+      "nonEmptyLines": 107,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/1783843763_updated_custom_food_presets.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 28,
+      "nonEmptyLines": 24,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_migrations/20260710_fix_trail_notes_note_id.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 35,
+      "nonEmptyLines": 31,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pocketbase.exe",
+      "language": "exe",
+      "fileCategory": "code",
+      "totalLines": 152902,
+      "nonEmptyLines": 145436,
+      "metrics": {}
+    },
+    {
+      "path": "infra/docker/api/src/db.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 36,
+      "nonEmptyLines": 30,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "infra/docker/docker-compose.yml",
+      "language": "yaml",
+      "fileCategory": "infra",
+      "totalLines": 82,
+      "nonEmptyLines": 78,
+      "sections": [
+        {
+          "heading": "services",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "volumes",
+          "level": 1,
+          "line": 77
+        },
+        {
+          "heading": "networks",
+          "level": 1,
+          "line": 80
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 3
+      }
+    },
+    {
+      "path": "infra/docker/Dockerfile.web",
+      "language": "dockerfile",
+      "fileCategory": "infra",
+      "totalLines": 64,
+      "nonEmptyLines": 46,
+      "metrics": {}
+    },
+    {
+      "path": "infra/nginx/nginx.conf",
+      "language": "conf",
+      "fileCategory": "code",
+      "totalLines": 138,
+      "nonEmptyLines": 120,
+      "metrics": {}
+    },
+    {
+      "path": "openspec/archive/comprehensive-audit-fix/report.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 89,
+      "nonEmptyLines": 75,
+      "sections": [
+        {
+          "heading": "egoless-do 全面代码审计修复 — 归档报告",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "执行日期",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "概述",
+          "level": 2,
+          "line": 6
+        },
+        {
+          "heading": "Commit 链（15 次）",
+          "level": 2,
+          "line": 9
+        },
+        {
+          "heading": "修复详情",
+          "level": 2,
+          "line": 29
+        },
+        {
+          "heading": "安全（14/14 = 100%）",
+          "level": 3,
+          "line": 31
+        },
+        {
+          "heading": "Bug（21/21 = 100%）",
+          "level": 3,
+          "line": 39
+        },
+        {
+          "heading": "架构（8/10 = 80%）",
+          "level": 3,
+          "line": 46
+        },
+        {
+          "heading": "性能（42/58 = 72%）",
+          "level": 3,
+          "line": 53
+        },
+        {
+          "heading": "同步（15/19 = 79%）",
+          "level": 3,
+          "line": 61
+        },
+        {
+          "heading": "核心指标对比",
+          "level": 2,
+          "line": 67
+        },
+        {
+          "heading": "验证结果",
+          "level": 2,
+          "line": 82
+        },
+        {
+          "heading": "遗留工作（后续 change）",
+          "level": 2,
+          "line": 86
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 13
+      }
+    },
+    {
+      "path": "openspec/archive/perf-systematic/proposal.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 37,
+      "nonEmptyLines": 27,
+      "sections": [
+        {
+          "heading": "Why",
+          "level": 2,
+          "line": 1
+        },
+        {
+          "heading": "What Changes",
+          "level": 2,
+          "line": 9
+        },
+        {
+          "heading": "Zustand selector 系统性改造（65 文件）",
+          "level": 3,
+          "line": 11
+        },
+        {
+          "heading": "rehydrateFromDb 并行化",
+          "level": 3,
+          "line": 14
+        },
+        {
+          "heading": "orphanRecovery N+1 消除",
+          "level": 3,
+          "line": 17
+        },
+        {
+          "heading": "Global-pulse 业务逻辑迁移",
+          "level": 3,
+          "line": 20
+        },
+        {
+          "heading": "Impact",
+          "level": 2,
+          "line": 26
+        },
+        {
+          "heading": "Verification",
+          "level": 2,
+          "line": 34
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 8
+      }
+    },
+    {
+      "path": "packages/config/eslint.base.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 36,
+      "nonEmptyLines": 36,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/config/package.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 5,
+      "nonEmptyLines": 5,
+      "sections": [
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "version",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "main",
+          "level": 1,
+          "line": 4
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 3
+      }
+    },
+    {
+      "path": "packages/config/tsconfig.base.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 18,
+      "nonEmptyLines": 18,
+      "sections": [
+        {
+          "heading": "compilerOptions",
+          "level": 1,
+          "line": 2
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 1
+      }
+    },
+    {
+      "path": "packages/core/package.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 23,
+      "nonEmptyLines": 23,
+      "sections": [
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "version",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "main",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "types",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "scripts",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dependencies",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "devDependencies",
+          "level": 1,
+          "line": 18
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 7
+      }
+    },
+    {
+      "path": "packages/core/src/ai/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 98,
+      "nonEmptyLines": 88,
+      "exports": [
+        {
+          "name": "AIService",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "getAIService",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "resetAIService",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "LocalAIEngine",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "OpenAICompatibleProvider",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "createProvider",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "testConnection",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "getAllContextReminders",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "detectMoodPatterns",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "detectHabitRisks",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "detectStreakRisks",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "detectReflectionGaps",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "ContextReminder",
+          "line": 17,
+          "isDefault": false
+        },
+        {
+          "name": "getAllRiskWarnings",
+          "line": 20,
+          "isDefault": false
+        },
+        {
+          "name": "detectHabitAbandonRisk",
+          "line": 20,
+          "isDefault": false
+        },
+        {
+          "name": "detectPlanDelayRisk",
+          "line": 20,
+          "isDefault": false
+        },
+        {
+          "name": "detectStreakBreakRisk",
+          "line": 20,
+          "isDefault": false
+        },
+        {
+          "name": "detectMoodDeclineRisk",
+          "line": 20,
+          "isDefault": false
+        },
+        {
+          "name": "RiskWarning",
+          "line": 27,
+          "isDefault": false
+        },
+        {
+          "name": "getAllThoughtPatterns",
+          "line": 30,
+          "isDefault": false
+        },
+        {
+          "name": "detectMoodSequencePatterns",
+          "line": 30,
+          "isDefault": false
+        },
+        {
+          "name": "detectTagPatterns",
+          "line": 30,
+          "isDefault": false
+        },
+        {
+          "name": "detectTimePatterns",
+          "line": 30,
+          "isDefault": false
+        },
+        {
+          "name": "detectKeywordPatterns",
+          "line": 30,
+          "isDefault": false
+        },
+        {
+          "name": "detectGrowthPatterns",
+          "line": 30,
+          "isDefault": false
+        },
+        {
+          "name": "ThoughtPattern",
+          "line": 38,
+          "isDefault": false
+        },
+        {
+          "name": "getAllPersonalizedSuggestions",
+          "line": 41,
+          "isDefault": false
+        },
+        {
+          "name": "generateMoodSuggestions",
+          "line": 41,
+          "isDefault": false
+        },
+        {
+          "name": "generateHabitSuggestions",
+          "line": 41,
+          "isDefault": false
+        },
+        {
+          "name": "generateRiskBasedSuggestions",
+          "line": 41,
+          "isDefault": false
+        },
+        {
+          "name": "generateTimeBasedSuggestions",
+          "line": 41,
+          "isDefault": false
+        },
+        {
+          "name": "PersonalizedSuggestion",
+          "line": 48,
+          "isDefault": false
+        },
+        {
+          "name": "applyForceLayout",
+          "line": 51,
+          "isDefault": false
+        },
+        {
+          "name": "applyHierarchicalLayout",
+          "line": 51,
+          "isDefault": false
+        },
+        {
+          "name": "applyCircularLayout",
+          "line": 51,
+          "isDefault": false
+        },
+        {
+          "name": "applyGridLayout",
+          "line": 51,
+          "isDefault": false
+        },
+        {
+          "name": "aggregateNodes",
+          "line": 51,
+          "isDefault": false
+        },
+        {
+          "name": "LayoutNode",
+          "line": 58,
+          "isDefault": false
+        },
+        {
+          "name": "LayoutEdge",
+          "line": 58,
+          "isDefault": false
+        },
+        {
+          "name": "LayoutConfig",
+          "line": 58,
+          "isDefault": false
+        },
+        {
+          "name": "AIFeatureType",
+          "line": 60,
+          "isDefault": false
+        },
+        {
+          "name": "AIMode",
+          "line": 60,
+          "isDefault": false
+        },
+        {
+          "name": "AIResult",
+          "line": 60,
+          "isDefault": false
+        },
+        {
+          "name": "AIConfig",
+          "line": 60,
+          "isDefault": false
+        },
+        {
+          "name": "ModelConfig",
+          "line": 60,
+          "isDefault": false
+        },
+        {
+          "name": "ProviderTemplate",
+          "line": 60,
+          "isDefault": false
+        },
+        {
+          "name": "TagSuggestion",
+          "line": 60,
+          "isDefault": false
+        },
+        {
+          "name": "MoodDetection",
+          "line": 60,
+          "isDefault": false
+        },
+        {
+          "name": "TrailInsight",
+          "line": 60,
+          "isDefault": false
+        },
+        {
+          "name": "ReviewGuide",
+          "line": 60,
+          "isDefault": false
+        },
+        {
+          "name": "GenerateOptions",
+          "line": 60,
+          "isDefault": false
+        },
+        {
+          "name": "UsageStats",
+          "line": 60,
+          "isDefault": false
+        },
+        {
+          "name": "PROVIDER_TEMPLATES",
+          "line": 67,
+          "isDefault": false
+        },
+        {
+          "name": "recommendTrailsViaAI",
+          "line": 70,
+          "isDefault": false
+        },
+        {
+          "name": "matchReflectionsToTopic",
+          "line": 70,
+          "isDefault": false
+        },
+        {
+          "name": "semanticSearchReflections",
+          "line": 70,
+          "isDefault": false
+        },
+        {
+          "name": "isAIRecommendAvailable",
+          "line": 70,
+          "isDefault": false
+        },
+        {
+          "name": "parseSmartQuery",
+          "line": 70,
+          "isDefault": false
+        },
+        {
+          "name": "AIRecommendation",
+          "line": 77,
+          "isDefault": false
+        },
+        {
+          "name": "AIMatchResult",
+          "line": 77,
+          "isDefault": false
+        },
+        {
+          "name": "SmartQueryResult",
+          "line": 77,
+          "isDefault": false
+        },
+        {
+          "name": "SmartQueryFilters",
+          "line": 77,
+          "isDefault": false
+        },
+        {
+          "name": "computeLocalInsights",
+          "line": 80,
+          "isDefault": false
+        },
+        {
+          "name": "generateInsightProfile",
+          "line": 80,
+          "isDefault": false
+        },
+        {
+          "name": "InsightProfile",
+          "line": 84,
+          "isDefault": false
+        },
+        {
+          "name": "HotTag",
+          "line": 84,
+          "isDefault": false
+        },
+        {
+          "name": "MoodEntry",
+          "line": 84,
+          "isDefault": false
+        },
+        {
+          "name": "HotTopic",
+          "line": 84,
+          "isDefault": false
+        },
+        {
+          "name": "buildIndex",
+          "line": 87,
+          "isDefault": false
+        },
+        {
+          "name": "retrieveTopK",
+          "line": 87,
+          "isDefault": false
+        },
+        {
+          "name": "expandTerms",
+          "line": 87,
+          "isDefault": false
+        },
+        {
+          "name": "SYNONYM_MAP",
+          "line": 87,
+          "isDefault": false
+        },
+        {
+          "name": "buildRecommendPrompt",
+          "line": 87,
+          "isDefault": false
+        },
+        {
+          "name": "buildQueryParsePrompt",
+          "line": 87,
+          "isDefault": false
+        },
+        {
+          "name": "formatReflectionSummary",
+          "line": 87,
+          "isDefault": false
+        },
+        {
+          "name": "AICache",
+          "line": 87,
+          "isDefault": false
+        },
+        {
+          "name": "generateCacheKey",
+          "line": 87,
+          "isDefault": false
+        },
+        {
+          "name": "ReflectionIndex",
+          "line": 98,
+          "isDefault": false
+        },
+        {
+          "name": "ScoredReflection",
+          "line": 98,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 79,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/ai/layout-algorithms.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 53,
+      "nonEmptyLines": 46,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/ai/layout-algorithms.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 298,
+      "nonEmptyLines": 250,
+      "functions": [
+        {
+          "name": "distance",
+          "startLine": 36,
+          "endLine": 40,
+          "params": [
+            "a",
+            "b"
+          ]
+        },
+        {
+          "name": "applyForceLayout",
+          "startLine": 43,
+          "endLine": 144,
+          "params": [
+            "nodes",
+            "edges",
+            "width",
+            "height",
+            "config"
+          ]
+        },
+        {
+          "name": "applyHierarchicalLayout",
+          "startLine": 147,
+          "endLine": 214,
+          "params": [
+            "nodes",
+            "edges",
+            "width",
+            "height"
+          ]
+        },
+        {
+          "name": "applyCircularLayout",
+          "startLine": 217,
+          "endLine": 231,
+          "params": [
+            "nodes",
+            "width",
+            "height"
+          ]
+        },
+        {
+          "name": "applyGridLayout",
+          "startLine": 234,
+          "endLine": 250,
+          "params": [
+            "nodes",
+            "width",
+            "height"
+          ]
+        },
+        {
+          "name": "aggregateNodes",
+          "startLine": 253,
+          "endLine": 298,
+          "params": [
+            "nodes",
+            "threshold"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "applyForceLayout",
+          "line": 43,
+          "isDefault": false
+        },
+        {
+          "name": "applyHierarchicalLayout",
+          "line": 147,
+          "isDefault": false
+        },
+        {
+          "name": "applyCircularLayout",
+          "line": 217,
+          "isDefault": false
+        },
+        {
+          "name": "applyGridLayout",
+          "line": 234,
+          "isDefault": false
+        },
+        {
+          "name": "aggregateNodes",
+          "line": 253,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "distance",
+          "callee": "Math.sqrt",
+          "lineNumber": 39
+        },
+        {
+          "caller": "applyForceLayout",
+          "callee": "nodes.forEach",
+          "lineNumber": 53
+        },
+        {
+          "caller": "applyForceLayout",
+          "callee": "Math.random",
+          "lineNumber": 55
+        },
+        {
+          "caller": "applyForceLayout",
+          "callee": "Math.random",
+          "lineNumber": 56
+        },
+        {
+          "caller": "applyForceLayout",
+          "callee": "Math.sqrt",
+          "lineNumber": 73
+        },
+        {
+          "caller": "applyForceLayout",
+          "callee": "nodes.map",
+          "lineNumber": 86
+        },
+        {
+          "caller": "applyForceLayout",
+          "callee": "edges.forEach",
+          "lineNumber": 87
+        },
+        {
+          "caller": "applyForceLayout",
+          "callee": "nodeMap.get",
+          "lineNumber": 88
+        },
+        {
+          "caller": "applyForceLayout",
+          "callee": "nodeMap.get",
+          "lineNumber": 89
+        },
+        {
+          "caller": "applyForceLayout",
+          "callee": "Math.sqrt",
+          "lineNumber": 94
+        },
+        {
+          "caller": "applyForceLayout",
+          "callee": "nodes.forEach",
+          "lineNumber": 108
+        },
+        {
+          "caller": "applyForceLayout",
+          "callee": "nodes.forEach",
+          "lineNumber": 114
+        },
+        {
+          "caller": "applyForceLayout",
+          "callee": "Math.sqrt",
+          "lineNumber": 120
+        },
+        {
+          "caller": "applyForceLayout",
+          "callee": "Math.max",
+          "lineNumber": 132
+        },
+        {
+          "caller": "applyForceLayout",
+          "callee": "Math.min",
+          "lineNumber": 132
+        },
+        {
+          "caller": "applyForceLayout",
+          "callee": "Math.max",
+          "lineNumber": 133
+        },
+        {
+          "caller": "applyForceLayout",
+          "callee": "Math.min",
+          "lineNumber": 133
+        },
+        {
+          "caller": "applyForceLayout",
+          "callee": "Math.abs",
+          "lineNumber": 136
+        },
+        {
+          "caller": "applyForceLayout",
+          "callee": "Math.abs",
+          "lineNumber": 136
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "edges.forEach",
+          "lineNumber": 157
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "children.get",
+          "lineNumber": 158
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "c.push",
+          "lineNumber": 159
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "children.set",
+          "lineNumber": 160
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "parents.get",
+          "lineNumber": 162
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "p.push",
+          "lineNumber": 163
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "parents.set",
+          "lineNumber": 164
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "nodes.filter",
+          "lineNumber": 168
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "parents.has",
+          "lineNumber": 168
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "parents.get",
+          "lineNumber": 168
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "roots.map",
+          "lineNumber": 172
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "queue.shift",
+          "lineNumber": 175
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "levels.has",
+          "lineNumber": 176
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "levels.set",
+          "lineNumber": 177
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "children.get",
+          "lineNumber": 179
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "c.forEach",
+          "lineNumber": 180
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "queue.push",
+          "lineNumber": 181
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "nodes.forEach",
+          "lineNumber": 186
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "levels.has",
+          "lineNumber": 187
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "levels.set",
+          "lineNumber": 188
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "levels.forEach",
+          "lineNumber": 194
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "levelCounts.set",
+          "lineNumber": 195
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "levelCounts.get",
+          "lineNumber": 195
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "Math.max",
+          "lineNumber": 200
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "levels.values",
+          "lineNumber": 200
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "nodes.forEach",
+          "lineNumber": 203
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "levels.get",
+          "lineNumber": 204
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "levelIndices.get",
+          "lineNumber": 205
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "levelCounts.get",
+          "lineNumber": 206
+        },
+        {
+          "caller": "applyHierarchicalLayout",
+          "callee": "levelIndices.set",
+          "lineNumber": 212
+        },
+        {
+          "caller": "applyCircularLayout",
+          "callee": "Math.min",
+          "lineNumber": 224
+        },
+        {
+          "caller": "applyCircularLayout",
+          "callee": "nodes.forEach",
+          "lineNumber": 226
+        },
+        {
+          "caller": "applyCircularLayout",
+          "callee": "Math.cos",
+          "lineNumber": 228
+        },
+        {
+          "caller": "applyCircularLayout",
+          "callee": "Math.sin",
+          "lineNumber": 229
+        },
+        {
+          "caller": "applyGridLayout",
+          "callee": "Math.ceil",
+          "lineNumber": 239
+        },
+        {
+          "caller": "applyGridLayout",
+          "callee": "Math.sqrt",
+          "lineNumber": 239
+        },
+        {
+          "caller": "applyGridLayout",
+          "callee": "Math.ceil",
+          "lineNumber": 240
+        },
+        {
+          "caller": "applyGridLayout",
+          "callee": "nodes.forEach",
+          "lineNumber": 244
+        },
+        {
+          "caller": "applyGridLayout",
+          "callee": "Math.floor",
+          "lineNumber": 246
+        },
+        {
+          "caller": "aggregateNodes",
+          "callee": "nodes.forEach",
+          "lineNumber": 262
+        },
+        {
+          "caller": "aggregateNodes",
+          "callee": "used.has",
+          "lineNumber": 263
+        },
+        {
+          "caller": "aggregateNodes",
+          "callee": "used.add",
+          "lineNumber": 266
+        },
+        {
+          "caller": "aggregateNodes",
+          "callee": "nodes.forEach",
+          "lineNumber": 269
+        },
+        {
+          "caller": "aggregateNodes",
+          "callee": "used.has",
+          "lineNumber": 270
+        },
+        {
+          "caller": "aggregateNodes",
+          "callee": "Math.sqrt",
+          "lineNumber": 271
+        },
+        {
+          "caller": "aggregateNodes",
+          "callee": "Math.pow",
+          "lineNumber": 272
+        },
+        {
+          "caller": "aggregateNodes",
+          "callee": "Math.pow",
+          "lineNumber": 272
+        },
+        {
+          "caller": "aggregateNodes",
+          "callee": "cluster.push",
+          "lineNumber": 275
+        },
+        {
+          "caller": "aggregateNodes",
+          "callee": "used.add",
+          "lineNumber": 276
+        },
+        {
+          "caller": "aggregateNodes",
+          "callee": "cluster.reduce",
+          "lineNumber": 282
+        },
+        {
+          "caller": "aggregateNodes",
+          "callee": "cluster.reduce",
+          "lineNumber": 283
+        },
+        {
+          "caller": "aggregateNodes",
+          "callee": "aggregated.push",
+          "lineNumber": 284
+        },
+        {
+          "caller": "aggregateNodes",
+          "callee": "Math.min",
+          "lineNumber": 290
+        },
+        {
+          "caller": "aggregateNodes",
+          "callee": "aggregated.push",
+          "lineNumber": 293
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 5,
+        "functionCount": 6,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/ai/rag/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 5,
+      "nonEmptyLines": 5,
+      "exports": [
+        {
+          "name": "buildIndex",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "ReflectionIndex",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "retrieveTopK",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "expandTerms",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "SYNONYM_MAP",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "ScoredReflection",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "buildRecommendPrompt",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "buildQueryParsePrompt",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "formatReflectionSummary",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "AICache",
+          "line": 5,
+          "isDefault": false
+        },
+        {
+          "name": "generateCacheKey",
+          "line": 5,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 11,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/breathing.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 62,
+      "nonEmptyLines": 54,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/breathing.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 99,
+      "nonEmptyLines": 91,
+      "functions": [
+        {
+          "name": "cycleDuration",
+          "startLine": 78,
+          "endLine": 80,
+          "params": [
+            "preset"
+          ]
+        },
+        {
+          "name": "phaseLabelKey",
+          "startLine": 83,
+          "endLine": 89,
+          "params": [
+            "type"
+          ]
+        },
+        {
+          "name": "getDescKey",
+          "startLine": 92,
+          "endLine": 94,
+          "params": [
+            "preset",
+            "style"
+          ]
+        },
+        {
+          "name": "getTipsKey",
+          "startLine": 97,
+          "endLine": 99,
+          "params": [
+            "preset",
+            "style"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "BREATHING_PRESETS",
+          "line": 24,
+          "isDefault": false
+        },
+        {
+          "name": "cycleDuration",
+          "line": 78,
+          "isDefault": false
+        },
+        {
+          "name": "phaseLabelKey",
+          "line": 83,
+          "isDefault": false
+        },
+        {
+          "name": "getDescKey",
+          "line": 92,
+          "isDefault": false
+        },
+        {
+          "name": "getTipsKey",
+          "line": 97,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "cycleDuration",
+          "callee": "preset.phases.reduce",
+          "lineNumber": 79
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 5,
+        "functionCount": 4,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/coordinateFuzzing.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 80,
+      "nonEmptyLines": 68,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    }
+  ]
+}

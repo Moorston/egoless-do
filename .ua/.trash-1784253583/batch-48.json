@@ -1,0 +1,59 @@
+{
+  "nodes": [
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/values/colors.xml",
+      "type": "config",
+      "name": "colors.xml",
+      "filePath": "apps/mobile/android/app/src/main/res/values/colors.xml",
+      "summary": "Android 颜色资源定义，声明 splashscreen_background、iconBackground 与主色（#0F0A1E 暗紫）等配色值。",
+      "tags": [
+        "configuration",
+        "android",
+        "resources"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/values/strings.xml",
+      "type": "config",
+      "name": "strings.xml",
+      "filePath": "apps/mobile/android/app/src/main/res/values/strings.xml",
+      "summary": "Android 字符串资源，定义应用名称「心流纪」与 expo 启动屏 resizeMode、状态栏 translucent 等配置项。",
+      "tags": [
+        "configuration",
+        "android",
+        "resources"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/values/styles.xml",
+      "type": "config",
+      "name": "styles.xml",
+      "filePath": "apps/mobile/android/app/src/main/res/values/styles.xml",
+      "summary": "Android 主题样式资源，定义 AppTheme（DayNight.NoActionBar）与 Theme.App.SplashScreen 启动屏主题，含状态栏颜色。",
+      "tags": [
+        "configuration",
+        "android",
+        "resources"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:apps/mobile/android/app/src/main/res/values/colors.xml",
+      "target": "file:apps/mobile/android/app/src/main/res/values/styles.xml",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:apps/mobile/android/app/src/main/res/values/strings.xml",
+      "target": "file:apps/mobile/android/app/src/main/res/values/styles.xml",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

@@ -589,7 +589,7 @@ export default function HomeScreen() {
                     {isToday ? (
                       <>
                         <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>
-                          <Text style={{ fontWeight: '600', color: P }}>{waterMl}</Text> / {waterGoal} ml
+                          <Text style={{ fontWeight: '600', color: P }}>{String(waterMl)}</Text> / {String(waterGoal)} ml
                         </Text>
                         <TouchableOpacity onPress={openWaterGoal} accessibilityLabel="编辑饮水目标">
                           <Pencil size={14} color={TH.sub} />
@@ -597,7 +597,7 @@ export default function HomeScreen() {
                       </>
                     ) : (
                       <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>
-                        <Text style={{ fontWeight: '600', color: P }}>{parsed.waterMl}</Text> ml
+                        <Text style={{ fontWeight: '600', color: P }}>{String(parsed.waterMl)}</Text> ml
                       </Text>
                     )}
                   </View>

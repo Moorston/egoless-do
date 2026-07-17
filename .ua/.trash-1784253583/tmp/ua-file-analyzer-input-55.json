@@ -1,0 +1,29 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": "infra/scripts/backup-pb.sh",
+      "language": "shell",
+      "sizeLines": 80,
+      "fileCategory": "script"
+    },
+    {
+      "path": "infra/scripts/deploy.sh",
+      "language": "shell",
+      "sizeLines": 64,
+      "fileCategory": "script"
+    },
+    {
+      "path": "infra/scripts/restore-pb.sh",
+      "language": "shell",
+      "sizeLines": 70,
+      "fileCategory": "script"
+    }
+  ],
+  "batchImportData": {
+    "infra/scripts/backup-pb.sh": [],
+    "infra/scripts/deploy.sh": [],
+    "infra/scripts/restore-pb.sh": []
+  },
+  "batchIndex": 55
+}

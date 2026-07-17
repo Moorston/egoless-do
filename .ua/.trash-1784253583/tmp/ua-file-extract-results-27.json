@@ -1,0 +1,1515 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 3,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "packages/core/src/business/reflectionGraph.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 89,
+      "nonEmptyLines": 75,
+      "functions": [
+        {
+          "name": "makeReflection",
+          "startLine": 10,
+          "endLine": 17,
+          "params": [
+            "id"
+          ]
+        },
+        {
+          "name": "makeInput",
+          "startLine": 19,
+          "endLine": 32,
+          "params": [
+            "overrides"
+          ]
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "makeInput",
+          "callee": "makeReflection",
+          "lineNumber": 22
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 0,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/reflectionGraph.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 516,
+      "nonEmptyLines": 464,
+      "functions": [
+        {
+          "name": "safe",
+          "startLine": 33,
+          "endLine": 33,
+          "params": [
+            "arr"
+          ]
+        },
+        {
+          "name": "makeNode",
+          "startLine": 36,
+          "endLine": 56,
+          "params": [
+            "id",
+            "type",
+            "label",
+            "data",
+            "cx",
+            "cy"
+          ]
+        },
+        {
+          "name": "addEdge",
+          "startLine": 59,
+          "endLine": 69,
+          "params": [
+            "edges",
+            "from",
+            "to",
+            "type",
+            "label"
+          ]
+        },
+        {
+          "name": "buildPlanGraph",
+          "startLine": 72,
+          "endLine": 122,
+          "params": [
+            "input",
+            "nodes",
+            "nodeMap",
+            "edges"
+          ]
+        },
+        {
+          "name": "buildHabitGraph",
+          "startLine": 125,
+          "endLine": 169,
+          "params": [
+            "input",
+            "nodes",
+            "nodeMap",
+            "edges"
+          ]
+        },
+        {
+          "name": "buildReflectionGraph",
+          "startLine": 172,
+          "endLine": 238,
+          "params": [
+            "input",
+            "nodes",
+            "nodeMap",
+            "edges"
+          ]
+        },
+        {
+          "name": "buildTrailGraph",
+          "startLine": 241,
+          "endLine": 297,
+          "params": [
+            "input",
+            "nodes",
+            "nodeMap",
+            "edges"
+          ]
+        },
+        {
+          "name": "buildPlanItemGraph",
+          "startLine": 300,
+          "endLine": 358,
+          "params": [
+            "input",
+            "nodes",
+            "nodeMap",
+            "edges"
+          ]
+        },
+        {
+          "name": "limitNodes",
+          "startLine": 364,
+          "endLine": 388,
+          "params": [
+            "nodes",
+            "edges",
+            "contextNode"
+          ]
+        },
+        {
+          "name": "generateInsights",
+          "startLine": 391,
+          "endLine": 433,
+          "params": [
+            "nodes",
+            "edges",
+            "contextType"
+          ]
+        },
+        {
+          "name": "buildRelationGraph",
+          "startLine": 436,
+          "endLine": 474,
+          "params": [
+            "input"
+          ]
+        },
+        {
+          "name": "linkPlansToVisions",
+          "startLine": 477,
+          "endLine": 495,
+          "params": [
+            "input",
+            "nodes",
+            "nodeMap",
+            "edges"
+          ]
+        },
+        {
+          "name": "linkHabitsToVisions",
+          "startLine": 498,
+          "endLine": 516,
+          "params": [
+            "input",
+            "nodes",
+            "nodeMap",
+            "edges"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "generateInsights",
+          "line": 391,
+          "isDefault": false
+        },
+        {
+          "name": "buildRelationGraph",
+          "line": 436,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "makeNode",
+          "callee": "[...label].slice(0, 20).join",
+          "lineNumber": 47
+        },
+        {
+          "caller": "makeNode",
+          "callee": "[...label].slice",
+          "lineNumber": 47
+        },
+        {
+          "caller": "makeNode",
+          "callee": "Math.random",
+          "lineNumber": 48
+        },
+        {
+          "caller": "makeNode",
+          "callee": "Math.random",
+          "lineNumber": 49
+        },
+        {
+          "caller": "addEdge",
+          "callee": "edges.some",
+          "lineNumber": 66
+        },
+        {
+          "caller": "addEdge",
+          "callee": "edges.push",
+          "lineNumber": 67
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "safe(input.plans).find",
+          "lineNumber": 78
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "safe",
+          "lineNumber": 78
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "makeNode",
+          "lineNumber": 83
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "nodes.push",
+          "lineNumber": 84
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 85
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "safe(input.planItems).filter",
+          "lineNumber": 87
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "safe",
+          "lineNumber": 87
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "nodeMap.has",
+          "lineNumber": 89
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "nodes.push",
+          "lineNumber": 90
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "makeNode",
+          "lineNumber": 90
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 91
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "addEdge",
+          "lineNumber": 93
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "safe(input.reflections).find",
+          "lineNumber": 96
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "safe",
+          "lineNumber": 96
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "nodeMap.has",
+          "lineNumber": 97
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "nodes.push",
+          "lineNumber": 98
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "makeNode",
+          "lineNumber": 98
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 99
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "addEdge",
+          "lineNumber": 100
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "safe(input.thoughtTrails).find",
+          "lineNumber": 104
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "safe",
+          "lineNumber": 104
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "nodeMap.has",
+          "lineNumber": 105
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "nodes.push",
+          "lineNumber": 106
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "makeNode",
+          "lineNumber": 106
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 107
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "addEdge",
+          "lineNumber": 108
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "safe(input.habits).find",
+          "lineNumber": 112
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "safe",
+          "lineNumber": 112
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "nodeMap.has",
+          "lineNumber": 113
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "nodes.push",
+          "lineNumber": 114
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "makeNode",
+          "lineNumber": 114
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 115
+        },
+        {
+          "caller": "buildPlanGraph",
+          "callee": "addEdge",
+          "lineNumber": 116
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "safe(input.habits).find",
+          "lineNumber": 131
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "safe",
+          "lineNumber": 131
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "makeNode",
+          "lineNumber": 136
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "nodes.push",
+          "lineNumber": 137
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 138
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "safe(input.reflections).filter",
+          "lineNumber": 140
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "safe",
+          "lineNumber": 140
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "r.tags.some",
+          "lineNumber": 141
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "nodeMap.has",
+          "lineNumber": 144
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "nodes.push",
+          "lineNumber": 145
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "makeNode",
+          "lineNumber": 145
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 146
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "addEdge",
+          "lineNumber": 148
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "safe(input.planItems).filter",
+          "lineNumber": 151
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "safe",
+          "lineNumber": 151
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "nodeMap.has",
+          "lineNumber": 155
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "nodes.push",
+          "lineNumber": 156
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "makeNode",
+          "lineNumber": 156
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 157
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "addEdge",
+          "lineNumber": 159
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "safe(input.plans).find",
+          "lineNumber": 160
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "safe",
+          "lineNumber": 160
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "nodeMap.has",
+          "lineNumber": 161
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "nodes.push",
+          "lineNumber": 162
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "makeNode",
+          "lineNumber": 162
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 163
+        },
+        {
+          "caller": "buildHabitGraph",
+          "callee": "addEdge",
+          "lineNumber": 164
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "safe(input.reflections).find",
+          "lineNumber": 178
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "safe",
+          "lineNumber": 178
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "makeNode",
+          "lineNumber": 183
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "nodes.push",
+          "lineNumber": 184
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 185
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "safe(input.reflectionLinks).filter",
+          "lineNumber": 187
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "safe",
+          "lineNumber": 187
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "safe(input.reflections).find",
+          "lineNumber": 192
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "safe",
+          "lineNumber": 192
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "nodeMap.has",
+          "lineNumber": 193
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "nodes.push",
+          "lineNumber": 194
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "makeNode",
+          "lineNumber": 194
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 195
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "addEdge",
+          "lineNumber": 196
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "safe(input.reflections)\r\n    .filter(r => !r.deleted && r.id !== reflection.id && r.tags.some(t => reflection.tags.includes(t)))\r\n    .slice",
+          "lineNumber": 200
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "safe(input.reflections)\r\n    .filter",
+          "lineNumber": 200
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "safe",
+          "lineNumber": 200
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "r.tags.some",
+          "lineNumber": 201
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "reflection.tags.includes",
+          "lineNumber": 201
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "nodeMap.has",
+          "lineNumber": 204
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "nodes.push",
+          "lineNumber": 205
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "makeNode",
+          "lineNumber": 205
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 206
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "addEdge",
+          "lineNumber": 207
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "safe(input.planItems).find",
+          "lineNumber": 212
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "safe",
+          "lineNumber": 212
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "nodeMap.has",
+          "lineNumber": 213
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "nodes.push",
+          "lineNumber": 214
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "makeNode",
+          "lineNumber": 214
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 215
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "addEdge",
+          "lineNumber": 216
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "safe(input.plans).find",
+          "lineNumber": 217
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "safe",
+          "lineNumber": 217
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "nodeMap.has",
+          "lineNumber": 218
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "nodes.push",
+          "lineNumber": 219
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "makeNode",
+          "lineNumber": 219
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 220
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "addEdge",
+          "lineNumber": 221
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "safe(input.thoughtTrails).filter",
+          "lineNumber": 226
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "safe",
+          "lineNumber": 226
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "(t.reflectionIds ?? []).includes",
+          "lineNumber": 227
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "nodeMap.has",
+          "lineNumber": 230
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "nodes.push",
+          "lineNumber": 231
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "makeNode",
+          "lineNumber": 231
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 232
+        },
+        {
+          "caller": "buildReflectionGraph",
+          "callee": "addEdge",
+          "lineNumber": 234
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "safe(input.thoughtTrails).find",
+          "lineNumber": 247
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "safe",
+          "lineNumber": 247
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "makeNode",
+          "lineNumber": 252
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "nodes.push",
+          "lineNumber": 253
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 254
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "safe(input.reflections).find",
+          "lineNumber": 257
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "safe",
+          "lineNumber": 257
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "nodeMap.has",
+          "lineNumber": 258
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "nodes.push",
+          "lineNumber": 259
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "makeNode",
+          "lineNumber": 259
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 260
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "addEdge",
+          "lineNumber": 261
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "safe(input.planItems).find",
+          "lineNumber": 266
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "safe",
+          "lineNumber": 266
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "nodeMap.has",
+          "lineNumber": 267
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "nodes.push",
+          "lineNumber": 268
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "makeNode",
+          "lineNumber": 268
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 269
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "addEdge",
+          "lineNumber": 270
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "safe(input.plans).find",
+          "lineNumber": 271
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "safe",
+          "lineNumber": 271
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "nodeMap.has",
+          "lineNumber": 272
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "nodes.push",
+          "lineNumber": 273
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "makeNode",
+          "lineNumber": 273
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 274
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "addEdge",
+          "lineNumber": 275
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "safe",
+          "lineNumber": 281
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "(t.reflectionIds ?? []).some",
+          "lineNumber": 283
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "(trail.reflectionIds ?? []).includes",
+          "lineNumber": 283
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "relatedTrailIds.add",
+          "lineNumber": 284
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "safe(input.thoughtTrails).find",
+          "lineNumber": 288
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "safe",
+          "lineNumber": 288
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "nodeMap.has",
+          "lineNumber": 289
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "nodes.push",
+          "lineNumber": 290
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "makeNode",
+          "lineNumber": 290
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 291
+        },
+        {
+          "caller": "buildTrailGraph",
+          "callee": "addEdge",
+          "lineNumber": 292
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "safe(input.planItems).find",
+          "lineNumber": 306
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "safe",
+          "lineNumber": 306
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "makeNode",
+          "lineNumber": 311
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "nodes.push",
+          "lineNumber": 312
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 313
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "safe(input.plans).find",
+          "lineNumber": 315
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "safe",
+          "lineNumber": 315
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "nodeMap.has",
+          "lineNumber": 316
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "nodes.push",
+          "lineNumber": 317
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "makeNode",
+          "lineNumber": 317
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 318
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "addEdge",
+          "lineNumber": 319
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "safe(input.reflections).find",
+          "lineNumber": 323
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "safe",
+          "lineNumber": 323
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "nodeMap.has",
+          "lineNumber": 324
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "nodes.push",
+          "lineNumber": 325
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "makeNode",
+          "lineNumber": 325
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 326
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "addEdge",
+          "lineNumber": 327
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "safe(input.thoughtTrails).find",
+          "lineNumber": 332
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "safe",
+          "lineNumber": 332
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "nodeMap.has",
+          "lineNumber": 333
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "nodes.push",
+          "lineNumber": 334
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "makeNode",
+          "lineNumber": 334
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 335
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "addEdge",
+          "lineNumber": 336
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "(trail.reflectionIds ?? []).slice",
+          "lineNumber": 337
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "safe(input.reflections).find",
+          "lineNumber": 338
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "safe",
+          "lineNumber": 338
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "nodeMap.has",
+          "lineNumber": 339
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "nodes.push",
+          "lineNumber": 340
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "makeNode",
+          "lineNumber": 340
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 341
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "addEdge",
+          "lineNumber": 342
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "safe(input.habits).find",
+          "lineNumber": 349
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "safe",
+          "lineNumber": 349
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "nodeMap.has",
+          "lineNumber": 350
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "nodes.push",
+          "lineNumber": 351
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "makeNode",
+          "lineNumber": 351
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "nodeMap.set",
+          "lineNumber": 352
+        },
+        {
+          "caller": "buildPlanItemGraph",
+          "callee": "addEdge",
+          "lineNumber": 353
+        },
+        {
+          "caller": "limitNodes",
+          "callee": "edgeCounts.set",
+          "lineNumber": 373
+        },
+        {
+          "caller": "limitNodes",
+          "callee": "edgeCounts.get",
+          "lineNumber": 373
+        },
+        {
+          "caller": "limitNodes",
+          "callee": "edgeCounts.set",
+          "lineNumber": 374
+        },
+        {
+          "caller": "limitNodes",
+          "callee": "edgeCounts.get",
+          "lineNumber": 374
+        },
+        {
+          "caller": "limitNodes",
+          "callee": "keepIds.add",
+          "lineNumber": 378
+        },
+        {
+          "caller": "limitNodes",
+          "callee": "nodes\r\n    .filter(n => !keepIds.has(n.id))\r\n    .sort",
+          "lineNumber": 380
+        },
+        {
+          "caller": "limitNodes",
+          "callee": "nodes\r\n    .filter",
+          "lineNumber": 380
+        },
+        {
+          "caller": "limitNodes",
+          "callee": "keepIds.has",
+          "lineNumber": 381
+        },
+        {
+          "caller": "limitNodes",
+          "callee": "edgeCounts.get",
+          "lineNumber": 382
+        },
+        {
+          "caller": "limitNodes",
+          "callee": "edgeCounts.get",
+          "lineNumber": 382
+        },
+        {
+          "caller": "limitNodes",
+          "callee": "sorted.slice(0, MAX_NODES - keepIds.size).forEach",
+          "lineNumber": 384
+        },
+        {
+          "caller": "limitNodes",
+          "callee": "sorted.slice",
+          "lineNumber": 384
+        },
+        {
+          "caller": "limitNodes",
+          "callee": "keepIds.add",
+          "lineNumber": 384
+        },
+        {
+          "caller": "limitNodes",
+          "callee": "nodes.splice",
+          "lineNumber": 386
+        },
+        {
+          "caller": "limitNodes",
+          "callee": "nodes.filter",
+          "lineNumber": 386
+        },
+        {
+          "caller": "limitNodes",
+          "callee": "keepIds.has",
+          "lineNumber": 386
+        },
+        {
+          "caller": "limitNodes",
+          "callee": "edges.splice",
+          "lineNumber": 387
+        },
+        {
+          "caller": "limitNodes",
+          "callee": "edges.filter",
+          "lineNumber": 387
+        },
+        {
+          "caller": "limitNodes",
+          "callee": "keepIds.has",
+          "lineNumber": 387
+        },
+        {
+          "caller": "limitNodes",
+          "callee": "keepIds.has",
+          "lineNumber": 387
+        },
+        {
+          "caller": "countByType",
+          "callee": "nodes.filter",
+          "lineNumber": 399
+        },
+        {
+          "caller": "generateInsights",
+          "callee": "countByType",
+          "lineNumber": 402
+        },
+        {
+          "caller": "generateInsights",
+          "callee": "insights.push",
+          "lineNumber": 403
+        },
+        {
+          "caller": "generateInsights",
+          "callee": "countByType",
+          "lineNumber": 404
+        },
+        {
+          "caller": "generateInsights",
+          "callee": "insights.push",
+          "lineNumber": 405
+        },
+        {
+          "caller": "generateInsights",
+          "callee": "countByType",
+          "lineNumber": 408
+        },
+        {
+          "caller": "generateInsights",
+          "callee": "insights.push",
+          "lineNumber": 409
+        },
+        {
+          "caller": "generateInsights",
+          "callee": "countByType",
+          "lineNumber": 410
+        },
+        {
+          "caller": "generateInsights",
+          "callee": "insights.push",
+          "lineNumber": 411
+        },
+        {
+          "caller": "generateInsights",
+          "callee": "edges.filter",
+          "lineNumber": 414
+        },
+        {
+          "caller": "generateInsights",
+          "callee": "insights.push",
+          "lineNumber": 415
+        },
+        {
+          "caller": "generateInsights",
+          "callee": "countByType",
+          "lineNumber": 418
+        },
+        {
+          "caller": "generateInsights",
+          "callee": "insights.push",
+          "lineNumber": 419
+        },
+        {
+          "caller": "generateInsights",
+          "callee": "countByType",
+          "lineNumber": 420
+        },
+        {
+          "caller": "generateInsights",
+          "callee": "insights.push",
+          "lineNumber": 421
+        },
+        {
+          "caller": "generateInsights",
+          "callee": "countByType",
+          "lineNumber": 422
+        },
+        {
+          "caller": "generateInsights",
+          "callee": "insights.push",
+          "lineNumber": 423
+        },
+        {
+          "caller": "generateInsights",
+          "callee": "nodes.filter(n => n.type !== 'planItem').map",
+          "lineNumber": 426
+        },
+        {
+          "caller": "generateInsights",
+          "callee": "nodes.filter",
+          "lineNumber": 426
+        },
+        {
+          "caller": "generateInsights",
+          "callee": "insights.push",
+          "lineNumber": 427
+        },
+        {
+          "caller": "generateInsights",
+          "callee": "nodes.filter",
+          "lineNumber": 428
+        },
+        {
+          "caller": "generateInsights",
+          "callee": "insights.push",
+          "lineNumber": 429
+        },
+        {
+          "caller": "generateInsights",
+          "callee": "insights.slice",
+          "lineNumber": 432
+        },
+        {
+          "caller": "buildRelationGraph",
+          "callee": "buildPlanGraph",
+          "lineNumber": 444
+        },
+        {
+          "caller": "buildRelationGraph",
+          "callee": "linkPlansToVisions",
+          "lineNumber": 446
+        },
+        {
+          "caller": "buildRelationGraph",
+          "callee": "buildHabitGraph",
+          "lineNumber": 449
+        },
+        {
+          "caller": "buildRelationGraph",
+          "callee": "linkHabitsToVisions",
+          "lineNumber": 451
+        },
+        {
+          "caller": "buildRelationGraph",
+          "callee": "buildReflectionGraph",
+          "lineNumber": 454
+        },
+        {
+          "caller": "buildRelationGraph",
+          "callee": "buildTrailGraph",
+          "lineNumber": 457
+        },
+        {
+          "caller": "buildRelationGraph",
+          "callee": "buildPlanItemGraph",
+          "lineNumber": 460
+        },
+        {
+          "caller": "buildRelationGraph",
+          "callee": "limitNodes",
+          "lineNumber": 470
+        },
+        {
+          "caller": "buildRelationGraph",
+          "callee": "generateInsights",
+          "lineNumber": 471
+        },
+        {
+          "caller": "linkPlansToVisions",
+          "callee": "safe",
+          "lineNumber": 483
+        },
+        {
+          "caller": "linkPlansToVisions",
+          "callee": "safe(input.visions).find",
+          "lineNumber": 486
+        },
+        {
+          "caller": "linkPlansToVisions",
+          "callee": "safe",
+          "lineNumber": 486
+        },
+        {
+          "caller": "linkPlansToVisions",
+          "callee": "nodeMap.has",
+          "lineNumber": 487
+        },
+        {
+          "caller": "linkPlansToVisions",
+          "callee": "makeNode",
+          "lineNumber": 488
+        },
+        {
+          "caller": "linkPlansToVisions",
+          "callee": "nodes.push",
+          "lineNumber": 489
+        },
+        {
+          "caller": "linkPlansToVisions",
+          "callee": "nodeMap.set",
+          "lineNumber": 490
+        },
+        {
+          "caller": "linkPlansToVisions",
+          "callee": "addEdge",
+          "lineNumber": 491
+        },
+        {
+          "caller": "linkHabitsToVisions",
+          "callee": "safe",
+          "lineNumber": 504
+        },
+        {
+          "caller": "linkHabitsToVisions",
+          "callee": "safe(input.visions).find",
+          "lineNumber": 507
+        },
+        {
+          "caller": "linkHabitsToVisions",
+          "callee": "safe",
+          "lineNumber": 507
+        },
+        {
+          "caller": "linkHabitsToVisions",
+          "callee": "nodeMap.has",
+          "lineNumber": 508
+        },
+        {
+          "caller": "linkHabitsToVisions",
+          "callee": "makeNode",
+          "lineNumber": 509
+        },
+        {
+          "caller": "linkHabitsToVisions",
+          "callee": "nodes.push",
+          "lineNumber": 510
+        },
+        {
+          "caller": "linkHabitsToVisions",
+          "callee": "nodeMap.set",
+          "lineNumber": 511
+        },
+        {
+          "caller": "linkHabitsToVisions",
+          "callee": "addEdge",
+          "lineNumber": 512
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 2,
+        "functionCount": 13,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/types/reflectionGraph.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 88,
+      "nonEmptyLines": 80,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    }
+  ]
+}

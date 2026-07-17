@@ -1,0 +1,106 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": "docs/API.md",
+      "language": "markdown",
+      "sizeLines": 246,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/DEPLOY.md",
+      "language": "markdown",
+      "sizeLines": 136,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/MIGRATION_GUIDE.md",
+      "language": "markdown",
+      "sizeLines": 86,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/architecture-analysis-2026-07-12.html",
+      "language": "html",
+      "sizeLines": 264,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "docs/architecture-analysis-2026-07-13.html",
+      "language": "html",
+      "sizeLines": 223,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "docs/architecture-analysis.md",
+      "language": "markdown",
+      "sizeLines": 270,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/architecture-risk-solutions.md",
+      "language": "markdown",
+      "sizeLines": 286,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/architecture-rules.md",
+      "language": "markdown",
+      "sizeLines": 277,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/architecture-section2-6-analysis.md",
+      "language": "markdown",
+      "sizeLines": 153,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/audit-2026-07-08.md",
+      "language": "markdown",
+      "sizeLines": 256,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/full-dimension-audit-2026-07-09.md",
+      "language": "markdown",
+      "sizeLines": 161,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/package-structure-analysis.md",
+      "language": "markdown",
+      "sizeLines": 119,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/remaining-dimension-audit-2026-07-09.md",
+      "language": "markdown",
+      "sizeLines": 125,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/round2-audit-2026-07-09.md",
+      "language": "markdown",
+      "sizeLines": 142,
+      "fileCategory": "docs"
+    }
+  ],
+  "batchImportData": {
+    "docs/API.md": [],
+    "docs/DEPLOY.md": [],
+    "docs/MIGRATION_GUIDE.md": [],
+    "docs/architecture-analysis-2026-07-12.html": [],
+    "docs/architecture-analysis-2026-07-13.html": [],
+    "docs/architecture-analysis.md": [],
+    "docs/architecture-risk-solutions.md": [],
+    "docs/architecture-rules.md": [],
+    "docs/architecture-section2-6-analysis.md": [],
+    "docs/audit-2026-07-08.md": [],
+    "docs/full-dimension-audit-2026-07-09.md": [],
+    "docs/package-structure-analysis.md": [],
+    "docs/remaining-dimension-audit-2026-07-09.md": [],
+    "docs/round2-audit-2026-07-09.md": []
+  },
+  "batchIndex": 52
+}

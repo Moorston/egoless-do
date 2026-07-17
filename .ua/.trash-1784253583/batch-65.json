@@ -1,0 +1,425 @@
+{
+  "nodes": [
+    {
+      "id": "file:apps/mobile/src/features/global-pulse/hooks/useGlobalTick.test.ts",
+      "type": "file",
+      "name": "useGlobalTick.test.ts",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/useGlobalTick.test.ts",
+      "summary": "useGlobalTick 单元测试（约 126 行）：定义 TickStore 类并验证定时 tick 与订阅机制。",
+      "tags": [
+        "test",
+        "global-pulse",
+        "unit-test"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:apps/mobile/src/features/global-pulse/hooks/useGlobalTick.test.ts:TickStore",
+      "type": "class",
+      "name": "TickStore",
+      "filePath": "apps/mobile/src/features/global-pulse/hooks/useGlobalTick.test.ts",
+      "lineRange": [
+        6,
+        34
+      ],
+      "summary": "测试用 TickStore 类：定时 tick 与 subscribe/getSnapshot 接口。",
+      "tags": [
+        "test",
+        "global-pulse",
+        "tick"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/home/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "apps/mobile/src/features/home/index.ts",
+      "summary": "home feature 的 barrel 导出文件，统一导出 HomeScreen、CheckinHistoryScreen、ReviewView 等页面与组件。",
+      "tags": [
+        "barrel",
+        "exports",
+        "home"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/practice/hooks/useConversation.ts",
+      "type": "file",
+      "name": "useConversation.ts",
+      "filePath": "apps/mobile/src/features/practice/hooks/useConversation.ts",
+      "summary": "useConversation hook（约 65 行）：管理局部 AI 对话列表增删查，基于 useState/useCallback，定义 Conversation/Message 类型。",
+      "tags": [
+        "hook",
+        "practice",
+        "ai",
+        "conversation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/hooks/useConversation.ts:useConversation",
+      "type": "function",
+      "name": "useConversation",
+      "filePath": "apps/mobile/src/features/practice/hooks/useConversation.ts",
+      "lineRange": [
+        24,
+        65
+      ],
+      "summary": "管理本地 AI 对话列表，提供 addMessage/getConversation/createConversation 操作。",
+      "tags": [
+        "hook",
+        "practice",
+        "conversation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/core/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "apps/mobile/src/features/reflections/core/index.ts",
+      "summary": "reflections core 子模块的 barrel 导出。",
+      "tags": [
+        "barrel",
+        "exports",
+        "reflections"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/hooks/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "apps/mobile/src/features/reflections/hooks/index.ts",
+      "summary": "reflections hooks 子模块的 barrel 导出。",
+      "tags": [
+        "barrel",
+        "exports",
+        "reflections"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.test.ts",
+      "type": "file",
+      "name": "useQuickTrailSearch.test.ts",
+      "filePath": "apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.test.ts",
+      "summary": "useQuickTrailSearch 的纯逻辑单元测试：覆盖时间范围过滤、排序、去重、搜索行为等场景。",
+      "tags": [
+        "test",
+        "reflections",
+        "unit-test"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/hooks/useReflections.test.ts",
+      "type": "file",
+      "name": "useReflections.test.ts",
+      "filePath": "apps/mobile/src/features/reflections/hooks/useReflections.test.ts",
+      "summary": "useReflections hook 的单元测试（约 81 行），验证列表加载、增删等核心逻辑。",
+      "tags": [
+        "test",
+        "reflections",
+        "unit-test"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/hooks/useSearchHistory.test.ts",
+      "type": "file",
+      "name": "useSearchHistory.test.ts",
+      "filePath": "apps/mobile/src/features/reflections/hooks/useSearchHistory.test.ts",
+      "summary": "useSearchHistory 的测试（约 201 行）：含纯逻辑测试与 renderHook 测试，覆盖加载、去重、持久化及 10 条上限。",
+      "tags": [
+        "test",
+        "reflections",
+        "unit-test"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/reflections/hooks/useSearchHistory.test.ts:renderHook",
+      "type": "function",
+      "name": "renderHook",
+      "filePath": "apps/mobile/src/features/reflections/hooks/useSearchHistory.test.ts",
+      "lineRange": [
+        21,
+        42
+      ],
+      "summary": "最小 renderHook 实现：通过 react-test-renderer 暴露 result/unmount。",
+      "tags": [
+        "test",
+        "helper",
+        "render-hook"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "apps/mobile/src/features/reflections/index.ts",
+      "summary": "reflections feature 顶层 barrel 导出。",
+      "tags": [
+        "barrel",
+        "exports",
+        "reflections"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/insights/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "apps/mobile/src/features/reflections/insights/index.ts",
+      "summary": "reflections insights 子模块的 barrel 导出。",
+      "tags": [
+        "barrel",
+        "exports",
+        "reflections"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/review/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "apps/mobile/src/features/reflections/review/index.ts",
+      "summary": "reflections review 子模块的 barrel 导出。",
+      "tags": [
+        "barrel",
+        "exports",
+        "reflections"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/shared/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "apps/mobile/src/features/reflections/shared/index.ts",
+      "summary": "reflections shared 子模块的 barrel 导出。",
+      "tags": [
+        "barrel",
+        "exports",
+        "reflections"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/timeline/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "apps/mobile/src/features/reflections/timeline/index.ts",
+      "summary": "reflections timeline 子模块的 barrel 导出。",
+      "tags": [
+        "barrel",
+        "exports",
+        "reflections"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sync/useSync.test.ts",
+      "type": "file",
+      "name": "useSync.test.ts",
+      "filePath": "apps/mobile/src/features/sync/useSync.test.ts",
+      "summary": "useSync hook 的单元测试（约 105 行），验证同步状态变更与回调行为。",
+      "tags": [
+        "test",
+        "sync",
+        "unit-test"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/hooks/usePagination.test.ts",
+      "type": "file",
+      "name": "usePagination.test.ts",
+      "filePath": "apps/mobile/src/hooks/usePagination.test.ts",
+      "summary": "usePagination 的分页逻辑单元测试（约 75 行），覆盖 paginate 纯函数及 hook 行为。",
+      "tags": [
+        "test",
+        "pagination",
+        "unit-test"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/store/initApp.test.ts",
+      "type": "file",
+      "name": "initApp.test.ts",
+      "filePath": "apps/mobile/src/store/initApp.test.ts",
+      "summary": "initApp 集成测试（约 162 行）：mock React Native、Sentry、SQLite 与 store，验证应用启动初始化流程。",
+      "tags": [
+        "test",
+        "store",
+        "integration-test"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/store/uiStore.test.ts",
+      "type": "file",
+      "name": "uiStore.test.ts",
+      "filePath": "apps/mobile/src/store/uiStore.test.ts",
+      "summary": "useUiStore 的单元测试（约 118 行），验证 modal、loading、theme、language、toast 状态变更。",
+      "tags": [
+        "test",
+        "store",
+        "unit-test"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/store/uiStore.ts",
+      "type": "file",
+      "name": "uiStore.ts",
+      "filePath": "apps/mobile/src/store/uiStore.ts",
+      "summary": "UI Store（约 87 行）：用 Zustand 管理 modal、loading、theme、language、toast 等界面状态与操作。",
+      "tags": [
+        "store",
+        "zustand",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/theme/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "apps/mobile/src/theme/index.ts",
+      "summary": "移动端主题 barrel 文件，重导出 @egoless-do/core 的 THEMES、COLORS 与 Theme 类型。",
+      "tags": [
+        "barrel",
+        "exports",
+        "theme"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/vitest.config.ts",
+      "type": "file",
+      "name": "vitest.config.ts",
+      "filePath": "apps/mobile/vitest.config.ts",
+      "summary": "移动端 Vitest 配置（约 18 行）：设定测试根目录、node 环境、包含模式与 core 别名。",
+      "tags": [
+        "configuration",
+        "vitest",
+        "test"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:backend/pb_data_backup/types.d.ts",
+      "type": "file",
+      "name": "types.d.ts",
+      "filePath": "backend/pb_data_backup/types.d.ts",
+      "summary": "PocketBase 后端自动生成的类型声明（约 20489 行），定义 cronAdd、mailerSend、$app 等 PB JS API 的类型签名。",
+      "tags": [
+        "type-definition",
+        "pocketbase",
+        "generated"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:backend/pb_hooks/auth.pb.js",
+      "type": "file",
+      "name": "auth.pb.js",
+      "filePath": "backend/pb_hooks/auth.pb.js",
+      "summary": "PB 认证刷新 hook（约 47 行）：token 刷新时递增 login_epoch 并嵌入 tokenClaims。",
+      "tags": [
+        "hook",
+        "pocketbase",
+        "auth"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_hooks/init.pb.js",
+      "type": "file",
+      "name": "init.pb.js",
+      "filePath": "backend/pb_hooks/init.pb.js",
+      "summary": "PB 初始化 hook 占位文件，提示通过 create-collection.ps1 或 Admin UI 创建集合。",
+      "tags": [
+        "hook",
+        "pocketbase",
+        "init"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:backend/pb_hooks/main.pb.js",
+      "type": "file",
+      "name": "main.pb.js",
+      "filePath": "backend/pb_hooks/main.pb.js",
+      "summary": "PB 主要业务 hook（约 241 行）：published_minds 匿名化与长度限制、global_checkin 后更新 global_stats/leaderboard。",
+      "tags": [
+        "hook",
+        "pocketbase",
+        "business"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_hooks/sync_push_pull.pb.js",
+      "type": "file",
+      "name": "sync_push_pull.pb.js",
+      "filePath": "backend/pb_hooks/sync_push_pull.pb.js",
+      "summary": "PB 同步 push/pull hook（约 271 行）：实现实体映射、校验、冲突检测与离线数据同步核心逻辑。",
+      "tags": [
+        "hook",
+        "pocketbase",
+        "sync"
+      ],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:apps/mobile/src/features/global-pulse/hooks/useGlobalTick.test.ts",
+      "target": "class:apps/mobile/src/features/global-pulse/hooks/useGlobalTick.test.ts:TickStore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/hooks/useConversation.ts",
+      "target": "function:apps/mobile/src/features/practice/hooks/useConversation.ts:useConversation",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/hooks/useConversation.ts",
+      "target": "function:apps/mobile/src/features/practice/hooks/useConversation.ts:useConversation",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/hooks/useSearchHistory.test.ts",
+      "target": "function:apps/mobile/src/features/reflections/hooks/useSearchHistory.test.ts:renderHook",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/store/uiStore.test.ts",
+      "target": "file:apps/mobile/src/store/uiStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/uiStore.test.ts",
+      "target": "file:apps/mobile/src/store/uiStore.ts",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

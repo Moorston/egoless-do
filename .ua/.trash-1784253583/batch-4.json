@@ -1,0 +1,2061 @@
+{
+  "nodes": [
+    {
+      "id": "file:apps/mobile/src/features/plan/PlanHeroCard.tsx",
+      "type": "file",
+      "name": "PlanHeroCard.tsx",
+      "filePath": "apps/mobile/src/features/plan/PlanHeroCard.tsx",
+      "summary": "计划模块的功能模块\"PlanHeroCard\"。主导出\"PlanHeroCard\"。轻量实现。",
+      "tags": [
+        "计划",
+        "管理",
+        "功能"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/plan/PlanHeroCard.tsx:PlanHeroCard",
+      "type": "function",
+      "name": "PlanHeroCard",
+      "filePath": "apps/mobile/src/features/plan/PlanHeroCard.tsx",
+      "lineRange": [
+        51,
+        143
+      ],
+      "summary": "计划的卡片组件\"PlanHeroCard\"，汇总展示单项数据与关键指标。",
+      "tags": [
+        "功能",
+        "计划",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/plan/PlanHistoryScreen.tsx",
+      "type": "file",
+      "name": "PlanHistoryScreen.tsx",
+      "filePath": "apps/mobile/src/features/plan/PlanHistoryScreen.tsx",
+      "summary": "计划模块的功能模块\"PlanHistoryScreen\"。主导出\"PlanHistoryScreen\"。轻量实现。",
+      "tags": [
+        "计划",
+        "管理",
+        "功能",
+        "页面入口"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/plan/PlanHistoryScreen.tsx:PlanHistoryScreen",
+      "type": "function",
+      "name": "PlanHistoryScreen",
+      "filePath": "apps/mobile/src/features/plan/PlanHistoryScreen.tsx",
+      "lineRange": [
+        14,
+        79
+      ],
+      "summary": "计划的页面组件\"PlanHistoryScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "计划",
+        "页面入口"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/plan/PlanScreen.tsx",
+      "type": "file",
+      "name": "PlanScreen.tsx",
+      "filePath": "apps/mobile/src/features/plan/PlanScreen.tsx",
+      "summary": "计划模块的功能模块\"PlanScreen\"。主导出\"PlanScreen\"。轻量实现。",
+      "tags": [
+        "计划",
+        "管理",
+        "功能",
+        "页面入口"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/plan/PlanScreen.tsx:PlanScreen",
+      "type": "function",
+      "name": "PlanScreen",
+      "filePath": "apps/mobile/src/features/plan/PlanScreen.tsx",
+      "lineRange": [
+        17,
+        57
+      ],
+      "summary": "计划的页面组件\"PlanScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "计划",
+        "页面入口"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/plan/PlanTodoList.tsx",
+      "type": "file",
+      "name": "PlanTodoList.tsx",
+      "filePath": "apps/mobile/src/features/plan/PlanTodoList.tsx",
+      "summary": "计划模块的功能模块\"PlanTodoList\"。主导出\"PlanTodoList\"。轻量实现。",
+      "tags": [
+        "计划",
+        "管理",
+        "功能"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/plan/PlanTodoList.tsx:PlanTodoList",
+      "type": "function",
+      "name": "PlanTodoList",
+      "filePath": "apps/mobile/src/features/plan/PlanTodoList.tsx",
+      "lineRange": [
+        27,
+        147
+      ],
+      "summary": "计划的\"PlanTodoList\"功能。",
+      "tags": [
+        "功能",
+        "计划",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/plan/PlanTodoListModal.tsx",
+      "type": "file",
+      "name": "PlanTodoListModal.tsx",
+      "filePath": "apps/mobile/src/features/plan/PlanTodoListModal.tsx",
+      "summary": "计划模块的功能模块\"PlanTodoListModal\"。主导出\"PlanTodoListModal\"。轻量实现。",
+      "tags": [
+        "计划",
+        "管理",
+        "功能",
+        "弹窗"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/plan/PlanTodoListModal.tsx:PlanTodoListModal",
+      "type": "function",
+      "name": "PlanTodoListModal",
+      "filePath": "apps/mobile/src/features/plan/PlanTodoListModal.tsx",
+      "lineRange": [
+        12,
+        123
+      ],
+      "summary": "计划的弹窗组件\"PlanTodoListModal\"，承载模态交互。",
+      "tags": [
+        "功能",
+        "计划",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/plan/components/Heatmap.tsx",
+      "type": "file",
+      "name": "Heatmap.tsx",
+      "filePath": "apps/mobile/src/features/plan/components/Heatmap.tsx",
+      "summary": "计划模块的UI 组件\"Heatmap\"。主导出\"Heatmap\"。轻量实现。",
+      "tags": [
+        "计划",
+        "管理",
+        "组件",
+        "可视化"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/plan/components/ItemHeatmap.tsx",
+      "type": "file",
+      "name": "ItemHeatmap.tsx",
+      "filePath": "apps/mobile/src/features/plan/components/ItemHeatmap.tsx",
+      "summary": "计划模块的UI 组件\"ItemHeatmap\"。主导出\"ItemHeatmap\"。轻量实现。",
+      "tags": [
+        "计划",
+        "管理",
+        "组件",
+        "可视化"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/plan/components/LinkBadge.tsx",
+      "type": "file",
+      "name": "LinkBadge.tsx",
+      "filePath": "apps/mobile/src/features/plan/components/LinkBadge.tsx",
+      "summary": "计划模块的UI 组件\"LinkBadge\"。主导出\"LinkBadge\"。轻量实现。",
+      "tags": [
+        "计划",
+        "管理",
+        "组件"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/plan/components/PlanItemForm.tsx",
+      "type": "file",
+      "name": "PlanItemForm.tsx",
+      "filePath": "apps/mobile/src/features/plan/components/PlanItemForm.tsx",
+      "summary": "计划模块的UI 组件\"validatePlanItemForm\"。主导出\"validatePlanItemForm\"，承担校验职责。共导出 3 项，规模较大，承载较丰富的交互与样式逻辑。",
+      "tags": [
+        "计划",
+        "管理",
+        "组件",
+        "大规模组件"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/plan/components/PlanItemForm.tsx:validatePlanItemForm",
+      "type": "function",
+      "name": "validatePlanItemForm",
+      "filePath": "apps/mobile/src/features/plan/components/PlanItemForm.tsx",
+      "lineRange": [
+        10,
+        19
+      ],
+      "summary": "计划的表单组件\"validatePlanItemForm\"，处理输入校验、提交与编辑态。",
+      "tags": [
+        "组件",
+        "计划",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/plan/components/PlanItemForm.tsx:PlanItemForm",
+      "type": "function",
+      "name": "PlanItemForm",
+      "filePath": "apps/mobile/src/features/plan/components/PlanItemForm.tsx",
+      "lineRange": [
+        49,
+        370
+      ],
+      "summary": "计划的表单组件\"PlanItemForm\"，处理输入校验、提交与编辑态。",
+      "tags": [
+        "组件",
+        "计划",
+        "导出函数"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/plan/components/ProgressRing.tsx",
+      "type": "file",
+      "name": "ProgressRing.tsx",
+      "filePath": "apps/mobile/src/features/plan/components/ProgressRing.tsx",
+      "summary": "计划模块的UI 组件\"ProgressRing\"。主导出\"ProgressRing\"。轻量实现。",
+      "tags": [
+        "计划",
+        "管理",
+        "组件"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/plan/components/StatusBadge.tsx",
+      "type": "file",
+      "name": "StatusBadge.tsx",
+      "filePath": "apps/mobile/src/features/plan/components/StatusBadge.tsx",
+      "summary": "计划模块的UI 组件\"StatusLabel\"。主导出\"StatusLabel\"。轻量实现。",
+      "tags": [
+        "计划",
+        "管理",
+        "组件"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/plan/useDailyTodo.ts",
+      "type": "file",
+      "name": "useDailyTodo.ts",
+      "filePath": "apps/mobile/src/features/plan/useDailyTodo.ts",
+      "summary": "计划模块的自定义 Hook\"useDailyTodo\"，封装可复用的响应式状态与副作用逻辑，供多个组件消费。",
+      "tags": [
+        "计划",
+        "管理",
+        "自定义Hook",
+        "钩子"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/practice/BodyScreen.tsx",
+      "type": "file",
+      "name": "BodyScreen.tsx",
+      "filePath": "apps/mobile/src/features/practice/BodyScreen.tsx",
+      "summary": "实修模块的功能模块\"BodyScreen\"。主导出\"BodyScreen\"。轻量实现。",
+      "tags": [
+        "实修",
+        "聚合",
+        "功能",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/BodyScreen.tsx:BodyScreen",
+      "type": "function",
+      "name": "BodyScreen",
+      "filePath": "apps/mobile/src/features/practice/BodyScreen.tsx",
+      "lineRange": [
+        21,
+        135
+      ],
+      "summary": "实修的页面组件\"BodyScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "实修",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/practice/GiveHistoryPage.tsx",
+      "type": "file",
+      "name": "GiveHistoryPage.tsx",
+      "filePath": "apps/mobile/src/features/practice/GiveHistoryPage.tsx",
+      "summary": "实修模块的功能模块\"GiveHistoryPage\"。主导出\"GiveHistoryPage\"。中等规模。",
+      "tags": [
+        "实修",
+        "聚合",
+        "功能",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/GiveHistoryPage.tsx:GiveHistoryPage",
+      "type": "function",
+      "name": "GiveHistoryPage",
+      "filePath": "apps/mobile/src/features/practice/GiveHistoryPage.tsx",
+      "lineRange": [
+        17,
+        209
+      ],
+      "summary": "实修的页面组件\"GiveHistoryPage\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "实修",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/practice/GiveScreen.tsx",
+      "type": "file",
+      "name": "GiveScreen.tsx",
+      "filePath": "apps/mobile/src/features/practice/GiveScreen.tsx",
+      "summary": "实修模块的功能模块\"GiveScreen\"。主导出\"GiveScreen\"。中等规模。",
+      "tags": [
+        "实修",
+        "聚合",
+        "功能",
+        "页面入口"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/GiveScreen.tsx:GiveScreen",
+      "type": "function",
+      "name": "GiveScreen",
+      "filePath": "apps/mobile/src/features/practice/GiveScreen.tsx",
+      "lineRange": [
+        19,
+        264
+      ],
+      "summary": "实修的页面组件\"GiveScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "实修",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/practice/PracticeScreen.tsx",
+      "type": "file",
+      "name": "PracticeScreen.tsx",
+      "filePath": "apps/mobile/src/features/practice/PracticeScreen.tsx",
+      "summary": "实修模块的功能模块\"PracticeScreen\"。主导出\"PracticeScreen\"。中等规模。",
+      "tags": [
+        "实修",
+        "聚合",
+        "功能",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/PracticeScreen.tsx:PracticeScreen",
+      "type": "function",
+      "name": "PracticeScreen",
+      "filePath": "apps/mobile/src/features/practice/PracticeScreen.tsx",
+      "lineRange": [
+        36,
+        192
+      ],
+      "summary": "实修的页面组件\"PracticeScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "实修",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/practice/PreceptHistoryPage.tsx",
+      "type": "file",
+      "name": "PreceptHistoryPage.tsx",
+      "filePath": "apps/mobile/src/features/practice/PreceptHistoryPage.tsx",
+      "summary": "实修模块的功能模块\"PreceptHistoryPage\"。主导出\"PreceptHistoryPage\"。中等规模。",
+      "tags": [
+        "实修",
+        "聚合",
+        "功能",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/PreceptHistoryPage.tsx:PreceptHistoryPage",
+      "type": "function",
+      "name": "PreceptHistoryPage",
+      "filePath": "apps/mobile/src/features/practice/PreceptHistoryPage.tsx",
+      "lineRange": [
+        13,
+        197
+      ],
+      "summary": "实修的页面组件\"PreceptHistoryPage\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "实修",
+        "页面入口"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/practice/PreceptScreen.tsx",
+      "type": "file",
+      "name": "PreceptScreen.tsx",
+      "filePath": "apps/mobile/src/features/practice/PreceptScreen.tsx",
+      "summary": "实修模块的功能模块\"PreceptScreen\"。主导出\"PreceptScreen\"。规模较大，承载较丰富的交互与样式逻辑。",
+      "tags": [
+        "实修",
+        "聚合",
+        "功能",
+        "页面入口",
+        "大规模组件"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/PreceptScreen.tsx:PreceptScreen",
+      "type": "function",
+      "name": "PreceptScreen",
+      "filePath": "apps/mobile/src/features/practice/PreceptScreen.tsx",
+      "lineRange": [
+        17,
+        523
+      ],
+      "summary": "实修的页面组件\"PreceptScreen\"，承载该模块的主交互界面与导航入口。",
+      "tags": [
+        "功能",
+        "实修",
+        "页面入口"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/practice/body/BodyAwarenessCard.tsx",
+      "type": "file",
+      "name": "BodyAwarenessCard.tsx",
+      "filePath": "apps/mobile/src/features/practice/body/BodyAwarenessCard.tsx",
+      "summary": "实修模块的功能模块\"BodyAwarenessCard\"。主导出\"BodyAwarenessCard\"。轻量实现。",
+      "tags": [
+        "实修",
+        "聚合",
+        "功能"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/body/BodyAwarenessCard.tsx:BodyAwarenessCard",
+      "type": "function",
+      "name": "BodyAwarenessCard",
+      "filePath": "apps/mobile/src/features/practice/body/BodyAwarenessCard.tsx",
+      "lineRange": [
+        20,
+        109
+      ],
+      "summary": "实修的卡片组件\"BodyAwarenessCard\"，汇总展示单项数据与关键指标。",
+      "tags": [
+        "功能",
+        "实修",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/practice/body/BodyCheckinInline.tsx",
+      "type": "file",
+      "name": "BodyCheckinInline.tsx",
+      "filePath": "apps/mobile/src/features/practice/body/BodyCheckinInline.tsx",
+      "summary": "实修模块的功能模块\"BodyCheckinInline\"。主导出\"BodyCheckinInline\"。轻量实现。",
+      "tags": [
+        "实修",
+        "聚合",
+        "功能"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/body/BodyCheckinInline.tsx:BodyCheckinInline",
+      "type": "function",
+      "name": "BodyCheckinInline",
+      "filePath": "apps/mobile/src/features/practice/body/BodyCheckinInline.tsx",
+      "lineRange": [
+        18,
+        96
+      ],
+      "summary": "实修的\"BodyCheckinInline\"功能。",
+      "tags": [
+        "功能",
+        "实修",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+      "type": "file",
+      "name": "BodyDashboard.tsx",
+      "filePath": "apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+      "summary": "实修模块的功能模块\"BodyDashboard\"。主导出\"BodyDashboard\"。规模较大，承载较丰富的交互与样式逻辑。",
+      "tags": [
+        "实修",
+        "聚合",
+        "功能",
+        "大规模组件"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/body/BodyDashboard.tsx:BodyDashboard",
+      "type": "function",
+      "name": "BodyDashboard",
+      "filePath": "apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+      "lineRange": [
+        30,
+        942
+      ],
+      "summary": "实修的\"BodyDashboard\"功能。",
+      "tags": [
+        "功能",
+        "实修",
+        "导出函数"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/practice/body/BodyFlow.tsx",
+      "type": "file",
+      "name": "BodyFlow.tsx",
+      "filePath": "apps/mobile/src/features/practice/body/BodyFlow.tsx",
+      "summary": "实修模块的功能模块\"BodyFlow\"。主导出\"BodyFlow\"。中等规模。",
+      "tags": [
+        "实修",
+        "聚合",
+        "功能"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/body/BodyFlow.tsx:StepIndicator",
+      "type": "function",
+      "name": "StepIndicator",
+      "filePath": "apps/mobile/src/features/practice/body/BodyFlow.tsx",
+      "lineRange": [
+        42,
+        66
+      ],
+      "summary": "实修的\"StepIndicator\"功能。",
+      "tags": [
+        "功能",
+        "实修",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/body/BodyFlow.tsx:ExercisePicker",
+      "type": "function",
+      "name": "ExercisePicker",
+      "filePath": "apps/mobile/src/features/practice/body/BodyFlow.tsx",
+      "lineRange": [
+        68,
+        104
+      ],
+      "summary": "实修的选择器组件\"ExercisePicker\"，提供选项列表与选中回调。",
+      "tags": [
+        "功能",
+        "实修",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/body/BodyFlow.tsx:BodyFlow",
+      "type": "function",
+      "name": "BodyFlow",
+      "filePath": "apps/mobile/src/features/practice/body/BodyFlow.tsx",
+      "lineRange": [
+        106,
+        418
+      ],
+      "summary": "实修的\"BodyFlow\"功能。",
+      "tags": [
+        "功能",
+        "实修",
+        "导出函数"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/practice/body/BodyProfileCard.tsx",
+      "type": "file",
+      "name": "BodyProfileCard.tsx",
+      "filePath": "apps/mobile/src/features/practice/body/BodyProfileCard.tsx",
+      "summary": "实修模块的功能模块\"BodyProfileCard\"。主导出\"BodyProfileCard\"。轻量实现。",
+      "tags": [
+        "实修",
+        "聚合",
+        "功能"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/body/BodyProfileCard.tsx:BodyProfileCard",
+      "type": "function",
+      "name": "BodyProfileCard",
+      "filePath": "apps/mobile/src/features/practice/body/BodyProfileCard.tsx",
+      "lineRange": [
+        37,
+        155
+      ],
+      "summary": "实修的卡片组件\"BodyProfileCard\"，汇总展示单项数据与关键指标。",
+      "tags": [
+        "功能",
+        "实修",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/practice/body/BodyTodayPlanCard.tsx",
+      "type": "file",
+      "name": "BodyTodayPlanCard.tsx",
+      "filePath": "apps/mobile/src/features/practice/body/BodyTodayPlanCard.tsx",
+      "summary": "实修模块的功能模块\"BodyTodayPlanCard\"。主导出\"BodyTodayPlanCard\"。中等规模。",
+      "tags": [
+        "实修",
+        "聚合",
+        "功能"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/body/BodyTodayPlanCard.tsx:resolvePlanDisplay",
+      "type": "function",
+      "name": "resolvePlanDisplay",
+      "filePath": "apps/mobile/src/features/practice/body/BodyTodayPlanCard.tsx",
+      "lineRange": [
+        21,
+        31
+      ],
+      "summary": "工具函数\"resolvePlanDisplay\"，负责解析与转换。",
+      "tags": [
+        "功能",
+        "实修",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/body/BodyTodayPlanCard.tsx:BodyTodayPlanCard",
+      "type": "function",
+      "name": "BodyTodayPlanCard",
+      "filePath": "apps/mobile/src/features/practice/body/BodyTodayPlanCard.tsx",
+      "lineRange": [
+        35,
+        183
+      ],
+      "summary": "实修的卡片组件\"BodyTodayPlanCard\"，汇总展示单项数据与关键指标。",
+      "tags": [
+        "功能",
+        "实修",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/practice/body/BodyWeekPlanCard.tsx",
+      "type": "file",
+      "name": "BodyWeekPlanCard.tsx",
+      "filePath": "apps/mobile/src/features/practice/body/BodyWeekPlanCard.tsx",
+      "summary": "实修模块的功能模块\"BodyWeekPlanCard\"。主导出\"BodyWeekPlanCard\"。中等规模。",
+      "tags": [
+        "实修",
+        "聚合",
+        "功能"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/body/BodyWeekPlanCard.tsx:BodyWeekPlanCard",
+      "type": "function",
+      "name": "BodyWeekPlanCard",
+      "filePath": "apps/mobile/src/features/practice/body/BodyWeekPlanCard.tsx",
+      "lineRange": [
+        35,
+        233
+      ],
+      "summary": "实修的卡片组件\"BodyWeekPlanCard\"，汇总展示单项数据与关键指标。",
+      "tags": [
+        "功能",
+        "实修",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/practice/body/CheckinSuccessCard.tsx",
+      "type": "file",
+      "name": "CheckinSuccessCard.tsx",
+      "filePath": "apps/mobile/src/features/practice/body/CheckinSuccessCard.tsx",
+      "summary": "实修模块的功能模块\"CheckinSuccessCard\"。主导出\"CheckinSuccessCard\"。轻量实现。",
+      "tags": [
+        "实修",
+        "聚合",
+        "功能"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/body/CheckinSuccessCard.tsx:CheckinSuccessCard",
+      "type": "function",
+      "name": "CheckinSuccessCard",
+      "filePath": "apps/mobile/src/features/practice/body/CheckinSuccessCard.tsx",
+      "lineRange": [
+        47,
+        135
+      ],
+      "summary": "实修的卡片组件\"CheckinSuccessCard\"，汇总展示单项数据与关键指标。",
+      "tags": [
+        "功能",
+        "实修",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/practice/body/GoalCard.tsx",
+      "type": "file",
+      "name": "GoalCard.tsx",
+      "filePath": "apps/mobile/src/features/practice/body/GoalCard.tsx",
+      "summary": "实修模块的功能模块\"GoalCard\"。主导出\"GoalCard\"。轻量实现。",
+      "tags": [
+        "实修",
+        "聚合",
+        "功能"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/body/GoalCard.tsx:GoalCard",
+      "type": "function",
+      "name": "GoalCard",
+      "filePath": "apps/mobile/src/features/practice/body/GoalCard.tsx",
+      "lineRange": [
+        14,
+        80
+      ],
+      "summary": "实修的卡片组件\"GoalCard\"，汇总展示单项数据与关键指标。",
+      "tags": [
+        "功能",
+        "实修",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/practice/body/PlanCard.tsx",
+      "type": "file",
+      "name": "PlanCard.tsx",
+      "filePath": "apps/mobile/src/features/practice/body/PlanCard.tsx",
+      "summary": "实修模块的功能模块\"PlanCard\"。主导出\"PlanCard\"。轻量实现。",
+      "tags": [
+        "实修",
+        "聚合",
+        "功能"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/body/PlanCard.tsx:resolvePartLabel",
+      "type": "function",
+      "name": "resolvePartLabel",
+      "filePath": "apps/mobile/src/features/practice/body/PlanCard.tsx",
+      "lineRange": [
+        22,
+        34
+      ],
+      "summary": "工具函数\"resolvePartLabel\"，负责解析与转换。",
+      "tags": [
+        "功能",
+        "实修",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/body/PlanCard.tsx:PlanCard",
+      "type": "function",
+      "name": "PlanCard",
+      "filePath": "apps/mobile/src/features/practice/body/PlanCard.tsx",
+      "lineRange": [
+        36,
+        78
+      ],
+      "summary": "实修的卡片组件\"PlanCard\"，汇总展示单项数据与关键指标。",
+      "tags": [
+        "功能",
+        "实修",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/practice/body/WeightTrendChart.tsx",
+      "type": "file",
+      "name": "WeightTrendChart.tsx",
+      "filePath": "apps/mobile/src/features/practice/body/WeightTrendChart.tsx",
+      "summary": "实修模块的功能模块\"WeightTrendChart\"。主导出\"WeightTrendChart\"。中等规模。",
+      "tags": [
+        "实修",
+        "聚合",
+        "功能",
+        "可视化"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/body/WeightTrendChart.tsx:WeightTrendChart",
+      "type": "function",
+      "name": "WeightTrendChart",
+      "filePath": "apps/mobile/src/features/practice/body/WeightTrendChart.tsx",
+      "lineRange": [
+        24,
+        244
+      ],
+      "summary": "实修的图表组件\"WeightTrendChart\"，将数据以可视化图形呈现。",
+      "tags": [
+        "功能",
+        "实修",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/practice/body/components/BodyTrainingPlanSection.tsx",
+      "type": "file",
+      "name": "BodyTrainingPlanSection.tsx",
+      "filePath": "apps/mobile/src/features/practice/body/components/BodyTrainingPlanSection.tsx",
+      "summary": "实修模块的UI 组件\"BodyTrainingPlanSection\"。主导出\"BodyTrainingPlanSection\"。轻量实现。",
+      "tags": [
+        "实修",
+        "聚合",
+        "组件"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/body/components/BodyTrainingPlanSection.tsx:BodyTrainingPlanSection",
+      "type": "function",
+      "name": "BodyTrainingPlanSection",
+      "filePath": "apps/mobile/src/features/practice/body/components/BodyTrainingPlanSection.tsx",
+      "lineRange": [
+        30,
+        122
+      ],
+      "summary": "实修的区块组件\"BodyTrainingPlanSection\"，用于页面内的分组展示。",
+      "tags": [
+        "组件",
+        "实修",
+        "导出函数"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/practice/body/components/CollapsibleSection.tsx",
+      "type": "file",
+      "name": "CollapsibleSection.tsx",
+      "filePath": "apps/mobile/src/features/practice/body/components/CollapsibleSection.tsx",
+      "summary": "实修模块的UI 组件\"CollapsibleSection\"。主导出\"CollapsibleSection\"。轻量实现。",
+      "tags": [
+        "实修",
+        "聚合",
+        "组件"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/body/components/CollapsibleSection.tsx:CollapsibleSection",
+      "type": "function",
+      "name": "CollapsibleSection",
+      "filePath": "apps/mobile/src/features/practice/body/components/CollapsibleSection.tsx",
+      "lineRange": [
+        16,
+        93
+      ],
+      "summary": "实修的区块组件\"CollapsibleSection\"，用于页面内的分组展示。",
+      "tags": [
+        "组件",
+        "实修",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/practice/body/hooks/useBodyFlowState.ts",
+      "type": "file",
+      "name": "useBodyFlowState.ts",
+      "filePath": "apps/mobile/src/features/practice/body/hooks/useBodyFlowState.ts",
+      "summary": "实修模块的自定义 Hook\"useBodyFlowState\"，封装可复用的响应式状态与副作用逻辑，供多个组件消费。",
+      "tags": [
+        "实修",
+        "聚合",
+        "自定义Hook",
+        "钩子"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/body/hooks/useBodyFlowState.ts:useBodyFlowState",
+      "type": "function",
+      "name": "useBodyFlowState",
+      "filePath": "apps/mobile/src/features/practice/body/hooks/useBodyFlowState.ts",
+      "lineRange": [
+        23,
+        92
+      ],
+      "summary": "\"useBodyFlowState\"是实修的自定义 Hook，管理钩子相关的响应式状态与副作用逻辑。",
+      "tags": [
+        "自定义Hook",
+        "实修",
+        "钩子"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/practice/body/hooks/useTodayPlan.test.ts",
+      "type": "file",
+      "name": "useTodayPlan.test.ts",
+      "filePath": "apps/mobile/src/features/practice/body/hooks/useTodayPlan.test.ts",
+      "summary": "实修模块的单元测试文件（resolveTodayWithOverride），通过用例校验相关逻辑，保障模块行为稳定。",
+      "tags": [
+        "实修",
+        "聚合",
+        "测试",
+        "钩子"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/practice/body/hooks/useTodayPlan.test.ts:resolveTodayWithOverride",
+      "type": "function",
+      "name": "resolveTodayWithOverride",
+      "filePath": "apps/mobile/src/features/practice/body/hooks/useTodayPlan.test.ts",
+      "lineRange": [
+        10,
+        51
+      ],
+      "summary": "工具函数\"resolveTodayWithOverride\"，负责解析与转换。",
+      "tags": [
+        "测试",
+        "实修",
+        "导出函数"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanHeroCard.tsx",
+      "target": "function:apps/mobile/src/features/plan/PlanHeroCard.tsx:PlanHeroCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanHistoryScreen.tsx",
+      "target": "function:apps/mobile/src/features/plan/PlanHistoryScreen.tsx:PlanHistoryScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanHistoryScreen.tsx",
+      "target": "function:apps/mobile/src/features/plan/PlanHistoryScreen.tsx:PlanHistoryScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanScreen.tsx",
+      "target": "function:apps/mobile/src/features/plan/PlanScreen.tsx:PlanScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanScreen.tsx",
+      "target": "function:apps/mobile/src/features/plan/PlanScreen.tsx:PlanScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanTodoList.tsx",
+      "target": "function:apps/mobile/src/features/plan/PlanTodoList.tsx:PlanTodoList",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanTodoList.tsx",
+      "target": "function:apps/mobile/src/features/plan/PlanTodoList.tsx:PlanTodoList",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanTodoListModal.tsx",
+      "target": "function:apps/mobile/src/features/plan/PlanTodoListModal.tsx:PlanTodoListModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanTodoListModal.tsx",
+      "target": "function:apps/mobile/src/features/plan/PlanTodoListModal.tsx:PlanTodoListModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/components/PlanItemForm.tsx",
+      "target": "function:apps/mobile/src/features/plan/components/PlanItemForm.tsx:validatePlanItemForm",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/components/PlanItemForm.tsx",
+      "target": "function:apps/mobile/src/features/plan/components/PlanItemForm.tsx:validatePlanItemForm",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/components/PlanItemForm.tsx",
+      "target": "function:apps/mobile/src/features/plan/components/PlanItemForm.tsx:PlanItemForm",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/components/PlanItemForm.tsx",
+      "target": "function:apps/mobile/src/features/plan/components/PlanItemForm.tsx:PlanItemForm",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/BodyScreen.tsx",
+      "target": "function:apps/mobile/src/features/practice/BodyScreen.tsx:BodyScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/BodyScreen.tsx",
+      "target": "function:apps/mobile/src/features/practice/BodyScreen.tsx:BodyScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/GiveHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/practice/GiveHistoryPage.tsx:GiveHistoryPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/GiveHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/practice/GiveHistoryPage.tsx:GiveHistoryPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/GiveScreen.tsx",
+      "target": "function:apps/mobile/src/features/practice/GiveScreen.tsx:GiveScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/GiveScreen.tsx",
+      "target": "function:apps/mobile/src/features/practice/GiveScreen.tsx:GiveScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/PracticeScreen.tsx",
+      "target": "function:apps/mobile/src/features/practice/PracticeScreen.tsx:PracticeScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/PracticeScreen.tsx",
+      "target": "function:apps/mobile/src/features/practice/PracticeScreen.tsx:PracticeScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/PreceptHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/practice/PreceptHistoryPage.tsx:PreceptHistoryPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/PreceptHistoryPage.tsx",
+      "target": "function:apps/mobile/src/features/practice/PreceptHistoryPage.tsx:PreceptHistoryPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/PreceptScreen.tsx",
+      "target": "function:apps/mobile/src/features/practice/PreceptScreen.tsx:PreceptScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/PreceptScreen.tsx",
+      "target": "function:apps/mobile/src/features/practice/PreceptScreen.tsx:PreceptScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyAwarenessCard.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/BodyAwarenessCard.tsx:BodyAwarenessCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyAwarenessCard.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/BodyAwarenessCard.tsx:BodyAwarenessCard",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyCheckinInline.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/BodyCheckinInline.tsx:BodyCheckinInline",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/BodyDashboard.tsx:BodyDashboard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/BodyDashboard.tsx:BodyDashboard",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyFlow.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/BodyFlow.tsx:StepIndicator",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyFlow.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/BodyFlow.tsx:ExercisePicker",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyFlow.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/BodyFlow.tsx:BodyFlow",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyFlow.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/BodyFlow.tsx:BodyFlow",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyProfileCard.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/BodyProfileCard.tsx:BodyProfileCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyProfileCard.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/BodyProfileCard.tsx:BodyProfileCard",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyTodayPlanCard.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/BodyTodayPlanCard.tsx:resolvePlanDisplay",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyTodayPlanCard.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/BodyTodayPlanCard.tsx:BodyTodayPlanCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyTodayPlanCard.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/BodyTodayPlanCard.tsx:BodyTodayPlanCard",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyWeekPlanCard.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/BodyWeekPlanCard.tsx:BodyWeekPlanCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/CheckinSuccessCard.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/CheckinSuccessCard.tsx:CheckinSuccessCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/GoalCard.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/GoalCard.tsx:GoalCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/GoalCard.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/GoalCard.tsx:GoalCard",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/PlanCard.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/PlanCard.tsx:resolvePartLabel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/PlanCard.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/PlanCard.tsx:PlanCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/PlanCard.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/PlanCard.tsx:PlanCard",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/WeightTrendChart.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/WeightTrendChart.tsx:WeightTrendChart",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/WeightTrendChart.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/WeightTrendChart.tsx:WeightTrendChart",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/components/BodyTrainingPlanSection.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/components/BodyTrainingPlanSection.tsx:BodyTrainingPlanSection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/components/BodyTrainingPlanSection.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/components/BodyTrainingPlanSection.tsx:BodyTrainingPlanSection",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/components/CollapsibleSection.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/components/CollapsibleSection.tsx:CollapsibleSection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/components/CollapsibleSection.tsx",
+      "target": "function:apps/mobile/src/features/practice/body/components/CollapsibleSection.tsx:CollapsibleSection",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/hooks/useBodyFlowState.ts",
+      "target": "function:apps/mobile/src/features/practice/body/hooks/useBodyFlowState.ts:useBodyFlowState",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/hooks/useBodyFlowState.ts",
+      "target": "function:apps/mobile/src/features/practice/body/hooks/useBodyFlowState.ts:useBodyFlowState",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/hooks/useTodayPlan.test.ts",
+      "target": "function:apps/mobile/src/features/practice/body/hooks/useTodayPlan.test.ts:resolveTodayWithOverride",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanHeroCard.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanHeroCard.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanHistoryScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanScreen.tsx",
+      "target": "file:apps/mobile/src/features/plan/PlanDetailContent.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanTodoList.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanTodoList.tsx",
+      "target": "file:apps/mobile/src/features/plan/components/LinkBadge.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanTodoList.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanTodoListModal.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanTodoListModal.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/PlanTodoListModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/components/Heatmap.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/components/ItemHeatmap.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/components/LinkBadge.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/components/PlanItemForm.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/components/PlanItemForm.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/components/ProgressRing.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/components/StatusBadge.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/useDailyTodo.ts",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/plan/useDailyTodo.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/BodyScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/BodyScreen.tsx",
+      "target": "file:apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/BodyScreen.tsx",
+      "target": "file:apps/mobile/src/features/practice/body/BodyFlow.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/BodyScreen.tsx",
+      "target": "file:apps/mobile/src/features/practice/body/hooks/useBodyFlowState.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/BodyScreen.tsx",
+      "target": "file:apps/mobile/src/features/practice/body/hooks/useTodayPlan.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/BodyScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/BodyScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/BodyScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/BodyScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/GiveHistoryPage.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/GiveHistoryPage.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/GiveHistoryPage.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/GiveHistoryPage.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/GiveScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/GiveScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/GiveScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/GiveScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/GiveScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/PracticeScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/PracticeScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/PracticeScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/PracticeScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/PracticeScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/PreceptHistoryPage.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/PreceptHistoryPage.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/PreceptHistoryPage.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/PreceptHistoryPage.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/PreceptScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/PreceptScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/PreceptScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/PreceptScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/PreceptScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyAwarenessCard.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyCheckinInline.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyCheckinInline.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+      "target": "file:apps/mobile/src/features/practice/body/hooks/useTodayPlan.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+      "target": "file:apps/mobile/src/features/practice/body/modals/AdjustExerciseModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+      "target": "file:apps/mobile/src/features/practice/body/modals/AssessmentModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+      "target": "file:apps/mobile/src/features/practice/body/modals/BodyCheckinModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+      "target": "file:apps/mobile/src/features/practice/body/modals/DayActionSheet.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+      "target": "file:apps/mobile/src/features/practice/body/modals/GoalEditLightModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+      "target": "file:apps/mobile/src/features/practice/body/modals/GoalEditModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+      "target": "file:apps/mobile/src/features/practice/body/modals/QuickSwapModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+      "target": "file:apps/mobile/src/features/practice/body/modals/WeightRecordModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+      "target": "file:apps/mobile/src/features/practice/body/modals/WeightTrendModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+      "target": "file:apps/mobile/src/features/practice/body/screens/CelebrationOverlay.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyDashboard.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyFlow.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyFlow.tsx",
+      "target": "file:apps/mobile/src/features/practice/body/BodyCheckinInline.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyFlow.tsx",
+      "target": "file:apps/mobile/src/features/practice/body/CheckinSuccessCard.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyFlow.tsx",
+      "target": "file:apps/mobile/src/features/practice/body/hooks/useBodyFlowState.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyFlow.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyProfileCard.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyTodayPlanCard.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/BodyWeekPlanCard.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/CheckinSuccessCard.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/CheckinSuccessCard.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/GoalCard.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/PlanCard.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/WeightTrendChart.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/components/BodyTrainingPlanSection.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/components/CollapsibleSection.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/hooks/useBodyFlowState.ts",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/hooks/useBodyFlowState.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/practice/body/hooks/useTodayPlan.test.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:apps/mobile/src/features/practice/body/BodyTodayPlanCard.tsx:BodyTodayPlanCard",
+      "target": "function:apps/mobile/src/features/practice/body/BodyTodayPlanCard.tsx:resolvePlanDisplay",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:apps/mobile/src/features/practice/body/PlanCard.tsx:PlanCard",
+      "target": "function:apps/mobile/src/features/practice/body/PlanCard.tsx:resolvePartLabel",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ]
+}

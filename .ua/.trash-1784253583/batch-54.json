@@ -1,0 +1,48 @@
+{
+  "nodes": [
+    {
+      "id": "config:infra/docker/api/.env.example",
+      "type": "config",
+      "name": ".env.example",
+      "filePath": "infra/docker/api/.env.example",
+      "summary": "API 服务环境变量示例，定义 PocketBase 连接、SMTP 邮件、微信、CORS、限流窗口与 INTERNAL_SECRET 等 12 项配置项。",
+      "tags": ["configuration", "environment", "api", "docker"],
+      "complexity": "simple",
+      "languageNotes": "12 个环境变量定义，涵盖 PB、SMTP、微信、CORS、限流与认证密钥。"
+    },
+    {
+      "id": "config:infra/docker/api/package.json",
+      "type": "config",
+      "name": "package.json",
+      "filePath": "infra/docker/api/package.json",
+      "summary": "egoless-auth-api 的 npm 包清单，声明 Hono、bcryptjs、better-sqlite3、nodemailer、pocketbase 等依赖与 dev/build/start 脚本。",
+      "tags": ["configuration", "node-api", "dependencies", "build"],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:infra/docker/api/tsconfig.json",
+      "type": "config",
+      "name": "tsconfig.json",
+      "filePath": "infra/docker/api/tsconfig.json",
+      "summary": "API 服务的 TypeScript 编译配置，继承顶层 tsconfig.base，目标 ES2022、ESNext 模块、bundler 解析，启用严格检查与孤立模块。",
+      "tags": ["configuration", "typescript", "build", "api"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "config:infra/docker/api/package.json",
+      "target": "config:infra/docker/api/.env.example",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:infra/docker/api/package.json",
+      "target": "config:infra/docker/api/tsconfig.json",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    }
+  ]
+}

@@ -1,0 +1,884 @@
+{
+  "nodes": [
+    {
+      "id": "file:packages/core/src/store/createBodySlice.ts",
+      "type": "file",
+      "name": "createBodySlice.ts",
+      "filePath": "packages/core/src/store/createBodySlice.ts",
+      "summary": "调身 Slice：管理 bodyGoal/bodyPlan/weightRecord/bodyCheckin/bodyTrainingPlan 与 bodyFlow 训练流状态，含 BODY_FLOW_EXPIRY_MS 常量。",
+      "tags": [
+        "body",
+        "store",
+        "slice"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/store/createBodySlice.ts:createBodySlice",
+      "type": "function",
+      "name": "createBodySlice",
+      "filePath": "packages/core/src/store/createBodySlice.ts",
+      "lineRange": [
+        62,
+        261
+      ],
+      "summary": "创建调身 Slice：管理目标/计划/体重/打卡/训练流，含 BODY_FLOW_EXPIRY_MS。",
+      "tags": [
+        "body",
+        "store",
+        "slice"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/store/createCheckinSlice.test.ts",
+      "type": "file",
+      "name": "createCheckinSlice.test.ts",
+      "filePath": "packages/core/src/store/createCheckinSlice.test.ts",
+      "summary": "createCheckinSlice 测试：覆盖 submitCheckin/calculateStreak/addGraceRecord 等行为。",
+      "tags": [
+        "checkin",
+        "test",
+        "store"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/store/createCheckinSlice.test.ts:makeTestStore",
+      "type": "function",
+      "name": "makeTestStore",
+      "filePath": "packages/core/src/store/createCheckinSlice.test.ts",
+      "lineRange": [
+        6,
+        20
+      ],
+      "summary": "构建 Zustand 风格的测试 store（set/get/api）。",
+      "tags": [
+        "test",
+        "store",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/createCheckinSlice.ts",
+      "type": "file",
+      "name": "createCheckinSlice.ts",
+      "filePath": "packages/core/src/store/createCheckinSlice.ts",
+      "summary": "签到 Slice：导出 CheckinSlice 类型与 createCheckinSlice，实现 submitCheckin/calculateStreak/addGraceRecord（委托 business 层）。",
+      "tags": [
+        "checkin",
+        "store",
+        "slice"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/store/createCheckinSlice.ts:createCheckinSlice",
+      "type": "function",
+      "name": "createCheckinSlice",
+      "filePath": "packages/core/src/store/createCheckinSlice.ts",
+      "lineRange": [
+        11,
+        47
+      ],
+      "summary": "创建签到 Slice：提交签到、计算 streak、添加 grace 记录。",
+      "tags": [
+        "checkin",
+        "store",
+        "slice"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/createDietSlice.test.ts",
+      "type": "file",
+      "name": "createDietSlice.test.ts",
+      "filePath": "packages/core/src/store/createDietSlice.test.ts",
+      "summary": "createDietSlice 测试：覆盖 addFood/deleteFood/setCalGoal 等饮食操作。",
+      "tags": [
+        "diet",
+        "test",
+        "store"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/store/createDietSlice.test.ts:makeTestStore",
+      "type": "function",
+      "name": "makeTestStore",
+      "filePath": "packages/core/src/store/createDietSlice.test.ts",
+      "lineRange": [
+        8,
+        23
+      ],
+      "summary": "构建 Zustand 风格的测试 store（set/get/api）。",
+      "tags": [
+        "test",
+        "store",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/store/createDietSlice.test.ts:makeFood",
+      "type": "function",
+      "name": "makeFood",
+      "filePath": "packages/core/src/store/createDietSlice.test.ts",
+      "lineRange": [
+        33,
+        44
+      ],
+      "summary": "构造测试用 FoodEntry。",
+      "tags": [
+        "test",
+        "food",
+        "store"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/createDietSlice.ts",
+      "type": "file",
+      "name": "createDietSlice.ts",
+      "filePath": "packages/core/src/store/createDietSlice.ts",
+      "summary": "饮食 Slice：管理 foodLog/customFoodPresets/motivationLog/customWuxingMaps，实现 addFood 及五行/情绪统计 getDailyFlavorStats/getDailyWuxingStats/getMotivationStats。",
+      "tags": [
+        "diet",
+        "store",
+        "slice"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/store/createDietSlice.ts:createDietSlice",
+      "type": "function",
+      "name": "createDietSlice",
+      "filePath": "packages/core/src/store/createDietSlice.ts",
+      "lineRange": [
+        22,
+        354
+      ],
+      "summary": "创建饮食 Slice：管理食物/预设/动机/五行映射，含五行与情绪统计。",
+      "tags": [
+        "diet",
+        "store",
+        "slice"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:packages/core/src/store/createExerciseSlice.test.ts",
+      "type": "file",
+      "name": "createExerciseSlice.test.ts",
+      "filePath": "packages/core/src/store/createExerciseSlice.test.ts",
+      "summary": "createExerciseSlice 测试：覆盖 addExercise/deleteExercise 行为。",
+      "tags": [
+        "exercise",
+        "test",
+        "store"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/store/createExerciseSlice.test.ts:makeTestStore",
+      "type": "function",
+      "name": "makeTestStore",
+      "filePath": "packages/core/src/store/createExerciseSlice.test.ts",
+      "lineRange": [
+        10,
+        23
+      ],
+      "summary": "构建 Zustand 风格的测试 store（set/get/api）。",
+      "tags": [
+        "test",
+        "store",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/store/createExerciseSlice.test.ts:makeExercise",
+      "type": "function",
+      "name": "makeExercise",
+      "filePath": "packages/core/src/store/createExerciseSlice.test.ts",
+      "lineRange": [
+        36,
+        46
+      ],
+      "summary": "构造测试用 ExerciseEntry。",
+      "tags": [
+        "test",
+        "exercise",
+        "store"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/createExerciseSlice.ts",
+      "type": "file",
+      "name": "createExerciseSlice.ts",
+      "filePath": "packages/core/src/store/createExerciseSlice.ts",
+      "summary": "运动 Slice：createExerciseSlice 实现 addExercise/deleteExercise（委托 business 层）。",
+      "tags": [
+        "exercise",
+        "store",
+        "slice"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/store/createExerciseSlice.ts:createExerciseSlice",
+      "type": "function",
+      "name": "createExerciseSlice",
+      "filePath": "packages/core/src/store/createExerciseSlice.ts",
+      "lineRange": [
+        15,
+        40
+      ],
+      "summary": "创建运动 Slice：添加/删除运动记录。",
+      "tags": [
+        "exercise",
+        "store",
+        "slice"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/createFastingSlice.test.ts",
+      "type": "file",
+      "name": "createFastingSlice.test.ts",
+      "filePath": "packages/core/src/store/createFastingSlice.test.ts",
+      "summary": "createFastingSlice 测试：覆盖 startFasting/stopFasting 行为。",
+      "tags": [
+        "fasting",
+        "test",
+        "store"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/store/createFastingSlice.test.ts:makeTestStore",
+      "type": "function",
+      "name": "makeTestStore",
+      "filePath": "packages/core/src/store/createFastingSlice.test.ts",
+      "lineRange": [
+        17,
+        30
+      ],
+      "summary": "构建 Zustand 风格的测试 store（set/get/api）。",
+      "tags": [
+        "test",
+        "store",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/createFastingSlice.ts",
+      "type": "file",
+      "name": "createFastingSlice.ts",
+      "filePath": "packages/core/src/store/createFastingSlice.ts",
+      "summary": "断食 Slice：createFastingSlice 实现 startFasting/stopFasting（委托 business/fasting）。",
+      "tags": [
+        "fasting",
+        "store",
+        "slice"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/store/createFastingSlice.ts:createFastingSlice",
+      "type": "function",
+      "name": "createFastingSlice",
+      "filePath": "packages/core/src/store/createFastingSlice.ts",
+      "lineRange": [
+        15,
+        42
+      ],
+      "summary": "创建断食 Slice：开始/结束断食会话。",
+      "tags": [
+        "fasting",
+        "store",
+        "slice"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/createFoodSlice.test.ts",
+      "type": "file",
+      "name": "createFoodSlice.test.ts",
+      "filePath": "packages/core/src/store/createFoodSlice.test.ts",
+      "summary": "createFoodSlice 测试：覆盖 FoodSlice 状态行为。",
+      "tags": [
+        "food",
+        "test",
+        "store"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/store/createFoodSlice.test.ts:makeTestStore",
+      "type": "function",
+      "name": "makeTestStore",
+      "filePath": "packages/core/src/store/createFoodSlice.test.ts",
+      "lineRange": [
+        12,
+        27
+      ],
+      "summary": "构建 Zustand 风格的测试 store（set/get/api）。",
+      "tags": [
+        "test",
+        "store",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/store/createFoodSlice.test.ts:makeFood",
+      "type": "function",
+      "name": "makeFood",
+      "filePath": "packages/core/src/store/createFoodSlice.test.ts",
+      "lineRange": [
+        40,
+        51
+      ],
+      "summary": "构造测试用 FoodEntry。",
+      "tags": [
+        "test",
+        "food",
+        "store"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/store/createFoodSlice.ts",
+      "type": "file",
+      "name": "createFoodSlice.ts",
+      "filePath": "packages/core/src/store/createFoodSlice.ts",
+      "summary": "食物 Slice：薄封装，复用 createDietSlice 导出 FoodSlice 类型。",
+      "tags": [
+        "food",
+        "store",
+        "slice"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/store/createFoodSlice.ts:createFoodSlice",
+      "type": "function",
+      "name": "createFoodSlice",
+      "filePath": "packages/core/src/store/createFoodSlice.ts",
+      "lineRange": [
+        13,
+        19
+      ],
+      "summary": "创建食物 Slice：复用 createDietSlice 并导出 FoodSlice 类型。",
+      "tags": [
+        "food",
+        "store",
+        "slice"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:packages/core/src/store/createBodySlice.ts",
+      "target": "function:packages/core/src/store/createBodySlice.ts:createBodySlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createBodySlice.ts",
+      "target": "function:packages/core/src/store/createBodySlice.ts:createBodySlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createCheckinSlice.test.ts",
+      "target": "function:packages/core/src/store/createCheckinSlice.test.ts:makeTestStore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createCheckinSlice.ts",
+      "target": "function:packages/core/src/store/createCheckinSlice.ts:createCheckinSlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createCheckinSlice.ts",
+      "target": "function:packages/core/src/store/createCheckinSlice.ts:createCheckinSlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createDietSlice.test.ts",
+      "target": "function:packages/core/src/store/createDietSlice.test.ts:makeTestStore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createDietSlice.test.ts",
+      "target": "function:packages/core/src/store/createDietSlice.test.ts:makeFood",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createDietSlice.ts",
+      "target": "function:packages/core/src/store/createDietSlice.ts:createDietSlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createDietSlice.ts",
+      "target": "function:packages/core/src/store/createDietSlice.ts:createDietSlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createExerciseSlice.test.ts",
+      "target": "function:packages/core/src/store/createExerciseSlice.test.ts:makeTestStore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createExerciseSlice.test.ts",
+      "target": "function:packages/core/src/store/createExerciseSlice.test.ts:makeExercise",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createExerciseSlice.ts",
+      "target": "function:packages/core/src/store/createExerciseSlice.ts:createExerciseSlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createExerciseSlice.ts",
+      "target": "function:packages/core/src/store/createExerciseSlice.ts:createExerciseSlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createFastingSlice.test.ts",
+      "target": "function:packages/core/src/store/createFastingSlice.test.ts:makeTestStore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createFastingSlice.ts",
+      "target": "function:packages/core/src/store/createFastingSlice.ts:createFastingSlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createFastingSlice.ts",
+      "target": "function:packages/core/src/store/createFastingSlice.ts:createFastingSlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createFoodSlice.test.ts",
+      "target": "function:packages/core/src/store/createFoodSlice.test.ts:makeTestStore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createFoodSlice.test.ts",
+      "target": "function:packages/core/src/store/createFoodSlice.test.ts:makeFood",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createFoodSlice.ts",
+      "target": "function:packages/core/src/store/createFoodSlice.ts:createFoodSlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:packages/core/src/store/createFoodSlice.ts",
+      "target": "function:packages/core/src/store/createFoodSlice.ts:createFoodSlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createBodySlice.ts",
+      "target": "file:packages/core/src/business/body.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createBodySlice.ts",
+      "target": "file:packages/core/src/logger.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createBodySlice.ts",
+      "target": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createBodySlice.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createBodySlice.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createBodySlice.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createCheckinSlice.test.ts",
+      "target": "file:packages/core/src/store/createCheckinSlice.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createCheckinSlice.test.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createCheckinSlice.test.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createCheckinSlice.ts",
+      "target": "file:packages/core/src/business/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createCheckinSlice.ts",
+      "target": "file:packages/core/src/logger.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createCheckinSlice.ts",
+      "target": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createCheckinSlice.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createCheckinSlice.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createCheckinSlice.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createDietSlice.test.ts",
+      "target": "file:packages/core/src/store/createDietSlice.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createDietSlice.ts",
+      "target": "file:packages/core/src/business/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createDietSlice.ts",
+      "target": "file:packages/core/src/constants.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createDietSlice.ts",
+      "target": "file:packages/core/src/logger.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createDietSlice.ts",
+      "target": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createDietSlice.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createDietSlice.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createDietSlice.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createExerciseSlice.test.ts",
+      "target": "file:packages/core/src/store/createExerciseSlice.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createExerciseSlice.ts",
+      "target": "file:packages/core/src/business/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createExerciseSlice.ts",
+      "target": "file:packages/core/src/logger.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createExerciseSlice.ts",
+      "target": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createExerciseSlice.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createExerciseSlice.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createExerciseSlice.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createFastingSlice.test.ts",
+      "target": "file:packages/core/src/store/createFastingSlice.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createFastingSlice.ts",
+      "target": "file:packages/core/src/business/fasting.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createFastingSlice.ts",
+      "target": "file:packages/core/src/logger.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createFastingSlice.ts",
+      "target": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createFastingSlice.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createFastingSlice.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createFoodSlice.test.ts",
+      "target": "file:packages/core/src/store/createFoodSlice.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createFoodSlice.ts",
+      "target": "file:packages/core/src/store/createDietSlice.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createFoodSlice.ts",
+      "target": "file:packages/core/src/store/sliceHelper.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createFoodSlice.ts",
+      "target": "file:packages/core/src/store/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/store/createBodySlice.ts",
+      "target": "function:packages/core/src/business/body.ts:createBodyGoal",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createBodySlice.ts",
+      "target": "function:packages/core/src/business/body.ts:createBodyPlan",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createBodySlice.ts",
+      "target": "function:packages/core/src/business/body.ts:createWeightRecord",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createBodySlice.ts",
+      "target": "function:packages/core/src/business/body.ts:createBodyCheckin",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createBodySlice.ts",
+      "target": "function:packages/core/src/utils.ts:uid",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createCheckinSlice.ts",
+      "target": "function:packages/core/src/utils.ts:calculateCheckinStreak",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createDietSlice.ts",
+      "target": "function:packages/core/src/utils.ts:uid",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createDietSlice.ts",
+      "target": "function:packages/core/src/utils.ts:dateStr",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createExerciseSlice.ts",
+      "target": "function:packages/core/src/utils.ts:uid",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createFastingSlice.ts",
+      "target": "function:packages/core/src/business/fasting.ts:startFastingSession",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/store/createFastingSlice.ts",
+      "target": "function:packages/core/src/business/fasting.ts:stopFastingSession",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ]
+}

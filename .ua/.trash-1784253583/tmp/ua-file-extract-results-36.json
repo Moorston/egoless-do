@@ -1,0 +1,355 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 3,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": ".trellis/spec/guides/code-reuse-thinking-guide.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 223,
+      "nonEmptyLines": 150,
+      "sections": [
+        {
+          "heading": "Code Reuse Thinking Guide",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "The Problem",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Before Writing New Code",
+          "level": 2,
+          "line": 18
+        },
+        {
+          "heading": "Step 1: Search First",
+          "level": 3,
+          "line": 20
+        },
+        {
+          "heading": "Step 2: Ask These Questions",
+          "level": 3,
+          "line": 30
+        },
+        {
+          "heading": "Common Duplication Patterns",
+          "level": 2,
+          "line": 41
+        },
+        {
+          "heading": "Pattern 1: Copy-Paste Functions",
+          "level": 3,
+          "line": 43
+        },
+        {
+          "heading": "Pattern 2: Similar Components",
+          "level": 3,
+          "line": 49
+        },
+        {
+          "heading": "Pattern 3: Repeated Constants",
+          "level": 3,
+          "line": 55
+        },
+        {
+          "heading": "Pattern 4: Repeated Payload Field Extraction",
+          "level": 3,
+          "line": 61
+        },
+        {
+          "heading": "When to Abstract",
+          "level": 2,
+          "line": 86
+        },
+        {
+          "heading": "After Batch Modifications",
+          "level": 2,
+          "line": 100
+        },
+        {
+          "heading": "Reducers Should Use Exhaustive Structure",
+          "level": 3,
+          "line": 108
+        },
+        {
+          "heading": "Checklist Before Commit",
+          "level": 2,
+          "line": 136
+        },
+        {
+          "heading": "Gotcha: Python if/elif/else Exhaustive Check",
+          "level": 2,
+          "line": 147
+        },
+        {
+          "heading": "Gotcha: Asymmetric Mechanisms Producing Same Output",
+          "level": 2,
+          "line": 178
+        },
+        {
+          "heading": "Template File Registration (Trellis-specific)",
+          "level": 2,
+          "line": 193
+        },
+        {
+          "heading": "Quick Checklist for New Scripts",
+          "level": 3,
+          "line": 208
+        },
+        {
+          "heading": "Template Sync Convention",
+          "level": 3,
+          "line": 215
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 19
+      }
+    },
+    {
+      "path": ".trellis/spec/guides/cross-layer-thinking-guide.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 327,
+      "nonEmptyLines": 226,
+      "sections": [
+        {
+          "heading": "Cross-Layer Thinking Guide",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "The Problem",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Before Implementing Cross-Layer Features",
+          "level": 2,
+          "line": 19
+        },
+        {
+          "heading": "Step 1: Map the Data Flow",
+          "level": 3,
+          "line": 21
+        },
+        {
+          "heading": "Step 2: Identify Boundaries",
+          "level": 3,
+          "line": 35
+        },
+        {
+          "heading": "Step 3: Define Contracts",
+          "level": 3,
+          "line": 44
+        },
+        {
+          "heading": "Common Cross-Layer Mistakes",
+          "level": 2,
+          "line": 54
+        },
+        {
+          "heading": "Mistake 1: Implicit Format Assumptions",
+          "level": 3,
+          "line": 56
+        },
+        {
+          "heading": "Mistake 2: Scattered Validation",
+          "level": 3,
+          "line": 62
+        },
+        {
+          "heading": "Mistake 3: Leaky Abstractions",
+          "level": 3,
+          "line": 68
+        },
+        {
+          "heading": "Mistake 4: Every Consumer Parses The Same Payload",
+          "level": 3,
+          "line": 74
+        },
+        {
+          "heading": "Checklist for Cross-Layer Features",
+          "level": 2,
+          "line": 105
+        },
+        {
+          "heading": "Cross-Platform Template Consistency",
+          "level": 2,
+          "line": 126
+        },
+        {
+          "heading": "Checklist: After Modifying Any Command Template",
+          "level": 3,
+          "line": 130
+        },
+        {
+          "heading": "Generated Runtime Template Upgrade Consistency",
+          "level": 2,
+          "line": 141
+        },
+        {
+          "heading": "Checklist: After Modifying A Runtime-Parsed Template",
+          "level": 3,
+          "line": 148
+        },
+        {
+          "heading": "Versioned Documentation Boundary",
+          "level": 2,
+          "line": 162
+        },
+        {
+          "heading": "Checklist: Before Editing Versioned Docs",
+          "level": 3,
+          "line": 168
+        },
+        {
+          "heading": "Mode-Detection Probe Checklist",
+          "level": 2,
+          "line": 197
+        },
+        {
+          "heading": "Before implementing:",
+          "level": 3,
+          "line": 201
+        },
+        {
+          "heading": "After implementing:",
+          "level": 3,
+          "line": 209
+        },
+        {
+          "heading": "Cross-Platform Template Consistency",
+          "level": 2,
+          "line": 223
+        },
+        {
+          "heading": "Checklist: After Modifying Any Command Template",
+          "level": 3,
+          "line": 227
+        },
+        {
+          "heading": "Generated Runtime Template Upgrade Consistency",
+          "level": 2,
+          "line": 238
+        },
+        {
+          "heading": "Checklist: After Modifying A Runtime-Parsed Template",
+          "level": 3,
+          "line": 245
+        },
+        {
+          "heading": "Mode-Detection Probe Checklist",
+          "level": 2,
+          "line": 267
+        },
+        {
+          "heading": "Before implementing:",
+          "level": 3,
+          "line": 271
+        },
+        {
+          "heading": "After implementing:",
+          "level": 3,
+          "line": 278
+        },
+        {
+          "heading": "When to Create Flow Documentation",
+          "level": 2,
+          "line": 291
+        },
+        {
+          "heading": "Event Log / Projection Boundary",
+          "level": 2,
+          "line": 302
+        },
+        {
+          "heading": "Checklist: After Adding A New Event Kind Or Field",
+          "level": 3,
+          "line": 310
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 31
+      }
+    },
+    {
+      "path": ".trellis/spec/guides/index.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 97,
+      "nonEmptyLines": 63,
+      "sections": [
+        {
+          "heading": "Thinking Guides",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Why Thinking Guides?",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Available Guides",
+          "level": 2,
+          "line": 20
+        },
+        {
+          "heading": "Quick Reference: Thinking Triggers",
+          "level": 2,
+          "line": 29
+        },
+        {
+          "heading": "When to Think About Cross-Layer Issues",
+          "level": 3,
+          "line": 31
+        },
+        {
+          "heading": "When to Think About Code Reuse",
+          "level": 3,
+          "line": 42
+        },
+        {
+          "heading": "When Verifying AI Cross-Review Results",
+          "level": 3,
+          "line": 54
+        },
+        {
+          "heading": "Pre-Modification Rule (CRITICAL)",
+          "level": 2,
+          "line": 70
+        },
+        {
+          "heading": "How to Use This Directory",
+          "level": 2,
+          "line": 83
+        },
+        {
+          "heading": "Contributing",
+          "level": 2,
+          "line": 91
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 10
+      }
+    }
+  ]
+}

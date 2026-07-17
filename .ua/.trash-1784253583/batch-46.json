@@ -1,0 +1,82 @@
+{
+  "nodes": [
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-15-body-page-optimization/design.md",
+      "type": "document",
+      "name": "design.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-15-body-page-optimization/design.md",
+      "summary": "调身页全面优化的技术设计文档，涵盖 Dashboard 翻新 (R1)、BodyFlow 流程增强 (R2)、训练计划升级 (R3)、SportPage 优化 (R4) 四个阶段的组件架构、状态机重构方案与文件变更清单。",
+      "tags": [
+        "documentation",
+        "technical-design",
+        "body-module",
+        "architecture"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-15-body-page-optimization/implement.md",
+      "type": "document",
+      "name": "implement.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-15-body-page-optimization/implement.md",
+      "summary": "调身页优化的执行计划文档，按 R1→R4 顺序拆解为具体实施步骤、阶段验证命令与风险缓解方案，支持每阶段独立提交与回滚。",
+      "tags": [
+        "documentation",
+        "implementation-plan",
+        "body-module",
+        "rollout"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-15-body-page-optimization/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-15-body-page-optimization/prd.md",
+      "summary": "调身页优化的产品需求文档，列出优化目标、当前代码结构与已知 Bug、R1~R4 具体需求以及视觉风格与交互流程层面的关键决策。",
+      "tags": [
+        "documentation",
+        "prd",
+        "product-requirements",
+        "body-module"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-15-body-page-optimization/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-15-body-page-optimization/task.json",
+      "summary": "Trellis 任务元数据，标识 body-page-optimization 任务的 id、状态（completed）、优先级 P2、创建者与完成时间等基本信息。",
+      "tags": [
+        "configuration",
+        "task-metadata",
+        "trellis"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:.trellis/tasks/archive/2026-07/07-15-body-page-optimization/task.json",
+      "target": "file:.trellis/tasks/archive/2026-07/07-15-body-page-optimization/prd.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:.trellis/tasks/archive/2026-07/07-15-body-page-optimization/prd.md",
+      "target": "file:.trellis/tasks/archive/2026-07/07-15-body-page-optimization/design.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:.trellis/tasks/archive/2026-07/07-15-body-page-optimization/design.md",
+      "target": "file:.trellis/tasks/archive/2026-07/07-15-body-page-optimization/implement.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

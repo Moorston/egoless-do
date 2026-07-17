@@ -1,0 +1,3150 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 25,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "_archive/web-legacy/instrumentation-client.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 16,
+      "nonEmptyLines": 15,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/instrumentation.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 21,
+      "nonEmptyLines": 19,
+      "functions": [
+        {
+          "name": "register",
+          "startLine": 3,
+          "endLine": 21,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "register",
+          "line": 3,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "register",
+          "callee": "Sentry.init",
+          "lineNumber": 5
+        },
+        {
+          "caller": "register",
+          "callee": "Sentry.init",
+          "lineNumber": 14
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/next-env.d.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 5,
+      "nonEmptyLines": 4,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/next.config.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 32,
+      "nonEmptyLines": 29,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/public/manifest.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 16,
+      "nonEmptyLines": 16,
+      "sections": [
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "short_name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "start_url",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "display",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "background_color",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "theme_color",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "orientation",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "icons",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "categories",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "lang",
+          "level": 1,
+          "line": 15
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 11
+      }
+    },
+    {
+      "path": "_archive/web-legacy/public/sw-bg-sync.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 16,
+      "nonEmptyLines": 14,
+      "functions": [
+        {
+          "name": "notifyClientsToSync",
+          "startLine": 11,
+          "endLine": 16,
+          "params": []
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "notifyClientsToSync",
+          "callee": "self.clients.matchAll",
+          "lineNumber": 12
+        },
+        {
+          "caller": "notifyClientsToSync",
+          "callee": "client.postMessage",
+          "lineNumber": 14
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/public/sw.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "callGraph": [
+        {
+          "caller": "a",
+          "callee": "new Promise(s=>{if(\"document\"in self){const e=document.createElement(\"script\");e.src=a,e.onload=s,document.head.appendChild(e)}else e=a,importScripts(a),s()}).then",
+          "lineNumber": 1
+        },
+        {
+          "caller": "a",
+          "callee": "document.createElement",
+          "lineNumber": 1
+        },
+        {
+          "caller": "a",
+          "callee": "document.head.appendChild",
+          "lineNumber": 1
+        },
+        {
+          "caller": "a",
+          "callee": "importScripts",
+          "lineNumber": 1
+        },
+        {
+          "caller": "a",
+          "callee": "s",
+          "lineNumber": 1
+        },
+        {
+          "caller": "r",
+          "callee": "a",
+          "lineNumber": 1
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/public/workbox-495fd258.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "callGraph": [
+        {
+          "caller": "e",
+          "callee": "JSON.stringify",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "super",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "e",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "n",
+          "lineNumber": 1
+        },
+        {
+          "caller": "setCatchHandler",
+          "callee": "n",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "super",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "t.exec",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "s.slice",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addFetchListener",
+          "callee": "self.addEventListener",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addFetchListener",
+          "callee": "this.handleRequest",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addFetchListener",
+          "callee": "t.respondWith",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addCacheListener",
+          "callee": "self.addEventListener",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addCacheListener",
+          "callee": "Promise.all",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addCacheListener",
+          "callee": "e.urlsToCache.map",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addCacheListener",
+          "callee": "this.handleRequest",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addCacheListener",
+          "callee": "t.waitUntil",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addCacheListener",
+          "callee": "s.then",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addCacheListener",
+          "callee": "t.ports[0].postMessage",
+          "lineNumber": 1
+        },
+        {
+          "caller": "handleRequest",
+          "callee": "s.protocol.startsWith",
+          "lineNumber": 1
+        },
+        {
+          "caller": "handleRequest",
+          "callee": "this.findMatchingRoute",
+          "lineNumber": 1
+        },
+        {
+          "caller": "handleRequest",
+          "callee": "this.i.has",
+          "lineNumber": 1
+        },
+        {
+          "caller": "handleRequest",
+          "callee": "this.i.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "handleRequest",
+          "callee": "a.handle",
+          "lineNumber": 1
+        },
+        {
+          "caller": "handleRequest",
+          "callee": "Promise.reject",
+          "lineNumber": 1
+        },
+        {
+          "caller": "handleRequest",
+          "callee": "c.catch",
+          "lineNumber": 1
+        },
+        {
+          "caller": "handleRequest",
+          "callee": "h.handle",
+          "lineNumber": 1
+        },
+        {
+          "caller": "handleRequest",
+          "callee": "this.o.handle",
+          "lineNumber": 1
+        },
+        {
+          "caller": "findMatchingRoute",
+          "callee": "this.t.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "findMatchingRoute",
+          "callee": "i.match",
+          "lineNumber": 1
+        },
+        {
+          "caller": "findMatchingRoute",
+          "callee": "Array.isArray",
+          "lineNumber": 1
+        },
+        {
+          "caller": "findMatchingRoute",
+          "callee": "Object.keys",
+          "lineNumber": 1
+        },
+        {
+          "caller": "setDefaultHandler",
+          "callee": "this.i.set",
+          "lineNumber": 1
+        },
+        {
+          "caller": "setDefaultHandler",
+          "callee": "n",
+          "lineNumber": 1
+        },
+        {
+          "caller": "setCatchHandler",
+          "callee": "n",
+          "lineNumber": 1
+        },
+        {
+          "caller": "registerRoute",
+          "callee": "this.t.has",
+          "lineNumber": 1
+        },
+        {
+          "caller": "registerRoute",
+          "callee": "this.t.set",
+          "lineNumber": 1
+        },
+        {
+          "caller": "registerRoute",
+          "callee": "this.t.get(t.method).push",
+          "lineNumber": 1
+        },
+        {
+          "caller": "registerRoute",
+          "callee": "this.t.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "unregisterRoute",
+          "callee": "this.t.has",
+          "lineNumber": 1
+        },
+        {
+          "caller": "unregisterRoute",
+          "callee": "this.t.get(t.method).indexOf",
+          "lineNumber": 1
+        },
+        {
+          "caller": "unregisterRoute",
+          "callee": "this.t.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "unregisterRoute",
+          "callee": "this.t.get(t.method).splice",
+          "lineNumber": 1
+        },
+        {
+          "caller": "unregisterRoute",
+          "callee": "this.t.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "c",
+          "callee": "o.addFetchListener",
+          "lineNumber": 1
+        },
+        {
+          "caller": "c",
+          "callee": "o.addCacheListener",
+          "lineNumber": 1
+        },
+        {
+          "caller": "h",
+          "callee": "c().registerRoute",
+          "lineNumber": 1
+        },
+        {
+          "caller": "h",
+          "callee": "c",
+          "lineNumber": 1
+        },
+        {
+          "caller": "f",
+          "callee": "[l.prefix,t,l.suffix].filter(t=>t&&t.length>0).join",
+          "lineNumber": 1
+        },
+        {
+          "caller": "f",
+          "callee": "[l.prefix,t,l.suffix].filter",
+          "lineNumber": 1
+        },
+        {
+          "caller": "w",
+          "callee": "f",
+          "lineNumber": 1
+        },
+        {
+          "caller": "d",
+          "callee": "f",
+          "lineNumber": 1
+        },
+        {
+          "caller": "p",
+          "callee": "s.searchParams.delete",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "Object.assign",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "this.v.set",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "this.event.waitUntil",
+          "lineNumber": 1
+        },
+        {
+          "caller": "fetch",
+          "callee": "m",
+          "lineNumber": 1
+        },
+        {
+          "caller": "fetch",
+          "callee": "this.hasCallback",
+          "lineNumber": 1
+        },
+        {
+          "caller": "fetch",
+          "callee": "n.clone",
+          "lineNumber": 1
+        },
+        {
+          "caller": "fetch",
+          "callee": "this.iterateCallbacks",
+          "lineNumber": 1
+        },
+        {
+          "caller": "fetch",
+          "callee": "t",
+          "lineNumber": 1
+        },
+        {
+          "caller": "fetch",
+          "callee": "n.clone",
+          "lineNumber": 1
+        },
+        {
+          "caller": "fetch",
+          "callee": "n.clone",
+          "lineNumber": 1
+        },
+        {
+          "caller": "fetch",
+          "callee": "fetch",
+          "lineNumber": 1
+        },
+        {
+          "caller": "fetch",
+          "callee": "this.iterateCallbacks",
+          "lineNumber": 1
+        },
+        {
+          "caller": "fetch",
+          "callee": "s",
+          "lineNumber": 1
+        },
+        {
+          "caller": "fetch",
+          "callee": "this.runCallbacks",
+          "lineNumber": 1
+        },
+        {
+          "caller": "fetch",
+          "callee": "r.clone",
+          "lineNumber": 1
+        },
+        {
+          "caller": "fetch",
+          "callee": "i.clone",
+          "lineNumber": 1
+        },
+        {
+          "caller": "fetchAndCachePut",
+          "callee": "this.fetch",
+          "lineNumber": 1
+        },
+        {
+          "caller": "fetchAndCachePut",
+          "callee": "e.clone",
+          "lineNumber": 1
+        },
+        {
+          "caller": "fetchAndCachePut",
+          "callee": "this.waitUntil",
+          "lineNumber": 1
+        },
+        {
+          "caller": "fetchAndCachePut",
+          "callee": "this.cachePut",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cacheMatch",
+          "callee": "m",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cacheMatch",
+          "callee": "this.getCacheKey",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cacheMatch",
+          "callee": "Object.assign",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cacheMatch",
+          "callee": "Object.assign",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cacheMatch",
+          "callee": "caches.match",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cacheMatch",
+          "callee": "this.iterateCallbacks",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cacheMatch",
+          "callee": "t",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "m",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "setTimeout",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "this.getCacheKey",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "new URL(String(a),location.href).href.replace",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "String",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "this.R",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "self.caches.open",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "this.hasCallback",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "async function(t,e,s,n){const r=p(e.url,s);if(e.url===r)return t.match(e,n);const i=Object.assign(Object.assign({},n),{ignoreSearch:!0}),a=await t.keys(e,i);for(const e of a)if(r===p(e.url,s))return t.match(e,n)}",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "p",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "t.match",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "Object.assign",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "Object.assign",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "t.keys",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "p",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "t.match",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "i.clone",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "u.put",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "o.clone",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "async function(){for(const t of g)await t()}",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "t",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "this.iterateCallbacks",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "t",
+          "lineNumber": 1
+        },
+        {
+          "caller": "cachePut",
+          "callee": "o.clone",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getCacheKey",
+          "callee": "this.iterateCallbacks",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getCacheKey",
+          "callee": "m",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getCacheKey",
+          "callee": "t",
+          "lineNumber": 1
+        },
+        {
+          "caller": "runCallbacks",
+          "callee": "this.iterateCallbacks",
+          "lineNumber": 1
+        },
+        {
+          "caller": "runCallbacks",
+          "callee": "s",
+          "lineNumber": 1
+        },
+        {
+          "caller": "iterateCallbacks",
+          "callee": "this.v.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "n",
+          "callee": "Object.assign",
+          "lineNumber": 1
+        },
+        {
+          "caller": "n",
+          "callee": "Object.assign",
+          "lineNumber": 1
+        },
+        {
+          "caller": "n",
+          "callee": "e[t]",
+          "lineNumber": 1
+        },
+        {
+          "caller": "waitUntil",
+          "callee": "this.p.push",
+          "lineNumber": 1
+        },
+        {
+          "caller": "doneWaiting",
+          "callee": "this.p.shift",
+          "lineNumber": 1
+        },
+        {
+          "caller": "destroy",
+          "callee": "this.l.resolve",
+          "lineNumber": 1
+        },
+        {
+          "caller": "R",
+          "callee": "this.iterateCallbacks",
+          "lineNumber": 1
+        },
+        {
+          "caller": "R",
+          "callee": "t",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "d",
+          "lineNumber": 1
+        },
+        {
+          "caller": "handle",
+          "callee": "this.handleAll",
+          "lineNumber": 1
+        },
+        {
+          "caller": "handleAll",
+          "callee": "this.q",
+          "lineNumber": 1
+        },
+        {
+          "caller": "handleAll",
+          "callee": "this.D",
+          "lineNumber": 1
+        },
+        {
+          "caller": "q",
+          "callee": "t.runCallbacks",
+          "lineNumber": 1
+        },
+        {
+          "caller": "q",
+          "callee": "this.U",
+          "lineNumber": 1
+        },
+        {
+          "caller": "q",
+          "callee": "t.iterateCallbacks",
+          "lineNumber": 1
+        },
+        {
+          "caller": "q",
+          "callee": "i",
+          "lineNumber": 1
+        },
+        {
+          "caller": "q",
+          "callee": "t.iterateCallbacks",
+          "lineNumber": 1
+        },
+        {
+          "caller": "q",
+          "callee": "s",
+          "lineNumber": 1
+        },
+        {
+          "caller": "D",
+          "callee": "e.runCallbacks",
+          "lineNumber": 1
+        },
+        {
+          "caller": "D",
+          "callee": "e.doneWaiting",
+          "lineNumber": 1
+        },
+        {
+          "caller": "D",
+          "callee": "e.runCallbacks",
+          "lineNumber": 1
+        },
+        {
+          "caller": "D",
+          "callee": "e.destroy",
+          "lineNumber": 1
+        },
+        {
+          "caller": "b",
+          "callee": "t.then",
+          "lineNumber": 1
+        },
+        {
+          "caller": "q",
+          "callee": "Object.assign.bind",
+          "lineNumber": 1
+        },
+        {
+          "caller": "q",
+          "callee": "({}).hasOwnProperty.call",
+          "lineNumber": 1
+        },
+        {
+          "caller": "q",
+          "callee": "q.apply",
+          "lineNumber": 1
+        },
+        {
+          "caller": "get",
+          "callee": "L.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "get",
+          "callee": "I.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "get",
+          "callee": "s.objectStore",
+          "lineNumber": 1
+        },
+        {
+          "caller": "get",
+          "callee": "k",
+          "lineNumber": 1
+        },
+        {
+          "caller": "O",
+          "callee": "(U||(U=[IDBCursor.prototype.advance,IDBCursor.prototype.continue,IDBCursor.prototype.continuePrimaryKey])).includes",
+          "lineNumber": 1
+        },
+        {
+          "caller": "O",
+          "callee": "t.apply",
+          "lineNumber": 1
+        },
+        {
+          "caller": "O",
+          "callee": "B",
+          "lineNumber": 1
+        },
+        {
+          "caller": "O",
+          "callee": "k",
+          "lineNumber": 1
+        },
+        {
+          "caller": "O",
+          "callee": "x.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "O",
+          "callee": "k",
+          "lineNumber": 1
+        },
+        {
+          "caller": "O",
+          "callee": "t.apply",
+          "lineNumber": 1
+        },
+        {
+          "caller": "O",
+          "callee": "B",
+          "lineNumber": 1
+        },
+        {
+          "caller": "O",
+          "callee": "t.call",
+          "lineNumber": 1
+        },
+        {
+          "caller": "O",
+          "callee": "B",
+          "lineNumber": 1
+        },
+        {
+          "caller": "O",
+          "callee": "I.set",
+          "lineNumber": 1
+        },
+        {
+          "caller": "O",
+          "callee": "e.sort",
+          "lineNumber": 1
+        },
+        {
+          "caller": "O",
+          "callee": "k",
+          "lineNumber": 1
+        },
+        {
+          "caller": "T",
+          "callee": "O",
+          "lineNumber": 1
+        },
+        {
+          "caller": "T",
+          "callee": "function(t){if(L.has(t))return;const e=new Promise((e,s)=>{const n=()=>{t.removeEventListener(\"complete\",r),t.removeEventListener(\"error\",i),t.removeEventListener(\"abort\",i)},r=()=>{e(),n()},i=()=>{s(t.error||new DOMException(\"AbortError\",\"AbortError\")),n()};t.addEventListener(\"complete\",r),t.addEventListener(\"error\",i),t.addEventListener(\"abort\",i)});L.set(t,e)}",
+          "lineNumber": 1
+        },
+        {
+          "caller": "T",
+          "callee": "L.has",
+          "lineNumber": 1
+        },
+        {
+          "caller": "n",
+          "callee": "t.removeEventListener",
+          "lineNumber": 1
+        },
+        {
+          "caller": "n",
+          "callee": "t.removeEventListener",
+          "lineNumber": 1
+        },
+        {
+          "caller": "n",
+          "callee": "t.removeEventListener",
+          "lineNumber": 1
+        },
+        {
+          "caller": "r",
+          "callee": "e",
+          "lineNumber": 1
+        },
+        {
+          "caller": "r",
+          "callee": "n",
+          "lineNumber": 1
+        },
+        {
+          "caller": "i",
+          "callee": "s",
+          "lineNumber": 1
+        },
+        {
+          "caller": "i",
+          "callee": "n",
+          "lineNumber": 1
+        },
+        {
+          "caller": "T",
+          "callee": "t.addEventListener",
+          "lineNumber": 1
+        },
+        {
+          "caller": "T",
+          "callee": "t.addEventListener",
+          "lineNumber": 1
+        },
+        {
+          "caller": "T",
+          "callee": "t.addEventListener",
+          "lineNumber": 1
+        },
+        {
+          "caller": "T",
+          "callee": "L.set",
+          "lineNumber": 1
+        },
+        {
+          "caller": "T",
+          "callee": "(D||(D=[IDBDatabase,IDBObjectStore,IDBIndex,IDBCursor,IDBTransaction])).some",
+          "lineNumber": 1
+        },
+        {
+          "caller": "k",
+          "callee": "function(t){const e=new Promise((e,s)=>{const n=()=>{t.removeEventListener(\"success\",r),t.removeEventListener(\"error\",i)},r=()=>{e(k(t.result)),n()},i=()=>{s(t.error),n()};t.addEventListener(\"success\",r),t.addEventListener(\"error\",i)});return e.then(e=>{e instanceof IDBCursor&&x.set(e,t)}).catch(()=>{}),E.set(e,t),e}",
+          "lineNumber": 1
+        },
+        {
+          "caller": "n",
+          "callee": "t.removeEventListener",
+          "lineNumber": 1
+        },
+        {
+          "caller": "n",
+          "callee": "t.removeEventListener",
+          "lineNumber": 1
+        },
+        {
+          "caller": "r",
+          "callee": "e",
+          "lineNumber": 1
+        },
+        {
+          "caller": "r",
+          "callee": "k",
+          "lineNumber": 1
+        },
+        {
+          "caller": "r",
+          "callee": "n",
+          "lineNumber": 1
+        },
+        {
+          "caller": "i",
+          "callee": "s",
+          "lineNumber": 1
+        },
+        {
+          "caller": "i",
+          "callee": "n",
+          "lineNumber": 1
+        },
+        {
+          "caller": "k",
+          "callee": "t.addEventListener",
+          "lineNumber": 1
+        },
+        {
+          "caller": "k",
+          "callee": "t.addEventListener",
+          "lineNumber": 1
+        },
+        {
+          "caller": "k",
+          "callee": "e.then(e=>{e instanceof IDBCursor&&x.set(e,t)}).catch",
+          "lineNumber": 1
+        },
+        {
+          "caller": "k",
+          "callee": "e.then",
+          "lineNumber": 1
+        },
+        {
+          "caller": "k",
+          "callee": "x.set",
+          "lineNumber": 1
+        },
+        {
+          "caller": "k",
+          "callee": "E.set",
+          "lineNumber": 1
+        },
+        {
+          "caller": "k",
+          "callee": "C.has",
+          "lineNumber": 1
+        },
+        {
+          "caller": "k",
+          "callee": "C.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "k",
+          "callee": "T",
+          "lineNumber": 1
+        },
+        {
+          "caller": "k",
+          "callee": "C.set",
+          "lineNumber": 1
+        },
+        {
+          "caller": "k",
+          "callee": "E.set",
+          "lineNumber": 1
+        },
+        {
+          "caller": "B",
+          "callee": "E.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "j",
+          "callee": "W.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "j",
+          "callee": "W.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "j",
+          "callee": "e.replace",
+          "lineNumber": 1
+        },
+        {
+          "caller": "j",
+          "callee": "M.includes",
+          "lineNumber": 1
+        },
+        {
+          "caller": "j",
+          "callee": "P.includes",
+          "lineNumber": 1
+        },
+        {
+          "caller": "i",
+          "callee": "this.transaction",
+          "lineNumber": 1
+        },
+        {
+          "caller": "i",
+          "callee": "a.index",
+          "lineNumber": 1
+        },
+        {
+          "caller": "i",
+          "callee": "e.shift",
+          "lineNumber": 1
+        },
+        {
+          "caller": "i",
+          "callee": "Promise.all",
+          "lineNumber": 1
+        },
+        {
+          "caller": "i",
+          "callee": "a[s]",
+          "lineNumber": 1
+        },
+        {
+          "caller": "j",
+          "callee": "W.set",
+          "lineNumber": 1
+        },
+        {
+          "caller": "I",
+          "callee": "t.createObjectStore",
+          "lineNumber": 1
+        },
+        {
+          "caller": "I",
+          "callee": "e.createIndex",
+          "lineNumber": 1
+        },
+        {
+          "caller": "I",
+          "callee": "e.createIndex",
+          "lineNumber": 1
+        },
+        {
+          "caller": "C",
+          "callee": "this.I",
+          "lineNumber": 1
+        },
+        {
+          "caller": "C",
+          "callee": "function(t,{blocked:e}={}){const s=indexedDB.deleteDatabase(t);e&&s.addEventListener(\"blocked\",t=>e(t.oldVersion,t)),k(s).then(()=>{})}",
+          "lineNumber": 1
+        },
+        {
+          "caller": "C",
+          "callee": "indexedDB.deleteDatabase",
+          "lineNumber": 1
+        },
+        {
+          "caller": "C",
+          "callee": "s.addEventListener",
+          "lineNumber": 1
+        },
+        {
+          "caller": "C",
+          "callee": "e",
+          "lineNumber": 1
+        },
+        {
+          "caller": "C",
+          "callee": "k(s).then",
+          "lineNumber": 1
+        },
+        {
+          "caller": "C",
+          "callee": "k",
+          "lineNumber": 1
+        },
+        {
+          "caller": "setTimestamp",
+          "callee": "K",
+          "lineNumber": 1
+        },
+        {
+          "caller": "setTimestamp",
+          "callee": "this.N",
+          "lineNumber": 1
+        },
+        {
+          "caller": "setTimestamp",
+          "callee": "(await this.getDb()).transaction",
+          "lineNumber": 1
+        },
+        {
+          "caller": "setTimestamp",
+          "callee": "this.getDb",
+          "lineNumber": 1
+        },
+        {
+          "caller": "setTimestamp",
+          "callee": "n.store.put",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getTimestamp",
+          "callee": "this.getDb",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getTimestamp",
+          "callee": "e.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getTimestamp",
+          "callee": "this.N",
+          "lineNumber": 1
+        },
+        {
+          "caller": "expireEntries",
+          "callee": "this.getDb",
+          "lineNumber": 1
+        },
+        {
+          "caller": "expireEntries",
+          "callee": "s.transaction(S).store.index(\"timestamp\").openCursor",
+          "lineNumber": 1
+        },
+        {
+          "caller": "expireEntries",
+          "callee": "s.transaction(S).store.index",
+          "lineNumber": 1
+        },
+        {
+          "caller": "expireEntries",
+          "callee": "s.transaction",
+          "lineNumber": 1
+        },
+        {
+          "caller": "expireEntries",
+          "callee": "r.push",
+          "lineNumber": 1
+        },
+        {
+          "caller": "expireEntries",
+          "callee": "n.continue",
+          "lineNumber": 1
+        },
+        {
+          "caller": "expireEntries",
+          "callee": "s.delete",
+          "lineNumber": 1
+        },
+        {
+          "caller": "expireEntries",
+          "callee": "a.push",
+          "lineNumber": 1
+        },
+        {
+          "caller": "N",
+          "callee": "K",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getDb",
+          "callee": "function(t,e,{blocked:s,upgrade:n,blocking:r,terminated:i}={}){const a=indexedDB.open(t,e),o=k(a);return n&&a.addEventListener(\"upgradeneeded\",t=>{n(k(a.result),t.oldVersion,t.newVersion,k(a.transaction),t)}),s&&a.addEventListener(\"blocked\",t=>s(t.oldVersion,t.newVersion,t)),o.then(t=>{i&&t.addEventListener(\"close\",()=>i()),r&&t.addEventListener(\"versionchange\",t=>r(t.oldVersion,t.newVersion,t))}).catch(()=>{}),o}",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getDb",
+          "callee": "indexedDB.open",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getDb",
+          "callee": "k",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getDb",
+          "callee": "a.addEventListener",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getDb",
+          "callee": "n",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getDb",
+          "callee": "k",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getDb",
+          "callee": "k",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getDb",
+          "callee": "a.addEventListener",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getDb",
+          "callee": "s",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getDb",
+          "callee": "o.then(t=>{i&&t.addEventListener(\"close\",()=>i()),r&&t.addEventListener(\"versionchange\",t=>r(t.oldVersion,t.newVersion,t))}).catch",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getDb",
+          "callee": "o.then",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getDb",
+          "callee": "t.addEventListener",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getDb",
+          "callee": "i",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getDb",
+          "callee": "t.addEventListener",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getDb",
+          "callee": "r",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getDb",
+          "callee": "this.C.bind",
+          "lineNumber": 1
+        },
+        {
+          "caller": "expireEntries",
+          "callee": "Date.now",
+          "lineNumber": 1
+        },
+        {
+          "caller": "expireEntries",
+          "callee": "this.M.expireEntries",
+          "lineNumber": 1
+        },
+        {
+          "caller": "expireEntries",
+          "callee": "self.caches.open",
+          "lineNumber": 1
+        },
+        {
+          "caller": "expireEntries",
+          "callee": "s.delete",
+          "lineNumber": 1
+        },
+        {
+          "caller": "expireEntries",
+          "callee": "b",
+          "lineNumber": 1
+        },
+        {
+          "caller": "expireEntries",
+          "callee": "this.expireEntries",
+          "lineNumber": 1
+        },
+        {
+          "caller": "updateTimestamp",
+          "callee": "this.M.setTimestamp",
+          "lineNumber": 1
+        },
+        {
+          "caller": "updateTimestamp",
+          "callee": "Date.now",
+          "lineNumber": 1
+        },
+        {
+          "caller": "isURLExpired",
+          "callee": "this.M.getTimestamp",
+          "lineNumber": 1
+        },
+        {
+          "caller": "isURLExpired",
+          "callee": "Date.now",
+          "lineNumber": 1
+        },
+        {
+          "caller": "delete",
+          "callee": "this.M.expireEntries",
+          "lineNumber": 1
+        },
+        {
+          "caller": "H",
+          "callee": "t.headers.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "H",
+          "callee": "function(t){const e=t.trim().toLowerCase();if(!e.startsWith(\"bytes=\"))throw new s(\"unit-must-be-bytes\",{normalizedRangeHeader:e});if(e.includes(\",\"))throw new s(\"single-range-only\",{normalizedRangeHeader:e});const n=/(\\d*)-(\\d*)/.exec(e);if(!n||!n[1]&&!n[2])throw new s(\"invalid-range-values\",{normalizedRangeHeader:e});return{start:\"\"===n[1]?void 0:Number(n[1]),end:\"\"===n[2]?void 0:Number(n[2])}}",
+          "lineNumber": 1
+        },
+        {
+          "caller": "H",
+          "callee": "t.trim().toLowerCase",
+          "lineNumber": 1
+        },
+        {
+          "caller": "H",
+          "callee": "t.trim",
+          "lineNumber": 1
+        },
+        {
+          "caller": "H",
+          "callee": "e.startsWith",
+          "lineNumber": 1
+        },
+        {
+          "caller": "H",
+          "callee": "e.includes",
+          "lineNumber": 1
+        },
+        {
+          "caller": "H",
+          "callee": "/(\\d*)-(\\d*)/.exec",
+          "lineNumber": 1
+        },
+        {
+          "caller": "H",
+          "callee": "Number",
+          "lineNumber": 1
+        },
+        {
+          "caller": "H",
+          "callee": "Number",
+          "lineNumber": 1
+        },
+        {
+          "caller": "H",
+          "callee": "e.blob",
+          "lineNumber": 1
+        },
+        {
+          "caller": "H",
+          "callee": "function(t,e,n){const r=t.size;if(n&&n>r||e&&e<0)throw new s(\"range-not-satisfiable\",{size:r,end:n,start:e});let i,a;return void 0!==e&&void 0!==n?(i=e,a=n+1):void 0!==e&&void 0===n?(i=e,a=r):void 0!==n&&void 0===e&&(i=r-n,a=r),{start:i,end:a}}",
+          "lineNumber": 1
+        },
+        {
+          "caller": "H",
+          "callee": "i.slice",
+          "lineNumber": 1
+        },
+        {
+          "caller": "H",
+          "callee": "h.headers.set",
+          "lineNumber": 1
+        },
+        {
+          "caller": "H",
+          "callee": "String",
+          "lineNumber": 1
+        },
+        {
+          "caller": "H",
+          "callee": "h.headers.set",
+          "lineNumber": 1
+        },
+        {
+          "caller": "$",
+          "callee": "e",
+          "lineNumber": 1
+        },
+        {
+          "caller": "$",
+          "callee": "t.waitUntil",
+          "lineNumber": 1
+        },
+        {
+          "caller": "z",
+          "callee": "r.searchParams.set",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "this.notUpdatedURLs.push",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "this.updatedURLs.push",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "this.W.getCacheKeyForURL",
+          "lineNumber": 1
+        },
+        {
+          "caller": "X",
+          "callee": "t.clone",
+          "lineNumber": 1
+        },
+        {
+          "caller": "X",
+          "callee": "e",
+          "lineNumber": 1
+        },
+        {
+          "caller": "X",
+          "callee": "function(){if(void 0===J){const t=new Response(\"\");if(\"body\"in t)try{new Response(t.body),J=!0}catch(t){J=!1}J=!1}return J}",
+          "lineNumber": 1
+        },
+        {
+          "caller": "X",
+          "callee": "r.blob",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "w",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "super",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "this.plugins.push",
+          "lineNumber": 1
+        },
+        {
+          "caller": "U",
+          "callee": "e.cacheMatch",
+          "lineNumber": 1
+        },
+        {
+          "caller": "U",
+          "callee": "this.S",
+          "lineNumber": 1
+        },
+        {
+          "caller": "U",
+          "callee": "this.K",
+          "lineNumber": 1
+        },
+        {
+          "caller": "K",
+          "callee": "e.fetch",
+          "lineNumber": 1
+        },
+        {
+          "caller": "K",
+          "callee": "this.A",
+          "lineNumber": 1
+        },
+        {
+          "caller": "K",
+          "callee": "e.cachePut",
+          "lineNumber": 1
+        },
+        {
+          "caller": "K",
+          "callee": "n.clone",
+          "lineNumber": 1
+        },
+        {
+          "caller": "S",
+          "callee": "this.A",
+          "lineNumber": 1
+        },
+        {
+          "caller": "S",
+          "callee": "e.fetch",
+          "lineNumber": 1
+        },
+        {
+          "caller": "S",
+          "callee": "e.cachePut",
+          "lineNumber": 1
+        },
+        {
+          "caller": "S",
+          "callee": "n.clone",
+          "lineNumber": 1
+        },
+        {
+          "caller": "A",
+          "callee": "this.plugins.entries",
+          "lineNumber": 1
+        },
+        {
+          "caller": "A",
+          "callee": "this.plugins.push",
+          "lineNumber": 1
+        },
+        {
+          "caller": "A",
+          "callee": "this.plugins.splice",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "w",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "this.install.bind",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "this.activate.bind",
+          "lineNumber": 1
+        },
+        {
+          "caller": "precache",
+          "callee": "this.addToCacheList",
+          "lineNumber": 1
+        },
+        {
+          "caller": "precache",
+          "callee": "self.addEventListener",
+          "lineNumber": 1
+        },
+        {
+          "caller": "precache",
+          "callee": "self.addEventListener",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addToCacheList",
+          "callee": "e.push",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addToCacheList",
+          "callee": "e.push",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addToCacheList",
+          "callee": "z",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addToCacheList",
+          "callee": "this.F.has",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addToCacheList",
+          "callee": "this.F.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addToCacheList",
+          "callee": "this.F.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addToCacheList",
+          "callee": "this.$.has",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addToCacheList",
+          "callee": "this.$.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addToCacheList",
+          "callee": "this.$.set",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addToCacheList",
+          "callee": "this.F.set",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addToCacheList",
+          "callee": "this.H.set",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addToCacheList",
+          "callee": "e.join",
+          "lineNumber": 1
+        },
+        {
+          "caller": "addToCacheList",
+          "callee": "console.warn",
+          "lineNumber": 1
+        },
+        {
+          "caller": "install",
+          "callee": "$",
+          "lineNumber": 1
+        },
+        {
+          "caller": "install",
+          "callee": "this.strategy.plugins.push",
+          "lineNumber": 1
+        },
+        {
+          "caller": "install",
+          "callee": "this.$.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "install",
+          "callee": "this.H.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "install",
+          "callee": "Promise.all",
+          "lineNumber": 1
+        },
+        {
+          "caller": "install",
+          "callee": "this.strategy.handleAll",
+          "lineNumber": 1
+        },
+        {
+          "caller": "activate",
+          "callee": "$",
+          "lineNumber": 1
+        },
+        {
+          "caller": "activate",
+          "callee": "self.caches.open",
+          "lineNumber": 1
+        },
+        {
+          "caller": "activate",
+          "callee": "t.keys",
+          "lineNumber": 1
+        },
+        {
+          "caller": "activate",
+          "callee": "this.F.values",
+          "lineNumber": 1
+        },
+        {
+          "caller": "activate",
+          "callee": "s.has",
+          "lineNumber": 1
+        },
+        {
+          "caller": "activate",
+          "callee": "t.delete",
+          "lineNumber": 1
+        },
+        {
+          "caller": "activate",
+          "callee": "n.push",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getCachedURLs",
+          "callee": "this.F.keys",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getCacheKeyForURL",
+          "callee": "this.F.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "getIntegrityForCacheKey",
+          "callee": "this.$.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "matchPrecache",
+          "callee": "this.getCacheKeyForURL",
+          "lineNumber": 1
+        },
+        {
+          "caller": "matchPrecache",
+          "callee": "(await self.caches.open(this.strategy.cacheName)).match",
+          "lineNumber": 1
+        },
+        {
+          "caller": "matchPrecache",
+          "callee": "self.caches.open",
+          "lineNumber": 1
+        },
+        {
+          "caller": "createHandlerBoundToURL",
+          "callee": "this.getCacheKeyForURL",
+          "lineNumber": 1
+        },
+        {
+          "caller": "createHandlerBoundToURL",
+          "callee": "Object.assign",
+          "lineNumber": 1
+        },
+        {
+          "caller": "createHandlerBoundToURL",
+          "callee": "this.strategy.handle",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "super",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "t.getURLsToCacheKeys",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "function*(t,{ignoreURLParametersMatching:e=[/^utm_/,/^fbclid$/],directoryIndex:s=\"index.html\",cleanURLs:n=!0,urlManipulation:r}={}){const i=new URL(t,location.href);i.hash=\"\",yield i.href;const a=function(t,e=[]){for(const s of[...t.searchParams.keys()])e.some(t=>t.test(s))&&t.searchParams.delete(s);return t}(i,e);if(yield a.href,s&&a.pathname.endsWith(\"/\")){const t=new URL(a.href);t.pathname+=s,yield t.href}if(n){const t=new URL(a.href);t.pathname+=\".html\",yield t.href}if(r){const t=r({url:i});for(const e of t)yield e.href}}",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "function(t,e=[]){for(const s of[...t.searchParams.keys()])e.some(t=>t.test(s))&&t.searchParams.delete(s);return t}",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "t.searchParams.keys",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "e.some",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "t.test",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "t.searchParams.delete",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "a.pathname.endsWith",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "r",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "n.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "t.getIntegrityForCacheKey",
+          "lineNumber": 1
+        },
+        {
+          "caller": "U",
+          "callee": "e.cacheMatch",
+          "lineNumber": 1
+        },
+        {
+          "caller": "U",
+          "callee": "e.fetchAndCachePut",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "this.V",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "this.J",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "b",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "i.expireEntries",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "i.updateTimestamp",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "t.waitUntil",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "this.J",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "s.updateTimestamp",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "s.expireEntries",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "function(t){g.add(t)}",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "g.add",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "this.deleteCacheAndMetadata",
+          "lineNumber": 1
+        },
+        {
+          "caller": "J",
+          "callee": "d",
+          "lineNumber": 1
+        },
+        {
+          "caller": "J",
+          "callee": "this.Y.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "J",
+          "callee": "this.Y.set",
+          "lineNumber": 1
+        },
+        {
+          "caller": "V",
+          "callee": "this.Z",
+          "lineNumber": 1
+        },
+        {
+          "caller": "V",
+          "callee": "Date.now",
+          "lineNumber": 1
+        },
+        {
+          "caller": "Z",
+          "callee": "t.headers.has",
+          "lineNumber": 1
+        },
+        {
+          "caller": "Z",
+          "callee": "t.headers.get",
+          "lineNumber": 1
+        },
+        {
+          "caller": "Z",
+          "callee": "new Date(e).getTime",
+          "lineNumber": 1
+        },
+        {
+          "caller": "Z",
+          "callee": "isNaN",
+          "lineNumber": 1
+        },
+        {
+          "caller": "deleteCacheAndMetadata",
+          "callee": "self.caches.delete",
+          "lineNumber": 1
+        },
+        {
+          "caller": "deleteCacheAndMetadata",
+          "callee": "e.delete",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "super",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "this.plugins.some",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "this.plugins.unshift",
+          "lineNumber": 1
+        },
+        {
+          "caller": "U",
+          "callee": "this.et",
+          "lineNumber": 1
+        },
+        {
+          "caller": "U",
+          "callee": "r.push",
+          "lineNumber": 1
+        },
+        {
+          "caller": "U",
+          "callee": "this.st",
+          "lineNumber": 1
+        },
+        {
+          "caller": "U",
+          "callee": "r.push",
+          "lineNumber": 1
+        },
+        {
+          "caller": "U",
+          "callee": "e.waitUntil",
+          "lineNumber": 1
+        },
+        {
+          "caller": "U",
+          "callee": "(async()=>await e.waitUntil(Promise.race(r))||await a)",
+          "lineNumber": 1
+        },
+        {
+          "caller": "U",
+          "callee": "e.waitUntil",
+          "lineNumber": 1
+        },
+        {
+          "caller": "U",
+          "callee": "Promise.race",
+          "lineNumber": 1
+        },
+        {
+          "caller": "et",
+          "callee": "setTimeout",
+          "lineNumber": 1
+        },
+        {
+          "caller": "et",
+          "callee": "e",
+          "lineNumber": 1
+        },
+        {
+          "caller": "et",
+          "callee": "s.cacheMatch",
+          "lineNumber": 1
+        },
+        {
+          "caller": "st",
+          "callee": "n.fetchAndCachePut",
+          "lineNumber": 1
+        },
+        {
+          "caller": "st",
+          "callee": "clearTimeout",
+          "lineNumber": 1
+        },
+        {
+          "caller": "st",
+          "callee": "n.cacheMatch",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "t.headers.has",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "H",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "super",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "this.plugins.some",
+          "lineNumber": 1
+        },
+        {
+          "caller": "constructor",
+          "callee": "this.plugins.unshift",
+          "lineNumber": 1
+        },
+        {
+          "caller": "U",
+          "callee": "e.fetchAndCachePut(t).catch",
+          "lineNumber": 1
+        },
+        {
+          "caller": "U",
+          "callee": "e.fetchAndCachePut",
+          "lineNumber": 1
+        },
+        {
+          "caller": "U",
+          "callee": "e.waitUntil",
+          "lineNumber": 1
+        },
+        {
+          "caller": "U",
+          "callee": "e.cacheMatch",
+          "lineNumber": 1
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/api/monitoring/route.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 38,
+      "nonEmptyLines": 32,
+      "functions": [
+        {
+          "name": "POST",
+          "startLine": 4,
+          "endLine": 38,
+          "params": [
+            "request"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "POST",
+          "line": 4,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "POST",
+          "callee": "request.text",
+          "lineNumber": 6
+        },
+        {
+          "caller": "POST",
+          "callee": "envelope.split",
+          "lineNumber": 7
+        },
+        {
+          "caller": "POST",
+          "callee": "JSON.parse",
+          "lineNumber": 8
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 12
+        },
+        {
+          "caller": "POST",
+          "callee": "dsnUrl.pathname.replace",
+          "lineNumber": 16
+        },
+        {
+          "caller": "POST",
+          "callee": "allowedPattern.test",
+          "lineNumber": 21
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 22
+        },
+        {
+          "caller": "POST",
+          "callee": "fetch",
+          "lineNumber": 26
+        },
+        {
+          "caller": "POST",
+          "callee": "NextResponse.json",
+          "lineNumber": 36
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/error.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 29,
+      "nonEmptyLines": 26,
+      "functions": [
+        {
+          "name": "ErrorPage",
+          "startLine": 6,
+          "endLine": 29,
+          "params": [
+            "{\n  error,\n  reset,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ErrorPage",
+          "line": 6,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "ErrorPage",
+          "callee": "useEffect",
+          "lineNumber": 13
+        },
+        {
+          "caller": "ErrorPage",
+          "callee": "Sentry.captureException",
+          "lineNumber": 14
+        },
+        {
+          "caller": "ErrorPage",
+          "callee": "reset",
+          "lineNumber": 22
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/global-error.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 31,
+      "nonEmptyLines": 28,
+      "functions": [
+        {
+          "name": "GlobalError",
+          "startLine": 6,
+          "endLine": 31,
+          "params": [
+            "{\n  error,\n  reset,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "GlobalError",
+          "line": 6,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "GlobalError",
+          "callee": "useEffect",
+          "lineNumber": 13
+        },
+        {
+          "caller": "GlobalError",
+          "callee": "Sentry.captureException",
+          "lineNumber": 14
+        },
+        {
+          "caller": "GlobalError",
+          "callee": "reset",
+          "lineNumber": 23
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/globals.css",
+      "language": "css",
+      "fileCategory": "markup",
+      "totalLines": 21,
+      "nonEmptyLines": 20,
+      "metrics": {}
+    },
+    {
+      "path": "_archive/web-legacy/src/app/layout.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 28,
+      "nonEmptyLines": 25,
+      "functions": [
+        {
+          "name": "RootLayout",
+          "startLine": 20,
+          "endLine": 28,
+          "params": [
+            "{ children }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "metadata",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "viewport",
+          "line": 11,
+          "isDefault": false
+        },
+        {
+          "name": "RootLayout",
+          "line": 20,
+          "isDefault": true
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 3,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/not-found.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 16,
+      "nonEmptyLines": 15,
+      "functions": [
+        {
+          "name": "NotFound",
+          "startLine": 3,
+          "endLine": 16,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "NotFound",
+          "line": 3,
+          "isDefault": true
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/app/page.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 2,
+      "nonEmptyLines": 2,
+      "exports": [
+        {
+          "name": "default",
+          "line": 2,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/components/hooks/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 4,
+      "nonEmptyLines": 4,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/components/hooks/useCachedStyle.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 7,
+      "nonEmptyLines": 5,
+      "functions": [
+        {
+          "name": "useCachedStyle",
+          "startLine": 5,
+          "endLine": 7,
+          "params": [
+            "factory",
+            "deps"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "useCachedStyle",
+          "line": 5,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useCachedStyle",
+          "callee": "useMemo",
+          "lineNumber": 6
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/components/hooks/useResponsive.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 30,
+      "nonEmptyLines": 25,
+      "functions": [
+        {
+          "name": "useResponsive",
+          "startLine": 10,
+          "endLine": 30,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "useResponsive",
+          "line": 10,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useResponsive",
+          "callee": "useState",
+          "lineNumber": 11
+        },
+        {
+          "caller": "useResponsive",
+          "callee": "useState",
+          "lineNumber": 12
+        },
+        {
+          "caller": "useResponsive",
+          "callee": "useEffect",
+          "lineNumber": 14
+        },
+        {
+          "caller": "useResponsive",
+          "callee": "setMounted",
+          "lineNumber": 15
+        },
+        {
+          "caller": "useResponsive",
+          "callee": "setWidth",
+          "lineNumber": 16
+        },
+        {
+          "caller": "handleResize",
+          "callee": "cancelAnimationFrame",
+          "lineNumber": 18
+        },
+        {
+          "caller": "handleResize",
+          "callee": "requestAnimationFrame",
+          "lineNumber": 18
+        },
+        {
+          "caller": "handleResize",
+          "callee": "setWidth",
+          "lineNumber": 18
+        },
+        {
+          "caller": "useResponsive",
+          "callee": "window.addEventListener",
+          "lineNumber": 19
+        },
+        {
+          "caller": "useResponsive",
+          "callee": "cancelAnimationFrame",
+          "lineNumber": 20
+        },
+        {
+          "caller": "useResponsive",
+          "callee": "window.removeEventListener",
+          "lineNumber": 20
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/components/ui/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 6,
+      "nonEmptyLines": 6,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/components/ui/VirtualList.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 97,
+      "nonEmptyLines": 89,
+      "functions": [
+        {
+          "name": "VirtualList",
+          "startLine": 16,
+          "endLine": 97,
+          "params": [
+            "{\n  items,\n  itemHeight,\n  maxHeight = 400,\n  renderItem,\n  keyExtractor,\n  emptyMessage,\n  emptyStyle,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "VirtualList",
+          "line": 16,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "VirtualList",
+          "callee": "useRef",
+          "lineNumber": 25
+        },
+        {
+          "caller": "VirtualList",
+          "callee": "useRef",
+          "lineNumber": 26
+        },
+        {
+          "caller": "VirtualList",
+          "callee": "useState",
+          "lineNumber": 27
+        },
+        {
+          "caller": "VirtualList",
+          "callee": "useEffect",
+          "lineNumber": 30
+        },
+        {
+          "caller": "update",
+          "callee": "containerRef.current.getBoundingClientRect",
+          "lineNumber": 33
+        },
+        {
+          "caller": "update",
+          "callee": "setListHeight",
+          "lineNumber": 35
+        },
+        {
+          "caller": "update",
+          "callee": "Math.min",
+          "lineNumber": 35
+        },
+        {
+          "caller": "update",
+          "callee": "Math.max",
+          "lineNumber": 35
+        },
+        {
+          "caller": "VirtualList",
+          "callee": "update",
+          "lineNumber": 38
+        },
+        {
+          "caller": "VirtualList",
+          "callee": "window.addEventListener",
+          "lineNumber": 39
+        },
+        {
+          "caller": "VirtualList",
+          "callee": "window.removeEventListener",
+          "lineNumber": 40
+        },
+        {
+          "caller": "VirtualList",
+          "callee": "useCallback",
+          "lineNumber": 43
+        },
+        {
+          "caller": "VirtualList",
+          "callee": "keyExtractor",
+          "lineNumber": 46
+        },
+        {
+          "caller": "VirtualList",
+          "callee": "renderItem",
+          "lineNumber": 47
+        },
+        {
+          "caller": "VirtualList",
+          "callee": "items.map",
+          "lineNumber": 74
+        },
+        {
+          "caller": "VirtualList",
+          "callee": "keyExtractor",
+          "lineNumber": 75
+        },
+        {
+          "caller": "VirtualList",
+          "callee": "renderItem",
+          "lineNumber": 76
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/middleware.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 26,
+      "nonEmptyLines": 21,
+      "functions": [
+        {
+          "name": "middleware",
+          "startLine": 4,
+          "endLine": 19,
+          "params": [
+            "request"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "middleware",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "config",
+          "line": 21,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "middleware",
+          "callee": "NextResponse.next",
+          "lineNumber": 5
+        },
+        {
+          "caller": "middleware",
+          "callee": "response.headers.set",
+          "lineNumber": 8
+        },
+        {
+          "caller": "middleware",
+          "callee": "response.headers.set",
+          "lineNumber": 9
+        },
+        {
+          "caller": "middleware",
+          "callee": "response.headers.set",
+          "lineNumber": 10
+        },
+        {
+          "caller": "middleware",
+          "callee": "response.headers.set",
+          "lineNumber": 11
+        },
+        {
+          "caller": "middleware",
+          "callee": "request.nextUrl.hostname.includes",
+          "lineNumber": 14
+        },
+        {
+          "caller": "middleware",
+          "callee": "response.headers.set",
+          "lineNumber": 15
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/src/types/amap.d.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 78,
+      "nonEmptyLines": 69,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "_archive/web-legacy/vitest.config.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 8,
+      "nonEmptyLines": 7,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": ".clinerules",
+      "language": "unknown",
+      "fileCategory": "code",
+      "totalLines": 252,
+      "nonEmptyLines": 191,
+      "metrics": {}
+    },
+    {
+      "path": ".github/copilot-instructions.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 252,
+      "nonEmptyLines": 191,
+      "sections": [
+        {
+          "heading": "Copilot Instructions — egoless-do",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Project Overview",
+          "level": 2,
+          "line": 5
+        },
+        {
+          "heading": "心流纪 · Egoless Do  跨平台正念修行 + 习惯追踪 + 思维记录综合应用。帮助用户养成健康饮食、规律冥想、运动习惯，同时捕捉内心感悟，实现身、心、思全面提升。",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "Stack: TypeScript + JavaScript + Zustand + Vitest + Turborepo + ESLint",
+          "level": 2,
+          "line": 8
+        },
+        {
+          "heading": "Codebase Knowledge",
+          "level": 2,
+          "line": 13
+        },
+        {
+          "heading": "Architecture",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "Folder Map",
+          "level": 2,
+          "line": 17
+        },
+        {
+          "heading": "Entry Points",
+          "level": 2,
+          "line": 29
+        },
+        {
+          "heading": "Data Flow",
+          "level": 2,
+          "line": 32
+        },
+        {
+          "heading": "External Dependencies",
+          "level": 2,
+          "line": 35
+        },
+        {
+          "heading": "Deployment",
+          "level": 2,
+          "line": 47
+        },
+        {
+          "heading": "Tech Stack",
+          "level": 1,
+          "line": 52
+        },
+        {
+          "heading": "Languages",
+          "level": 2,
+          "line": 54
+        },
+        {
+          "heading": "Frameworks & Libraries",
+          "level": 2,
+          "line": 58
+        },
+        {
+          "heading": "Database",
+          "level": 2,
+          "line": 64
+        },
+        {
+          "heading": "External APIs",
+          "level": 2,
+          "line": 67
+        },
+        {
+          "heading": "Dev Tooling",
+          "level": 2,
+          "line": 70
+        },
+        {
+          "heading": "All Commands",
+          "level": 2,
+          "line": 76
+        },
+        {
+          "heading": "Module Map",
+          "level": 1,
+          "line": 95
+        },
+        {
+          "heading": "--help",
+          "level": 2,
+          "line": 97
+        },
+        {
+          "heading": "apps",
+          "level": 2,
+          "line": 104
+        },
+        {
+          "heading": "backend",
+          "level": 2,
+          "line": 111
+        },
+        {
+          "heading": "docs",
+          "level": 2,
+          "line": 118
+        },
+        {
+          "heading": "infra",
+          "level": 2,
+          "line": 125
+        },
+        {
+          "heading": "openspec",
+          "level": 2,
+          "line": 132
+        },
+        {
+          "heading": "packages",
+          "level": 2,
+          "line": 139
+        },
+        {
+          "heading": "scripts",
+          "level": 2,
+          "line": 146
+        },
+        {
+          "heading": "_archive",
+          "level": 2,
+          "line": 153
+        },
+        {
+          "heading": "__tests__",
+          "level": 2,
+          "line": 160
+        },
+        {
+          "heading": "Data Models",
+          "level": 1,
+          "line": 169
+        },
+        {
+          "heading": "Model Files",
+          "level": 2,
+          "line": 171
+        },
+        {
+          "heading": "Enums & Constants",
+          "level": 2,
+          "line": 179
+        },
+        {
+          "heading": "Migration notes",
+          "level": 2,
+          "line": 182
+        },
+        {
+          "heading": "API Surface",
+          "level": 1,
+          "line": 187
+        },
+        {
+          "heading": "Route Files",
+          "level": 2,
+          "line": 189
+        },
+        {
+          "heading": "Base URL",
+          "level": 2,
+          "line": 192
+        },
+        {
+          "heading": "Auth",
+          "level": 2,
+          "line": 195
+        },
+        {
+          "heading": "Endpoints",
+          "level": 2,
+          "line": 198
+        },
+        {
+          "heading": "WebSockets / Events",
+          "level": 2,
+          "line": 201
+        },
+        {
+          "heading": "Conventions & Patterns",
+          "level": 1,
+          "line": 206
+        },
+        {
+          "heading": "Naming",
+          "level": 2,
+          "line": 208
+        },
+        {
+          "heading": "Error Handling",
+          "level": 2,
+          "line": 213
+        },
+        {
+          "heading": "Auth Pattern",
+          "level": 2,
+          "line": 216
+        },
+        {
+          "heading": "Testing Approach",
+          "level": 2,
+          "line": 221
+        },
+        {
+          "heading": "Code Style Notes",
+          "level": 2,
+          "line": 225
+        },
+        {
+          "heading": "Gotchas & Workarounds",
+          "level": 1,
+          "line": 230
+        },
+        {
+          "heading": "Known Quirks",
+          "level": 2,
+          "line": 232
+        },
+        {
+          "heading": "Do Not Touch",
+          "level": 2,
+          "line": 235
+        },
+        {
+          "heading": "Known Bugs / TODOs",
+          "level": 2,
+          "line": 238
+        },
+        {
+          "heading": "Environment Notes",
+          "level": 2,
+          "line": 241
+        },
+        {
+          "heading": "Instructions",
+          "level": 2,
+          "line": 248
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 51
+      }
+    }
+  ]
+}

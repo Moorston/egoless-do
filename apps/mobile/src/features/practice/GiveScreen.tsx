@@ -71,7 +71,7 @@ export default function GiveScreen() {
       <View style={[styles.recentRow, { borderLeftColor: config?.color || '#F59E0B' }]}>
         <View style={styles.recentHeader}>
           <Text style={[styles.recentDate, { color: TH.sub }]}>
-            {d.getMonth() + 1}/{d.getDate()}
+            {String(d.getMonth() + 1)}/{String(d.getDate())}
           </Text>
           <Text style={styles.recentIcon}>{config?.icon || '💰'}</Text>
           {item.anonymous && <Text style={styles.anonTag}>🤐</Text>}
@@ -97,15 +97,15 @@ export default function GiveScreen() {
         <Text style={[styles.quoteText, { color: TH.sub }]}>{T('giveQuote') || '应无所住而行布施 — 金刚经'}</Text>
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
-            <Text style={[styles.statValue, { color: '#F59E0B' }]}>{stats.total}</Text>
+            <Text style={[styles.statValue, { color: '#F59E0B' }]}>{String(stats.total)}</Text>
             <Text style={[styles.statLabel, { color: TH.sub }]}>{T('giveTotal') || '累计'}</Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={[styles.statValue, { color: TH.text }]}>{stats.month}</Text>
+            <Text style={[styles.statValue, { color: TH.text }]}>{String(stats.month)}</Text>
             <Text style={[styles.statLabel, { color: TH.sub }]}>{T('giveMonth') || '本月'}</Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={[styles.statValue, { color: '#10B981' }]}>{stats.week}</Text>
+            <Text style={[styles.statValue, { color: '#10B981' }]}>{String(stats.week)}</Text>
             <Text style={[styles.statLabel, { color: TH.sub }]}>{T('giveWeek') || '本周'}</Text>
           </View>
         </View>
@@ -114,7 +114,7 @@ export default function GiveScreen() {
           {GIVE_TYPES.map(gt => (
             <View key={gt.type} style={styles.typeItem}>
               <Text style={styles.typeIcon}>{gt.icon}</Text>
-              <Text style={[styles.typeCount, { color: gt.color }]}>{stats.byType[gt.type] || 0}</Text>
+              <Text style={[styles.typeCount, { color: gt.color }]}>{String(stats.byType[gt.type] || 0)}</Text>
               <Text style={[styles.typeLabel, { color: TH.sub }]}>{T(`give${gt.type.charAt(0).toUpperCase() + gt.type.slice(1)}`) || gt.type}</Text>
             </View>
           ))}

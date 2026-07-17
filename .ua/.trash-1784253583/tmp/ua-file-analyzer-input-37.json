@@ -1,0 +1,56 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": ".trellis/spec/mobile/frontend/component-guidelines.md",
+      "language": "markdown",
+      "sizeLines": 110,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/spec/mobile/frontend/directory-structure.md",
+      "language": "markdown",
+      "sizeLines": 96,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/spec/mobile/frontend/hook-guidelines.md",
+      "language": "markdown",
+      "sizeLines": 114,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/spec/mobile/frontend/index.md",
+      "language": "markdown",
+      "sizeLines": 39,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/spec/mobile/frontend/quality-guidelines.md",
+      "language": "markdown",
+      "sizeLines": 144,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/spec/mobile/frontend/state-management.md",
+      "language": "markdown",
+      "sizeLines": 140,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/spec/mobile/frontend/type-safety.md",
+      "language": "markdown",
+      "sizeLines": 110,
+      "fileCategory": "docs"
+    }
+  ],
+  "batchImportData": {
+    ".trellis/spec/mobile/frontend/component-guidelines.md": [],
+    ".trellis/spec/mobile/frontend/directory-structure.md": [],
+    ".trellis/spec/mobile/frontend/hook-guidelines.md": [],
+    ".trellis/spec/mobile/frontend/index.md": [],
+    ".trellis/spec/mobile/frontend/quality-guidelines.md": [],
+    ".trellis/spec/mobile/frontend/state-management.md": [],
+    ".trellis/spec/mobile/frontend/type-safety.md": []
+  }
+}

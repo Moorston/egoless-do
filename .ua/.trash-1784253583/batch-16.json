@@ -1,0 +1,1764 @@
+{
+  "nodes": [
+    {
+      "id": "file:apps/mobile/src/features/sutra/SutraScreen.tsx",
+      "type": "file",
+      "name": "SutraScreen.tsx",
+      "filePath": "apps/mobile/src/features/sutra/SutraScreen.tsx",
+      "summary": "经咒修持主页面，整合咒语选择、108念珠计数、音频播放与记录报告。",
+      "tags": [
+        "sutra",
+        "screen",
+        "mantra-counting"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/sutra/useSutraAudio.ts",
+      "type": "file",
+      "name": "useSutraAudio.ts",
+      "filePath": "apps/mobile/src/features/sutra/useSutraAudio.ts",
+      "summary": "基于expo-audio的经咒音频播放hook，含循环与播放状态同步。",
+      "tags": [
+        "sutra",
+        "audio-hook"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/vow/DedicationTab.tsx",
+      "type": "file",
+      "name": "DedicationTab.tsx",
+      "filePath": "apps/mobile/src/features/vow/DedicationTab.tsx",
+      "summary": "发愿页签：展示回向列表、逾期判断与回向设置入口。",
+      "tags": [
+        "vow",
+        "dedication",
+        "tab"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/vow/DedicationWriteScreen.tsx",
+      "type": "file",
+      "name": "DedicationWriteScreen.tsx",
+      "filePath": "apps/mobile/src/features/vow/DedicationWriteScreen.tsx",
+      "summary": "回向书写页面，含感悟与调整字段、进度统计与展示。",
+      "tags": [
+        "vow",
+        "dedication",
+        "screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/vow/ProgressTab.tsx",
+      "type": "file",
+      "name": "ProgressTab.tsx",
+      "filePath": "apps/mobile/src/features/vow/ProgressTab.tsx",
+      "summary": "发愿进步页签，组合总览与细节日数据。",
+      "tags": [
+        "vow",
+        "progress",
+        "tab"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/vow/VowScreen.tsx",
+      "type": "file",
+      "name": "VowScreen.tsx",
+      "filePath": "apps/mobile/src/features/vow/VowScreen.tsx",
+      "summary": "发愿主页面，含愿景卡片、计划编辑、归档与达成等操作。",
+      "tags": [
+        "vow",
+        "screen",
+        "vision"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/vow/components/DailyDetail.tsx",
+      "type": "file",
+      "name": "DailyDetail.tsx",
+      "filePath": "apps/mobile/src/features/vow/components/DailyDetail.tsx",
+      "summary": "发愿每日详情组件，展示日维度习惯与计划完成情况。",
+      "tags": [
+        "vow",
+        "daily-detail",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/vow/components/DedicationCard.tsx",
+      "type": "file",
+      "name": "DedicationCard.tsx",
+      "filePath": "apps/mobile/src/features/vow/components/DedicationCard.tsx",
+      "summary": "单个回向记录卡片，展示期别与习惯统计。",
+      "tags": [
+        "vow",
+        "dedication",
+        "card"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/features/vow/components/ProgressOverview.tsx",
+      "type": "file",
+      "name": "ProgressOverview.tsx",
+      "filePath": "apps/mobile/src/features/vow/components/ProgressOverview.tsx",
+      "summary": "发愿渐变总览卡，显示周/月练习天数与最长连续。",
+      "tags": [
+        "vow",
+        "progress",
+        "card"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/features/vow/components/VisionCard.tsx",
+      "type": "file",
+      "name": "VisionCard.tsx",
+      "filePath": "apps/mobile/src/features/vow/components/VisionCard.tsx",
+      "summary": "愿景卡片组件，展示愿景进度、关联计划与操作。",
+      "tags": [
+        "vow",
+        "vision",
+        "card"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/vow/modals/DedicationSettingsModal.tsx",
+      "type": "file",
+      "name": "DedicationSettingsModal.tsx",
+      "filePath": "apps/mobile/src/features/vow/modals/DedicationSettingsModal.tsx",
+      "summary": "回向设置弹窗，配置频率、星期与提醒。",
+      "tags": [
+        "vow",
+        "dedication",
+        "modal"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/vow/modals/VisionEditModal.tsx",
+      "type": "file",
+      "name": "VisionEditModal.tsx",
+      "filePath": "apps/mobile/src/features/vow/modals/VisionEditModal.tsx",
+      "summary": "愿景编辑弹窗，含类型、时间框架与月份选择器。",
+      "tags": [
+        "vow",
+        "vision",
+        "modal"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/vow/useVowProgress.ts",
+      "type": "file",
+      "name": "useVowProgress.ts",
+      "filePath": "apps/mobile/src/features/vow/useVowProgress.ts",
+      "summary": "计算发愿进度数据的hook，聚合愿景、计划与每日统计。",
+      "tags": [
+        "vow",
+        "progress",
+        "hook"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/features/zhiguan/ZhiguanHistoryScreen.tsx",
+      "type": "file",
+      "name": "ZhiguanHistoryScreen.tsx",
+      "filePath": "apps/mobile/src/features/zhiguan/ZhiguanHistoryScreen.tsx",
+      "summary": "止观履历页，含统计卡、月度热力图、历史列表与JSON导出。",
+      "tags": [
+        "zhiguan",
+        "history",
+        "screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:apps/mobile/src/hooks/usePagination.ts",
+      "type": "file",
+      "name": "usePagination.ts",
+      "filePath": "apps/mobile/src/hooks/usePagination.ts",
+      "summary": "基于偏移的分页hook，供FlatList onEndReached使用。",
+      "tags": [
+        "pagination",
+        "hook"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "type": "file",
+      "name": "SimpleHeader.tsx",
+      "filePath": "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "summary": "通用顶部导航栏，含日期、连续天数与标签页切换。",
+      "tags": [
+        "navigation",
+        "header",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "file",
+      "name": "hooks.ts",
+      "filePath": "apps/mobile/src/navigation/hooks.ts",
+      "summary": "类型化的根栈与主标签导航hook包装。",
+      "tags": [
+        "navigation",
+        "hook",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/navigation/types.ts",
+      "type": "file",
+      "name": "types.ts",
+      "filePath": "apps/mobile/src/navigation/types.ts",
+      "summary": "导航参数类型定义（根栈/标签页路由名）。",
+      "tags": [
+        "navigation",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/navigation/useAppNavigation.ts",
+      "type": "file",
+      "name": "useAppNavigation.ts",
+      "filePath": "apps/mobile/src/navigation/useAppNavigation.ts",
+      "summary": "统一导航hook，支持栈与标签页间类型安全跳转。",
+      "tags": [
+        "navigation",
+        "hook"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/src/store/createMobileUiSlice.ts",
+      "type": "file",
+      "name": "createMobileUiSlice.ts",
+      "filePath": "apps/mobile/src/store/createMobileUiSlice.ts",
+      "summary": "创建移动端UI切片，组合食物/打卡/配置等切片与健康同步。",
+      "tags": [
+        "store",
+        "slice",
+        "mobile"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/store/safeAsyncStorage.ts",
+      "type": "file",
+      "name": "safeAsyncStorage.ts",
+      "filePath": "apps/mobile/src/store/safeAsyncStorage.ts",
+      "summary": "AsyncStorage安全包装器，原生模块不可用时回退到内存Map。",
+      "tags": [
+        "store",
+        "storage",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "file",
+      "name": "useAppStore.ts",
+      "filePath": "apps/mobile/src/store/useAppStore.ts",
+      "summary": "移动端Zustand store组合装配，含切片、自动同步与应用状态处理。",
+      "tags": [
+        "store",
+        "slice",
+        "composition"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:packages/core/src/business/zhiguanCountingRound.test.ts",
+      "type": "file",
+      "name": "zhiguanCountingRound.test.ts",
+      "filePath": "packages/core/src/business/zhiguanCountingRound.test.ts",
+      "summary": "止观数息轮纯逻辑单元测试。",
+      "tags": [
+        "zhiguan",
+        "test",
+        "business-logic"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/business/zhiguanHintEngine.test.ts",
+      "type": "file",
+      "name": "zhiguanHintEngine.test.ts",
+      "filePath": "packages/core/src/business/zhiguanHintEngine.test.ts",
+      "summary": "止观提示引擎单元测试。",
+      "tags": [
+        "zhiguan",
+        "test",
+        "business-logic"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/business/zhiguanHistory.test.ts",
+      "type": "file",
+      "name": "zhiguanHistory.test.ts",
+      "filePath": "packages/core/src/business/zhiguanHistory.test.ts",
+      "summary": "止观历史逻辑单元测试。",
+      "tags": [
+        "zhiguan",
+        "test",
+        "business-logic"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/business/zhiguanTimer.test.ts",
+      "type": "file",
+      "name": "zhiguanTimer.test.ts",
+      "filePath": "packages/core/src/business/zhiguanTimer.test.ts",
+      "summary": "止观计时器单元测试。",
+      "tags": [
+        "zhiguan",
+        "test",
+        "business-logic"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "packages/core/src/index.ts",
+      "summary": "core包统一导出，聚合字体、i18n键、业务函数等公开API。",
+      "tags": [
+        "core",
+        "barrel",
+        "exports"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sutra/SutraScreen.tsx:SutraScreen",
+      "type": "function",
+      "name": "SutraScreen",
+      "filePath": "apps/mobile/src/features/sutra/SutraScreen.tsx",
+      "lineRange": [
+        25,
+        27
+      ],
+      "summary": "SutraScreen 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sutra/SutraScreen.tsx:SutraScreenInner",
+      "type": "function",
+      "name": "SutraScreenInner",
+      "filePath": "apps/mobile/src/features/sutra/SutraScreen.tsx",
+      "lineRange": [
+        29,
+        735
+      ],
+      "summary": "经咒主页面内部实现。",
+      "tags": [
+        "sutra",
+        "screen"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/sutra/useSutraAudio.ts:useSutraAudio",
+      "type": "function",
+      "name": "useSutraAudio",
+      "filePath": "apps/mobile/src/features/sutra/useSutraAudio.ts",
+      "lineRange": [
+        10,
+        65
+      ],
+      "summary": "useSutraAudio 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/vow/DedicationTab.tsx:DedicationTab",
+      "type": "function",
+      "name": "DedicationTab",
+      "filePath": "apps/mobile/src/features/vow/DedicationTab.tsx",
+      "lineRange": [
+        17,
+        173
+      ],
+      "summary": "DedicationTab 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/vow/DedicationWriteScreen.tsx:DedicationWriteScreen",
+      "type": "function",
+      "name": "DedicationWriteScreen",
+      "filePath": "apps/mobile/src/features/vow/DedicationWriteScreen.tsx",
+      "lineRange": [
+        18,
+        220
+      ],
+      "summary": "DedicationWriteScreen 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/vow/ProgressTab.tsx:ProgressTab",
+      "type": "function",
+      "name": "ProgressTab",
+      "filePath": "apps/mobile/src/features/vow/ProgressTab.tsx",
+      "lineRange": [
+        16,
+        93
+      ],
+      "summary": "ProgressTab 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/vow/VowScreen.tsx:VowScreen",
+      "type": "function",
+      "name": "VowScreen",
+      "filePath": "apps/mobile/src/features/vow/VowScreen.tsx",
+      "lineRange": [
+        18,
+        293
+      ],
+      "summary": "发愿主页面实现。",
+      "tags": [
+        "vow",
+        "vision"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/vow/components/DailyDetail.tsx:DailyDetail",
+      "type": "function",
+      "name": "DailyDetail",
+      "filePath": "apps/mobile/src/features/vow/components/DailyDetail.tsx",
+      "lineRange": [
+        14,
+        105
+      ],
+      "summary": "DailyDetail 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/vow/components/DedicationCard.tsx:DedicationCard",
+      "type": "function",
+      "name": "DedicationCard",
+      "filePath": "apps/mobile/src/features/vow/components/DedicationCard.tsx",
+      "lineRange": [
+        15,
+        135
+      ],
+      "summary": "DedicationCard 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/vow/components/ProgressOverview.tsx:ProgressOverview",
+      "type": "function",
+      "name": "ProgressOverview",
+      "filePath": "apps/mobile/src/features/vow/components/ProgressOverview.tsx",
+      "lineRange": [
+        17,
+        85
+      ],
+      "summary": "ProgressOverview 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/vow/components/VisionCard.tsx:VisionCard",
+      "type": "function",
+      "name": "VisionCard",
+      "filePath": "apps/mobile/src/features/vow/components/VisionCard.tsx",
+      "lineRange": [
+        60,
+        332
+      ],
+      "summary": "愿景卡片实现，含进度与操作。",
+      "tags": [
+        "vow",
+        "vision"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/vow/modals/DedicationSettingsModal.tsx:DedicationSettingsModal",
+      "type": "function",
+      "name": "DedicationSettingsModal",
+      "filePath": "apps/mobile/src/features/vow/modals/DedicationSettingsModal.tsx",
+      "lineRange": [
+        33,
+        248
+      ],
+      "summary": "DedicationSettingsModal 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/vow/modals/VisionEditModal.tsx:MonthPicker",
+      "type": "function",
+      "name": "MonthPicker",
+      "filePath": "apps/mobile/src/features/vow/modals/VisionEditModal.tsx",
+      "lineRange": [
+        21,
+        96
+      ],
+      "summary": "月份迷你日历选择器。",
+      "tags": [
+        "vow",
+        "picker"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/vow/modals/VisionEditModal.tsx:VisionEditModal",
+      "type": "function",
+      "name": "VisionEditModal",
+      "filePath": "apps/mobile/src/features/vow/modals/VisionEditModal.tsx",
+      "lineRange": [
+        108,
+        425
+      ],
+      "summary": "愿景编辑弹窗实现。",
+      "tags": [
+        "vow",
+        "vision",
+        "modal"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/vow/useVowProgress.ts:useVowProgress",
+      "type": "function",
+      "name": "useVowProgress",
+      "filePath": "apps/mobile/src/features/vow/useVowProgress.ts",
+      "lineRange": [
+        34,
+        238
+      ],
+      "summary": "发愿进度数据计算hook。",
+      "tags": [
+        "vow",
+        "progress"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:apps/mobile/src/features/zhiguan/ZhiguanHistoryScreen.tsx:ZhiguanHistoryScreen",
+      "type": "function",
+      "name": "ZhiguanHistoryScreen",
+      "filePath": "apps/mobile/src/features/zhiguan/ZhiguanHistoryScreen.tsx",
+      "lineRange": [
+        19,
+        181
+      ],
+      "summary": "止观履历页实现。",
+      "tags": [
+        "zhiguan",
+        "history"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/features/zhiguan/ZhiguanHistoryScreen.tsx:HeatmapBlock",
+      "type": "function",
+      "name": "HeatmapBlock",
+      "filePath": "apps/mobile/src/features/zhiguan/ZhiguanHistoryScreen.tsx",
+      "lineRange": [
+        192,
+        211
+      ],
+      "summary": "HeatmapBlock 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/hooks/usePagination.ts:usePagination",
+      "type": "function",
+      "name": "usePagination",
+      "filePath": "apps/mobile/src/hooks/usePagination.ts",
+      "lineRange": [
+        43,
+        85
+      ],
+      "summary": "分页hook实现。",
+      "tags": [
+        "pagination"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/navigation/SimpleHeader.tsx:SimpleHeader",
+      "type": "function",
+      "name": "SimpleHeader",
+      "filePath": "apps/mobile/src/navigation/SimpleHeader.tsx",
+      "lineRange": [
+        23,
+        78
+      ],
+      "summary": "SimpleHeader 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/navigation/hooks.ts:useRootNavigation",
+      "type": "function",
+      "name": "useRootNavigation",
+      "filePath": "apps/mobile/src/navigation/hooks.ts",
+      "lineRange": [
+        9,
+        11
+      ],
+      "summary": "useRootNavigation 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/navigation/hooks.ts:useTabNavigation",
+      "type": "function",
+      "name": "useTabNavigation",
+      "filePath": "apps/mobile/src/navigation/hooks.ts",
+      "lineRange": [
+        14,
+        16
+      ],
+      "summary": "useTabNavigation 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/navigation/useAppNavigation.ts:useAppNavigation",
+      "type": "function",
+      "name": "useAppNavigation",
+      "filePath": "apps/mobile/src/navigation/useAppNavigation.ts",
+      "lineRange": [
+        12,
+        14
+      ],
+      "summary": "useAppNavigation 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/navigation/useAppNavigation.ts:useNavigateToTab",
+      "type": "function",
+      "name": "useNavigateToTab",
+      "filePath": "apps/mobile/src/navigation/useAppNavigation.ts",
+      "lineRange": [
+        21,
+        27
+      ],
+      "summary": "useNavigateToTab 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/navigation/useAppNavigation.ts:useGoToMainTab",
+      "type": "function",
+      "name": "useGoToMainTab",
+      "filePath": "apps/mobile/src/navigation/useAppNavigation.ts",
+      "lineRange": [
+        32,
+        38
+      ],
+      "summary": "useGoToMainTab 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/createMobileUiSlice.ts:createMobileUiSlice",
+      "type": "function",
+      "name": "createMobileUiSlice",
+      "filePath": "apps/mobile/src/store/createMobileUiSlice.ts",
+      "lineRange": [
+        32,
+        104
+      ],
+      "summary": "移动端UI切片工厂函数。",
+      "tags": [
+        "store",
+        "slice"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/src/store/safeAsyncStorage.ts:isNativeAvailable",
+      "type": "function",
+      "name": "isNativeAvailable",
+      "filePath": "apps/mobile/src/store/safeAsyncStorage.ts",
+      "lineRange": [
+        10,
+        19
+      ],
+      "summary": "isNativeAvailable 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/safeAsyncStorage.ts:safeGetItem",
+      "type": "function",
+      "name": "safeGetItem",
+      "filePath": "apps/mobile/src/store/safeAsyncStorage.ts",
+      "lineRange": [
+        21,
+        28
+      ],
+      "summary": "safeGetItem 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/safeAsyncStorage.ts:safeSetItem",
+      "type": "function",
+      "name": "safeSetItem",
+      "filePath": "apps/mobile/src/store/safeAsyncStorage.ts",
+      "lineRange": [
+        30,
+        40
+      ],
+      "summary": "safeSetItem 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/safeAsyncStorage.ts:safeMultiGet",
+      "type": "function",
+      "name": "safeMultiGet",
+      "filePath": "apps/mobile/src/store/safeAsyncStorage.ts",
+      "lineRange": [
+        42,
+        51
+      ],
+      "summary": "safeMultiGet 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/safeAsyncStorage.ts:safeMultiSet",
+      "type": "function",
+      "name": "safeMultiSet",
+      "filePath": "apps/mobile/src/store/safeAsyncStorage.ts",
+      "lineRange": [
+        53,
+        63
+      ],
+      "summary": "safeMultiSet 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/useAppStore.ts:flushAllPendingTimers",
+      "type": "function",
+      "name": "flushAllPendingTimers",
+      "filePath": "apps/mobile/src/store/useAppStore.ts",
+      "lineRange": [
+        59,
+        62
+      ],
+      "summary": "flushAllPendingTimers 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/useAppStore.ts:flushProfileSettings",
+      "type": "function",
+      "name": "flushProfileSettings",
+      "filePath": "apps/mobile/src/store/useAppStore.ts",
+      "lineRange": [
+        64,
+        101
+      ],
+      "summary": "flushProfileSettings 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/useAppStore.ts:flushAIConfig",
+      "type": "function",
+      "name": "flushAIConfig",
+      "filePath": "apps/mobile/src/store/useAppStore.ts",
+      "lineRange": [
+        114,
+        127
+      ],
+      "summary": "flushAIConfig 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/useAppStore.ts:useShallowStore",
+      "type": "function",
+      "name": "useShallowStore",
+      "filePath": "apps/mobile/src/store/useAppStore.ts",
+      "lineRange": [
+        149,
+        151
+      ],
+      "summary": "基于useShallow的store选择器hook。",
+      "tags": [
+        "store",
+        "selector"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/useAppStore.ts:setAutoSyncCallback",
+      "type": "function",
+      "name": "setAutoSyncCallback",
+      "filePath": "apps/mobile/src/store/useAppStore.ts",
+      "lineRange": [
+        156,
+        156
+      ],
+      "summary": "setAutoSyncCallback 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/src/store/useAppStore.ts:initMobileStore",
+      "type": "function",
+      "name": "initMobileStore",
+      "filePath": "apps/mobile/src/store/useAppStore.ts",
+      "lineRange": [
+        274,
+        276
+      ],
+      "summary": "initMobileStore 函数实现。",
+      "tags": [
+        "function"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:apps/mobile/src/features/sutra/SutraScreen.tsx",
+      "target": "function:apps/mobile/src/features/sutra/SutraScreen.tsx:SutraScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sutra/SutraScreen.tsx",
+      "target": "function:apps/mobile/src/features/sutra/SutraScreen.tsx:SutraScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sutra/SutraScreen.tsx",
+      "target": "function:apps/mobile/src/features/sutra/SutraScreen.tsx:SutraScreenInner",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sutra/useSutraAudio.ts",
+      "target": "function:apps/mobile/src/features/sutra/useSutraAudio.ts:useSutraAudio",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/sutra/useSutraAudio.ts",
+      "target": "function:apps/mobile/src/features/sutra/useSutraAudio.ts:useSutraAudio",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/DedicationTab.tsx",
+      "target": "function:apps/mobile/src/features/vow/DedicationTab.tsx:DedicationTab",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/DedicationTab.tsx",
+      "target": "function:apps/mobile/src/features/vow/DedicationTab.tsx:DedicationTab",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/DedicationWriteScreen.tsx",
+      "target": "function:apps/mobile/src/features/vow/DedicationWriteScreen.tsx:DedicationWriteScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/DedicationWriteScreen.tsx",
+      "target": "function:apps/mobile/src/features/vow/DedicationWriteScreen.tsx:DedicationWriteScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/ProgressTab.tsx",
+      "target": "function:apps/mobile/src/features/vow/ProgressTab.tsx:ProgressTab",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/ProgressTab.tsx",
+      "target": "function:apps/mobile/src/features/vow/ProgressTab.tsx:ProgressTab",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/VowScreen.tsx",
+      "target": "function:apps/mobile/src/features/vow/VowScreen.tsx:VowScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/VowScreen.tsx",
+      "target": "function:apps/mobile/src/features/vow/VowScreen.tsx:VowScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/components/DailyDetail.tsx",
+      "target": "function:apps/mobile/src/features/vow/components/DailyDetail.tsx:DailyDetail",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/components/DailyDetail.tsx",
+      "target": "function:apps/mobile/src/features/vow/components/DailyDetail.tsx:DailyDetail",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/components/DedicationCard.tsx",
+      "target": "function:apps/mobile/src/features/vow/components/DedicationCard.tsx:DedicationCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/components/ProgressOverview.tsx",
+      "target": "function:apps/mobile/src/features/vow/components/ProgressOverview.tsx:ProgressOverview",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/components/ProgressOverview.tsx",
+      "target": "function:apps/mobile/src/features/vow/components/ProgressOverview.tsx:ProgressOverview",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/components/VisionCard.tsx",
+      "target": "function:apps/mobile/src/features/vow/components/VisionCard.tsx:VisionCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/modals/DedicationSettingsModal.tsx",
+      "target": "function:apps/mobile/src/features/vow/modals/DedicationSettingsModal.tsx:DedicationSettingsModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/modals/DedicationSettingsModal.tsx",
+      "target": "function:apps/mobile/src/features/vow/modals/DedicationSettingsModal.tsx:DedicationSettingsModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/modals/VisionEditModal.tsx",
+      "target": "function:apps/mobile/src/features/vow/modals/VisionEditModal.tsx:MonthPicker",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/modals/VisionEditModal.tsx",
+      "target": "function:apps/mobile/src/features/vow/modals/VisionEditModal.tsx:VisionEditModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/modals/VisionEditModal.tsx",
+      "target": "function:apps/mobile/src/features/vow/modals/VisionEditModal.tsx:VisionEditModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/useVowProgress.ts",
+      "target": "function:apps/mobile/src/features/vow/useVowProgress.ts:useVowProgress",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/useVowProgress.ts",
+      "target": "function:apps/mobile/src/features/vow/useVowProgress.ts:useVowProgress",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanHistoryScreen.tsx",
+      "target": "function:apps/mobile/src/features/zhiguan/ZhiguanHistoryScreen.tsx:ZhiguanHistoryScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanHistoryScreen.tsx",
+      "target": "function:apps/mobile/src/features/zhiguan/ZhiguanHistoryScreen.tsx:ZhiguanHistoryScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanHistoryScreen.tsx",
+      "target": "function:apps/mobile/src/features/zhiguan/ZhiguanHistoryScreen.tsx:HeatmapBlock",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/hooks/usePagination.ts",
+      "target": "function:apps/mobile/src/hooks/usePagination.ts:usePagination",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/hooks/usePagination.ts",
+      "target": "function:apps/mobile/src/hooks/usePagination.ts:usePagination",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "target": "function:apps/mobile/src/navigation/SimpleHeader.tsx:SimpleHeader",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "target": "function:apps/mobile/src/navigation/SimpleHeader.tsx:SimpleHeader",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/hooks.ts",
+      "target": "function:apps/mobile/src/navigation/hooks.ts:useRootNavigation",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/hooks.ts",
+      "target": "function:apps/mobile/src/navigation/hooks.ts:useRootNavigation",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/hooks.ts",
+      "target": "function:apps/mobile/src/navigation/hooks.ts:useTabNavigation",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/hooks.ts",
+      "target": "function:apps/mobile/src/navigation/hooks.ts:useTabNavigation",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/useAppNavigation.ts",
+      "target": "function:apps/mobile/src/navigation/useAppNavigation.ts:useAppNavigation",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/useAppNavigation.ts",
+      "target": "function:apps/mobile/src/navigation/useAppNavigation.ts:useAppNavigation",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/useAppNavigation.ts",
+      "target": "function:apps/mobile/src/navigation/useAppNavigation.ts:useNavigateToTab",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/useAppNavigation.ts",
+      "target": "function:apps/mobile/src/navigation/useAppNavigation.ts:useNavigateToTab",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/useAppNavigation.ts",
+      "target": "function:apps/mobile/src/navigation/useAppNavigation.ts:useGoToMainTab",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/useAppNavigation.ts",
+      "target": "function:apps/mobile/src/navigation/useAppNavigation.ts:useGoToMainTab",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/store/createMobileUiSlice.ts",
+      "target": "function:apps/mobile/src/store/createMobileUiSlice.ts:createMobileUiSlice",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/createMobileUiSlice.ts",
+      "target": "function:apps/mobile/src/store/createMobileUiSlice.ts:createMobileUiSlice",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/store/safeAsyncStorage.ts",
+      "target": "function:apps/mobile/src/store/safeAsyncStorage.ts:isNativeAvailable",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/safeAsyncStorage.ts",
+      "target": "function:apps/mobile/src/store/safeAsyncStorage.ts:safeGetItem",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/safeAsyncStorage.ts",
+      "target": "function:apps/mobile/src/store/safeAsyncStorage.ts:safeGetItem",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/store/safeAsyncStorage.ts",
+      "target": "function:apps/mobile/src/store/safeAsyncStorage.ts:safeSetItem",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/safeAsyncStorage.ts",
+      "target": "function:apps/mobile/src/store/safeAsyncStorage.ts:safeSetItem",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/store/safeAsyncStorage.ts",
+      "target": "function:apps/mobile/src/store/safeAsyncStorage.ts:safeMultiGet",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/safeAsyncStorage.ts",
+      "target": "function:apps/mobile/src/store/safeAsyncStorage.ts:safeMultiGet",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/store/safeAsyncStorage.ts",
+      "target": "function:apps/mobile/src/store/safeAsyncStorage.ts:safeMultiSet",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/safeAsyncStorage.ts",
+      "target": "function:apps/mobile/src/store/safeAsyncStorage.ts:safeMultiSet",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/store/useAppStore.ts",
+      "target": "function:apps/mobile/src/store/useAppStore.ts:flushAllPendingTimers",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/useAppStore.ts",
+      "target": "function:apps/mobile/src/store/useAppStore.ts:flushAllPendingTimers",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/store/useAppStore.ts",
+      "target": "function:apps/mobile/src/store/useAppStore.ts:flushProfileSettings",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/useAppStore.ts",
+      "target": "function:apps/mobile/src/store/useAppStore.ts:flushAIConfig",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/useAppStore.ts",
+      "target": "function:apps/mobile/src/store/useAppStore.ts:useShallowStore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/useAppStore.ts",
+      "target": "function:apps/mobile/src/store/useAppStore.ts:useShallowStore",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/store/useAppStore.ts",
+      "target": "function:apps/mobile/src/store/useAppStore.ts:setAutoSyncCallback",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/useAppStore.ts",
+      "target": "function:apps/mobile/src/store/useAppStore.ts:setAutoSyncCallback",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/store/useAppStore.ts",
+      "target": "function:apps/mobile/src/store/useAppStore.ts:initMobileStore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:apps/mobile/src/store/useAppStore.ts",
+      "target": "function:apps/mobile/src/store/useAppStore.ts:initMobileStore",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/src/features/sutra/SutraScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sutra/SutraScreen.tsx",
+      "target": "file:apps/mobile/src/features/shared/components/MalaRing.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sutra/SutraScreen.tsx",
+      "target": "file:apps/mobile/src/features/shared/hooks/useAudioCache.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sutra/SutraScreen.tsx",
+      "target": "file:apps/mobile/src/features/sutra/useSutraAudio.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sutra/SutraScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sutra/SutraScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sutra/SutraScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sutra/SutraScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/sutra/useSutraAudio.ts",
+      "target": "file:apps/mobile/src/features/shared/hooks/useAudioCache.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/DedicationTab.tsx",
+      "target": "file:apps/mobile/src/features/vow/components/DedicationCard.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/DedicationTab.tsx",
+      "target": "file:apps/mobile/src/features/vow/modals/DedicationSettingsModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/DedicationTab.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/DedicationTab.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/DedicationWriteScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/DedicationWriteScreen.tsx",
+      "target": "file:apps/mobile/src/features/vow/useVowProgress.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/DedicationWriteScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/DedicationWriteScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/ProgressTab.tsx",
+      "target": "file:apps/mobile/src/features/vow/components/DailyDetail.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/ProgressTab.tsx",
+      "target": "file:apps/mobile/src/features/vow/components/ProgressOverview.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/ProgressTab.tsx",
+      "target": "file:apps/mobile/src/features/vow/useVowProgress.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/ProgressTab.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/VowScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/VowScreen.tsx",
+      "target": "file:apps/mobile/src/features/vow/components/VisionCard.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/VowScreen.tsx",
+      "target": "file:apps/mobile/src/features/vow/modals/VisionEditModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/VowScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/VowScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/VowScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/VowScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/components/DailyDetail.tsx",
+      "target": "file:apps/mobile/src/features/vow/useVowProgress.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/components/DailyDetail.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/components/DedicationCard.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/components/ProgressOverview.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/components/ProgressOverview.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/components/VisionCard.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/components/VisionCard.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/modals/DedicationSettingsModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/modals/VisionEditModal.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/modals/VisionEditModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/useVowProgress.ts",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/vow/useVowProgress.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanHistoryScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanHistoryScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/hooks.ts",
+      "target": "file:apps/mobile/src/navigation/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/navigation/useAppNavigation.ts",
+      "target": "file:apps/mobile/src/navigation/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/createMobileUiSlice.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/useAppStore.ts",
+      "target": "file:apps/mobile/src/config.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/useAppStore.ts",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/useAppStore.ts",
+      "target": "file:apps/mobile/src/features/sync/SyncService.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/useAppStore.ts",
+      "target": "file:apps/mobile/src/store/createMobileUiSlice.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/useAppStore.ts",
+      "target": "file:apps/mobile/src/store/storageAdapter.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:apps/mobile/src/store/useAppStore.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/zhiguanCountingRound.test.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/zhiguanHintEngine.test.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/zhiguanHistory.test.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/zhiguanTimer.test.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    }
+  ]
+}

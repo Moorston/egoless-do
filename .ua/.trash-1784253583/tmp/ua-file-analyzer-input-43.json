@@ -1,0 +1,15 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {"path": ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/design.md", "language": "markdown", "sizeLines": 108, "fileCategory": "docs"},
+    {"path": ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/implement.md", "language": "markdown", "sizeLines": 63, "fileCategory": "docs"},
+    {"path": ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/prd.md", "language": "markdown", "sizeLines": 80, "fileCategory": "docs"},
+    {"path": ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/task.json", "language": "json", "sizeLines": 25, "fileCategory": "config"}
+  ],
+  "batchImportData": {
+    ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/design.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/implement.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-12-enhance-profile-screen/task.json": []
+  }
+}

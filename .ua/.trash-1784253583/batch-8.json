@@ -1,0 +1,3973 @@
+{
+  "nodes": [
+    {
+      "id": "file:packages/core/src/__tests__/performDailyReset.test.ts",
+      "type": "file",
+      "name": "performDailyReset.test.ts",
+      "filePath": "packages/core/src/__tests__/performDailyReset.test.ts",
+      "summary": "performDailyReset 的单元测试，验证计划每日重置逻辑：自动启动到期任务、标记延迟任务、生成每日待办历史、hasChanges 标志等场景。",
+      "tags": [
+        "test",
+        "business-logic",
+        "plan",
+        "pure-function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/ai/ai-service.ts",
+      "type": "file",
+      "name": "ai-service.ts",
+      "filePath": "packages/core/src/ai/ai-service.ts",
+      "summary": "AI 子系统核心服务类 AIService（单例），管理本地引擎与多云提供商，提供情绪检测、标签建议、思维脉络洞察、复盘引导、打卡复盘等 AI 能力。",
+      "tags": [
+        "ai",
+        "ai-service",
+        "singleton",
+        "cloud-providers"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:packages/core/src/ai/ai-service.ts:AIService",
+      "type": "class",
+      "name": "AIService",
+      "filePath": "packages/core/src/ai/ai-service.ts",
+      "lineRange": [
+        16,
+        442
+      ],
+      "summary": "AI 服务核心类，封装 LocalAIEngine 与多个 CloudProvider，提供 detectMood/suggestTags/generateTrailInsight/generateReviewGuide/generateCheckinReview 等 25 个方法。",
+      "tags": [
+        "ai",
+        "ai-service",
+        "singleton",
+        "cloud-providers"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/ai/ai-service.ts:getAIService",
+      "type": "function",
+      "name": "getAIService",
+      "filePath": "packages/core/src/ai/ai-service.ts",
+      "lineRange": [
+        447,
+        455
+      ],
+      "summary": "AIService 单例工厂函数，首次创建实例，后续可传入 config 更新现有实例配置。",
+      "tags": [
+        "ai",
+        "singleton",
+        "factory"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/ai/ai-service.ts:resetAIService",
+      "type": "function",
+      "name": "resetAIService",
+      "filePath": "packages/core/src/ai/ai-service.ts",
+      "lineRange": [
+        457,
+        459
+      ],
+      "summary": "重置 AIService 单例（置为 null）。",
+      "tags": [
+        "ai",
+        "singleton"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/ai/cloud-providers.ts",
+      "type": "file",
+      "name": "cloud-providers.ts",
+      "filePath": "packages/core/src/ai/cloud-providers.ts",
+      "summary": "OpenAI 兼容云提供商实现，包含 OpenAICompatibleProvider 类与 createProvider 工厂、testConnection 连接测试函数。",
+      "tags": [
+        "ai",
+        "cloud-providers",
+        "api-client"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:packages/core/src/ai/cloud-providers.ts:OpenAICompatibleProvider",
+      "type": "class",
+      "name": "OpenAICompatibleProvider",
+      "filePath": "packages/core/src/ai/cloud-providers.ts",
+      "lineRange": [
+        13,
+        73
+      ],
+      "summary": "通用 OpenAI 兼容云提供商类，通过 fetch 调用 /chat/completions 接口生成 AI 回复，支持本地模型与远程 API。",
+      "tags": [
+        "ai",
+        "cloud-providers",
+        "api-client"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/cloud-providers.ts:createProvider",
+      "type": "function",
+      "name": "createProvider",
+      "filePath": "packages/core/src/ai/cloud-providers.ts",
+      "lineRange": [
+        76,
+        78
+      ],
+      "summary": "创建云提供商实例的工厂函数（当前统一返回 OpenAICompatibleProvider）。",
+      "tags": [
+        "ai",
+        "cloud-providers",
+        "factory"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/ai/cloud-providers.ts:testConnection",
+      "type": "function",
+      "name": "testConnection",
+      "filePath": "packages/core/src/ai/cloud-providers.ts",
+      "lineRange": [
+        81,
+        97
+      ],
+      "summary": "测试指定模型配置的连通性，返回 success/error/latency 结果。",
+      "tags": [
+        "ai",
+        "cloud-providers",
+        "connectivity"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/ai/context-reminder.ts",
+      "type": "file",
+      "name": "context-reminder.ts",
+      "filePath": "packages/core/src/ai/context-reminder.ts",
+      "summary": "情境感知提醒服务，基于感念、习惯、打卡历史检测情绪模式、习惯风险、连续打卡风险、感念间隔并生成 ContextReminder 列表。",
+      "tags": [
+        "ai",
+        "risk-detection",
+        "analytics",
+        "recommendations"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/context-reminder.ts:detectMoodPatterns",
+      "type": "function",
+      "name": "detectMoodPatterns",
+      "filePath": "packages/core/src/ai/context-reminder.ts",
+      "lineRange": [
+        16,
+        60
+      ],
+      "summary": "检测连续负面情绪与情绪波动模式，生成情绪关注/波动提醒。",
+      "tags": [
+        "ai",
+        "risk-detection",
+        "mood"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/context-reminder.ts:detectHabitRisks",
+      "type": "function",
+      "name": "detectHabitRisks",
+      "filePath": "packages/core/src/ai/context-reminder.ts",
+      "lineRange": [
+        63,
+        107
+      ],
+      "summary": "检测习惯长时间未打卡、进度落后等风险并生成提醒。",
+      "tags": [
+        "ai",
+        "risk-detection",
+        "habit"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/context-reminder.ts:detectStreakRisks",
+      "type": "function",
+      "name": "detectStreakRisks",
+      "filePath": "packages/core/src/ai/context-reminder.ts",
+      "lineRange": [
+        110,
+        147
+      ],
+      "summary": "检测今日未打卡、连续打卡中断风险并生成提醒。",
+      "tags": [
+        "ai",
+        "risk-detection",
+        "streak"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/context-reminder.ts:detectReflectionGaps",
+      "type": "function",
+      "name": "detectReflectionGaps",
+      "filePath": "packages/core/src/ai/context-reminder.ts",
+      "lineRange": [
+        150,
+        176
+      ],
+      "summary": "检测距上次感念记录间隔过长并生成补记提醒。",
+      "tags": [
+        "ai",
+        "risk-detection",
+        "reflection"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/context-reminder.ts:getAllContextReminders",
+      "type": "function",
+      "name": "getAllContextReminders",
+      "filePath": "packages/core/src/ai/context-reminder.ts",
+      "lineRange": [
+        179,
+        194
+      ],
+      "summary": "汇总四类情境提醒并按优先级排序的入口函数。",
+      "tags": [
+        "ai",
+        "risk-detection",
+        "aggregator"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/ai/insight-profile.test.ts",
+      "type": "file",
+      "name": "insight-profile.test.ts",
+      "filePath": "packages/core/src/ai/insight-profile.test.ts",
+      "summary": "computeLocalInsights 的单元测试，验证空输入、时间范围过滤、删除项排除、情绪分布、热门标签趋势等逻辑。",
+      "tags": [
+        "test",
+        "ai",
+        "analytics"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/ai/insight-profile.ts",
+      "type": "file",
+      "name": "insight-profile.ts",
+      "filePath": "packages/core/src/ai/insight-profile.ts",
+      "summary": "洞察画像模块，提供本地统计（computeLocalInsights：连续天数、热门标签、情绪分布）与 AI 驱动的高频主题词提取（generateInsightProfile/parseInsightResponse）。",
+      "tags": [
+        "ai",
+        "analytics",
+        "insight",
+        "pure-function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/insight-profile.ts:computeLocalInsights",
+      "type": "function",
+      "name": "computeLocalInsights",
+      "filePath": "packages/core/src/ai/insight-profile.ts",
+      "lineRange": [
+        58,
+        84
+      ],
+      "summary": "同步计算感念的本地统计指标：总数、日均、连续天数、热门标签、情绪分布。",
+      "tags": [
+        "ai",
+        "analytics",
+        "pure-function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/insight-profile.ts:computeStreakDays",
+      "type": "function",
+      "name": "computeStreakDays",
+      "filePath": "packages/core/src/ai/insight-profile.ts",
+      "lineRange": [
+        88,
+        111
+      ],
+      "summary": "计算感念连续天数的辅助函数。",
+      "tags": [
+        "ai",
+        "analytics",
+        "streak"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/insight-profile.ts:computeHotTags",
+      "type": "function",
+      "name": "computeHotTags",
+      "filePath": "packages/core/src/ai/insight-profile.ts",
+      "lineRange": [
+        115,
+        150
+      ],
+      "summary": "统计当前与上期标签频次，计算热门标签及其上升/稳定/下降趋势。",
+      "tags": [
+        "ai",
+        "analytics",
+        "tags"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/insight-profile.ts:computeMoodDistribution",
+      "type": "function",
+      "name": "computeMoodDistribution",
+      "filePath": "packages/core/src/ai/insight-profile.ts",
+      "lineRange": [
+        154,
+        169
+      ],
+      "summary": "计算情绪分布及对应图标、百分比。",
+      "tags": [
+        "ai",
+        "analytics",
+        "mood"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/insight-profile.ts:generateInsightProfile",
+      "type": "function",
+      "name": "generateInsightProfile",
+      "filePath": "packages/core/src/ai/insight-profile.ts",
+      "lineRange": [
+        177,
+        218
+      ],
+      "summary": "异步生成洞察画像：先算本地统计，若 AI 可用则调用云端提取高频主题词。",
+      "tags": [
+        "ai",
+        "analytics",
+        "insight"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/insight-profile.ts:parseInsightResponse",
+      "type": "function",
+      "name": "parseInsightResponse",
+      "filePath": "packages/core/src/ai/insight-profile.ts",
+      "lineRange": [
+        220,
+        267
+      ],
+      "summary": "解析 AI 返回的 JSON 主题词列表，使用 extractJSON/repairJSON 容错并映射到感念 ID。",
+      "tags": [
+        "ai",
+        "analytics",
+        "json-utils"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/ai/json-utils.test.ts",
+      "type": "file",
+      "name": "json-utils.test.ts",
+      "filePath": "packages/core/src/ai/json-utils.test.ts",
+      "summary": "json-utils 单元测试，覆盖 extractJSON、findLastBalancedJSON、repairJSON 在 markdown 代码块、嵌套文本、残缺 JSON 等场景的表现。",
+      "tags": [
+        "test",
+        "ai",
+        "json-utils"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/ai/json-utils.ts",
+      "type": "file",
+      "name": "json-utils.ts",
+      "filePath": "packages/core/src/ai/json-utils.ts",
+      "summary": "AI 响应 JSON 解析工具集，提供 extractJSON、findLastBalancedJSON、repairJSON 三个纯函数。",
+      "tags": [
+        "ai",
+        "json-utils",
+        "utility",
+        "pure-function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/json-utils.ts:extractJSON",
+      "type": "function",
+      "name": "extractJSON",
+      "filePath": "packages/core/src/ai/json-utils.ts",
+      "lineRange": [
+        12,
+        24
+      ],
+      "summary": "从 AI 原始响应中提取 JSON：优先 markdown 代码块，否则找最后平衡的数组/对象。",
+      "tags": [
+        "ai",
+        "json-utils",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/ai/json-utils.ts:findLastBalancedJSON",
+      "type": "function",
+      "name": "findLastBalancedJSON",
+      "filePath": "packages/core/src/ai/json-utils.ts",
+      "lineRange": [
+        30,
+        57
+      ],
+      "summary": "从右向左扫描找最后一个平衡的 JSON 结构（支持嵌套、字符串、转义）。",
+      "tags": [
+        "ai",
+        "json-utils",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/json-utils.ts:repairJSON",
+      "type": "function",
+      "name": "repairJSON",
+      "filePath": "packages/core/src/ai/json-utils.ts",
+      "lineRange": [
+        64,
+        96
+      ],
+      "summary": "修复截断/残缺 JSON：截断到最后一个结构闭合处并自动补全缺失的括号。",
+      "tags": [
+        "ai",
+        "json-utils",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/ai/local-engine.ts",
+      "type": "file",
+      "name": "local-engine.ts",
+      "filePath": "packages/core/src/ai/local-engine.ts",
+      "summary": "本地规则引擎 LocalAIEngine，基于关键词词典与模式匹配实现情绪检测、标签建议、内容扩展、思维脉络洞察等离线 AI 能力。",
+      "tags": [
+        "ai",
+        "local-engine",
+        "rule-based"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:packages/core/src/ai/local-engine.ts:LocalAIEngine",
+      "type": "class",
+      "name": "LocalAIEngine",
+      "filePath": "packages/core/src/ai/local-engine.ts",
+      "lineRange": [
+        52,
+        185
+      ],
+      "summary": "基于关键词词典与正则的本地 AI 引擎，提供 detectMood/suggestTags/suggestContentExpansion/generateTrailInsight 等 7 个方法。",
+      "tags": [
+        "ai",
+        "local-engine",
+        "rule-based"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/ai/personalized-suggestions.ts",
+      "type": "file",
+      "name": "personalized-suggestions.ts",
+      "filePath": "packages/core/src/ai/personalized-suggestions.ts",
+      "summary": "个性化建议引擎，综合情绪模式、习惯进度、风险警告、时间上下文生成去重排序的 PersonalizedSuggestion 列表。",
+      "tags": [
+        "ai",
+        "recommendations",
+        "analytics"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/personalized-suggestions.ts:generateMoodSuggestions",
+      "type": "function",
+      "name": "generateMoodSuggestions",
+      "filePath": "packages/core/src/ai/personalized-suggestions.ts",
+      "lineRange": [
+        19,
+        67
+      ],
+      "summary": "基于情绪模式（焦虑循环、成长趋势）生成行动/心态类建议。",
+      "tags": [
+        "ai",
+        "recommendations",
+        "mood"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/personalized-suggestions.ts:generateHabitSuggestions",
+      "type": "function",
+      "name": "generateHabitSuggestions",
+      "filePath": "packages/core/src/ai/personalized-suggestions.ts",
+      "lineRange": [
+        70,
+        122
+      ],
+      "summary": "基于习惯进度与相关感念生成习惯类建议。",
+      "tags": [
+        "ai",
+        "recommendations",
+        "habit"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/personalized-suggestions.ts:generateRiskBasedSuggestions",
+      "type": "function",
+      "name": "generateRiskBasedSuggestions",
+      "filePath": "packages/core/src/ai/personalized-suggestions.ts",
+      "lineRange": [
+        125,
+        174
+      ],
+      "summary": "将 RiskWarning 列表转化为对应的建议项。",
+      "tags": [
+        "ai",
+        "recommendations",
+        "risk-detection"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/personalized-suggestions.ts:generateTimeBasedSuggestions",
+      "type": "function",
+      "name": "generateTimeBasedSuggestions",
+      "filePath": "packages/core/src/ai/personalized-suggestions.ts",
+      "lineRange": [
+        177,
+        233
+      ],
+      "summary": "基于星期、时段、周末情绪、今日打卡状态生成时间上下文建议。",
+      "tags": [
+        "ai",
+        "recommendations",
+        "time"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/personalized-suggestions.ts:getAllPersonalizedSuggestions",
+      "type": "function",
+      "name": "getAllPersonalizedSuggestions",
+      "filePath": "packages/core/src/ai/personalized-suggestions.ts",
+      "lineRange": [
+        236,
+        259
+      ],
+      "summary": "汇总四类建议并按优先级排序去重的入口函数。",
+      "tags": [
+        "ai",
+        "recommendations",
+        "aggregator"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/ai/rag/cache.ts",
+      "type": "file",
+      "name": "cache.ts",
+      "filePath": "packages/core/src/ai/rag/cache.ts",
+      "summary": "RAG 缓存层，实现带 TTL 与 LRU 淘汰的 AICache 类及 generateCacheKey 键生成函数。",
+      "tags": [
+        "ai",
+        "rag",
+        "cache",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:packages/core/src/ai/rag/cache.ts:AICache",
+      "type": "class",
+      "name": "AICache",
+      "filePath": "packages/core/src/ai/rag/cache.ts",
+      "lineRange": [
+        11,
+        62
+      ],
+      "summary": "带 TTL 过期与 maxSize LRU 淘汰的泛型缓存类，提供 get/set/has/clear/delete/size 方法。",
+      "tags": [
+        "ai",
+        "rag",
+        "cache"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/rag/cache.ts:generateCacheKey",
+      "type": "function",
+      "name": "generateCacheKey",
+      "filePath": "packages/core/src/ai/rag/cache.ts",
+      "lineRange": [
+        70,
+        75
+      ],
+      "summary": "基于查询与 ID 指纹数组生成稳定哈希缓存键。",
+      "tags": [
+        "ai",
+        "rag",
+        "cache"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/ai/rag/indexer.ts",
+      "type": "file",
+      "name": "indexer.ts",
+      "filePath": "packages/core/src/ai/rag/indexer.ts",
+      "summary": "RAG 索引模块，buildIndex 将感念列表构建为索引数组，extractKeywords 提取关键词。",
+      "tags": [
+        "ai",
+        "rag",
+        "indexer"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/ai/rag/indexer.ts:buildIndex",
+      "type": "function",
+      "name": "buildIndex",
+      "filePath": "packages/core/src/ai/rag/indexer.ts",
+      "lineRange": [
+        20,
+        34
+      ],
+      "summary": "将感念列表构建为可检索的索引数组。",
+      "tags": [
+        "ai",
+        "rag",
+        "indexer"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/ai/rag/prompt-builder.ts",
+      "type": "file",
+      "name": "prompt-builder.ts",
+      "filePath": "packages/core/src/ai/rag/prompt-builder.ts",
+      "summary": "RAG 提示词构建模块，提供 formatReflectionSummary、buildRecommendPrompt、buildQueryParsePrompt 三个导出函数。",
+      "tags": [
+        "ai",
+        "rag",
+        "prompt-builder"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/rag/prompt-builder.ts:formatReflectionSummary",
+      "type": "function",
+      "name": "formatReflectionSummary",
+      "filePath": "packages/core/src/ai/rag/prompt-builder.ts",
+      "lineRange": [
+        12,
+        23
+      ],
+      "summary": "格式化单条感念为摘要文本。",
+      "tags": [
+        "ai",
+        "rag",
+        "prompt-builder"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/ai/rag/prompt-builder.ts:buildRecommendPrompt",
+      "type": "function",
+      "name": "buildRecommendPrompt",
+      "filePath": "packages/core/src/ai/rag/prompt-builder.ts",
+      "lineRange": [
+        28,
+        48
+      ],
+      "summary": "构建思维脉络推荐的 AI 提示词。",
+      "tags": [
+        "ai",
+        "rag",
+        "prompt-builder"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/ai/rag/prompt-builder.ts:buildQueryParsePrompt",
+      "type": "function",
+      "name": "buildQueryParsePrompt",
+      "filePath": "packages/core/src/ai/rag/prompt-builder.ts",
+      "lineRange": [
+        53,
+        79
+      ],
+      "summary": "构建智能查询解析的 AI 提示词。",
+      "tags": [
+        "ai",
+        "rag",
+        "prompt-builder"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/ai/rag/retriever.test.ts",
+      "type": "file",
+      "name": "retriever.test.ts",
+      "filePath": "packages/core/src/ai/rag/retriever.test.ts",
+      "summary": "retriever 单元测试，验证 expandTerms 同义词扩展与 retrieveTopK 排序检索逻辑。",
+      "tags": [
+        "test",
+        "ai",
+        "rag"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/ai/rag/retriever.ts",
+      "type": "file",
+      "name": "retriever.ts",
+      "filePath": "packages/core/src/ai/rag/retriever.ts",
+      "summary": "RAG 检索模块，基于关键词/同义词/情绪/时间/标签多维度打分，通过 retrieveTopK 返回 Top-K 感念。",
+      "tags": [
+        "ai",
+        "rag",
+        "retriever",
+        "pure-function"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/rag/retriever.ts:expandTerms",
+      "type": "function",
+      "name": "expandTerms",
+      "filePath": "packages/core/src/ai/rag/retriever.ts",
+      "lineRange": [
+        82,
+        107
+      ],
+      "summary": "基于 SYNONYM_MAP 对查询词做同义词扩展。",
+      "tags": [
+        "ai",
+        "rag",
+        "retriever"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/rag/retriever.ts:retrieveTopK",
+      "type": "function",
+      "name": "retrieveTopK",
+      "filePath": "packages/core/src/ai/rag/retriever.ts",
+      "lineRange": [
+        112,
+        148
+      ],
+      "summary": "综合多维度打分对索引检索并返回 Top-K 结果。",
+      "tags": [
+        "ai",
+        "rag",
+        "retriever"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/rag/retriever.ts:calcKeywordScore",
+      "type": "function",
+      "name": "calcKeywordScore",
+      "filePath": "packages/core/src/ai/rag/retriever.ts",
+      "lineRange": [
+        153,
+        165
+      ],
+      "summary": "计算关键词匹配得分。",
+      "tags": [
+        "ai",
+        "rag",
+        "retriever"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/ai/rag/retriever.ts:calcSynonymScore",
+      "type": "function",
+      "name": "calcSynonymScore",
+      "filePath": "packages/core/src/ai/rag/retriever.ts",
+      "lineRange": [
+        170,
+        183
+      ],
+      "summary": "计算同义词匹配得分。",
+      "tags": [
+        "ai",
+        "rag",
+        "retriever"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/ai/rag/retriever.ts:calcMoodScore",
+      "type": "function",
+      "name": "calcMoodScore",
+      "filePath": "packages/core/src/ai/rag/retriever.ts",
+      "lineRange": [
+        188,
+        199
+      ],
+      "summary": "计算情绪匹配得分。",
+      "tags": [
+        "ai",
+        "rag",
+        "retriever"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/ai/rag/retriever.ts:calcTagScore",
+      "type": "function",
+      "name": "calcTagScore",
+      "filePath": "packages/core/src/ai/rag/retriever.ts",
+      "lineRange": [
+        213,
+        222
+      ],
+      "summary": "计算标签匹配得分。",
+      "tags": [
+        "ai",
+        "rag",
+        "retriever"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/ai/risk-warning.test.ts",
+      "type": "file",
+      "name": "risk-warning.test.ts",
+      "filePath": "packages/core/src/ai/risk-warning.test.ts",
+      "summary": "risk-warning 单元测试，验证习惯放弃、计划延迟、连续打卡中断、情绪下降四类风险检测逻辑。",
+      "tags": [
+        "test",
+        "ai",
+        "risk-detection"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/ai/risk-warning.ts",
+      "type": "file",
+      "name": "risk-warning.ts",
+      "filePath": "packages/core/src/ai/risk-warning.ts",
+      "summary": "风险警告模块，检测习惯放弃、计划延迟、连续打卡中断、情绪下降四类风险并汇总为 RiskWarning 列表。",
+      "tags": [
+        "ai",
+        "risk-detection",
+        "analytics"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/risk-warning.ts:detectHabitAbandonRisk",
+      "type": "function",
+      "name": "detectHabitAbandonRisk",
+      "filePath": "packages/core/src/ai/risk-warning.ts",
+      "lineRange": [
+        17,
+        68
+      ],
+      "summary": "检测习惯长时间未打卡与进度落后风险。",
+      "tags": [
+        "ai",
+        "risk-detection",
+        "habit"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/risk-warning.ts:detectPlanDelayRisk",
+      "type": "function",
+      "name": "detectPlanDelayRisk",
+      "filePath": "packages/core/src/ai/risk-warning.ts",
+      "lineRange": [
+        71,
+        121
+      ],
+      "summary": "检测进行中的计划进度落后或即将到期风险。",
+      "tags": [
+        "ai",
+        "risk-detection",
+        "plan"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/risk-warning.ts:detectStreakBreakRisk",
+      "type": "function",
+      "name": "detectStreakBreakRisk",
+      "filePath": "packages/core/src/ai/risk-warning.ts",
+      "lineRange": [
+        124,
+        173
+      ],
+      "summary": "检测连续打卡中断风险。",
+      "tags": [
+        "ai",
+        "risk-detection",
+        "streak"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/risk-warning.ts:detectMoodDeclineRisk",
+      "type": "function",
+      "name": "detectMoodDeclineRisk",
+      "filePath": "packages/core/src/ai/risk-warning.ts",
+      "lineRange": [
+        176,
+        213
+      ],
+      "summary": "检测近期情绪下降趋势风险。",
+      "tags": [
+        "ai",
+        "risk-detection",
+        "mood"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/risk-warning.ts:getAllRiskWarnings",
+      "type": "function",
+      "name": "getAllRiskWarnings",
+      "filePath": "packages/core/src/ai/risk-warning.ts",
+      "lineRange": [
+        216,
+        232
+      ],
+      "summary": "汇总四类风险警告并按严重程度排序的入口函数。",
+      "tags": [
+        "ai",
+        "risk-detection",
+        "aggregator"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/ai/thought-patterns.test.ts",
+      "type": "file",
+      "name": "thought-patterns.test.ts",
+      "filePath": "packages/core/src/ai/thought-patterns.test.ts",
+      "summary": "thought-patterns 单元测试，验证情绪序列、标签、时间、关键词、成长五类模式检测逻辑。",
+      "tags": [
+        "test",
+        "ai",
+        "analytics"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/ai/thought-patterns.ts",
+      "type": "file",
+      "name": "thought-patterns.ts",
+      "filePath": "packages/core/src/ai/thought-patterns.ts",
+      "summary": "思维模式检测模块，从感念中识别情绪序列、标签、时间、关键词、成长五类 ThoughtPattern。",
+      "tags": [
+        "ai",
+        "analytics",
+        "pattern-detection"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/ai/thought-patterns.ts:detectMoodSequencePatterns",
+      "type": "function",
+      "name": "detectMoodSequencePatterns",
+      "filePath": "packages/core/src/ai/thought-patterns.ts",
+      "lineRange": [
+        45,
+        90
+      ],
+      "summary": "检测特定情绪序列模式（如连续焦虑）。",
+      "tags": [
+        "ai",
+        "analytics",
+        "mood"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/thought-patterns.ts:detectTagPatterns",
+      "type": "function",
+      "name": "detectTagPatterns",
+      "filePath": "packages/core/src/ai/thought-patterns.ts",
+      "lineRange": [
+        93,
+        130
+      ],
+      "summary": "按标签分组检测高频标签模式。",
+      "tags": [
+        "ai",
+        "analytics",
+        "tags"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/thought-patterns.ts:detectTimePatterns",
+      "type": "function",
+      "name": "detectTimePatterns",
+      "filePath": "packages/core/src/ai/thought-patterns.ts",
+      "lineRange": [
+        133,
+        173
+      ],
+      "summary": "按时段分组检测记录时间偏好模式。",
+      "tags": [
+        "ai",
+        "analytics",
+        "time"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/thought-patterns.ts:detectKeywordPatterns",
+      "type": "function",
+      "name": "detectKeywordPatterns",
+      "filePath": "packages/core/src/ai/thought-patterns.ts",
+      "lineRange": [
+        176,
+        219
+      ],
+      "summary": "基于关键词匹配检测主题模式。",
+      "tags": [
+        "ai",
+        "analytics",
+        "keyword"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/thought-patterns.ts:detectGrowthPatterns",
+      "type": "function",
+      "name": "detectGrowthPatterns",
+      "filePath": "packages/core/src/ai/thought-patterns.ts",
+      "lineRange": [
+        222,
+        275
+      ],
+      "summary": "按周分组检测情绪成长趋势模式。",
+      "tags": [
+        "ai",
+        "analytics",
+        "growth"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/thought-patterns.ts:getAllThoughtPatterns",
+      "type": "function",
+      "name": "getAllThoughtPatterns",
+      "filePath": "packages/core/src/ai/thought-patterns.ts",
+      "lineRange": [
+        278,
+        289
+      ],
+      "summary": "汇总五类思维模式的入口函数。",
+      "tags": [
+        "ai",
+        "analytics",
+        "aggregator"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/ai/trail-recommender.ts",
+      "type": "file",
+      "name": "trail-recommender.ts",
+      "filePath": "packages/core/src/ai/trail-recommender.ts",
+      "summary": "思维脉络推荐模块，基于 RAG 索引+缓存+AI 生成实现 recommendTrailsViaAI、matchReflectionsToTopic、semanticSearchReflections、parseSmartQuery 等能力。",
+      "tags": [
+        "ai",
+        "rag",
+        "recommendations",
+        "ai-service"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/ai/trail-recommender.ts:clearAICaches",
+      "type": "function",
+      "name": "clearAICaches",
+      "filePath": "packages/core/src/ai/trail-recommender.ts",
+      "lineRange": [
+        55,
+        61
+      ],
+      "summary": "清空推荐/匹配/查询三类 AI 缓存。",
+      "tags": [
+        "ai",
+        "rag",
+        "cache"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/ai/trail-recommender.ts:batchedAIGenerate",
+      "type": "function",
+      "name": "batchedAIGenerate",
+      "filePath": "packages/core/src/ai/trail-recommender.ts",
+      "lineRange": [
+        133,
+        206
+      ],
+      "summary": "批量调用 AI 生成并解析结果，含错误回退。",
+      "tags": [
+        "ai",
+        "ai-service",
+        "rag"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/trail-recommender.ts:recommendTrailsViaAI",
+      "type": "function",
+      "name": "recommendTrailsViaAI",
+      "filePath": "packages/core/src/ai/trail-recommender.ts",
+      "lineRange": [
+        210,
+        269
+      ],
+      "summary": "基于 RAG 检索 + AI 生成思维脉络推荐。",
+      "tags": [
+        "ai",
+        "rag",
+        "recommendations"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/trail-recommender.ts:matchReflectionsToTopic",
+      "type": "function",
+      "name": "matchReflectionsToTopic",
+      "filePath": "packages/core/src/ai/trail-recommender.ts",
+      "lineRange": [
+        273,
+        330
+      ],
+      "summary": "将感念按主题匹配并返回相关感念。",
+      "tags": [
+        "ai",
+        "rag",
+        "recommendations"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/trail-recommender.ts:semanticSearchReflections",
+      "type": "function",
+      "name": "semanticSearchReflections",
+      "filePath": "packages/core/src/ai/trail-recommender.ts",
+      "lineRange": [
+        336,
+        408
+      ],
+      "summary": "语义搜索感念并返回匹配结果。",
+      "tags": [
+        "ai",
+        "rag",
+        "retriever"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/trail-recommender.ts:parseSmartQuery",
+      "type": "function",
+      "name": "parseSmartQuery",
+      "filePath": "packages/core/src/ai/trail-recommender.ts",
+      "lineRange": [
+        419,
+        475
+      ],
+      "summary": "解析自然语言智能查询为结构化过滤条件。",
+      "tags": [
+        "ai",
+        "rag",
+        "prompt-builder"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/trail-recommender.ts:isAIRecommendAvailable",
+      "type": "function",
+      "name": "isAIRecommendAvailable",
+      "filePath": "packages/core/src/ai/trail-recommender.ts",
+      "lineRange": [
+        479,
+        487
+      ],
+      "summary": "判断当前 AI 配置是否可用。",
+      "tags": [
+        "ai",
+        "ai-service"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/ai/trail-recommender.ts:parseAIRecommendations",
+      "type": "function",
+      "name": "parseAIRecommendations",
+      "filePath": "packages/core/src/ai/trail-recommender.ts",
+      "lineRange": [
+        491,
+        513
+      ],
+      "summary": "解析 AI 推荐的 JSON 结果。",
+      "tags": [
+        "ai",
+        "json-utils"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/trail-recommender.ts:parseAIMatchResults",
+      "type": "function",
+      "name": "parseAIMatchResults",
+      "filePath": "packages/core/src/ai/trail-recommender.ts",
+      "lineRange": [
+        515,
+        535
+      ],
+      "summary": "解析 AI 主题匹配的 JSON 结果。",
+      "tags": [
+        "ai",
+        "json-utils"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/ai/trail-recommender.ts:parseSmartQueryResult",
+      "type": "function",
+      "name": "parseSmartQueryResult",
+      "filePath": "packages/core/src/ai/trail-recommender.ts",
+      "lineRange": [
+        537,
+        570
+      ],
+      "summary": "解析智能查询的 JSON 结果。",
+      "tags": [
+        "ai",
+        "json-utils"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/ai/types.ts",
+      "type": "file",
+      "name": "types.ts",
+      "filePath": "packages/core/src/ai/types.ts",
+      "summary": "AI 子系统类型定义文件，定义 AIConfig/AIResult/ModelConfig/AIMode/TagSuggestion/MoodDetection/TrailInsight/ReviewGuide 等类型及 PROVIDER_TEMPLATES 常量。",
+      "tags": [
+        "ai",
+        "type-definition"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/auth.test.ts",
+      "type": "file",
+      "name": "auth.test.ts",
+      "filePath": "packages/core/src/auth.test.ts",
+      "summary": "auth 模块的单元测试（680 行），覆盖注册/登录/微信登录/Token 刷新/获取用户/登出/密码重置/同步推拉等全部 API 场景。",
+      "tags": [
+        "test",
+        "auth",
+        "api-client"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:packages/core/src/auth.ts",
+      "type": "file",
+      "name": "auth.ts",
+      "filePath": "packages/core/src/auth.ts",
+      "summary": "认证与同步 API 客户端，封装注册/登录/微信登录/Token 刷新/获取用户/登出/密码重置/同步推拉等 19 个导出函数，基于 fetchWithTimeout。",
+      "tags": [
+        "auth",
+        "api-client",
+        "sync"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/auth.ts:validatePassword",
+      "type": "function",
+      "name": "validatePassword",
+      "filePath": "packages/core/src/auth.ts",
+      "lineRange": [
+        52,
+        60
+      ],
+      "summary": "校验密码强度（长度、数字、字母）。",
+      "tags": [
+        "auth",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/auth.ts:apiRegister",
+      "type": "function",
+      "name": "apiRegister",
+      "filePath": "packages/core/src/auth.ts",
+      "lineRange": [
+        63,
+        70
+      ],
+      "summary": "用户注册 API。",
+      "tags": [
+        "auth",
+        "api-client"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/auth.ts:apiSendCode",
+      "type": "function",
+      "name": "apiSendCode",
+      "filePath": "packages/core/src/auth.ts",
+      "lineRange": [
+        73,
+        80
+      ],
+      "summary": "发送邮箱验证码 API。",
+      "tags": [
+        "auth",
+        "api-client"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/auth.ts:apiCheckEmail",
+      "type": "function",
+      "name": "apiCheckEmail",
+      "filePath": "packages/core/src/auth.ts",
+      "lineRange": [
+        83,
+        90
+      ],
+      "summary": "检查邮箱是否已注册 API。",
+      "tags": [
+        "auth",
+        "api-client"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/auth.ts:apiLogin",
+      "type": "function",
+      "name": "apiLogin",
+      "filePath": "packages/core/src/auth.ts",
+      "lineRange": [
+        93,
+        100
+      ],
+      "summary": "邮箱密码登录 API。",
+      "tags": [
+        "auth",
+        "api-client"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/auth.ts:apiWechatLogin",
+      "type": "function",
+      "name": "apiWechatLogin",
+      "filePath": "packages/core/src/auth.ts",
+      "lineRange": [
+        103,
+        110
+      ],
+      "summary": "微信登录 API。",
+      "tags": [
+        "auth",
+        "api-client"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/auth.ts:apiRefreshToken",
+      "type": "function",
+      "name": "apiRefreshToken",
+      "filePath": "packages/core/src/auth.ts",
+      "lineRange": [
+        113,
+        120
+      ],
+      "summary": "刷新访问令牌 API。",
+      "tags": [
+        "auth",
+        "api-client"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/auth.ts:apiGetMe",
+      "type": "function",
+      "name": "apiGetMe",
+      "filePath": "packages/core/src/auth.ts",
+      "lineRange": [
+        123,
+        128
+      ],
+      "summary": "获取当前用户信息 API。",
+      "tags": [
+        "auth",
+        "api-client"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/auth.ts:apiLogout",
+      "type": "function",
+      "name": "apiLogout",
+      "filePath": "packages/core/src/auth.ts",
+      "lineRange": [
+        131,
+        141
+      ],
+      "summary": "登出 API。",
+      "tags": [
+        "auth",
+        "api-client"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/auth.ts:apiResetPassword",
+      "type": "function",
+      "name": "apiResetPassword",
+      "filePath": "packages/core/src/auth.ts",
+      "lineRange": [
+        144,
+        151
+      ],
+      "summary": "重置密码 API。",
+      "tags": [
+        "auth",
+        "api-client"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/auth.ts:apiChangePassword",
+      "type": "function",
+      "name": "apiChangePassword",
+      "filePath": "packages/core/src/auth.ts",
+      "lineRange": [
+        154,
+        161
+      ],
+      "summary": "修改密码 API。",
+      "tags": [
+        "auth",
+        "api-client"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/auth.ts:apiSyncPush",
+      "type": "function",
+      "name": "apiSyncPush",
+      "filePath": "packages/core/src/auth.ts",
+      "lineRange": [
+        164,
+        173
+      ],
+      "summary": "同步推送本地变更 API。",
+      "tags": [
+        "auth",
+        "sync"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/auth.ts:apiSyncPullPost",
+      "type": "function",
+      "name": "apiSyncPullPost",
+      "filePath": "packages/core/src/auth.ts",
+      "lineRange": [
+        176,
+        184
+      ],
+      "summary": "同步拉取（POST 模式）API。",
+      "tags": [
+        "auth",
+        "sync"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/auth.ts:apiSyncPull",
+      "type": "function",
+      "name": "apiSyncPull",
+      "filePath": "packages/core/src/auth.ts",
+      "lineRange": [
+        187,
+        194
+      ],
+      "summary": "同步拉取变更 API。",
+      "tags": [
+        "auth",
+        "sync"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/auth.ts:apiSyncCheck",
+      "type": "function",
+      "name": "apiSyncCheck",
+      "filePath": "packages/core/src/auth.ts",
+      "lineRange": [
+        197,
+        203
+      ],
+      "summary": "同步检查是否需要拉取 API。",
+      "tags": [
+        "auth",
+        "sync"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/auth.ts:apiSyncPullEntity",
+      "type": "function",
+      "name": "apiSyncPullEntity",
+      "filePath": "packages/core/src/auth.ts",
+      "lineRange": [
+        215,
+        239
+      ],
+      "summary": "分页拉取单个实体类型的同步数据 API。",
+      "tags": [
+        "auth",
+        "sync"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/business/body.test.ts",
+      "type": "file",
+      "name": "body.test.ts",
+      "filePath": "packages/core/src/business/body.test.ts",
+      "summary": "body 业务逻辑单元测试，验证 BMI/BMR 计算、目标进度、PR 记录、肌群统计等。",
+      "tags": [
+        "test",
+        "business-logic",
+        "body"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/business/body.ts",
+      "type": "file",
+      "name": "body.ts",
+      "filePath": "packages/core/src/business/body.ts",
+      "summary": "调身业务逻辑模块，提供 BMI/BMR 计算、目标进度、策略推荐、目标/计划/体重记录/打卡创建、PR 记录、肌群统计、月频率、训练建议等 12 个导出函数。",
+      "tags": [
+        "business-logic",
+        "body",
+        "analytics"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:packages/core/src/business/body.ts:calcBMI",
+      "type": "function",
+      "name": "calcBMI",
+      "filePath": "packages/core/src/business/body.ts",
+      "lineRange": [
+        5,
+        9
+      ],
+      "summary": "计算 BMI 身体质量指数。",
+      "tags": [
+        "business-logic",
+        "body"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/body.ts:calcBMR",
+      "type": "function",
+      "name": "calcBMR",
+      "filePath": "packages/core/src/business/body.ts",
+      "lineRange": [
+        11,
+        16
+      ],
+      "summary": "计算基础代谢率 BMR。",
+      "tags": [
+        "business-logic",
+        "body"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/body.ts:calcGoalProgress",
+      "type": "function",
+      "name": "calcGoalProgress",
+      "filePath": "packages/core/src/business/body.ts",
+      "lineRange": [
+        18,
+        28
+      ],
+      "summary": "计算目标完成进度百分比。",
+      "tags": [
+        "business-logic",
+        "body"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/body.ts:recommendStrategy",
+      "type": "function",
+      "name": "recommendStrategy",
+      "filePath": "packages/core/src/business/body.ts",
+      "lineRange": [
+        30,
+        37
+      ],
+      "summary": "基于身体标签推荐训练策略。",
+      "tags": [
+        "business-logic",
+        "body"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/body.ts:createBodyGoal",
+      "type": "function",
+      "name": "createBodyGoal",
+      "filePath": "packages/core/src/business/body.ts",
+      "lineRange": [
+        39,
+        60
+      ],
+      "summary": "创建身体目标记录。",
+      "tags": [
+        "business-logic",
+        "body"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/business/body.ts:createBodyPlan",
+      "type": "function",
+      "name": "createBodyPlan",
+      "filePath": "packages/core/src/business/body.ts",
+      "lineRange": [
+        62,
+        79
+      ],
+      "summary": "创建训练计划。",
+      "tags": [
+        "business-logic",
+        "body"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/business/body.ts:createWeightRecord",
+      "type": "function",
+      "name": "createWeightRecord",
+      "filePath": "packages/core/src/business/body.ts",
+      "lineRange": [
+        81,
+        94
+      ],
+      "summary": "创建体重记录。",
+      "tags": [
+        "business-logic",
+        "body"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/body.ts:createBodyCheckin",
+      "type": "function",
+      "name": "createBodyCheckin",
+      "filePath": "packages/core/src/business/body.ts",
+      "lineRange": [
+        96,
+        117
+      ],
+      "summary": "创建调身打卡记录。",
+      "tags": [
+        "business-logic",
+        "body"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/business/body.ts:computePRs",
+      "type": "function",
+      "name": "computePRs",
+      "filePath": "packages/core/src/business/body.ts",
+      "lineRange": [
+        134,
+        155
+      ],
+      "summary": "计算训练 PR（个人记录）。",
+      "tags": [
+        "business-logic",
+        "body",
+        "analytics"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/business/body.ts:computeMuscleGroupStats",
+      "type": "function",
+      "name": "computeMuscleGroupStats",
+      "filePath": "packages/core/src/business/body.ts",
+      "lineRange": [
+        170,
+        195
+      ],
+      "summary": "统计肌群训练分布。",
+      "tags": [
+        "business-logic",
+        "body",
+        "analytics"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/business/body.ts:computeMonthFrequency",
+      "type": "function",
+      "name": "computeMonthFrequency",
+      "filePath": "packages/core/src/business/body.ts",
+      "lineRange": [
+        211,
+        241
+      ],
+      "summary": "计算月度训练频率。",
+      "tags": [
+        "business-logic",
+        "body",
+        "analytics"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/business/body.ts:generateSuggestions",
+      "type": "function",
+      "name": "generateSuggestions",
+      "filePath": "packages/core/src/business/body.ts",
+      "lineRange": [
+        256,
+        358
+      ],
+      "summary": "基于训练日志、打卡、计划生成训练建议。",
+      "tags": [
+        "business-logic",
+        "body",
+        "recommendations"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/business/checkin.test.ts",
+      "type": "file",
+      "name": "checkin.test.ts",
+      "filePath": "packages/core/src/business/checkin.test.ts",
+      "summary": "checkin 业务逻辑单元测试，验证未完成项获取、打卡提交、打卡备注解析等。",
+      "tags": [
+        "test",
+        "business-logic",
+        "checkin"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/business/checkin.ts",
+      "type": "file",
+      "name": "checkin.ts",
+      "filePath": "packages/core/src/business/checkin.ts",
+      "summary": "打卡业务逻辑模块，提供未完成项获取、按日饮食日志、最长连续打卡、当日统计、打卡提交、打卡备注解析等函数。",
+      "tags": [
+        "business-logic",
+        "checkin",
+        "analytics"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/business/checkin.ts:getIncompleteItems",
+      "type": "function",
+      "name": "getIncompleteItems",
+      "filePath": "packages/core/src/business/checkin.ts",
+      "lineRange": [
+        23,
+        48
+      ],
+      "summary": "获取当日未完成的习惯与计划项及其原因。",
+      "tags": [
+        "business-logic",
+        "checkin"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/business/checkin.ts:getStatsForDate",
+      "type": "function",
+      "name": "getStatsForDate",
+      "filePath": "packages/core/src/business/checkin.ts",
+      "lineRange": [
+        60,
+        69
+      ],
+      "summary": "获取指定日期的打卡统计（含连续打卡）。",
+      "tags": [
+        "business-logic",
+        "checkin"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/business/checkin.ts:submitCheckinEntry",
+      "type": "function",
+      "name": "submitCheckinEntry",
+      "filePath": "packages/core/src/business/checkin.ts",
+      "lineRange": [
+        71,
+        91
+      ],
+      "summary": "提交打卡条目并更新连续打卡天数。",
+      "tags": [
+        "business-logic",
+        "checkin"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:packages/core/src/business/checkin.ts:parseCheckinNote",
+      "type": "function",
+      "name": "parseCheckinNote",
+      "filePath": "packages/core/src/business/checkin.ts",
+      "lineRange": [
+        108,
+        154
+      ],
+      "summary": "解析打卡备注中的实践、自定义项与表情符号。",
+      "tags": [
+        "business-logic",
+        "checkin"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/business/dateChangeDetection.ts",
+      "type": "file",
+      "name": "dateChangeDetection.ts",
+      "filePath": "packages/core/src/business/dateChangeDetection.ts",
+      "summary": "日期变化检测模块，createDateChangeDetector 返回检测器，当系统日期变化时触发回调。",
+      "tags": [
+        "business-logic",
+        "utility",
+        "date"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/dateChangeDetection.ts:createDateChangeDetector",
+      "type": "function",
+      "name": "createDateChangeDetector",
+      "filePath": "packages/core/src/business/dateChangeDetection.ts",
+      "lineRange": [
+        8,
+        25
+      ],
+      "summary": "创建日期变化检测器，日期变化时调用回调。",
+      "tags": [
+        "business-logic",
+        "utility",
+        "date"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/business/exercise.test.ts",
+      "type": "file",
+      "name": "exercise.test.ts",
+      "filePath": "packages/core/src/business/exercise.test.ts",
+      "summary": "exercise 业务逻辑单元测试，验证按 ID 删除训练动作。",
+      "tags": [
+        "test",
+        "business-logic",
+        "exercise"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/business/exercise.ts",
+      "type": "file",
+      "name": "exercise.ts",
+      "filePath": "packages/core/src/business/exercise.ts",
+      "summary": "训练业务逻辑模块，提供 deleteExerciseFromList 按 ID 软删除训练动作。",
+      "tags": [
+        "business-logic",
+        "exercise"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/exercise.ts:deleteExerciseFromList",
+      "type": "function",
+      "name": "deleteExerciseFromList",
+      "filePath": "packages/core/src/business/exercise.ts",
+      "lineRange": [
+        4,
+        7
+      ],
+      "summary": "按 ID 软删除训练动作（标记 deleted）。",
+      "tags": [
+        "business-logic",
+        "exercise"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/business/fasting.test.ts",
+      "type": "file",
+      "name": "fasting.test.ts",
+      "filePath": "packages/core/src/business/fasting.test.ts",
+      "summary": "fasting 业务逻辑单元测试，验证禁食会话启动与停止逻辑。",
+      "tags": [
+        "test",
+        "business-logic",
+        "fasting"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:packages/core/src/business/fasting.ts",
+      "type": "file",
+      "name": "fasting.ts",
+      "filePath": "packages/core/src/business/fasting.ts",
+      "summary": "禁食业务逻辑模块，提供 startFastingSession 启动禁食会话与 stopFastingSession 停止禁食会话。",
+      "tags": [
+        "business-logic",
+        "fasting"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/fasting.ts:startFastingSession",
+      "type": "function",
+      "name": "startFastingSession",
+      "filePath": "packages/core/src/business/fasting.ts",
+      "lineRange": [
+        6,
+        9
+      ],
+      "summary": "启动新的禁食会话。",
+      "tags": [
+        "business-logic",
+        "fasting"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:packages/core/src/business/fasting.ts:stopFastingSession",
+      "type": "function",
+      "name": "stopFastingSession",
+      "filePath": "packages/core/src/business/fasting.ts",
+      "lineRange": [
+        19,
+        39
+      ],
+      "summary": "停止当前禁食会话并估算消耗热量。",
+      "tags": [
+        "business-logic",
+        "fasting"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:packages/core/src/business/food.test.ts",
+      "type": "file",
+      "name": "food.test.ts",
+      "filePath": "packages/core/src/business/food.test.ts",
+      "summary": "food 业务逻辑单元测试，验证删除食物与获取最近食物列表。",
+      "tags": [
+        "test",
+        "business-logic",
+        "food"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:packages/core/src/ai/ai-service.ts",
+      "target": "class:packages/core/src/ai/ai-service.ts:AIService",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/ai-service.ts",
+      "target": "function:packages/core/src/ai/ai-service.ts:getAIService",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/ai-service.ts",
+      "target": "function:packages/core/src/ai/ai-service.ts:resetAIService",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/cloud-providers.ts",
+      "target": "class:packages/core/src/ai/cloud-providers.ts:OpenAICompatibleProvider",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/cloud-providers.ts",
+      "target": "function:packages/core/src/ai/cloud-providers.ts:createProvider",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/cloud-providers.ts",
+      "target": "function:packages/core/src/ai/cloud-providers.ts:testConnection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/context-reminder.ts",
+      "target": "function:packages/core/src/ai/context-reminder.ts:detectMoodPatterns",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/context-reminder.ts",
+      "target": "function:packages/core/src/ai/context-reminder.ts:detectHabitRisks",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/context-reminder.ts",
+      "target": "function:packages/core/src/ai/context-reminder.ts:detectStreakRisks",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/context-reminder.ts",
+      "target": "function:packages/core/src/ai/context-reminder.ts:detectReflectionGaps",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/context-reminder.ts",
+      "target": "function:packages/core/src/ai/context-reminder.ts:getAllContextReminders",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/insight-profile.ts",
+      "target": "function:packages/core/src/ai/insight-profile.ts:computeLocalInsights",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/insight-profile.ts",
+      "target": "function:packages/core/src/ai/insight-profile.ts:computeStreakDays",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/insight-profile.ts",
+      "target": "function:packages/core/src/ai/insight-profile.ts:computeHotTags",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/insight-profile.ts",
+      "target": "function:packages/core/src/ai/insight-profile.ts:computeMoodDistribution",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/insight-profile.ts",
+      "target": "function:packages/core/src/ai/insight-profile.ts:generateInsightProfile",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/insight-profile.ts",
+      "target": "function:packages/core/src/ai/insight-profile.ts:parseInsightResponse",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/json-utils.ts",
+      "target": "function:packages/core/src/ai/json-utils.ts:extractJSON",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/json-utils.ts",
+      "target": "function:packages/core/src/ai/json-utils.ts:findLastBalancedJSON",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/json-utils.ts",
+      "target": "function:packages/core/src/ai/json-utils.ts:repairJSON",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/local-engine.ts",
+      "target": "class:packages/core/src/ai/local-engine.ts:LocalAIEngine",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/personalized-suggestions.ts",
+      "target": "function:packages/core/src/ai/personalized-suggestions.ts:generateMoodSuggestions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/personalized-suggestions.ts",
+      "target": "function:packages/core/src/ai/personalized-suggestions.ts:generateHabitSuggestions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/personalized-suggestions.ts",
+      "target": "function:packages/core/src/ai/personalized-suggestions.ts:generateRiskBasedSuggestions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/personalized-suggestions.ts",
+      "target": "function:packages/core/src/ai/personalized-suggestions.ts:generateTimeBasedSuggestions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/personalized-suggestions.ts",
+      "target": "function:packages/core/src/ai/personalized-suggestions.ts:getAllPersonalizedSuggestions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/cache.ts",
+      "target": "class:packages/core/src/ai/rag/cache.ts:AICache",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/cache.ts",
+      "target": "function:packages/core/src/ai/rag/cache.ts:generateCacheKey",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/indexer.ts",
+      "target": "function:packages/core/src/ai/rag/indexer.ts:buildIndex",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/prompt-builder.ts",
+      "target": "function:packages/core/src/ai/rag/prompt-builder.ts:formatReflectionSummary",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/prompt-builder.ts",
+      "target": "function:packages/core/src/ai/rag/prompt-builder.ts:buildRecommendPrompt",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/prompt-builder.ts",
+      "target": "function:packages/core/src/ai/rag/prompt-builder.ts:buildQueryParsePrompt",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/retriever.ts",
+      "target": "function:packages/core/src/ai/rag/retriever.ts:expandTerms",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/retriever.ts",
+      "target": "function:packages/core/src/ai/rag/retriever.ts:retrieveTopK",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/retriever.ts",
+      "target": "function:packages/core/src/ai/rag/retriever.ts:calcKeywordScore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/retriever.ts",
+      "target": "function:packages/core/src/ai/rag/retriever.ts:calcSynonymScore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/retriever.ts",
+      "target": "function:packages/core/src/ai/rag/retriever.ts:calcMoodScore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/retriever.ts",
+      "target": "function:packages/core/src/ai/rag/retriever.ts:calcTagScore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/risk-warning.ts",
+      "target": "function:packages/core/src/ai/risk-warning.ts:detectHabitAbandonRisk",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/risk-warning.ts",
+      "target": "function:packages/core/src/ai/risk-warning.ts:detectPlanDelayRisk",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/risk-warning.ts",
+      "target": "function:packages/core/src/ai/risk-warning.ts:detectStreakBreakRisk",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/risk-warning.ts",
+      "target": "function:packages/core/src/ai/risk-warning.ts:detectMoodDeclineRisk",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/risk-warning.ts",
+      "target": "function:packages/core/src/ai/risk-warning.ts:getAllRiskWarnings",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/thought-patterns.ts",
+      "target": "function:packages/core/src/ai/thought-patterns.ts:detectMoodSequencePatterns",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/thought-patterns.ts",
+      "target": "function:packages/core/src/ai/thought-patterns.ts:detectTagPatterns",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/thought-patterns.ts",
+      "target": "function:packages/core/src/ai/thought-patterns.ts:detectTimePatterns",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/thought-patterns.ts",
+      "target": "function:packages/core/src/ai/thought-patterns.ts:detectKeywordPatterns",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/thought-patterns.ts",
+      "target": "function:packages/core/src/ai/thought-patterns.ts:detectGrowthPatterns",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/thought-patterns.ts",
+      "target": "function:packages/core/src/ai/thought-patterns.ts:getAllThoughtPatterns",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "function:packages/core/src/ai/trail-recommender.ts:clearAICaches",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "function:packages/core/src/ai/trail-recommender.ts:batchedAIGenerate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "function:packages/core/src/ai/trail-recommender.ts:recommendTrailsViaAI",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "function:packages/core/src/ai/trail-recommender.ts:matchReflectionsToTopic",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "function:packages/core/src/ai/trail-recommender.ts:semanticSearchReflections",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "function:packages/core/src/ai/trail-recommender.ts:parseSmartQuery",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "function:packages/core/src/ai/trail-recommender.ts:isAIRecommendAvailable",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "function:packages/core/src/ai/trail-recommender.ts:parseAIRecommendations",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "function:packages/core/src/ai/trail-recommender.ts:parseAIMatchResults",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "function:packages/core/src/ai/trail-recommender.ts:parseSmartQueryResult",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:validatePassword",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiRegister",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiSendCode",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiCheckEmail",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiLogin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiWechatLogin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiRefreshToken",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiGetMe",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiLogout",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiResetPassword",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiChangePassword",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiSyncPush",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiSyncPullPost",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiSyncPull",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiSyncCheck",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiSyncPullEntity",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:calcBMI",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:calcBMR",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:calcGoalProgress",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:recommendStrategy",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:createBodyGoal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:createBodyPlan",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:createWeightRecord",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:createBodyCheckin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:computePRs",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:computeMuscleGroupStats",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:computeMonthFrequency",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:generateSuggestions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/checkin.ts",
+      "target": "function:packages/core/src/business/checkin.ts:getIncompleteItems",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/checkin.ts",
+      "target": "function:packages/core/src/business/checkin.ts:getStatsForDate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/checkin.ts",
+      "target": "function:packages/core/src/business/checkin.ts:submitCheckinEntry",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/checkin.ts",
+      "target": "function:packages/core/src/business/checkin.ts:parseCheckinNote",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/dateChangeDetection.ts",
+      "target": "function:packages/core/src/business/dateChangeDetection.ts:createDateChangeDetector",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/exercise.ts",
+      "target": "function:packages/core/src/business/exercise.ts:deleteExerciseFromList",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/fasting.ts",
+      "target": "function:packages/core/src/business/fasting.ts:startFastingSession",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/business/fasting.ts",
+      "target": "function:packages/core/src/business/fasting.ts:stopFastingSession",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:packages/core/src/ai/ai-service.ts",
+      "target": "class:packages/core/src/ai/ai-service.ts:AIService",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/ai-service.ts",
+      "target": "function:packages/core/src/ai/ai-service.ts:getAIService",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/ai-service.ts",
+      "target": "function:packages/core/src/ai/ai-service.ts:resetAIService",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/cloud-providers.ts",
+      "target": "class:packages/core/src/ai/cloud-providers.ts:OpenAICompatibleProvider",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/cloud-providers.ts",
+      "target": "function:packages/core/src/ai/cloud-providers.ts:createProvider",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/cloud-providers.ts",
+      "target": "function:packages/core/src/ai/cloud-providers.ts:testConnection",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/context-reminder.ts",
+      "target": "function:packages/core/src/ai/context-reminder.ts:detectMoodPatterns",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/context-reminder.ts",
+      "target": "function:packages/core/src/ai/context-reminder.ts:detectHabitRisks",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/context-reminder.ts",
+      "target": "function:packages/core/src/ai/context-reminder.ts:detectStreakRisks",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/context-reminder.ts",
+      "target": "function:packages/core/src/ai/context-reminder.ts:detectReflectionGaps",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/context-reminder.ts",
+      "target": "function:packages/core/src/ai/context-reminder.ts:getAllContextReminders",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/insight-profile.ts",
+      "target": "function:packages/core/src/ai/insight-profile.ts:computeLocalInsights",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/insight-profile.ts",
+      "target": "function:packages/core/src/ai/insight-profile.ts:generateInsightProfile",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/json-utils.ts",
+      "target": "function:packages/core/src/ai/json-utils.ts:extractJSON",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/json-utils.ts",
+      "target": "function:packages/core/src/ai/json-utils.ts:findLastBalancedJSON",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/json-utils.ts",
+      "target": "function:packages/core/src/ai/json-utils.ts:repairJSON",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/local-engine.ts",
+      "target": "class:packages/core/src/ai/local-engine.ts:LocalAIEngine",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/personalized-suggestions.ts",
+      "target": "function:packages/core/src/ai/personalized-suggestions.ts:generateMoodSuggestions",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/personalized-suggestions.ts",
+      "target": "function:packages/core/src/ai/personalized-suggestions.ts:generateHabitSuggestions",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/personalized-suggestions.ts",
+      "target": "function:packages/core/src/ai/personalized-suggestions.ts:generateRiskBasedSuggestions",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/personalized-suggestions.ts",
+      "target": "function:packages/core/src/ai/personalized-suggestions.ts:generateTimeBasedSuggestions",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/personalized-suggestions.ts",
+      "target": "function:packages/core/src/ai/personalized-suggestions.ts:getAllPersonalizedSuggestions",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/cache.ts",
+      "target": "class:packages/core/src/ai/rag/cache.ts:AICache",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/cache.ts",
+      "target": "function:packages/core/src/ai/rag/cache.ts:generateCacheKey",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/indexer.ts",
+      "target": "function:packages/core/src/ai/rag/indexer.ts:buildIndex",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/prompt-builder.ts",
+      "target": "function:packages/core/src/ai/rag/prompt-builder.ts:formatReflectionSummary",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/prompt-builder.ts",
+      "target": "function:packages/core/src/ai/rag/prompt-builder.ts:buildRecommendPrompt",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/prompt-builder.ts",
+      "target": "function:packages/core/src/ai/rag/prompt-builder.ts:buildQueryParsePrompt",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/retriever.ts",
+      "target": "function:packages/core/src/ai/rag/retriever.ts:expandTerms",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/retriever.ts",
+      "target": "function:packages/core/src/ai/rag/retriever.ts:retrieveTopK",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/risk-warning.ts",
+      "target": "function:packages/core/src/ai/risk-warning.ts:detectHabitAbandonRisk",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/risk-warning.ts",
+      "target": "function:packages/core/src/ai/risk-warning.ts:detectPlanDelayRisk",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/risk-warning.ts",
+      "target": "function:packages/core/src/ai/risk-warning.ts:detectStreakBreakRisk",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/risk-warning.ts",
+      "target": "function:packages/core/src/ai/risk-warning.ts:detectMoodDeclineRisk",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/risk-warning.ts",
+      "target": "function:packages/core/src/ai/risk-warning.ts:getAllRiskWarnings",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/thought-patterns.ts",
+      "target": "function:packages/core/src/ai/thought-patterns.ts:detectMoodSequencePatterns",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/thought-patterns.ts",
+      "target": "function:packages/core/src/ai/thought-patterns.ts:detectTagPatterns",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/thought-patterns.ts",
+      "target": "function:packages/core/src/ai/thought-patterns.ts:detectTimePatterns",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/thought-patterns.ts",
+      "target": "function:packages/core/src/ai/thought-patterns.ts:detectKeywordPatterns",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/thought-patterns.ts",
+      "target": "function:packages/core/src/ai/thought-patterns.ts:detectGrowthPatterns",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/thought-patterns.ts",
+      "target": "function:packages/core/src/ai/thought-patterns.ts:getAllThoughtPatterns",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "function:packages/core/src/ai/trail-recommender.ts:clearAICaches",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "function:packages/core/src/ai/trail-recommender.ts:recommendTrailsViaAI",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "function:packages/core/src/ai/trail-recommender.ts:matchReflectionsToTopic",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "function:packages/core/src/ai/trail-recommender.ts:semanticSearchReflections",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "function:packages/core/src/ai/trail-recommender.ts:parseSmartQuery",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "function:packages/core/src/ai/trail-recommender.ts:isAIRecommendAvailable",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:validatePassword",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiRegister",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiSendCode",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiCheckEmail",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiLogin",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiWechatLogin",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiRefreshToken",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiGetMe",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiLogout",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiResetPassword",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiChangePassword",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiSyncPush",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiSyncPullPost",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiSyncPull",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiSyncCheck",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "function:packages/core/src/auth.ts:apiSyncPullEntity",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:calcBMI",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:calcBMR",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:calcGoalProgress",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:recommendStrategy",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:createBodyGoal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:createBodyPlan",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:createWeightRecord",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:createBodyCheckin",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:computePRs",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:computeMuscleGroupStats",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:computeMonthFrequency",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "function:packages/core/src/business/body.ts:generateSuggestions",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/checkin.ts",
+      "target": "function:packages/core/src/business/checkin.ts:getIncompleteItems",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/checkin.ts",
+      "target": "function:packages/core/src/business/checkin.ts:getStatsForDate",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/checkin.ts",
+      "target": "function:packages/core/src/business/checkin.ts:submitCheckinEntry",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/checkin.ts",
+      "target": "function:packages/core/src/business/checkin.ts:parseCheckinNote",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/dateChangeDetection.ts",
+      "target": "function:packages/core/src/business/dateChangeDetection.ts:createDateChangeDetector",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/exercise.ts",
+      "target": "function:packages/core/src/business/exercise.ts:deleteExerciseFromList",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/fasting.ts",
+      "target": "function:packages/core/src/business/fasting.ts:startFastingSession",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/business/fasting.ts",
+      "target": "function:packages/core/src/business/fasting.ts:stopFastingSession",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:packages/core/src/__tests__/performDailyReset.test.ts",
+      "target": "file:packages/core/src/business/plan.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/__tests__/performDailyReset.test.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/ai-service.ts",
+      "target": "file:packages/core/src/ai/cloud-providers.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/ai-service.ts",
+      "target": "file:packages/core/src/ai/local-engine.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/ai-service.ts",
+      "target": "file:packages/core/src/ai/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/ai-service.ts",
+      "target": "file:packages/core/src/business/review.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/ai-service.ts",
+      "target": "file:packages/core/src/logger.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/ai-service.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/cloud-providers.ts",
+      "target": "file:packages/core/src/ai/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/cloud-providers.ts",
+      "target": "file:packages/core/src/logger.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/context-reminder.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/context-reminder.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/insight-profile.test.ts",
+      "target": "file:packages/core/src/ai/insight-profile.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/insight-profile.test.ts",
+      "target": "file:packages/core/src/types/reflection.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/insight-profile.ts",
+      "target": "file:packages/core/src/ai/ai-service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/insight-profile.ts",
+      "target": "file:packages/core/src/ai/json-utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/insight-profile.ts",
+      "target": "file:packages/core/src/ai/trail-recommender.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/insight-profile.ts",
+      "target": "file:packages/core/src/ai/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/insight-profile.ts",
+      "target": "file:packages/core/src/business/thought-trail.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/insight-profile.ts",
+      "target": "file:packages/core/src/business/trail-creation.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/insight-profile.ts",
+      "target": "file:packages/core/src/logger.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/insight-profile.ts",
+      "target": "file:packages/core/src/types/reflection.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/insight-profile.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/json-utils.test.ts",
+      "target": "file:packages/core/src/ai/json-utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/json-utils.ts",
+      "target": "file:packages/core/src/logger.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/local-engine.ts",
+      "target": "file:packages/core/src/ai/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/personalized-suggestions.ts",
+      "target": "file:packages/core/src/ai/risk-warning.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/personalized-suggestions.ts",
+      "target": "file:packages/core/src/ai/thought-patterns.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/personalized-suggestions.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/personalized-suggestions.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/indexer.ts",
+      "target": "file:packages/core/src/types/reflection.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/indexer.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/prompt-builder.ts",
+      "target": "file:packages/core/src/ai/rag/indexer.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/prompt-builder.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/retriever.test.ts",
+      "target": "file:packages/core/src/ai/rag/indexer.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/retriever.test.ts",
+      "target": "file:packages/core/src/ai/rag/retriever.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/rag/retriever.ts",
+      "target": "file:packages/core/src/ai/rag/indexer.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/risk-warning.test.ts",
+      "target": "file:packages/core/src/ai/risk-warning.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/risk-warning.test.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/risk-warning.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/risk-warning.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/thought-patterns.test.ts",
+      "target": "file:packages/core/src/ai/thought-patterns.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/thought-patterns.test.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/thought-patterns.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/thought-patterns.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "file:packages/core/src/ai/ai-service.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "file:packages/core/src/ai/json-utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "file:packages/core/src/ai/rag/cache.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "file:packages/core/src/ai/rag/indexer.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "file:packages/core/src/ai/rag/prompt-builder.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "file:packages/core/src/ai/rag/retriever.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "file:packages/core/src/ai/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "file:packages/core/src/business/trail-creation.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "file:packages/core/src/logger.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "file:packages/core/src/types/reflection.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/ai/trail-recommender.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/auth.test.ts",
+      "target": "file:packages/core/src/auth.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/auth.test.ts",
+      "target": "file:packages/core/src/fetch.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "file:packages/core/src/fetch.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "file:packages/core/src/logger.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "file:packages/core/src/sync/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/body.test.ts",
+      "target": "file:packages/core/src/business/body.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/checkin.test.ts",
+      "target": "file:packages/core/src/business/checkin.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/checkin.test.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/checkin.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/checkin.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/dateChangeDetection.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/exercise.test.ts",
+      "target": "file:packages/core/src/business/exercise.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/exercise.test.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/exercise.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/fasting.test.ts",
+      "target": "file:packages/core/src/business/fasting.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/fasting.test.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/fasting.ts",
+      "target": "file:packages/core/src/defaults.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/fasting.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/fasting.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/food.test.ts",
+      "target": "file:packages/core/src/business/food.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:packages/core/src/business/food.test.ts",
+      "target": "file:packages/core/src/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:packages/core/src/ai/trail-recommender.ts:recommendTrailsViaAI",
+      "target": "function:packages/core/src/ai/rag/cache.ts:generateCacheKey",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/ai/trail-recommender.ts:recommendTrailsViaAI",
+      "target": "function:packages/core/src/ai/rag/indexer.ts:buildIndex",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/ai/trail-recommender.ts:recommendTrailsViaAI",
+      "target": "function:packages/core/src/ai/rag/retriever.ts:retrieveTopK",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/ai/trail-recommender.ts:recommendTrailsViaAI",
+      "target": "function:packages/core/src/ai/rag/prompt-builder.ts:buildRecommendPrompt",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/ai/trail-recommender.ts:matchReflectionsToTopic",
+      "target": "function:packages/core/src/ai/rag/retriever.ts:retrieveTopK",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/ai/trail-recommender.ts:semanticSearchReflections",
+      "target": "function:packages/core/src/ai/rag/indexer.ts:buildIndex",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/ai/trail-recommender.ts:parseSmartQuery",
+      "target": "function:packages/core/src/ai/rag/prompt-builder.ts:buildQueryParsePrompt",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/ai/trail-recommender.ts:parseAIRecommendations",
+      "target": "function:packages/core/src/ai/json-utils.ts:extractJSON",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/ai/trail-recommender.ts:parseAIMatchResults",
+      "target": "function:packages/core/src/ai/json-utils.ts:extractJSON",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/ai/trail-recommender.ts:parseSmartQueryResult",
+      "target": "function:packages/core/src/ai/json-utils.ts:extractJSON",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/ai/insight-profile.ts:parseInsightResponse",
+      "target": "function:packages/core/src/ai/json-utils.ts:extractJSON",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/ai/insight-profile.ts:parseInsightResponse",
+      "target": "function:packages/core/src/ai/json-utils.ts:repairJSON",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/ai/insight-profile.ts:generateInsightProfile",
+      "target": "function:packages/core/src/ai/trail-recommender.ts:isAIRecommendAvailable",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:packages/core/src/ai/insight-profile.ts:generateInsightProfile",
+      "target": "class:packages/core/src/ai/ai-service.ts:AIService",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "function:packages/core/src/ai/trail-recommender.ts:isAIRecommendAvailable",
+      "target": "class:packages/core/src/ai/ai-service.ts:AIService",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:packages/core/src/ai/personalized-suggestions.ts",
+      "target": "file:packages/core/src/ai/risk-warning.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:packages/core/src/ai/personalized-suggestions.ts",
+      "target": "file:packages/core/src/ai/thought-patterns.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:packages/core/src/auth.ts",
+      "target": "file:packages/core/src/fetch.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:packages/core/src/business/checkin.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:packages/core/src/business/body.ts",
+      "target": "file:packages/core/src/utils.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:packages/core/src/business/fasting.ts",
+      "target": "file:packages/core/src/defaults.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    }
+  ]
+}

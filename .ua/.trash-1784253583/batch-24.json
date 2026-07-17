@@ -1,0 +1,439 @@
+{
+  "nodes": [
+    {
+      "id": "file:apps/mobile/src/features/reflections/insights/InsightsPanel.tsx",
+      "type": "file",
+      "name": "InsightsPanel.tsx",
+      "summary": "感念洞察横向卡片列表面板，展示关系图的关联洞察文本，使用 Brain 图标标题与横向滚动布局。",
+      "tags": [
+        "reflections",
+        "insights",
+        "ui-panel"
+      ],
+      "complexity": 1,
+      "filePath": "apps/mobile/src/features/reflections/insights/InsightsPanel.tsx"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/insights/NodeDetailPanel.tsx",
+      "type": "file",
+      "name": "NodeDetailPanel.tsx",
+      "summary": "节点详情弹出面板，展示选中节点的类型、颜色、标签与关联愿景，并提供查看详情导航按钮。",
+      "tags": [
+        "reflections",
+        "insights",
+        "graph-visualization",
+        "ui-panel"
+      ],
+      "complexity": 2,
+      "filePath": "apps/mobile/src/features/reflections/insights/NodeDetailPanel.tsx"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/insights/RelationMapView.tsx",
+      "type": "file",
+      "name": "RelationMapView.tsx",
+      "summary": "感念关系图谱主视图（力导向布局），基于 SVG 渲染节点与边，集成触摸手势缩放/平移，并组合统计栏、节点详情、洞察面板。",
+      "tags": [
+        "reflections",
+        "insights",
+        "graph-visualization",
+        "data-viz",
+        "svg"
+      ],
+      "complexity": 5,
+      "filePath": "apps/mobile/src/features/reflections/insights/RelationMapView.tsx"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/insights/StatsBar.tsx",
+      "type": "file",
+      "name": "StatsBar.tsx",
+      "summary": "图谱底部统计栏，按节点类型（感念/计划/习惯/脉络/任务）计数并以对应颜色展示数量。",
+      "tags": [
+        "reflections",
+        "insights",
+        "graph-visualization",
+        "data-viz"
+      ],
+      "complexity": 1,
+      "filePath": "apps/mobile/src/features/reflections/insights/StatsBar.tsx"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/insights/hooks/useRelationGraph.ts",
+      "type": "file",
+      "name": "useRelationGraph.ts",
+      "summary": "关系图数据构建 hook，从 store 订阅数据并调用 core 的 buildRelationGraph 纯函数生成节点、边、洞察与上下文节点。",
+      "tags": [
+        "reflections",
+        "insights",
+        "hook",
+        "graph-visualization"
+      ],
+      "complexity": 2,
+      "filePath": "apps/mobile/src/features/reflections/insights/hooks/useRelationGraph.ts"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/insights/types.ts",
+      "type": "file",
+      "name": "types.ts",
+      "summary": "感念关系图谱共享类型定义，包含节点/边/上下文/图构建输入输出类型，以及节点颜色、标签、图标与边样式常量映射。",
+      "tags": [
+        "reflections",
+        "insights",
+        "types",
+        "graph-visualization"
+      ],
+      "complexity": 2,
+      "filePath": "apps/mobile/src/features/reflections/insights/types.ts"
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/insights/InsightsPanel.tsx:InsightsPanel",
+      "type": "function",
+      "name": "InsightsPanel",
+      "summary": "默认导出的洞察面板组件，接收 insights 字符串数组，以横向滚动卡片渲染每条洞察文本。",
+      "tags": [
+        "reflections",
+        "insights",
+        "ui-panel"
+      ],
+      "complexity": 1,
+      "filePath": "apps/mobile/src/features/reflections/insights/InsightsPanel.tsx",
+      "lineRange": [
+        13,
+        34
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/insights/NodeDetailPanel.tsx:NodeDetailPanel",
+      "type": "function",
+      "name": "NodeDetailPanel",
+      "summary": "默认导出的节点详情组件，展示选中节点类型圆点、标签、关联愿景（计划节点）及查看详情按钮回调。",
+      "tags": [
+        "reflections",
+        "insights",
+        "graph-visualization",
+        "ui-panel"
+      ],
+      "complexity": 2,
+      "filePath": "apps/mobile/src/features/reflections/insights/NodeDetailPanel.tsx",
+      "lineRange": [
+        33,
+        59
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/insights/RelationMapView.tsx:RelationMapView",
+      "type": "function",
+      "name": "RelationMapView",
+      "summary": "感念关系图谱核心视图组件（468行），实现力导向布局模拟（斥力/弹簧/重力）、requestAnimationFrame 渲染循环、触摸缩放手势，并组合 SVG 节点/边、统计栏、节点详情与洞察面板。",
+      "tags": [
+        "reflections",
+        "insights",
+        "graph-visualization",
+        "data-viz",
+        "svg"
+      ],
+      "complexity": 5,
+      "filePath": "apps/mobile/src/features/reflections/insights/RelationMapView.tsx",
+      "lineRange": [
+        36,
+        410
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/insights/StatsBar.tsx:StatsBar",
+      "type": "function",
+      "name": "StatsBar",
+      "summary": "默认导出的统计栏组件，按五种节点类型过滤计数，并以对应颜色数字与中文标签展示各类型节点数量。",
+      "tags": [
+        "reflections",
+        "insights",
+        "graph-visualization",
+        "data-viz"
+      ],
+      "complexity": 1,
+      "filePath": "apps/mobile/src/features/reflections/insights/StatsBar.tsx",
+      "lineRange": [
+        29,
+        46
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/reflections/insights/hooks/useRelationGraph.ts:useRelationGraph",
+      "type": "function",
+      "name": "useRelationGraph",
+      "summary": "导出的关系图数据 hook，订阅 store 中的计划/愿景/任务/感念/脉络/习惯/关联数据，调用 core 的 buildRelationGraph 纯函数生成图的节点、边、洞察与上下文节点。",
+      "tags": [
+        "reflections",
+        "insights",
+        "hook",
+        "graph-visualization"
+      ],
+      "complexity": 2,
+      "filePath": "apps/mobile/src/features/reflections/insights/hooks/useRelationGraph.ts",
+      "lineRange": [
+        12,
+        39
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/InsightsPanel.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/InsightsPanel.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/NodeDetailPanel.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/NodeDetailPanel.tsx",
+      "target": "file:apps/mobile/src/features/reflections/insights/types.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/NodeDetailPanel.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/RelationMapView.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/RelationMapView.tsx",
+      "target": "file:apps/mobile/src/features/reflections/insights/hooks/useRelationGraph.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/RelationMapView.tsx",
+      "target": "file:apps/mobile/src/features/reflections/insights/InsightsPanel.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/RelationMapView.tsx",
+      "target": "file:apps/mobile/src/features/reflections/insights/NodeDetailPanel.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/RelationMapView.tsx",
+      "target": "file:apps/mobile/src/features/reflections/insights/StatsBar.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/RelationMapView.tsx",
+      "target": "file:apps/mobile/src/features/reflections/insights/types.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/RelationMapView.tsx",
+      "target": "file:apps/mobile/src/navigation/types.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/RelationMapView.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/RelationMapView.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/StatsBar.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/StatsBar.tsx",
+      "target": "file:apps/mobile/src/features/reflections/insights/types.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/StatsBar.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/hooks/useRelationGraph.ts",
+      "target": "file:apps/mobile/src/features/reflections/insights/types.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/hooks/useRelationGraph.ts",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/hooks/useRelationGraph.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/InsightsPanel.tsx",
+      "target": "file:apps/mobile/src/features/reflections/insights/InsightsPanel.tsx:InsightsPanel",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/NodeDetailPanel.tsx",
+      "target": "file:apps/mobile/src/features/reflections/insights/NodeDetailPanel.tsx:NodeDetailPanel",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/RelationMapView.tsx",
+      "target": "file:apps/mobile/src/features/reflections/insights/RelationMapView.tsx:RelationMapView",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/StatsBar.tsx",
+      "target": "file:apps/mobile/src/features/reflections/insights/StatsBar.tsx:StatsBar",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/hooks/useRelationGraph.ts",
+      "target": "file:apps/mobile/src/features/reflections/insights/hooks/useRelationGraph.ts:useRelationGraph",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/InsightsPanel.tsx",
+      "target": "file:apps/mobile/src/features/reflections/insights/InsightsPanel.tsx:InsightsPanel",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/NodeDetailPanel.tsx",
+      "target": "file:apps/mobile/src/features/reflections/insights/NodeDetailPanel.tsx:NodeDetailPanel",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/RelationMapView.tsx",
+      "target": "file:apps/mobile/src/features/reflections/insights/RelationMapView.tsx:RelationMapView",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/StatsBar.tsx",
+      "target": "file:apps/mobile/src/features/reflections/insights/StatsBar.tsx:StatsBar",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/hooks/useRelationGraph.ts",
+      "target": "file:apps/mobile/src/features/reflections/insights/hooks/useRelationGraph.ts:useRelationGraph",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/RelationMapView.tsx:RelationMapView",
+      "target": "file:apps/mobile/src/features/reflections/insights/hooks/useRelationGraph.ts:useRelationGraph",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/RelationMapView.tsx:RelationMapView",
+      "target": "file:apps/mobile/src/features/reflections/insights/StatsBar.tsx:StatsBar",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/RelationMapView.tsx:RelationMapView",
+      "target": "file:apps/mobile/src/features/reflections/insights/NodeDetailPanel.tsx:NodeDetailPanel",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/RelationMapView.tsx:RelationMapView",
+      "target": "file:apps/mobile/src/features/reflections/insights/InsightsPanel.tsx:InsightsPanel",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/hooks/useRelationGraph.ts:useRelationGraph",
+      "target": "file:apps/mobile/src/features/reflections/insights/types.ts",
+      "type": "depends_on",
+      "weight": 0.6,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/NodeDetailPanel.tsx:NodeDetailPanel",
+      "target": "file:apps/mobile/src/features/reflections/insights/types.ts",
+      "type": "depends_on",
+      "weight": 0.6,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/reflections/insights/StatsBar.tsx:StatsBar",
+      "target": "file:apps/mobile/src/features/reflections/insights/types.ts",
+      "type": "depends_on",
+      "weight": 0.6,
+      "direction": "forward"
+    }
+  ]
+}

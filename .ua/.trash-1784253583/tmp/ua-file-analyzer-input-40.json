@@ -1,0 +1,35 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-03-sync-pull-audit/design.md",
+      "language": "markdown",
+      "sizeLines": 146,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-03-sync-pull-audit/implement.md",
+      "language": "markdown",
+      "sizeLines": 82,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-03-sync-pull-audit/prd.md",
+      "language": "markdown",
+      "sizeLines": 71,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-03-sync-pull-audit/task.json",
+      "language": "json",
+      "sizeLines": 25,
+      "fileCategory": "config"
+    }
+  ],
+  "batchImportData": {
+    ".trellis/tasks/archive/2026-07/07-03-sync-pull-audit/design.md": [],
+    ".trellis/tasks/archive/2026-07/07-03-sync-pull-audit/implement.md": [],
+    ".trellis/tasks/archive/2026-07/07-03-sync-pull-audit/prd.md": [],
+    ".trellis/tasks/archive/2026-07/07-03-sync-pull-audit/task.json": []
+  }
+}

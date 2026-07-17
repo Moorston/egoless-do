@@ -1,0 +1,4679 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 24,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "apps/mobile/src/components/AnimatedMusicIcon.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 58,
+      "nonEmptyLines": 48,
+      "functions": [
+        {
+          "name": "AnimatedMusicIcon",
+          "startLine": 11,
+          "endLine": 58,
+          "params": [
+            "{ isPlaying, color = '#fff', size = 20 }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "AnimatedMusicIcon",
+          "line": 11,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "AnimatedMusicIcon",
+          "callee": "useRef",
+          "lineNumber": 12
+        },
+        {
+          "caller": "AnimatedMusicIcon",
+          "callee": "useRef",
+          "lineNumber": 13
+        },
+        {
+          "caller": "AnimatedMusicIcon",
+          "callee": "useRef",
+          "lineNumber": 14
+        },
+        {
+          "caller": "AnimatedMusicIcon",
+          "callee": "useEffect",
+          "lineNumber": 16
+        },
+        {
+          "caller": "AnimatedMusicIcon",
+          "callee": "bar1.setValue",
+          "lineNumber": 18
+        },
+        {
+          "caller": "AnimatedMusicIcon",
+          "callee": "bar2.setValue",
+          "lineNumber": 19
+        },
+        {
+          "caller": "AnimatedMusicIcon",
+          "callee": "bar3.setValue",
+          "lineNumber": 20
+        },
+        {
+          "caller": "createAnim",
+          "callee": "Animated.loop",
+          "lineNumber": 25
+        },
+        {
+          "caller": "createAnim",
+          "callee": "Animated.sequence",
+          "lineNumber": 26
+        },
+        {
+          "caller": "createAnim",
+          "callee": "Animated.delay",
+          "lineNumber": 27
+        },
+        {
+          "caller": "createAnim",
+          "callee": "Animated.timing",
+          "lineNumber": 28
+        },
+        {
+          "caller": "createAnim",
+          "callee": "Animated.timing",
+          "lineNumber": 29
+        },
+        {
+          "caller": "AnimatedMusicIcon",
+          "callee": "createAnim",
+          "lineNumber": 33
+        },
+        {
+          "caller": "AnimatedMusicIcon",
+          "callee": "createAnim",
+          "lineNumber": 34
+        },
+        {
+          "caller": "AnimatedMusicIcon",
+          "callee": "createAnim",
+          "lineNumber": 35
+        },
+        {
+          "caller": "AnimatedMusicIcon",
+          "callee": "a1.start",
+          "lineNumber": 37
+        },
+        {
+          "caller": "AnimatedMusicIcon",
+          "callee": "a2.start",
+          "lineNumber": 38
+        },
+        {
+          "caller": "AnimatedMusicIcon",
+          "callee": "a3.start",
+          "lineNumber": 39
+        },
+        {
+          "caller": "AnimatedMusicIcon",
+          "callee": "a1.stop",
+          "lineNumber": 41
+        },
+        {
+          "caller": "AnimatedMusicIcon",
+          "callee": "a2.stop",
+          "lineNumber": 41
+        },
+        {
+          "caller": "AnimatedMusicIcon",
+          "callee": "a3.stop",
+          "lineNumber": 41
+        },
+        {
+          "caller": "AnimatedMusicIcon",
+          "callee": "Math.max",
+          "lineNumber": 48
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/components/MeditationMusicBar.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 154,
+      "nonEmptyLines": 142,
+      "functions": [
+        {
+          "name": "CoverIcon",
+          "startLine": 33,
+          "endLine": 55,
+          "params": [
+            "{ track, size = 44 }"
+          ]
+        },
+        {
+          "name": "MeditationMusicBar",
+          "startLine": 57,
+          "endLine": 111,
+          "params": [
+            "{ track, isActive, isPlaying, primaryColor, loop, onPress, onTogglePlay, onToggleLoop }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "MeditationMusicBar",
+          "line": 57,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "MeditationMusicBar",
+          "callee": "useTheme",
+          "lineNumber": 58
+        },
+        {
+          "caller": "MeditationMusicBar",
+          "callee": "useT",
+          "lineNumber": 59
+        },
+        {
+          "caller": "MeditationMusicBar",
+          "callee": "T",
+          "lineNumber": 102
+        },
+        {
+          "caller": "MeditationMusicBar",
+          "callee": "T",
+          "lineNumber": 105
+        },
+        {
+          "caller": "MeditationMusicBar",
+          "callee": "T",
+          "lineNumber": 105
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/exercise/SportPage.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 561,
+      "nonEmptyLines": 506,
+      "functions": [
+        {
+          "name": "SportPage",
+          "startLine": 51,
+          "endLine": 561,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "SportPage",
+          "line": 51,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "SportPage",
+          "callee": "useRootNavigation",
+          "lineNumber": 52
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useRoute",
+          "lineNumber": 53
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useTheme",
+          "lineNumber": 54
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useT",
+          "lineNumber": 55
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useShallowStore",
+          "lineNumber": 56
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useAmapComponents",
+          "lineNumber": 57
+        },
+        {
+          "caller": "SportPage",
+          "callee": "getSportType",
+          "lineNumber": 62
+        },
+        {
+          "caller": "SportPage",
+          "callee": "getSportExperienceType",
+          "lineNumber": 63
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useKeepAwake",
+          "lineNumber": 67
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useExerciseTimer",
+          "lineNumber": 70
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useExerciseAudio",
+          "lineNumber": 71
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useExerciseRest",
+          "lineNumber": 72
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useMusicStore",
+          "lineNumber": 73
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useMusicStore",
+          "lineNumber": 74
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useMusicStore",
+          "lineNumber": 75
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useMusicStore",
+          "lineNumber": 76
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useMusicStore",
+          "lineNumber": 77
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useMusicStore",
+          "lineNumber": 78
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useMusicStore",
+          "lineNumber": 79
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useState",
+          "lineNumber": 80
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useRef",
+          "lineNumber": 83
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useState",
+          "lineNumber": 84
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useRef",
+          "lineNumber": 85
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useState",
+          "lineNumber": 86
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useGoalResolver",
+          "lineNumber": 87
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useSessionHeartbeat",
+          "lineNumber": 90
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useEffect",
+          "lineNumber": 93
+        },
+        {
+          "caller": "SportPage",
+          "callee": "resolveGoal",
+          "lineNumber": 97
+        },
+        {
+          "caller": "SportPage",
+          "callee": "createSession({\r\n        user_hash: userHash,\r\n        nickname: userProfile?.nickname || '',\r\n        type: 'exercise',\r\n        goal: goal || undefined,\r\n        sport_key: sportName,\r\n        sport_icon: icon,\r\n      }).then",
+          "lineNumber": 98
+        },
+        {
+          "caller": "SportPage",
+          "callee": "createSession",
+          "lineNumber": 98
+        },
+        {
+          "caller": "SportPage",
+          "callee": "setSessionId",
+          "lineNumber": 108
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useCallback",
+          "lineNumber": 115
+        },
+        {
+          "caller": "SportPage",
+          "callee": "setInsight",
+          "lineNumber": 116
+        },
+        {
+          "caller": "SportPage",
+          "callee": "clearTimeout",
+          "lineNumber": 119
+        },
+        {
+          "caller": "SportPage",
+          "callee": "setTimeout",
+          "lineNumber": 120
+        },
+        {
+          "caller": "SportPage",
+          "callee": "updateSession",
+          "lineNumber": 121
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useCallback",
+          "lineNumber": 127
+        },
+        {
+          "caller": "SportPage",
+          "callee": "clearTimeout",
+          "lineNumber": 128
+        },
+        {
+          "caller": "SportPage",
+          "callee": "deleteSession",
+          "lineNumber": 130
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useCallback",
+          "lineNumber": 135
+        },
+        {
+          "caller": "SportPage",
+          "callee": "audio.playBell",
+          "lineNumber": 136
+        },
+        {
+          "caller": "SportPage",
+          "callee": "rest.startRest",
+          "lineNumber": 137
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useExerciseSets",
+          "lineNumber": 140
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useState",
+          "lineNumber": 143
+        },
+        {
+          "caller": "SportPage",
+          "callee": "Object.keys",
+          "lineNumber": 145
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useState",
+          "lineNumber": 146
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useState",
+          "lineNumber": 147
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useState",
+          "lineNumber": 150
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useState",
+          "lineNumber": 151
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useRef",
+          "lineNumber": 152
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useRef",
+          "lineNumber": 153
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useRef",
+          "lineNumber": 154
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useRef",
+          "lineNumber": 155
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useState",
+          "lineNumber": 159
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useState",
+          "lineNumber": 160
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useState",
+          "lineNumber": 161
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useRef",
+          "lineNumber": 162
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useRef",
+          "lineNumber": 163
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useRef",
+          "lineNumber": 164
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useRef",
+          "lineNumber": 165
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useRef",
+          "lineNumber": 166
+        },
+        {
+          "caller": "SportPage",
+          "callee": "computeDistance",
+          "lineNumber": 169
+        },
+        {
+          "caller": "SportPage",
+          "callee": "estimateCalories",
+          "lineNumber": 170
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useExerciseTargets",
+          "lineNumber": 173
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useEffect",
+          "lineNumber": 180
+        },
+        {
+          "caller": "SportPage",
+          "callee": "clearTimeout",
+          "lineNumber": 182
+        },
+        {
+          "caller": "runPhase",
+          "callee": "setBreathPhase",
+          "lineNumber": 189
+        },
+        {
+          "caller": "runPhase",
+          "callee": "breathAnim.setValue",
+          "lineNumber": 190
+        },
+        {
+          "caller": "runPhase",
+          "callee": "Animated.timing(breathAnim, { toValue: 1, duration: PHASE_DURATION, useNativeDriver: false }).start",
+          "lineNumber": 191
+        },
+        {
+          "caller": "runPhase",
+          "callee": "Animated.timing",
+          "lineNumber": 191
+        },
+        {
+          "caller": "runPhase",
+          "callee": "audioRef.current.playBell",
+          "lineNumber": 192
+        },
+        {
+          "caller": "runPhase",
+          "callee": "setBreathPhase",
+          "lineNumber": 194
+        },
+        {
+          "caller": "runPhase",
+          "callee": "setBreathPhase",
+          "lineNumber": 196
+        },
+        {
+          "caller": "runPhase",
+          "callee": "Animated.timing(breathAnim, { toValue: 0, duration: PHASE_DURATION, useNativeDriver: false }).start",
+          "lineNumber": 197
+        },
+        {
+          "caller": "runPhase",
+          "callee": "Animated.timing",
+          "lineNumber": 197
+        },
+        {
+          "caller": "runPhase",
+          "callee": "audioRef.current.playBell",
+          "lineNumber": 198
+        },
+        {
+          "caller": "runPhase",
+          "callee": "setTimeout",
+          "lineNumber": 200
+        },
+        {
+          "caller": "runPhase",
+          "callee": "runPhase",
+          "lineNumber": 202
+        },
+        {
+          "caller": "SportPage",
+          "callee": "runPhase",
+          "lineNumber": 205
+        },
+        {
+          "caller": "SportPage",
+          "callee": "clearTimeout",
+          "lineNumber": 206
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useCallback",
+          "lineNumber": 210
+        },
+        {
+          "caller": "SportPage",
+          "callee": "reqLocPerm",
+          "lineNumber": 212
+        },
+        {
+          "caller": "SportPage",
+          "callee": "watchPos",
+          "lineNumber": 214
+        },
+        {
+          "caller": "SportPage",
+          "callee": "Date.now",
+          "lineNumber": 215
+        },
+        {
+          "caller": "SportPage",
+          "callee": "setCoords",
+          "lineNumber": 216
+        },
+        {
+          "caller": "SportPage",
+          "callee": "mapRef.current?.moveCamera",
+          "lineNumber": 217
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useCallback",
+          "lineNumber": 221
+        },
+        {
+          "caller": "SportPage",
+          "callee": "locationSub.current?.remove",
+          "lineNumber": 222
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useEffect",
+          "lineNumber": 227
+        },
+        {
+          "caller": "SportPage",
+          "callee": "startGpsTracking",
+          "lineNumber": 229
+        },
+        {
+          "caller": "SportPage",
+          "callee": "stopGpsTracking",
+          "lineNumber": 231
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useEffect",
+          "lineNumber": 235
+        },
+        {
+          "caller": "SportPage",
+          "callee": "(async () => {\r\n        try {\r\n          const { status } = await reqLocPerm();\r\n          if (!mounted) return;\r\n          if (status === 'granted') {\r\n            const loc = await getCurPos();\r\n            if (mounted && loc) setInitialPos({ latitude: loc.coords.latitude, longitude: loc.coords.longitude });\r\n          }\r\n        } catch (e) { log.warn('Location error:', e); }\r\n      })",
+          "lineNumber": 238
+        },
+        {
+          "caller": "SportPage",
+          "callee": "reqLocPerm",
+          "lineNumber": 240
+        },
+        {
+          "caller": "SportPage",
+          "callee": "getCurPos",
+          "lineNumber": 243
+        },
+        {
+          "caller": "SportPage",
+          "callee": "setInitialPos",
+          "lineNumber": 244
+        },
+        {
+          "caller": "SportPage",
+          "callee": "log.warn",
+          "lineNumber": 246
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useEffect",
+          "lineNumber": 253
+        },
+        {
+          "caller": "SportPage",
+          "callee": "Math.floor",
+          "lineNumber": 255
+        },
+        {
+          "caller": "SportPage",
+          "callee": "setSegmentPaces",
+          "lineNumber": 258
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useEffect",
+          "lineNumber": 265
+        },
+        {
+          "caller": "SportPage",
+          "callee": "actualTargets.checkTargetReached",
+          "lineNumber": 267
+        },
+        {
+          "caller": "SportPage",
+          "callee": "actualTargets.checkMilestone",
+          "lineNumber": 268
+        },
+        {
+          "caller": "SportPage",
+          "callee": "actualTargets.checkSoftTargetBell",
+          "lineNumber": 269
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useEffect",
+          "lineNumber": 274
+        },
+        {
+          "caller": "SportPage",
+          "callee": "sets.triggerBounce",
+          "lineNumber": 275
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useCallback",
+          "lineNumber": 279
+        },
+        {
+          "caller": "SportPage",
+          "callee": "timer.handleGo",
+          "lineNumber": 280
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useCallback",
+          "lineNumber": 283
+        },
+        {
+          "caller": "SportPage",
+          "callee": "stopGpsTracking",
+          "lineNumber": 284
+        },
+        {
+          "caller": "SportPage",
+          "callee": "timer.handlePause",
+          "lineNumber": 285
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useCallback",
+          "lineNumber": 288
+        },
+        {
+          "caller": "SportPage",
+          "callee": "timer.handleContinue",
+          "lineNumber": 289
+        },
+        {
+          "caller": "SportPage",
+          "callee": "startGpsTracking",
+          "lineNumber": 290
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useEffect",
+          "lineNumber": 294
+        },
+        {
+          "caller": "SportPage",
+          "callee": "cleanupSession",
+          "lineNumber": 295
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useRef",
+          "lineNumber": 298
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useCallback",
+          "lineNumber": 299
+        },
+        {
+          "caller": "SportPage",
+          "callee": "musicStop",
+          "lineNumber": 303
+        },
+        {
+          "caller": "SportPage",
+          "callee": "audioPlayerRef.current?.pause",
+          "lineNumber": 304
+        },
+        {
+          "caller": "SportPage",
+          "callee": "audio.stopAll",
+          "lineNumber": 305
+        },
+        {
+          "caller": "SportPage",
+          "callee": "cleanupSession",
+          "lineNumber": 306
+        },
+        {
+          "caller": "SportPage",
+          "callee": "stopGpsTracking",
+          "lineNumber": 307
+        },
+        {
+          "caller": "SportPage",
+          "callee": "Date.now",
+          "lineNumber": 313
+        },
+        {
+          "caller": "SportPage",
+          "callee": "coords.map",
+          "lineNumber": 317
+        },
+        {
+          "caller": "SportPage",
+          "callee": "addExercise",
+          "lineNumber": 327
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useAppStore.getState",
+          "lineNumber": 336
+        },
+        {
+          "caller": "SportPage",
+          "callee": "import('../health/HealthService').then(({ writeWorkout }) => {\r\n            return writeWorkout({ ...entry, id: '', updatedAt: 0, deleted: false });\r\n          }).catch",
+          "lineNumber": 337
+        },
+        {
+          "caller": "SportPage",
+          "callee": "import('../health/HealthService').then",
+          "lineNumber": 337
+        },
+        {
+          "caller": "SportPage",
+          "callee": "import",
+          "lineNumber": 337
+        },
+        {
+          "caller": "SportPage",
+          "callee": "writeWorkout",
+          "lineNumber": 338
+        },
+        {
+          "caller": "SportPage",
+          "callee": "log.warn",
+          "lineNumber": 339
+        },
+        {
+          "caller": "SportPage",
+          "callee": "log.error",
+          "lineNumber": 343
+        },
+        {
+          "caller": "SportPage",
+          "callee": "nav.navigate",
+          "lineNumber": 347
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useEffect",
+          "lineNumber": 351
+        },
+        {
+          "caller": "SportPage",
+          "callee": "musicStop",
+          "lineNumber": 353
+        },
+        {
+          "caller": "SportPage",
+          "callee": "audioPlayerRef.current?.pause",
+          "lineNumber": 354
+        },
+        {
+          "caller": "SportPage",
+          "callee": "audio.stopAll",
+          "lineNumber": 355
+        },
+        {
+          "caller": "SportPage",
+          "callee": "useCallback",
+          "lineNumber": 360
+        },
+        {
+          "caller": "SportPage",
+          "callee": "stopGpsTracking",
+          "lineNumber": 361
+        },
+        {
+          "caller": "SportPage",
+          "callee": "timer.handlePause",
+          "lineNumber": 362
+        },
+        {
+          "caller": "SportPage",
+          "callee": "(() => {\r\n    if (targetType === 'reps') return `${sets.totalReps}/${targetValue}`;\r\n    if (targetType === 'time') return `${Math.floor(timer.sec / 60)}/${Math.floor(targetValue / 60)}min`;\r\n    if (targetType === 'calories') return `${calories}/${targetValue}kcal`;\r\n    return '';\r\n  })",
+          "lineNumber": 366
+        },
+        {
+          "caller": "SportPage",
+          "callee": "Math.floor",
+          "lineNumber": 368
+        },
+        {
+          "caller": "SportPage",
+          "callee": "Math.floor",
+          "lineNumber": 368
+        },
+        {
+          "caller": "SportPage",
+          "callee": "nav.goBack",
+          "lineNumber": 398
+        },
+        {
+          "caller": "SportPage",
+          "callee": "(exerciseLog ?? []).filter",
+          "lineNumber": 399
+        },
+        {
+          "caller": "SportPage",
+          "callee": "setShowMusicPicker",
+          "lineNumber": 400
+        },
+        {
+          "caller": "SportPage",
+          "callee": "setShowMusicPicker",
+          "lineNumber": 405
+        },
+        {
+          "caller": "SportPage",
+          "callee": "T",
+          "lineNumber": 417
+        },
+        {
+          "caller": "SportPage",
+          "callee": "musicPause",
+          "lineNumber": 417
+        },
+        {
+          "caller": "SportPage",
+          "callee": "musicResume",
+          "lineNumber": 417
+        },
+        {
+          "caller": "SportPage",
+          "callee": "setShowMusicPicker",
+          "lineNumber": 417
+        },
+        {
+          "caller": "SportPage",
+          "callee": "setShowMusicPicker",
+          "lineNumber": 418
+        },
+        {
+          "caller": "SportPage",
+          "callee": "musicPause",
+          "lineNumber": 436
+        },
+        {
+          "caller": "SportPage",
+          "callee": "musicResume",
+          "lineNumber": 436
+        },
+        {
+          "caller": "SportPage",
+          "callee": "setShowMusicPicker",
+          "lineNumber": 436
+        },
+        {
+          "caller": "SportPage",
+          "callee": "nav.goBack",
+          "lineNumber": 443
+        },
+        {
+          "caller": "SportPage",
+          "callee": "(exerciseLog ?? []).filter",
+          "lineNumber": 444
+        },
+        {
+          "caller": "SportPage",
+          "callee": "setShowMusicPicker",
+          "lineNumber": 447
+        },
+        {
+          "caller": "SportPage",
+          "callee": "nav.goBack",
+          "lineNumber": 470
+        },
+        {
+          "caller": "SportPage",
+          "callee": "(exerciseLog ?? []).filter",
+          "lineNumber": 471
+        },
+        {
+          "caller": "SportPage",
+          "callee": "musicPause",
+          "lineNumber": 491
+        },
+        {
+          "caller": "SportPage",
+          "callee": "musicResume",
+          "lineNumber": 491
+        },
+        {
+          "caller": "SportPage",
+          "callee": "setShowMusicPicker",
+          "lineNumber": 493
+        },
+        {
+          "caller": "SportPage",
+          "callee": "resolveGoal",
+          "lineNumber": 499
+        },
+        {
+          "caller": "SportPage",
+          "callee": "setShowMusicPicker",
+          "lineNumber": 502
+        },
+        {
+          "caller": "SportPage",
+          "callee": "audio.setShowSoundPicker",
+          "lineNumber": 519
+        },
+        {
+          "caller": "SportPage",
+          "callee": "musicPause",
+          "lineNumber": 534
+        },
+        {
+          "caller": "SportPage",
+          "callee": "musicResume",
+          "lineNumber": 534
+        },
+        {
+          "caller": "SportPage",
+          "callee": "setShowMusicPicker",
+          "lineNumber": 536
+        },
+        {
+          "caller": "SportPage",
+          "callee": "(() => {\r\n    switch (experienceType) {\r\n      case 'meditative': return <MeditativeActive {...layoutProps} />;\r\n      case 'endurance':  return <EnduranceActive {...layoutProps} />;\r\n      case 'interval':   return <StrengthActive {...layoutProps} restMode=\"inline\" />;\r\n      default:           return <StrengthActive {...layoutProps} />;\r\n    }\r\n  })",
+          "lineNumber": 540
+        },
+        {
+          "caller": "SportPage",
+          "callee": "resolveGoal",
+          "lineNumber": 556
+        },
+        {
+          "caller": "SportPage",
+          "callee": "setShowMusicPicker",
+          "lineNumber": 558
+        }
+      ],
+      "metrics": {
+        "importCount": 26,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/exercise/hooks/useExerciseAudio.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 139,
+      "nonEmptyLines": 121,
+      "functions": [
+        {
+          "name": "useExerciseAudio",
+          "startLine": 18,
+          "endLine": 139,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "useExerciseAudio",
+          "line": 18,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useExerciseAudio",
+          "callee": "useState",
+          "lineNumber": 19
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "useState",
+          "lineNumber": 20
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "useRef",
+          "lineNumber": 21
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "useAudioPlayer",
+          "lineNumber": 25
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "useAudioPlayer",
+          "lineNumber": 28
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "useEffect",
+          "lineNumber": 30
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "useEffect",
+          "lineNumber": 35
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "useEffect",
+          "lineNumber": 40
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "audioSessionManager.requestPlay",
+          "lineNumber": 43
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "bgPlayer.play",
+          "lineNumber": 45
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "useEffect",
+          "lineNumber": 51
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "setAudioModeAsync({ playsInSilentMode: true, shouldPlayInBackground: false }).catch",
+          "lineNumber": 52
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "setAudioModeAsync",
+          "lineNumber": 52
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "AsyncStorage.getItem('sport_selected_sound').then(v => {\r\n      if (v && EXERCISE_SOUNDS.some(s => s.key === v)) setSelectedSound(v);\r\n    }).catch",
+          "lineNumber": 53
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "AsyncStorage.getItem('sport_selected_sound').then",
+          "lineNumber": 53
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "AsyncStorage.getItem",
+          "lineNumber": 53
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "EXERCISE_SOUNDS.some",
+          "lineNumber": 54
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "setSelectedSound",
+          "lineNumber": 54
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "useEffect",
+          "lineNumber": 59
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "AsyncStorage.setItem('sport_selected_sound', selectedSound).catch",
+          "lineNumber": 60
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "AsyncStorage.setItem",
+          "lineNumber": 60
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "useCallback",
+          "lineNumber": 63
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "bellPlayer.seekTo",
+          "lineNumber": 64
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "bellPlayer.play",
+          "lineNumber": 65
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "useCallback",
+          "lineNumber": 68
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "setSelectedSound",
+          "lineNumber": 69
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "bgPlayer.pause",
+          "lineNumber": 73
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "audioSessionManager.notifyStopped",
+          "lineNumber": 74
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "setShowSoundPicker",
+          "lineNumber": 79
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "useRef",
+          "lineNumber": 83
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "useRef",
+          "lineNumber": 84
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "useRef",
+          "lineNumber": 85
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "useEffect",
+          "lineNumber": 86
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "useEffect",
+          "lineNumber": 87
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "useEffect",
+          "lineNumber": 88
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "useEffect",
+          "lineNumber": 89
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "bgPlayerRef.current.remove",
+          "lineNumber": 92
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "bellPlayerRef.current.remove",
+          "lineNumber": 93
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "audioSessionManager.notifyStopped",
+          "lineNumber": 95
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "useCallback",
+          "lineNumber": 100
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "setSelectedSound",
+          "lineNumber": 101
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "EXERCISE_SOUNDS.findIndex",
+          "lineNumber": 102
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "bgPlayer.pause",
+          "lineNumber": 105
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "audioSessionManager.notifyStopped",
+          "lineNumber": 106
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "setShowSoundPicker",
+          "lineNumber": 110
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "useCallback",
+          "lineNumber": 116
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "bgPlayer.pause",
+          "lineNumber": 117
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "bellPlayer.pause",
+          "lineNumber": 118
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "audioSessionManager.notifyStopped",
+          "lineNumber": 119
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "useEffect",
+          "lineNumber": 123
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "bgPlayerRef.current.remove",
+          "lineNumber": 125
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "bellPlayerRef.current.remove",
+          "lineNumber": 126
+        },
+        {
+          "caller": "useExerciseAudio",
+          "callee": "audioSessionManager.notifyStopped",
+          "lineNumber": 128
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/exercise/hooks/useExerciseGps.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 39,
+      "nonEmptyLines": 34,
+      "functions": [
+        {
+          "name": "getLocation",
+          "startLine": 3,
+          "endLine": 8,
+          "params": []
+        },
+        {
+          "name": "reqLocPerm",
+          "startLine": 10,
+          "endLine": 14,
+          "params": []
+        },
+        {
+          "name": "getCurPos",
+          "startLine": 16,
+          "endLine": 20,
+          "params": []
+        },
+        {
+          "name": "watchPos",
+          "startLine": 22,
+          "endLine": 26,
+          "params": [
+            "cb"
+          ]
+        },
+        {
+          "name": "computeDistance",
+          "startLine": 28,
+          "endLine": 39,
+          "params": [
+            "coords"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "reqLocPerm",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "getCurPos",
+          "line": 16,
+          "isDefault": false
+        },
+        {
+          "name": "watchPos",
+          "line": 22,
+          "isDefault": false
+        },
+        {
+          "name": "computeDistance",
+          "line": 28,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getLocation",
+          "callee": "import",
+          "lineNumber": 5
+        },
+        {
+          "caller": "getLocation",
+          "callee": "import",
+          "lineNumber": 7
+        },
+        {
+          "caller": "reqLocPerm",
+          "callee": "getLocation",
+          "lineNumber": 11
+        },
+        {
+          "caller": "reqLocPerm",
+          "callee": "m.requestForegroundPermissionsAsync",
+          "lineNumber": 13
+        },
+        {
+          "caller": "getCurPos",
+          "callee": "getLocation",
+          "lineNumber": 17
+        },
+        {
+          "caller": "getCurPos",
+          "callee": "m.getCurrentPositionAsync",
+          "lineNumber": 19
+        },
+        {
+          "caller": "watchPos",
+          "callee": "getLocation",
+          "lineNumber": 23
+        },
+        {
+          "caller": "watchPos",
+          "callee": "m.watchPositionAsync",
+          "lineNumber": 25
+        },
+        {
+          "caller": "computeDistance",
+          "callee": "coords.reduce",
+          "lineNumber": 30
+        },
+        {
+          "caller": "computeDistance",
+          "callee": "Math.min",
+          "lineNumber": 35
+        },
+        {
+          "caller": "computeDistance",
+          "callee": "Math.sin",
+          "lineNumber": 35
+        },
+        {
+          "caller": "computeDistance",
+          "callee": "Math.cos",
+          "lineNumber": 35
+        },
+        {
+          "caller": "computeDistance",
+          "callee": "Math.cos",
+          "lineNumber": 36
+        },
+        {
+          "caller": "computeDistance",
+          "callee": "Math.sin",
+          "lineNumber": 36
+        },
+        {
+          "caller": "computeDistance",
+          "callee": "Math.atan2",
+          "lineNumber": 37
+        },
+        {
+          "caller": "computeDistance",
+          "callee": "Math.sqrt",
+          "lineNumber": 37
+        },
+        {
+          "caller": "computeDistance",
+          "callee": "Math.sqrt",
+          "lineNumber": 37
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 4,
+        "functionCount": 5,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/exercise/hooks/useExerciseRest.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 29,
+      "nonEmptyLines": 24,
+      "functions": [
+        {
+          "name": "useExerciseRest",
+          "startLine": 3,
+          "endLine": 29,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "useExerciseRest",
+          "line": 3,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useExerciseRest",
+          "callee": "useState",
+          "lineNumber": 4
+        },
+        {
+          "caller": "useExerciseRest",
+          "callee": "useState",
+          "lineNumber": 5
+        },
+        {
+          "caller": "useExerciseRest",
+          "callee": "useEffect",
+          "lineNumber": 7
+        },
+        {
+          "caller": "useExerciseRest",
+          "callee": "setIsResting",
+          "lineNumber": 10
+        },
+        {
+          "caller": "useExerciseRest",
+          "callee": "setTimeout",
+          "lineNumber": 13
+        },
+        {
+          "caller": "useExerciseRest",
+          "callee": "setRestSec",
+          "lineNumber": 13
+        },
+        {
+          "caller": "useExerciseRest",
+          "callee": "clearTimeout",
+          "lineNumber": 14
+        },
+        {
+          "caller": "useExerciseRest",
+          "callee": "useCallback",
+          "lineNumber": 17
+        },
+        {
+          "caller": "useExerciseRest",
+          "callee": "setIsResting",
+          "lineNumber": 19
+        },
+        {
+          "caller": "useExerciseRest",
+          "callee": "setRestSec",
+          "lineNumber": 20
+        },
+        {
+          "caller": "useExerciseRest",
+          "callee": "useCallback",
+          "lineNumber": 23
+        },
+        {
+          "caller": "useExerciseRest",
+          "callee": "setIsResting",
+          "lineNumber": 24
+        },
+        {
+          "caller": "useExerciseRest",
+          "callee": "setRestSec",
+          "lineNumber": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/exercise/hooks/useExerciseSets.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 95,
+      "nonEmptyLines": 84,
+      "functions": [
+        {
+          "name": "useExerciseSets",
+          "startLine": 6,
+          "endLine": 95,
+          "params": [
+            "onCompleteSet"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "useExerciseSets",
+          "line": 6,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useExerciseSets",
+          "callee": "useState",
+          "lineNumber": 7
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "useState",
+          "lineNumber": 8
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "useRef",
+          "lineNumber": 9
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "useRef",
+          "lineNumber": 11
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "useRef",
+          "lineNumber": 15
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "useRef",
+          "lineNumber": 16
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "useRef",
+          "lineNumber": 17
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "useRef",
+          "lineNumber": 20
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "useRef",
+          "lineNumber": 21
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "useRef",
+          "lineNumber": 22
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "useCallback",
+          "lineNumber": 24
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "clearTimeout",
+          "lineNumber": 25
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "clearTimeout",
+          "lineNumber": 26
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "useEffect",
+          "lineNumber": 30
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "clearTimeout",
+          "lineNumber": 32
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "clearTimeout",
+          "lineNumber": 33
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "useCallback",
+          "lineNumber": 37
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "clearLongPress",
+          "lineNumber": 38
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "setTimeout",
+          "lineNumber": 40
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "Date.now",
+          "lineNumber": 42
+        },
+        {
+          "caller": "tick",
+          "callee": "Date.now",
+          "lineNumber": 44
+        },
+        {
+          "caller": "tick",
+          "callee": "setCurrentSetReps",
+          "lineNumber": 47
+        },
+        {
+          "caller": "tick",
+          "callee": "Math.max",
+          "lineNumber": 47
+        },
+        {
+          "caller": "tick",
+          "callee": "setTimeout",
+          "lineNumber": 49
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "tick",
+          "lineNumber": 51
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "useCallback",
+          "lineNumber": 55
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "clearLongPress",
+          "lineNumber": 57
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "setCurrentSetReps",
+          "lineNumber": 59
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "Math.max",
+          "lineNumber": 59
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "anim.setValue",
+          "lineNumber": 62
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "Animated.sequence([\n      Animated.timing(anim, { toValue: 1.15, duration: 80, useNativeDriver: true }),\n      Animated.timing(anim, { toValue: 1, duration: 120, useNativeDriver: true }),\n    ]).start",
+          "lineNumber": 63
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "Animated.sequence",
+          "lineNumber": 63
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "Animated.timing",
+          "lineNumber": 64
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "Animated.timing",
+          "lineNumber": 65
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "useCallback",
+          "lineNumber": 70
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "bounceAnim.setValue",
+          "lineNumber": 71
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "Animated.sequence([\n      Animated.timing(bounceAnim, { toValue: 1.05, duration: 100, useNativeDriver: true }),\n      Animated.timing(bounceAnim, { toValue: 1, duration: 100, useNativeDriver: true }),\n    ]).start",
+          "lineNumber": 72
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "Animated.sequence",
+          "lineNumber": 72
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "Animated.timing",
+          "lineNumber": 73
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "Animated.timing",
+          "lineNumber": 74
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "useCallback",
+          "lineNumber": 78
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "setSets",
+          "lineNumber": 79
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "setCurrentSetReps",
+          "lineNumber": 80
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch",
+          "lineNumber": 81
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "Haptics.impactAsync",
+          "lineNumber": 81
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "onCompleteSetRef.current",
+          "lineNumber": 82
+        },
+        {
+          "caller": "useExerciseSets",
+          "callee": "sets.reduce",
+          "lineNumber": 85
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/exercise/hooks/useExerciseTargets.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 124,
+      "nonEmptyLines": 113,
+      "functions": [
+        {
+          "name": "useExerciseTargets",
+          "startLine": 20,
+          "endLine": 124,
+          "params": [
+            "params"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "useExerciseTargets",
+          "line": 20,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useExerciseTargets",
+          "callee": "useRef",
+          "lineNumber": 23
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "useState",
+          "lineNumber": 24
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "useRef",
+          "lineNumber": 25
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "useRef",
+          "lineNumber": 26
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "useRef",
+          "lineNumber": 27
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "useState",
+          "lineNumber": 28
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "useRef",
+          "lineNumber": 29
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "(() => {\n    if (targetValue <= 0) return 0;\n    if (targetType === 'distance') return Math.min(distKm / targetValue, 1);\n    if (targetType === 'time')     return Math.min(sec / targetValue, 1);\n    if (targetType === 'calories') return Math.min(calories / targetValue, 1);\n    if (targetType === 'reps')     return Math.min(totalReps / targetValue, 1);\n    return 0;\n  })",
+          "lineNumber": 35
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "Math.min",
+          "lineNumber": 37
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "Math.min",
+          "lineNumber": 38
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "Math.min",
+          "lineNumber": 39
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "Math.min",
+          "lineNumber": 40
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "getSoftTarget",
+          "lineNumber": 45
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "Math.min",
+          "lineNumber": 48
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "useCallback",
+          "lineNumber": 56
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "setShowCelebration",
+          "lineNumber": 57
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "celebrateAnim.setValue",
+          "lineNumber": 58
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "Animated.sequence([\n      Animated.timing(celebrateAnim, { toValue: 1, duration: 300, easing: Easing.out(Easing.back(1.5)), useNativeDriver: true }),\n      Animated.delay(600),\n      Animated.timing(celebrateAnim, { toValue: 0, duration: 200, useNativeDriver: true }),\n    ]).start",
+          "lineNumber": 59
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "Animated.sequence",
+          "lineNumber": 59
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "Animated.timing",
+          "lineNumber": 60
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "Easing.out",
+          "lineNumber": 60
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "Easing.back",
+          "lineNumber": 60
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "Animated.delay",
+          "lineNumber": 61
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "Animated.timing",
+          "lineNumber": 62
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "setShowCelebration",
+          "lineNumber": 63
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "useRef",
+          "lineNumber": 67
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "useCallback",
+          "lineNumber": 68
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "Haptics.notificationAsync",
+          "lineNumber": 77
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "triggerCelebration",
+          "lineNumber": 78
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "playBell",
+          "lineNumber": 79
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "useCallback",
+          "lineNumber": 84
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "reachedMilestonesRef.current.has",
+          "lineNumber": 88
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "reachedMilestonesRef.current.add",
+          "lineNumber": 89
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "setMilestoneText",
+          "lineNumber": 90
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "Haptics.impactAsync",
+          "lineNumber": 91
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "playBell",
+          "lineNumber": 92
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "milestoneAnim.setValue",
+          "lineNumber": 93
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "Animated.sequence([\n          Animated.timing(milestoneAnim, { toValue: 1, duration: 300, useNativeDriver: true }),\n          Animated.delay(1500),\n          Animated.timing(milestoneAnim, { toValue: 0, duration: 300, useNativeDriver: true }),\n        ]).start",
+          "lineNumber": 94
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "Animated.sequence",
+          "lineNumber": 94
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "Animated.timing",
+          "lineNumber": 95
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "Animated.delay",
+          "lineNumber": 96
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "Animated.timing",
+          "lineNumber": 97
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "setMilestoneText",
+          "lineNumber": 98
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "useCallback",
+          "lineNumber": 105
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "Haptics.impactAsync",
+          "lineNumber": 108
+        },
+        {
+          "caller": "useExerciseTargets",
+          "callee": "playBell",
+          "lineNumber": 109
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/exercise/hooks/useExerciseTimer.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 110,
+      "nonEmptyLines": 96,
+      "functions": [
+        {
+          "name": "useExerciseTimer",
+          "startLine": 7,
+          "endLine": 110,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "useExerciseTimer",
+          "line": 7,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useExerciseTimer",
+          "callee": "useState",
+          "lineNumber": 8
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "useState",
+          "lineNumber": 9
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "useState",
+          "lineNumber": 10
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "useState",
+          "lineNumber": 11
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "useState",
+          "lineNumber": 12
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "useRef",
+          "lineNumber": 14
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "useRef",
+          "lineNumber": 15
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "useRef",
+          "lineNumber": 16
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "useRef",
+          "lineNumber": 17
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "useRef",
+          "lineNumber": 18
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "useEffect",
+          "lineNumber": 21
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "setInterval",
+          "lineNumber": 23
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "setSec",
+          "lineNumber": 23
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "clearInterval",
+          "lineNumber": 25
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "clearInterval",
+          "lineNumber": 27
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "useEffect",
+          "lineNumber": 31
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "setPage",
+          "lineNumber": 34
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "setActive",
+          "lineNumber": 35
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "Haptics.impactAsync",
+          "lineNumber": 38
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "setTimeout",
+          "lineNumber": 39
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "setCountdown",
+          "lineNumber": 39
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "clearTimeout",
+          "lineNumber": 40
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "useEffect",
+          "lineNumber": 44
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "clearTimeout",
+          "lineNumber": 45
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "holdAnim.removeAllListeners",
+          "lineNumber": 46
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "holdAnim.stopAnimation",
+          "lineNumber": 47
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "useCallback",
+          "lineNumber": 50
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "setCountdown",
+          "lineNumber": 50
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "setPage",
+          "lineNumber": 50
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "useCallback",
+          "lineNumber": 52
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "setActive",
+          "lineNumber": 53
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "setPage",
+          "lineNumber": 54
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "useCallback",
+          "lineNumber": 57
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "setPage",
+          "lineNumber": 58
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "setActive",
+          "lineNumber": 59
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "useCallback",
+          "lineNumber": 62
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "clearTimeout",
+          "lineNumber": 63
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "holdAnim.setValue",
+          "lineNumber": 64
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "holdAnim.removeAllListeners",
+          "lineNumber": 65
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "Animated.spring(scaleAnim, {\n      toValue: 1.2, damping: 8, stiffness: 200, useNativeDriver: true,\n    }).start",
+          "lineNumber": 68
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "Animated.spring",
+          "lineNumber": 68
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "Animated.timing",
+          "lineNumber": 73
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "holdAnim.addListener",
+          "lineNumber": 76
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "holdAnim.removeAllListeners",
+          "lineNumber": 78
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "Haptics.notificationAsync",
+          "lineNumber": 79
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "pulseAnim.setValue",
+          "lineNumber": 81
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "Animated.timing(pulseAnim, { toValue: 1, duration: 400, easing: Easing.out(Easing.ease), useNativeDriver: true }).start",
+          "lineNumber": 82
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "Animated.timing",
+          "lineNumber": 82
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "Easing.out",
+          "lineNumber": 82
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "Animated.spring(scaleAnim, { toValue: 1, damping: 10, useNativeDriver: true }).start",
+          "lineNumber": 84
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "Animated.spring",
+          "lineNumber": 84
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "setTimeout",
+          "lineNumber": 85
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "setPage",
+          "lineNumber": 86
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "anim.start",
+          "lineNumber": 90
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "useCallback",
+          "lineNumber": 93
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "clearTimeout",
+          "lineNumber": 94
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "holdAnim.removeAllListeners",
+          "lineNumber": 95
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "Animated.spring(scaleAnim, { toValue: 1, damping: 10, useNativeDriver: true }).start",
+          "lineNumber": 97
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "Animated.spring",
+          "lineNumber": 97
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "holdAnim.stopAnimation",
+          "lineNumber": 99
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "Animated.timing(holdAnim, { toValue: 0, duration: 200, useNativeDriver: false }).start",
+          "lineNumber": 100
+        },
+        {
+          "caller": "useExerciseTimer",
+          "callee": "Animated.timing",
+          "lineNumber": 100
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/exercise/layouts/EnduranceActive.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 120,
+      "nonEmptyLines": 106,
+      "functions": [
+        {
+          "name": "EnduranceActive",
+          "startLine": 13,
+          "endLine": 120,
+          "params": [
+            "props"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "EnduranceActive",
+          "line": 13,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "EnduranceActive",
+          "callee": "FONT_HERO",
+          "lineNumber": 52
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "FONT_BODY",
+          "lineNumber": 55
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "T",
+          "lineNumber": 55
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "FONT_STAT_CARD",
+          "lineNumber": 61
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "fmt",
+          "lineNumber": 61
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "FONT_SUB",
+          "lineNumber": 62
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "T",
+          "lineNumber": 62
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "FONT_STAT_CARD",
+          "lineNumber": 65
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "FONT_SUB",
+          "lineNumber": 66
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "T",
+          "lineNumber": 66
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "FONT_STAT_CARD",
+          "lineNumber": 73
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "FONT_SUB",
+          "lineNumber": 74
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "T",
+          "lineNumber": 74
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "FONT_STAT_CARD",
+          "lineNumber": 77
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "FONT_SUB",
+          "lineNumber": 78
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "T",
+          "lineNumber": 78
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "Math.min",
+          "lineNumber": 86
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "FONT_SUB",
+          "lineNumber": 88
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "T('exerciseTargetProgress').replace('{value}', targetType === 'time' ? `${Math.floor(targetValue / 60)}min` : `${targetValue}`).replace",
+          "lineNumber": 89
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "T('exerciseTargetProgress').replace",
+          "lineNumber": 89
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "T",
+          "lineNumber": 89
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "Math.floor",
+          "lineNumber": 89
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "String",
+          "lineNumber": 89
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "Math.round",
+          "lineNumber": 89
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "Alert.alert",
+          "lineNumber": 99
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "T",
+          "lineNumber": 99
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "T",
+          "lineNumber": 99
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "T",
+          "lineNumber": 100
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "T",
+          "lineNumber": 101
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "props.handlePause",
+          "lineNumber": 101
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "FONT_SUB",
+          "lineNumber": 104
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "T",
+          "lineNumber": 104
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "FONT_SUB",
+          "lineNumber": 115
+        },
+        {
+          "caller": "EnduranceActive",
+          "callee": "T",
+          "lineNumber": 115
+        }
+      ],
+      "metrics": {
+        "importCount": 5,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/exercise/layouts/GpsActive.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 95,
+      "nonEmptyLines": 91,
+      "functions": [
+        {
+          "name": "GpsActive",
+          "startLine": 33,
+          "endLine": 95,
+          "params": [
+            "{\r\n  MapView, Polyline, amapReady, mapRef, initialPos, coords, color,\r\n  mode, targetProgress, distKm, sec, calories, handlePause, T,\r\n  musicTrack, musicIsPlaying, musicLoop, onMusicTogglePlay, onMusicToggleLoop, onMusicPress,\r\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "GpsActive",
+          "line": 33,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "GpsActive",
+          "callee": "Math.min",
+          "lineNumber": 53
+        },
+        {
+          "caller": "GpsActive",
+          "callee": "FONT_HERO",
+          "lineNumber": 59
+        },
+        {
+          "caller": "GpsActive",
+          "callee": "distKm.toFixed",
+          "lineNumber": 59
+        },
+        {
+          "caller": "GpsActive",
+          "callee": "FONT_SUB",
+          "lineNumber": 60
+        },
+        {
+          "caller": "GpsActive",
+          "callee": "FONT_HERO",
+          "lineNumber": 63
+        },
+        {
+          "caller": "GpsActive",
+          "callee": "Math.floor",
+          "lineNumber": 63
+        },
+        {
+          "caller": "GpsActive",
+          "callee": "String(sec % 60).padStart",
+          "lineNumber": 63
+        },
+        {
+          "caller": "GpsActive",
+          "callee": "String",
+          "lineNumber": 63
+        },
+        {
+          "caller": "GpsActive",
+          "callee": "FONT_SUB",
+          "lineNumber": 64
+        },
+        {
+          "caller": "GpsActive",
+          "callee": "T",
+          "lineNumber": 64
+        },
+        {
+          "caller": "GpsActive",
+          "callee": "FONT_HERO",
+          "lineNumber": 67
+        },
+        {
+          "caller": "GpsActive",
+          "callee": "formatPace",
+          "lineNumber": 67
+        },
+        {
+          "caller": "GpsActive",
+          "callee": "FONT_SUB",
+          "lineNumber": 68
+        },
+        {
+          "caller": "GpsActive",
+          "callee": "T",
+          "lineNumber": 68
+        },
+        {
+          "caller": "GpsActive",
+          "callee": "FONT_TITLE",
+          "lineNumber": 72
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/exercise/layouts/MeditativeActive.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 119,
+      "nonEmptyLines": 107,
+      "functions": [
+        {
+          "name": "MeditativeActive",
+          "startLine": 14,
+          "endLine": 119,
+          "params": [
+            "props"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "MeditativeActive",
+          "line": 14,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "MeditativeActive",
+          "callee": "T",
+          "lineNumber": 30
+        },
+        {
+          "caller": "MeditativeActive",
+          "callee": "breathAnim.interpolate",
+          "lineNumber": 60
+        },
+        {
+          "caller": "MeditativeActive",
+          "callee": "breathAnim.interpolate",
+          "lineNumber": 61
+        },
+        {
+          "caller": "MeditativeActive",
+          "callee": "FONT_BODY",
+          "lineNumber": 63
+        },
+        {
+          "caller": "MeditativeActive",
+          "callee": "['inhale', 'hold', 'exhale'].map",
+          "lineNumber": 68
+        },
+        {
+          "caller": "MeditativeActive",
+          "callee": "FONT_HERO",
+          "lineNumber": 75
+        },
+        {
+          "caller": "MeditativeActive",
+          "callee": "Math.floor",
+          "lineNumber": 75
+        },
+        {
+          "caller": "MeditativeActive",
+          "callee": "String(sec % 60).padStart",
+          "lineNumber": 75
+        },
+        {
+          "caller": "MeditativeActive",
+          "callee": "String",
+          "lineNumber": 75
+        },
+        {
+          "caller": "MeditativeActive",
+          "callee": "FONT_SUB",
+          "lineNumber": 76
+        },
+        {
+          "caller": "MeditativeActive",
+          "callee": "Math.min",
+          "lineNumber": 84
+        },
+        {
+          "caller": "MeditativeActive",
+          "callee": "FONT_SUB",
+          "lineNumber": 86
+        },
+        {
+          "caller": "MeditativeActive",
+          "callee": "Math.round",
+          "lineNumber": 87
+        },
+        {
+          "caller": "MeditativeActive",
+          "callee": "FONT_STAT_SECTION",
+          "lineNumber": 96
+        },
+        {
+          "caller": "MeditativeActive",
+          "callee": "Math.floor",
+          "lineNumber": 97
+        },
+        {
+          "caller": "MeditativeActive",
+          "callee": "String(sec % 60).padStart",
+          "lineNumber": 97
+        },
+        {
+          "caller": "MeditativeActive",
+          "callee": "String",
+          "lineNumber": 97
+        },
+        {
+          "caller": "MeditativeActive",
+          "callee": "FONT_SUB",
+          "lineNumber": 99
+        },
+        {
+          "caller": "MeditativeActive",
+          "callee": "T",
+          "lineNumber": 99
+        },
+        {
+          "caller": "MeditativeActive",
+          "callee": "FONT_STAT_CARD",
+          "lineNumber": 113
+        },
+        {
+          "caller": "MeditativeActive",
+          "callee": "FONT_SUB",
+          "lineNumber": 114
+        }
+      ],
+      "metrics": {
+        "importCount": 6,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/exercise/layouts/StrengthActive.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 232,
+      "nonEmptyLines": 206,
+      "functions": [
+        {
+          "name": "StrengthActive",
+          "startLine": 22,
+          "endLine": 191,
+          "params": [
+            "props"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "StrengthActive",
+          "line": 22,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "StrengthActive",
+          "callee": "T",
+          "lineNumber": 47
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "T('exerciseSet').replace",
+          "lineNumber": 61
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "T",
+          "lineNumber": 61
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "String",
+          "lineNumber": 61
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "sets.reduce",
+          "lineNumber": 61
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "T",
+          "lineNumber": 61
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "setCurrentSetReps",
+          "lineNumber": 77
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "startLongPress",
+          "lineNumber": 86
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "stopLongPress",
+          "lineNumber": 87
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "startLongPress",
+          "lineNumber": 101
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "stopLongPress",
+          "lineNumber": 102
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "T",
+          "lineNumber": 109
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "T",
+          "lineNumber": 115
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "sets.slice(-3).map",
+          "lineNumber": 122
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "sets.slice",
+          "lineNumber": 122
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "T('exerciseSet').replace",
+          "lineNumber": 127
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "T",
+          "lineNumber": 127
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "String",
+          "lineNumber": 127
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "Math.min",
+          "lineNumber": 144
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "T",
+          "lineNumber": 147
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "Math.round",
+          "lineNumber": 147
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "T",
+          "lineNumber": 156
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "Math.floor",
+          "lineNumber": 169
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "String(sec % 60).padStart",
+          "lineNumber": 169
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "String",
+          "lineNumber": 169
+        },
+        {
+          "caller": "StrengthActive",
+          "callee": "T",
+          "lineNumber": 171
+        }
+      ],
+      "metrics": {
+        "importCount": 7,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/exercise/layouts/types.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 89,
+      "nonEmptyLines": 74,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/exercise/pages/CountdownPage.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 41,
+      "nonEmptyLines": 37,
+      "functions": [
+        {
+          "name": "CountdownPage",
+          "startLine": 20,
+          "endLine": 41,
+          "params": [
+            "{ countdown, label, musicTrack, musicIsPlaying, musicLoop, onMusicTogglePlay, onMusicToggleLoop, onMusicPress }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "CountdownPage",
+          "line": 20,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "CountdownPage",
+          "callee": "FONT_HERO",
+          "lineNumber": 23
+        },
+        {
+          "caller": "CountdownPage",
+          "callee": "FONT_TITLE",
+          "lineNumber": 24
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/exercise/pages/PausedPage.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 192,
+      "nonEmptyLines": 173,
+      "functions": [
+        {
+          "name": "PausedPage",
+          "startLine": 11,
+          "endLine": 192,
+          "params": [
+            "props"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "PausedPage",
+          "line": 11,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "PausedPage",
+          "callee": "sets.reduce",
+          "lineNumber": 19
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "useState",
+          "lineNumber": 27
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "useState",
+          "lineNumber": 28
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "useRef",
+          "lineNumber": 29
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "useRef",
+          "lineNumber": 30
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "useRef",
+          "lineNumber": 31
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "useCallback",
+          "lineNumber": 33
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "cancelAnimationFrame",
+          "lineNumber": 34
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "useCallback",
+          "lineNumber": 37
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "setHolding",
+          "lineNumber": 38
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "setRingOffset",
+          "lineNumber": 39
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "Date.now",
+          "lineNumber": 40
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "Animated.spring(scaleAnim, { toValue: 1.2, damping: 8, stiffness: 200, useNativeDriver: true }).start",
+          "lineNumber": 41
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "Animated.spring",
+          "lineNumber": 41
+        },
+        {
+          "caller": "tick",
+          "callee": "Math.min",
+          "lineNumber": 43
+        },
+        {
+          "caller": "tick",
+          "callee": "Date.now",
+          "lineNumber": 43
+        },
+        {
+          "caller": "tick",
+          "callee": "setRingOffset",
+          "lineNumber": 44
+        },
+        {
+          "caller": "tick",
+          "callee": "requestAnimationFrame",
+          "lineNumber": 46
+        },
+        {
+          "caller": "tick",
+          "callee": "getMinDuration",
+          "lineNumber": 49
+        },
+        {
+          "caller": "tick",
+          "callee": "setHolding",
+          "lineNumber": 51
+        },
+        {
+          "caller": "tick",
+          "callee": "setRingOffset",
+          "lineNumber": 52
+        },
+        {
+          "caller": "tick",
+          "callee": "Animated.spring(scaleAnim, { toValue: 1, damping: 10, useNativeDriver: true }).start",
+          "lineNumber": 53
+        },
+        {
+          "caller": "tick",
+          "callee": "Animated.spring",
+          "lineNumber": 53
+        },
+        {
+          "caller": "tick",
+          "callee": "Alert.alert",
+          "lineNumber": 54
+        },
+        {
+          "caller": "tick",
+          "callee": "T",
+          "lineNumber": 54
+        },
+        {
+          "caller": "tick",
+          "callee": "T",
+          "lineNumber": 54
+        },
+        {
+          "caller": "tick",
+          "callee": "T",
+          "lineNumber": 55
+        },
+        {
+          "caller": "tick",
+          "callee": "T",
+          "lineNumber": 56
+        },
+        {
+          "caller": "tick",
+          "callee": "onGoBack",
+          "lineNumber": 56
+        },
+        {
+          "caller": "tick",
+          "callee": "pulseAnim.setValue",
+          "lineNumber": 59
+        },
+        {
+          "caller": "tick",
+          "callee": "Animated.timing(pulseAnim, { toValue: 1, duration: 400, useNativeDriver: true }).start",
+          "lineNumber": 60
+        },
+        {
+          "caller": "tick",
+          "callee": "Animated.timing",
+          "lineNumber": 60
+        },
+        {
+          "caller": "tick",
+          "callee": "Animated.spring(scaleAnim, { toValue: 1, damping: 10, useNativeDriver: true }).start",
+          "lineNumber": 61
+        },
+        {
+          "caller": "tick",
+          "callee": "Animated.spring",
+          "lineNumber": 61
+        },
+        {
+          "caller": "tick",
+          "callee": "clearTimeout",
+          "lineNumber": 62
+        },
+        {
+          "caller": "tick",
+          "callee": "setTimeout",
+          "lineNumber": 63
+        },
+        {
+          "caller": "tick",
+          "callee": "setPage",
+          "lineNumber": 63
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "requestAnimationFrame",
+          "lineNumber": 67
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "useCallback",
+          "lineNumber": 70
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "stopAnimation",
+          "lineNumber": 71
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "setHolding",
+          "lineNumber": 72
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "setRingOffset",
+          "lineNumber": 73
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "Animated.spring(scaleAnim, { toValue: 1, damping: 10, useNativeDriver: true }).start",
+          "lineNumber": 74
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "Animated.spring",
+          "lineNumber": 74
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "handleHoldEnd",
+          "lineNumber": 75
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "useEffect",
+          "lineNumber": 78
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "stopAnimation",
+          "lineNumber": 78
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "useEffect",
+          "lineNumber": 79
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "clearTimeout",
+          "lineNumber": 79
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "FONT_TITLE",
+          "lineNumber": 87
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "T",
+          "lineNumber": 87
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "FONT_STAT_CARD",
+          "lineNumber": 110
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "fmt",
+          "lineNumber": 110
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "FONT_SUB",
+          "lineNumber": 111
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "T",
+          "lineNumber": 111
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "FONT_STAT_CARD",
+          "lineNumber": 115
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "FONT_SUB",
+          "lineNumber": 116
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "T",
+          "lineNumber": 116
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "FONT_STAT_CARD",
+          "lineNumber": 120
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "FONT_SUB",
+          "lineNumber": 121
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "T",
+          "lineNumber": 121
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "FONT_STAT_CARD",
+          "lineNumber": 124
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "FONT_SUB",
+          "lineNumber": 125
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "FONT_HERO",
+          "lineNumber": 129
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "distKm.toFixed",
+          "lineNumber": 130
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "Math.floor",
+          "lineNumber": 130
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "FONT_SUB",
+          "lineNumber": 132
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "T",
+          "lineNumber": 133
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "FONT_STAT_CARD",
+          "lineNumber": 135
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "fmt",
+          "lineNumber": 135
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "pulseAnim.interpolate",
+          "lineNumber": 152
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "pulseAnim.interpolate",
+          "lineNumber": 153
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "FONT_SUB",
+          "lineNumber": 186
+        },
+        {
+          "caller": "PausedPage",
+          "callee": "T",
+          "lineNumber": 187
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/exercise/pages/PrepPage.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 435,
+      "nonEmptyLines": 420,
+      "functions": [
+        {
+          "name": "PrepPage",
+          "startLine": 9,
+          "endLine": 213,
+          "params": [
+            "props"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "PrepPage",
+          "line": 9,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "PrepPage",
+          "callee": "Object.keys",
+          "lineNumber": 18
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "useState",
+          "lineNumber": 19
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "useState",
+          "lineNumber": 20
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "useState",
+          "lineNumber": 21
+        },
+        {
+          "caller": "isCustomActive",
+          "callee": "presets[t]?.some",
+          "lineNumber": 22
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 25
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 25
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 25
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 26
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 26
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 26
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 30
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 31
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 32
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 33
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 54
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "(['free', 'target'] as const).map",
+          "lineNumber": 62
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "setMode",
+          "lineNumber": 63
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "FONT_BODY",
+          "lineNumber": 65
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "availableTargetTypes.map",
+          "lineNumber": 76
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "setTargetType",
+          "lineNumber": 77
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "setTargetValue",
+          "lineNumber": 77
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "setShowCustomInput",
+          "lineNumber": 77
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "setCustomInputValue",
+          "lineNumber": 77
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "FONT_SUB",
+          "lineNumber": 79
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "(presets[targetType as keyof typeof presets] ?? []).map",
+          "lineNumber": 86
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "setTargetValue",
+          "lineNumber": 87
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "setShowCustomInput",
+          "lineNumber": 87
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "setCustomInputValue",
+          "lineNumber": 87
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "setCustomTargetValue",
+          "lineNumber": 87
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "FONT_BODY",
+          "lineNumber": 89
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "(() => {\r\n                const customActive = isCustomActive(targetType);\r\n                const customLabel = customActive\r\n                  ? (targetType === 'time' ? `${customTargetValue[targetType] / 60} ${T('exerciseMin')}` : `${customTargetValue[targetType]} kcal`)\r\n                  : T('exerciseCustom');\r\n                return (\r\n                  <TouchableOpacity onPress={() => {\r\n                    if (customActive) {\r\n                      setShowCustomInput(false);\r\n                      setCustomInputValue('');\r\n                      setCustomTargetValue(v => { const n = { ...v }; delete n[targetType]; return n; });\r\n                      const firstPreset = presets[targetType]?.[0]?.value ?? 0;\r\n                      setTargetValue(firstPreset);\r\n                    } else {\r\n                      setShowCustomInput(v => !v);\r\n                    }\r\n                  }}\r\n                    style={customActive || showCustomInput ? styles.presetPillActive : styles.presetPillInactive}>\r\n                    <Text style={{ color: '#fff', fontSize: FONT_BODY(), fontWeight: customActive || showCustomInput ? '700' : '400' }}>{customLabel}</Text>\r\n                  </TouchableOpacity>\r\n                );\r\n              })",
+          "lineNumber": 92
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "isCustomActive",
+          "lineNumber": 93
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 95
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 96
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "setShowCustomInput",
+          "lineNumber": 100
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "setCustomInputValue",
+          "lineNumber": 101
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "setCustomTargetValue",
+          "lineNumber": 102
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "setTargetValue",
+          "lineNumber": 104
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "setShowCustomInput",
+          "lineNumber": 106
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "FONT_BODY",
+          "lineNumber": 110
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 126
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "parseFloat",
+          "lineNumber": 129
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "isNaN",
+          "lineNumber": 130
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "Alert.alert",
+          "lineNumber": 131
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 131
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "Math.round",
+          "lineNumber": 134
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "Math.round",
+          "lineNumber": 134
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "setTargetValue",
+          "lineNumber": 135
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "setCustomTargetValue",
+          "lineNumber": 136
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "setCustomInputValue",
+          "lineNumber": 137
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "setShowCustomInput",
+          "lineNumber": 138
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 141
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "setBreathGuideEnabled",
+          "lineNumber": 150
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 152
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "(() => {\r\n          const st = getSoftTarget(sportName);\r\n          if (!st) return null;\r\n          const label = st.unit === 'min' ? T('exerciseSoftTargetMin').replace('{n}', String(st.intermediate)) : T('exerciseSoftTargetReps').replace('{n}', String(st.intermediate));\r\n          return (\r\n            <View style={styles.softTargetCard}>\r\n              <Text style={styles.softTargetText}>{label}</Text>\r\n            </View>\r\n          );\r\n        })",
+          "lineNumber": 160
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "getSoftTarget",
+          "lineNumber": 161
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T('exerciseSoftTargetMin').replace",
+          "lineNumber": 163
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 163
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "String",
+          "lineNumber": 163
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T('exerciseSoftTargetReps').replace",
+          "lineNumber": 163
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 163
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "String",
+          "lineNumber": 163
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "(() => {\r\n          const lastEntry = exerciseLog?.filter((e: ExerciseEntry) => !e.deleted && e.sportKey === sportName).slice(-1)[0];\r\n          if (!lastEntry) return null;\r\n          return (\r\n            <View style={styles.lastWorkoutCard}>\r\n              <Text style={styles.lastWorkoutText}>\r\n                {T('exerciseLastTime')} {lastEntry.durationSec ? fmt(lastEntry.durationSec) : ''}{lastEntry.reps ? ` · ${lastEntry.reps} ${T('exerciseReps')}` : ''}{lastEntry.calories ? ` · ${lastEntry.calories}kcal` : ''}\r\n              </Text>\r\n            </View>\r\n          );\r\n        })",
+          "lineNumber": 172
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "exerciseLog?.filter((e: ExerciseEntry) => !e.deleted && e.sportKey === sportName).slice",
+          "lineNumber": 173
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "exerciseLog?.filter",
+          "lineNumber": 173
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 178
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "fmt",
+          "lineNumber": 178
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 178
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 191
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "T",
+          "lineNumber": 196
+        },
+        {
+          "caller": "PrepPage",
+          "callee": "FONT_STAT_SECTION",
+          "lineNumber": 208
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/exercise/pages/ReportPage.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 202,
+      "nonEmptyLines": 188,
+      "functions": [
+        {
+          "name": "ReportPage",
+          "startLine": 9,
+          "endLine": 202,
+          "params": [
+            "props"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ReportPage",
+          "line": 9,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "ReportPage",
+          "callee": "useAppStore",
+          "lineNumber": 16
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "useAppStore",
+          "lineNumber": 17
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "useAppStore",
+          "lineNumber": 18
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "Math.min",
+          "lineNumber": 20
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "useMemo",
+          "lineNumber": 23
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "(exerciseLog ?? []).filter",
+          "lineNumber": 24
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "Date.now",
+          "lineNumber": 27
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "logs\r\n      .filter((e: Record<string, unknown>) => (e.timestamp as number) >= sevenDaysAgo)\r\n      .sort((a, b) => ((a.timestamp as number) ?? 0) - ((b.timestamp as number) ?? 0))\r\n      .slice(-7)\r\n      .map",
+          "lineNumber": 29
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "logs\r\n      .filter((e: Record<string, unknown>) => (e.timestamp as number) >= sevenDaysAgo)\r\n      .sort((a, b) => ((a.timestamp as number) ?? 0) - ((b.timestamp as number) ?? 0))\r\n      .slice",
+          "lineNumber": 29
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "logs\r\n      .filter((e: Record<string, unknown>) => (e.timestamp as number) >= sevenDaysAgo)\r\n      .sort",
+          "lineNumber": 29
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "logs\r\n      .filter",
+          "lineNumber": 29
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "dateStr",
+          "lineNumber": 34
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "Math.min",
+          "lineNumber": 43
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "Math.round",
+          "lineNumber": 43
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "FONT_TITLE",
+          "lineNumber": 49
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "T",
+          "lineNumber": 49
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "FONT_SUB",
+          "lineNumber": 50
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "formatDate",
+          "lineNumber": 50
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "[\r\n          ...(sportType === 'gps' ? [{ label: T('exerciseDistance'), value: `${distKm.toFixed(2)} km`, large: true }] : []),\r\n          { label: T('exerciseTime'), value: fmt(sec), large: true },\r\n          ...(sportType === 'repetition' ? [{ label: T('exerciseTotalReps'), value: `${displayReps}`, unit: T('exerciseReps') }] : []),\r\n          ...(sportType === 'gps' ? [{ label: T('exercisePace'), value: formatPace(distKm > 0 ? sec / distKm : 0) }] : []),\r\n          { label: T('exerciseTotalCal'), value: `${calories}`, unit: 'kcal', large: true },\r\n        ].map",
+          "lineNumber": 55
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "T",
+          "lineNumber": 56
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "distKm.toFixed",
+          "lineNumber": 56
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "T",
+          "lineNumber": 57
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "fmt",
+          "lineNumber": 57
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "T",
+          "lineNumber": 58
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "T",
+          "lineNumber": 58
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "T",
+          "lineNumber": 59
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "formatPace",
+          "lineNumber": 59
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "T",
+          "lineNumber": 60
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "FONT_BACK",
+          "lineNumber": 68
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "FONT_STAT_SECTION",
+          "lineNumber": 68
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "FONT_SMALL",
+          "lineNumber": 71
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "FONT_SMALL",
+          "lineNumber": 72
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "FONT_BODY",
+          "lineNumber": 80
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "T",
+          "lineNumber": 81
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "weekHistory.slice(-7).map",
+          "lineNumber": 84
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "weekHistory.slice",
+          "lineNumber": 84
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "Math.min",
+          "lineNumber": 90
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "FONT_SMALL",
+          "lineNumber": 93
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "day.date.slice",
+          "lineNumber": 93
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "Math.min",
+          "lineNumber": 98
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "Math.max",
+          "lineNumber": 98
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "weekHistory.map",
+          "lineNumber": 98
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "FONT_SMALL",
+          "lineNumber": 103
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "Math.floor",
+          "lineNumber": 104
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "FONT_SMALL",
+          "lineNumber": 107
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "FONT_BODY",
+          "lineNumber": 120
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "T",
+          "lineNumber": 121
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "FONT_BODY",
+          "lineNumber": 135
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "FONT_TITLE",
+          "lineNumber": 138
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "FONT_SMALL",
+          "lineNumber": 139
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "T",
+          "lineNumber": 140
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "FONT_BODY",
+          "lineNumber": 162
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "T",
+          "lineNumber": 162
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "sets.map",
+          "lineNumber": 164
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "FONT_BODY",
+          "lineNumber": 166
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "T('exerciseSet').replace",
+          "lineNumber": 166
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "T",
+          "lineNumber": 166
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "String",
+          "lineNumber": 166
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "FONT_BODY",
+          "lineNumber": 167
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "T",
+          "lineNumber": 167
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "FONT_BODY",
+          "lineNumber": 177
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "T",
+          "lineNumber": 177
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "segmentPaces.map",
+          "lineNumber": 179
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "FONT_BODY",
+          "lineNumber": 184
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "FONT_BODY",
+          "lineNumber": 185
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "formatPace",
+          "lineNumber": 185
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "FONT_TITLE",
+          "lineNumber": 197
+        },
+        {
+          "caller": "ReportPage",
+          "callee": "T",
+          "lineNumber": 197
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/exercise/pages/types.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 93,
+      "nonEmptyLines": 79,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/exercise/shared/CelebrationOverlay.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 40,
+      "nonEmptyLines": 38,
+      "functions": [
+        {
+          "name": "CelebrationOverlay",
+          "startLine": 12,
+          "endLine": 40,
+          "params": [
+            "{ showCelebration, celebrateAnim, milestoneText, milestoneAnim }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "CelebrationOverlay",
+          "line": 12,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "CelebrationOverlay",
+          "callee": "scaleFontSize",
+          "lineNumber": 18
+        },
+        {
+          "caller": "CelebrationOverlay",
+          "callee": "celebrateAnim.interpolate",
+          "lineNumber": 19
+        },
+        {
+          "caller": "CelebrationOverlay",
+          "callee": "milestoneAnim.interpolate",
+          "lineNumber": 31
+        },
+        {
+          "caller": "CelebrationOverlay",
+          "callee": "FONT_BODY",
+          "lineNumber": 34
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/exercise/shared/EmbeddedRest.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 25,
+      "nonEmptyLines": 23,
+      "functions": [
+        {
+          "name": "EmbeddedRest",
+          "startLine": 12,
+          "endLine": 25,
+          "params": [
+            "{ restSec, totalSec = 60, onSkip, T }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "EmbeddedRest",
+          "line": 12,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "EmbeddedRest",
+          "callee": "FONT_STAT_CARD",
+          "lineNumber": 15
+        },
+        {
+          "caller": "EmbeddedRest",
+          "callee": "FONT_SUB",
+          "lineNumber": 21
+        },
+        {
+          "caller": "EmbeddedRest",
+          "callee": "T",
+          "lineNumber": 21
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/exercise/shared/ExerciseTopBar.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 47,
+      "nonEmptyLines": 45,
+      "functions": [
+        {
+          "name": "ExerciseTopBar",
+          "startLine": 17,
+          "endLine": 47,
+          "params": [
+            "{ icon, sportName, targetInfo, selectedSound, showSoundPicker, onToggleSoundPicker, onSelectSound, rightSlot }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ExerciseTopBar",
+          "line": 17,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "ExerciseTopBar",
+          "callee": "FONT_CLOSE",
+          "lineNumber": 22
+        },
+        {
+          "caller": "ExerciseTopBar",
+          "callee": "FONT_BODY",
+          "lineNumber": 23
+        },
+        {
+          "caller": "ExerciseTopBar",
+          "callee": "FONT_SUB",
+          "lineNumber": 28
+        },
+        {
+          "caller": "ExerciseTopBar",
+          "callee": "EXERCISE_SOUNDS.map",
+          "lineNumber": 37
+        },
+        {
+          "caller": "ExerciseTopBar",
+          "callee": "onSelectSound",
+          "lineNumber": 38
+        },
+        {
+          "caller": "ExerciseTopBar",
+          "callee": "FONT_SUB",
+          "lineNumber": 40
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/exercise/shared/RestOverlay.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 56,
+      "nonEmptyLines": 51,
+      "functions": [
+        {
+          "name": "RestOverlay",
+          "startLine": 17,
+          "endLine": 56,
+          "params": [
+            "{ restSec, totalSec = 60, lastSetReps, setIndex, targetReps, onSkip, label, T }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "RestOverlay",
+          "line": 17,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "RestOverlay",
+          "callee": "FONT_HERO",
+          "lineNumber": 31
+        },
+        {
+          "caller": "RestOverlay",
+          "callee": "FONT_BODY",
+          "lineNumber": 33
+        },
+        {
+          "caller": "RestOverlay",
+          "callee": "FONT_SUB",
+          "lineNumber": 38
+        },
+        {
+          "caller": "RestOverlay",
+          "callee": "T('exerciseSet').replace",
+          "lineNumber": 38
+        },
+        {
+          "caller": "RestOverlay",
+          "callee": "T",
+          "lineNumber": 38
+        },
+        {
+          "caller": "RestOverlay",
+          "callee": "String",
+          "lineNumber": 38
+        },
+        {
+          "caller": "RestOverlay",
+          "callee": "FONT_BODY",
+          "lineNumber": 39
+        },
+        {
+          "caller": "RestOverlay",
+          "callee": "T",
+          "lineNumber": 39
+        },
+        {
+          "caller": "RestOverlay",
+          "callee": "FONT_SUB",
+          "lineNumber": 44
+        },
+        {
+          "caller": "RestOverlay",
+          "callee": "T('exerciseSet').replace",
+          "lineNumber": 44
+        },
+        {
+          "caller": "RestOverlay",
+          "callee": "T",
+          "lineNumber": 44
+        },
+        {
+          "caller": "RestOverlay",
+          "callee": "String",
+          "lineNumber": 44
+        },
+        {
+          "caller": "RestOverlay",
+          "callee": "FONT_BODY",
+          "lineNumber": 45
+        },
+        {
+          "caller": "RestOverlay",
+          "callee": "T('exerciseRepsTarget').replace",
+          "lineNumber": 45
+        },
+        {
+          "caller": "RestOverlay",
+          "callee": "T",
+          "lineNumber": 45
+        },
+        {
+          "caller": "RestOverlay",
+          "callee": "String",
+          "lineNumber": 45
+        },
+        {
+          "caller": "RestOverlay",
+          "callee": "FONT_BODY",
+          "lineNumber": 52
+        },
+        {
+          "caller": "RestOverlay",
+          "callee": "T",
+          "lineNumber": 52
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/global-pulse/components/ActiveInsightBar.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 18,
+      "nonEmptyLines": 14,
+      "functions": [
+        {
+          "name": "ActiveInsightBar",
+          "startLine": 16,
+          "endLine": 16,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "ActiveInsightBar",
+          "line": 16,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    }
+  ]
+}

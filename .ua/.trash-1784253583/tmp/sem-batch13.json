@@ -1,0 +1,630 @@
+{
+  "_archive/web-legacy/src/components/PrivacyPolicyPage.tsx": {
+    "summary": "隐私政策静态页：展示应用隐私条款，含返回按钮。",
+    "tags": [
+      "web-legacy",
+      "page",
+      "privacy",
+      "simple"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "PrivacyPolicyPage": {
+        "summary": "渲染隐私政策正文与返回导航。",
+        "tags": [
+          "privacy",
+          "page"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/ReflectionsTab.tsx": {
+    "summary": "感念 Tab：含感念列表、搜索高亮、标签/心情筛选、排序、收藏(Pin)、关联(trails)、LineChart 趋势、TagManagerPanel/MoodManagerPanel、useReflections 数据源。",
+    "tags": [
+      "web-legacy",
+      "reflection",
+      "tab",
+      "search",
+      "chart"
+    ],
+    "complexity": "complex",
+    "functions": {
+      "ReflectionsTab": {
+        "summary": "感念列表 + 搜索/筛选/排序/收藏 + 趋势图 + 标签/心情面板。",
+        "tags": [
+          "reflection",
+          "search",
+          "chart"
+        ],
+        "complexity": "complex"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/SettingsTab.tsx": {
+    "summary": "设置 Tab：主题、语言、提醒、AI、数据统计图、分享、导入导出、清数据、注销等系统设置。",
+    "tags": [
+      "web-legacy",
+      "settings",
+      "tab",
+      "system"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "SettingsTab": {
+        "summary": "渲染主题/语言/提醒/AI/危险区(清数据/注销)等设置项。",
+        "tags": [
+          "settings",
+          "ui"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/SportPage.tsx": {
+    "summary": "运动主页面：运动全流程 (SportPrepPage→SportActivePage→SportReportPage)，含热量估算(estimateCalories/MET_MAP)与距离计算、高德地图。",
+    "tags": [
+      "web-legacy",
+      "sport",
+      "flow",
+      "map"
+    ],
+    "complexity": "complex",
+    "functions": {
+      "SportPage": {
+        "summary": "运动流程状态机：准备→进行中→报告三阶段。",
+        "tags": [
+          "sport",
+          "flow"
+        ],
+        "complexity": "complex"
+      },
+      "computeDistance": {
+        "summary": "根据轨迹坐标计算 GPS 距离。",
+        "tags": [
+          "sport",
+          "gps"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/StarfieldBackground.tsx": {
+    "summary": "星空背景动画组件：用 canvas 渲染粒子星场背景装饰。",
+    "tags": [
+      "web-legacy",
+      "canvas",
+      "animation",
+      "background"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "StarfieldBackground": {
+        "summary": "canvas 粒子星空循环动画。",
+        "tags": [
+          "canvas",
+          "animation"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/StatsPage.tsx": {
+    "summary": "统计页壳：薄封装，注入 THEMES 后委托 StatsTab 渲染。",
+    "tags": [
+      "web-legacy",
+      "stats",
+      "page"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "StatsPage": {
+        "summary": "统计页入口，渲染 StatsTab。",
+        "tags": [
+          "stats",
+          "shell"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/StatsTab.tsx": {
+    "summary": "统计 Tab：体重/热量/周跑量聚合图(LineChart/BarChart)、冥想/打卡/日历热力图(CalendarGrid)、shield/grace 统计。",
+    "tags": [
+      "web-legacy",
+      "stats",
+      "chart",
+      "aggregate"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "StatsTab": {
+        "summary": "渲染体重/热量/跑量折线图与日历热力图。",
+        "tags": [
+          "stats",
+          "chart"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/StreakBreakPage.tsx": {
+    "summary": "连续中断页：展示 streak 断裂洞察(周/月分布、恢复天数)与鼓励文案、MiniBarChart；提供恢复打卡引导。",
+    "tags": [
+      "web-legacy",
+      "streak",
+      "insights",
+      "recovery"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "StreakBreakPage": {
+        "summary": "展示 streak 断裂分析与恢复建议。",
+        "tags": [
+          "streak",
+          "insights"
+        ],
+        "complexity": "moderate"
+      },
+      "MiniBarChart": {
+        "summary": "小型柱状图子组件(分布可视化)。",
+        "tags": [
+          "chart",
+          "mini"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/TagManagerPanel.tsx": {
+    "summary": "标签管理面板：自定义标签增删改、排序(drag-reorder)、预设 TAGS_PRESET。",
+    "tags": [
+      "web-legacy",
+      "tag",
+      "manager"
+    ],
+    "complexity": "simple"
+  },
+  "_archive/web-legacy/src/components/charts/BarChart.tsx": {
+    "summary": "柱状图组件：基于 CSS/Flex 渲染 x 轴标签与柱形，含 tooltip。",
+    "tags": [
+      "web-legacy",
+      "chart",
+      "bar"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "BarChart": {
+        "summary": "渲染柱形图与坐标轴、tooltip。",
+        "tags": [
+          "chart",
+          "bar"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/charts/CalendarGrid.tsx": {
+    "summary": "日历网格组件：月历翻页，标记打卡 done/grace 状态与今日高亮。",
+    "tags": [
+      "web-legacy",
+      "chart",
+      "calendar"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "CalendarGrid": {
+        "summary": "渲染月历网格，标记每日打卡/grace。",
+        "tags": [
+          "calendar",
+          "chart"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/charts/HeatmapGrid.tsx": {
+    "summary": "热力图网格组件：按周×日格子展示强度热力图(通用)。",
+    "tags": [
+      "web-legacy",
+      "chart",
+      "heatmap"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "HeatmapGrid": {
+        "summary": "渲染通用热力图网格(周×日强度)。",
+        "tags": [
+          "heatmap",
+          "chart"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/charts/LineChart.tsx": {
+    "summary": "折线图组件：基于 SVG 渲染折线、坐标轴标签与 tooltip。",
+    "tags": [
+      "web-legacy",
+      "chart",
+      "line"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "LineChart": {
+        "summary": "渲染 SVG 折线图、坐标轴与 tooltip。",
+        "tags": [
+          "chart",
+          "line"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/helpers.tsx": {
+    "summary": "UI/样式/Hooks 聚合导出(barrel)：re-export ./ui、./hooks、./styles。",
+    "tags": [
+      "web-legacy",
+      "barrel",
+      "helpers"
+    ],
+    "complexity": "simple"
+  },
+  "_archive/web-legacy/src/components/hooks/useT.ts": {
+    "summary": "多语言 Hook：基于 store.language 返回 t(k,语言) 的柯里化函数。",
+    "tags": [
+      "web-legacy",
+      "i18n",
+      "hook"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "useT": {
+        "summary": "绑定当前语言的翻译函数。",
+        "tags": [
+          "i18n",
+          "hook"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/hooks/useTheme.ts": {
+    "summary": "主题 Hook：根据 store.theme 从 THEMES 映当前配色(TH/primary)。",
+    "tags": [
+      "web-legacy",
+      "theme",
+      "hook"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "useTheme": {
+        "summary": "缓存并返回当前主题配色对象。",
+        "tags": [
+          "theme",
+          "hook"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/sport/SportActivePage.tsx": {
+    "summary": "运动中页面：计时器(Play/Pause/±)、距离/卡路里/组数实时更新、fmt 时间格式化。",
+    "tags": [
+      "web-legacy",
+      "sport",
+      "active",
+      "timer"
+    ],
+    "complexity": "moderate",
+    "functions": {
+      "SportActivePageInner": {
+        "summary": "运动中计时/距离/卡路里实时面板。",
+        "tags": [
+          "sport",
+          "timer"
+        ],
+        "complexity": "moderate"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/sport/SportPrepPage.tsx": {
+    "summary": "运动准备页：选择运动类型/目标(mode: free/target)与预设 target 开始计数。",
+    "tags": [
+      "web-legacy",
+      "sport",
+      "prep"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "SportPrepPageInner": {
+        "summary": "配置运动类型/目标并进入运动中。",
+        "tags": [
+          "sport",
+          "setup"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/sport/SportReportPage.tsx": {
+    "summary": "运动报告页：展示本次运动总时长/距离/卡路里/配速(formatPace)与地图轨迹。",
+    "tags": [
+      "web-legacy",
+      "sport",
+      "report"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "SportReportPageInner": {
+        "summary": "渲染运动结束报告摘要。",
+        "tags": [
+          "sport",
+          "summary"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/ui/Checkbox.tsx": {
+    "summary": "复选框 UI 组件：主题色 + Check 图标。",
+    "tags": [
+      "web-legacy",
+      "ui",
+      "checkbox"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "Checkbox": {
+        "summary": "渲染主题色复选框。",
+        "tags": [
+          "ui",
+          "checkbox"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/ui/ErrorBoundary.tsx": {
+    "summary": "错误边界类组件：捕获 React 异常上报 Sentry 并展示降级 UI。",
+    "tags": [
+      "web-legacy",
+      "ui",
+      "error-boundary",
+      "sentry"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "ErrorBoundary": {
+        "summary": "componentDidCatch 上报 Sentry 并渲染 AlertTriangle 降级。",
+        "tags": [
+          "error-boundary",
+          "sentry"
+        ],
+        "complexity": "simple"
+      }
+    },
+    "classes": {
+      "ErrorBoundaryInner": {
+        "summary": "内部错误边界实现类。",
+        "tags": [
+          "error-boundary",
+          "class"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/ui/LinkWorldBtn.tsx": {
+    "summary": "跳转运动世界外链按钮组件(ChevronRight 指示)。",
+    "tags": [
+      "web-legacy",
+      "ui",
+      "link"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "LinkWorldBtn": {
+        "summary": "渲染外链跳转按钮。",
+        "tags": [
+          "ui",
+          "link"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/ui/Modal.tsx": {
+    "summary": "通用弹窗组件：createPortal + 遮罩 + 点击外部关闭。",
+    "tags": [
+      "web-legacy",
+      "ui",
+      "modal"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "Modal": {
+        "summary": "基于 createPortal 渲染遮罩弹窗，点击外部关闭。",
+        "tags": [
+          "ui",
+          "modal"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/ui/RowItem.tsx": {
+    "summary": "通用行项组件：标题/副文本/右侧插槽，主题色。",
+    "tags": [
+      "web-legacy",
+      "ui",
+      "list-item"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "RowItem": {
+        "summary": "渲染通用行项布局。",
+        "tags": [
+          "ui",
+          "list"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/ui/Toggle.tsx": {
+    "summary": "开关 UI 组件：主题色 Toggle。",
+    "tags": [
+      "web-legacy",
+      "ui",
+      "toggle"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "Toggle": {
+        "summary": "渲染主题色开关。",
+        "tags": [
+          "ui",
+          "toggle"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/useDailyTodo.ts": {
+    "summary": "每日待办 Hook：用 core.createDailyTodoHook 绑定 useWebStore 切片生成。",
+    "tags": [
+      "web-legacy",
+      "hook",
+      "daily-todo"
+    ],
+    "complexity": "simple"
+  },
+  "_archive/web-legacy/src/components/useFoodSearch.ts": {
+    "summary": "食物搜索 Hook：基于 FOOD_PRESETS 关键词过滤 + FOOD_ICON_MAP 图标分类。",
+    "tags": [
+      "web-legacy",
+      "hook",
+      "food",
+      "search"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "useFoodSearch": {
+        "summary": "按关键字搜索食物预设并分类图标。",
+        "tags": [
+          "food",
+          "search",
+          "hook"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/useOverlay.ts": {
+    "summary": "覆盖层管理：OverlayContext + useOverlayState(24 种 overlayKey 开关) + useOverlay 访问器。",
+    "tags": [
+      "web-legacy",
+      "overlay",
+      "context",
+      "hook"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "useOverlayState": {
+        "summary": "管理 24 种 OverlayKey 的开关与属性状态。",
+        "tags": [
+          "overlay",
+          "state"
+        ],
+        "complexity": "simple"
+      },
+      "useOverlay": {
+        "summary": "OverlayContext 访问器，未包裹则抛错。",
+        "tags": [
+          "overlay",
+          "context"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/useReflections.ts": {
+    "summary": "感念数据 Hook：分页/搜索/筛选(防抖)、排序、收藏、关联遍历。",
+    "tags": [
+      "web-legacy",
+      "hook",
+      "reflection",
+      "search"
+    ],
+    "complexity": "complex",
+    "functions": {
+      "useReflections": {
+        "summary": "感念列表数据源：搜索、筛选、排序、分页与关联。",
+        "tags": [
+          "reflection",
+          "hook"
+        ],
+        "complexity": "complex"
+      },
+      "useDebouncedValue": {
+        "summary": "输入防抖 Hook，用于搜索框。",
+        "tags": [
+          "debounce",
+          "hook"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "_archive/web-legacy/src/components/useReminder.ts": {
+    "summary": "提醒 Hook：到设定时间(remindTime)调用 Notification API 发送常驻提醒(30s 轮询)。",
+    "tags": [
+      "web-legacy",
+      "hook",
+      "reminder",
+      "notification"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "useReminder": {
+        "summary": "每分钟检查 remindTime 并发送浏览器通知。",
+        "tags": [
+          "reminder",
+          "notification"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "_archive/web-legacy/src/lib/amapLoader.ts": {
+    "summary": "高德地图 SDK 加载器：单例 loadPromise、配置安全码、懒加载 @amap/amap-jsapi-loader。",
+    "tags": [
+      "web-legacy",
+      "amap",
+      "loader",
+      "geo"
+    ],
+    "complexity": "simple",
+    "functions": {
+      "loadAMap": {
+        "summary": "单例加载高德 SDK 并返回 AMap 命名空间。",
+        "tags": [
+          "amap",
+          "loader"
+        ],
+        "complexity": "simple"
+      }
+    }
+  },
+  "_archive/web-legacy/src/store/useWebStore.ts": {
+    "summary": "Web 端 Zustand store：用 persist(localStorage)+noopAdapter 组合 18 个 slice(无同步)，含 DailyResetManager 每日重置、autoSyncPlanItems 触发、rehydrate 后 habit 状态检查。",
+    "tags": [
+      "web-legacy",
+      "store",
+      "zustand",
+      "persist"
+    ],
+    "complexity": "moderate"
+  }
+}

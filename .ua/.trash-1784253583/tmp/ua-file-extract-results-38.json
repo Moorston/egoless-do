@@ -1,0 +1,324 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 7,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": ".trellis/spec/web/frontend/component-guidelines.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 59,
+      "nonEmptyLines": 33,
+      "sections": [
+        {
+          "heading": "Component Guidelines",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Component Structure",
+          "level": 2,
+          "line": 23
+        },
+        {
+          "heading": "Props Conventions",
+          "level": 2,
+          "line": 31
+        },
+        {
+          "heading": "Styling Patterns",
+          "level": 2,
+          "line": 39
+        },
+        {
+          "heading": "Accessibility",
+          "level": 2,
+          "line": 47
+        },
+        {
+          "heading": "Common Mistakes",
+          "level": 2,
+          "line": 55
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 7
+      }
+    },
+    {
+      "path": ".trellis/spec/web/frontend/directory-structure.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 54,
+      "nonEmptyLines": 33,
+      "sections": [
+        {
+          "heading": "Directory Structure",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Directory Layout",
+          "level": 2,
+          "line": 23
+        },
+        {
+          "heading": "Module Organization",
+          "level": 2,
+          "line": 34
+        },
+        {
+          "heading": "Naming Conventions",
+          "level": 2,
+          "line": 42
+        },
+        {
+          "heading": "Examples",
+          "level": 2,
+          "line": 50
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 6
+      }
+    },
+    {
+      "path": ".trellis/spec/web/frontend/hook-guidelines.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 51,
+      "nonEmptyLines": 29,
+      "sections": [
+        {
+          "heading": "Hook Guidelines",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Custom Hook Patterns",
+          "level": 2,
+          "line": 23
+        },
+        {
+          "heading": "Data Fetching",
+          "level": 2,
+          "line": 31
+        },
+        {
+          "heading": "Naming Conventions",
+          "level": 2,
+          "line": 39
+        },
+        {
+          "heading": "Common Mistakes",
+          "level": 2,
+          "line": 47
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 6
+      }
+    },
+    {
+      "path": ".trellis/spec/web/frontend/index.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 41,
+      "nonEmptyLines": 26,
+      "sections": [
+        {
+          "heading": "Frontend Development Guidelines",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Guidelines Summary",
+          "level": 2,
+          "line": 13
+        },
+        {
+          "heading": "How to Fill These Guidelines",
+          "level": 2,
+          "line": 28
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 4
+      }
+    },
+    {
+      "path": ".trellis/spec/web/frontend/quality-guidelines.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 51,
+      "nonEmptyLines": 29,
+      "sections": [
+        {
+          "heading": "Quality Guidelines",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Forbidden Patterns",
+          "level": 2,
+          "line": 23
+        },
+        {
+          "heading": "Required Patterns",
+          "level": 2,
+          "line": 31
+        },
+        {
+          "heading": "Testing Requirements",
+          "level": 2,
+          "line": 39
+        },
+        {
+          "heading": "Code Review Checklist",
+          "level": 2,
+          "line": 47
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 6
+      }
+    },
+    {
+      "path": ".trellis/spec/web/frontend/state-management.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 51,
+      "nonEmptyLines": 29,
+      "sections": [
+        {
+          "heading": "State Management",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "State Categories",
+          "level": 2,
+          "line": 23
+        },
+        {
+          "heading": "When to Use Global State",
+          "level": 2,
+          "line": 31
+        },
+        {
+          "heading": "Server State",
+          "level": 2,
+          "line": 39
+        },
+        {
+          "heading": "Common Mistakes",
+          "level": 2,
+          "line": 47
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 6
+      }
+    },
+    {
+      "path": ".trellis/spec/web/frontend/type-safety.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 51,
+      "nonEmptyLines": 29,
+      "sections": [
+        {
+          "heading": "Type Safety",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Type Organization",
+          "level": 2,
+          "line": 23
+        },
+        {
+          "heading": "Validation",
+          "level": 2,
+          "line": 31
+        },
+        {
+          "heading": "Common Patterns",
+          "level": 2,
+          "line": 39
+        },
+        {
+          "heading": "Forbidden Patterns",
+          "level": 2,
+          "line": 47
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 6
+      }
+    }
+  ]
+}

@@ -1,0 +1,348 @@
+{
+  "nodes": [
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-06-fix-remaining-ts-errors/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-06-fix-remaining-ts-errors/implement.jsonl",
+      "summary": "Trellis 归档任务「修复剩余 174 个预存 TypeScript 错误」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-06-fix-remaining-ts-errors/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-06-fix-remaining-ts-errors/prd.md",
+      "summary": "Trellis 归档任务「修复剩余 174 个预存 TypeScript 错误」的需求文档（prd.md）。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "prd",
+        "archive"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-06-fix-remaining-ts-errors/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-06-fix-remaining-ts-errors/task.json",
+      "summary": "Trellis 归档任务「修复剩余 174 个预存 TypeScript 错误」的元数据（task.json）：id、标题、状态、优先级。",
+      "tags": [
+        "config",
+        "trellis",
+        "task",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-accessibility-audit/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-accessibility-audit/check.jsonl",
+      "summary": "Trellis 归档任务「无障碍审查」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-accessibility-audit/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-accessibility-audit/implement.jsonl",
+      "summary": "Trellis 归档任务「无障碍审查」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-accessibility-audit/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-accessibility-audit/prd.md",
+      "summary": "Trellis 归档任务「无障碍审查」的需求文档（prd.md）。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "prd",
+        "archive"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-accessibility-audit/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-accessibility-audit/task.json",
+      "summary": "Trellis 归档任务「无障碍审查」的元数据（task.json）：id、标题、状态、优先级。",
+      "tags": [
+        "config",
+        "trellis",
+        "task",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-code-arch-governance/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-code-arch-governance/check.jsonl",
+      "summary": "Trellis 归档任务「构建项目全局代码规范与架构约束文档」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-code-arch-governance/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-code-arch-governance/implement.jsonl",
+      "summary": "Trellis 归档任务「构建项目全局代码规范与架构约束文档」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-dependency-audit/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-dependency-audit/check.jsonl",
+      "summary": "Trellis 归档任务「第三方依赖审计」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-dependency-audit/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-dependency-audit/implement.jsonl",
+      "summary": "Trellis 归档任务「第三方依赖审计」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-dependency-audit/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-dependency-audit/prd.md",
+      "summary": "Trellis 归档任务「第三方依赖审计」的需求文档（prd.md）。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "prd",
+        "archive"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-dependency-audit/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-dependency-audit/task.json",
+      "summary": "Trellis 归档任务「第三方依赖审计」的元数据（task.json）：id、标题、状态、优先级。",
+      "tags": [
+        "config",
+        "trellis",
+        "task",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-full-dimension-audit/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-full-dimension-audit/check.jsonl",
+      "summary": "Trellis 归档任务「全维度审查 — 依赖/无障碍/平台/性能/i18n」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-full-dimension-audit/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-full-dimension-audit/implement.jsonl",
+      "summary": "Trellis 归档任务「全维度审查 — 依赖/无障碍/平台/性能/i18n」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-full-dimension-audit/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-full-dimension-audit/prd.md",
+      "summary": "Trellis 归档任务「全维度审查 — 依赖/无障碍/平台/性能/i18n」的需求文档（prd.md）。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "prd",
+        "archive"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-full-dimension-audit/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-full-dimension-audit/task.json",
+      "summary": "Trellis 归档任务「全维度审查 — 依赖/无障碍/平台/性能/i18n」的元数据（task.json）：id、标题、状态、优先级。",
+      "tags": [
+        "config",
+        "trellis",
+        "task",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-i18n-audit/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-i18n-audit/check.jsonl",
+      "summary": "Trellis 归档任务「国际化完整性审查」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-i18n-audit/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-i18n-audit/implement.jsonl",
+      "summary": "Trellis 归档任务「国际化完整性审查」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-i18n-audit/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-i18n-audit/prd.md",
+      "summary": "Trellis 归档任务「国际化完整性审查」的需求文档（prd.md）。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "prd",
+        "archive"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-i18n-audit/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-i18n-audit/task.json",
+      "summary": "Trellis 归档任务「国际化完整性审查」的元数据（task.json）：id、标题、状态、优先级。",
+      "tags": [
+        "config",
+        "trellis",
+        "task",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-perf-audit/check.jsonl",
+      "type": "file",
+      "name": "check.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-perf-audit/check.jsonl",
+      "summary": "Trellis 归档任务「性能分析」的审查清单（check.jsonl）：列出审查文件与原因。",
+      "tags": [
+        "trellis",
+        "check",
+        "archive",
+        "qa"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-perf-audit/implement.jsonl",
+      "type": "file",
+      "name": "implement.jsonl",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-perf-audit/implement.jsonl",
+      "summary": "Trellis 归档任务「性能分析」的实施记录（implement.jsonl）：记录实际修改的文件与原因。",
+      "tags": [
+        "trellis",
+        "implement",
+        "archive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-perf-audit/prd.md",
+      "type": "document",
+      "name": "prd.md",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-perf-audit/prd.md",
+      "summary": "Trellis 归档任务「性能分析」的需求文档（prd.md）。",
+      "tags": [
+        "documentation",
+        "trellis",
+        "prd",
+        "archive"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:.trellis/tasks/archive/2026-07/07-09-perf-audit/task.json",
+      "type": "config",
+      "name": "task.json",
+      "filePath": ".trellis/tasks/archive/2026-07/07-09-perf-audit/task.json",
+      "summary": "Trellis 归档任务「性能分析」的元数据（task.json）：id、标题、状态、优先级。",
+      "tags": [
+        "config",
+        "trellis",
+        "task",
+        "archive"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": []
+}

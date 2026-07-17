@@ -526,7 +526,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                     <Text style={{ color:TH.text, fontSize:FONT_BODY() }}>{T('checkinFood')}</Text>
                   </View>
                   <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
-                    <Text style={{ fontSize:FONT_TITLE(), fontWeight:'600', color:P }}>{totalCal}</Text>
+                    <Text style={{ fontSize:FONT_TITLE(), fontWeight:'600', color:P }}>{String(totalCal)}</Text>
                     <Text style={{ color:TH.sub, fontSize:FONT_SUB() }}>kcal</Text>
                     <TouchableOpacity onPress={() => setShowFoodAdd(!showFoodAdd)}
                       accessibilityLabel="添加食物"

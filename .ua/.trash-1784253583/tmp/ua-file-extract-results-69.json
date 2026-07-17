@@ -1,0 +1,2043 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 25,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "packages/core/src/business/coordinateFuzzing.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 112,
+      "nonEmptyLines": 98,
+      "functions": [
+        {
+          "name": "hashString",
+          "startLine": 16,
+          "endLine": 23,
+          "params": [
+            "str"
+          ]
+        },
+        {
+          "name": "seededRandom",
+          "startLine": 28,
+          "endLine": 34,
+          "params": [
+            "seed"
+          ]
+        },
+        {
+          "name": "metersToLatOffset",
+          "startLine": 39,
+          "endLine": 41,
+          "params": [
+            "meters"
+          ]
+        },
+        {
+          "name": "metersToLngOffset",
+          "startLine": 46,
+          "endLine": 48,
+          "params": [
+            "meters",
+            "lat"
+          ]
+        },
+        {
+          "name": "fuzzCoordinate",
+          "startLine": 57,
+          "endLine": 87,
+          "params": [
+            "lat",
+            "lng",
+            "secretKey"
+          ]
+        },
+        {
+          "name": "isValidCoordinate",
+          "startLine": 92,
+          "endLine": 94,
+          "params": [
+            "lat",
+            "lng"
+          ]
+        },
+        {
+          "name": "calculateDistance",
+          "startLine": 99,
+          "endLine": 112,
+          "params": [
+            "lat1",
+            "lng1",
+            "lat2",
+            "lng2"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "fuzzCoordinate",
+          "line": 57,
+          "isDefault": false
+        },
+        {
+          "name": "isValidCoordinate",
+          "line": 92,
+          "isDefault": false
+        },
+        {
+          "name": "calculateDistance",
+          "line": 99,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "hashString",
+          "callee": "str.charCodeAt",
+          "lineNumber": 19
+        },
+        {
+          "caller": "hashString",
+          "callee": "Math.abs",
+          "lineNumber": 22
+        },
+        {
+          "caller": "metersToLngOffset",
+          "callee": "Math.cos",
+          "lineNumber": 47
+        },
+        {
+          "caller": "fuzzCoordinate",
+          "callee": "hashString",
+          "lineNumber": 63
+        },
+        {
+          "caller": "fuzzCoordinate",
+          "callee": "lat.toFixed",
+          "lineNumber": 63
+        },
+        {
+          "caller": "fuzzCoordinate",
+          "callee": "lng.toFixed",
+          "lineNumber": 63
+        },
+        {
+          "caller": "fuzzCoordinate",
+          "callee": "seededRandom",
+          "lineNumber": 64
+        },
+        {
+          "caller": "fuzzCoordinate",
+          "callee": "rng",
+          "lineNumber": 67
+        },
+        {
+          "caller": "fuzzCoordinate",
+          "callee": "rng",
+          "lineNumber": 68
+        },
+        {
+          "caller": "fuzzCoordinate",
+          "callee": "Math.cos",
+          "lineNumber": 71
+        },
+        {
+          "caller": "fuzzCoordinate",
+          "callee": "Math.sin",
+          "lineNumber": 72
+        },
+        {
+          "caller": "fuzzCoordinate",
+          "callee": "metersToLatOffset",
+          "lineNumber": 75
+        },
+        {
+          "caller": "fuzzCoordinate",
+          "callee": "metersToLngOffset",
+          "lineNumber": 76
+        },
+        {
+          "caller": "fuzzCoordinate",
+          "callee": "Math.max",
+          "lineNumber": 84
+        },
+        {
+          "caller": "fuzzCoordinate",
+          "callee": "Math.min",
+          "lineNumber": 84
+        },
+        {
+          "caller": "fuzzCoordinate",
+          "callee": "Math.max",
+          "lineNumber": 85
+        },
+        {
+          "caller": "fuzzCoordinate",
+          "callee": "Math.min",
+          "lineNumber": 85
+        },
+        {
+          "caller": "calculateDistance",
+          "callee": "Math.sin",
+          "lineNumber": 107
+        },
+        {
+          "caller": "calculateDistance",
+          "callee": "Math.sin",
+          "lineNumber": 107
+        },
+        {
+          "caller": "calculateDistance",
+          "callee": "Math.cos",
+          "lineNumber": 108
+        },
+        {
+          "caller": "calculateDistance",
+          "callee": "Math.cos",
+          "lineNumber": 108
+        },
+        {
+          "caller": "calculateDistance",
+          "callee": "Math.sin",
+          "lineNumber": 109
+        },
+        {
+          "caller": "calculateDistance",
+          "callee": "Math.sin",
+          "lineNumber": 109
+        },
+        {
+          "caller": "calculateDistance",
+          "callee": "Math.atan2",
+          "lineNumber": 110
+        },
+        {
+          "caller": "calculateDistance",
+          "callee": "Math.sqrt",
+          "lineNumber": 110
+        },
+        {
+          "caller": "calculateDistance",
+          "callee": "Math.sqrt",
+          "lineNumber": 110
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 3,
+        "functionCount": 7,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/customLists.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 34,
+      "nonEmptyLines": 29,
+      "functions": [
+        {
+          "name": "addCustomItem",
+          "startLine": 3,
+          "endLine": 6,
+          "params": [
+            "list",
+            "item"
+          ]
+        },
+        {
+          "name": "removeCustomItem",
+          "startLine": 8,
+          "endLine": 10,
+          "params": [
+            "list",
+            "item"
+          ]
+        },
+        {
+          "name": "updateCustomItem",
+          "startLine": 12,
+          "endLine": 16,
+          "params": [
+            "list",
+            "oldItem",
+            "newItem"
+          ]
+        },
+        {
+          "name": "reorderItem",
+          "startLine": 18,
+          "endLine": 26,
+          "params": [
+            "list",
+            "fromIndex",
+            "toIndex"
+          ]
+        },
+        {
+          "name": "ensureOrderContains",
+          "startLine": 28,
+          "endLine": 34,
+          "params": [
+            "order",
+            "required"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "addCustomItem",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "removeCustomItem",
+          "line": 8,
+          "isDefault": false
+        },
+        {
+          "name": "updateCustomItem",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "reorderItem",
+          "line": 18,
+          "isDefault": false
+        },
+        {
+          "name": "ensureOrderContains",
+          "line": 28,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "addCustomItem",
+          "callee": "item.trim",
+          "lineNumber": 4
+        },
+        {
+          "caller": "addCustomItem",
+          "callee": "list.includes",
+          "lineNumber": 5
+        },
+        {
+          "caller": "removeCustomItem",
+          "callee": "list.filter",
+          "lineNumber": 9
+        },
+        {
+          "caller": "updateCustomItem",
+          "callee": "newItem.trim",
+          "lineNumber": 13
+        },
+        {
+          "caller": "updateCustomItem",
+          "callee": "list.includes",
+          "lineNumber": 14
+        },
+        {
+          "caller": "updateCustomItem",
+          "callee": "list.map",
+          "lineNumber": 15
+        },
+        {
+          "caller": "reorderItem",
+          "callee": "result.splice",
+          "lineNumber": 23
+        },
+        {
+          "caller": "reorderItem",
+          "callee": "result.splice",
+          "lineNumber": 24
+        },
+        {
+          "caller": "ensureOrderContains",
+          "callee": "order.filter",
+          "lineNumber": 30
+        },
+        {
+          "caller": "ensureOrderContains",
+          "callee": "requiredSet.has",
+          "lineNumber": 30
+        },
+        {
+          "caller": "ensureOrderContains",
+          "callee": "required.filter",
+          "lineNumber": 32
+        },
+        {
+          "caller": "ensureOrderContains",
+          "callee": "existingSet.has",
+          "lineNumber": 32
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 5,
+        "functionCount": 5,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/dateUtils.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 32,
+      "nonEmptyLines": 26,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/dateUtils.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 12,
+      "nonEmptyLines": 10,
+      "functions": [
+        {
+          "name": "formatDateBar",
+          "startLine": 5,
+          "endLine": 12,
+          "params": [
+            "dateStrVal",
+            "isToday",
+            "T"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "WEEKDAYS",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "formatDateBar",
+          "line": 5,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "formatDateBar",
+          "callee": "d.getMonth",
+          "lineNumber": 7
+        },
+        {
+          "caller": "formatDateBar",
+          "callee": "d.getDate",
+          "lineNumber": 8
+        },
+        {
+          "caller": "formatDateBar",
+          "callee": "d.getDay",
+          "lineNumber": 9
+        },
+        {
+          "caller": "formatDateBar",
+          "callee": "T",
+          "lineNumber": 11
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/precepts.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 53,
+      "nonEmptyLines": 45,
+      "functions": [
+        {
+          "name": "isPreceptHabit",
+          "startLine": 39,
+          "endLine": 41,
+          "params": [
+            "name"
+          ]
+        },
+        {
+          "name": "getPreceptDisplayName",
+          "startLine": 44,
+          "endLine": 46,
+          "params": [
+            "name"
+          ]
+        },
+        {
+          "name": "getPreceptType",
+          "startLine": 49,
+          "endLine": 53,
+          "params": [
+            "name"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "PRECEPT_AVOID_PRESETS",
+          "line": 11,
+          "isDefault": false
+        },
+        {
+          "name": "PRACTICE_PRESETS",
+          "line": 22,
+          "isDefault": false
+        },
+        {
+          "name": "VIOLATION_TRIGGERS",
+          "line": 31,
+          "isDefault": false
+        },
+        {
+          "name": "PRECEPT_PREFIX_AVOID",
+          "line": 35,
+          "isDefault": false
+        },
+        {
+          "name": "PRECEPT_PREFIX_PRACTICE",
+          "line": 36,
+          "isDefault": false
+        },
+        {
+          "name": "isPreceptHabit",
+          "line": 39,
+          "isDefault": false
+        },
+        {
+          "name": "getPreceptDisplayName",
+          "line": 44,
+          "isDefault": false
+        },
+        {
+          "name": "getPreceptType",
+          "line": 49,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "isPreceptHabit",
+          "callee": "name.startsWith",
+          "lineNumber": 40
+        },
+        {
+          "caller": "isPreceptHabit",
+          "callee": "name.startsWith",
+          "lineNumber": 40
+        },
+        {
+          "caller": "getPreceptDisplayName",
+          "callee": "name.replace(PRECEPT_PREFIX_AVOID, '').replace",
+          "lineNumber": 45
+        },
+        {
+          "caller": "getPreceptDisplayName",
+          "callee": "name.replace",
+          "lineNumber": 45
+        },
+        {
+          "caller": "getPreceptType",
+          "callee": "name.startsWith",
+          "lineNumber": 50
+        },
+        {
+          "caller": "getPreceptType",
+          "callee": "name.startsWith",
+          "lineNumber": 51
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 8,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/sleep.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 88,
+      "nonEmptyLines": 78,
+      "functions": [
+        {
+          "name": "getCurrentPeriod",
+          "startLine": 31,
+          "endLine": 43,
+          "params": []
+        },
+        {
+          "name": "getNextSleepPeriod",
+          "startLine": 46,
+          "endLine": 59,
+          "params": []
+        },
+        {
+          "name": "formatSleepDuration",
+          "startLine": 62,
+          "endLine": 69,
+          "params": [
+            "min"
+          ]
+        },
+        {
+          "name": "sleepQualityLevel",
+          "startLine": 72,
+          "endLine": 77,
+          "params": [
+            "durationMin"
+          ]
+        },
+        {
+          "name": "qualityEmoji",
+          "startLine": 80,
+          "endLine": 88,
+          "params": [
+            "level"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "BODY_CLOCK",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "getCurrentPeriod",
+          "line": 31,
+          "isDefault": false
+        },
+        {
+          "name": "getNextSleepPeriod",
+          "line": 46,
+          "isDefault": false
+        },
+        {
+          "name": "formatSleepDuration",
+          "line": 62,
+          "isDefault": false
+        },
+        {
+          "name": "sleepQualityLevel",
+          "line": 72,
+          "isDefault": false
+        },
+        {
+          "name": "qualityEmoji",
+          "line": 80,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getCurrentPeriod",
+          "callee": "new Date().getHours",
+          "lineNumber": 32
+        },
+        {
+          "caller": "getNextSleepPeriod",
+          "callee": "now.getHours",
+          "lineNumber": 48
+        },
+        {
+          "caller": "getNextSleepPeriod",
+          "callee": "now.getMinutes",
+          "lineNumber": 49
+        },
+        {
+          "caller": "getNextSleepPeriod",
+          "callee": "Math.max",
+          "lineNumber": 58
+        },
+        {
+          "caller": "formatSleepDuration",
+          "callee": "Math.floor",
+          "lineNumber": 64
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 6,
+        "functionCount": 5,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/zhiguanConstants.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 4,
+      "nonEmptyLines": 4,
+      "exports": [
+        {
+          "name": "BreathPattern",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "SankalpaTemplate",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "VipassanaGuides",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "BREATH_PATTERNS",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "SANKALPA_TEMPLATES",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "VIPASSANA_GUIDES",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "METHOD_TABLE",
+          "line": 4,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 7,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/zhiguanCountingRound.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 48,
+      "nonEmptyLines": 42,
+      "functions": [
+        {
+          "name": "notifyBreath",
+          "startLine": 17,
+          "endLine": 34,
+          "params": [
+            "state"
+          ]
+        },
+        {
+          "name": "computeRounds",
+          "startLine": 37,
+          "endLine": 44,
+          "params": [
+            "total"
+          ]
+        },
+        {
+          "name": "resetRound",
+          "startLine": 46,
+          "endLine": 48,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "initialRoundState",
+          "line": 9,
+          "isDefault": false
+        },
+        {
+          "name": "notifyBreath",
+          "line": 17,
+          "isDefault": false
+        },
+        {
+          "name": "computeRounds",
+          "line": 37,
+          "isDefault": false
+        },
+        {
+          "name": "resetRound",
+          "line": 46,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "notifyBreath",
+          "callee": "Math.max",
+          "lineNumber": 18
+        },
+        {
+          "caller": "notifyBreath",
+          "callee": "Math.floor",
+          "lineNumber": 24
+        },
+        {
+          "caller": "computeRounds",
+          "callee": "Math.max",
+          "lineNumber": 38
+        },
+        {
+          "caller": "computeRounds",
+          "callee": "Math.floor",
+          "lineNumber": 38
+        },
+        {
+          "caller": "computeRounds",
+          "callee": "Math.floor",
+          "lineNumber": 41
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 4,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/business/zhiguanTimer.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 24,
+      "nonEmptyLines": 21,
+      "functions": [
+        {
+          "name": "calcElapsed",
+          "startLine": 2,
+          "endLine": 4,
+          "params": [
+            "startTs",
+            "pausedElapsed",
+            "now"
+          ]
+        },
+        {
+          "name": "accumulatePause",
+          "startLine": 7,
+          "endLine": 9,
+          "params": [
+            "pausedElapsed",
+            "pauseStart",
+            "now"
+          ]
+        },
+        {
+          "name": "formatSec",
+          "startLine": 12,
+          "endLine": 16,
+          "params": [
+            "totalSec"
+          ]
+        },
+        {
+          "name": "isInClosingCountdown",
+          "startLine": 19,
+          "endLine": 24,
+          "params": [
+            "elapsedSecs",
+            "totalTargetSecs"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "calcElapsed",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "accumulatePause",
+          "line": 7,
+          "isDefault": false
+        },
+        {
+          "name": "formatSec",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "isInClosingCountdown",
+          "line": 19,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "calcElapsed",
+          "callee": "Math.max",
+          "lineNumber": 3
+        },
+        {
+          "caller": "calcElapsed",
+          "callee": "Math.floor",
+          "lineNumber": 3
+        },
+        {
+          "caller": "formatSec",
+          "callee": "Math.floor",
+          "lineNumber": 13
+        },
+        {
+          "caller": "formatSec",
+          "callee": "String(m).padStart",
+          "lineNumber": 15
+        },
+        {
+          "caller": "formatSec",
+          "callee": "String",
+          "lineNumber": 15
+        },
+        {
+          "caller": "formatSec",
+          "callee": "String(s).padStart",
+          "lineNumber": 15
+        },
+        {
+          "caller": "formatSec",
+          "callee": "String",
+          "lineNumber": 15
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 4,
+        "functionCount": 4,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/constants/music.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 54,
+      "nonEmptyLines": 47,
+      "exports": [
+        {
+          "name": "BUILTIN_TRACKS",
+          "line": 5,
+          "isDefault": false
+        },
+        {
+          "name": "MUSIC_CATEGORIES",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "USER_MUSIC_STORAGE_KEY",
+          "line": 24,
+          "isDefault": false
+        },
+        {
+          "name": "MUSIC_FAVORITES_KEY",
+          "line": 27,
+          "isDefault": false
+        },
+        {
+          "name": "MUSIC_CATEGORY_META",
+          "line": 37,
+          "isDefault": false
+        },
+        {
+          "name": "TRACK_VISUAL",
+          "line": 46,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 6,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/constants/sutraTexts.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 133,
+      "nonEmptyLines": 121,
+      "functions": [
+        {
+          "name": "getSutraText",
+          "startLine": 130,
+          "endLine": 133,
+          "params": [
+            "key"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "SUTRA_TEXTS",
+          "line": 11,
+          "isDefault": false
+        },
+        {
+          "name": "getSutraText",
+          "line": 130,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/data/DataGateway.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 36,
+      "nonEmptyLines": 29,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/data/DataGateway.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 35,
+      "nonEmptyLines": 28,
+      "classes": [
+        {
+          "name": "NoopDataGateway",
+          "startLine": 30,
+          "endLine": 35,
+          "methods": [
+            "get",
+            "list",
+            "upsert",
+            "delete"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "NoopDataGateway",
+          "line": 30,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "packages/core/src/data/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 2,
+      "nonEmptyLines": 2,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/i18n.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 5,
+      "nonEmptyLines": 5,
+      "exports": [
+        {
+          "name": "zh",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "en",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "zhHant",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "translations",
+          "line": 5,
+          "isDefault": false
+        },
+        {
+          "name": "getT",
+          "line": 5,
+          "isDefault": false
+        },
+        {
+          "name": "t",
+          "line": 5,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 6,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/icons.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 104,
+      "nonEmptyLines": 99,
+      "exports": [
+        {
+          "name": "TAB_ICONS",
+          "line": 5,
+          "isDefault": false
+        },
+        {
+          "name": "ACTION_ICONS",
+          "line": 18,
+          "isDefault": false
+        },
+        {
+          "name": "FEATURE_ICONS",
+          "line": 40,
+          "isDefault": false
+        },
+        {
+          "name": "FOOD_ICON_NAMES",
+          "line": 92,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 4,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/pocketbase.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 14,
+      "nonEmptyLines": 11,
+      "functions": [
+        {
+          "name": "setPocketbaseUrl",
+          "startLine": 7,
+          "endLine": 9,
+          "params": [
+            "url"
+          ]
+        },
+        {
+          "name": "getPb",
+          "startLine": 11,
+          "endLine": 14,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "setPocketbaseUrl",
+          "line": 7,
+          "isDefault": false
+        },
+        {
+          "name": "getPb",
+          "line": 11,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/store/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 35,
+      "nonEmptyLines": 35,
+      "exports": [
+        {
+          "name": "StorageAdapter",
+          "line": 1,
+          "isDefault": false
+        },
+        {
+          "name": "SyncDataMap",
+          "line": 1,
+          "isDefault": false
+        },
+        {
+          "name": "AuthSlice",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "HabitSlice",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "ReflectionSlice",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "PlanSlice",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "RecycleBinSlice",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "FoodSlice",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "CheckinSlice",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "ExerciseSlice",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "MeditationSlice",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "FastingSlice",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "ProfileSlice",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "SleepSlice",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "ThoughtTrailSlice",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "ReviewSlice",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "FullStore",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "BodySlice",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "DietSlice",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "MindSlice",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "MantraSlice",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "ZhiguanSlice",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "SettingsSlice",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "SliceError",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "SliceErrorState",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "PracticeSlice",
+          "line": 11,
+          "isDefault": false
+        },
+        {
+          "name": "SliceCreator",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "createAuthSlice",
+          "line": 13,
+          "isDefault": false
+        },
+        {
+          "name": "createHabitSlice",
+          "line": 14,
+          "isDefault": false
+        },
+        {
+          "name": "createReflectionSlice",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "createPlanSlice",
+          "line": 16,
+          "isDefault": false
+        },
+        {
+          "name": "createRecycleBinSlice",
+          "line": 17,
+          "isDefault": false
+        },
+        {
+          "name": "createFoodSlice",
+          "line": 18,
+          "isDefault": false
+        },
+        {
+          "name": "createCheckinSlice",
+          "line": 19,
+          "isDefault": false
+        },
+        {
+          "name": "createExerciseSlice",
+          "line": 20,
+          "isDefault": false
+        },
+        {
+          "name": "createMeditationSlice",
+          "line": 21,
+          "isDefault": false
+        },
+        {
+          "name": "createFastingSlice",
+          "line": 22,
+          "isDefault": false
+        },
+        {
+          "name": "createProfileSlice",
+          "line": 23,
+          "isDefault": false
+        },
+        {
+          "name": "createSettingsSlice",
+          "line": 24,
+          "isDefault": false
+        },
+        {
+          "name": "createSleepSlice",
+          "line": 25,
+          "isDefault": false
+        },
+        {
+          "name": "createThoughtTrailSlice",
+          "line": 26,
+          "isDefault": false
+        },
+        {
+          "name": "createReviewSlice",
+          "line": 27,
+          "isDefault": false
+        },
+        {
+          "name": "createBodySlice",
+          "line": 28,
+          "isDefault": false
+        },
+        {
+          "name": "createDietSlice",
+          "line": 29,
+          "isDefault": false
+        },
+        {
+          "name": "createPracticeSlice",
+          "line": 30,
+          "isDefault": false
+        },
+        {
+          "name": "createMindSlice",
+          "line": 31,
+          "isDefault": false
+        },
+        {
+          "name": "createMantraSlice",
+          "line": 32,
+          "isDefault": false
+        },
+        {
+          "name": "createZhiguanSlice",
+          "line": 33,
+          "isDefault": false
+        },
+        {
+          "name": "createSliceErrorSlice",
+          "line": 34,
+          "isDefault": false
+        },
+        {
+          "name": "buildMergePatch",
+          "line": 35,
+          "isDefault": false
+        },
+        {
+          "name": "ENTITY_MERGE_MAP",
+          "line": 35,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 51,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/store/storageAdapter.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 3,
+      "nonEmptyLines": 3,
+      "exports": [
+        {
+          "name": "StorageAdapter",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "SyncDataMap",
+          "line": 3,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/sync/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 5,
+      "nonEmptyLines": 5,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/types/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 27,
+      "nonEmptyLines": 27,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/types/music.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 10,
+      "nonEmptyLines": 9,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/typography.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 85,
+      "nonEmptyLines": 79,
+      "functions": [
+        {
+          "name": "configureFontScale",
+          "startLine": 54,
+          "endLine": 56,
+          "params": [
+            "scale"
+          ]
+        },
+        {
+          "name": "scaleFontSize",
+          "startLine": 62,
+          "endLine": 62,
+          "params": [
+            "size"
+          ]
+        },
+        {
+          "name": "FONT_TITLE",
+          "startLine": 68,
+          "endLine": 68,
+          "params": []
+        },
+        {
+          "name": "FONT_BODY",
+          "startLine": 69,
+          "endLine": 69,
+          "params": []
+        },
+        {
+          "name": "FONT_BUTTON",
+          "startLine": 70,
+          "endLine": 70,
+          "params": []
+        },
+        {
+          "name": "FONT_EMPTY",
+          "startLine": 71,
+          "endLine": 71,
+          "params": []
+        },
+        {
+          "name": "FONT_LABEL",
+          "startLine": 72,
+          "endLine": 72,
+          "params": []
+        },
+        {
+          "name": "FONT_CARD_TITLE",
+          "startLine": 73,
+          "endLine": 73,
+          "params": []
+        },
+        {
+          "name": "FONT_SUB",
+          "startLine": 74,
+          "endLine": 74,
+          "params": []
+        },
+        {
+          "name": "FONT_BADGE",
+          "startLine": 75,
+          "endLine": 75,
+          "params": []
+        },
+        {
+          "name": "FONT_ERROR",
+          "startLine": 76,
+          "endLine": 76,
+          "params": []
+        },
+        {
+          "name": "FONT_BACK",
+          "startLine": 77,
+          "endLine": 77,
+          "params": []
+        },
+        {
+          "name": "FONT_CLOSE",
+          "startLine": 78,
+          "endLine": 78,
+          "params": []
+        },
+        {
+          "name": "FONT_STAT_CARD",
+          "startLine": 79,
+          "endLine": 79,
+          "params": []
+        },
+        {
+          "name": "FONT_STAT_SECTION",
+          "startLine": 80,
+          "endLine": 80,
+          "params": []
+        },
+        {
+          "name": "FONT_HERO",
+          "startLine": 81,
+          "endLine": 81,
+          "params": []
+        },
+        {
+          "name": "FONT_CHART_AXIS",
+          "startLine": 82,
+          "endLine": 82,
+          "params": []
+        },
+        {
+          "name": "FONT_CHART_TOOLTIP",
+          "startLine": 83,
+          "endLine": 83,
+          "params": []
+        },
+        {
+          "name": "FONT_SMALL",
+          "startLine": 84,
+          "endLine": 84,
+          "params": []
+        },
+        {
+          "name": "FONT_TINY",
+          "startLine": 85,
+          "endLine": 85,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "configureFontScale",
+          "line": 54,
+          "isDefault": false
+        },
+        {
+          "name": "scaleFontSize",
+          "line": 62,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_TITLE",
+          "line": 68,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_BODY",
+          "line": 69,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_BUTTON",
+          "line": 70,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_EMPTY",
+          "line": 71,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_LABEL",
+          "line": 72,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_CARD_TITLE",
+          "line": 73,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_SUB",
+          "line": 74,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_BADGE",
+          "line": 75,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_ERROR",
+          "line": 76,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_BACK",
+          "line": 77,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_CLOSE",
+          "line": 78,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_STAT_CARD",
+          "line": 79,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_STAT_SECTION",
+          "line": 80,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_HERO",
+          "line": 81,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_CHART_AXIS",
+          "line": 82,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_CHART_TOOLTIP",
+          "line": 83,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_SMALL",
+          "line": 84,
+          "isDefault": false
+        },
+        {
+          "name": "FONT_TINY",
+          "line": 85,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "configureFontScale",
+          "callee": "Math.max",
+          "lineNumber": 55
+        },
+        {
+          "caller": "configureFontScale",
+          "callee": "Math.min",
+          "lineNumber": 55
+        },
+        {
+          "caller": "scaleFontSize",
+          "callee": "Math.round",
+          "lineNumber": 62
+        },
+        {
+          "caller": "FONT_TITLE",
+          "callee": "Math.round",
+          "lineNumber": 68
+        },
+        {
+          "caller": "FONT_BODY",
+          "callee": "Math.round",
+          "lineNumber": 69
+        },
+        {
+          "caller": "FONT_BUTTON",
+          "callee": "Math.round",
+          "lineNumber": 70
+        },
+        {
+          "caller": "FONT_EMPTY",
+          "callee": "Math.round",
+          "lineNumber": 71
+        },
+        {
+          "caller": "FONT_LABEL",
+          "callee": "Math.round",
+          "lineNumber": 72
+        },
+        {
+          "caller": "FONT_CARD_TITLE",
+          "callee": "Math.round",
+          "lineNumber": 73
+        },
+        {
+          "caller": "FONT_SUB",
+          "callee": "Math.round",
+          "lineNumber": 74
+        },
+        {
+          "caller": "FONT_BADGE",
+          "callee": "Math.round",
+          "lineNumber": 75
+        },
+        {
+          "caller": "FONT_ERROR",
+          "callee": "Math.round",
+          "lineNumber": 76
+        },
+        {
+          "caller": "FONT_BACK",
+          "callee": "Math.round",
+          "lineNumber": 77
+        },
+        {
+          "caller": "FONT_CLOSE",
+          "callee": "Math.round",
+          "lineNumber": 78
+        },
+        {
+          "caller": "FONT_STAT_CARD",
+          "callee": "Math.round",
+          "lineNumber": 79
+        },
+        {
+          "caller": "FONT_STAT_SECTION",
+          "callee": "Math.round",
+          "lineNumber": 80
+        },
+        {
+          "caller": "FONT_HERO",
+          "callee": "Math.round",
+          "lineNumber": 81
+        },
+        {
+          "caller": "FONT_CHART_AXIS",
+          "callee": "Math.round",
+          "lineNumber": 82
+        },
+        {
+          "caller": "FONT_CHART_TOOLTIP",
+          "callee": "Math.round",
+          "lineNumber": 83
+        },
+        {
+          "caller": "FONT_SMALL",
+          "callee": "Math.round",
+          "lineNumber": 84
+        },
+        {
+          "caller": "FONT_TINY",
+          "callee": "Math.round",
+          "lineNumber": 85
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 20,
+        "functionCount": 20,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/utils/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 2,
+      "nonEmptyLines": 2,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/utils/transform.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 51,
+      "nonEmptyLines": 44,
+      "functions": [
+        {
+          "name": "toCamelCase",
+          "startLine": 7,
+          "endLine": 9,
+          "params": [
+            "str"
+          ]
+        },
+        {
+          "name": "toSnakeCase",
+          "startLine": 14,
+          "endLine": 19,
+          "params": [
+            "str"
+          ]
+        },
+        {
+          "name": "transformKeys",
+          "startLine": 22,
+          "endLine": 37,
+          "params": [
+            "obj",
+            "keyFn"
+          ]
+        },
+        {
+          "name": "keysToCamel",
+          "startLine": 42,
+          "endLine": 44,
+          "params": [
+            "obj"
+          ]
+        },
+        {
+          "name": "keysToSnake",
+          "startLine": 49,
+          "endLine": 51,
+          "params": [
+            "obj"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "toCamelCase",
+          "line": 7,
+          "isDefault": false
+        },
+        {
+          "name": "toSnakeCase",
+          "line": 14,
+          "isDefault": false
+        },
+        {
+          "name": "keysToCamel",
+          "line": 42,
+          "isDefault": false
+        },
+        {
+          "name": "keysToSnake",
+          "line": 49,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "toCamelCase",
+          "callee": "str.replace",
+          "lineNumber": 8
+        },
+        {
+          "caller": "toCamelCase",
+          "callee": "letter.toUpperCase",
+          "lineNumber": 8
+        },
+        {
+          "caller": "toSnakeCase",
+          "callee": "str\n    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2')\n    .replace(/([a-z\\d])([A-Z])/g, '$1_$2')\n    .toLowerCase",
+          "lineNumber": 15
+        },
+        {
+          "caller": "toSnakeCase",
+          "callee": "str\n    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2')\n    .replace",
+          "lineNumber": 15
+        },
+        {
+          "caller": "toSnakeCase",
+          "callee": "str\n    .replace",
+          "lineNumber": 15
+        },
+        {
+          "caller": "transformKeys",
+          "callee": "Array.isArray",
+          "lineNumber": 23
+        },
+        {
+          "caller": "transformKeys",
+          "callee": "obj.map",
+          "lineNumber": 24
+        },
+        {
+          "caller": "transformKeys",
+          "callee": "transformKeys",
+          "lineNumber": 24
+        },
+        {
+          "caller": "transformKeys",
+          "callee": "Object.getPrototypeOf",
+          "lineNumber": 27
+        },
+        {
+          "caller": "transformKeys",
+          "callee": "Object.fromEntries",
+          "lineNumber": 28
+        },
+        {
+          "caller": "transformKeys",
+          "callee": "Object.entries(obj as Record<string, unknown>).map",
+          "lineNumber": 29
+        },
+        {
+          "caller": "transformKeys",
+          "callee": "Object.entries",
+          "lineNumber": 29
+        },
+        {
+          "caller": "transformKeys",
+          "callee": "keyFn",
+          "lineNumber": 30
+        },
+        {
+          "caller": "transformKeys",
+          "callee": "transformKeys",
+          "lineNumber": 31
+        },
+        {
+          "caller": "keysToCamel",
+          "callee": "transformKeys",
+          "lineNumber": 43
+        },
+        {
+          "caller": "keysToSnake",
+          "callee": "transformKeys",
+          "lineNumber": 50
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 4,
+        "functionCount": 5,
+        "classCount": 0
+      }
+    }
+  ]
+}

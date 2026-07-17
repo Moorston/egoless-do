@@ -1,0 +1,28 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": ".trellis/.template-hashes.json",
+      "language": "json",
+      "sizeLines": 98,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".trellis/config.yaml",
+      "language": "yaml",
+      "sizeLines": 110,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".trellis/workflow.md",
+      "language": "markdown",
+      "sizeLines": 708,
+      "fileCategory": "docs"
+    }
+  ],
+  "batchImportData": {
+    ".trellis/.template-hashes.json": [],
+    ".trellis/config.yaml": [],
+    ".trellis/workflow.md": []
+  }
+}

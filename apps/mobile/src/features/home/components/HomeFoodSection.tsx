@@ -74,7 +74,7 @@ const HomeFoodSection = memo(function HomeFoodSection({
             {isToday ? (
               <>
                 <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>
-                  <Text style={{ fontWeight: '600', color: P }}>{totalCal}</Text> / {calGoal} kcal
+                  <Text style={{ fontWeight: '600', color: P }}>{String(totalCal)}</Text> / {String(calGoal)} kcal
                 </Text>
                 <TouchableOpacity onPress={() => { setCgi(String(calGoal)); setShowCG(true); }}>
                   <Pencil size={14} color={TH.sub} />
@@ -82,7 +82,7 @@ const HomeFoodSection = memo(function HomeFoodSection({
               </>
             ) : (
               <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>
-                <Text style={{ fontWeight: '600', color: P }}>{totalCal}</Text> kcal
+                <Text style={{ fontWeight: '600', color: P }}>{String(totalCal)}</Text> kcal
               </Text>
             )}
           </View>
@@ -98,7 +98,7 @@ const HomeFoodSection = memo(function HomeFoodSection({
                 <TouchableOpacity key={f.name} onPress={() => { setPortionFood(f); setPortion(1); }}
                   style={{ flex: 1, borderRadius: 10, padding: 10, alignItems: 'center', backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border }}>
                   <Text style={{ color: TH.text, fontSize: FONT_SUB(), textAlign: 'center' }} numberOfLines={1}>{f.name}</Text>
-                  <Text style={{ color: P, fontSize: FONT_SUB(), fontWeight: '600' }}>{f.calories}kcal</Text>
+                  <Text style={{ color: P, fontSize: FONT_SUB(), fontWeight: '600' }}>{String(f.calories)}kcal</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -108,11 +108,11 @@ const HomeFoodSection = memo(function HomeFoodSection({
         {/* Food List */}
         {todayFoods.length > 0 && (
           <View style={styles.sectionSpacing}>
-            <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 6 }}>{T('todayFood')} ({todayFoodTotal})</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 6 }}>{T('todayFood')} ({String(todayFoodTotal)})</Text>
             {todayFoods.map(f => (
               <View key={f.id} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: TH.border }}>
                 <Text style={{ color: TH.text, fontSize: FONT_BODY(), flex: 1 }} numberOfLines={1}>{f.name}</Text>
-                <Text style={{ color: P, fontSize: FONT_SUB(), fontWeight: '600', marginRight: 8 }}>{f.calories} kcal</Text>
+                <Text style={{ color: P, fontSize: FONT_SUB(), fontWeight: '600', marginRight: 8 }}>{String(f.calories)} kcal</Text>
                 {isToday && (
                   <TouchableOpacity onPress={() => onDeleteFood(f.id)}>
                     <X size={16} color={TH.sub} />
@@ -159,7 +159,7 @@ const HomeFoodSection = memo(function HomeFoodSection({
             <View style={styles.totalRow}>
               <Text style={{ color: TH.sub, fontSize: FONT_BODY() }}>{T('foodTotalCal')}</Text>
               <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color: COLORS.ORANGE }}>
-                {Math.round((portionFood?.calories ?? 0) * portion)} <Text style={{ fontSize: FONT_SUB(), fontWeight: '400', color: TH.sub }}>kcal</Text>
+                {String(Math.round((portionFood?.calories ?? 0) * portion))} <Text style={{ fontSize: FONT_SUB(), fontWeight: '400', color: TH.sub }}>kcal</Text>
               </Text>
             </View>
             <View style={styles.modalButtonRow}>

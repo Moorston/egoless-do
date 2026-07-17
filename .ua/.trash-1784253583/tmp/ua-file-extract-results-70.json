@@ -1,0 +1,1174 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 14,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "packages/core/src/zod/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 2,
+      "nonEmptyLines": 2,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/zod/schemas.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 145,
+      "nonEmptyLines": 127,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/src/zod/schemas.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 178,
+      "nonEmptyLines": 149,
+      "functions": [
+        {
+          "name": "safeParse",
+          "startLine": 153,
+          "endLine": 159,
+          "params": [
+            "schema",
+            "data"
+          ]
+        },
+        {
+          "name": "validate",
+          "startLine": 162,
+          "endLine": 167,
+          "params": [
+            "schema",
+            "data"
+          ]
+        },
+        {
+          "name": "validateRows",
+          "startLine": 170,
+          "endLine": 178,
+          "params": [
+            "schema",
+            "rows"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "AuthUserSchema",
+          "line": 9,
+          "isDefault": false
+        },
+        {
+          "name": "AuthResponseSchema",
+          "line": 18,
+          "isDefault": false
+        },
+        {
+          "name": "TokenResponseSchema",
+          "line": 25,
+          "isDefault": false
+        },
+        {
+          "name": "SyncableSchema",
+          "line": 33,
+          "isDefault": false
+        },
+        {
+          "name": "CheckinEntrySchema",
+          "line": 39,
+          "isDefault": false
+        },
+        {
+          "name": "HabitSchema",
+          "line": 47,
+          "isDefault": false
+        },
+        {
+          "name": "ReflectionSchema",
+          "line": 54,
+          "isDefault": false
+        },
+        {
+          "name": "FastingSessionSchema",
+          "line": 62,
+          "isDefault": false
+        },
+        {
+          "name": "FoodEntrySchema",
+          "line": 69,
+          "isDefault": false
+        },
+        {
+          "name": "ExerciseEntrySchema",
+          "line": 76,
+          "isDefault": false
+        },
+        {
+          "name": "PlanSchema",
+          "line": 83,
+          "isDefault": false
+        },
+        {
+          "name": "SleepEntrySchema",
+          "line": 91,
+          "isDefault": false
+        },
+        {
+          "name": "ThoughtTrailSchema",
+          "line": 99,
+          "isDefault": false
+        },
+        {
+          "name": "UserProfileSchema",
+          "line": 105,
+          "isDefault": false
+        },
+        {
+          "name": "RecycleBinItemSchema",
+          "line": 112,
+          "isDefault": false
+        },
+        {
+          "name": "SyncPullDataSchema",
+          "line": 122,
+          "isDefault": false
+        },
+        {
+          "name": "AuthSettingsSchema",
+          "line": 126,
+          "isDefault": false
+        },
+        {
+          "name": "AppSettingsSchema",
+          "line": 132,
+          "isDefault": false
+        },
+        {
+          "name": "safeParse",
+          "line": 153,
+          "isDefault": false
+        },
+        {
+          "name": "validate",
+          "line": 162,
+          "isDefault": false
+        },
+        {
+          "name": "validateRows",
+          "line": 170,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "safeParse",
+          "callee": "schema.safeParse",
+          "lineNumber": 157
+        },
+        {
+          "caller": "validate",
+          "callee": "schema.parse",
+          "lineNumber": 166
+        },
+        {
+          "caller": "validateRows",
+          "callee": "rows\n    .map(row => schema.safeParse(row))\n    .filter((result): result is { success: true; data: z.infer<T> } => result.success)\n    .map",
+          "lineNumber": 174
+        },
+        {
+          "caller": "validateRows",
+          "callee": "rows\n    .map(row => schema.safeParse(row))\n    .filter",
+          "lineNumber": 174
+        },
+        {
+          "caller": "validateRows",
+          "callee": "rows\n    .map",
+          "lineNumber": 174
+        },
+        {
+          "caller": "validateRows",
+          "callee": "schema.safeParse",
+          "lineNumber": 175
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 21,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "packages/core/tsconfig.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 17,
+      "nonEmptyLines": 17,
+      "sections": [
+        {
+          "heading": "extends",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "compilerOptions",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "include",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "exclude",
+          "level": 1,
+          "line": 16
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 4
+      }
+    },
+    {
+      "path": "packages/core/vitest.config.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 8,
+      "nonEmptyLines": 7,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "patches/expo-audio@57.0.0.patch",
+      "language": "patch",
+      "fileCategory": "code",
+      "totalLines": 22,
+      "nonEmptyLines": 22,
+      "metrics": {}
+    },
+    {
+      "path": "patches/expo-image-picker@57.0.2.patch",
+      "language": "patch",
+      "fileCategory": "code",
+      "totalLines": 16,
+      "nonEmptyLines": 15,
+      "metrics": {}
+    },
+    {
+      "path": "scripts/cleanup_all_ghosts.mjs",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 249,
+      "nonEmptyLines": 208,
+      "functions": [
+        {
+          "name": "decodeUtf8",
+          "startLine": 22,
+          "endLine": 33,
+          "params": [
+            "arr"
+          ]
+        },
+        {
+          "name": "parseData",
+          "startLine": 36,
+          "endLine": 43,
+          "params": [
+            "data"
+          ]
+        },
+        {
+          "name": "main",
+          "startLine": 183,
+          "endLine": 247,
+          "params": []
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "decodeUtf8",
+          "callee": "String.fromCharCode",
+          "lineNumber": 26
+        },
+        {
+          "caller": "decodeUtf8",
+          "callee": "String.fromCharCode",
+          "lineNumber": 27
+        },
+        {
+          "caller": "decodeUtf8",
+          "callee": "String.fromCharCode",
+          "lineNumber": 28
+        },
+        {
+          "caller": "decodeUtf8",
+          "callee": "String.fromCodePoint",
+          "lineNumber": 29
+        },
+        {
+          "caller": "decodeUtf8",
+          "callee": "String.fromCharCode",
+          "lineNumber": 30
+        },
+        {
+          "caller": "parseData",
+          "callee": "Array.isArray",
+          "lineNumber": 37
+        },
+        {
+          "caller": "parseData",
+          "callee": "JSON.parse",
+          "lineNumber": 38
+        },
+        {
+          "caller": "parseData",
+          "callee": "Array.isArray",
+          "lineNumber": 39
+        },
+        {
+          "caller": "parseData",
+          "callee": "data.every",
+          "lineNumber": 39
+        },
+        {
+          "caller": "parseData",
+          "callee": "JSON.parse",
+          "lineNumber": 40
+        },
+        {
+          "caller": "parseData",
+          "callee": "decodeUtf8",
+          "lineNumber": 40
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 184
+        },
+        {
+          "caller": "main",
+          "callee": "fetch",
+          "lineNumber": 185
+        },
+        {
+          "caller": "main",
+          "callee": "JSON.stringify",
+          "lineNumber": 188
+        },
+        {
+          "caller": "main",
+          "callee": "console.error",
+          "lineNumber": 191
+        },
+        {
+          "caller": "main",
+          "callee": "authRes.text",
+          "lineNumber": 191
+        },
+        {
+          "caller": "main",
+          "callee": "process.exit",
+          "lineNumber": 192
+        },
+        {
+          "caller": "main",
+          "callee": "authRes.json",
+          "lineNumber": 194
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 195
+        },
+        {
+          "caller": "main",
+          "callee": "fetch",
+          "lineNumber": 209
+        },
+        {
+          "caller": "main",
+          "callee": "console.error",
+          "lineNumber": 210
+        },
+        {
+          "caller": "main",
+          "callee": "res.json",
+          "lineNumber": 211
+        },
+        {
+          "caller": "main",
+          "callee": "parseData",
+          "lineNumber": 213
+        },
+        {
+          "caller": "main",
+          "callee": "check",
+          "lineNumber": 214
+        },
+        {
+          "caller": "main",
+          "callee": "ghostIds.push",
+          "lineNumber": 215
+        },
+        {
+          "caller": "main",
+          "callee": "ghostInfos.push",
+          "lineNumber": 223
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 231
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 233
+        },
+        {
+          "caller": "main",
+          "callee": "fetch",
+          "lineNumber": 237
+        },
+        {
+          "caller": "main",
+          "callee": "console.error",
+          "lineNumber": 239
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 242
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 246
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "scripts/cleanup_completed_plans.mjs",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 213,
+      "nonEmptyLines": 185,
+      "functions": [
+        {
+          "name": "decodeUtf8",
+          "startLine": 25,
+          "endLine": 36,
+          "params": [
+            "arr"
+          ]
+        },
+        {
+          "name": "parseData",
+          "startLine": 39,
+          "endLine": 46,
+          "params": [
+            "data"
+          ]
+        },
+        {
+          "name": "fetchAll",
+          "startLine": 49,
+          "endLine": 63,
+          "params": [
+            "headers",
+            "coll",
+            "filter"
+          ]
+        },
+        {
+          "name": "deleteRecord",
+          "startLine": 66,
+          "endLine": 69,
+          "params": [
+            "headers",
+            "coll",
+            "id"
+          ]
+        },
+        {
+          "name": "main",
+          "startLine": 71,
+          "endLine": 211,
+          "params": []
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "decodeUtf8",
+          "callee": "String.fromCharCode",
+          "lineNumber": 29
+        },
+        {
+          "caller": "decodeUtf8",
+          "callee": "String.fromCharCode",
+          "lineNumber": 30
+        },
+        {
+          "caller": "decodeUtf8",
+          "callee": "String.fromCharCode",
+          "lineNumber": 31
+        },
+        {
+          "caller": "decodeUtf8",
+          "callee": "String.fromCodePoint",
+          "lineNumber": 32
+        },
+        {
+          "caller": "decodeUtf8",
+          "callee": "String.fromCharCode",
+          "lineNumber": 33
+        },
+        {
+          "caller": "parseData",
+          "callee": "Array.isArray",
+          "lineNumber": 40
+        },
+        {
+          "caller": "parseData",
+          "callee": "JSON.parse",
+          "lineNumber": 41
+        },
+        {
+          "caller": "parseData",
+          "callee": "Array.isArray",
+          "lineNumber": 42
+        },
+        {
+          "caller": "parseData",
+          "callee": "data.every",
+          "lineNumber": 42
+        },
+        {
+          "caller": "parseData",
+          "callee": "JSON.parse",
+          "lineNumber": 43
+        },
+        {
+          "caller": "parseData",
+          "callee": "decodeUtf8",
+          "lineNumber": 43
+        },
+        {
+          "caller": "fetchAll",
+          "callee": "encodeURIComponent",
+          "lineNumber": 54
+        },
+        {
+          "caller": "fetchAll",
+          "callee": "fetch",
+          "lineNumber": 55
+        },
+        {
+          "caller": "fetchAll",
+          "callee": "console.error",
+          "lineNumber": 56
+        },
+        {
+          "caller": "fetchAll",
+          "callee": "res.json",
+          "lineNumber": 57
+        },
+        {
+          "caller": "fetchAll",
+          "callee": "items.push",
+          "lineNumber": 58
+        },
+        {
+          "caller": "deleteRecord",
+          "callee": "fetch",
+          "lineNumber": 67
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 72
+        },
+        {
+          "caller": "main",
+          "callee": "fetch",
+          "lineNumber": 73
+        },
+        {
+          "caller": "main",
+          "callee": "JSON.stringify",
+          "lineNumber": 76
+        },
+        {
+          "caller": "main",
+          "callee": "console.error",
+          "lineNumber": 79
+        },
+        {
+          "caller": "main",
+          "callee": "authRes.text",
+          "lineNumber": 79
+        },
+        {
+          "caller": "main",
+          "callee": "process.exit",
+          "lineNumber": 80
+        },
+        {
+          "caller": "main",
+          "callee": "authRes.json",
+          "lineNumber": 82
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 84
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 87
+        },
+        {
+          "caller": "main",
+          "callee": "fetchAll",
+          "lineNumber": 88
+        },
+        {
+          "caller": "main",
+          "callee": "parseData",
+          "lineNumber": 92
+        },
+        {
+          "caller": "main",
+          "callee": "completedPlans.push",
+          "lineNumber": 94
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 99
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 103
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 105
+        },
+        {
+          "caller": "main",
+          "callee": "completedPlans.map",
+          "lineNumber": 108
+        },
+        {
+          "caller": "main",
+          "callee": "completedPlans.map",
+          "lineNumber": 109
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 112
+        },
+        {
+          "caller": "main",
+          "callee": "fetchAll",
+          "lineNumber": 113
+        },
+        {
+          "caller": "main",
+          "callee": "parseData",
+          "lineNumber": 117
+        },
+        {
+          "caller": "main",
+          "callee": "planIdSet.has",
+          "lineNumber": 119
+        },
+        {
+          "caller": "main",
+          "callee": "planItemsToDelete.push",
+          "lineNumber": 120
+        },
+        {
+          "caller": "main",
+          "callee": "planItemsToDelete.map",
+          "lineNumber": 124
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 126
+        },
+        {
+          "caller": "main",
+          "callee": "deleteRecord",
+          "lineNumber": 129
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 131
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 134
+        },
+        {
+          "caller": "main",
+          "callee": "fetchAll",
+          "lineNumber": 135
+        },
+        {
+          "caller": "main",
+          "callee": "parseData",
+          "lineNumber": 139
+        },
+        {
+          "caller": "main",
+          "callee": "planItemIdSet.has",
+          "lineNumber": 141
+        },
+        {
+          "caller": "main",
+          "callee": "checkinsToDelete.push",
+          "lineNumber": 142
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 146
+        },
+        {
+          "caller": "main",
+          "callee": "deleteRecord",
+          "lineNumber": 149
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 151
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 154
+        },
+        {
+          "caller": "main",
+          "callee": "fetchAll",
+          "lineNumber": 155
+        },
+        {
+          "caller": "main",
+          "callee": "parseData",
+          "lineNumber": 159
+        },
+        {
+          "caller": "main",
+          "callee": "planIdSet.has",
+          "lineNumber": 161
+        },
+        {
+          "caller": "main",
+          "callee": "todosToDelete.push",
+          "lineNumber": 162
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 166
+        },
+        {
+          "caller": "main",
+          "callee": "deleteRecord",
+          "lineNumber": 169
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 171
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 174
+        },
+        {
+          "caller": "main",
+          "callee": "fetchAll",
+          "lineNumber": 175
+        },
+        {
+          "caller": "main",
+          "callee": "parseData",
+          "lineNumber": 179
+        },
+        {
+          "caller": "main",
+          "callee": "planIdSet.has",
+          "lineNumber": 181
+        },
+        {
+          "caller": "main",
+          "callee": "historyToDelete.push",
+          "lineNumber": 182
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 186
+        },
+        {
+          "caller": "main",
+          "callee": "deleteRecord",
+          "lineNumber": 189
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 191
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 194
+        },
+        {
+          "caller": "main",
+          "callee": "deleteRecord",
+          "lineNumber": 197
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 199
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 203
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 204
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 205
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 206
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 207
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 208
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 209
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 210
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 5,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "scripts/cleanup_ghost_foods.mjs",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 99,
+      "nonEmptyLines": 85,
+      "functions": [
+        {
+          "name": "decodeUtf8",
+          "startLine": 18,
+          "endLine": 29,
+          "params": [
+            "arr"
+          ]
+        },
+        {
+          "name": "parseData",
+          "startLine": 32,
+          "endLine": 39,
+          "params": [
+            "data"
+          ]
+        },
+        {
+          "name": "main",
+          "startLine": 41,
+          "endLine": 97,
+          "params": []
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "decodeUtf8",
+          "callee": "String.fromCharCode",
+          "lineNumber": 22
+        },
+        {
+          "caller": "decodeUtf8",
+          "callee": "String.fromCharCode",
+          "lineNumber": 23
+        },
+        {
+          "caller": "decodeUtf8",
+          "callee": "String.fromCharCode",
+          "lineNumber": 24
+        },
+        {
+          "caller": "decodeUtf8",
+          "callee": "String.fromCodePoint",
+          "lineNumber": 25
+        },
+        {
+          "caller": "decodeUtf8",
+          "callee": "String.fromCharCode",
+          "lineNumber": 26
+        },
+        {
+          "caller": "parseData",
+          "callee": "Array.isArray",
+          "lineNumber": 33
+        },
+        {
+          "caller": "parseData",
+          "callee": "JSON.parse",
+          "lineNumber": 34
+        },
+        {
+          "caller": "parseData",
+          "callee": "Array.isArray",
+          "lineNumber": 35
+        },
+        {
+          "caller": "parseData",
+          "callee": "JSON.parse",
+          "lineNumber": 36
+        },
+        {
+          "caller": "parseData",
+          "callee": "decodeUtf8",
+          "lineNumber": 36
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 42
+        },
+        {
+          "caller": "main",
+          "callee": "fetch",
+          "lineNumber": 43
+        },
+        {
+          "caller": "main",
+          "callee": "JSON.stringify",
+          "lineNumber": 46
+        },
+        {
+          "caller": "main",
+          "callee": "console.error",
+          "lineNumber": 49
+        },
+        {
+          "caller": "main",
+          "callee": "authRes.text",
+          "lineNumber": 49
+        },
+        {
+          "caller": "main",
+          "callee": "process.exit",
+          "lineNumber": 50
+        },
+        {
+          "caller": "main",
+          "callee": "authRes.json",
+          "lineNumber": 52
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 53
+        },
+        {
+          "caller": "main",
+          "callee": "fetch",
+          "lineNumber": 63
+        },
+        {
+          "caller": "main",
+          "callee": "console.error",
+          "lineNumber": 64
+        },
+        {
+          "caller": "main",
+          "callee": "res.json",
+          "lineNumber": 65
+        },
+        {
+          "caller": "main",
+          "callee": "allItems.push",
+          "lineNumber": 66
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 71
+        },
+        {
+          "caller": "main",
+          "callee": "parseData",
+          "lineNumber": 76
+        },
+        {
+          "caller": "main",
+          "callee": "ghostIds.push",
+          "lineNumber": 78
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 79
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 84
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 88
+        },
+        {
+          "caller": "main",
+          "callee": "fetch",
+          "lineNumber": 91
+        },
+        {
+          "caller": "main",
+          "callee": "console.error",
+          "lineNumber": 93
+        },
+        {
+          "caller": "main",
+          "callee": "console.log",
+          "lineNumber": 96
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "scripts/clear-business-data.sh",
+      "language": "shell",
+      "fileCategory": "script",
+      "totalLines": 117,
+      "nonEmptyLines": 101,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "scripts/clear-business-data.sql",
+      "language": "sql",
+      "fileCategory": "data",
+      "totalLines": 85,
+      "nonEmptyLines": 81,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "definitionCount": 0
+      }
+    },
+    {
+      "path": "setup.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 23,
+      "nonEmptyLines": 20,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "vitest.config.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 21,
+      "nonEmptyLines": 20,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    }
+  ]
+}

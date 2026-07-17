@@ -1,0 +1,29 @@
+{
+  "nodes": [
+    {
+      "id": "service:infra/docker/api/Dockerfile",
+      "type": "service",
+      "name": "Dockerfile",
+      "filePath": "infra/docker/api/Dockerfile",
+      "summary": "API 服务多阶段 Dockerfile：base(启用 corepack)→deps(安装依赖)→runner(复制并构建) 产出 node:20-alpine 生产镜像。",
+      "tags": [
+        "containerization",
+        "infrastructure",
+        "docker",
+        "multi-stage",
+        "deployment"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "多阶段构建分离构建依赖与运行时，减小镜像体积并加速 CI 构建。"
+    }
+  ],
+  "edges": [
+    {
+      "source": "service:infra/docker/api/Dockerfile",
+      "target": "config:package.json",
+      "type": "deploys",
+      "direction": "forward",
+      "weight": 0.7
+    }
+  ]
+}

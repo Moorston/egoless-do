@@ -1,0 +1,564 @@
+{
+  "nodes": [
+    {
+      "id": "file:apps/mobile/android/app/debug.keystore",
+      "type": "file",
+      "name": "debug.keystore",
+      "filePath": "apps/mobile/android/app/debug.keystore",
+      "summary": "Android 调试签名密钥库，用于开发阶段 APK 的 debug 签名。",
+      "tags": [
+        "configuration",
+        "android",
+        "signing"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/proguard-rules.pro",
+      "type": "file",
+      "name": "proguard-rules.pro",
+      "filePath": "apps/mobile/android/app/proguard-rules.pro",
+      "summary": "Android ProGuard 代码混淆规则配置（约 14 行），控制 release 构建混淆行为。",
+      "tags": [
+        "configuration",
+        "android",
+        "proguard"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/debug/AndroidManifest.xml",
+      "type": "config",
+      "name": "AndroidManifest.xml",
+      "filePath": "apps/mobile/android/app/src/debug/AndroidManifest.xml",
+      "summary": "Android debug 构建变体的清单文件，配置调试专属权限与组件。",
+      "tags": [
+        "configuration",
+        "android",
+        "manifest"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/debugOptimized/AndroidManifest.xml",
+      "type": "config",
+      "name": "AndroidManifest.xml",
+      "filePath": "apps/mobile/android/app/src/debugOptimized/AndroidManifest.xml",
+      "summary": "Android debugOptimized 构建变体的清单文件。",
+      "tags": [
+        "configuration",
+        "android",
+        "manifest"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/AndroidManifest.xml",
+      "type": "config",
+      "name": "AndroidManifest.xml",
+      "filePath": "apps/mobile/android/app/src/main/AndroidManifest.xml",
+      "summary": "Android 主清单文件（约 39 行）：声明应用权限、Activity、Intent filter 与组件。",
+      "tags": [
+        "configuration",
+        "android",
+        "manifest"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt",
+      "type": "file",
+      "name": "MainActivity.kt",
+      "filePath": "apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt",
+      "summary": "Android 主 Activity（Kotlin，约 61 行）：配置主题、组件名、React delegate 与返回按钮行为。",
+      "tags": [
+        "entry-point",
+        "android",
+        "kotlin",
+        "react"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt:onCreate",
+      "type": "function",
+      "name": "onCreate",
+      "filePath": "apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt",
+      "lineRange": [
+        14,
+        20
+      ],
+      "summary": "设置 AppTheme 并在 super.onCreate 中确保闪屏背景色正确。",
+      "tags": [
+        "android",
+        "lifecycle",
+        "setup"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt:createReactActivityDelegate",
+      "type": "function",
+      "name": "createReactActivityDelegate",
+      "filePath": "apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt",
+      "lineRange": [
+        32,
+        41
+      ],
+      "summary": "创建支持 New Architecture 的 ReactActivityDelegateWrapper。",
+      "tags": [
+        "android",
+        "react-native",
+        "delegate"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt:invokeDefaultOnBackPressed",
+      "type": "function",
+      "name": "invokeDefaultOnBackPressed",
+      "filePath": "apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt",
+      "lineRange": [
+        48,
+        60
+      ],
+      "summary": "按 Android S 版本调整返回按钮行为（切后台而非关闭 Activity）。",
+      "tags": [
+        "android",
+        "navigation",
+        "back"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt:MainActivity",
+      "type": "class",
+      "name": "MainActivity",
+      "filePath": "apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt",
+      "lineRange": [
+        13,
+        61
+      ],
+      "summary": "Android 主 Activity：管理主题、组件名、delegate 与返回按钮行为。",
+      "tags": [
+        "android",
+        "react-activity",
+        "entry-point"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt",
+      "type": "file",
+      "name": "MainApplication.kt",
+      "filePath": "apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt",
+      "summary": "Android Application（Kotlin，约 56 行）：配置 React 宿主包、JS 入口与生命周期分发。",
+      "tags": [
+        "entry-point",
+        "android",
+        "kotlin",
+        "react"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt:onCreate",
+      "type": "function",
+      "name": "onCreate",
+      "filePath": "apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt",
+      "lineRange": [
+        41,
+        50
+      ],
+      "summary": "加载 React Native、配置 New Architecture releaseLevel 并通知生命周期。",
+      "tags": [
+        "android",
+        "lifecycle",
+        "setup"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt:onConfigurationChanged",
+      "type": "function",
+      "name": "onConfigurationChanged",
+      "filePath": "apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt",
+      "lineRange": [
+        52,
+        55
+      ],
+      "summary": "转发配置变更（暗色模式、语言）到 ApplicationLifecycleDispatcher。",
+      "tags": [
+        "android",
+        "lifecycle",
+        "config"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt:MainApplication",
+      "type": "class",
+      "name": "MainApplication",
+      "filePath": "apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt",
+      "lineRange": [
+        19,
+        56
+      ],
+      "summary": "Android Application 类：配置 React 宿主包、JS 入口与生命周期分发。",
+      "tags": [
+        "android",
+        "react-application",
+        "entry-point"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/drawable/ic_launcher_background.xml",
+      "type": "config",
+      "name": "ic_launcher_background.xml",
+      "filePath": "apps/mobile/android/app/src/main/res/drawable/ic_launcher_background.xml",
+      "summary": "启动器图标背景 Drawable 的矢量 XML 定义。",
+      "tags": [
+        "configuration",
+        "android",
+        "drawable"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/drawable/rn_edit_text_material.xml",
+      "type": "config",
+      "name": "rn_edit_text_material.xml",
+      "filePath": "apps/mobile/android/app/src/main/res/drawable/rn_edit_text_material.xml",
+      "summary": "React Native 编辑文本 Material 样式 Drawable 的 XML 定义，修复 Android EditText 下划线。",
+      "tags": [
+        "configuration",
+        "android",
+        "drawable"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml",
+      "type": "config",
+      "name": "ic_launcher_round.xml",
+      "filePath": "apps/mobile/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml",
+      "summary": "自适应圆形启动器图标的 XML _anydpi-v26 定义。",
+      "tags": [
+        "configuration",
+        "android",
+        "mipmap"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
+      "type": "config",
+      "name": "ic_launcher.xml",
+      "filePath": "apps/mobile/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
+      "summary": "自适应启动器图标的 XML _anydpi-v26 定义。",
+      "tags": [
+        "configuration",
+        "android",
+        "mipmap"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.webp",
+      "type": "file",
+      "name": "ic_launcher_foreground.webp",
+      "filePath": "apps/mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.webp",
+      "summary": "hdpi 密度启动器前景图标（webp 格式）。",
+      "tags": [
+        "asset",
+        "android",
+        "icon",
+        "webp"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher_round.webp",
+      "type": "file",
+      "name": "ic_launcher_round.webp",
+      "filePath": "apps/mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher_round.webp",
+      "summary": "hdpi 密度圆形启动器图标（webp 格式）。",
+      "tags": [
+        "asset",
+        "android",
+        "icon",
+        "webp"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher.webp",
+      "type": "file",
+      "name": "ic_launcher.webp",
+      "filePath": "apps/mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher.webp",
+      "summary": "hdpi 密度启动器图标（webp 格式）。",
+      "tags": [
+        "asset",
+        "android",
+        "icon",
+        "webp"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.webp",
+      "type": "file",
+      "name": "ic_launcher_foreground.webp",
+      "filePath": "apps/mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.webp",
+      "summary": "mdpi 密度启动器前景图标（webp 格式）。",
+      "tags": [
+        "asset",
+        "android",
+        "icon",
+        "webp"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher_round.webp",
+      "type": "file",
+      "name": "ic_launcher_round.webp",
+      "filePath": "apps/mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher_round.webp",
+      "summary": "mdpi 密度圆形启动器图标（webp 格式）。",
+      "tags": [
+        "asset",
+        "android",
+        "icon",
+        "webp"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher.webp",
+      "type": "file",
+      "name": "ic_launcher.webp",
+      "filePath": "apps/mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher.webp",
+      "summary": "mdpi 密度启动器图标（webp 格式）。",
+      "tags": [
+        "asset",
+        "android",
+        "icon",
+        "webp"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.webp",
+      "type": "file",
+      "name": "ic_launcher_foreground.webp",
+      "filePath": "apps/mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.webp",
+      "summary": "xhdpi 密度启动器前景图标（webp 格式）。",
+      "tags": [
+        "asset",
+        "android",
+        "icon",
+        "webp"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp",
+      "type": "file",
+      "name": "ic_launcher_round.webp",
+      "filePath": "apps/mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp",
+      "summary": "xhdpi 密度圆形启动器图标（webp 格式）。",
+      "tags": [
+        "asset",
+        "android",
+        "icon",
+        "webp"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher.webp",
+      "type": "file",
+      "name": "ic_launcher.webp",
+      "filePath": "apps/mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher.webp",
+      "summary": "xhdpi 密度启动器图标（webp 格式）。",
+      "tags": [
+        "asset",
+        "android",
+        "icon",
+        "webp"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.webp",
+      "type": "file",
+      "name": "ic_launcher_foreground.webp",
+      "filePath": "apps/mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.webp",
+      "summary": "xxhdpi 密度启动器前景图标（webp 格式）。",
+      "tags": [
+        "asset",
+        "android",
+        "icon",
+        "webp"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.webp",
+      "type": "file",
+      "name": "ic_launcher_round.webp",
+      "filePath": "apps/mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.webp",
+      "summary": "xxhdpi 密度圆形启动器图标（webp 格式）。",
+      "tags": [
+        "asset",
+        "android",
+        "icon",
+        "webp"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.webp",
+      "type": "file",
+      "name": "ic_launcher.webp",
+      "filePath": "apps/mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.webp",
+      "summary": "xxhdpi 密度启动器图标（webp 格式）。",
+      "tags": [
+        "asset",
+        "android",
+        "icon",
+        "webp"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.webp",
+      "type": "file",
+      "name": "ic_launcher_foreground.webp",
+      "filePath": "apps/mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.webp",
+      "summary": "xxxhdpi 密度启动器前景图标（webp 格式）。",
+      "tags": [
+        "asset",
+        "android",
+        "icon",
+        "webp"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:apps/mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp",
+      "type": "file",
+      "name": "ic_launcher_round.webp",
+      "filePath": "apps/mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp",
+      "summary": "xxxhdpi 密度圆形启动器图标（webp 格式）。",
+      "tags": [
+        "asset",
+        "android",
+        "icon",
+        "webp"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt",
+      "target": "function:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt:onCreate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt",
+      "target": "function:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt:onCreate",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt",
+      "target": "function:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt:createReactActivityDelegate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt",
+      "target": "function:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt:createReactActivityDelegate",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt",
+      "target": "function:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt:invokeDefaultOnBackPressed",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt",
+      "target": "function:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt:invokeDefaultOnBackPressed",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt",
+      "target": "class:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt:MainActivity",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt",
+      "target": "class:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainActivity.kt:MainActivity",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt",
+      "target": "function:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt:onCreate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt",
+      "target": "function:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt:onCreate",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt",
+      "target": "function:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt:onConfigurationChanged",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt",
+      "target": "function:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt:onConfigurationChanged",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt",
+      "target": "class:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt:MainApplication",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt",
+      "target": "class:apps/mobile/android/app/src/main/java/com/egolessdo/app/MainApplication.kt:MainApplication",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ]
+}

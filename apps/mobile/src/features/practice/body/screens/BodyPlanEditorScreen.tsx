@@ -327,7 +327,7 @@ export default function BodyPlanEditorScreen() {
                     <Text style={{ fontSize: 12 }}>😴</Text>
                   )}
                   {exCount > 0 && (
-                    <Text style={{ fontSize: 9, color: P, fontWeight: '700' }}>{exCount}</Text>
+                    <Text style={{ fontSize: 9, color: P, fontWeight: '700' }}>{String(exCount)}</Text>
                   )}
                 </TouchableOpacity>
               );
@@ -364,7 +364,7 @@ export default function BodyPlanEditorScreen() {
                               <Text style={{ fontSize: FONT_SMALL(), color: TH.text, marginLeft: 4 }}>{item.label}</Text>
                               {item.count > 0 && (
                                 <View style={{ marginLeft: 4, paddingHorizontal: 5, paddingVertical: 1, borderRadius: 8, backgroundColor: `${P}20` }}>
-                                  <Text style={{ fontSize: 10, color: P, fontWeight: '600' }}>{item.count}</Text>
+                                  <Text style={{ fontSize: 10, color: P, fontWeight: '600' }}>{String(item.count)}</Text>
                                 </View>
                               )}
                             </TouchableOpacity>

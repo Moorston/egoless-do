@@ -1,0 +1,74 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": "apps/mobile/src/features/reflections/insights/InsightsPanel.tsx",
+      "language": "typescript",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/insights/NodeDetailPanel.tsx",
+      "language": "typescript",
+      "sizeLines": 96,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/insights/RelationMapView.tsx",
+      "language": "typescript",
+      "sizeLines": 468,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/insights/StatsBar.tsx",
+      "language": "typescript",
+      "sizeLines": 58,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/insights/hooks/useRelationGraph.ts",
+      "language": "typescript",
+      "sizeLines": 39,
+      "fileCategory": "code"
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/insights/types.ts",
+      "language": "typescript",
+      "sizeLines": 137,
+      "fileCategory": "code"
+    }
+  ],
+  "batchImportData": {
+    "apps/mobile/src/features/reflections/insights/InsightsPanel.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/insights/NodeDetailPanel.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/insights/types.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/insights/RelationMapView.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/insights/hooks/useRelationGraph.ts",
+      "apps/mobile/src/features/reflections/insights/InsightsPanel.tsx",
+      "apps/mobile/src/features/reflections/insights/NodeDetailPanel.tsx",
+      "apps/mobile/src/features/reflections/insights/StatsBar.tsx",
+      "apps/mobile/src/features/reflections/insights/types.ts",
+      "apps/mobile/src/navigation/types.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/insights/StatsBar.tsx": [
+      "apps/mobile/src/components/UI.tsx",
+      "apps/mobile/src/features/reflections/insights/types.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/insights/hooks/useRelationGraph.ts": [
+      "apps/mobile/src/features/reflections/insights/types.ts",
+      "apps/mobile/src/store/useAppStore.ts",
+      "packages/core/src/index.ts"
+    ],
+    "apps/mobile/src/features/reflections/insights/types.ts": []
+  }
+}

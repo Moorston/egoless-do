@@ -1,0 +1,1721 @@
+{
+  "nodes": [
+    {
+      "id": "file:apps/mobile/src/features/meditation/MeditationScreen.tsx",
+      "type": "file",
+      "name": "MeditationScreen.tsx",
+      "summary": "冥想主页面，包含倒计时、实时会话心跳、背景音乐选择、钟声音效、完成感悟记录与分享卡片等完整冥想流程。",
+      "tags": [
+        "meditation",
+        "screen",
+        "timer",
+        "audio",
+        "sharing"
+      ],
+      "complexity": "complex",
+      "filePath": "apps/mobile/src/features/meditation/MeditationScreen.tsx"
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/components/CategoryCard.tsx",
+      "type": "file",
+      "name": "CategoryCard.tsx",
+      "summary": "音乐分类卡片组件，渐变背景展示分类图标、名称与曲目数量，用于音乐馆网格入口。",
+      "tags": [
+        "music",
+        "component",
+        "card",
+        "gradient"
+      ],
+      "complexity": "simple",
+      "filePath": "apps/mobile/src/features/music/components/CategoryCard.tsx"
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/components/FavoriteButton.tsx",
+      "type": "file",
+      "name": "FavoriteButton.tsx",
+      "summary": "心形收藏按钮，带缩放心跳动画，用于切换曲目收藏状态。",
+      "tags": [
+        "music",
+        "component",
+        "favorite",
+        "animation"
+      ],
+      "complexity": "simple",
+      "filePath": "apps/mobile/src/features/music/components/FavoriteButton.tsx"
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/components/ImportMusicButton.tsx",
+      "type": "file",
+      "name": "ImportMusicButton.tsx",
+      "summary": "导入本地音频按钮，调用 DocumentPicker 选择音频并加入用户曲库。",
+      "tags": [
+        "music",
+        "component",
+        "import",
+        "document-picker"
+      ],
+      "complexity": "simple",
+      "filePath": "apps/mobile/src/features/music/components/ImportMusicButton.tsx"
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/components/MusicMiniBar.tsx",
+      "type": "file",
+      "name": "MusicMiniBar.tsx",
+      "summary": "迷你音乐控制条，显示当前曲目、播放/暂停与循环模式切换及进度条，供冥想页内嵌。",
+      "tags": [
+        "music",
+        "component",
+        "mini-player",
+        "progress"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/music/components/MusicMiniBar.tsx"
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/components/MusicPickerModal.tsx",
+      "type": "file",
+      "name": "MusicPickerModal.tsx",
+      "summary": "音乐选择弹窗，按分类分组展示内置与用户曲目，支持试听、收藏与确认选择背景音乐。",
+      "tags": [
+        "music",
+        "component",
+        "modal",
+        "picker",
+        "flatlist"
+      ],
+      "complexity": "complex",
+      "filePath": "apps/mobile/src/features/music/components/MusicPickerModal.tsx"
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/components/PlayerBar.tsx",
+      "type": "file",
+      "name": "PlayerBar.tsx",
+      "summary": "底部播放器控制条，含播放/暂停、上下曲、音量、循环模式、睡眠定时器弹窗与波形进度条。",
+      "tags": [
+        "music",
+        "component",
+        "player",
+        "sleep-timer",
+        "seekbar"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/music/components/PlayerBar.tsx"
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/components/TrackListItem.tsx",
+      "type": "file",
+      "name": "TrackListItem.tsx",
+      "summary": "曲目列表项，展示曲目名、分类、收藏状态、动画图标、波形进度及用户曲删除操作。",
+      "tags": [
+        "music",
+        "component",
+        "track",
+        "list-item"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/music/components/TrackListItem.tsx"
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/components/WaveformBar.tsx",
+      "type": "file",
+      "name": "WaveformBar.tsx",
+      "summary": "音频波形条组件，按分类预设轮廓或种子随机生成柱状波形，支持进度高亮与点击定位。",
+      "tags": [
+        "music",
+        "component",
+        "waveform",
+        "visualization"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/music/components/WaveformBar.tsx"
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/screens/MusicCategoryScreen.tsx",
+      "type": "file",
+      "name": "MusicCategoryScreen.tsx",
+      "summary": "音乐分类页，按分类加载曲目列表，支持播放、收藏、设置播放队列并显示底部播放器。",
+      "tags": [
+        "music",
+        "screen",
+        "category",
+        "queue"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/music/screens/MusicCategoryScreen.tsx"
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/screens/MusicScreen.tsx",
+      "type": "file",
+      "name": "MusicScreen.tsx",
+      "summary": "音乐馆主页，展示正在播放卡片、分类卡片网格，并挂载分类元数据计算与底部播放器。",
+      "tags": [
+        "music",
+        "screen",
+        "library",
+        "category-grid"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/music/screens/MusicScreen.tsx"
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/services/AudioEngineProvider.tsx",
+      "type": "file",
+      "name": "AudioEngineProvider.tsx",
+      "summary": "全局音频引擎 Provider，监听音乐 store 控制 expo-audio 播放器，同步进度、处理切曲与音频会话设置。",
+      "tags": [
+        "music",
+        "service",
+        "audio-engine",
+        "provider",
+        "expo-audio"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/music/services/AudioEngineProvider.tsx"
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/services/AudioSessionManager.ts",
+      "type": "file",
+      "name": "AudioSessionManager.ts",
+      "summary": "音频会话管理器（music feature 版），以单例管理音乐与环境音的优先级抢占与恢复。",
+      "tags": [
+        "music",
+        "service",
+        "audio-session",
+        "singleton",
+        "priority"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/music/services/AudioSessionManager.ts"
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/services/audioPlayerRef.ts",
+      "type": "file",
+      "name": "audioPlayerRef.ts",
+      "summary": "全局音频播放器共享引用，由 AudioEngineProvider 赋值，供 PlayerBar 等跨组件操作播放器。",
+      "tags": [
+        "music",
+        "service",
+        "ref",
+        "audio-player"
+      ],
+      "complexity": "simple",
+      "filePath": "apps/mobile/src/features/music/services/audioPlayerRef.ts"
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "type": "file",
+      "name": "useMusicStore.ts",
+      "summary": "音乐 Zustand store，管理库/用户曲/收藏/队列/播放状态/睡眠定时器，并以文件系统持久化。",
+      "tags": [
+        "music",
+        "store",
+        "zustand",
+        "persistence",
+        "queue"
+      ],
+      "complexity": "complex",
+      "filePath": "apps/mobile/src/features/music/useMusicStore.ts"
+    },
+    {
+      "id": "file:apps/mobile/src/features/zhiguan/SessionComplete.tsx",
+      "type": "file",
+      "name": "SessionComplete.tsx",
+      "summary": "禅修结束卡片，展示时长/日期、八触记录、自评禅定阶段、结行笔记与回向，完成或放弃。",
+      "tags": [
+        "zhiguan",
+        "screen",
+        "session-complete",
+        "eight-tactile",
+        "sam-stage"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/zhiguan/SessionComplete.tsx"
+    },
+    {
+      "id": "file:apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx",
+      "type": "file",
+      "name": "ZhiguanScreen.tsx",
+      "summary": "止观主控页，三层渐进式（idle/practicing/complete）架构，整合呼吸环、计数、vipassana、计时器与会话生命周期。",
+      "tags": [
+        "zhiguan",
+        "screen",
+        "breath",
+        "timer",
+        "session-lifecycle"
+      ],
+      "complexity": "complex",
+      "filePath": "apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx"
+    },
+    {
+      "id": "file:apps/mobile/src/features/zhiguan/ZhiguanSettingsSheet.tsx",
+      "type": "file",
+      "name": "ZhiguanSettingsSheet.tsx",
+      "summary": "止观设置弹窗，配置呼吸节奏、目标时长、背景音、修行法、五盖强度与发愿文。",
+      "tags": [
+        "zhiguan",
+        "component",
+        "settings",
+        "modal",
+        "sankalpa"
+      ],
+      "complexity": "complex",
+      "filePath": "apps/mobile/src/features/zhiguan/ZhiguanSettingsSheet.tsx"
+    },
+    {
+      "id": "file:apps/mobile/src/features/zhiguan/components/BreathRing.tsx",
+      "type": "file",
+      "name": "BreathRing.tsx",
+      "summary": "呼吸圆环动画组件，按吸气-屏-呼气节奏膨胀收缩，跟随呼吸模式循环。",
+      "tags": [
+        "zhiguan",
+        "component",
+        "breath",
+        "animated",
+        "ring"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/zhiguan/components/BreathRing.tsx"
+    },
+    {
+      "id": "file:apps/mobile/src/features/zhiguan/components/CountingRound.tsx",
+      "type": "file",
+      "name": "CountingRound.tsx",
+      "summary": "十珠计数环，每呼吸一次点亮一颗珠子，显示轮次与总呼吸数。",
+      "tags": [
+        "zhiguan",
+        "component",
+        "counting",
+        "beads",
+        "breath"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/zhiguan/components/CountingRound.tsx"
+    },
+    {
+      "id": "file:apps/mobile/src/features/zhiguan/components/VipassanaPanel.tsx",
+      "type": "file",
+      "name": "VipassanaPanel.tsx",
+      "summary": "四念处指引面板，滑入式显示身/受/心/法的观照修行引导文。",
+      "tags": [
+        "zhiguan",
+        "component",
+        "vipassana",
+        "modal",
+        "guides"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/zhiguan/components/VipassanaPanel.tsx"
+    },
+    {
+      "id": "file:apps/mobile/src/features/zhiguan/hooks/useZhiguanTimer.ts",
+      "type": "file",
+      "name": "useZhiguanTimer.ts",
+      "summary": "止观计时器 Hook，基于 requestAnimationFrame 计时，处理后台暂停补偿与阶段提示。",
+      "tags": [
+        "zhiguan",
+        "hook",
+        "timer",
+        "raf",
+        "app-state"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/zhiguan/hooks/useZhiguanTimer.ts"
+    },
+    {
+      "id": "file:apps/mobile/src/services/AudioSessionManager.ts",
+      "type": "file",
+      "name": "AudioSessionManager.ts",
+      "summary": "音频会话管理器（全局服务版），以单例管理音乐与环境音的优先级抢占与恢复。",
+      "tags": [
+        "service",
+        "audio-session",
+        "singleton",
+        "priority"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/services/AudioSessionManager.ts"
+    },
+    {
+      "id": "file:apps/mobile/src/features/meditation/MeditationScreen.tsx:MeditationScreen",
+      "type": "function",
+      "name": "MeditationScreen",
+      "summary": "冥想主页组件，串联倒计时、心跳会话、音乐选择、钟声音效、感悟记录与分享卡片。",
+      "tags": [
+        "meditation",
+        "screen",
+        "timer",
+        "audio",
+        "sharing"
+      ],
+      "complexity": "complex",
+      "filePath": "apps/mobile/src/features/meditation/MeditationScreen.tsx",
+      "lineRange": [
+        32,
+        430
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/components/FavoriteButton.tsx:FavoriteButton",
+      "type": "function",
+      "name": "FavoriteButton",
+      "summary": "收藏按钮组件，点击触发心跳缩放动画并切换收藏状态。",
+      "tags": [
+        "music",
+        "favorite",
+        "animation"
+      ],
+      "complexity": "simple",
+      "filePath": "apps/mobile/src/features/music/components/FavoriteButton.tsx",
+      "lineRange": [
+        13,
+        38
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/components/ImportMusicButton.tsx:ImportMusicButton",
+      "type": "function",
+      "name": "ImportMusicButton",
+      "summary": "导入音乐按钮，调用 DocumentPicker 选曲并写入用户曲库。",
+      "tags": [
+        "music",
+        "import",
+        "document-picker"
+      ],
+      "complexity": "simple",
+      "filePath": "apps/mobile/src/features/music/components/ImportMusicButton.tsx",
+      "lineRange": [
+        17,
+        48
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/components/MusicMiniBar.tsx:MusicMiniBar",
+      "type": "function",
+      "name": "MusicMiniBar",
+      "summary": "迷你播放控制条，显示曲目、播放/暂停与循环模式及进度。",
+      "tags": [
+        "music",
+        "mini-player",
+        "progress"
+      ],
+      "complexity": "simple",
+      "filePath": "apps/mobile/src/features/music/components/MusicMiniBar.tsx",
+      "lineRange": [
+        30,
+        67
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/components/MusicPickerModal.tsx:MusicPickerModal",
+      "type": "function",
+      "name": "MusicPickerModal",
+      "summary": "音乐选择弹窗，按分类展示曲目，支持试听、收藏与确认。",
+      "tags": [
+        "music",
+        "modal",
+        "picker",
+        "flatlist"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/music/components/MusicPickerModal.tsx",
+      "lineRange": [
+        28,
+        150
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/components/PlayerBar.tsx:PlayerBar",
+      "type": "function",
+      "name": "PlayerBar",
+      "summary": "底部播放器控制条，含上下曲、音量、循环、睡眠定时与波形进度。",
+      "tags": [
+        "music",
+        "player",
+        "sleep-timer",
+        "seekbar"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/music/components/PlayerBar.tsx",
+      "lineRange": [
+        21,
+        196
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/components/TrackListItem.tsx:TrackListItem",
+      "type": "function",
+      "name": "TrackListItem",
+      "summary": "曲目列表项，展示曲目详情、收藏、动画图标、波形进度与删除。",
+      "tags": [
+        "music",
+        "track",
+        "list-item"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/music/components/TrackListItem.tsx",
+      "lineRange": [
+        25,
+        91
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/components/WaveformBar.tsx:generateWaveform",
+      "type": "function",
+      "name": "generateWaveform",
+      "summary": "按分类预设轮廓或种子随机生成波形柱状数据数组。",
+      "tags": [
+        "music",
+        "waveform",
+        "generator",
+        "seeded-random"
+      ],
+      "complexity": "simple",
+      "filePath": "apps/mobile/src/features/music/components/WaveformBar.tsx",
+      "lineRange": [
+        21,
+        41
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/components/WaveformBar.tsx:WaveformBar",
+      "type": "function",
+      "name": "WaveformBar",
+      "summary": "波形条渲染组件，按进度高亮并支持点击定位。",
+      "tags": [
+        "music",
+        "waveform",
+        "visualization"
+      ],
+      "complexity": "simple",
+      "filePath": "apps/mobile/src/features/music/components/WaveformBar.tsx",
+      "lineRange": [
+        53,
+        85
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/screens/MusicCategoryScreen.tsx:MusicCategoryScreen",
+      "type": "function",
+      "name": "MusicCategoryScreen",
+      "summary": "音乐分类页组件，加载分类曲目、播放、收藏与队列设置。",
+      "tags": [
+        "music",
+        "screen",
+        "category",
+        "queue"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/music/screens/MusicCategoryScreen.tsx",
+      "lineRange": [
+        18,
+        108
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/screens/MusicScreen.tsx:MusicScreen",
+      "type": "function",
+      "name": "MusicScreen",
+      "summary": "音乐馆主页组件，展示正在播放卡片与分类卡片网格。",
+      "tags": [
+        "music",
+        "screen",
+        "library",
+        "category-grid"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/music/screens/MusicScreen.tsx",
+      "lineRange": [
+        16,
+        152
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/services/AudioEngineProvider.tsx:AudioEngineProvider",
+      "type": "function",
+      "name": "AudioEngineProvider",
+      "summary": "音频引擎 Provider，桥接音乐 store 与 expo-audio 播放器。",
+      "tags": [
+        "music",
+        "audio-engine",
+        "provider",
+        "expo-audio"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/music/services/AudioEngineProvider.tsx",
+      "lineRange": [
+        18,
+        95
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/services/AudioSessionManager.ts:AudioSessionManager",
+      "type": "function",
+      "name": "AudioSessionManager",
+      "summary": "音频会话管理器类（feature 版），以优先级规则调度音乐与环境音。",
+      "tags": [
+        "music",
+        "audio-session",
+        "singleton",
+        "class"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/music/services/AudioSessionManager.ts",
+      "lineRange": [
+        17,
+        92
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/useMusicStore.ts:setMusicSyncCallback",
+      "type": "function",
+      "name": "setMusicSyncCallback",
+      "summary": "注册音乐变更回调，供 useAppStore 触发 profile 同步。",
+      "tags": [
+        "music",
+        "store",
+        "sync",
+        "callback"
+      ],
+      "complexity": "simple",
+      "filePath": "apps/mobile/src/features/music/useMusicStore.ts",
+      "lineRange": [
+        52,
+        52
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/useMusicStore.ts:computeTracksByCategory",
+      "type": "function",
+      "name": "computeTracksByCategory",
+      "summary": "纯函数，按分类筛选内置与用户曲目并返回列表。",
+      "tags": [
+        "music",
+        "selector",
+        "pure",
+        "category"
+      ],
+      "complexity": "simple",
+      "filePath": "apps/mobile/src/features/music/useMusicStore.ts",
+      "lineRange": [
+        113,
+        121
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/useMusicStore.ts:computeCategoryMeta",
+      "type": "function",
+      "name": "computeCategoryMeta",
+      "summary": "纯函数，计算各分类元数据（名称、图标、数量）。",
+      "tags": [
+        "music",
+        "selector",
+        "pure",
+        "category-meta"
+      ],
+      "complexity": "simple",
+      "filePath": "apps/mobile/src/features/music/useMusicStore.ts",
+      "lineRange": [
+        123,
+        132
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/zhiguan/SessionComplete.tsx:SessionComplete",
+      "type": "function",
+      "name": "SessionComplete",
+      "summary": "禅修结束卡片组件，采集八触、禅定阶段、结行笔记与回向。",
+      "tags": [
+        "zhiguan",
+        "session-complete",
+        "eight-tactile",
+        "sam-stage"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/zhiguan/SessionComplete.tsx",
+      "lineRange": [
+        27,
+        154
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx:ZhiguanScreen",
+      "type": "function",
+      "name": "ZhiguanScreen",
+      "summary": "止观主控组件，三态切换并整合呼吸环、计数、vipassana 与会话生命周期。",
+      "tags": [
+        "zhiguan",
+        "screen",
+        "breath",
+        "session-lifecycle"
+      ],
+      "complexity": "complex",
+      "filePath": "apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx",
+      "lineRange": [
+        50,
+        332
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/zhiguan/ZhiguanSettingsSheet.tsx:ZhiguanSettingsSheet",
+      "type": "function",
+      "name": "ZhiguanSettingsSheet",
+      "summary": "止观设置弹窗组件，配置呼吸、时长、背景音、法门、五盖与发愿。",
+      "tags": [
+        "zhiguan",
+        "settings",
+        "modal",
+        "sankalpa"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/zhiguan/ZhiguanSettingsSheet.tsx",
+      "lineRange": [
+        42,
+        199
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/zhiguan/components/BreathRing.tsx:BreathRing",
+      "type": "function",
+      "name": "BreathRing",
+      "summary": "呼吸圆环动画组件，按呼吸模式循环膨胀收缩。",
+      "tags": [
+        "zhiguan",
+        "breath",
+        "animated",
+        "ring"
+      ],
+      "complexity": "simple",
+      "filePath": "apps/mobile/src/features/zhiguan/components/BreathRing.tsx",
+      "lineRange": [
+        16,
+        61
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/zhiguan/components/CountingRound.tsx:CountingRound",
+      "type": "function",
+      "name": "CountingRound",
+      "summary": "十珠计数环组件，按呼吸点亮珠子并显示轮次。",
+      "tags": [
+        "zhiguan",
+        "counting",
+        "beads"
+      ],
+      "complexity": "simple",
+      "filePath": "apps/mobile/src/features/zhiguan/components/CountingRound.tsx",
+      "lineRange": [
+        17,
+        61
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/zhiguan/components/VipassanaPanel.tsx:VipassanaPanel",
+      "type": "function",
+      "name": "VipassanaPanel",
+      "summary": "四念处指引面板组件，展示身/受/心/法观照引导。",
+      "tags": [
+        "zhiguan",
+        "vipassana",
+        "modal",
+        "guides"
+      ],
+      "complexity": "simple",
+      "filePath": "apps/mobile/src/features/zhiguan/components/VipassanaPanel.tsx",
+      "lineRange": [
+        16,
+        65
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/zhiguan/hooks/useZhiguanTimer.ts:useZhiguanTimer",
+      "type": "function",
+      "name": "useZhiguanTimer",
+      "summary": "止观计时器 Hook，基于 requestAnimationFrame 并处理后台补偿。",
+      "tags": [
+        "zhiguan",
+        "timer",
+        "raf",
+        "app-state"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/features/zhiguan/hooks/useZhiguanTimer.ts",
+      "lineRange": [
+        19,
+        110
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/zhiguan/hooks/useZhiguanTimer.ts:usePracticeElapseHints",
+      "type": "function",
+      "name": "usePracticeElapseHints",
+      "summary": "监听坐禅时长并在 5/30/60 分钟触发阶段提示回调。",
+      "tags": [
+        "zhiguan",
+        "hook",
+        "hints",
+        "elapsed"
+      ],
+      "complexity": "simple",
+      "filePath": "apps/mobile/src/features/zhiguan/hooks/useZhiguanTimer.ts",
+      "lineRange": [
+        113,
+        125
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/services/AudioSessionManager.ts:AudioSessionManager",
+      "type": "function",
+      "name": "AudioSessionManager",
+      "summary": "音频会话管理器类（全局版），以优先级规则调度音乐与环境音。",
+      "tags": [
+        "service",
+        "audio-session",
+        "singleton",
+        "class"
+      ],
+      "complexity": "moderate",
+      "filePath": "apps/mobile/src/services/AudioSessionManager.ts",
+      "lineRange": [
+        17,
+        92
+      ]
+    },
+    {
+      "id": "file:apps/mobile/src/features/music/useMusicStore.ts:useMusicStore",
+      "type": "function",
+      "name": "useMusicStore",
+      "summary": "音乐 Zustand store hook，含播放、队列、收藏、睡眠定时与文件持久化逻辑。",
+      "tags": [
+        "music",
+        "store",
+        "zustand",
+        "persistence"
+      ],
+      "complexity": "complex",
+      "filePath": "apps/mobile/src/features/music/useMusicStore.ts",
+      "lineRange": [
+        134,
+        385
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:apps/mobile/src/features/meditation/MeditationScreen.tsx",
+      "target": "file:apps/mobile/src/components/MeditationMusicBar.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MeditationScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MeditationScreen.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/components/ActiveInsightBar.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MeditationScreen.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/hooks/useGoalResolver.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MeditationScreen.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/hooks/useSessionHeartbeat.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MeditationScreen.tsx",
+      "target": "file:apps/mobile/src/features/global-pulse/services/activeSessionApi.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MeditationScreen.tsx",
+      "target": "file:apps/mobile/src/features/music/components/MusicPickerModal.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MeditationScreen.tsx",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MeditationScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MeditationScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/SimpleHeader.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MeditationScreen.tsx",
+      "target": "file:apps/mobile/src/services/AudioSessionManager.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MeditationScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MeditationScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/CategoryCard.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/FavoriteButton.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/ImportMusicButton.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/ImportMusicButton.tsx",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/ImportMusicButton.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/MusicMiniBar.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/MusicMiniBar.tsx",
+      "target": "file:apps/mobile/src/features/music/components/WaveformBar.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/MusicMiniBar.tsx",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/MusicMiniBar.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/MusicPickerModal.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/MusicPickerModal.tsx",
+      "target": "file:apps/mobile/src/features/music/components/TrackListItem.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/MusicPickerModal.tsx",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/MusicPickerModal.tsx",
+      "target": "file:apps/mobile/src/services/AudioSessionManager.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/MusicPickerModal.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/PlayerBar.tsx",
+      "target": "file:apps/mobile/src/components/AnimatedMusicIcon.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/PlayerBar.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/PlayerBar.tsx",
+      "target": "file:apps/mobile/src/features/music/components/WaveformBar.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/PlayerBar.tsx",
+      "target": "file:apps/mobile/src/features/music/services/audioPlayerRef.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/PlayerBar.tsx",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/PlayerBar.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/TrackListItem.tsx",
+      "target": "file:apps/mobile/src/components/AnimatedMusicIcon.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/TrackListItem.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/TrackListItem.tsx",
+      "target": "file:apps/mobile/src/features/music/components/FavoriteButton.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/TrackListItem.tsx",
+      "target": "file:apps/mobile/src/features/music/components/WaveformBar.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/TrackListItem.tsx",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/TrackListItem.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/screens/MusicCategoryScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/screens/MusicCategoryScreen.tsx",
+      "target": "file:apps/mobile/src/features/music/components/PlayerBar.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/screens/MusicCategoryScreen.tsx",
+      "target": "file:apps/mobile/src/features/music/components/TrackListItem.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/screens/MusicCategoryScreen.tsx",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/screens/MusicCategoryScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/screens/MusicCategoryScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/screens/MusicScreen.tsx",
+      "target": "file:apps/mobile/src/components/AnimatedMusicIcon.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/screens/MusicScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/screens/MusicScreen.tsx",
+      "target": "file:apps/mobile/src/features/music/components/CategoryCard.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/screens/MusicScreen.tsx",
+      "target": "file:apps/mobile/src/features/music/components/ImportMusicButton.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/screens/MusicScreen.tsx",
+      "target": "file:apps/mobile/src/features/music/components/PlayerBar.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/screens/MusicScreen.tsx",
+      "target": "file:apps/mobile/src/features/music/components/WaveformBar.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/screens/MusicScreen.tsx",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/screens/MusicScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/screens/MusicScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/services/AudioEngineProvider.tsx",
+      "target": "file:apps/mobile/src/features/music/services/audioPlayerRef.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/services/AudioEngineProvider.tsx",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/services/AudioEngineProvider.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/services/AudioSessionManager.ts",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/SessionComplete.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/SessionComplete.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx",
+      "target": "file:apps/mobile/src/features/zhiguan/components/BreathRing.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx",
+      "target": "file:apps/mobile/src/features/zhiguan/components/CountingRound.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx",
+      "target": "file:apps/mobile/src/features/zhiguan/components/VipassanaPanel.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx",
+      "target": "file:apps/mobile/src/features/zhiguan/hooks/useZhiguanTimer.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx",
+      "target": "file:apps/mobile/src/features/zhiguan/SessionComplete.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx",
+      "target": "file:apps/mobile/src/features/zhiguan/ZhiguanSettingsSheet.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx",
+      "target": "file:apps/mobile/src/navigation/hooks.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx",
+      "target": "file:apps/mobile/src/store/useAppStore.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanSettingsSheet.tsx",
+      "target": "file:apps/mobile/src/components/UI.tsx",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanSettingsSheet.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/components/BreathRing.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/components/CountingRound.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/components/VipassanaPanel.tsx",
+      "target": "file:packages/core/src/index.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/services/AudioSessionManager.ts",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "type": "imports",
+      "weight": 0.7,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MeditationScreen.tsx",
+      "target": "file:apps/mobile/src/features/meditation/MeditationScreen.tsx:MeditationScreen",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/meditation/MeditationScreen.tsx",
+      "target": "file:apps/mobile/src/features/meditation/MeditationScreen.tsx:MeditationScreen",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/FavoriteButton.tsx",
+      "target": "file:apps/mobile/src/features/music/components/FavoriteButton.tsx:FavoriteButton",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/FavoriteButton.tsx",
+      "target": "file:apps/mobile/src/features/music/components/FavoriteButton.tsx:FavoriteButton",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/ImportMusicButton.tsx",
+      "target": "file:apps/mobile/src/features/music/components/ImportMusicButton.tsx:ImportMusicButton",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/ImportMusicButton.tsx",
+      "target": "file:apps/mobile/src/features/music/components/ImportMusicButton.tsx:ImportMusicButton",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/MusicMiniBar.tsx",
+      "target": "file:apps/mobile/src/features/music/components/MusicMiniBar.tsx:MusicMiniBar",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/MusicMiniBar.tsx",
+      "target": "file:apps/mobile/src/features/music/components/MusicMiniBar.tsx:MusicMiniBar",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/MusicPickerModal.tsx",
+      "target": "file:apps/mobile/src/features/music/components/MusicPickerModal.tsx:MusicPickerModal",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/MusicPickerModal.tsx",
+      "target": "file:apps/mobile/src/features/music/components/MusicPickerModal.tsx:MusicPickerModal",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/PlayerBar.tsx",
+      "target": "file:apps/mobile/src/features/music/components/PlayerBar.tsx:PlayerBar",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/PlayerBar.tsx",
+      "target": "file:apps/mobile/src/features/music/components/PlayerBar.tsx:PlayerBar",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/TrackListItem.tsx",
+      "target": "file:apps/mobile/src/features/music/components/TrackListItem.tsx:TrackListItem",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/WaveformBar.tsx",
+      "target": "file:apps/mobile/src/features/music/components/WaveformBar.tsx:generateWaveform",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/WaveformBar.tsx",
+      "target": "file:apps/mobile/src/features/music/components/WaveformBar.tsx:WaveformBar",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/WaveformBar.tsx",
+      "target": "file:apps/mobile/src/features/music/components/WaveformBar.tsx:WaveformBar",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/screens/MusicCategoryScreen.tsx",
+      "target": "file:apps/mobile/src/features/music/screens/MusicCategoryScreen.tsx:MusicCategoryScreen",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/screens/MusicCategoryScreen.tsx",
+      "target": "file:apps/mobile/src/features/music/screens/MusicCategoryScreen.tsx:MusicCategoryScreen",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/screens/MusicScreen.tsx",
+      "target": "file:apps/mobile/src/features/music/screens/MusicScreen.tsx:MusicScreen",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/screens/MusicScreen.tsx",
+      "target": "file:apps/mobile/src/features/music/screens/MusicScreen.tsx:MusicScreen",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/services/AudioEngineProvider.tsx",
+      "target": "file:apps/mobile/src/features/music/services/AudioEngineProvider.tsx:AudioEngineProvider",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/services/AudioEngineProvider.tsx",
+      "target": "file:apps/mobile/src/features/music/services/AudioEngineProvider.tsx:AudioEngineProvider",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/services/AudioSessionManager.ts",
+      "target": "file:apps/mobile/src/features/music/services/AudioSessionManager.ts:AudioSessionManager",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts:setMusicSyncCallback",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts:setMusicSyncCallback",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts:computeTracksByCategory",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts:computeTracksByCategory",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts:computeCategoryMeta",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts:computeCategoryMeta",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/SessionComplete.tsx",
+      "target": "file:apps/mobile/src/features/zhiguan/SessionComplete.tsx:SessionComplete",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/SessionComplete.tsx",
+      "target": "file:apps/mobile/src/features/zhiguan/SessionComplete.tsx:SessionComplete",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx",
+      "target": "file:apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx:ZhiguanScreen",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx",
+      "target": "file:apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx:ZhiguanScreen",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanSettingsSheet.tsx",
+      "target": "file:apps/mobile/src/features/zhiguan/ZhiguanSettingsSheet.tsx:ZhiguanSettingsSheet",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanSettingsSheet.tsx",
+      "target": "file:apps/mobile/src/features/zhiguan/ZhiguanSettingsSheet.tsx:ZhiguanSettingsSheet",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/components/BreathRing.tsx",
+      "target": "file:apps/mobile/src/features/zhiguan/components/BreathRing.tsx:BreathRing",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/components/BreathRing.tsx",
+      "target": "file:apps/mobile/src/features/zhiguan/components/BreathRing.tsx:BreathRing",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/components/CountingRound.tsx",
+      "target": "file:apps/mobile/src/features/zhiguan/components/CountingRound.tsx:CountingRound",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/components/CountingRound.tsx",
+      "target": "file:apps/mobile/src/features/zhiguan/components/CountingRound.tsx:CountingRound",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/components/VipassanaPanel.tsx",
+      "target": "file:apps/mobile/src/features/zhiguan/components/VipassanaPanel.tsx:VipassanaPanel",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/components/VipassanaPanel.tsx",
+      "target": "file:apps/mobile/src/features/zhiguan/components/VipassanaPanel.tsx:VipassanaPanel",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/hooks/useZhiguanTimer.ts",
+      "target": "file:apps/mobile/src/features/zhiguan/hooks/useZhiguanTimer.ts:useZhiguanTimer",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/hooks/useZhiguanTimer.ts",
+      "target": "file:apps/mobile/src/features/zhiguan/hooks/useZhiguanTimer.ts:useZhiguanTimer",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/hooks/useZhiguanTimer.ts",
+      "target": "file:apps/mobile/src/features/zhiguan/hooks/useZhiguanTimer.ts:usePracticeElapseHints",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/hooks/useZhiguanTimer.ts",
+      "target": "file:apps/mobile/src/features/zhiguan/hooks/useZhiguanTimer.ts:usePracticeElapseHints",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/services/AudioSessionManager.ts",
+      "target": "file:apps/mobile/src/services/AudioSessionManager.ts:AudioSessionManager",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/components/WaveformBar.tsx:WaveformBar",
+      "target": "file:apps/mobile/src/features/music/components/WaveformBar.tsx:generateWaveform",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/screens/MusicCategoryScreen.tsx:MusicCategoryScreen",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts:computeTracksByCategory",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/screens/MusicScreen.tsx:MusicScreen",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts:computeCategoryMeta",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx:ZhiguanScreen",
+      "target": "file:apps/mobile/src/features/zhiguan/hooks/useZhiguanTimer.ts:useZhiguanTimer",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/zhiguan/ZhiguanScreen.tsx:ZhiguanScreen",
+      "target": "file:apps/mobile/src/features/zhiguan/hooks/useZhiguanTimer.ts:usePracticeElapseHints",
+      "type": "calls",
+      "weight": 0.8,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts:useMusicStore",
+      "type": "contains",
+      "weight": 1,
+      "direction": "forward"
+    },
+    {
+      "source": "file:apps/mobile/src/features/music/useMusicStore.ts",
+      "target": "file:apps/mobile/src/features/music/useMusicStore.ts:useMusicStore",
+      "type": "exports",
+      "weight": 0.8,
+      "direction": "forward"
+    }
+  ]
+}

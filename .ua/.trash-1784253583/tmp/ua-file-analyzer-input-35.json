@@ -1,0 +1,28 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md",
+      "language": "markdown",
+      "sizeLines": 443,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md",
+      "language": "markdown",
+      "sizeLines": 492,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".trellis/spec/governance/INDEX.md",
+      "language": "markdown",
+      "sizeLines": 121,
+      "fileCategory": "docs"
+    }
+  ],
+  "batchImportData": {
+    ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md": [],
+    ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md": [],
+    ".trellis/spec/governance/INDEX.md": []
+  }
+}

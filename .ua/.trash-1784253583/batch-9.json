@@ -1,0 +1,5788 @@
+{
+ "nodes": [
+  {
+   "id": "file:packages/core/src/business/food.ts",
+   "type": "file",
+   "name": "food.ts",
+   "filePath": "packages/core/src/business/food.ts",
+   "summary": "food.ts 提供食物日志的删除与最近食用食物统计，基于频次排序返回高频食物列表。",
+   "tags": [
+    "business-logic",
+    "food",
+    "pure-function"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:packages/core/src/business/food.ts:deleteFoodFromList",
+   "type": "function",
+   "name": "deleteFoodFromList",
+   "filePath": "packages/core/src/business/food.ts",
+   "summary": "deleteFoodFromList 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    5,
+    8
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/food.ts:getRecentFoods",
+   "type": "function",
+   "name": "getRecentFoods",
+   "filePath": "packages/core/src/business/food.ts",
+   "summary": "getRecentFoods 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    11,
+    33
+   ]
+  },
+  {
+   "id": "file:packages/core/src/business/grace.test.ts",
+   "type": "file",
+   "name": "grace.test.ts",
+   "filePath": "packages/core/src/business/grace.test.ts",
+   "summary": "grace.test.ts 测试 grace 模块按月计算 grace 次数与剩余配额。",
+   "tags": [
+    "test",
+    "grace"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "file:packages/core/src/business/grace.ts",
+   "type": "file",
+   "name": "grace.ts",
+   "filePath": "packages/core/src/business/grace.ts",
+   "summary": "grace.ts 修行 grace（宽免）逻辑：按月统计使用次数、计算剩余配额并判断昨日是否可用。",
+   "tags": [
+    "business-logic",
+    "grace",
+    "pure-function"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:packages/core/src/business/grace.ts:getMonthGraceCount",
+   "type": "function",
+   "name": "getMonthGraceCount",
+   "filePath": "packages/core/src/business/grace.ts",
+   "summary": "getMonthGraceCount 业务函数。",
+   "tags": [
+    "pure-function",
+    "grace",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    5,
+    12
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/grace.ts:getRemainingGrace",
+   "type": "function",
+   "name": "getRemainingGrace",
+   "filePath": "packages/core/src/business/grace.ts",
+   "summary": "getRemainingGrace 业务函数。",
+   "tags": [
+    "pure-function",
+    "grace"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    15,
+    21
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/grace.ts:isGraceAvailable",
+   "type": "function",
+   "name": "isGraceAvailable",
+   "filePath": "packages/core/src/business/grace.ts",
+   "summary": "isGraceAvailable 业务函数。",
+   "tags": [
+    "pure-function",
+    "grace"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    24,
+    33
+   ]
+  },
+  {
+   "id": "file:packages/core/src/business/habits.test.ts",
+   "type": "file",
+   "name": "habits.test.ts",
+   "filePath": "packages/core/src/business/habits.test.ts",
+   "summary": "habits.test.ts 测试 habits 模块的增删改查、打卡与自动状态流转。",
+   "tags": [
+    "test",
+    "habits"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "file:packages/core/src/business/habits.ts",
+   "type": "file",
+   "name": "habits.ts",
+   "filePath": "packages/core/src/business/habits.ts",
+   "summary": "habits.ts 习惯核心业务：增删改查、打卡、状态变更、模块同步、周完成率/连续天数与热力图构建。",
+   "tags": [
+    "business-logic",
+    "habits",
+    "pure-function"
+   ],
+   "complexity": "complex"
+  },
+  {
+   "id": "function:packages/core/src/business/habits.ts:addHabitToList",
+   "type": "function",
+   "name": "addHabitToList",
+   "filePath": "packages/core/src/business/habits.ts",
+   "summary": "addHabitToList 业务函数。",
+   "tags": [
+    "pure-function",
+    "habit"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    20,
+    22
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/habits.ts:updateHabitInList",
+   "type": "function",
+   "name": "updateHabitInList",
+   "filePath": "packages/core/src/business/habits.ts",
+   "summary": "updateHabitInList 业务函数。",
+   "tags": [
+    "pure-function",
+    "habit"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    24,
+    27
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/habits.ts:deleteHabitFromList",
+   "type": "function",
+   "name": "deleteHabitFromList",
+   "filePath": "packages/core/src/business/habits.ts",
+   "summary": "deleteHabitFromList 业务函数。",
+   "tags": [
+    "pure-function",
+    "habit"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    29,
+    32
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/habits.ts:checkinHabitInList",
+   "type": "function",
+   "name": "checkinHabitInList",
+   "filePath": "packages/core/src/business/habits.ts",
+   "summary": "checkinHabitInList 业务函数。",
+   "tags": [
+    "pure-function",
+    "habit"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    34,
+    49
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/habits.ts:changeHabitStatusInList",
+   "type": "function",
+   "name": "changeHabitStatusInList",
+   "filePath": "packages/core/src/business/habits.ts",
+   "summary": "changeHabitStatusInList 业务函数。",
+   "tags": [
+    "pure-function",
+    "habit",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    51,
+    62
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/habits.ts:checkAutoStatus",
+   "type": "function",
+   "name": "checkAutoStatus",
+   "filePath": "packages/core/src/business/habits.ts",
+   "summary": "checkAutoStatus 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    65,
+    74
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/habits.ts:syncHabitsFromModules",
+   "type": "function",
+   "name": "syncHabitsFromModules",
+   "filePath": "packages/core/src/business/habits.ts",
+   "summary": "syncHabitsFromModules 业务函数。",
+   "tags": [
+    "pure-function",
+    "habit"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    90,
+    140
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/habits.ts:computeWeeklyCompletionRates",
+   "type": "function",
+   "name": "computeWeeklyCompletionRates",
+   "filePath": "packages/core/src/business/habits.ts",
+   "summary": "computeWeeklyCompletionRates 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    145,
+    167
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/habits.ts:computeWeeklyStreaks",
+   "type": "function",
+   "name": "computeWeeklyStreaks",
+   "filePath": "packages/core/src/business/habits.ts",
+   "summary": "computeWeeklyStreaks 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    170,
+    206
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/habits.ts:buildHeatmapData",
+   "type": "function",
+   "name": "buildHeatmapData",
+   "filePath": "packages/core/src/business/habits.ts",
+   "summary": "buildHeatmapData 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    214,
+    229
+   ]
+  },
+  {
+   "id": "file:packages/core/src/business/index.ts",
+   "type": "file",
+   "name": "index.ts",
+   "filePath": "packages/core/src/business/index.ts",
+   "summary": "index.ts business 层 barrel：统一重导出 plan 等模块的公共函数，作为 store slice 的消费入口。",
+   "tags": [
+    "barrel",
+    "business-logic",
+    "entry-point"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:packages/core/src/business/meditation.test.ts",
+   "type": "file",
+   "name": "meditation.test.ts",
+   "filePath": "packages/core/src/business/meditation.test.ts",
+   "summary": "meditation.test.ts 测试冥想分钟追加逻辑。",
+   "tags": [
+    "test",
+    "meditation"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "file:packages/core/src/business/meditation.ts",
+   "type": "file",
+   "name": "meditation.ts",
+   "filePath": "packages/core/src/business/meditation.ts",
+   "summary": "meditation.ts 冥想业务：按日累计冥想分钟数，支持更新当日记录或追加新条目。",
+   "tags": [
+    "business-logic",
+    "meditation",
+    "pure-function"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:packages/core/src/business/meditation.ts:addMedMinutesToList",
+   "type": "function",
+   "name": "addMedMinutesToList",
+   "filePath": "packages/core/src/business/meditation.ts",
+   "summary": "addMedMinutesToList 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    5,
+    33
+   ]
+  },
+  {
+   "id": "file:packages/core/src/business/module-state.ts",
+   "type": "file",
+   "name": "module-state.ts",
+   "filePath": "packages/core/src/business/module-state.ts",
+   "summary": "module-state.ts 计算模块级衍生状态：最大断食时长（含当前断食）与当日最大运动分钟数。",
+   "tags": [
+    "business-logic",
+    "pure-function",
+    "derived-state"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "function:packages/core/src/business/module-state.ts:computeMaxFastingHours",
+   "type": "function",
+   "name": "computeMaxFastingHours",
+   "filePath": "packages/core/src/business/module-state.ts",
+   "summary": "computeMaxFastingHours 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    23,
+    42
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/module-state.ts:computeMaxExerciseMinutes",
+   "type": "function",
+   "name": "computeMaxExerciseMinutes",
+   "filePath": "packages/core/src/business/module-state.ts",
+   "summary": "computeMaxExerciseMinutes 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    47,
+    59
+   ]
+  },
+  {
+   "id": "file:packages/core/src/business/plan.test.ts",
+   "type": "file",
+   "name": "plan.test.ts",
+   "filePath": "packages/core/src/business/plan.test.ts",
+   "summary": "plan.test.ts 测试计划模块的增删改查、状态机与每日重置。",
+   "tags": [
+    "test",
+    "plan"
+   ],
+   "complexity": "complex"
+  },
+  {
+   "id": "file:packages/core/src/business/plan.ts",
+   "type": "file",
+   "name": "plan.ts",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "plan.ts 计划核心业务（最庞大）：计划/计划项的增删改查、启动/暂停/恢复/完成/取消、自动状态与每日重置、进度计算、自定义待办与历史。",
+   "tags": [
+    "business-logic",
+    "plan",
+    "pure-function"
+   ],
+   "complexity": "complex"
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:statusToI18nKey",
+   "type": "function",
+   "name": "statusToI18nKey",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "statusToI18nKey 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    21,
+    23
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:getFrequencySummary",
+   "type": "function",
+   "name": "getFrequencySummary",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "getFrequencySummary 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    35,
+    67
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:computeExpectedDays",
+   "type": "function",
+   "name": "computeExpectedDays",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "computeExpectedDays 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    114,
+    202
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:shouldShowToday",
+   "type": "function",
+   "name": "shouldShowToday",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "shouldShowToday 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    207,
+    269
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:canDeletePlan",
+   "type": "function",
+   "name": "canDeletePlan",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "canDeletePlan 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    273,
+    275
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:canEditPlan",
+   "type": "function",
+   "name": "canEditPlan",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "canEditPlan 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    277,
+    279
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:canEditPlanItem",
+   "type": "function",
+   "name": "canEditPlanItem",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "canEditPlanItem 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    281,
+    283
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:isPlanActive",
+   "type": "function",
+   "name": "isPlanActive",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "isPlanActive 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    285,
+    287
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:isPlanDelayed",
+   "type": "function",
+   "name": "isPlanDelayed",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "isPlanDelayed 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    289,
+    293
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:addPlan",
+   "type": "function",
+   "name": "addPlan",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "addPlan 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    297,
+    325
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:updatePlan",
+   "type": "function",
+   "name": "updatePlan",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "updatePlan 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    327,
+    336
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:deletePlan",
+   "type": "function",
+   "name": "deletePlan",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "deletePlan 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    338,
+    340
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:startPlan",
+   "type": "function",
+   "name": "startPlan",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "startPlan 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    344,
+    357
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:pausePlan",
+   "type": "function",
+   "name": "pausePlan",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "pausePlan 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    359,
+    368
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:resumePlan",
+   "type": "function",
+   "name": "resumePlan",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "resumePlan 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    370,
+    382
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:completePlan",
+   "type": "function",
+   "name": "completePlan",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "completePlan 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    384,
+    394
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:cancelPlan",
+   "type": "function",
+   "name": "cancelPlan",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "cancelPlan 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    396,
+    405
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:checkAutoStatus",
+   "type": "function",
+   "name": "checkAutoStatus",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "checkAutoStatus 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    408,
+    468
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:performDailyReset",
+   "type": "function",
+   "name": "performDailyReset",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "performDailyReset 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    471,
+    557
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:addPlanItem",
+   "type": "function",
+   "name": "addPlanItem",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "addPlanItem 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    561,
+    596
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:updatePlanItem",
+   "type": "function",
+   "name": "updatePlanItem",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "updatePlanItem 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    598,
+    600
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:deletePlanItem",
+   "type": "function",
+   "name": "deletePlanItem",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "deletePlanItem 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    602,
+    604
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:createPlanItemFromReflection",
+   "type": "function",
+   "name": "createPlanItemFromReflection",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "createPlanItemFromReflection 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan",
+    "reflect"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    607,
+    643
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:createPlanItem",
+   "type": "function",
+   "name": "createPlanItem",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "createPlanItem 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    649,
+    689
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:canArchivePlan",
+   "type": "function",
+   "name": "canArchivePlan",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "canArchivePlan 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    692,
+    700
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:unlinkAllReflectionsFromPlan",
+   "type": "function",
+   "name": "unlinkAllReflectionsFromPlan",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "unlinkAllReflectionsFromPlan 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan",
+    "reflect"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    703,
+    713
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:checkinItem",
+   "type": "function",
+   "name": "checkinItem",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "checkinItem 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    717,
+    727
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:uncheckinItem",
+   "type": "function",
+   "name": "uncheckinItem",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "uncheckinItem 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    729,
+    739
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:syncPlanItemsFromModules",
+   "type": "function",
+   "name": "syncPlanItemsFromModules",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "syncPlanItemsFromModules 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    754,
+    829
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:countDoneCheckins",
+   "type": "function",
+   "name": "countDoneCheckins",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "countDoneCheckins 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    845,
+    858
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:computeItemProgress",
+   "type": "function",
+   "name": "computeItemProgress",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "computeItemProgress 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    860,
+    873
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:countItemDoneDays",
+   "type": "function",
+   "name": "countItemDoneDays",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "countItemDoneDays 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    876,
+    886
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:computePlanProgress",
+   "type": "function",
+   "name": "computePlanProgress",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "computePlanProgress 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    888,
+    895
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:getActivePlan",
+   "type": "function",
+   "name": "getActivePlan",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "getActivePlan 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    899,
+    906
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:getPlanItems",
+   "type": "function",
+   "name": "getPlanItems",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "getPlanItems 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    908,
+    910
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:getTodayItems",
+   "type": "function",
+   "name": "getTodayItems",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "getTodayItems 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    912,
+    926
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:getHistoryPlans",
+   "type": "function",
+   "name": "getHistoryPlans",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "getHistoryPlans 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    928,
+    932
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:refreshPlanItemStats",
+   "type": "function",
+   "name": "refreshPlanItemStats",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "refreshPlanItemStats 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    935,
+    948
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:addDailyCustomTodo",
+   "type": "function",
+   "name": "addDailyCustomTodo",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "addDailyCustomTodo 业务函数。",
+   "tags": [
+    "pure-function",
+    "todo"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    952,
+    967
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:toggleDailyCustomTodo",
+   "type": "function",
+   "name": "toggleDailyCustomTodo",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "toggleDailyCustomTodo 业务函数。",
+   "tags": [
+    "pure-function",
+    "todo"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    969,
+    974
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:deleteDailyCustomTodo",
+   "type": "function",
+   "name": "deleteDailyCustomTodo",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "deleteDailyCustomTodo 业务函数。",
+   "tags": [
+    "pure-function",
+    "todo"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    976,
+    978
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:getTodayCustomTodos",
+   "type": "function",
+   "name": "getTodayCustomTodos",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "getTodayCustomTodos 业务函数。",
+   "tags": [
+    "pure-function",
+    "todo"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    980,
+    984
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:saveDailyTodoHistory",
+   "type": "function",
+   "name": "saveDailyTodoHistory",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "saveDailyTodoHistory 业务函数。",
+   "tags": [
+    "pure-function",
+    "todo"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    988,
+    1038
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/plan.ts:getTodoHistory",
+   "type": "function",
+   "name": "getTodoHistory",
+   "filePath": "packages/core/src/business/plan.ts",
+   "summary": "getTodoHistory 业务函数。",
+   "tags": [
+    "pure-function",
+    "todo"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    1040,
+    1044
+   ]
+  },
+  {
+   "id": "file:packages/core/src/business/planForm.ts",
+   "type": "file",
+   "name": "planForm.ts",
+   "filePath": "packages/core/src/business/planForm.ts",
+   "summary": "planForm.ts 计划表单辅助：生成默认频率、校验表单字段、构造新计划项骨架。",
+   "tags": [
+    "business-logic",
+    "plan",
+    "validation"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "function:packages/core/src/business/planForm.ts:createDefaultFrequency",
+   "type": "function",
+   "name": "createDefaultFrequency",
+   "filePath": "packages/core/src/business/planForm.ts",
+   "summary": "createDefaultFrequency 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    48,
+    57
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/planForm.ts:validatePlanForm",
+   "type": "function",
+   "name": "validatePlanForm",
+   "filePath": "packages/core/src/business/planForm.ts",
+   "summary": "validatePlanForm 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    60,
+    83
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/planForm.ts:createNewItem",
+   "type": "function",
+   "name": "createNewItem",
+   "filePath": "packages/core/src/business/planForm.ts",
+   "summary": "createNewItem 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    88,
+    96
+   ]
+  },
+  {
+   "id": "file:packages/core/src/business/planLogic.test.ts",
+   "type": "file",
+   "name": "planLogic.test.ts",
+   "filePath": "packages/core/src/business/planLogic.test.ts",
+   "summary": "planLogic.test.ts 测试计划逻辑的辅助纯函数。",
+   "tags": [
+    "test",
+    "plan"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "file:packages/core/src/business/planTodo.test.ts",
+   "type": "file",
+   "name": "planTodo.test.ts",
+   "filePath": "packages/core/src/business/planTodo.test.ts",
+   "summary": "planTodo.test.ts 测试每日待办状态映射、统计与历史合并。",
+   "tags": [
+    "test",
+    "plan"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "file:packages/core/src/business/planTodo.ts",
+   "type": "file",
+   "name": "planTodo.ts",
+   "filePath": "packages/core/src/business/planTodo.ts",
+   "summary": "planTodo.ts 每日待办纯函数：构建打卡索引、计算待办状态、日统计、历史摘要与合并。",
+   "tags": [
+    "business-logic",
+    "plan",
+    "pure-function"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "function:packages/core/src/business/planTodo.ts:getTodoItemStatus",
+   "type": "function",
+   "name": "getTodoItemStatus",
+   "filePath": "packages/core/src/business/planTodo.ts",
+   "summary": "getTodoItemStatus 业务函数。",
+   "tags": [
+    "pure-function",
+    "todo",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    22,
+    36
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/planTodo.ts:getTodoItemStatusMap",
+   "type": "function",
+   "name": "getTodoItemStatusMap",
+   "filePath": "packages/core/src/business/planTodo.ts",
+   "summary": "getTodoItemStatusMap 业务函数。",
+   "tags": [
+    "pure-function",
+    "todo",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    38,
+    58
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/planTodo.ts:computeDailyTodoStats",
+   "type": "function",
+   "name": "computeDailyTodoStats",
+   "filePath": "packages/core/src/business/planTodo.ts",
+   "summary": "computeDailyTodoStats 业务函数。",
+   "tags": [
+    "pure-function",
+    "todo",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    70,
+    91
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/planTodo.ts:computeHistorySummary",
+   "type": "function",
+   "name": "computeHistorySummary",
+   "filePath": "packages/core/src/business/planTodo.ts",
+   "summary": "computeHistorySummary 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    98,
+    110
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/planTodo.ts:mergeHistoryItems",
+   "type": "function",
+   "name": "mergeHistoryItems",
+   "filePath": "packages/core/src/business/planTodo.ts",
+   "summary": "mergeHistoryItems 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    122,
+    141
+   ]
+  },
+  {
+   "id": "file:packages/core/src/business/reflectionAnalytics.test.ts",
+   "type": "file",
+   "name": "reflectionAnalytics.test.ts",
+   "filePath": "packages/core/src/business/reflectionAnalytics.test.ts",
+   "summary": "reflectionAnalytics.test.ts 测试感念分析：心情趋势、热力图、标签共现与智能集合。",
+   "tags": [
+    "test",
+    "reflections",
+    "analytics"
+   ],
+   "complexity": "complex"
+  },
+  {
+   "id": "function:packages/core/src/business/reflectionAnalytics.test.ts:makeRef",
+   "type": "function",
+   "name": "makeRef",
+   "filePath": "packages/core/src/business/reflectionAnalytics.test.ts",
+   "summary": "makeRef 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    14,
+    26
+   ]
+  },
+  {
+   "id": "file:packages/core/src/business/reflectionAnalytics.ts",
+   "type": "file",
+   "name": "reflectionAnalytics.ts",
+   "filePath": "packages/core/src/business/reflectionAnalytics.ts",
+   "summary": "reflectionAnalytics.ts 感念分析：心情分数/趋势、写作热力图、标签共现图、智能集合划分与搜索高亮。",
+   "tags": [
+    "business-logic",
+    "reflections",
+    "analytics",
+    "pure-function"
+   ],
+   "complexity": "complex"
+  },
+  {
+   "id": "function:packages/core/src/business/reflectionAnalytics.ts:computeMoodScore",
+   "type": "function",
+   "name": "computeMoodScore",
+   "filePath": "packages/core/src/business/reflectionAnalytics.ts",
+   "summary": "computeMoodScore 业务函数。",
+   "tags": [
+    "pure-function",
+    "mood"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    12,
+    14
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/reflectionAnalytics.ts:computeMoodTrend",
+   "type": "function",
+   "name": "computeMoodTrend",
+   "filePath": "packages/core/src/business/reflectionAnalytics.ts",
+   "summary": "computeMoodTrend 业务函数。",
+   "tags": [
+    "pure-function",
+    "mood",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    25,
+    66
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/reflectionAnalytics.ts:computeWritingHeatmap",
+   "type": "function",
+   "name": "computeWritingHeatmap",
+   "filePath": "packages/core/src/business/reflectionAnalytics.ts",
+   "summary": "computeWritingHeatmap 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    76,
+    97
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/reflectionAnalytics.ts:computeTagCooccurrence",
+   "type": "function",
+   "name": "computeTagCooccurrence",
+   "filePath": "packages/core/src/business/reflectionAnalytics.ts",
+   "summary": "computeTagCooccurrence 业务函数。",
+   "tags": [
+    "pure-function",
+    "tag"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    119,
+    156
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/reflectionAnalytics.ts:computeSmartCollections",
+   "type": "function",
+   "name": "computeSmartCollections",
+   "filePath": "packages/core/src/business/reflectionAnalytics.ts",
+   "summary": "computeSmartCollections 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    169,
+    252
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/reflectionAnalytics.ts:highlightSearchMatch",
+   "type": "function",
+   "name": "highlightSearchMatch",
+   "filePath": "packages/core/src/business/reflectionAnalytics.ts",
+   "summary": "highlightSearchMatch 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    261,
+    303
+   ]
+  },
+  {
+   "id": "file:packages/core/src/business/reflections.test.ts",
+   "type": "file",
+   "name": "reflections.test.ts",
+   "filePath": "packages/core/src/business/reflections.test.ts",
+   "summary": "reflections.test.ts 测试感念的增删改查、关联计划项与筛选分组。",
+   "tags": [
+    "test",
+    "reflections"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "file:packages/core/src/business/reflections.ts",
+   "type": "file",
+   "name": "reflections.ts",
+   "filePath": "packages/core/src/business/reflections.ts",
+   "summary": "reflections.ts 感念业务：增删改查、置顶、关联/解除计划项、筛选、按日期分组、动态标签/心情计数。",
+   "tags": [
+    "business-logic",
+    "reflections",
+    "pure-function"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "function:packages/core/src/business/reflections.ts:addReflectionToList",
+   "type": "function",
+   "name": "addReflectionToList",
+   "filePath": "packages/core/src/business/reflections.ts",
+   "summary": "addReflectionToList 业务函数。",
+   "tags": [
+    "pure-function",
+    "reflect"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    8,
+    10
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/reflections.ts:togglePinInList",
+   "type": "function",
+   "name": "togglePinInList",
+   "filePath": "packages/core/src/business/reflections.ts",
+   "summary": "togglePinInList 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    12,
+    15
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/reflections.ts:deleteReflectionFromList",
+   "type": "function",
+   "name": "deleteReflectionFromList",
+   "filePath": "packages/core/src/business/reflections.ts",
+   "summary": "deleteReflectionFromList 业务函数。",
+   "tags": [
+    "pure-function",
+    "reflect"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    17,
+    20
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/reflections.ts:updateReflectionInList",
+   "type": "function",
+   "name": "updateReflectionInList",
+   "filePath": "packages/core/src/business/reflections.ts",
+   "summary": "updateReflectionInList 业务函数。",
+   "tags": [
+    "pure-function",
+    "reflect"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    22,
+    25
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/reflections.ts:linkReflectionToPlanItem",
+   "type": "function",
+   "name": "linkReflectionToPlanItem",
+   "filePath": "packages/core/src/business/reflections.ts",
+   "summary": "linkReflectionToPlanItem 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan",
+    "reflect"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    28,
+    37
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/reflections.ts:unlinkReflectionFromPlanItem",
+   "type": "function",
+   "name": "unlinkReflectionFromPlanItem",
+   "filePath": "packages/core/src/business/reflections.ts",
+   "summary": "unlinkReflectionFromPlanItem 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan",
+    "reflect"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    40,
+    48
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/reflections.ts:getLinkedPlanItem",
+   "type": "function",
+   "name": "getLinkedPlanItem",
+   "filePath": "packages/core/src/business/reflections.ts",
+   "summary": "getLinkedPlanItem 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    51,
+    57
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/reflections.ts:filterReflections",
+   "type": "function",
+   "name": "filterReflections",
+   "filePath": "packages/core/src/business/reflections.ts",
+   "summary": "filterReflections 业务函数。",
+   "tags": [
+    "pure-function",
+    "reflect"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    62,
+    94
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/reflections.ts:groupReflectionsByDate",
+   "type": "function",
+   "name": "groupReflectionsByDate",
+   "filePath": "packages/core/src/business/reflections.ts",
+   "summary": "groupReflectionsByDate 业务函数。",
+   "tags": [
+    "pure-function",
+    "reflect"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    97,
+    110
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/reflections.ts:computeDynamicTagCounts",
+   "type": "function",
+   "name": "computeDynamicTagCounts",
+   "filePath": "packages/core/src/business/reflections.ts",
+   "summary": "computeDynamicTagCounts 业务函数。",
+   "tags": [
+    "pure-function",
+    "tag",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    113,
+    142
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/reflections.ts:computeDynamicMoodCounts",
+   "type": "function",
+   "name": "computeDynamicMoodCounts",
+   "filePath": "packages/core/src/business/reflections.ts",
+   "summary": "computeDynamicMoodCounts 业务函数。",
+   "tags": [
+    "pure-function",
+    "mood",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    145,
+    173
+   ]
+  },
+  {
+   "id": "file:packages/core/src/business/reverseGeocoding.ts",
+   "type": "file",
+   "name": "reverseGeocoding.ts",
+   "filePath": "packages/core/src/business/reverseGeocoding.ts",
+   "summary": "reverseGeocoding.ts 逆地理编码：带缓存与队列的城市查询（getCityInfo/batch/clearCache/getCacheSize）。",
+   "tags": [
+    "business-logic",
+    "geocoding",
+    "cache"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "function:packages/core/src/business/reverseGeocoding.ts:extractCityName",
+   "type": "function",
+   "name": "extractCityName",
+   "filePath": "packages/core/src/business/reverseGeocoding.ts",
+   "summary": "extractCityName 业务函数。",
+   "tags": [
+    "pure-function",
+    "geocoding"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    39,
+    56
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/reverseGeocoding.ts:processQueue",
+   "type": "function",
+   "name": "processQueue",
+   "filePath": "packages/core/src/business/reverseGeocoding.ts",
+   "summary": "processQueue 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    61,
+    116
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/reverseGeocoding.ts:getCityInfo",
+   "type": "function",
+   "name": "getCityInfo",
+   "filePath": "packages/core/src/business/reverseGeocoding.ts",
+   "summary": "getCityInfo 业务函数。",
+   "tags": [
+    "pure-function",
+    "geocoding"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    124,
+    136
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/reverseGeocoding.ts:getCityInfoBatch",
+   "type": "function",
+   "name": "getCityInfoBatch",
+   "filePath": "packages/core/src/business/reverseGeocoding.ts",
+   "summary": "getCityInfoBatch 业务函数。",
+   "tags": [
+    "pure-function",
+    "geocoding"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    143,
+    157
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/reverseGeocoding.ts:clearCache",
+   "type": "function",
+   "name": "clearCache",
+   "filePath": "packages/core/src/business/reverseGeocoding.ts",
+   "summary": "clearCache 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    162,
+    164
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/reverseGeocoding.ts:getCacheSize",
+   "type": "function",
+   "name": "getCacheSize",
+   "filePath": "packages/core/src/business/reverseGeocoding.ts",
+   "summary": "getCacheSize 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    169,
+    171
+   ]
+  },
+  {
+   "id": "file:packages/core/src/business/review.test.ts",
+   "type": "file",
+   "name": "review.test.ts",
+   "filePath": "packages/core/src/business/review.test.ts",
+   "summary": "review.test.ts 测试 review 数据计算、提示词构建与 AI 响应解析。",
+   "tags": [
+    "test",
+    "review"
+   ],
+   "complexity": "complex"
+  },
+  {
+   "id": "file:packages/core/src/business/review.ts",
+   "type": "file",
+   "name": "review.ts",
+   "filePath": "packages/core/src/business/review.ts",
+   "summary": "review.ts 复盘数据计算：周/月范围、连续天数、未完成原因/条目、习惯/计划进度、健康指标、环比、AI 提示词与响应解析。",
+   "tags": [
+    "business-logic",
+    "review",
+    "analytics",
+    "pure-function"
+   ],
+   "complexity": "complex"
+  },
+  {
+   "id": "function:packages/core/src/business/review.ts:getWeekRange",
+   "type": "function",
+   "name": "getWeekRange",
+   "filePath": "packages/core/src/business/review.ts",
+   "summary": "getWeekRange 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    39,
+    52
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/review.ts:getMonthRange",
+   "type": "function",
+   "name": "getMonthRange",
+   "filePath": "packages/core/src/business/review.ts",
+   "summary": "getMonthRange 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    55,
+    66
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/review.ts:getDatesInRange",
+   "type": "function",
+   "name": "getDatesInRange",
+   "filePath": "packages/core/src/business/review.ts",
+   "summary": "getDatesInRange 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    78,
+    89
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/review.ts:calculateStreakForRange",
+   "type": "function",
+   "name": "calculateStreakForRange",
+   "filePath": "packages/core/src/business/review.ts",
+   "summary": "calculateStreakForRange 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    96,
+    106
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/review.ts:calculateLongestStreak",
+   "type": "function",
+   "name": "calculateLongestStreak",
+   "filePath": "packages/core/src/business/review.ts",
+   "summary": "calculateLongestStreak 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    109,
+    123
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/review.ts:calculateReviewData",
+   "type": "function",
+   "name": "calculateReviewData",
+   "filePath": "packages/core/src/business/review.ts",
+   "summary": "calculateReviewData 业务函数。",
+   "tags": [
+    "pure-function",
+    "review"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    128,
+    204
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/review.ts:calculateIncompleteReasons",
+   "type": "function",
+   "name": "calculateIncompleteReasons",
+   "filePath": "packages/core/src/business/review.ts",
+   "summary": "calculateIncompleteReasons 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    207,
+    230
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/review.ts:calculateIncompleteItems",
+   "type": "function",
+   "name": "calculateIncompleteItems",
+   "filePath": "packages/core/src/business/review.ts",
+   "summary": "calculateIncompleteItems 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    233,
+    287
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/review.ts:calculateHabitProgress",
+   "type": "function",
+   "name": "calculateHabitProgress",
+   "filePath": "packages/core/src/business/review.ts",
+   "summary": "calculateHabitProgress 业务函数。",
+   "tags": [
+    "pure-function",
+    "habit",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    290,
+    337
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/review.ts:calculatePlanProgress",
+   "type": "function",
+   "name": "calculatePlanProgress",
+   "filePath": "packages/core/src/business/review.ts",
+   "summary": "calculatePlanProgress 业务函数。",
+   "tags": [
+    "pure-function",
+    "plan",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    340,
+    357
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/review.ts:calculateMetrics",
+   "type": "function",
+   "name": "calculateMetrics",
+   "filePath": "packages/core/src/business/review.ts",
+   "summary": "calculateMetrics 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    360,
+    447
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/review.ts:calculateComparison",
+   "type": "function",
+   "name": "calculateComparison",
+   "filePath": "packages/core/src/business/review.ts",
+   "summary": "calculateComparison 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    450,
+    479
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/review.ts:buildReviewPrompt",
+   "type": "function",
+   "name": "buildReviewPrompt",
+   "filePath": "packages/core/src/business/review.ts",
+   "summary": "buildReviewPrompt 业务函数。",
+   "tags": [
+    "pure-function",
+    "review"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    484,
+    567
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/review.ts:parseReviewAIResponse",
+   "type": "function",
+   "name": "parseReviewAIResponse",
+   "filePath": "packages/core/src/business/review.ts",
+   "summary": "parseReviewAIResponse 业务函数。",
+   "tags": [
+    "pure-function",
+    "review"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    572,
+    618
+   ]
+  },
+  {
+   "id": "file:packages/core/src/business/thought-trail.test.ts",
+   "type": "file",
+   "name": "thought-trail.test.ts",
+   "filePath": "packages/core/src/business/thought-trail.test.ts",
+   "summary": "thought-trail.test.ts 测试思路线索的生成、统计与关联推荐。",
+   "tags": [
+    "test",
+    "trail"
+   ],
+   "complexity": "complex"
+  },
+  {
+   "id": "function:packages/core/src/business/thought-trail.test.ts:makeTrail",
+   "type": "function",
+   "name": "makeTrail",
+   "filePath": "packages/core/src/business/thought-trail.test.ts",
+   "summary": "makeTrail 业务函数。",
+   "tags": [
+    "pure-function",
+    "trail"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    7,
+    17
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/thought-trail.test.ts:makeReflection",
+   "type": "function",
+   "name": "makeReflection",
+   "filePath": "packages/core/src/business/thought-trail.test.ts",
+   "summary": "makeReflection 业务函数。",
+   "tags": [
+    "pure-function",
+    "reflect"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    19,
+    31
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/thought-trail.test.ts:makeNote",
+   "type": "function",
+   "name": "makeNote",
+   "filePath": "packages/core/src/business/thought-trail.test.ts",
+   "summary": "makeNote 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    33,
+    44
+   ]
+  },
+  {
+   "id": "file:packages/core/src/business/thought-trail.ts",
+   "type": "file",
+   "name": "thought-trail.ts",
+   "filePath": "packages/core/src/business/thought-trail.ts",
+   "summary": "thought-trail.ts 思路线索业务：生成线索名、统计、按感念/标签检索、情绪图标、概览、相关线索、标签集与时间线条目。",
+   "tags": [
+    "business-logic",
+    "trail",
+    "pure-function"
+   ],
+   "complexity": "complex"
+  },
+  {
+   "id": "function:packages/core/src/business/thought-trail.ts:generateTrailName",
+   "type": "function",
+   "name": "generateTrailName",
+   "filePath": "packages/core/src/business/thought-trail.ts",
+   "summary": "generateTrailName 业务函数。",
+   "tags": [
+    "pure-function",
+    "trail",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    28,
+    72
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/thought-trail.ts:getTrailStats",
+   "type": "function",
+   "name": "getTrailStats",
+   "filePath": "packages/core/src/business/thought-trail.ts",
+   "summary": "getTrailStats 业务函数。",
+   "tags": [
+    "pure-function",
+    "trail",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    77,
+    114
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/thought-trail.ts:getTrailsByReflection",
+   "type": "function",
+   "name": "getTrailsByReflection",
+   "filePath": "packages/core/src/business/thought-trail.ts",
+   "summary": "getTrailsByReflection 业务函数。",
+   "tags": [
+    "pure-function",
+    "trail",
+    "reflect"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    119,
+    124
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/thought-trail.ts:getReflectionsByTag",
+   "type": "function",
+   "name": "getReflectionsByTag",
+   "filePath": "packages/core/src/business/thought-trail.ts",
+   "summary": "getReflectionsByTag 业务函数。",
+   "tags": [
+    "pure-function",
+    "reflect",
+    "tag"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    129,
+    145
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/thought-trail.ts:getMoodIcon",
+   "type": "function",
+   "name": "getMoodIcon",
+   "filePath": "packages/core/src/business/thought-trail.ts",
+   "summary": "getMoodIcon 业务函数。",
+   "tags": [
+    "pure-function",
+    "mood"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    150,
+    168
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/thought-trail.ts:getTrailOverview",
+   "type": "function",
+   "name": "getTrailOverview",
+   "filePath": "packages/core/src/business/thought-trail.ts",
+   "summary": "getTrailOverview 业务函数。",
+   "tags": [
+    "pure-function",
+    "trail"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    173,
+    260
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/thought-trail.ts:getRelatedTrails",
+   "type": "function",
+   "name": "getRelatedTrails",
+   "filePath": "packages/core/src/business/thought-trail.ts",
+   "summary": "getRelatedTrails 业务函数。",
+   "tags": [
+    "pure-function",
+    "trail"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    265,
+    298
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/thought-trail.ts:getTrailTagSet",
+   "type": "function",
+   "name": "getTrailTagSet",
+   "filePath": "packages/core/src/business/thought-trail.ts",
+   "summary": "getTrailTagSet 业务函数。",
+   "tags": [
+    "pure-function",
+    "trail",
+    "tag"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    301,
+    331
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/thought-trail.ts:getTrailTimelineItems",
+   "type": "function",
+   "name": "getTrailTimelineItems",
+   "filePath": "packages/core/src/business/thought-trail.ts",
+   "summary": "getTrailTimelineItems 业务函数。",
+   "tags": [
+    "pure-function",
+    "trail"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    336,
+    358
+   ]
+  },
+  {
+   "id": "file:packages/core/src/business/trail-creation.test.ts",
+   "type": "file",
+   "name": "trail-creation.test.ts",
+   "filePath": "packages/core/src/business/trail-creation.test.ts",
+   "summary": "trail-creation.test.ts 测试线索创建：候选池、推荐、叙事生成与混合推荐。",
+   "tags": [
+    "test",
+    "trail"
+   ],
+   "complexity": "complex"
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.test.ts:makeRef",
+   "type": "function",
+   "name": "makeRef",
+   "filePath": "packages/core/src/business/trail-creation.test.ts",
+   "summary": "makeRef 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    30,
+    42
+   ]
+  },
+  {
+   "id": "file:packages/core/src/business/trail-creation.ts",
+   "type": "file",
+   "name": "trail-creation.ts",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "trail-creation.ts 线索创建（庞大）：候选池、情绪/标签/时间模式检测、叙事生成、趋势、间隔分析、关键词匹配、混合推荐与用户偏好过滤。",
+   "tags": [
+    "business-logic",
+    "trail",
+    "analytics",
+    "pure-function"
+   ],
+   "complexity": "complex"
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:computeCandidatePool",
+   "type": "function",
+   "name": "computeCandidatePool",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "computeCandidatePool 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    87,
+    124
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:computeRecommendations",
+   "type": "function",
+   "name": "computeRecommendations",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "computeRecommendations 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    128,
+    154
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:detectMoodNarrative",
+   "type": "function",
+   "name": "detectMoodNarrative",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "detectMoodNarrative 业务函数。",
+   "tags": [
+    "pure-function",
+    "mood",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    158,
+    197
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:detectTagFocus",
+   "type": "function",
+   "name": "detectTagFocus",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "detectTagFocus 业务函数。",
+   "tags": [
+    "pure-function",
+    "tag"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    201,
+    248
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:detectTimePattern",
+   "type": "function",
+   "name": "detectTimePattern",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "detectTimePattern 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    252,
+    296
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:matchByKeyword",
+   "type": "function",
+   "name": "matchByKeyword",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "matchByKeyword 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    300,
+    326
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:generateNarrative",
+   "type": "function",
+   "name": "generateNarrative",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "generateNarrative 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    330,
+    358
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:generateNarrativeName",
+   "type": "function",
+   "name": "generateNarrativeName",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "generateNarrativeName 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    360,
+    375
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:computeMoodTrendSimple",
+   "type": "function",
+   "name": "computeMoodTrendSimple",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "computeMoodTrendSimple 业务函数。",
+   "tags": [
+    "pure-function",
+    "mood",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    391,
+    404
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:trendArrow",
+   "type": "function",
+   "name": "trendArrow",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "trendArrow 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    406,
+    408
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:trendLabel",
+   "type": "function",
+   "name": "trendLabel",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "trendLabel 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    410,
+    416
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:trendColor",
+   "type": "function",
+   "name": "trendColor",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "trendColor 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    418,
+    420
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:buildReflectionSummary",
+   "type": "function",
+   "name": "buildReflectionSummary",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "buildReflectionSummary 业务函数。",
+   "tags": [
+    "pure-function",
+    "reflect"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    422,
+    429
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:formatDateShort",
+   "type": "function",
+   "name": "formatDateShort",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "formatDateShort 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    431,
+    434
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:daysBetween",
+   "type": "function",
+   "name": "daysBetween",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "daysBetween 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    436,
+    438
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:getMostFrequentTag",
+   "type": "function",
+   "name": "getMostFrequentTag",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "getMostFrequentTag 业务函数。",
+   "tags": [
+    "pure-function",
+    "tag"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    440,
+    453
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:analyzeTrailGaps",
+   "type": "function",
+   "name": "analyzeTrailGaps",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "analyzeTrailGaps 业务函数。",
+   "tags": [
+    "pure-function",
+    "trail"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    474,
+    524
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:generateRecommendationReason",
+   "type": "function",
+   "name": "generateRecommendationReason",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "generateRecommendationReason 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    528,
+    552
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:calcOverlap",
+   "type": "function",
+   "name": "calcOverlap",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "calcOverlap 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    556,
+    565
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:mergeAndRank",
+   "type": "function",
+   "name": "mergeAndRank",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "mergeAndRank 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    567,
+    612
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:computeHybridRecommendations",
+   "type": "function",
+   "name": "computeHybridRecommendations",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "computeHybridRecommendations 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    616,
+    670
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:buildIgnoredPattern",
+   "type": "function",
+   "name": "buildIgnoredPattern",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "buildIgnoredPattern 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    674,
+    681
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/trail-creation.ts:applyUserPreferences",
+   "type": "function",
+   "name": "applyUserPreferences",
+   "filePath": "packages/core/src/business/trail-creation.ts",
+   "summary": "applyUserPreferences 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    683,
+    693
+   ]
+  },
+  {
+   "id": "file:packages/core/src/business/useDailyTodo.ts",
+   "type": "file",
+   "name": "useDailyTodo.ts",
+   "filePath": "packages/core/src/business/useDailyTodo.ts",
+   "summary": "useDailyTodo.ts createDailyTodoHook 工厂：为传入的 react/useStore 组装每日待办 hook，返回状态/动作/统计。",
+   "tags": [
+    "business-logic",
+    "plan",
+    "hook-factory"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "function:packages/core/src/business/useDailyTodo.ts:createDailyTodoHook",
+   "type": "function",
+   "name": "createDailyTodoHook",
+   "filePath": "packages/core/src/business/useDailyTodo.ts",
+   "summary": "createDailyTodoHook 业务函数。",
+   "tags": [
+    "pure-function",
+    "todo"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    34,
+    110
+   ]
+  },
+  {
+   "id": "file:packages/core/src/business/zhiguanHintEngine.ts",
+   "type": "file",
+   "name": "zhiguanHintEngine.ts",
+   "filePath": "packages/core/src/business/zhiguanHintEngine.ts",
+   "summary": "zhiguanHintEngine.ts 止观方法推荐：根据雷达图维度缺口推荐最适合的修法。",
+   "tags": [
+    "business-logic",
+    "zhiguan",
+    "pure-function"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "function:packages/core/src/business/zhiguanHintEngine.ts:recommendMethod",
+   "type": "function",
+   "name": "recommendMethod",
+   "filePath": "packages/core/src/business/zhiguanHintEngine.ts",
+   "summary": "recommendMethod 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    60,
+    85
+   ]
+  },
+  {
+   "id": "file:packages/core/src/business/zhiguanHistory.ts",
+   "type": "file",
+   "name": "zhiguanHistory.ts",
+   "filePath": "packages/core/src/business/zhiguanHistory.ts",
+   "summary": "zhiguanHistory.ts 止观会话统计：按日排序、总统计、连续天数、日累计时长与热力图。",
+   "tags": [
+    "business-logic",
+    "zhiguan",
+    "analytics",
+    "pure-function"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "function:packages/core/src/business/zhiguanHistory.ts:sortSessionsByDateDesc",
+   "type": "function",
+   "name": "sortSessionsByDateDesc",
+   "filePath": "packages/core/src/business/zhiguanHistory.ts",
+   "summary": "sortSessionsByDateDesc 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    6,
+    12
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/zhiguanHistory.ts:computeZhiguanStats",
+   "type": "function",
+   "name": "computeZhiguanStats",
+   "filePath": "packages/core/src/business/zhiguanHistory.ts",
+   "summary": "computeZhiguanStats 业务函数。",
+   "tags": [
+    "pure-function",
+    "zhiguan",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    25,
+    63
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/zhiguanHistory.ts:computeStreakDays",
+   "type": "function",
+   "name": "computeStreakDays",
+   "filePath": "packages/core/src/business/zhiguanHistory.ts",
+   "summary": "computeStreakDays 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    70,
+    104
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/zhiguanHistory.ts:getDailyTotalMs",
+   "type": "function",
+   "name": "getDailyTotalMs",
+   "filePath": "packages/core/src/business/zhiguanHistory.ts",
+   "summary": "getDailyTotalMs 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    107,
+    111
+   ]
+  },
+  {
+   "id": "function:packages/core/src/business/zhiguanHistory.ts:computeHeatmap",
+   "type": "function",
+   "name": "computeHeatmap",
+   "filePath": "packages/core/src/business/zhiguanHistory.ts",
+   "summary": "computeHeatmap 业务函数。",
+   "tags": [
+    "pure-function",
+    "analytics"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    114,
+    123
+   ]
+  },
+  {
+   "id": "file:packages/core/src/business/zhiguanMethods.ts",
+   "type": "file",
+   "name": "zhiguanMethods.ts",
+   "filePath": "packages/core/src/business/zhiguanMethods.ts",
+   "summary": "zhiguanMethods.ts 止观方法常量：SANKALPA_TEMPLATES、BREATH_PATTERNS、VIPASSANA_GUIDES、METHOD_TABLE。",
+   "tags": [
+    "constants",
+    "zhiguan"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "file:packages/core/src/constants.ts",
+   "type": "file",
+   "name": "constants.ts",
+   "filePath": "packages/core/src/constants.ts",
+   "summary": "constants.ts 全局常量与运动工具函数（主题/颜色/标签/心情/食物/运动 MET/计划模板等加卡路里估算/运动库构建）。",
+   "tags": [
+    "constants",
+    "config"
+   ],
+   "complexity": "complex"
+  },
+  {
+   "id": "function:packages/core/src/constants.ts:cardAccent",
+   "type": "function",
+   "name": "cardAccent",
+   "filePath": "packages/core/src/constants.ts",
+   "summary": "cardAccent 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    51,
+    63
+   ]
+  },
+  {
+   "id": "function:packages/core/src/constants.ts:cardTextColor",
+   "type": "function",
+   "name": "cardTextColor",
+   "filePath": "packages/core/src/constants.ts",
+   "summary": "cardTextColor 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    66,
+    73
+   ]
+  },
+  {
+   "id": "function:packages/core/src/constants.ts:getSportType",
+   "type": "function",
+   "name": "getSportType",
+   "filePath": "packages/core/src/constants.ts",
+   "summary": "getSportType 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    239,
+    243
+   ]
+  },
+  {
+   "id": "function:packages/core/src/constants.ts:getMinDuration",
+   "type": "function",
+   "name": "getMinDuration",
+   "filePath": "packages/core/src/constants.ts",
+   "summary": "getMinDuration 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    253,
+    255
+   ]
+  },
+  {
+   "id": "function:packages/core/src/constants.ts:estimateCalories",
+   "type": "function",
+   "name": "estimateCalories",
+   "filePath": "packages/core/src/constants.ts",
+   "summary": "estimateCalories 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    318,
+    321
+   ]
+  },
+  {
+   "id": "function:packages/core/src/constants.ts:getSportExperienceType",
+   "type": "function",
+   "name": "getSportExperienceType",
+   "filePath": "packages/core/src/constants.ts",
+   "summary": "getSportExperienceType 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    330,
+    335
+   ]
+  },
+  {
+   "id": "function:packages/core/src/constants.ts:getSoftTarget",
+   "type": "function",
+   "name": "getSoftTarget",
+   "filePath": "packages/core/src/constants.ts",
+   "summary": "getSoftTarget 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    359,
+    361
+   ]
+  },
+  {
+   "id": "function:packages/core/src/constants.ts:buildExerciseLibrary",
+   "type": "function",
+   "name": "buildExerciseLibrary",
+   "filePath": "packages/core/src/constants.ts",
+   "summary": "buildExerciseLibrary 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    444,
+    512
+   ]
+  },
+  {
+   "id": "function:packages/core/src/constants.ts:getSportMuscleGroups",
+   "type": "function",
+   "name": "getSportMuscleGroups",
+   "filePath": "packages/core/src/constants.ts",
+   "summary": "getSportMuscleGroups 业务函数。",
+   "tags": [
+    "pure-function"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    521,
+    535
+   ]
+  },
+  {
+   "id": "file:packages/core/src/constants/wuxingMap.ts",
+   "type": "file",
+   "name": "wuxingMap.ts",
+   "filePath": "packages/core/src/constants/wuxingMap.ts",
+   "summary": "wuxingMap.ts 五行饮食地图常量：五行类别、进食动机、元素配置、口味配置与五行映射。",
+   "tags": [
+    "constants",
+    "wuxing"
+   ],
+   "complexity": "complex"
+  },
+  {
+   "id": "file:packages/core/src/dailyReset.test.ts",
+   "type": "file",
+   "name": "dailyReset.test.ts",
+   "filePath": "packages/core/src/dailyReset.test.ts",
+   "summary": "dailyReset.test.ts 测试每日重置 (dailyReset) 的补丁生成与调度逻辑。",
+   "tags": [
+    "test",
+    "plan"
+   ],
+   "complexity": "moderate"
+  }
+ ],
+ "edges": [
+  {
+   "source": "file:packages/core/src/business/food.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/food.ts",
+   "target": "file:packages/core/src/utils.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/food.ts",
+   "target": "function:packages/core/src/business/food.ts:deleteFoodFromList",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/food.ts",
+   "target": "function:packages/core/src/business/food.ts:deleteFoodFromList",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/food.ts",
+   "target": "function:packages/core/src/business/food.ts:getRecentFoods",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/food.ts",
+   "target": "function:packages/core/src/business/food.ts:getRecentFoods",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/grace.test.ts",
+   "target": "file:packages/core/src/business/grace.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/grace.test.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/grace.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/grace.ts",
+   "target": "function:packages/core/src/business/grace.ts:getMonthGraceCount",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/grace.ts",
+   "target": "function:packages/core/src/business/grace.ts:getMonthGraceCount",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/grace.ts",
+   "target": "function:packages/core/src/business/grace.ts:getRemainingGrace",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/grace.ts",
+   "target": "function:packages/core/src/business/grace.ts:getRemainingGrace",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/grace.ts",
+   "target": "function:packages/core/src/business/grace.ts:isGraceAvailable",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/grace.ts",
+   "target": "function:packages/core/src/business/grace.ts:isGraceAvailable",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/habits.test.ts",
+   "target": "file:packages/core/src/business/habits.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/habits.test.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/habits.test.ts",
+   "target": "file:packages/core/src/utils.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "file:packages/core/src/business/module-state.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "file:packages/core/src/defaults.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "file:packages/core/src/utils.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "function:packages/core/src/business/habits.ts:addHabitToList",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "function:packages/core/src/business/habits.ts:addHabitToList",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "function:packages/core/src/business/habits.ts:updateHabitInList",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "function:packages/core/src/business/habits.ts:updateHabitInList",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "function:packages/core/src/business/habits.ts:deleteHabitFromList",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "function:packages/core/src/business/habits.ts:deleteHabitFromList",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "function:packages/core/src/business/habits.ts:checkinHabitInList",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "function:packages/core/src/business/habits.ts:checkinHabitInList",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "function:packages/core/src/business/habits.ts:changeHabitStatusInList",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "function:packages/core/src/business/habits.ts:changeHabitStatusInList",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "function:packages/core/src/business/habits.ts:checkAutoStatus",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "function:packages/core/src/business/habits.ts:checkAutoStatus",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "function:packages/core/src/business/habits.ts:syncHabitsFromModules",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "function:packages/core/src/business/habits.ts:syncHabitsFromModules",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "function:packages/core/src/business/habits.ts:computeWeeklyCompletionRates",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "function:packages/core/src/business/habits.ts:computeWeeklyCompletionRates",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "function:packages/core/src/business/habits.ts:computeWeeklyStreaks",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "function:packages/core/src/business/habits.ts:computeWeeklyStreaks",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "function:packages/core/src/business/habits.ts:buildHeatmapData",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/habits.ts",
+   "target": "function:packages/core/src/business/habits.ts:buildHeatmapData",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/meditation.test.ts",
+   "target": "file:packages/core/src/business/meditation.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/meditation.test.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/meditation.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/meditation.ts",
+   "target": "file:packages/core/src/utils.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/meditation.ts",
+   "target": "function:packages/core/src/business/meditation.ts:addMedMinutesToList",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/meditation.ts",
+   "target": "function:packages/core/src/business/meditation.ts:addMedMinutesToList",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/module-state.ts",
+   "target": "file:packages/core/src/utils.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/module-state.ts",
+   "target": "function:packages/core/src/business/module-state.ts:computeMaxFastingHours",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/module-state.ts",
+   "target": "function:packages/core/src/business/module-state.ts:computeMaxFastingHours",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/module-state.ts",
+   "target": "function:packages/core/src/business/module-state.ts:computeMaxExerciseMinutes",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/module-state.ts",
+   "target": "function:packages/core/src/business/module-state.ts:computeMaxExerciseMinutes",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.test.ts",
+   "target": "file:packages/core/src/business/plan.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/plan.test.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "file:packages/core/src/business/module-state.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "file:packages/core/src/constants.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "file:packages/core/src/utils.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:statusToI18nKey",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:statusToI18nKey",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:getFrequencySummary",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:getFrequencySummary",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:computeExpectedDays",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:computeExpectedDays",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:shouldShowToday",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:shouldShowToday",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:canDeletePlan",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:canDeletePlan",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:canEditPlan",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:canEditPlan",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:canEditPlanItem",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:canEditPlanItem",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:isPlanActive",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:isPlanActive",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:isPlanDelayed",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:isPlanDelayed",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:addPlan",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:addPlan",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:updatePlan",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:updatePlan",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:deletePlan",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:deletePlan",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:startPlan",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:startPlan",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:pausePlan",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:pausePlan",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:resumePlan",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:resumePlan",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:completePlan",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:completePlan",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:cancelPlan",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:cancelPlan",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:checkAutoStatus",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:checkAutoStatus",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:performDailyReset",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:performDailyReset",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:addPlanItem",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:addPlanItem",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:updatePlanItem",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:updatePlanItem",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:deletePlanItem",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:deletePlanItem",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:createPlanItemFromReflection",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:createPlanItemFromReflection",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:createPlanItem",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:createPlanItem",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:canArchivePlan",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:canArchivePlan",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:unlinkAllReflectionsFromPlan",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:unlinkAllReflectionsFromPlan",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:checkinItem",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:checkinItem",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:uncheckinItem",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:uncheckinItem",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:syncPlanItemsFromModules",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:syncPlanItemsFromModules",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:countDoneCheckins",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:computeItemProgress",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:computeItemProgress",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:countItemDoneDays",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:countItemDoneDays",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:computePlanProgress",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:computePlanProgress",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:getActivePlan",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:getActivePlan",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:getPlanItems",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:getPlanItems",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:getTodayItems",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:getTodayItems",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:getHistoryPlans",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:getHistoryPlans",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:refreshPlanItemStats",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:refreshPlanItemStats",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:addDailyCustomTodo",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:addDailyCustomTodo",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:toggleDailyCustomTodo",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:toggleDailyCustomTodo",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:deleteDailyCustomTodo",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:deleteDailyCustomTodo",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:getTodayCustomTodos",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:getTodayCustomTodos",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:saveDailyTodoHistory",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:saveDailyTodoHistory",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:getTodoHistory",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/plan.ts",
+   "target": "function:packages/core/src/business/plan.ts:getTodoHistory",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/planForm.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/planForm.ts",
+   "target": "function:packages/core/src/business/planForm.ts:createDefaultFrequency",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/planForm.ts",
+   "target": "function:packages/core/src/business/planForm.ts:createDefaultFrequency",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/planForm.ts",
+   "target": "function:packages/core/src/business/planForm.ts:validatePlanForm",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/planForm.ts",
+   "target": "function:packages/core/src/business/planForm.ts:validatePlanForm",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/planForm.ts",
+   "target": "function:packages/core/src/business/planForm.ts:createNewItem",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/planForm.ts",
+   "target": "function:packages/core/src/business/planForm.ts:createNewItem",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/planLogic.test.ts",
+   "target": "file:packages/core/src/business/plan.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/planLogic.test.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/planTodo.test.ts",
+   "target": "file:packages/core/src/business/planTodo.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/planTodo.test.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/planTodo.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/planTodo.ts",
+   "target": "file:packages/core/src/utils.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/planTodo.ts",
+   "target": "function:packages/core/src/business/planTodo.ts:getTodoItemStatus",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/planTodo.ts",
+   "target": "function:packages/core/src/business/planTodo.ts:getTodoItemStatus",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/planTodo.ts",
+   "target": "function:packages/core/src/business/planTodo.ts:getTodoItemStatusMap",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/planTodo.ts",
+   "target": "function:packages/core/src/business/planTodo.ts:getTodoItemStatusMap",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/planTodo.ts",
+   "target": "function:packages/core/src/business/planTodo.ts:computeDailyTodoStats",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/planTodo.ts",
+   "target": "function:packages/core/src/business/planTodo.ts:computeDailyTodoStats",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/planTodo.ts",
+   "target": "function:packages/core/src/business/planTodo.ts:computeHistorySummary",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/planTodo.ts",
+   "target": "function:packages/core/src/business/planTodo.ts:computeHistorySummary",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/planTodo.ts",
+   "target": "function:packages/core/src/business/planTodo.ts:mergeHistoryItems",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/planTodo.ts",
+   "target": "function:packages/core/src/business/planTodo.ts:mergeHistoryItems",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/reflectionAnalytics.test.ts",
+   "target": "file:packages/core/src/business/reflectionAnalytics.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/reflectionAnalytics.test.ts",
+   "target": "file:packages/core/src/types/reflection.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/reflectionAnalytics.test.ts",
+   "target": "function:packages/core/src/business/reflectionAnalytics.test.ts:makeRef",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reflectionAnalytics.ts",
+   "target": "file:packages/core/src/types/reflection.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/reflectionAnalytics.ts",
+   "target": "file:packages/core/src/utils.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/reflectionAnalytics.ts",
+   "target": "function:packages/core/src/business/reflectionAnalytics.ts:computeMoodScore",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reflectionAnalytics.ts",
+   "target": "function:packages/core/src/business/reflectionAnalytics.ts:computeMoodScore",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/reflectionAnalytics.ts",
+   "target": "function:packages/core/src/business/reflectionAnalytics.ts:computeMoodTrend",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reflectionAnalytics.ts",
+   "target": "function:packages/core/src/business/reflectionAnalytics.ts:computeMoodTrend",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/reflectionAnalytics.ts",
+   "target": "function:packages/core/src/business/reflectionAnalytics.ts:computeWritingHeatmap",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reflectionAnalytics.ts",
+   "target": "function:packages/core/src/business/reflectionAnalytics.ts:computeWritingHeatmap",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/reflectionAnalytics.ts",
+   "target": "function:packages/core/src/business/reflectionAnalytics.ts:computeTagCooccurrence",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reflectionAnalytics.ts",
+   "target": "function:packages/core/src/business/reflectionAnalytics.ts:computeTagCooccurrence",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/reflectionAnalytics.ts",
+   "target": "function:packages/core/src/business/reflectionAnalytics.ts:computeSmartCollections",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reflectionAnalytics.ts",
+   "target": "function:packages/core/src/business/reflectionAnalytics.ts:computeSmartCollections",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/reflectionAnalytics.ts",
+   "target": "function:packages/core/src/business/reflectionAnalytics.ts:highlightSearchMatch",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reflectionAnalytics.ts",
+   "target": "function:packages/core/src/business/reflectionAnalytics.ts:highlightSearchMatch",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.test.ts",
+   "target": "file:packages/core/src/business/reflections.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.test.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "file:packages/core/src/defaults.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "file:packages/core/src/utils.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "function:packages/core/src/business/reflections.ts:addReflectionToList",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "function:packages/core/src/business/reflections.ts:addReflectionToList",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "function:packages/core/src/business/reflections.ts:togglePinInList",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "function:packages/core/src/business/reflections.ts:togglePinInList",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "function:packages/core/src/business/reflections.ts:deleteReflectionFromList",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "function:packages/core/src/business/reflections.ts:deleteReflectionFromList",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "function:packages/core/src/business/reflections.ts:updateReflectionInList",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "function:packages/core/src/business/reflections.ts:updateReflectionInList",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "function:packages/core/src/business/reflections.ts:linkReflectionToPlanItem",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "function:packages/core/src/business/reflections.ts:linkReflectionToPlanItem",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "function:packages/core/src/business/reflections.ts:unlinkReflectionFromPlanItem",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "function:packages/core/src/business/reflections.ts:unlinkReflectionFromPlanItem",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "function:packages/core/src/business/reflections.ts:getLinkedPlanItem",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "function:packages/core/src/business/reflections.ts:getLinkedPlanItem",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "function:packages/core/src/business/reflections.ts:filterReflections",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "function:packages/core/src/business/reflections.ts:filterReflections",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "function:packages/core/src/business/reflections.ts:groupReflectionsByDate",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "function:packages/core/src/business/reflections.ts:groupReflectionsByDate",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "function:packages/core/src/business/reflections.ts:computeDynamicTagCounts",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "function:packages/core/src/business/reflections.ts:computeDynamicTagCounts",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "function:packages/core/src/business/reflections.ts:computeDynamicMoodCounts",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reflections.ts",
+   "target": "function:packages/core/src/business/reflections.ts:computeDynamicMoodCounts",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/reverseGeocoding.ts",
+   "target": "file:packages/core/src/logger.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/reverseGeocoding.ts",
+   "target": "function:packages/core/src/business/reverseGeocoding.ts:extractCityName",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reverseGeocoding.ts",
+   "target": "function:packages/core/src/business/reverseGeocoding.ts:processQueue",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reverseGeocoding.ts",
+   "target": "function:packages/core/src/business/reverseGeocoding.ts:getCityInfo",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reverseGeocoding.ts",
+   "target": "function:packages/core/src/business/reverseGeocoding.ts:getCityInfo",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/reverseGeocoding.ts",
+   "target": "function:packages/core/src/business/reverseGeocoding.ts:getCityInfoBatch",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reverseGeocoding.ts",
+   "target": "function:packages/core/src/business/reverseGeocoding.ts:getCityInfoBatch",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/reverseGeocoding.ts",
+   "target": "function:packages/core/src/business/reverseGeocoding.ts:clearCache",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reverseGeocoding.ts",
+   "target": "function:packages/core/src/business/reverseGeocoding.ts:clearCache",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/reverseGeocoding.ts",
+   "target": "function:packages/core/src/business/reverseGeocoding.ts:getCacheSize",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/reverseGeocoding.ts",
+   "target": "function:packages/core/src/business/reverseGeocoding.ts:getCacheSize",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/review.test.ts",
+   "target": "file:packages/core/src/business/review.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/review.test.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/review.ts",
+   "target": "file:packages/core/src/business/checkin.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/review.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/review.ts",
+   "target": "file:packages/core/src/utils.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/review.ts",
+   "target": "function:packages/core/src/business/review.ts:getWeekRange",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/review.ts",
+   "target": "function:packages/core/src/business/review.ts:getWeekRange",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/review.ts",
+   "target": "function:packages/core/src/business/review.ts:getMonthRange",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/review.ts",
+   "target": "function:packages/core/src/business/review.ts:getMonthRange",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/review.ts",
+   "target": "function:packages/core/src/business/review.ts:getDatesInRange",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/review.ts",
+   "target": "function:packages/core/src/business/review.ts:calculateStreakForRange",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/review.ts",
+   "target": "function:packages/core/src/business/review.ts:calculateLongestStreak",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/review.ts",
+   "target": "function:packages/core/src/business/review.ts:calculateReviewData",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/review.ts",
+   "target": "function:packages/core/src/business/review.ts:calculateReviewData",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/review.ts",
+   "target": "function:packages/core/src/business/review.ts:calculateIncompleteReasons",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/review.ts",
+   "target": "function:packages/core/src/business/review.ts:calculateIncompleteItems",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/review.ts",
+   "target": "function:packages/core/src/business/review.ts:calculateHabitProgress",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/review.ts",
+   "target": "function:packages/core/src/business/review.ts:calculatePlanProgress",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/review.ts",
+   "target": "function:packages/core/src/business/review.ts:calculateMetrics",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/review.ts",
+   "target": "function:packages/core/src/business/review.ts:calculateComparison",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/review.ts",
+   "target": "function:packages/core/src/business/review.ts:buildReviewPrompt",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/review.ts",
+   "target": "function:packages/core/src/business/review.ts:buildReviewPrompt",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/review.ts",
+   "target": "function:packages/core/src/business/review.ts:parseReviewAIResponse",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/review.ts",
+   "target": "function:packages/core/src/business/review.ts:parseReviewAIResponse",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.test.ts",
+   "target": "file:packages/core/src/business/thought-trail.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.test.ts",
+   "target": "file:packages/core/src/types/reflection.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.test.ts",
+   "target": "file:packages/core/src/types/thought-trail.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.test.ts",
+   "target": "file:packages/core/src/types/trail-note.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.test.ts",
+   "target": "function:packages/core/src/business/thought-trail.test.ts:makeTrail",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.test.ts",
+   "target": "function:packages/core/src/business/thought-trail.test.ts:makeReflection",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.test.ts",
+   "target": "function:packages/core/src/business/thought-trail.test.ts:makeNote",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.ts",
+   "target": "file:packages/core/src/types/reflection.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.ts",
+   "target": "file:packages/core/src/types/thought-trail.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.ts",
+   "target": "file:packages/core/src/types/trail-note.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.ts",
+   "target": "file:packages/core/src/utils.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.ts",
+   "target": "function:packages/core/src/business/thought-trail.ts:generateTrailName",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.ts",
+   "target": "function:packages/core/src/business/thought-trail.ts:generateTrailName",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.ts",
+   "target": "function:packages/core/src/business/thought-trail.ts:getTrailStats",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.ts",
+   "target": "function:packages/core/src/business/thought-trail.ts:getTrailStats",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.ts",
+   "target": "function:packages/core/src/business/thought-trail.ts:getTrailsByReflection",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.ts",
+   "target": "function:packages/core/src/business/thought-trail.ts:getTrailsByReflection",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.ts",
+   "target": "function:packages/core/src/business/thought-trail.ts:getReflectionsByTag",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.ts",
+   "target": "function:packages/core/src/business/thought-trail.ts:getReflectionsByTag",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.ts",
+   "target": "function:packages/core/src/business/thought-trail.ts:getMoodIcon",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.ts",
+   "target": "function:packages/core/src/business/thought-trail.ts:getMoodIcon",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.ts",
+   "target": "function:packages/core/src/business/thought-trail.ts:getTrailOverview",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.ts",
+   "target": "function:packages/core/src/business/thought-trail.ts:getTrailOverview",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.ts",
+   "target": "function:packages/core/src/business/thought-trail.ts:getRelatedTrails",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.ts",
+   "target": "function:packages/core/src/business/thought-trail.ts:getRelatedTrails",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.ts",
+   "target": "function:packages/core/src/business/thought-trail.ts:getTrailTagSet",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.ts",
+   "target": "function:packages/core/src/business/thought-trail.ts:getTrailTimelineItems",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/thought-trail.ts",
+   "target": "function:packages/core/src/business/thought-trail.ts:getTrailTimelineItems",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.test.ts",
+   "target": "file:packages/core/src/business/trail-creation.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.test.ts",
+   "target": "file:packages/core/src/types/reflection.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.test.ts",
+   "target": "function:packages/core/src/business/trail-creation.test.ts:makeRef",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "file:packages/core/src/business/thought-trail.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "file:packages/core/src/logger.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "file:packages/core/src/types/reflection.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "file:packages/core/src/types/thought-trail.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "file:packages/core/src/utils.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:computeCandidatePool",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:computeCandidatePool",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:computeRecommendations",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:computeRecommendations",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:detectMoodNarrative",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:detectMoodNarrative",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:detectTagFocus",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:detectTagFocus",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:detectTimePattern",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:detectTimePattern",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:matchByKeyword",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:matchByKeyword",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:generateNarrative",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:generateNarrative",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:generateNarrativeName",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:generateNarrativeName",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:computeMoodTrendSimple",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:computeMoodTrendSimple",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:trendArrow",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:trendArrow",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:trendLabel",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:trendLabel",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:trendColor",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:trendColor",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:buildReflectionSummary",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:buildReflectionSummary",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:formatDateShort",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:formatDateShort",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:daysBetween",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:daysBetween",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:getMostFrequentTag",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:getMostFrequentTag",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:analyzeTrailGaps",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:analyzeTrailGaps",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:generateRecommendationReason",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:generateRecommendationReason",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:calcOverlap",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:mergeAndRank",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:mergeAndRank",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:computeHybridRecommendations",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:computeHybridRecommendations",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:buildIgnoredPattern",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:buildIgnoredPattern",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:applyUserPreferences",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/trail-creation.ts",
+   "target": "function:packages/core/src/business/trail-creation.ts:applyUserPreferences",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/useDailyTodo.ts",
+   "target": "file:packages/core/src/business/plan.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/useDailyTodo.ts",
+   "target": "file:packages/core/src/business/planTodo.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/useDailyTodo.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/useDailyTodo.ts",
+   "target": "function:packages/core/src/business/useDailyTodo.ts:createDailyTodoHook",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/useDailyTodo.ts",
+   "target": "function:packages/core/src/business/useDailyTodo.ts:createDailyTodoHook",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/zhiguanHintEngine.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/zhiguanHintEngine.ts",
+   "target": "function:packages/core/src/business/zhiguanHintEngine.ts:recommendMethod",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/zhiguanHintEngine.ts",
+   "target": "function:packages/core/src/business/zhiguanHintEngine.ts:recommendMethod",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/zhiguanHistory.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/zhiguanHistory.ts",
+   "target": "file:packages/core/src/utils.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/business/zhiguanHistory.ts",
+   "target": "function:packages/core/src/business/zhiguanHistory.ts:sortSessionsByDateDesc",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/zhiguanHistory.ts",
+   "target": "function:packages/core/src/business/zhiguanHistory.ts:sortSessionsByDateDesc",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/zhiguanHistory.ts",
+   "target": "function:packages/core/src/business/zhiguanHistory.ts:computeZhiguanStats",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/zhiguanHistory.ts",
+   "target": "function:packages/core/src/business/zhiguanHistory.ts:computeZhiguanStats",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/zhiguanHistory.ts",
+   "target": "function:packages/core/src/business/zhiguanHistory.ts:computeStreakDays",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/zhiguanHistory.ts",
+   "target": "function:packages/core/src/business/zhiguanHistory.ts:computeStreakDays",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/zhiguanHistory.ts",
+   "target": "function:packages/core/src/business/zhiguanHistory.ts:getDailyTotalMs",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/zhiguanHistory.ts",
+   "target": "function:packages/core/src/business/zhiguanHistory.ts:getDailyTotalMs",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/zhiguanHistory.ts",
+   "target": "function:packages/core/src/business/zhiguanHistory.ts:computeHeatmap",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/business/zhiguanHistory.ts",
+   "target": "function:packages/core/src/business/zhiguanHistory.ts:computeHeatmap",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/business/zhiguanMethods.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/constants.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/constants.ts",
+   "target": "function:packages/core/src/constants.ts:cardAccent",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/constants.ts",
+   "target": "function:packages/core/src/constants.ts:cardAccent",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/constants.ts",
+   "target": "function:packages/core/src/constants.ts:cardTextColor",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/constants.ts",
+   "target": "function:packages/core/src/constants.ts:cardTextColor",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/constants.ts",
+   "target": "function:packages/core/src/constants.ts:getSportType",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/constants.ts",
+   "target": "function:packages/core/src/constants.ts:getSportType",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/constants.ts",
+   "target": "function:packages/core/src/constants.ts:getMinDuration",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/constants.ts",
+   "target": "function:packages/core/src/constants.ts:getMinDuration",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/constants.ts",
+   "target": "function:packages/core/src/constants.ts:estimateCalories",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/constants.ts",
+   "target": "function:packages/core/src/constants.ts:estimateCalories",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/constants.ts",
+   "target": "function:packages/core/src/constants.ts:getSportExperienceType",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/constants.ts",
+   "target": "function:packages/core/src/constants.ts:getSportExperienceType",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/constants.ts",
+   "target": "function:packages/core/src/constants.ts:getSoftTarget",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/constants.ts",
+   "target": "function:packages/core/src/constants.ts:getSoftTarget",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/constants.ts",
+   "target": "function:packages/core/src/constants.ts:buildExerciseLibrary",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/constants.ts",
+   "target": "function:packages/core/src/constants.ts:buildExerciseLibrary",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:packages/core/src/constants.ts",
+   "target": "function:packages/core/src/constants.ts:getSportMuscleGroups",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:packages/core/src/constants/wuxingMap.ts",
+   "target": "file:packages/core/src/types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/dailyReset.test.ts",
+   "target": "file:packages/core/src/dailyReset.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:packages/core/src/dailyReset.test.ts",
+   "target": "file:packages/core/src/utils.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "function:packages/core/src/business/useDailyTodo.ts:createDailyTodoHook",
+   "target": "function:packages/core/src/business/plan.ts:getTodayItems",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/useDailyTodo.ts:createDailyTodoHook",
+   "target": "function:packages/core/src/business/plan.ts:getTodayCustomTodos",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/useDailyTodo.ts:createDailyTodoHook",
+   "target": "function:packages/core/src/business/plan.ts:getTodoHistory",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/useDailyTodo.ts:createDailyTodoHook",
+   "target": "function:packages/core/src/business/planTodo.ts:getTodoItemStatusMap",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/useDailyTodo.ts:createDailyTodoHook",
+   "target": "function:packages/core/src/business/planTodo.ts:computeDailyTodoStats",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/useDailyTodo.ts:createDailyTodoHook",
+   "target": "function:packages/core/src/business/planTodo.ts:computeHistorySummary",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/trail-creation.ts:computeRecommendations",
+   "target": "function:packages/core/src/business/trail-creation.ts:detectMoodNarrative",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/trail-creation.ts:computeRecommendations",
+   "target": "function:packages/core/src/business/trail-creation.ts:detectTagFocus",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/trail-creation.ts:computeRecommendations",
+   "target": "function:packages/core/src/business/trail-creation.ts:detectTimePattern",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/trail-creation.ts:computeHybridRecommendations",
+   "target": "function:packages/core/src/business/trail-creation.ts:computeRecommendations",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/trail-creation.ts:computeHybridRecommendations",
+   "target": "function:packages/core/src/business/trail-creation.ts:mergeAndRank",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/trail-creation.ts:computeHybridRecommendations",
+   "target": "function:packages/core/src/business/trail-creation.ts:generateRecommendationReason",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/trail-creation.ts:applyUserPreferences",
+   "target": "function:packages/core/src/business/trail-creation.ts:buildIgnoredPattern",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/plan.ts:performDailyReset",
+   "target": "function:packages/core/src/business/plan.ts:checkAutoStatus",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/plan.ts:performDailyReset",
+   "target": "function:packages/core/src/business/plan.ts:saveDailyTodoHistory",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/plan.ts:syncPlanItemsFromModules",
+   "target": "function:packages/core/src/business/plan.ts:checkinItem",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/plan.ts:syncPlanItemsFromModules",
+   "target": "function:packages/core/src/business/module-state.ts:computeMaxFastingHours",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/plan.ts:syncPlanItemsFromModules",
+   "target": "function:packages/core/src/business/module-state.ts:computeMaxExerciseMinutes",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/habits.ts:syncHabitsFromModules",
+   "target": "function:packages/core/src/business/module-state.ts:computeMaxFastingHours",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/habits.ts:syncHabitsFromModules",
+   "target": "function:packages/core/src/business/module-state.ts:computeMaxExerciseMinutes",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/review.ts:calculateReviewData",
+   "target": "function:packages/core/src/business/review.ts:calculateIncompleteReasons",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/review.ts:calculateReviewData",
+   "target": "function:packages/core/src/business/review.ts:calculateIncompleteItems",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/review.ts:calculateReviewData",
+   "target": "function:packages/core/src/business/review.ts:calculateMetrics",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/review.ts:calculateReviewData",
+   "target": "function:packages/core/src/business/review.ts:calculateHabitProgress",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/review.ts:calculateReviewData",
+   "target": "function:packages/core/src/business/review.ts:calculatePlanProgress",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/review.ts:calculateReviewData",
+   "target": "function:packages/core/src/business/review.ts:calculateComparison",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/thought-trail.ts:getRelatedTrails",
+   "target": "function:packages/core/src/business/thought-trail.ts:getTrailTagSet",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/thought-trail.ts:getTrailOverview",
+   "target": "function:packages/core/src/business/thought-trail.ts:getTrailStats",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/reflectionAnalytics.ts:computeSmartCollections",
+   "target": "function:packages/core/src/business/reflectionAnalytics.ts:computeMoodScore",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/plan.ts:refreshPlanItemStats",
+   "target": "function:packages/core/src/business/plan.ts:computeExpectedDays",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/plan.ts:computeItemProgress",
+   "target": "function:packages/core/src/business/plan.ts:computeExpectedDays",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/plan.ts:getTodayItems",
+   "target": "function:packages/core/src/business/plan.ts:shouldShowToday",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:packages/core/src/business/plan.ts:getActivePlan",
+   "target": "function:packages/core/src/business/plan.ts:isPlanActive",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  }
+ ]
+}

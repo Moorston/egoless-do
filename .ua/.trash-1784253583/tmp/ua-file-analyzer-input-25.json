@@ -1,0 +1,53 @@
+{
+  "projectRoot": "D:/MyProject/2026/egoless-do",
+  "batchFiles": [
+    {
+      "path": "packages/core/src/i18n/en.ts",
+      "language": "typescript",
+      "sizeLines": 1246,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/i18n/index.ts",
+      "language": "typescript",
+      "sizeLines": 31,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/i18n/types.ts",
+      "language": "typescript",
+      "sizeLines": 1087,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/i18n/zh-Hant.ts",
+      "language": "typescript",
+      "sizeLines": 1224,
+      "fileCategory": "code"
+    },
+    {
+      "path": "packages/core/src/i18n/zh.ts",
+      "language": "typescript",
+      "sizeLines": 1245,
+      "fileCategory": "code"
+    }
+  ],
+  "batchImportData": {
+    "packages/core/src/i18n/en.ts": [
+      "packages/core/src/i18n/types.ts"
+    ],
+    "packages/core/src/i18n/index.ts": [
+      "packages/core/src/i18n/en.ts",
+      "packages/core/src/i18n/types.ts",
+      "packages/core/src/i18n/zh-Hant.ts",
+      "packages/core/src/i18n/zh.ts"
+    ],
+    "packages/core/src/i18n/types.ts": [],
+    "packages/core/src/i18n/zh-Hant.ts": [
+      "packages/core/src/i18n/types.ts"
+    ],
+    "packages/core/src/i18n/zh.ts": [
+      "packages/core/src/i18n/types.ts"
+    ]
+  }
+}

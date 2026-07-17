@@ -1,0 +1,343 @@
+{
+  "nodes": [
+    {
+      "id": "file:backend/pb_migrations/1782352478_created_global_checkins.js",
+      "type": "file",
+      "name": "1782352478_created_global_checkins.js",
+      "filePath": "backend/pb_migrations/1782352478_created_global_checkins.js",
+      "summary": "按时间戳命名迁移，创建 global_checkins 集合实现全球签到数据落地。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1782352495_created_global_stats.js",
+      "type": "file",
+      "name": "1782352495_created_global_stats.js",
+      "filePath": "backend/pb_migrations/1782352495_created_global_stats.js",
+      "summary": "按时间戳命名迁移，创建 global_stats 集合存储全球统计指标。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1782445175_created_push_tokens.js",
+      "type": "file",
+      "name": "1782445175_created_push_tokens.js",
+      "filePath": "backend/pb_migrations/1782445175_created_push_tokens.js",
+      "summary": "按时间戳命名迁移，创建 push_tokens 集合以支持设备推送。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1782500000_create_all_sync_collections.js",
+      "type": "file",
+      "name": "1782500000_create_all_sync_collections.js",
+      "filePath": "backend/pb_migrations/1782500000_create_all_sync_collections.js",
+      "summary": "统一创建所有同步端点所需集合，使用 v0.38.2 的 fields（非 schema）Collection 构造。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "sync"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:backend/pb_migrations/1782600000_add_body_collections.js",
+      "type": "file",
+      "name": "1782600000_add_body_collections.js",
+      "filePath": "backend/pb_migrations/1782600000_add_body_collections.js",
+      "summary": "创建调身相关集合（body_goals、body_plans、weight_records、body_checkins）。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1782700000_add_vow_collections.js",
+      "type": "file",
+      "name": "1782700000_add_vow_collections.js",
+      "filePath": "backend/pb_migrations/1782700000_add_vow_collections.js",
+      "summary": "创建发愿相关集合（visions、vision_practices、dedications）。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1782800000_add_mantra_collections.js",
+      "type": "file",
+      "name": "1782800000_add_mantra_collections.js",
+      "filePath": "backend/pb_migrations/1782800000_add_mantra_collections.js",
+      "summary": "创建咒语相关集合（mantra_defs、mantra_sessions）。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1782900000_add_sleep_and_give_collections.js",
+      "type": "file",
+      "name": "1782900000_add_sleep_and_give_collections.js",
+      "filePath": "backend/pb_migrations/1782900000_add_sleep_and_give_collections.js",
+      "summary": "创建 sleep_records 与 give_entries 集合，支撑睡眠与布施记录同步。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1782910000_add_diet_collections.js",
+      "type": "file",
+      "name": "1782910000_add_diet_collections.js",
+      "filePath": "backend/pb_migrations/1782910000_add_diet_collections.js",
+      "summary": "创建 eating_motivations 与 custom_wuxing_maps 集合，支撑饮食动机与五行自定义。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1782920000_add_sutra_reading_collection.js",
+      "type": "file",
+      "name": "1782920000_add_sutra_reading_collection.js",
+      "filePath": "backend/pb_migrations/1782920000_add_sutra_reading_collection.js",
+      "summary": "创建 sutra_reading_sessions 集合，支撑诵经记录同步。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1782930000_add_fear_collections.js",
+      "type": "file",
+      "name": "1782930000_add_fear_collections.js",
+      "filePath": "backend/pb_migrations/1782930000_add_fear_collections.js",
+      "summary": "创建 fear_entries、courage_entries、fear_achievements 集合，支撑恐惧对治修行。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1782940000_add_zhiguan_and_breath_collections.js",
+      "type": "file",
+      "name": "1782940000_add_zhiguan_and_breath_collections.js",
+      "filePath": "backend/pb_migrations/1782940000_add_zhiguan_and_breath_collections.js",
+      "summary": "创建 zhiguan_sessions 与 breath_records 集合，支撑止观与呼吸记录同步。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1782950000_fix_collection_permissions.js",
+      "type": "file",
+      "name": "1782950000_fix_collection_permissions.js",
+      "filePath": "backend/pb_migrations/1782950000_fix_collection_permissions.js",
+      "summary": "修复集合权限配置的迁移，收紧 list/view/create/update/delete 规则。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database",
+        "security"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:backend/pb_migrations/1783352556_created_account_lockouts.js",
+      "type": "file",
+      "name": "1783352556_created_account_lockouts.js",
+      "filePath": "backend/pb_migrations/1783352556_created_account_lockouts.js",
+      "summary": "创建 account_lockouts 集合，实现账户锁定与防暴力破解机制。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database",
+        "security"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1783352556_created_audit_logs.js",
+      "type": "file",
+      "name": "1783352556_created_audit_logs.js",
+      "filePath": "backend/pb_migrations/1783352556_created_audit_logs.js",
+      "summary": "创建 audit_logs 集合，记录关键安全审计日志。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database",
+        "security"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1783352556_created_refresh_tokens.js",
+      "type": "file",
+      "name": "1783352556_created_refresh_tokens.js",
+      "filePath": "backend/pb_migrations/1783352556_created_refresh_tokens.js",
+      "summary": "创建 refresh_tokens 集合，持久化刷新令牌以支持认证续期。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database",
+        "auth"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1783352556_created_token_blacklist.js",
+      "type": "file",
+      "name": "1783352556_created_token_blacklist.js",
+      "filePath": "backend/pb_migrations/1783352556_created_token_blacklist.js",
+      "summary": "创建 token_blacklist 集合，实现令牌吊销与黑名单机制。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database",
+        "auth"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1783352556_created_user_mfa.js",
+      "type": "file",
+      "name": "1783352556_created_user_mfa.js",
+      "filePath": "backend/pb_migrations/1783352556_created_user_mfa.js",
+      "summary": "创建 user_mfa 集合，支撑用户多因素认证配置存储。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database",
+        "auth"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1783352556_created_user_roles.js",
+      "type": "file",
+      "name": "1783352556_created_user_roles.js",
+      "filePath": "backend/pb_migrations/1783352556_created_user_roles.js",
+      "summary": "创建 user_roles 集合，支撑基于角色的访问控制。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database",
+        "auth"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1783352556_created_verification_codes.js",
+      "type": "file",
+      "name": "1783352556_created_verification_codes.js",
+      "filePath": "backend/pb_migrations/1783352556_created_verification_codes.js",
+      "summary": "创建 verification_codes 集合，存储邮箱验证码及其过期时间。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database",
+        "auth"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1783660940_updated_refresh_tokens.js",
+      "type": "file",
+      "name": "1783660940_updated_refresh_tokens.js",
+      "filePath": "backend/pb_migrations/1783660940_updated_refresh_tokens.js",
+      "summary": "更新 refresh_tokens 集合结构的迁移，补全字段或索引。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database",
+        "auth"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:backend/pb_migrations/1783661066_updated_audit_logs.js",
+      "type": "file",
+      "name": "1783661066_updated_audit_logs.js",
+      "filePath": "backend/pb_migrations/1783661066_updated_audit_logs.js",
+      "summary": "更新 audit_logs 集合结构的迁移，扩展审计字段或权限。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database",
+        "security"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1783661086_updated_user_mfa.js",
+      "type": "file",
+      "name": "1783661086_updated_user_mfa.js",
+      "filePath": "backend/pb_migrations/1783661086_updated_user_mfa.js",
+      "summary": "更新 user_mfa 集合结构的迁移，完善多因素认证字段。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database",
+        "auth"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:backend/pb_migrations/1783689997_deleted_map_pins.js",
+      "type": "file",
+      "name": "1783689997_deleted_map_pins.js",
+      "filePath": "backend/pb_migrations/1783689997_deleted_map_pins.js",
+      "summary": "删除已废弃 map_pins 集合的迁移，清理不再使用的地图钉标数据模型。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database",
+        "cleanup"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:backend/pb_migrations/1783689998_deleted_intents.js",
+      "type": "file",
+      "name": "1783689998_deleted_intents.js",
+      "filePath": "backend/pb_migrations/1783689998_deleted_intents.js",
+      "summary": "删除已废弃 intents 集合的迁移，清理意图数据模型。",
+      "tags": [
+        "migration",
+        "pocketbase",
+        "database",
+        "cleanup"
+      ],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": []
+}

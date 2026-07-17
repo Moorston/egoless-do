@@ -1,0 +1,2006 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 25,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": ".github/dependabot.yml",
+      "language": "yaml",
+      "fileCategory": "config",
+      "totalLines": 12,
+      "nonEmptyLines": 12,
+      "sections": [
+        {
+          "heading": "version",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "updates",
+          "level": 1,
+          "line": 2
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 2
+      }
+    },
+    {
+      "path": ".gitmodules",
+      "language": "unknown",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 0,
+      "metrics": {}
+    },
+    {
+      "path": ".npmrc",
+      "language": "unknown",
+      "fileCategory": "code",
+      "totalLines": 2,
+      "nonEmptyLines": 2,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/.version",
+      "language": "unknown",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/agents/check.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 70,
+      "nonEmptyLines": 51,
+      "sections": [
+        {
+          "heading": "Check Agent (channel runtime)",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "Context",
+          "level": 2,
+          "line": 13
+        },
+        {
+          "heading": "Core Responsibilities",
+          "level": 2,
+          "line": 23
+        },
+        {
+          "heading": "Forbidden Operations",
+          "level": 2,
+          "line": 32
+        },
+        {
+          "heading": "Workflow",
+          "level": 2,
+          "line": 40
+        },
+        {
+          "heading": "Report Format",
+          "level": 2,
+          "line": 50
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 6
+      }
+    },
+    {
+      "path": ".trellis/agents/implement.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 71,
+      "nonEmptyLines": 51,
+      "sections": [
+        {
+          "heading": "Implement Agent (channel runtime)",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "Context",
+          "level": 2,
+          "line": 13
+        },
+        {
+          "heading": "Core Responsibilities",
+          "level": 2,
+          "line": 23
+        },
+        {
+          "heading": "Forbidden Operations",
+          "level": 2,
+          "line": 30
+        },
+        {
+          "heading": "Workflow",
+          "level": 2,
+          "line": 38
+        },
+        {
+          "heading": "Code Standards",
+          "level": 2,
+          "line": 46
+        },
+        {
+          "heading": "Report Format",
+          "level": 2,
+          "line": 53
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 7
+      }
+    },
+    {
+      "path": ".trellis/plans/auth-proxy-extraction.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 174,
+      "nonEmptyLines": 143,
+      "sections": [
+        {
+          "heading": "Auth 代理层独立服务提取方案",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Context",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "方案概述",
+          "level": 2,
+          "line": 33
+        },
+        {
+          "heading": "Phase 1: 创建 Hono Auth 服务骨架",
+          "level": 2,
+          "line": 37
+        },
+        {
+          "heading": "Phase 2: 迁移 Auth 路由逻辑",
+          "level": 2,
+          "line": 67
+        },
+        {
+          "heading": "Phase 3: 更新部署配置",
+          "level": 2,
+          "line": 92
+        },
+        {
+          "heading": "3.1 更新 `infra/docker/docker-compose.yml`",
+          "level": 3,
+          "line": 94
+        },
+        {
+          "heading": "3.2 更新 `infra/nginx/nginx.conf`",
+          "level": 3,
+          "line": 120
+        },
+        {
+          "heading": "Phase 4: 更新移动端配置",
+          "level": 2,
+          "line": 132
+        },
+        {
+          "heading": "Phase 5: 验证",
+          "level": 2,
+          "line": 149
+        },
+        {
+          "heading": "工作量估算",
+          "level": 2,
+          "line": 157
+        },
+        {
+          "heading": "依赖项",
+          "level": 2,
+          "line": 168
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 12
+      }
+    },
+    {
+      "path": ".trellis/scripts/__init__.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 5,
+      "nonEmptyLines": 4,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": ".trellis/scripts/common/cli_adapter.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 886,
+      "nonEmptyLines": 759,
+      "functions": [
+        {
+          "name": "get_cli_adapter",
+          "startLine": 637,
+          "endLine": 679,
+          "params": [
+            "platform"
+          ]
+        },
+        {
+          "name": "_has_other_platform_dir",
+          "startLine": 709,
+          "endLine": 715,
+          "params": [
+            "project_root",
+            "exclude"
+          ]
+        },
+        {
+          "name": "detect_platform",
+          "startLine": 718,
+          "endLine": 873,
+          "params": [
+            "project_root"
+          ]
+        },
+        {
+          "name": "get_cli_adapter_auto",
+          "startLine": 876,
+          "endLine": 886,
+          "params": [
+            "project_root"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "CLIAdapter",
+          "startLine": 63,
+          "endLine": 629,
+          "methods": [
+            "get_agent_name",
+            "config_dir_name",
+            "get_config_dir",
+            "get_agent_path",
+            "get_commands_path",
+            "get_trellis_command_path",
+            "get_non_interactive_env",
+            "build_run_command",
+            "build_resume_command",
+            "get_resume_command_str",
+            "is_opencode",
+            "is_claude",
+            "is_cursor",
+            "is_iflow",
+            "cli_name",
+            "supports_cli_agents",
+            "requires_agent_definition_file",
+            "supports_session_id_on_create",
+            "extract_session_id_from_log"
+          ],
+          "properties": [
+            "platform",
+            "_AGENT_NAME_MAP"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "CLIAdapter",
+          "line": 62,
+          "isDefault": false
+        },
+        {
+          "name": "get_cli_adapter",
+          "line": 637,
+          "isDefault": false
+        },
+        {
+          "name": "_has_other_platform_dir",
+          "line": 709,
+          "isDefault": false
+        },
+        {
+          "name": "detect_platform",
+          "line": 718,
+          "isDefault": false
+        },
+        {
+          "name": "get_cli_adapter_auto",
+          "line": 876,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "get_agent_name",
+          "callee": "self._AGENT_NAME_MAP.get",
+          "lineNumber": 91
+        },
+        {
+          "caller": "get_agent_name",
+          "callee": "mapping.get",
+          "lineNumber": 92
+        },
+        {
+          "caller": "get_agent_path",
+          "callee": "self.get_agent_name",
+          "lineNumber": 161
+        },
+        {
+          "caller": "get_agent_path",
+          "callee": "self.get_config_dir",
+          "lineNumber": 163
+        },
+        {
+          "caller": "get_agent_path",
+          "callee": "self.get_config_dir",
+          "lineNumber": 164
+        },
+        {
+          "caller": "get_commands_path",
+          "callee": "self.get_config_dir",
+          "lineNumber": 185
+        },
+        {
+          "caller": "get_commands_path",
+          "callee": "len",
+          "lineNumber": 188
+        },
+        {
+          "caller": "get_commands_path",
+          "callee": "filename.endswith",
+          "lineNumber": 190
+        },
+        {
+          "caller": "get_commands_path",
+          "callee": "Path",
+          "lineNumber": 193
+        },
+        {
+          "caller": "get_commands_path",
+          "callee": "self.get_config_dir",
+          "lineNumber": 195
+        },
+        {
+          "caller": "get_commands_path",
+          "callee": "len",
+          "lineNumber": 198
+        },
+        {
+          "caller": "get_commands_path",
+          "callee": "filename.endswith",
+          "lineNumber": 200
+        },
+        {
+          "caller": "get_commands_path",
+          "callee": "Path",
+          "lineNumber": 203
+        },
+        {
+          "caller": "get_commands_path",
+          "callee": "self.get_config_dir",
+          "lineNumber": 207
+        },
+        {
+          "caller": "get_commands_path",
+          "callee": "len",
+          "lineNumber": 210
+        },
+        {
+          "caller": "get_commands_path",
+          "callee": "Path",
+          "lineNumber": 213
+        },
+        {
+          "caller": "get_commands_path",
+          "callee": "self.get_config_dir",
+          "lineNumber": 216
+        },
+        {
+          "caller": "get_commands_path",
+          "callee": "len",
+          "lineNumber": 219
+        },
+        {
+          "caller": "get_commands_path",
+          "callee": "Path",
+          "lineNumber": 222
+        },
+        {
+          "caller": "get_commands_path",
+          "callee": "len",
+          "lineNumber": 228
+        },
+        {
+          "caller": "get_commands_path",
+          "callee": "filename.endswith",
+          "lineNumber": 230
+        },
+        {
+          "caller": "get_commands_path",
+          "callee": "Path",
+          "lineNumber": 233
+        },
+        {
+          "caller": "get_commands_path",
+          "callee": "self.get_config_dir",
+          "lineNumber": 236
+        },
+        {
+          "caller": "get_commands_path",
+          "callee": "len",
+          "lineNumber": 239
+        },
+        {
+          "caller": "get_commands_path",
+          "callee": "self.get_config_dir",
+          "lineNumber": 243
+        },
+        {
+          "caller": "get_commands_path",
+          "callee": "self.get_config_dir",
+          "lineNumber": 246
+        },
+        {
+          "caller": "get_commands_path",
+          "callee": "Path",
+          "lineNumber": 246
+        },
+        {
+          "caller": "build_run_command",
+          "callee": "self.get_agent_name",
+          "lineNumber": 361
+        },
+        {
+          "caller": "build_run_command",
+          "callee": "cmd.extend",
+          "lineNumber": 365
+        },
+        {
+          "caller": "build_run_command",
+          "callee": "cmd.extend",
+          "lineNumber": 372
+        },
+        {
+          "caller": "build_run_command",
+          "callee": "cmd.extend",
+          "lineNumber": 375
+        },
+        {
+          "caller": "build_run_command",
+          "callee": "cmd.append",
+          "lineNumber": 380
+        },
+        {
+          "caller": "build_run_command",
+          "callee": "cmd.append",
+          "lineNumber": 384
+        },
+        {
+          "caller": "build_run_command",
+          "callee": "cmd.append",
+          "lineNumber": 387
+        },
+        {
+          "caller": "build_run_command",
+          "callee": "cmd.append",
+          "lineNumber": 392
+        },
+        {
+          "caller": "build_run_command",
+          "callee": "ValueError",
+          "lineNumber": 394
+        },
+        {
+          "caller": "build_run_command",
+          "callee": "ValueError",
+          "lineNumber": 398
+        },
+        {
+          "caller": "build_run_command",
+          "callee": "ValueError",
+          "lineNumber": 404
+        },
+        {
+          "caller": "build_run_command",
+          "callee": "ValueError",
+          "lineNumber": 408
+        },
+        {
+          "caller": "build_run_command",
+          "callee": "ValueError",
+          "lineNumber": 412
+        },
+        {
+          "caller": "build_run_command",
+          "callee": "ValueError",
+          "lineNumber": 418
+        },
+        {
+          "caller": "build_run_command",
+          "callee": "ValueError",
+          "lineNumber": 422
+        },
+        {
+          "caller": "build_run_command",
+          "callee": "cmd.extend",
+          "lineNumber": 428
+        },
+        {
+          "caller": "build_run_command",
+          "callee": "cmd.extend",
+          "lineNumber": 431
+        },
+        {
+          "caller": "build_run_command",
+          "callee": "cmd.append",
+          "lineNumber": 434
+        },
+        {
+          "caller": "build_run_command",
+          "callee": "cmd.extend",
+          "lineNumber": 437
+        },
+        {
+          "caller": "build_run_command",
+          "callee": "cmd.append",
+          "lineNumber": 440
+        },
+        {
+          "caller": "build_run_command",
+          "callee": "cmd.append",
+          "lineNumber": 442
+        },
+        {
+          "caller": "build_resume_command",
+          "callee": "ValueError",
+          "lineNumber": 468
+        },
+        {
+          "caller": "build_resume_command",
+          "callee": "ValueError",
+          "lineNumber": 472
+        },
+        {
+          "caller": "build_resume_command",
+          "callee": "ValueError",
+          "lineNumber": 478
+        },
+        {
+          "caller": "build_resume_command",
+          "callee": "ValueError",
+          "lineNumber": 482
+        },
+        {
+          "caller": "build_resume_command",
+          "callee": "ValueError",
+          "lineNumber": 486
+        },
+        {
+          "caller": "build_resume_command",
+          "callee": "ValueError",
+          "lineNumber": 492
+        },
+        {
+          "caller": "build_resume_command",
+          "callee": "ValueError",
+          "lineNumber": 496
+        },
+        {
+          "caller": "get_resume_command_str",
+          "callee": "self.build_resume_command",
+          "lineNumber": 512
+        },
+        {
+          "caller": "get_resume_command_str",
+          "callee": "\" \".join",
+          "lineNumber": 513
+        },
+        {
+          "caller": "extract_session_id_from_log",
+          "callee": "re.search",
+          "lineNumber": 626
+        },
+        {
+          "caller": "extract_session_id_from_log",
+          "callee": "match.group",
+          "lineNumber": 628
+        },
+        {
+          "caller": "get_cli_adapter",
+          "callee": "ValueError",
+          "lineNumber": 675
+        },
+        {
+          "caller": "get_cli_adapter",
+          "callee": "CLIAdapter",
+          "lineNumber": 679
+        },
+        {
+          "caller": "_has_other_platform_dir",
+          "callee": "any",
+          "lineNumber": 711
+        },
+        {
+          "caller": "_has_other_platform_dir",
+          "callee": "(project_root / d).is_dir",
+          "lineNumber": 712
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "os.environ.get(\"TRELLIS_PLATFORM\", \"\").lower",
+          "lineNumber": 749
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "os.environ.get",
+          "lineNumber": 749
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "(project_root / \".opencode\").is_dir",
+          "lineNumber": 775
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "(project_root / \".iflow\").is_dir",
+          "lineNumber": 779
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "(project_root / \".cursor\").is_dir",
+          "lineNumber": 784
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "(project_root / \".claude\").is_dir",
+          "lineNumber": 784
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "(project_root / \".gemini\").is_dir",
+          "lineNumber": 788
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "(project_root / \".codex\").is_dir",
+          "lineNumber": 793
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "_has_other_platform_dir",
+          "lineNumber": 793
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "(project_root / \".kilocode\").is_dir",
+          "lineNumber": 799
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "(project_root / \".kiro\" / \"skills\").is_dir",
+          "lineNumber": 803
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "_has_other_platform_dir",
+          "lineNumber": 803
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "(\r\n        project_root / \".agent\" / \"workflows\"\r\n    ).is_dir",
+          "lineNumber": 809
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "_has_other_platform_dir",
+          "lineNumber": 811
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "(project_root / \".devin\" / \"workflows\").is_dir",
+          "lineNumber": 820
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "(project_root / \".windsurf\" / \"workflows\").is_dir",
+          "lineNumber": 821
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "_has_other_platform_dir",
+          "lineNumber": 822
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "(project_root / \".codebuddy\").is_dir",
+          "lineNumber": 828
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "(project_root / \".qoder\").is_dir",
+          "lineNumber": 832
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "(project_root / \".github\" / \"copilot\").is_dir",
+          "lineNumber": 836
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "(project_root / \".factory\").is_dir",
+          "lineNumber": 840
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "(project_root / \".pi\").is_dir",
+          "lineNumber": 844
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "(project_root / \".trae\").is_dir",
+          "lineNumber": 848
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "(project_root / \".omp\").is_dir",
+          "lineNumber": 852
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "agents_skills.is_dir",
+          "lineNumber": 863
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "_has_other_platform_dir",
+          "lineNumber": 863
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "set",
+          "lineNumber": 864
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "agents_skills.iterdir",
+          "lineNumber": 867
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "entry.is_dir",
+          "lineNumber": 868
+        },
+        {
+          "caller": "detect_platform",
+          "callee": "entry.name.startswith",
+          "lineNumber": 868
+        },
+        {
+          "caller": "get_cli_adapter_auto",
+          "callee": "detect_platform",
+          "lineNumber": 885
+        },
+        {
+          "caller": "get_cli_adapter_auto",
+          "callee": "CLIAdapter",
+          "lineNumber": 886
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 5,
+        "functionCount": 4,
+        "classCount": 1
+      }
+    },
+    {
+      "path": ".trellis/scripts/hooks/linear_sync.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 243,
+      "nonEmptyLines": 188,
+      "functions": [
+        {
+          "name": "_load_config",
+          "startLine": 48,
+          "endLine": 62,
+          "params": []
+        },
+        {
+          "name": "_read_task",
+          "startLine": 75,
+          "endLine": 81,
+          "params": []
+        },
+        {
+          "name": "_write_task",
+          "startLine": 84,
+          "endLine": 87,
+          "params": [
+            "data",
+            "path"
+          ]
+        },
+        {
+          "name": "_linearis",
+          "startLine": 90,
+          "endLine": 104,
+          "params": []
+        },
+        {
+          "name": "_get_linear_issue",
+          "startLine": 107,
+          "endLine": 111,
+          "params": [
+            "task"
+          ]
+        },
+        {
+          "name": "cmd_create",
+          "startLine": 117,
+          "endLine": 158,
+          "params": []
+        },
+        {
+          "name": "cmd_start",
+          "startLine": 161,
+          "endLine": 168,
+          "params": []
+        },
+        {
+          "name": "cmd_archive",
+          "startLine": 171,
+          "endLine": 177,
+          "params": []
+        },
+        {
+          "name": "cmd_sync",
+          "startLine": 180,
+          "endLine": 197,
+          "params": []
+        },
+        {
+          "name": "_resolve_parent_linear_issue",
+          "startLine": 203,
+          "endLine": 224,
+          "params": [
+            "task"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "_load_config",
+          "line": 48,
+          "isDefault": false
+        },
+        {
+          "name": "_read_task",
+          "line": 75,
+          "isDefault": false
+        },
+        {
+          "name": "_write_task",
+          "line": 84,
+          "isDefault": false
+        },
+        {
+          "name": "_linearis",
+          "line": 90,
+          "isDefault": false
+        },
+        {
+          "name": "_get_linear_issue",
+          "line": 107,
+          "isDefault": false
+        },
+        {
+          "name": "cmd_create",
+          "line": 117,
+          "isDefault": false
+        },
+        {
+          "name": "cmd_start",
+          "line": 161,
+          "isDefault": false
+        },
+        {
+          "name": "cmd_archive",
+          "line": 171,
+          "isDefault": false
+        },
+        {
+          "name": "cmd_sync",
+          "line": 180,
+          "isDefault": false
+        },
+        {
+          "name": "_resolve_parent_linear_issue",
+          "line": 203,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_load_config",
+          "callee": "os.environ.get",
+          "lineNumber": 50
+        },
+        {
+          "caller": "_load_config",
+          "callee": "Path",
+          "lineNumber": 53
+        },
+        {
+          "caller": "_load_config",
+          "callee": "Path",
+          "lineNumber": 55
+        },
+        {
+          "caller": "_load_config",
+          "callee": "open",
+          "lineNumber": 59
+        },
+        {
+          "caller": "_load_config",
+          "callee": "json.load",
+          "lineNumber": 60
+        },
+        {
+          "caller": "_read_task",
+          "callee": "os.environ.get",
+          "lineNumber": 76
+        },
+        {
+          "caller": "_read_task",
+          "callee": "print",
+          "lineNumber": 78
+        },
+        {
+          "caller": "_read_task",
+          "callee": "sys.exit",
+          "lineNumber": 79
+        },
+        {
+          "caller": "_read_task",
+          "callee": "open",
+          "lineNumber": 80
+        },
+        {
+          "caller": "_read_task",
+          "callee": "json.load",
+          "lineNumber": 81
+        },
+        {
+          "caller": "_write_task",
+          "callee": "open",
+          "lineNumber": 85
+        },
+        {
+          "caller": "_write_task",
+          "callee": "json.dump",
+          "lineNumber": 86
+        },
+        {
+          "caller": "_write_task",
+          "callee": "f.write",
+          "lineNumber": 87
+        },
+        {
+          "caller": "_linearis",
+          "callee": "subprocess.run",
+          "lineNumber": 91
+        },
+        {
+          "caller": "_linearis",
+          "callee": "print",
+          "lineNumber": 99
+        },
+        {
+          "caller": "_linearis",
+          "callee": "result.stderr.strip",
+          "lineNumber": 99
+        },
+        {
+          "caller": "_linearis",
+          "callee": "sys.exit",
+          "lineNumber": 100
+        },
+        {
+          "caller": "_linearis",
+          "callee": "result.stdout.strip",
+          "lineNumber": 101
+        },
+        {
+          "caller": "_linearis",
+          "callee": "json.loads",
+          "lineNumber": 103
+        },
+        {
+          "caller": "_get_linear_issue",
+          "callee": "task.get",
+          "lineNumber": 108
+        },
+        {
+          "caller": "_get_linear_issue",
+          "callee": "isinstance",
+          "lineNumber": 109
+        },
+        {
+          "caller": "_get_linear_issue",
+          "callee": "meta.get",
+          "lineNumber": 110
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "print",
+          "lineNumber": 119
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "sys.exit",
+          "lineNumber": 120
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "_read_task",
+          "lineNumber": 122
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "_get_linear_issue",
+          "lineNumber": 125
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "print",
+          "lineNumber": 126
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "_get_linear_issue",
+          "lineNumber": 126
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "task.get",
+          "lineNumber": 129
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "task.get",
+          "lineNumber": 129
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "PRIORITY_MAP.get",
+          "lineNumber": 133
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "task.get",
+          "lineNumber": 133
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "args.extend",
+          "lineNumber": 135
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "str",
+          "lineNumber": 135
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "args.extend",
+          "lineNumber": 139
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "task.get",
+          "lineNumber": 142
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "ASSIGNEE_MAP.get",
+          "lineNumber": 143
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "args.extend",
+          "lineNumber": 145
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "_resolve_parent_linear_issue",
+          "lineNumber": 148
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "args.extend",
+          "lineNumber": 150
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "_linearis",
+          "lineNumber": 152
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "isinstance",
+          "lineNumber": 154
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "task.get",
+          "lineNumber": 154
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "_write_task",
+          "lineNumber": 157
+        },
+        {
+          "caller": "cmd_create",
+          "callee": "print",
+          "lineNumber": 158
+        },
+        {
+          "caller": "cmd_start",
+          "callee": "_read_task",
+          "lineNumber": 162
+        },
+        {
+          "caller": "cmd_start",
+          "callee": "_get_linear_issue",
+          "lineNumber": 163
+        },
+        {
+          "caller": "cmd_start",
+          "callee": "_linearis",
+          "lineNumber": 166
+        },
+        {
+          "caller": "cmd_start",
+          "callee": "print",
+          "lineNumber": 167
+        },
+        {
+          "caller": "cmd_start",
+          "callee": "cmd_sync",
+          "lineNumber": 168
+        },
+        {
+          "caller": "cmd_archive",
+          "callee": "_read_task",
+          "lineNumber": 172
+        },
+        {
+          "caller": "cmd_archive",
+          "callee": "_get_linear_issue",
+          "lineNumber": 173
+        },
+        {
+          "caller": "cmd_archive",
+          "callee": "_linearis",
+          "lineNumber": 176
+        },
+        {
+          "caller": "cmd_archive",
+          "callee": "print",
+          "lineNumber": 177
+        },
+        {
+          "caller": "cmd_sync",
+          "callee": "_read_task",
+          "lineNumber": 182
+        },
+        {
+          "caller": "cmd_sync",
+          "callee": "_get_linear_issue",
+          "lineNumber": 183
+        },
+        {
+          "caller": "cmd_sync",
+          "callee": "print",
+          "lineNumber": 185
+        },
+        {
+          "caller": "cmd_sync",
+          "callee": "sys.exit",
+          "lineNumber": 186
+        },
+        {
+          "caller": "cmd_sync",
+          "callee": "os.environ.get",
+          "lineNumber": 189
+        },
+        {
+          "caller": "cmd_sync",
+          "callee": "Path",
+          "lineNumber": 190
+        },
+        {
+          "caller": "cmd_sync",
+          "callee": "prd_path.is_file",
+          "lineNumber": 191
+        },
+        {
+          "caller": "cmd_sync",
+          "callee": "print",
+          "lineNumber": 192
+        },
+        {
+          "caller": "cmd_sync",
+          "callee": "sys.exit",
+          "lineNumber": 193
+        },
+        {
+          "caller": "cmd_sync",
+          "callee": "prd_path.read_text(encoding=\"utf-8\").strip",
+          "lineNumber": 195
+        },
+        {
+          "caller": "cmd_sync",
+          "callee": "prd_path.read_text",
+          "lineNumber": 195
+        },
+        {
+          "caller": "cmd_sync",
+          "callee": "_linearis",
+          "lineNumber": 196
+        },
+        {
+          "caller": "cmd_sync",
+          "callee": "print",
+          "lineNumber": 197
+        },
+        {
+          "caller": "_resolve_parent_linear_issue",
+          "callee": "task.get",
+          "lineNumber": 205
+        },
+        {
+          "caller": "_resolve_parent_linear_issue",
+          "callee": "os.environ.get",
+          "lineNumber": 209
+        },
+        {
+          "caller": "_resolve_parent_linear_issue",
+          "callee": "Path",
+          "lineNumber": 213
+        },
+        {
+          "caller": "_resolve_parent_linear_issue",
+          "callee": "parent_json.exists",
+          "lineNumber": 217
+        },
+        {
+          "caller": "_resolve_parent_linear_issue",
+          "callee": "open",
+          "lineNumber": 219
+        },
+        {
+          "caller": "_resolve_parent_linear_issue",
+          "callee": "json.load",
+          "lineNumber": 220
+        },
+        {
+          "caller": "_resolve_parent_linear_issue",
+          "callee": "_get_linear_issue",
+          "lineNumber": 221
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 10,
+        "functionCount": 10,
+        "classCount": 0
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/00-bootstrap-guidelines/prd.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 136,
+      "nonEmptyLines": 94,
+      "sections": [
+        {
+          "heading": "Bootstrap Task: Fill Project Development Guidelines",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Status (update the checkboxes as you complete each item)",
+          "level": 2,
+          "line": 22
+        },
+        {
+          "heading": "Spec files to populate",
+          "level": 2,
+          "line": 32
+        },
+        {
+          "heading": "Package: mobile (`spec/mobile/`)",
+          "level": 3,
+          "line": 34
+        },
+        {
+          "heading": "Package: web (`spec/web/`)",
+          "level": 3,
+          "line": 38
+        },
+        {
+          "heading": "Package: @egoless-do/config (`spec/config/`)",
+          "level": 3,
+          "line": 42
+        },
+        {
+          "heading": "Package: @egoless-do/core (`spec/core/`)",
+          "level": 3,
+          "line": 46
+        },
+        {
+          "heading": "Thinking guides (already populated)",
+          "level": 3,
+          "line": 53
+        },
+        {
+          "heading": "How to fill the spec",
+          "level": 2,
+          "line": 60
+        },
+        {
+          "heading": "Step 1: Import from existing convention files first (preferred)",
+          "level": 3,
+          "line": 62
+        },
+        {
+          "heading": "Step 2: Analyze the codebase for anything not covered by existing docs",
+          "level": 3,
+          "line": 83
+        },
+        {
+          "heading": "Step 3: Document reality, not ideals",
+          "level": 3,
+          "line": 90
+        },
+        {
+          "heading": "Quick explainer of the runtime (share when they ask \"why do we need spec at all\")",
+          "level": 2,
+          "line": 101
+        },
+        {
+          "heading": "Completion",
+          "level": 2,
+          "line": 115
+        },
+        {
+          "heading": "Suggested opening line",
+          "level": 2,
+          "line": 130
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 15
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/00-bootstrap-guidelines/task.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 31,
+      "nonEmptyLines": 31,
+      "sections": [
+        {
+          "heading": "id",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "title",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "status",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dev_type",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "scope",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "package",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "priority",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "creator",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "assignee",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "createdAt",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "completedAt",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "branch",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "base_branch",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "worktree_path",
+          "level": 1,
+          "line": 17
+        },
+        {
+          "heading": "commit",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "pr_url",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "subtasks",
+          "level": 1,
+          "line": 20
+        },
+        {
+          "heading": "children",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "parent",
+          "level": 1,
+          "line": 22
+        },
+        {
+          "heading": "relatedFiles",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "notes",
+          "level": 1,
+          "line": 29
+        },
+        {
+          "heading": "meta",
+          "level": 1,
+          "line": 30
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-03-bugfix-comprehensive/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-03-bugfix-comprehensive/implement.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-03-bugfix-comprehensive/prd.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 43,
+      "nonEmptyLines": 35,
+      "sections": [
+        {
+          "heading": "修复全面扫描发现的24个bug",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Goal",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "HIGH — 数据丢失或功能完全失效（6个）",
+          "level": 2,
+          "line": 6
+        },
+        {
+          "heading": "MEDIUM — 数据丢失或功能异常（10个）",
+          "level": 2,
+          "line": 15
+        },
+        {
+          "heading": "LOW — 边界情况（8个）",
+          "level": 2,
+          "line": 28
+        },
+        {
+          "heading": "Acceptance Criteria",
+          "level": 2,
+          "line": 39
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 6
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-03-bugfix-comprehensive/task.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 26,
+      "nonEmptyLines": 26,
+      "sections": [
+        {
+          "heading": "id",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "title",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "status",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dev_type",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "scope",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "package",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "priority",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "creator",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "assignee",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "createdAt",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "completedAt",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "branch",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "base_branch",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "worktree_path",
+          "level": 1,
+          "line": 17
+        },
+        {
+          "heading": "commit",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "pr_url",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "subtasks",
+          "level": 1,
+          "line": 20
+        },
+        {
+          "heading": "children",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "parent",
+          "level": 1,
+          "line": 22
+        },
+        {
+          "heading": "relatedFiles",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "notes",
+          "level": 1,
+          "line": 24
+        },
+        {
+          "heading": "meta",
+          "level": 1,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 3,
+      "nonEmptyLines": 3,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-03-habits-page-optimization/implement.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 6,
+      "nonEmptyLines": 6,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-03-sync-pull-audit/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 2,
+      "nonEmptyLines": 2,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-03-sync-pull-audit/implement.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 6,
+      "nonEmptyLines": 6,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-05-engine-class-refactor/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 4,
+      "nonEmptyLines": 4,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-05-engine-class-refactor/implement.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 4,
+      "nonEmptyLines": 4,
+      "metrics": {}
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-05-engine-class-refactor/prd.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 50,
+      "nonEmptyLines": 36,
+      "sections": [
+        {
+          "heading": "AR-09: Engine 类拆分",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Goal",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "Requirements",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "SleepEngine (1001→<500)",
+          "level": 3,
+          "line": 14
+        },
+        {
+          "heading": "BreathingEngine (940→<500)",
+          "level": 3,
+          "line": 21
+        },
+        {
+          "heading": "MantraEngine (624→<400)",
+          "level": 3,
+          "line": 29
+        },
+        {
+          "heading": "Acceptance Criteria",
+          "level": 2,
+          "line": 36
+        },
+        {
+          "heading": "Notes",
+          "level": 2,
+          "line": 46
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 8
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-05-engine-class-refactor/task.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 26,
+      "nonEmptyLines": 26,
+      "sections": [
+        {
+          "heading": "id",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "title",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "status",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "dev_type",
+          "level": 1,
+          "line": 7
+        },
+        {
+          "heading": "scope",
+          "level": 1,
+          "line": 8
+        },
+        {
+          "heading": "package",
+          "level": 1,
+          "line": 9
+        },
+        {
+          "heading": "priority",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "creator",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "assignee",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "createdAt",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "completedAt",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "branch",
+          "level": 1,
+          "line": 15
+        },
+        {
+          "heading": "base_branch",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "worktree_path",
+          "level": 1,
+          "line": 17
+        },
+        {
+          "heading": "commit",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "pr_url",
+          "level": 1,
+          "line": 19
+        },
+        {
+          "heading": "subtasks",
+          "level": 1,
+          "line": 20
+        },
+        {
+          "heading": "children",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "parent",
+          "level": 1,
+          "line": 22
+        },
+        {
+          "heading": "relatedFiles",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "notes",
+          "level": 1,
+          "line": 24
+        },
+        {
+          "heading": "meta",
+          "level": 1,
+          "line": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 24
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-07/07-06-fix-remaining-ts-errors/check.jsonl",
+      "language": "jsonl",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {}
+    }
+  ]
+}

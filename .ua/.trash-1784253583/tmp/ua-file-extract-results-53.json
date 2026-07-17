@@ -1,0 +1,85 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 3,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "docs/claude-md-pieces/core-philosophy.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 17,
+      "nonEmptyLines": 12,
+      "sections": [
+        {
+          "heading": "Core 哲学 — sole source of truth",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "硬规则",
+          "level": 2,
+          "line": 5
+        },
+        {
+          "heading": "软规则（建议执行，除非有明确 why）",
+          "level": 2,
+          "line": 13
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 3
+      }
+    },
+    {
+      "path": "docs/claude-md-pieces/decision-tree.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 21,
+      "nonEmptyLines": 18,
+      "sections": [
+        {
+          "heading": "决策树：代码该放哪",
+          "level": 1,
+          "line": 1
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 1
+      }
+    },
+    {
+      "path": "docs/claude-md-pieces/project-dir-layout.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 42,
+      "nonEmptyLines": 38,
+      "sections": [
+        {
+          "heading": "项目目录结构范本项目",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "已知技术债务",
+          "level": 2,
+          "line": 38
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 2
+      }
+    }
+  ]
+}

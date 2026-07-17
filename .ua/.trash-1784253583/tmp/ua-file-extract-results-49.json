@@ -1,0 +1,39 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 4,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "apps/mobile/android/build.gradle",
+      "language": "gradle",
+      "fileCategory": "config",
+      "totalLines": 24,
+      "nonEmptyLines": 21,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/gradle.properties",
+      "language": "properties",
+      "fileCategory": "config",
+      "totalLines": 65,
+      "nonEmptyLines": 51,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/gradlew.bat",
+      "language": "batch",
+      "fileCategory": "script",
+      "totalLines": 94,
+      "nonEmptyLines": 73,
+      "metrics": {}
+    },
+    {
+      "path": "apps/mobile/android/settings.gradle",
+      "language": "gradle",
+      "fileCategory": "config",
+      "totalLines": 39,
+      "nonEmptyLines": 33,
+      "metrics": {}
+    }
+  ]
+}

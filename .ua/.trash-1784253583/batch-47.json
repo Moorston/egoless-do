@@ -1,0 +1,59 @@
+{
+  "nodes": [
+    {
+      "id": "file:_archive/web-legacy/README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "_archive/web-legacy/README.md",
+      "summary": "已归档 Web Legacy 应用的说明文档，记录归档日期 (2026-07-05)、归档原因 (AR-03 业务逻辑已迁至 packages/core) 与原 Next.js PWA 目录结构。",
+      "tags": [
+        "documentation",
+        "archive",
+        "web-legacy"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/package.json",
+      "type": "config",
+      "name": "package.json",
+      "filePath": "_archive/web-legacy/package.json",
+      "summary": "已归档 Web 应用的包配置，声明 Next.js 15 项目依赖（含 workspace 引用 @egoless-do/core、PWA/Sentry/Zustand）及 vitest 开发依赖。",
+      "tags": [
+        "configuration",
+        "web-legacy",
+        "dependencies"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:_archive/web-legacy/tsconfig.json",
+      "type": "config",
+      "name": "tsconfig.json",
+      "filePath": "_archive/web-legacy/tsconfig.json",
+      "summary": "已归档 Web 应用的 TypeScript 配置，继承 packages/config 基础配置，启用 Next.js 插件并配置路径别名指向 core 与 src。",
+      "tags": [
+        "configuration",
+        "typescript",
+        "web-legacy"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:_archive/web-legacy/README.md",
+      "target": "file:_archive/web-legacy/package.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:_archive/web-legacy/package.json",
+      "target": "file:_archive/web-legacy/tsconfig.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

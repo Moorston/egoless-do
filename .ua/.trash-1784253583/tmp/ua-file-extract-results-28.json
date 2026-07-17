@@ -1,0 +1,124 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 1,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "infra/docker/api/Dockerfile",
+      "language": "dockerfile",
+      "fileCategory": "infra",
+      "totalLines": 18,
+      "nonEmptyLines": 15,
+      "services": [
+        {
+          "name": "base",
+          "image": "node:20-alpine",
+          "ports": [],
+          "startLine": 1,
+          "endLine": 3
+        },
+        {
+          "name": "deps",
+          "image": "base",
+          "ports": [],
+          "startLine": 4,
+          "endLine": 8
+        },
+        {
+          "name": "runner",
+          "image": "base",
+          "ports": [
+            3000
+          ],
+          "startLine": 9,
+          "endLine": 19
+        }
+      ],
+      "steps": [
+        {
+          "name": "FROM node:20-alpine AS base",
+          "startLine": 1,
+          "endLine": 1
+        },
+        {
+          "name": "RUN corepack enable",
+          "startLine": 2,
+          "endLine": 2
+        },
+        {
+          "name": "FROM base AS deps",
+          "startLine": 4,
+          "endLine": 4
+        },
+        {
+          "name": "WORKDIR /app",
+          "startLine": 5,
+          "endLine": 5
+        },
+        {
+          "name": "COPY package.json pnpm-lock.yaml* ./",
+          "startLine": 6,
+          "endLine": 6
+        },
+        {
+          "name": "RUN pnpm install --frozen-lockfile || npm install",
+          "startLine": 7,
+          "endLine": 7
+        },
+        {
+          "name": "FROM base AS runner",
+          "startLine": 9,
+          "endLine": 9
+        },
+        {
+          "name": "WORKDIR /app",
+          "startLine": 10,
+          "endLine": 10
+        },
+        {
+          "name": "COPY --from=deps /app/node_modules ./node_modules",
+          "startLine": 11,
+          "endLine": 11
+        },
+        {
+          "name": "COPY . .",
+          "startLine": 12,
+          "endLine": 12
+        },
+        {
+          "name": "RUN pnpm build || npm run build",
+          "startLine": 13,
+          "endLine": 13
+        },
+        {
+          "name": "ENV NODE_ENV=production",
+          "startLine": 15,
+          "endLine": 15
+        },
+        {
+          "name": "ENV PORT=3000",
+          "startLine": 16,
+          "endLine": 16
+        },
+        {
+          "name": "EXPOSE 3000",
+          "startLine": 17,
+          "endLine": 17
+        },
+        {
+          "name": "CMD [\"node\", \"dist/index.js\"]",
+          "startLine": 18,
+          "endLine": 18
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "serviceCount": 3,
+        "stepCount": 15
+      }
+    }
+  ]
+}

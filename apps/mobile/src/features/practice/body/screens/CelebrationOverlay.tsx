@@ -121,11 +121,11 @@ export default function CelebrationOverlay({ visible, TH, T, data, onDismiss }: 
               <Text style={[styles.statLabel, { color: TH.sub }]}>{T('bodyCompletionRate') || '完成率'}</Text>
             </View>
             <View style={[styles.statItem, { borderColor: TH.border }]}>
-              <Text style={[styles.statValue, { color: '#f59e0b' }]}>{data.totalDurationMin}</Text>
+              <Text style={[styles.statValue, { color: '#f59e0b' }]}>{String(data.totalDurationMin)}</Text>
               <Text style={[styles.statLabel, { color: TH.sub }]}>{T('bodyMin') || '分钟'}</Text>
             </View>
             <View style={[styles.statItem, { borderColor: TH.border }]}>
-              <Text style={[styles.statValue, { color: '#ef4444' }]}>{data.totalCalories}</Text>
+              <Text style={[styles.statValue, { color: '#ef4444' }]}>{String(data.totalCalories)}</Text>
               <Text style={[styles.statLabel, { color: TH.sub }]}>{T('bodyKcal') || 'kcal'}</Text>
             </View>
           </View>

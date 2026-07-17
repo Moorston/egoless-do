@@ -1,0 +1,1289 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 25,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "apps/mobile/src/features/global-pulse/hooks/useGlobalTick.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 126,
+      "nonEmptyLines": 103,
+      "classes": [
+        {
+          "name": "TickStore",
+          "startLine": 6,
+          "endLine": 34,
+          "methods": [
+            "constructor"
+          ],
+          "properties": [
+            "_listeners",
+            "_tick",
+            "_timer",
+            "_intervalMs",
+            "getSnapshot",
+            "subscribe"
+          ]
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/home/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 14,
+      "nonEmptyLines": 14,
+      "exports": [
+        {
+          "name": "HomeScreen",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "CheckinHistoryScreen",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "CheckinDetailScreen",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "FoodLogPage",
+          "line": 5,
+          "isDefault": false
+        },
+        {
+          "name": "GracePage",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "StreakBreakScreen",
+          "line": 7,
+          "isDefault": false
+        },
+        {
+          "name": "ReviewHistoryScreen",
+          "line": 8,
+          "isDefault": false
+        },
+        {
+          "name": "ReviewDetailScreen",
+          "line": 9,
+          "isDefault": false
+        },
+        {
+          "name": "GlobalPulseScreen",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "CheckinModal",
+          "line": 11,
+          "isDefault": false
+        },
+        {
+          "name": "CheckinReflection",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "CheckinStatsModal",
+          "line": 13,
+          "isDefault": false
+        },
+        {
+          "name": "ReviewView",
+          "line": 14,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 13,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/practice/hooks/useConversation.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 65,
+      "nonEmptyLines": 56,
+      "functions": [
+        {
+          "name": "useConversation",
+          "startLine": 24,
+          "endLine": 65,
+          "params": [
+            "options"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "useConversation",
+          "line": 24,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useConversation",
+          "callee": "useState",
+          "lineNumber": 27
+        },
+        {
+          "caller": "useConversation",
+          "callee": "useCallback",
+          "lineNumber": 29
+        },
+        {
+          "caller": "useConversation",
+          "callee": "setConversations",
+          "lineNumber": 30
+        },
+        {
+          "caller": "useConversation",
+          "callee": "prev.map",
+          "lineNumber": 31
+        },
+        {
+          "caller": "useConversation",
+          "callee": "Date.now",
+          "lineNumber": 36
+        },
+        {
+          "caller": "useConversation",
+          "callee": "onMessageAdded",
+          "lineNumber": 40
+        },
+        {
+          "caller": "useConversation",
+          "callee": "useCallback",
+          "lineNumber": 43
+        },
+        {
+          "caller": "useConversation",
+          "callee": "conversations.find",
+          "lineNumber": 44
+        },
+        {
+          "caller": "useConversation",
+          "callee": "useCallback",
+          "lineNumber": 47
+        },
+        {
+          "caller": "useConversation",
+          "callee": "Date.now",
+          "lineNumber": 49
+        },
+        {
+          "caller": "useConversation",
+          "callee": "Math.random().toString(36).slice",
+          "lineNumber": 49
+        },
+        {
+          "caller": "useConversation",
+          "callee": "Math.random().toString",
+          "lineNumber": 49
+        },
+        {
+          "caller": "useConversation",
+          "callee": "Math.random",
+          "lineNumber": 49
+        },
+        {
+          "caller": "useConversation",
+          "callee": "Date.now",
+          "lineNumber": 52
+        },
+        {
+          "caller": "useConversation",
+          "callee": "Date.now",
+          "lineNumber": 53
+        },
+        {
+          "caller": "useConversation",
+          "callee": "setConversations",
+          "lineNumber": 55
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/core/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 19,
+      "nonEmptyLines": 19,
+      "exports": [
+        {
+          "name": "ReflectionsScreen",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "ReflectionDetailScreen",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "CreateReflectionModal",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "ReflectionCard",
+          "line": 5,
+          "isDefault": false
+        },
+        {
+          "name": "ReflectionForm",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "ReflectionDetailContent",
+          "line": 7,
+          "isDefault": false
+        },
+        {
+          "name": "FilterDrawer",
+          "line": 8,
+          "isDefault": false
+        },
+        {
+          "name": "FilterTags",
+          "line": 9,
+          "isDefault": false
+        },
+        {
+          "name": "DayGroup",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "BatchActionBar",
+          "line": 11,
+          "isDefault": false
+        },
+        {
+          "name": "AddReflectionBar",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "AddReflectionFAB",
+          "line": 13,
+          "isDefault": false
+        },
+        {
+          "name": "ShareCard",
+          "line": 14,
+          "isDefault": false
+        },
+        {
+          "name": "SwipeableRow",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "CreatePlanFromReflectionModal",
+          "line": 16,
+          "isDefault": false
+        },
+        {
+          "name": "CreatePlanFromTrailModal",
+          "line": 17,
+          "isDefault": false
+        },
+        {
+          "name": "PlanTaskCard",
+          "line": 18,
+          "isDefault": false
+        },
+        {
+          "name": "PlanTasksSection",
+          "line": 19,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 18,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/hooks/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 6,
+      "nonEmptyLines": 6,
+      "exports": [
+        {
+          "name": "useReflections",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "useTrailData",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "useTrailAI",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "useTrailActions",
+          "line": 5,
+          "isDefault": false
+        },
+        {
+          "name": "useQuickTrailSearch",
+          "line": 6,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 5,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/hooks/useQuickTrailSearch.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 116,
+      "nonEmptyLines": 94,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/hooks/useReflections.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 81,
+      "nonEmptyLines": 68,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/hooks/useSearchHistory.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 201,
+      "nonEmptyLines": 162,
+      "functions": [
+        {
+          "name": "renderHook",
+          "startLine": 21,
+          "endLine": 42,
+          "params": [
+            "hookFn"
+          ]
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "TestComponent",
+          "callee": "hookFn",
+          "lineNumber": 25
+        },
+        {
+          "caller": "renderHook",
+          "callee": "act",
+          "lineNumber": 30
+        },
+        {
+          "caller": "renderHook",
+          "callee": "TestRenderer.create",
+          "lineNumber": 31
+        },
+        {
+          "caller": "renderHook",
+          "callee": "React.createElement",
+          "lineNumber": 31
+        },
+        {
+          "caller": "renderHook",
+          "callee": "act",
+          "lineNumber": 37
+        },
+        {
+          "caller": "renderHook",
+          "callee": "renderer.unmount",
+          "lineNumber": 38
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 8,
+      "nonEmptyLines": 8,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/insights/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 11,
+      "nonEmptyLines": 11,
+      "exports": [
+        {
+          "name": "InsightScreen",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "ReflectionStatsScreen",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "StrategyLibrary",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "RelationMapView",
+          "line": 5,
+          "isDefault": false
+        },
+        {
+          "name": "InsightPanel",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "InsightPanelSkeleton",
+          "line": 7,
+          "isDefault": false
+        },
+        {
+          "name": "InsightSection",
+          "line": 8,
+          "isDefault": false
+        },
+        {
+          "name": "RecommendCard",
+          "line": 9,
+          "isDefault": false
+        },
+        {
+          "name": "AIAnalysisStream",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "SmartQueryBubble",
+          "line": 11,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 10,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/review/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 6,
+      "nonEmptyLines": 6,
+      "exports": [
+        {
+          "name": "ReviewScreen",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "ReviewGuideSection",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "ReviewNoteCard",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "EditNoteModal",
+          "line": 5,
+          "isDefault": false
+        },
+        {
+          "name": "WriteNoteModal",
+          "line": 6,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 5,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/shared/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 6,
+      "nonEmptyLines": 6,
+      "exports": [
+        {
+          "name": "MoodBar",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "SegmentBar",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "SelectionSummary",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "SelectReflectionModal",
+          "line": 5,
+          "isDefault": false
+        },
+        {
+          "name": "TopicChip",
+          "line": 6,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 5,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/reflections/timeline/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 4,
+      "nonEmptyLines": 4,
+      "exports": [
+        {
+          "name": "TimelineList",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "TimelineNoteItem",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "TimelineReflectionItem",
+          "line": 4,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 3,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/features/sync/useSync.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 105,
+      "nonEmptyLines": 87,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/hooks/usePagination.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 75,
+      "nonEmptyLines": 64,
+      "functions": [
+        {
+          "name": "paginate",
+          "startLine": 6,
+          "endLine": 12,
+          "params": [
+            "data",
+            "page",
+            "pageSize"
+          ]
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "paginate",
+          "callee": "Math.ceil",
+          "lineNumber": 8
+        },
+        {
+          "caller": "paginate",
+          "callee": "data.slice",
+          "lineNumber": 9
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/store/initApp.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 162,
+      "nonEmptyLines": 143,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/store/uiStore.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 118,
+      "nonEmptyLines": 103,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/store/uiStore.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 87,
+      "nonEmptyLines": 75,
+      "exports": [
+        {
+          "name": "useUiStore",
+          "line": 39,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/src/theme/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 2,
+      "nonEmptyLines": 2,
+      "exports": [
+        {
+          "name": "THEMES",
+          "line": 1,
+          "isDefault": false
+        },
+        {
+          "name": "COLORS",
+          "line": 1,
+          "isDefault": false
+        },
+        {
+          "name": "Theme",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "ThemeName",
+          "line": 2,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 4,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "apps/mobile/vitest.config.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 18,
+      "nonEmptyLines": 17,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_data_backup/types.d.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 20489,
+      "nonEmptyLines": 20319,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_hooks/auth.pb.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 47,
+      "nonEmptyLines": 44,
+      "callGraph": [
+        {
+          "caller": "escapeFilterValue",
+          "callee": "String",
+          "lineNumber": 12
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, '\\\\(').replace(/\\)/g, '\\\\)').replace",
+          "lineNumber": 12
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, '\\\\(').replace",
+          "lineNumber": 12
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace",
+          "lineNumber": 12
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace",
+          "lineNumber": 12
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace",
+          "lineNumber": 12
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace",
+          "lineNumber": 12
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_hooks/init.pb.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 9,
+      "nonEmptyLines": 9,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_hooks/main.pb.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 241,
+      "nonEmptyLines": 222,
+      "callGraph": [
+        {
+          "caller": "escapeFilterValue",
+          "callee": "String",
+          "lineNumber": 22
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, '\\\\(').replace(/\\)/g, '\\\\)').replace",
+          "lineNumber": 22
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, '\\\\(').replace",
+          "lineNumber": 22
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace",
+          "lineNumber": 22
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace",
+          "lineNumber": 22
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace",
+          "lineNumber": 22
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace",
+          "lineNumber": 22
+        },
+        {
+          "caller": "buildUserHashFilter",
+          "callee": "escapeFilterValue",
+          "lineNumber": 24
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "String",
+          "lineNumber": 75
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, '\\\\(').replace(/\\)/g, '\\\\)').replace",
+          "lineNumber": 75
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, '\\\\(').replace",
+          "lineNumber": 75
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace",
+          "lineNumber": 75
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace",
+          "lineNumber": 75
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace",
+          "lineNumber": 75
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace",
+          "lineNumber": 75
+        },
+        {
+          "caller": "buildUserHashFilter",
+          "callee": "escapeFilterValue",
+          "lineNumber": 77
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "String",
+          "lineNumber": 96
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, '\\\\(').replace(/\\)/g, '\\\\)').replace",
+          "lineNumber": 96
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, '\\\\(').replace",
+          "lineNumber": 96
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace",
+          "lineNumber": 96
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace",
+          "lineNumber": 96
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace",
+          "lineNumber": 96
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace",
+          "lineNumber": 96
+        },
+        {
+          "caller": "buildUserHashFilter",
+          "callee": "escapeFilterValue",
+          "lineNumber": 98
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "String",
+          "lineNumber": 117
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, '\\\\(').replace(/\\)/g, '\\\\)').replace",
+          "lineNumber": 117
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, '\\\\(').replace",
+          "lineNumber": 117
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace",
+          "lineNumber": 117
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace",
+          "lineNumber": 117
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace",
+          "lineNumber": 117
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace",
+          "lineNumber": 117
+        },
+        {
+          "caller": "buildUserHashFilter",
+          "callee": "escapeFilterValue",
+          "lineNumber": 119
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "backend/pb_hooks/sync_push_pull.pb.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 271,
+      "nonEmptyLines": 257,
+      "callGraph": [
+        {
+          "caller": "isValidId",
+          "callee": "uuidRe.test",
+          "lineNumber": 11
+        },
+        {
+          "caller": "isValidId",
+          "callee": "idRe.test",
+          "lineNumber": 11
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "String",
+          "lineNumber": 12
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, '\\\\(').replace(/\\)/g, '\\\\)').replace",
+          "lineNumber": 12
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, '\\\\(').replace",
+          "lineNumber": 12
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace",
+          "lineNumber": 12
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace",
+          "lineNumber": 12
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace",
+          "lineNumber": 12
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace",
+          "lineNumber": 12
+        },
+        {
+          "caller": "decodeUtf8Bytes",
+          "callee": "String.fromCharCode",
+          "lineNumber": 13
+        },
+        {
+          "caller": "decodeUtf8Bytes",
+          "callee": "String.fromCharCode",
+          "lineNumber": 13
+        },
+        {
+          "caller": "decodeUtf8Bytes",
+          "callee": "String.fromCharCode",
+          "lineNumber": 13
+        },
+        {
+          "caller": "decodeUtf8Bytes",
+          "callee": "String.fromCodePoint",
+          "lineNumber": 13
+        },
+        {
+          "caller": "decodeUtf8Bytes",
+          "callee": "String.fromCharCode",
+          "lineNumber": 13
+        },
+        {
+          "caller": "parseDataField",
+          "callee": "Array.isArray",
+          "lineNumber": 14
+        },
+        {
+          "caller": "parseDataField",
+          "callee": "JSON.parse",
+          "lineNumber": 14
+        },
+        {
+          "caller": "parseDataField",
+          "callee": "Array.isArray",
+          "lineNumber": 14
+        },
+        {
+          "caller": "parseDataField",
+          "callee": "JSON.parse",
+          "lineNumber": 14
+        },
+        {
+          "caller": "parseDataField",
+          "callee": "decodeUtf8Bytes",
+          "lineNumber": 14
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "String",
+          "lineNumber": 116
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, '\\\\(').replace(/\\)/g, '\\\\)').replace",
+          "lineNumber": 116
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, '\\\\(').replace",
+          "lineNumber": 116
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace",
+          "lineNumber": 116
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace",
+          "lineNumber": 116
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace",
+          "lineNumber": 116
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace",
+          "lineNumber": 116
+        },
+        {
+          "caller": "decodeUtf8Bytes",
+          "callee": "String.fromCharCode",
+          "lineNumber": 117
+        },
+        {
+          "caller": "decodeUtf8Bytes",
+          "callee": "String.fromCharCode",
+          "lineNumber": 117
+        },
+        {
+          "caller": "decodeUtf8Bytes",
+          "callee": "String.fromCharCode",
+          "lineNumber": 117
+        },
+        {
+          "caller": "decodeUtf8Bytes",
+          "callee": "String.fromCodePoint",
+          "lineNumber": 117
+        },
+        {
+          "caller": "decodeUtf8Bytes",
+          "callee": "String.fromCharCode",
+          "lineNumber": 117
+        },
+        {
+          "caller": "parseDataField",
+          "callee": "Array.isArray",
+          "lineNumber": 118
+        },
+        {
+          "caller": "parseDataField",
+          "callee": "JSON.parse",
+          "lineNumber": 118
+        },
+        {
+          "caller": "parseDataField",
+          "callee": "Array.isArray",
+          "lineNumber": 118
+        },
+        {
+          "caller": "parseDataField",
+          "callee": "JSON.parse",
+          "lineNumber": 118
+        },
+        {
+          "caller": "parseDataField",
+          "callee": "decodeUtf8Bytes",
+          "lineNumber": 118
+        },
+        {
+          "caller": "safeFindRecords",
+          "callee": "app.findRecordsByFilter",
+          "lineNumber": 120
+        },
+        {
+          "caller": "safeFindRecords",
+          "callee": "app.findRecordsByFilter",
+          "lineNumber": 121
+        },
+        {
+          "caller": "safeFindRecords",
+          "callee": "app.findRecordsByFilter",
+          "lineNumber": 122
+        },
+        {
+          "caller": "safeFindRecords",
+          "callee": "app.findRecordsByFilter",
+          "lineNumber": 123
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "String",
+          "lineNumber": 221
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, '\\\\(').replace(/\\)/g, '\\\\)').replace",
+          "lineNumber": 221
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace(/\\(/g, '\\\\(').replace",
+          "lineNumber": 221
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace(/'/g, \"\\\\'\").replace",
+          "lineNumber": 221
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"').replace",
+          "lineNumber": 221
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace(/\\\\/g, '\\\\\\\\').replace",
+          "lineNumber": 221
+        },
+        {
+          "caller": "escapeFilterValue",
+          "callee": "v.replace",
+          "lineNumber": 221
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    }
+  ]
+}
