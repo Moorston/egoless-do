@@ -713,6 +713,117 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
         </Text>
       </View>
 
+      {/* ── 快捷操作 ── */}
+      <View style={styles.quickActions}>
+        {[
+          { icon: <Scale size={20} color={TH.primary} />, label: T('bodyRecordWeight') || '记录体重', onPress: () => setShowWeightRecord(true) },
+          { icon: <History size={20} color={TH.primary} />, label: T('exerciseHistory') || '锻炼记录', onPress: () => nav.navigate('ExerciseHistory' as never) },
+          { icon: <Dumbbell size={20} color={TH.primary} />, label: T('bodyPlanManagement') || '计划管理', onPress: () => nav.navigate('PlanManagement' as never) },
+          { icon: <Target size={20} color={TH.primary} />, label: T('bodyGoal') || '目标设定', onPress: () => setShowGoalEdit(true) },
+        ].map((item, i) => (
+          <TouchableOpacity key={i} onPress={item.onPress} style={[styles.quickActionItem, { backgroundColor: TH.card }]}>
+            {item.icon}
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.text, marginTop: 4 }}>{item.label}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {/* ── 调身目标 ── */}
+      <TouchableOpacity
+        onPress={() => setShowGoalEdit(true)}
+        activeOpacity={0.85}
+        style={[styles.goalCard, { backgroundColor: TH.card }]}
+      >
+        <View style={styles.goalHeader}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <View style={[styles.goalIconCircle, { backgroundColor: '#8b5cf6' }]}>
+              <Target size={18} color="#fff" />
+            </View>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T('bodyGoal') || '调身目标'}</Text>
+          </View>
+          <Text style={{ fontSize: FONT_SMALL(), color: '#8b5cf6' }}>{activeGoal ? T('bodyGoalEdit') : T('bodyGoalSet')}</Text>
+        </View>
+        {activeGoal ? (
+          <View style={styles.goalContent}>
+            <View style={styles.goalMetrics}>
+              {activeGoal.targetWeight && (
+                <View style={styles.goalMetricItem}>
+                  <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.text }}>{`${activeGoal.targetWeight}kg`}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyTargetWeight')}</Text>
+                </View>
+              )}
+              {activeGoal.targetBodyFat && (
+                <View style={styles.goalMetricItem}>
+                  <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.text }}>{`${activeGoal.targetBodyFat}%`}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyTargetBodyFat')}</Text>
+                </View>
+              )}
+              {activeGoal.strategy && (
+                <View style={styles.goalMetricItem}>
+                  <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#8b5cf6' }}>
+                    {getStrategyLabel(activeGoal.strategy)}
+                  </Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyStrategyLabel')}</Text>
+                </View>
+              )}
+            </View>
+            {activeGoal.targetDate && (
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 8 }}>{T('bodyTargetDate')}: {activeGoal.targetDate}</Text>
+            )}
+          </View>
+        ) : (
+          <View style={styles.goalEmpty}>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{T('bodyGoalNotSet') || '设定目标，开始调身之旅'}</Text>
+          </View>
+        )}
+      </TouchableOpacity>
+
+      {/* ── 我的训练计划 ── */}
+      <TouchableOpacity
+        onPress={() => nav.navigate('PlanManagement' as never)}
+        activeOpacity={0.85}
+        style={[styles.planCard, { backgroundColor: TH.card }]}
+      >
+        <View style={styles.planHeader}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <View style={[styles.planIconCircle, { backgroundColor: '#f59e0b' }]}>
+              <Dumbbell size={18} color="#fff" />
+            </View>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T('bodyPlanManagement') || '我的训练计划'}</Text>
+          </View>
+          <Text style={{ fontSize: FONT_SMALL(), color: '#f59e0b' }}>{activeTrainingPlan ? T('bodyPlanEdit') : T('bodyPlanCreate')}</Text>
+        </View>
+        {activeTrainingPlan ? (
+          <View style={styles.planContent}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{activeTrainingPlan.name}</Text>
+              <View style={[styles.planBadge, { backgroundColor: '#10b98115' }]}>
+                <Text style={{ fontSize: FONT_SMALL(), color: '#10b981', fontWeight: '600' }}>{T('bodyPlanActive') || '进行中'}</Text>
+              </View>
+            </View>
+            <View style={{ flexDirection: 'row', gap: 12, marginBottom: 8 }}>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{activeTrainingPlan.startDate} ~ {activeTrainingPlan.endDate}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{String(activeTrainingPlan.tasks.filter(t => t.sportKey && t.sportKey !== 'rest').length)}天/周</Text>
+            </View>
+            {planProgress && (
+              <View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyProgress') || '本周进度'}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.text, fontWeight: '600' }}>{String(planProgress.weekComplete)}/{String(planProgress.weekTotal)}</Text>
+                </View>
+                <View style={[styles.progressBarBg, { backgroundColor: TH.border, height: 6 }]}>
+                  <View style={[styles.progressBarFill, { backgroundColor: '#f59e0b', height: 6, width: `${planProgress.weekTotal > 0 ? (planProgress.weekComplete / planProgress.weekTotal) * 100 : 0}%` }]} />
+                </View>
+              </View>
+            )}
+          </View>
+        ) : (
+          <View style={styles.planEmpty}>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{T('bodyPlanNotSet') || '创建训练计划，开始系统训练'}</Text>
+          </View>
+        )}
+      </TouchableOpacity>
+
       {/* ── 本周进度 ── */}
       {planProgress && (
         <View style={[styles.progressCard, { backgroundColor: TH.card }]}>
@@ -782,11 +893,54 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
         </View>
       )}
 
-      
+      <AssessmentModal visible={showAssessment} TH={TH} T={T} profile={profile} onClose={() => setShowAssessment(false)} onSave={handleSaveAssessment} />
+      <GoalEditModal visible={showGoalEdit} TH={TH} T={T} goal={activeGoal} profile={profile} onClose={() => setShowGoalEdit(false)} onSave={handleSaveGoal} />
+      <BodyCheckinModal visible={showCheckin} TH={TH} T={T} todayPlan={todayPlan} onClose={() => setShowCheckin(false)} onSave={handleSaveCheckin} />
+      <WeightRecordModal visible={showWeightRecord} TH={TH} T={T} currentWeight={profile.weight as number | undefined} currentBodyFat={profile.bodyFat as number | undefined} onClose={() => setShowWeightRecord(false)} onSave={handleSaveWeight} />
+      <WeightTrendModal visible={showWeightTrend} TH={TH} T={T} checkins={checkinHistory ?? []} onClose={() => setShowWeightTrend(false)} />
 
+      {/* Override modals */}
+      <QuickSwapModal visible={showQuickSwap} onClose={() => setShowQuickSwap(false)} onConfirm={handleSwapConfirm} TH={TH} T={T} />
+      {todayExercises && (
+        <AdjustExerciseModal visible={showAdjustExercise} onClose={() => setShowAdjustExercise(false)} onConfirm={handleAdjustConfirm} exercises={todayExercises} TH={TH} T={T} />
+      )}
+      <DayActionSheet
+        visible={showDayAction}
+        onClose={() => setShowDayAction(false)}
+        dayLabel={selectedDay ? T(`bodyWeek${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][selectedDay - 1]}`) : ''}
+        isRest={selectedDayIsRest}
+        hasOverride={!!selectedDayOverride}
+        onSwap={() => { setShowDayAction(false); setShowQuickSwap(true); }}
+        onSkip={handleDaySkip}
+        onSwapDays={() => {/* TODO: implement day swap picker */}}
+        onAdjust={() => { setShowDayAction(false); setShowAdjustExercise(true); }}
+        TH={TH} T={T}
+      />
+      {activeTrainingPlan && (
+        <GoalEditLightModal
+          visible={showGoalEditLight}
+          onClose={() => setShowGoalEditLight(false)}
+          onConfirm={handleSaveGoalLight}
+          initialStrategy={activeTrainingPlan.strategy}
+          initialTargetWeight={activeTrainingPlan.targetWeight}
+          initialTargetBodyFat={activeTrainingPlan.targetBodyFat}
+          initialGoalNote={activeTrainingPlan.goalNote}
+          TH={TH} T={T}
+        />
+      )}
+
+      {celebrationData && (
+        <CelebrationOverlay
+          visible={showCelebration}
+          TH={TH} T={T}
+          data={celebrationData}
+          onDismiss={() => setShowCelebration(false)}
+        />
+      )}
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   bannerContainer: {
     marginBottom: 12,
