@@ -316,12 +316,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
   );
 }
 
-const STYLES_HOLDER = StyleSheet.create({
-  _dummy: {},
-});
-
-}
-
 const styles = StyleSheet.create({
   bannerContainer: {
     marginBottom: 12,
