@@ -732,6 +732,57 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
         ))}
       </View>
 
+      {/* ── 调身目标 ── */}
+      <TouchableOpacity
+        onPress={() => setShowGoalEdit(true)}
+        activeOpacity={0.85}
+        style={[styles.goalCard, { backgroundColor: TH.card }]}
+      >
+        <View style={styles.goalHeader}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <View style={[styles.goalIconCircle, { backgroundColor: '#8b5cf6' }]}>
+              <Target size={18} color="#fff" />
+            </View>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T('bodyGoal') || '调身目标'}</Text>
+          </View>
+          <Text style={{ fontSize: FONT_SMALL(), color: '#8b5cf6' }}>{activeGoal ? T('bodyGoalEdit') : T('bodyGoalSet')}</Text>
+        </View>
+        {activeGoal ? (
+          <View style={styles.goalContent}>
+            <View style={styles.goalMetrics}>
+              {activeGoal.targetWeight && (
+                <View style={styles.goalMetricItem}>
+                  <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.text }}>{`${activeGoal.targetWeight}kg`}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyTargetWeight')}</Text>
+                </View>
+              )}
+              {activeGoal.targetBodyFat && (
+                <View style={styles.goalMetricItem}>
+                  <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.text }}>{`${activeGoal.targetBodyFat}%`}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyTargetBodyFat')}</Text>
+                </View>
+              )}
+              {activeGoal.strategy && (
+                <View style={styles.goalMetricItem}>
+                  <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#8b5cf6' }}>
+                    {getStrategyLabel(activeGoal.strategy)}
+                  </Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyStrategyLabel')}</Text>
+                </View>
+              )}
+            </View>
+            {activeGoal.targetDate && (
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 8 }}>{T('bodyTargetDate')}: {activeGoal.targetDate}</Text>
+            )}
+          </View>
+        ) : (
+          <View style={styles.goalEmpty}>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{T('bodyGoalNotSet') || '设定目标，开始调身之旅'}</Text>
+          </View>
+        )}
+      </TouchableOpacity>
+
+      
       {null}
     </View>
   );
