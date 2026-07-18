@@ -455,39 +455,55 @@ export default function BodyPlanEditorScreen() {
                 )}
               </View>
             );
-          })()}
-
-                        <View style={{ flexDirection: 'row', gap: 6, marginBottom: 6 }}>
-                          <TextInput value={customExName} onChangeText={setCustomExName} placeholder="动作名称" placeholderTextColor={TH.sub}
-                            style={[styles.smallInput, { flex: 2, backgroundColor: TH.bg, color: TH.text, borderColor: TH.border }]} />
-                          <TextInput value={customExSets} onChangeText={setCustomExSets} placeholder="组" keyboardType="numeric" placeholderTextColor={TH.sub}
-                            style={[styles.smallInput, { flex: 1, backgroundColor: TH.bg, color: TH.text, borderColor: TH.border }]} />
-                          <TextInput value={customExReps} onChangeText={setCustomExReps} placeholder="次" keyboardType="numeric" placeholderTextColor={TH.sub}
-                            style={[styles.smallInput, { flex: 1, backgroundColor: TH.bg, color: TH.text, borderColor: TH.border }]} />
-                        </View>
-                        <View style={{ flexDirection: 'row', gap: 6 }}>
-                          <TouchableOpacity onPress={() => addCustomExercise(activeDay)}
-                            style={{ flex: 1, paddingVertical: 6, borderRadius: 6, backgroundColor: P, alignItems: 'center' }}>
-                            <Text style={{ color: '#fff', fontSize: FONT_SMALL(), fontWeight: '600' }}>{T('confirm')}</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity onPress={() => { setShowCustomEx(null); setCustomExName(''); }}
-                            style={{ paddingVertical: 6, paddingHorizontal: 12, borderRadius: 6, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
-                            <Text style={{ color: TH.sub, fontSize: FONT_SMALL() }}>{T('cancel')}</Text>
-                          </TouchableOpacity>
-                        </View>
+                {/* Added exercises */}
+                {hasExs && (
+                  <View style={{ marginBottom: 8, marginTop: 8 }}>
+                    {(task.exercises ?? []).map(ex => (
+                      <View key={ex.id} style={[styles.exRow, { backgroundColor: `${P}08` }]}>
+                        <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }}>
+                          {ex.icon} {ex.nameZh || ex.name}
+                          {ex.defaultSets && ex.defaultReps ? `  ${ex.defaultSets}×${ex.defaultReps}` : ''}
+                          {ex.defaultWeight ? `  ${ex.defaultWeight}kg` : ''}
+                          {ex.defaultDurationSec ? `  ${Math.round(ex.defaultDurationSec / 60)}min` : ''}
+                        </Text>
+                        <TouchableOpacity onPress={() => removeExercise(activeDay, ex.id)}><X size={14} color="#EF4444" /></TouchableOpacity>
                       </View>
-                    ) : (
-                      <TouchableOpacity onPress={() => setShowCustomEx(activeDay)} style={{ marginBottom: 4 }}>
-                        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>+ {T('bodyPlanAddCustom')}</Text>
-                      </TouchableOpacity>
-                    )}
-
-                    {/* Note */}
-                    <TextInput value={task.note ?? ''} onChangeText={v => setTasks(prev => prev.map(t => t.weekday === activeDay ? { ...t, note: v } : t))}
-                      placeholder={T('bodyPlanNote')} placeholderTextColor={TH.sub}
-                      style={{ backgroundColor: TH.card, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 6, color: TH.text, fontSize: FONT_SMALL(), borderWidth: 1, borderColor: TH.border }} />
-                  </>
+                    ))}
+                  </View>
                 )}
+
+                {/* Custom exercise */}
+                {showCustomEx === activeDay ? (
+                  <View style={{ backgroundColor: TH.card, borderRadius: 8, padding: 8, borderWidth: 1, borderColor: TH.border, marginBottom: 8 }}>
+                    <View style={{ flexDirection: 'row', gap: 6, marginBottom: 6 }}>
+                      <TextInput value={customExName} onChangeText={setCustomExName} placeholder="动作名称" placeholderTextColor={TH.sub}
+                        style={[styles.smallInput, { flex: 2, backgroundColor: TH.bg, color: TH.text, borderColor: TH.border }]} />
+                      <TextInput value={customExSets} onChangeText={setCustomExSets} placeholder="组" keyboardType="numeric" placeholderTextColor={TH.sub}
+                        style={[styles.smallInput, { flex: 1, backgroundColor: TH.bg, color: TH.text, borderColor: TH.border }]} />
+                      <TextInput value={customExReps} onChangeText={setCustomExReps} placeholder="次" keyboardType="numeric" placeholderTextColor={TH.sub}
+                        style={[styles.smallInput, { flex: 1, backgroundColor: TH.bg, color: TH.text, borderColor: TH.border }]} />
+                    </View>
+                    <View style={{ flexDirection: 'row', gap: 6 }}>
+                      <TouchableOpacity onPress={() => addCustomExercise(activeDay)}
+                        style={{ flex: 1, paddingVertical: 6, borderRadius: 6, backgroundColor: P, alignItems: 'center' }}>
+                        <Text style={{ color: '#fff', fontSize: FONT_SMALL(), fontWeight: '600' }}>{T('confirm')}</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => { setShowCustomEx(null); setCustomExName(''); }}
+                        style={{ paddingVertical: 6, paddingHorizontal: 12, borderRadius: 6, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
+                        <Text style={{ color: TH.sub, fontSize: FONT_SMALL() }}>{T('cancel')}</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ) : (
+                  <TouchableOpacity onPress={() => setShowCustomEx(activeDay)} style={{ marginBottom: 4 }}>
+                    <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>+ {T('bodyPlanAddCustom')}</Text>
+                  </TouchableOpacity>
+                )}
+
+                {/* Note */}
+                <TextInput value={task.note ?? ''} onChangeText={v => setTasks(prev => prev.map(t => t.weekday === activeDay ? { ...t, note: v } : t))}
+                  placeholder={T('bodyPlanNote')} placeholderTextColor={TH.sub}
+                  style={{ backgroundColor: TH.card, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 6, color: TH.text, fontSize: FONT_SMALL(), borderWidth: 1, borderColor: TH.border }} />
               </View>
             );
           })()}
