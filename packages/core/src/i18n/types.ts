@@ -901,7 +901,7 @@ export interface I18nKeys {
   bodyPartHiit: string;
   bodyPartBaduanjin: string; bodyPartWuqinxi: string; bodyPartTaiji: string;
   bodyPartZhanzhuang: string; bodyPartJingluo: string; bodyPartYoga: string; bodyPartWalking: string;
-  bodyCatTraditional: string; bodyCatModern: string;
+  bodyCatTraditional: string; bodyCatModern: string; bodyCatFree: string;
   bodyStrategyLoseFat: string; bodyStrategyGainMuscle: string; bodyStrategyTone: string;
   bodyStrategyGainWeight: string; bodyStrategyMaintain: string; bodyStrategyPosture: string; bodyStrategyRecovery: string;
   bodyRecommendHint: string; bodyRecommendLabel: string;

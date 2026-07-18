@@ -86,7 +86,11 @@ export default function BodyPlanEditorScreen() {
   }, [exerciseLibrary]);
 
   const currentTask = activeDay ? tasks.find(t => t.weekday === activeDay) : null;
-  const currentExs = currentTask?.sportKey ? (exercisesByCategory.get(currentTask.sportKey) ?? []) : [];
+  const currentExs = currentTask?.sportKey
+    ? (currentTask.sportKey === 'free'
+        ? exerciseLibrary
+        : (exercisesByCategory.get(currentTask.sportKey) ?? []))
+    : [];
   const searchedExs = exSearch.trim()
     ? currentExs.filter(ex => ex.nameZh.includes(exSearch.trim()))
     : currentExs;
@@ -382,6 +386,12 @@ export default function BodyPlanEditorScreen() {
                         </View>
                       </View>
                     ))}
+                    {/* 自由训练 — shows ALL exercises */}
+                    <TouchableOpacity onPress={() => setTaskSportKey(activeDay, 'free')}
+                      style={[styles.sportChip, { borderColor: '#10b981', backgroundColor: '#10b98115', marginTop: 4 }]}>
+                      <Text style={{ fontSize: FONT_SMALL() }}>🎯</Text>
+                      <Text style={{ fontSize: FONT_SMALL(), color: '#10b981', marginLeft: 4, fontWeight: '600' }}>{T('bodyCatFree')}</Text>
+                    </TouchableOpacity>
                   </View>
                 ) : isRest ? (
                   <View style={{ alignItems: 'center', paddingVertical: 12 }}>
@@ -396,7 +406,11 @@ export default function BodyPlanEditorScreen() {
                         style={{ paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6, borderWidth: 1, borderColor: TH.border }}>
                         <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyPlanChange')}</Text>
                       </TouchableOpacity>
-                      <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{cat?.icon} {cat ? T(cat.i18nKey) : task.sportKey}</Text>
+                      {task.sportKey === 'free' ? (
+                        <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#10b981' }}>🎯 {T('bodyCatFree')}</Text>
+                      ) : (
+                        <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{cat?.icon} {cat ? T(cat.i18nKey) : task.sportKey}</Text>
+                      )}
                     </View>
 
                     {/* Search exercises */}

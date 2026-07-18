@@ -1055,7 +1055,7 @@ export const zhHant: I18nKeys = {
   bodyPartHiit:'HIIT',
   bodyPartBaduanjin:'八段錦', bodyPartWuqinxi:'五禽戲', bodyPartTaiji:'太極拳',
   bodyPartZhanzhuang:'站樁', bodyPartJingluo:'經絡拍打', bodyPartYoga:'拉伸/瑜伽', bodyPartWalking:'散步行禪',
-  bodyCatTraditional:'傳統養生', bodyCatModern:'現代訓練',
+  bodyCatTraditional:'傳統養生', bodyCatModern:'現代訓練', bodyCatFree:'自由訓練',
   bodyStrategyLoseFat:'減脂', bodyStrategyGainMuscle:'增肌', bodyStrategyTone:'塑形',
   bodyStrategyGainWeight:'增重', bodyStrategyMaintain:'維持', bodyStrategyPosture:'體態', bodyStrategyRecovery:'康復',
   bodyRecommendHint:'根據你的自評標籤，建議策略：', bodyRecommendLabel:'根據你的標籤推薦:',
