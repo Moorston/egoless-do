@@ -9,6 +9,7 @@ import { useTheme, useT } from '../../../../components/UI';
 import { useRootNavigation, type RootStackParamList } from '../../../../navigation/hooks';
 import { useShallowStore } from '../../../../store/useAppStore';
 import TemplatePickerModal from '../modals/TemplatePickerModal';
+import DatePickerModal from '../../../../components/DatePickerModal';
 
 const WEEKDAY_KEYS = ['bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'bodyWeekThu', 'bodyWeekFri', 'bodyWeekSat', 'bodyWeekSun'];
 const P = '#f59e0b';
@@ -52,6 +53,7 @@ export default function BodyPlanEditorScreen() {
   const [showCustomEx, setShowCustomEx] = useState<number | null>(null);
   const [showTemplatePicker, setShowTemplatePicker] = useState(false);
   const [selectedExIds, setSelectedExIds] = useState<Set<string>>(new Set());
+  const [pickingDate, setPickingDate] = useState<'start' | 'end' | null>(null);
 
   // Load existing plan for editing
   useEffect(() => {
@@ -255,11 +257,15 @@ export default function BodyPlanEditorScreen() {
           <View style={{ flexDirection: 'row', gap: 12 }}>
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 4 }}>{T('bodyPlanStart')}</Text>
-              <TextInput value={startDate} onChangeText={setStartDate} style={[styles.dateInput, { backgroundColor: TH.bg, color: TH.text, borderColor: TH.border }]} />
+              <TouchableOpacity onPress={() => setPickingDate('start')} style={[styles.dateInput, { backgroundColor: TH.bg, borderColor: TH.border, justifyContent: 'center' }]}>
+                <Text style={{ color: TH.text, fontSize: FONT_BODY() }}>{startDate}</Text>
+              </TouchableOpacity>
             </View>
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 4 }}>{T('bodyPlanEnd')}</Text>
-              <TextInput value={endDate} onChangeText={setEndDate} style={[styles.dateInput, { backgroundColor: TH.bg, color: TH.text, borderColor: TH.border }]} />
+              <TouchableOpacity onPress={() => setPickingDate('end')} style={[styles.dateInput, { backgroundColor: TH.bg, borderColor: TH.border, justifyContent: 'center' }]}>
+                <Text style={{ color: TH.text, fontSize: FONT_BODY() }}>{endDate}</Text>
+              </TouchableOpacity>
             </View>
           </View>
           <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 6, textAlign: 'center' }}>{`约 ${durationWeeks} 周`}</Text>
@@ -512,6 +518,18 @@ export default function BodyPlanEditorScreen() {
         TH={TH} T={T}
         onClose={() => setShowTemplatePicker(false)}
         onSelect={handleSelectTemplate}
+      />
+
+      <DatePickerModal
+        visible={pickingDate !== null}
+        value={pickingDate === 'start' ? startDate : endDate}
+        onConfirm={(date) => {
+          if (pickingDate === 'start') setStartDate(date);
+          else setEndDate(date);
+          setPickingDate(null);
+        }}
+        onClose={() => setPickingDate(null)}
+        minDate={pickingDate === 'end' ? startDate : undefined}
       />
     </SafeAreaView>
   );
