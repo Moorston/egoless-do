@@ -51,6 +51,7 @@ export default function BodyPlanEditorScreen() {
   const [customExSets, setCustomExSets] = useState('');
   const [customExReps, setCustomExReps] = useState('');
   const [showCustomEx, setShowCustomEx] = useState<number | null>(null);
+  const [exFilter, setExFilter] = useState<'all' | 'traditional' | 'modern'>('all');
   const [showTemplatePicker, setShowTemplatePicker] = useState(false);
   const [selectedExIds, setSelectedExIds] = useState<Set<string>>(new Set());
   const [pickingDate, setPickingDate] = useState<'start' | 'end' | null>(null);
@@ -92,11 +93,17 @@ export default function BodyPlanEditorScreen() {
         : (exercisesByCategory.get(currentTask.sportKey) ?? []))
     : [];
   const searchedExs = useMemo(() => {
-    const exs = exSearch.trim()
-      ? exerciseLibrary.filter(ex => ex.nameZh.includes(exSearch.trim()))
-      : exerciseLibrary;
+    let exs = exerciseLibrary;
+    if (exFilter === 'traditional') {
+      exs = exs.filter(e => EXERCISE_CATEGORIES.find(c => c.key === e.category)?.type === 'traditional');
+    } else if (exFilter === 'modern') {
+      exs = exs.filter(e => EXERCISE_CATEGORIES.find(c => c.key === e.category)?.type === 'modern');
+    }
+    if (exSearch.trim()) {
+      exs = exs.filter(ex => ex.nameZh.includes(exSearch.trim()));
+    }
     return exs;
-  }, [exerciseLibrary, exSearch]);
+  }, [exerciseLibrary, exSearch, exFilter]);
 
   // ── Actions ──
   const setTaskSportKey = (weekday: number, sportKey: string) => {
@@ -359,6 +366,21 @@ export default function BodyPlanEditorScreen() {
 
                 {!isRest && (
                   <>
+                    {/* Category filter tabs */}
+                    <View style={{ flexDirection: 'row', gap: 6, marginBottom: 10 }}>
+                      {([
+                        { key: 'all', label: '自由训练', icon: '🎯' },
+                        { key: 'traditional', label: '传统养生', icon: '☯️' },
+                        { key: 'modern', label: '现代训练', icon: '💪' },
+                      ] as const).map(tab => (
+                        <TouchableOpacity key={tab.key} onPress={() => setExFilter(tab.key)}
+                          style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingVertical: 8, borderRadius: 8, backgroundColor: exFilter === tab.key ? `${P}20` : TH.card, borderWidth: 1, borderColor: exFilter === tab.key ? `${P}50` : TH.border }}>
+                          <Text style={{ fontSize: 14 }}>{tab.icon}</Text>
+                          <Text style={{ fontSize: FONT_SMALL(), fontWeight: exFilter === tab.key ? '700' : '500', color: exFilter === tab.key ? P : TH.sub }}>{tab.label}</Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+
                     {/* Search bar */}
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10, backgroundColor: TH.card, borderRadius: 8, paddingHorizontal: 10, borderWidth: 1, borderColor: TH.border }}>
                       <Search size={14} color={TH.sub} />
