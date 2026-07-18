@@ -750,13 +750,13 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
         {activeGoal ? (
           <View style={styles.goalContent}>
             <View style={styles.goalMetrics}>
-              {activeGoal.targetWeight && (
+              {activeGoal.targetWeight != null && (
                 <View style={styles.goalMetricItem}>
                   <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.text }}>{`${activeGoal.targetWeight}kg`}</Text>
                   <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyTargetWeight')}</Text>
                 </View>
               )}
-              {activeGoal.targetBodyFat && (
+              {activeGoal.targetBodyFat != null && (
                 <View style={styles.goalMetricItem}>
                   <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.text }}>{`${activeGoal.targetBodyFat}%`}</Text>
                   <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyTargetBodyFat')}</Text>
