@@ -311,6 +311,412 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
       <Text style={{fontSize: 20, color: TH.text, padding: 10}}>
         BodyDashboard v5 - sections below
       </Text>
+      {/* ── Banner Carousel ── */}
+      <View style={styles.bannerContainer}>
+        <ScrollView
+          ref={bannerScrollRef}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onMomentumScrollEnd={(e) => {
+            const index = Math.round(e.nativeEvent.contentOffset.x / BANNER_WIDTH);
+            setCurrentBanner(index);
+          }}
+          style={{ width: BANNER_WIDTH }}
+        >
+          {/* Banner 1: 今日方案 */}
+          <View style={[styles.bannerCard, { backgroundColor: '#f59e0b' }]}>
+            <View style={styles.bannerHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <Text style={{ fontSize: 20 }}>📋</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyTodayPlan')}</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => nav.navigate('ExerciseHistory' as never)}
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8 }}
+              >
+                <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600' }}>{T('exerciseHistory') || '锻炼记录'}</Text>
+              </TouchableOpacity>
+            </View>
+            {/* Override status bar */}
+            {hasOverride && todayOverride && (
+              <View style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8, padding: 8, marginBottom: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>
+                  {todayOverride.type === 'skip' ? (T('bodyOverrideSkip') || '已标记跳过')
+                    : todayOverride.type === 'swap' ? (T('bodyOverrideSwap') || '已换动作')
+                    : todayOverride.type === 'adjust' ? (T('bodyOverrideAdjust') || '已调整组数')
+                    : (T('bodyOverrideCustom') || '已自定义')}
+                </Text>
+                <TouchableOpacity onPress={handleUndoOverride} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                  <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600', textDecorationLine: 'underline' }}>{T('bodyUndo') || '撤销'}</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            {todayPlanDisplay ? (
+              <>
+                <View style={styles.bannerContent}>
+                  <View style={styles.bannerIconCircle}>
+                    <Text style={{ fontSize: 24 }}>{todayPlanDisplay.icon}</Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>{todayPlanDisplay.label}</Text>
+                    {todayPlanDisplay.note && (
+                      <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', marginTop: 2 }} numberOfLines={1}>
+                        {todayPlanDisplay.note}
+                      </Text>
+                    )}
+                  </View>
+                </View>
+                <TouchableOpacity
+                  onPress={() => onFlowStart?.()}
+                  activeOpacity={0.85}
+                  style={styles.bannerButton}
+                >
+                  <Play size={20} color="#f59e0b" />
+                  <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#f59e0b' }}>{T('bodyStartToday')}</Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <>
+                <View style={styles.bannerContent}>
+                  <View style={styles.bannerIconCircle}>
+                    <Text style={{ fontSize: 24 }}>😴</Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>{T('bodyTodayPlanRest')}</Text>
+                    <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', marginTop: 2 }}>
+                      {T('bodyFlowChooseExercise') || '也可以选择其他运动'}
+                    </Text>
+                  </View>
+                </View>
+                {/* Rest day suggestions */}
+                <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12 }}>
+                  {[
+                    { icon: '🧘', label: T('bodyPartWalking') || '散步行禅' },
+                    { icon: '🧘‍♀️', label: T('bodyPartYoga') || '拉伸/瑜伽' },
+                    { icon: '🌬️', label: T('bodyFlowBreathing') || '呼吸引导' },
+                  ].map((item, i) => (
+                    <TouchableOpacity
+                      key={i}
+                      onPress={() => onFlowStart?.()}
+                      style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8 }}
+                    >
+                      <Text style={{ fontSize: 14 }}>{item.icon}</Text>
+                      <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>{item.label}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                {/* Body awareness quick stats */}
+                {latestCheckin && (
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-around', backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 8, padding: 8 }}>
+                    {[
+                      { label: T('bodyEnergy') || '能量', value: latestCheckin.energy, color: '#fff' },
+                      { label: T('bodyPain') || '疼痛', value: latestCheckin.pain, color: '#fff' },
+                      { label: T('bodyComfort') || '舒适', value: latestCheckin.comfort, color: '#fff' },
+                    ].map((item, i) => (
+                      <View key={i} style={{ alignItems: 'center' }}>
+                        <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: item.color }}>{String(item.value)}</Text>
+                        <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>{item.label}</Text>
+                      </View>
+                    ))}
+                  </View>
+                )}
+              </>
+            )}
+          </View>
+
+          {/* Banner 2: 身体档案 */}
+          <View style={[styles.bannerCard, { backgroundColor: '#8b5cf6' }]}>
+            <View style={styles.bannerHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <Text style={{ fontSize: 20 }}>📋</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyProfile') || '身体档案'}</Text>
+              </View>
+            </View>
+            <View style={styles.bannerContent}>
+              <View style={{ flex: 1 }}>
+                {/* Body metrics - single row */}
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 }}>
+                  {[
+                    { value: profile.weight ? `${profile.weight}` : '-', unit: 'kg', label: T('bodyWeight') || '体重' },
+                    { value: profile.height ? `${profile.height}` : '-', unit: 'cm', label: T('bodyHeight') || '身高' },
+                    { value: profile.weight && profile.height ? `${(profile.weight / ((profile.height / 100) ** 2)).toFixed(1)}` : '-', unit: '', label: 'BMI' },
+                    { value: profile.bodyFat ? `${profile.bodyFat}` : '-', unit: '%', label: T('bodyBodyFat') || '体脂' },
+                  ].map((item, i) => (
+                    <View key={i} style={{ alignItems: 'center' }}>
+                      <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: '#fff' }}>{String(item.value)}{item.unit}</Text>
+                      <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>{item.label}</Text>
+                    </View>
+                  ))}
+                </View>
+                {/* Self assessment full content */}
+                {profile.selfAssessment ? (
+                  <View style={{ backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 8, padding: 10 }}>
+                    <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.9)', lineHeight: 18 }}>
+                      🗣️ {profile.selfAssessment}
+                    </Text>
+                    {(profile.bodyTags as string[] ?? []).length > 0 && (
+                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
+                        {(profile.bodyTags as string[]).map((tag: string) => (
+                          <View key={tag} style={{ backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
+                            <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>#{tag}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    )}
+                  </View>
+                ) : (
+                  <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>
+                    {T('bodySelfAssessmentPlaceholder') || '记录你的身体状态和感受...'}
+                  </Text>
+                )}
+              </View>
+            </View>
+            <TouchableOpacity
+              onPress={() => setShowAssessment(true)}
+              activeOpacity={0.85}
+              style={[styles.bannerButton, { backgroundColor: 'rgba(255,255,255,0.9)' }]}
+            >
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#8b5cf6' }}>{T('bodySelfAssessment') || '自我评估'}</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Banner 3: 身体觉知 */}
+          <View style={[styles.bannerCard, { backgroundColor: '#10b981' }]}>
+            <View style={styles.bannerHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <Text style={{ fontSize: 20 }}>🧘</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyAwareness') || '身体觉知'}</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => nav.navigate('BodyCheckinHistory' as never)}
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 }}
+              >
+                <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>{T('bodyAwarenessRecords') || '记录'}</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.bannerContent}>
+              <View style={{ flex: 1 }}>
+                {latestCheckin ? (
+                  <>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+                      {[
+                        { label: T('bodyEnergy') || '能量', value: latestCheckin.energy, color: '#fff' },
+                        { label: T('bodyPain') || '疼痛', value: latestCheckin.pain, color: '#fff' },
+                        { label: T('bodyComfort') || '舒适', value: latestCheckin.comfort, color: '#fff' },
+                        { label: T('bodySleepQuality') || '睡眠', value: latestCheckin.sleep, color: '#fff' },
+                      ].map((item, i) => (
+                        <View key={i} style={{ alignItems: 'center' }}>
+                          <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: item.color }}>{String(item.value)}</Text>
+                          <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>{item.label}</Text>
+                        </View>
+                      ))}
+                    </View>
+                    {/* Tags */}
+                    {latestCheckin.tags && latestCheckin.tags.length > 0 && (
+                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
+                        {latestCheckin.tags.map((tag: string) => (
+                          <View key={tag} style={{ backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
+                            <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>#{tag}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    )}
+                    {/* Note */}
+                    {latestCheckin.note && (
+                      <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.8)', marginBottom: 4 }} numberOfLines={2}>
+                        📝 {latestCheckin.note}
+                      </Text>
+                    )}
+                    <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.6)' }}>
+                      {latestCheckin.date}
+                    </Text>
+                  </>
+                ) : (
+                  <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.8)' }}>
+                    {T('bodyAwarenessNoData') || '暂无觉知记录'}
+                  </Text>
+                )}
+              </View>
+            </View>
+            <TouchableOpacity
+              onPress={() => setShowCheckin(true)}
+              activeOpacity={0.85}
+              style={[styles.bannerButton, { backgroundColor: 'rgba(255,255,255,0.9)' }]}
+            >
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#10b981' }}>{T('bodyFlowAwareness') || '记录觉知'}</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Banner 4: 体重趋势 */}
+          <View style={[styles.bannerCard, { backgroundColor: '#3b82f6' }]}>
+            <View style={styles.bannerHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <Text style={{ fontSize: 20 }}>⚖️</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyWeightTrend') || '体重趋势'}</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => setShowWeightRecord(true)}
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8 }}
+              >
+                <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600' }}>{T('bodyRecordWeight') || '记录体重'}</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.bannerContent}>
+              <View style={{ flex: 1 }}>
+                {weightTrend ? (
+                  <>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 10 }}>
+                      <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>
+                        {`${weightTrend.current} kg`}
+                      </Text>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                        <TrendingUp size={16} color={weightTrend.diff > 0 ? '#fbbf24' : '#34d399'} style={weightTrend.diff < 0 ? { transform: [{ scaleY: -1 }] } : undefined} />
+                        <Text style={{ fontSize: FONT_BODY(), color: weightTrend.diff > 0 ? '#fbbf24' : '#34d399', fontWeight: '600' }}>
+                          {`${weightTrend.diff > 0 ? '+' : ''}${weightTrend.diff.toFixed(1)} kg`}
+                        </Text>
+                      </View>
+                    </View>
+                    {/* Line chart - last 7 days */}
+                    <View style={{ height: 80, marginTop: 4 }}>
+                      {(() => {
+                        const records = (checkinHistory ?? [])
+                          .filter(r => !r.deleted && r.weight != null && r.weight > 0)
+                          .sort((a, b) => a.date.localeCompare(b.date))
+                          .slice(-7);
+                        if (records.length < 2) return null;
+                        const weights = records.map(r => r.weight);
+                        const minW = Math.min(...weights);
+                        const maxW = Math.max(...weights);
+                        const range = maxW - minW || 1;
+                        const chartHeight = 50;
+                        const labelHeight = 20;
+                        const totalHeight = chartHeight + labelHeight;
+                        const chartWidth = BANNER_WIDTH - 80;
+                        const stepX = chartWidth / (records.length - 1);
+
+                        return (
+                          <View style={{ position: 'relative', height: totalHeight }}>
+                            {/* Line segments */}
+                            {records.map((r, i) => {
+                              if (i === 0) return null;
+                              const prevR = records[i - 1];
+                              const x1 = (i - 1) * stepX;
+                              const y1 = chartHeight - ((prevR.weight - minW) / range) * (chartHeight - 15);
+                              const x2 = i * stepX;
+                              const y2 = chartHeight - ((r.weight - minW) / range) * (chartHeight - 15);
+                              const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+                              const angle = Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
+                              return (
+                                <View
+                                  key={`line-${i}`}
+                                  style={{
+                                    position: 'absolute',
+                                    left: x1,
+                                    top: y1,
+                                    width: length,
+                                    height: 2,
+                                    backgroundColor: 'rgba(255,255,255,0.8)',
+                                    transform: [{ rotate: `${angle}deg` }],
+                                    transformOrigin: '0 0',
+                                  }}
+                                />
+                              );
+                            })}
+                            {/* Data points with weight labels */}
+                            {records.map((r, i) => {
+                              const x = i * stepX;
+                              const y = chartHeight - ((r.weight - minW) / range) * (chartHeight - 15);
+                              const isLast = i === records.length - 1;
+                              return (
+                                <React.Fragment key={`point-${i}`}>
+                                  {/* Weight value above point */}
+                                  <Text style={{
+                                    position: 'absolute',
+                                    left: x - 15,
+                                    top: y - 18,
+                                    fontSize: FONT_SMALL(),
+                                    color: '#fff',
+                                    fontWeight: isLast ? '700' : '500',
+                                    width: 30,
+                                    textAlign: 'center',
+                                  }}>
+                                    {String(r.weight)}
+                                  </Text>
+                                  {/* Point */}
+                                  <View style={{
+                                    position: 'absolute',
+                                    left: x - 5,
+                                    top: y - 5,
+                                    width: isLast ? 12 : 8,
+                                    height: isLast ? 12 : 8,
+                                    borderRadius: isLast ? 6 : 4,
+                                    backgroundColor: isLast ? '#fff' : 'rgba(255,255,255,0.7)',
+                                  }} />
+                                </React.Fragment>
+                              );
+                            })}
+                            {/* Date labels at bottom */}
+                            {records.map((r, i) => (
+                              <Text
+                                key={`label-${i}`}
+                                style={{
+                                  position: 'absolute',
+                                  left: i * stepX - 12,
+                                  top: chartHeight + 4,
+                                  fontSize: FONT_SMALL(),
+                                  color: 'rgba(255,255,255,0.8)',
+                                  width: 24,
+                                  textAlign: 'center',
+                                }}
+                              >
+                                {r.date.slice(8)}
+                              </Text>
+                            ))}
+                          </View>
+                        );
+                      })()}
+                    </View>
+                  </>
+                ) : (
+                  <View style={{ alignItems: 'center', paddingVertical: 20 }}>
+                    <Text style={{ fontSize: 40, marginBottom: 8 }}>📊</Text>
+                    <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.8)' }}>
+                      {T('bodyWeightNoData') || '暂无体重记录'}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            </View>
+            <TouchableOpacity
+              onPress={() => setShowWeightTrend(true)}
+              activeOpacity={0.85}
+              style={[styles.bannerButton, { backgroundColor: 'rgba(255,255,255,0.9)' }]}
+            >
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#3b82f6' }}>{T('bodyMoreWeightTrend') || '更多体重趋势'}</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+
+        {/* Banner indicators */}
+        <View style={styles.bannerIndicators}>
+          {[0, 1, 2, 3].map(i => (
+            <View
+              key={i}
+              style={[
+                styles.bannerDot,
+                { backgroundColor: i === currentBanner ? '#fff' : 'rgba(255,255,255,0.4)' }
+              ]}
+            />
+          ))}
+        </View>
+        {/* Guide text */}
+        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, textAlign: 'center', marginTop: 6 }}>
+          ← 左右滑动查看更多 →
+        </Text>
+      </View>
+
+      
       {null}
     </View>
   );
