@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_LABEL, EXERCISE_CATEGORIES, BODY_STRATEGIES, PLAN_TEMPLATES, buildExerciseLibrary, type BodyTrainingPlan, type BodyPlanTask, type BodyStrategy, type ExerciseDef, type PlanTemplate } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_LABEL, EXERCISE_CATEGORIES, BODY_STRATEGIES, PLAN_TEMPLATES, buildExerciseLibrary, type BodyGoal, type BodyTrainingPlan, type BodyPlanTask, type BodyStrategy, type ExerciseDef, type PlanTemplate } from '@egoless-do/core';
 import { ChevronLeft, Target, ClipboardList, Save, Plus, X, Search, Dumbbell, ChevronDown, ChevronUp, Download } from 'lucide-react-native';
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
@@ -21,22 +21,26 @@ export default function BodyPlanEditorScreen() {
   const route = useRoute<EditorRoute>();
   const editPlanId = route.params?.planId;
   const isEditing = !!editPlanId;
-  const { addBodyTrainingPlan, updateBodyTrainingPlan, bodyTrainingPlans } = useShallowStore(s => ({
+  const { addBodyTrainingPlan, updateBodyTrainingPlan, bodyTrainingPlans, bodyGoals } = useShallowStore(s => ({
     addBodyTrainingPlan: s.addBodyTrainingPlan,
     updateBodyTrainingPlan: s.updateBodyTrainingPlan,
     bodyTrainingPlans: s.bodyTrainingPlans,
+    bodyGoals: s.bodyGoals,
   }));
   const exerciseLibrary = useMemo(() => buildExerciseLibrary(), []);
+
+  // ── Pre-fill from existing body goal ──
+  const existingGoal = useMemo(() => (bodyGoals ?? []).find((g: BodyGoal) => !g.deleted), [bodyGoals]);
 
   // ── State ──
   const [name, setName] = useState('');
   const [startDate, setStartDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [endDate, setEndDate] = useState(() => { const d = new Date(); d.setDate(d.getDate() + 28); return d.toISOString().slice(0, 10); });
-  const [showGoal, setShowGoal] = useState(false);
-  const [strategy, setStrategy] = useState<BodyStrategy | ''>('');
-  const [targetWeight, setTargetWeight] = useState('');
-  const [targetBodyFat, setTargetBodyFat] = useState('');
-  const [goalNote, setGoalNote] = useState('');
+  const [showGoal, setShowGoal] = useState(true);
+  const [strategy, setStrategy] = useState<BodyStrategy | ''>(existingGoal?.strategy ?? '');
+  const [targetWeight, setTargetWeight] = useState(existingGoal?.targetWeight ? String(existingGoal.targetWeight) : '');
+  const [targetBodyFat, setTargetBodyFat] = useState(existingGoal?.targetBodyFat ? String(existingGoal.targetBodyFat) : '');
+  const [goalNote, setGoalNote] = useState(existingGoal?.goalNote ?? '');
   const [tasks, setTasks] = useState<BodyPlanTask[]>(() =>
     Array.from({ length: 7 }, (_, i) => ({ weekday: i + 1, sportKey: '', note: '' }))
   );
