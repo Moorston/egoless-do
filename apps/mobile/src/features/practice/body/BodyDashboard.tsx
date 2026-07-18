@@ -783,6 +783,53 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
       </TouchableOpacity>
 
       
+      {/* ── 我的训练计划 ── */}
+      <TouchableOpacity
+        onPress={() => nav.navigate('PlanManagement' as never)}
+        activeOpacity={0.85}
+        style={[styles.planCard, { backgroundColor: TH.card }]}
+      >
+        <View style={styles.planHeader}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <View style={[styles.planIconCircle, { backgroundColor: '#f59e0b' }]}>
+              <Dumbbell size={18} color="#fff" />
+            </View>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T('bodyPlanManagement') || '我的训练计划'}</Text>
+          </View>
+          <Text style={{ fontSize: FONT_SMALL(), color: '#f59e0b' }}>{activeTrainingPlan ? T('bodyPlanEdit') : T('bodyPlanCreate')}</Text>
+        </View>
+        {activeTrainingPlan ? (
+          <View style={styles.planContent}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{activeTrainingPlan.name}</Text>
+              <View style={[styles.planBadge, { backgroundColor: '#10b98115' }]}>
+                <Text style={{ fontSize: FONT_SMALL(), color: '#10b981', fontWeight: '600' }}>{T('bodyPlanActive') || '进行中'}</Text>
+              </View>
+            </View>
+            <View style={{ flexDirection: 'row', gap: 12, marginBottom: 8 }}>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{activeTrainingPlan.startDate} ~ {activeTrainingPlan.endDate}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{String(activeTrainingPlan.tasks.filter(t => t.sportKey && t.sportKey !== 'rest').length)}天/周</Text>
+            </View>
+            {planProgress && (
+              <View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyProgress') || '本周进度'}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.text, fontWeight: '600' }}>{String(planProgress.weekComplete)}/{String(planProgress.weekTotal)}</Text>
+                </View>
+                <View style={[styles.progressBarBg, { backgroundColor: TH.border, height: 6 }]}>
+                  <View style={[styles.progressBarFill, { backgroundColor: '#f59e0b', height: 6, width: `${planProgress.weekTotal > 0 ? (planProgress.weekComplete / planProgress.weekTotal) * 100 : 0}%` }]} />
+                </View>
+              </View>
+            )}
+          </View>
+        ) : (
+          <View style={styles.planEmpty}>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{T('bodyPlanNotSet') || '创建训练计划，开始系统训练'}</Text>
+          </View>
+        )}
+      </TouchableOpacity>
+
+      
       {null}
     </View>
   );
