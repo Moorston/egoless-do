@@ -537,8 +537,8 @@ export default function BodyPlanEditorScreen() {
         onClose={() => setPickingDate(null)}
         minDate={pickingDate === 'end' ? startDate : dateStr()}
       />
-    </KeyboardAvoidingView>
     </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 
