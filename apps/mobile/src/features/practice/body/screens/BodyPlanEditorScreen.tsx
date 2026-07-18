@@ -437,7 +437,7 @@ export default function BodyPlanEditorScreen() {
                     </View>
 
                     {/* Selection bar */}
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: `${P}10`, borderRadius: 10, padding: 8, borderWidth: 1, borderColor: `${P}30' }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: `${P}10`, borderRadius: 10, padding: 8, borderWidth: 1, borderColor: `${P}30` }}>
                       <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: P }}>已选 {selectedExIds.size} 个</Text>
                       <TouchableOpacity onPress={addSelectedExercises} disabled={selectedExIds.size === 0}
                         style={{ backgroundColor: selectedExIds.size > 0 ? P : TH.border, borderRadius: 8, paddingHorizontal: 16, paddingVertical: 8 }}>
