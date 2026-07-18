@@ -453,7 +453,6 @@ export default function BodyPlanEditorScreen() {
                     <Text style={{ fontSize: FONT_BODY(), color: TH.sub, marginTop: 6 }}>{T('bodyPlanRestDay')}</Text>
                   </View>
                 )}
-              </View>
             );
                 {/* Added exercises */}
                 {hasExs && (
