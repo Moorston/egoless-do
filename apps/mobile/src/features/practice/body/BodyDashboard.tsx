@@ -713,21 +713,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
         </Text>
       </View>
 
-      {/* ── 快捷操作 ── */}
-      <View style={styles.quickActions}>
-        {[
-          { icon: <Scale size={20} color={TH.primary} />, label: T('bodyRecordWeight') || '记录体重', onPress: () => setShowWeightRecord(true) },
-          { icon: <History size={20} color={TH.primary} />, label: T('exerciseHistory') || '锻炼记录', onPress: () => nav.navigate('ExerciseHistory' as never) },
-          { icon: <Dumbbell size={20} color={TH.primary} />, label: T('bodyPlanManagement') || '计划管理', onPress: () => nav.navigate('PlanManagement' as never) },
-          { icon: <Target size={20} color={TH.primary} />, label: T('bodyGoal') || '目标设定', onPress: () => setShowGoalEdit(true) },
-        ].map((item, i) => (
-          <TouchableOpacity key={i} onPress={item.onPress} style={[styles.quickActionItem, { backgroundColor: TH.card }]}>
-            {item.icon}
-            <Text style={{ fontSize: FONT_SMALL(), color: TH.text, marginTop: 4 }}>{item.label}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
       {/* ── 调身目标 ── */}
       <TouchableOpacity
         onPress={() => setShowGoalEdit(true)}
@@ -760,7 +745,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
               )}
               {activeGoal.strategy && (
                 <View style={styles.goalMetricItem}>
-                  <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#8b5cf6' }}>
+                  <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '600', color: '#8b5cf6' }}>
                     {getStrategyLabel(activeGoal.strategy)}
                   </Text>
                   <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyStrategyLabel')}</Text>
