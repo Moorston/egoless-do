@@ -308,9 +308,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
 
   return (
     <View>
-      <Text style={{fontSize: 20, color: TH.text, padding: 10}}>
-        BodyDashboard v5 - sections below
-      </Text>
       {/* ── Banner Carousel ── */}
       <View style={styles.bannerContainer}>
         <ScrollView
@@ -716,7 +713,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
         </Text>
       </View>
 
-      
       {/* ── 快捷操作 ── */}
       <View style={styles.quickActions}>
         {[
@@ -782,7 +778,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
         )}
       </TouchableOpacity>
 
-      
       {/* ── 我的训练计划 ── */}
       <TouchableOpacity
         onPress={() => nav.navigate('PlanManagement' as never)}
@@ -829,7 +824,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
         )}
       </TouchableOpacity>
 
-      
       {/* ── 本周进度 ── */}
       {planProgress && (
         <View style={[styles.progressCard, { backgroundColor: TH.card }]}>
