@@ -1218,3 +1218,37 @@ StatsScreen计划任务进度改为countItemDoneDays动态计算；补全planIte
 ### Next Steps
 
 - None - task complete
+
+
+## Session 36: 调身页布局调整 + iOS Text strings 根因修复
+
+**Date**: 2026-07-18
+**Task**: 调身页布局调整 + iOS Text strings 根因修复
+**Branch**: `master`
+
+### Summary
+
+根因修复: goal card 0-value renders as text node (targetWeight=0 → {0 && <View>} → 0 rendered outside Text). 调身布局: 移除快捷操作按钮, 策略字体重置为 FONT_STAT_CARD.
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `e4172ed` | (see git log) |
+| `2b6d14e` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
