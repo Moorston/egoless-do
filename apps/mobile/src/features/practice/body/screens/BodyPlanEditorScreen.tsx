@@ -237,7 +237,9 @@ export default function BodyPlanEditorScreen() {
     nav.goBack();
   };
 
-  <SafeAreaView style={{ flex: 1, backgroundColor: TH.bg }}>
+  return (
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: TH.bg }}>
       {/* ── Header ── */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => nav.goBack()}><ChevronLeft size={24} color={TH.text} /></TouchableOpacity>
@@ -250,7 +252,6 @@ export default function BodyPlanEditorScreen() {
         ) : null}
       </View>
 
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 100 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
         {/* ── Plan Name + Duration ── */}
         <View style={[styles.card, { backgroundColor: TH.card }]}>
