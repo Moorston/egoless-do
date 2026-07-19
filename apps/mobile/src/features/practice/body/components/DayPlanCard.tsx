@@ -203,8 +203,8 @@ export default function DayPlanCard({
       )}
 
       {/* Start Training CTA */}
-      {onStartTraining && addedExs.length > 0 && (
-        <TouchableOpacity onPress={onStartTraining} style={[styles.ctaBtn, { backgroundColor: P }]}>
+      {addedExs.length > 0 && (
+        <TouchableOpacity onPress={() => {}} style={[styles.ctaBtn, { backgroundColor: P }]}>
           <Text style={styles.ctaText}>{T('bodyStartTraining') || '开始训练'}</Text>
         </TouchableOpacity>
       )}
