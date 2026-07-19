@@ -413,7 +413,7 @@ export default function BodyPlanEditorScreen() {
                                 return (
                                   <TouchableOpacity key={ex.id}
                                     onPress={() => alreadyAdded ? null : toggleExSelect(ex.id)}
-                                    style={{ width: '31%', borderRadius: 10, padding: 10, borderWidth: isSelected ? 2 : 1, borderColor: isSelected ? P : alreadyAdded ? `${P}30` : TH.border, backgroundColor: isSelected ? `${P}18` : alreadyAdded ? `${P}08` : TH.card, opacity: alreadyAdded ? 0.45 : 1 }}>
+                                    style={{ width: '31%', minWidth: 90, borderRadius: 10, padding: 10, borderWidth: isSelected ? 2 : 1, borderColor: isSelected ? P : alreadyAdded ? `${P}30` : TH.border, backgroundColor: isSelected ? `${P}18` : alreadyAdded ? `${P}08` : TH.card, opacity: alreadyAdded ? 0.45 : 1 }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 2 }}>
                                       <Text style={{ fontSize: 16 }}>{ex.icon}</Text>
                                       <Text style={{ fontSize: FONT_SMALL(), color: isSelected ? P : TH.text, fontWeight: isSelected ? '700' : '500', flex: 1 }} numberOfLines={1}>{isSelected && '☑ '}{alreadyAdded && !isSelected && '✓ '}{ex.nameZh}</Text>
