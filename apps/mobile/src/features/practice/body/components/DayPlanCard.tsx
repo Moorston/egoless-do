@@ -1,246 +1,362 @@
-import {
-  EXERCISE_CATEGORIES,
-  type BodyPlanTask,
-  type ExerciseDef,
-  type Theme,
-} from '@egoless-do/core';
-import { Search, X } from 'lucide-react-native';
+import { FONT_SMALL, FONT_SUB, FONT_BODY, EXERCISE_CATEGORIES, type BodyPlanTask, type ExerciseDef, type Theme } from '@egoless-do/core';
+import { ChevronDown, ChevronUp, Play } from 'lucide-react-native';
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, LayoutAnimation, Platform, UIManager, StyleSheet } from 'react-native';
 
-import { useT } from '../../../../components/UI';
+// Enable LayoutAnimation on Android
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
+import ExerciseCard from './ExerciseCard';
+import ExercisePickerGrid from './ExercisePickerGrid';
 
 const P = '#f59e0b';
 
-type ExFilter = 'all' | 'traditional' | 'modern';
-
 interface Props {
   TH: Theme;
+  T: (key: string) => string;
   task: BodyPlanTask;
   exerciseLibrary: ExerciseDef[];
-  onShowSnackbar: (message: string, undoFn: () => void) => void;
+  onStartTraining: (weekday: number) => void;
+  onUpdateTask: (weekday: number, updates: Partial<BodyPlanTask>) => void;
+  onToggleExercise: (weekday: number, ex: ExerciseDef) => void;
   selectedIds: Set<string>;
+  onShowSnackbar: (message: string, undoFn: () => void) => void;
 }
 
 export default function DayPlanCard({
-  TH,
-  task,
-  exerciseLibrary,
-  onShowSnackbar,
-  selectedIds,
+  TH, T, task, exerciseLibrary,
+  onStartTraining, onUpdateTask, onToggleExercise,
+  selectedIds, onShowSnackbar,
 }: Props) {
-  const T = useT();
-  const [exFilter, setExFilter] = useState<ExFilter>('all');
-  const [exSearch, setExSearch] = useState('');
-  const [selectedExIds, setSelectedExIds] = useState<Set<string>>(new Set());
-
+  const [expanded, setExpanded] = useState(false);
   const isRest = task.sportKey === 'rest';
-
-  const searchedExs = useMemo(() => {
-    let exs = exerciseLibrary;
-    if (exFilter === 'traditional') {
-      exs = exs.filter(e => EXERCISE_CATEGORIES.find(c => c.key === e.category)?.type === 'traditional');
-    } else if (exFilter === 'modern') {
-      exs = exs.filter(e => EXERCISE_CATEGORIES.find(c => c.key === e.category)?.type === 'modern');
-    }
-    if (exSearch.trim()) exs = exs.filter(e => e.nameZh.includes(exSearch.trim()));
-    return exs;
-  }, [exerciseLibrary, exSearch, exFilter]);
-
-  const groups = useMemo(() => {
-    const result: { cat: typeof EXERCISE_CATEGORIES[number]; items: ExerciseDef[] }[] = [];
-    const addedKeys = new Set<string>();
-    for (const ex of searchedExs) {
-      if (!addedKeys.has(ex.category)) {
-        addedKeys.add(ex.category);
-        const cat = EXERCISE_CATEGORIES.find(c => c.key === ex.category);
-        if (cat) result.push({ cat, items: searchedExs.filter(e => e.category === ex.category) });
-      }
-    }
-    const uncategorized = searchedExs.filter(e => !EXERCISE_CATEGORIES.some(c => c.key === e.category));
-    if (uncategorized.length > 0) {
-      result.push({ cat: { category: '', key: '__other__', icon: '🏋️', type: 'modern', i18nKey: 'bodyCatModern' }, items: uncategorized });
-    }
-    return result;
-  }, [searchedExs]);
-
   const addedExs = useMemo(() => task.exercises ?? [], [task.exercises]);
+  const addedExIds = useMemo(() => new Set(addedExs.map(e => e.id)), [addedExs]);
 
-  const handleToggle = useCallback((ex: ExerciseDef) => {
-    const isSelected = selectedIds.has(ex.id);
-    const isAlreadyAdded = addedExs.some(e => e.nameZh === ex.nameZh);
-    if (isSelected) {
-      setSelectedExIds(prev => { const n = new Set(prev); n.delete(ex.id); return n; });
-      onShowSnackbar(`${ex.nameZh} 已移除`, () => setSelectedExIds(prev => new Set([...prev, ex.id])));
-    } else if (!isAlreadyAdded) {
-      setSelectedExIds(prev => new Set([...prev, ex.id]));
-      onShowSnackbar(`${ex.nameZh} 已添加`, () => setSelectedExIds(prev => { const n = new Set(prev); n.delete(ex.id); return n; }));
+  // Part icon
+  const partIcon = useMemo(() => {
+    if (isRest) return '😴';
+    const cat = EXERCISE_CATEGORIES.find(c => c.key === task.sportKey);
+    return cat?.icon ?? '🏋️';
+  }, [isRest, task.sportKey]);
+
+  // Part name
+  const partName = useMemo(() => {
+    if (isRest) return T('bodyPlanRestDay') || '休息';
+    const cat = EXERCISE_CATEGORIES.find(c => c.key === task.sportKey);
+    return cat ? T(cat.i18nKey) : task.sportKey;
+  }, [isRest, T, task.sportKey]);
+
+  // Estimated duration
+  const estimatedDuration = useMemo(() => {
+    if (addedExs.length === 0) return 0;
+    const totalSec = addedExs.reduce((s, ex) => s + (ex.defaultDurationSec ?? ((ex.defaultSets ?? 3) * 45)), 0);
+    return Math.round(totalSec / 60);
+  }, [addedExs]);
+
+  // Weekday label
+  const WEEKDAY_KEYS = ['', 'bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'bodyWeekThu', 'bodyWeekFri', 'bodyWeekSat', 'bodyWeekSun'];
+  const weekdayLabel = T(WEEKDAY_KEYS[task.weekday] ?? '');
+
+  const toggleExpand = useCallback(() => {
+    LayoutAnimation.configureNext({
+      duration: 250,
+      create: { type: 'easeInEaseOut', property: 'opacity' },
+      update: { type: 'easeInEaseOut' },
+      delete: { type: 'easeInEaseOut', property: 'opacity' },
+    });
+    setExpanded(prev => !prev);
+  }, []);
+
+  const handleRemoveExercise = useCallback((exId: string) => {
+    const removedEx = addedExs.find(e => e.id === exId);
+    const newExs = addedExs.filter(e => e.id !== exId);
+    onUpdateTask(task.weekday, { exercises: newExs });
+
+    if (removedEx) {
+      onShowSnackbar(
+        `${removedEx.nameZh} ${T('bodyPlanRemoved') || '已移除'}`,
+        () => {
+          onUpdateTask(task.weekday, { exercises: [...newExs, removedEx] });
+        }
+      );
     }
-  }, [selectedIds, addedExs, onShowSnackbar]);
+  }, [addedExs, task.weekday, onUpdateTask, onShowSnackbar, T]);
 
+  const handleUpdateExercise = useCallback((exId: string, updates: Partial<Pick<ExerciseDef, 'defaultSets' | 'defaultReps' | 'defaultWeight'>>) => {
+    const newExs = addedExs.map(ex =>
+      ex.id === exId ? { ...ex, ...updates } : ex
+    );
+    onUpdateTask(task.weekday, { exercises: newExs });
+  }, [addedExs, task.weekday, onUpdateTask]);
+
+  const handleToggleExercise = useCallback((ex: ExerciseDef) => {
+    const isSelected = selectedIds.has(ex.id);
+    const isAlreadyAdded = addedExIds.has(ex.id);
+
+    if (isSelected) {
+      // Deselect (undo-ready)
+      onToggleExercise(task.weekday, ex);
+      onShowSnackbar(
+        `${ex.nameZh} ${T('bodyPlanRemoved') || '已移除'}`,
+        () => onToggleExercise(task.weekday, ex)
+      );
+    } else if (isAlreadyAdded) {
+      // Remove from day plan
+      handleRemoveExercise(ex.id);
+    } else {
+      // Add to day plan
+      onToggleExercise(task.weekday, ex);
+      onShowSnackbar(
+        `${ex.nameZh} ${T('bodyPlanAdded') || '已添加'}`,
+        () => {
+          // Undo: remove it again
+          const newExs = (task.exercises ?? []).filter(e => e.id !== ex.id);
+          onUpdateTask(task.weekday, { exercises: newExs });
+        }
+      );
+    }
+  }, [selectedIds, addedExIds, task, onToggleExercise, onShowSnackbar, handleRemoveExercise, onUpdateTask, T]);
+
+  // ── Rest day view ──
   if (isRest) {
     return (
-      <View style={[styles.restCard, { backgroundColor: TH.card }]}>
-        <Text style={{ fontSize: 32, textAlign: 'center' }}>😴</Text>
-        <Text style={[styles.restText, { color: TH.sub }]}>{T('bodyPlanRestDay')}</Text>
-      </View>
+      <TouchableOpacity
+        onPress={toggleExpand}
+        activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityLabel={`${weekdayLabel} ${T('bodyPlanRestDay') || '休息日'}`}
+        style={[styles.restCard, { backgroundColor: TH.card, borderColor: TH.border }]}
+      >
+        <View style={styles.restContent}>
+          <Text style={styles.restIcon}>😴</Text>
+          <View style={styles.restTextCol}>
+            <Text style={[styles.restDayLabel, { color: TH.sub }]}>{weekdayLabel}</Text>
+            <Text style={[styles.restTitle, { color: TH.text }]}>{T('bodyPlanRestDay') || '休息日'}</Text>
+          </View>
+          {expanded ? <ChevronUp size={20} color={TH.sub} /> : <ChevronDown size={20} color={TH.sub} />}
+        </View>
+        {expanded && (
+          <View style={[styles.restDetail, { borderTopColor: TH.border }]}>
+            <Text style={[styles.restDetailText, { color: TH.sub }]}>
+              {T('bodyPlanRestDayHint') || '今天是休息日，好好恢复身体吧'}
+            </Text>
+          </View>
+        )}
+      </TouchableOpacity>
     );
   }
 
+  // ── Training day view ──
   return (
-    <View style={[styles.card, { backgroundColor: TH.bg, borderColor: TH.border }]}>
-      {/* Filter tabs */}
-      <View style={styles.filterRow}>
-        {([
-          { key: 'all', label: T('bodyPlanFreeTraining'), icon: '🎯' },
-          { key: 'traditional', label: T('bodyPlanTraditional'), icon: '☯️' },
-          { key: 'modern', label: T('bodyPlanModern'), icon: '💪' },
-        ] as const).map(tab => (
-          <TouchableOpacity
-            key={tab.key}
-            onPress={() => setExFilter(tab.key)}
-            style={[styles.filterTab, exFilter === tab.key && { backgroundColor: `${P}15`, borderColor: P }]}
-          >
-            <Text style={{ fontSize: 14 }}>{tab.icon}</Text>
-            <Text style={[styles.filterText, { color: exFilter === tab.key ? P : TH.sub }]}>{tab.label}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* Search */}
-      <View style={[styles.searchRow, { backgroundColor: TH.card, borderColor: TH.border }]}>
-        <Search size={14} color={TH.sub} />
-        <TextInput
-          value={exSearch}
-          onChangeText={setExSearch}
-          placeholder={T('bodySearchExercise') || '搜索动作'}
-          placeholderTextColor={TH.sub}
-          style={[styles.searchInput, { color: TH.text }]}
-        />
-        {exSearch ? <TouchableOpacity onPress={() => setExSearch('')}><X size={14} color={TH.sub} /></TouchableOpacity> : null}
-      </View>
-
-      {/* Selected count */}
-      {selectedIds.size > 0 && (
-        <View style={[styles.selectedBar, { backgroundColor: `${P}10`, borderColor: `${P}30` }]}>
-          <Text style={[styles.selectedText, { color: P }]}>{T('bodyPlanSelectedCount') || `已选 ${selectedIds.size} 个`}</Text>
-        </View>
-      )}
-
-      {/* Exercise grid */}
-      <View style={styles.grid}>
-        {groups.length === 0 ? (
-          <Text style={[styles.emptyText, { color: TH.sub }]}>{T('bodyPlanNoExercises') || '未找到动作'}</Text>
-        ) : groups.map(group => (
-          <View key={group.cat.key} style={styles.group}>
-            <View style={styles.groupHeader}>
-              <Text style={{ fontSize: 18 }}>{group.cat.icon}</Text>
-              <Text style={[styles.groupTitle, { color: TH.text }]}>{T(group.cat.i18nKey)}</Text>
-            </View>
-            <View style={styles.groupGrid}>
-              {group.items.map(ex => {
-                const alreadyAdded = addedExs.some(e => e.nameZh === ex.nameZh);
-                const isSelected = selectedIds.has(ex.id);
-                return (
-                  <TouchableOpacity
-                    key={ex.id}
-                    onPress={() => alreadyAdded || isSelected ? undefined : handleToggle(ex)}
-                    style={[
-                      styles.exCard,
-                      {
-                        width: '31%',
-                        minWidth: 90,
-                        borderColor: isSelected ? P : alreadyAdded ? `${P}30` : TH.border,
-                        backgroundColor: isSelected ? `${P}18` : alreadyAdded ? `${P}08` : TH.card,
-                        opacity: alreadyAdded ? 0.4 : 1,
-                      },
-                    ]}
-                  >
-                    <View style={styles.exHeader}>
-                      <Text style={styles.exIcon}>{ex.icon}</Text>
-                      <Text numberOfLines={1} style={[styles.exName, { color: isSelected ? P : TH.text }]}>
-                        {isSelected && '☑ '}{alreadyAdded && !isSelected && '✓ '}{ex.nameZh}
-                      </Text>
-                    </View>
-                    {ex.defaultSets && ex.defaultReps && (
-                      <Text style={[styles.exMeta, { color: isSelected ? P : TH.sub }]}>{ex.defaultSets}×{ex.defaultReps}</Text>
-                    )}
-                    {!ex.defaultSets && ex.defaultDurationSec && (
-                      <Text style={[styles.exMeta, { color: isSelected ? P : TH.sub }]}>{String(Math.round(ex.defaultDurationSec / 60))}分钟</Text>
-                    )}
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
+    <View style={[styles.card, { backgroundColor: TH.card, borderColor: TH.border }]}>
+      {/* Collapsed summary row (always visible) */}
+      <TouchableOpacity
+        onPress={toggleExpand}
+        activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityLabel={`${weekdayLabel} ${partName}`}
+        style={styles.summaryRow}
+      >
+        <View style={styles.summaryLeft}>
+          <Text style={styles.summaryIcon}>{partIcon}</Text>
+          <View style={styles.summaryCol}>
+            <Text style={styles.weekdayLabel}>{weekdayLabel}</Text>
+            <Text style={[styles.partName, { color: TH.text }]}>{partName}</Text>
           </View>
-        ))}
-      </View>
-
-      {/* Selected exercises list */}
-      {addedExs.length > 0 && (
-        <View style={styles.addedSection}>
-          <Text style={[styles.addedTitle, { color: TH.text }]}>{T('bodyPlanAddedExercises') || '当天动作'}</Text>
-          {addedExs.map(ex => (
-            <View key={ex.id} style={[styles.addedRow, { backgroundColor: `${P}08` }]}>
-              <View style={styles.addedInfo}>
-                <Text style={{ fontSize: 16 }}>{ex.icon}</Text>
-                <Text style={[styles.addedName, { color: TH.text }]}>{ex.nameZh || ex.name}</Text>
-                {ex.defaultSets && ex.defaultReps && (
-                  <TouchableOpacity
-                    onPress={() => { setEditingEx({ id: ex.id, field: 'sets' }); setEditValue(String(ex.defaultSets)); }}
-                    style={styles.editPill}
-                  >
-                    <Text style={[styles.addedMeta, { color: TH.sub }]}>{String(ex.defaultSets)}×</Text>
-                  </TouchableOpacity>
-                )}
-              </View>
-              <TouchableOpacity onPress={() => onRemoveExercise(ex.id)} accessibilityLabel="移除">
-                <X size={16} color="#EF4444" />
-              </TouchableOpacity>
-            </View>
-          ))}
         </View>
-      )}
+        <View style={styles.summaryRight}>
+          {addedExs.length > 0 && (
+            <View style={[styles.summaryBadge, { backgroundColor: `${P}15` }]}>
+              <Text style={[styles.summaryCount, { color: P }]}>{String(addedExs.length)}{T('bodyPlanUnitExercise') || '个动作'}</Text>
+            </View>
+          )}
+          {estimatedDuration > 0 && (
+            <Text style={[styles.summaryDuration, { color: TH.sub }]}>{String(estimatedDuration)}min</Text>
+          )}
+          {expanded ? <ChevronUp size={18} color={TH.sub} /> : <ChevronDown size={18} color={TH.sub} />}
+        </View>
+      </TouchableOpacity>
 
-      {/* Start Training CTA */}
-      {addedExs.length > 0 && (
-        <TouchableOpacity onPress={() => {}} style={[styles.ctaBtn, { backgroundColor: P }]}>
-          <Text style={styles.ctaText}>{T('bodyStartTraining') || '开始训练'}</Text>
-        </TouchableOpacity>
+      {/* Expanded content */}
+      {expanded && (
+        <View style={[styles.expandedContent, { borderTopColor: TH.border }]}>
+          {/* Exercise List (already added) */}
+          {addedExs.length > 0 && (
+            <View style={styles.exerciseListSection}>
+              <Text style={[styles.sectionTitle, { color: TH.text }]}>
+                {T('bodyPlanAddedExercises') || '当天动作'} ({String(addedExs.length)})
+              </Text>
+              {addedExs.map(ex => (
+                <ExerciseCard
+                  key={ex.id}
+                  exercise={ex}
+                  TH={TH}
+                  T={T}
+                  onRemove={handleRemoveExercise}
+                  onUpdate={handleUpdateExercise}
+                />
+              ))}
+            </View>
+          )}
+
+          {/* Exercise Picker Grid */}
+          <View style={styles.pickerSection}>
+            <Text style={[styles.sectionTitle, { color: TH.text }]}>
+              {T('bodyPlanAddExercise') || '添加动作'}
+            </Text>
+            <ExercisePickerGrid
+              TH={TH}
+              T={T}
+              exerciseLibrary={exerciseLibrary}
+              addedExIds={addedExIds}
+              selectedIds={selectedIds}
+              onToggle={handleToggleExercise}
+            />
+          </View>
+
+          {/* CTA - Start Training this day */}
+          {addedExs.length > 0 && (
+            <TouchableOpacity
+              onPress={() => onStartTraining(task.weekday)}
+              activeOpacity={0.8}
+              style={styles.ctaBtn}
+              accessibilityRole="button"
+              accessibilityLabel={T('bodyStartTraining') || '开始训练'}
+            >
+              <Play size={18} color="#fff" />
+              <Text style={styles.ctaText}>{T('bodyStartTraining') || '开始训练'}</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  card: { borderRadius: 12, padding: 12, borderWidth: 1, gap: 10 },
-  restCard: { borderRadius: 12, padding: 24, alignItems: 'center' },
-  restText: { fontSize: 14, marginTop: 8 },
-  filterRow: { flexDirection: 'row', gap: 6 },
-  filterTab: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingVertical: 8, borderRadius: 8, borderWidth: 1 },
-  filterText: { fontSize: 12, fontWeight: '500' },
-  searchRow: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 10, borderRadius: 8, borderWidth: 1 },
-  searchInput: { flex: 1, paddingVertical: 8, fontSize: 13 },
-  selectedBar: { padding: 8, borderRadius: 8, borderWidth: 1 },
-  selectedText: { fontSize: 14, fontWeight: '600' },
-  grid: {},
-  emptyText: { textAlign: 'center', paddingVertical: 16 },
-  group: { marginBottom: 12 },
-  groupHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 },
-  groupTitle: { fontSize: 14, fontWeight: '600' },
-  groupGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
-  exCard: { borderRadius: 10, padding: 10, borderWidth: 1 },
-  exHeader: { flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 2 },
-  exIcon: { fontSize: 16 },
-  exName: { fontSize: 12, fontWeight: '500', flex: 1 },
-  exMeta: { fontSize: 10 },
-  addedSection: { marginTop: 4 },
-  addedTitle: { fontSize: 14, fontWeight: '600', marginBottom: 8 },
-  addedRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 8, borderRadius: 8, marginBottom: 4 },
-  addedInfo: { flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 },
-  addedName: { fontSize: 14, fontWeight: '500', flex: 1 },
-  addedMeta: { fontSize: 12 },
-  editPill: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6, backgroundColor: 'rgba(255,255,255,0.1)' },
-  ctaBtn: { borderRadius: 10, paddingVertical: 12, alignItems: 'center', marginTop: 10 },
-  ctaText: { color: '#fff', fontWeight: '700', fontSize: 14 },
+  card: {
+    borderRadius: 14,
+    borderWidth: 1,
+    marginBottom: 10,
+    overflow: 'hidden',
+  },
+  summaryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  summaryLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    flex: 1,
+  },
+  summaryIcon: {
+    fontSize: 24,
+  },
+  summaryCol: {
+    flex: 1,
+  },
+  weekdayLabel: {
+    fontSize: FONT_SMALL(),
+    color: '#f59e0b',
+    fontWeight: '600',
+  },
+  partName: {
+    fontSize: FONT_BODY(),
+    fontWeight: '600',
+    marginTop: 1,
+  },
+  summaryRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  summaryBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  summaryCount: {
+    fontSize: FONT_SMALL(),
+    fontWeight: '600',
+  },
+  summaryDuration: {
+    fontSize: FONT_SMALL(),
+  },
+  expandedContent: {
+    borderTopWidth: 1,
+    paddingHorizontal: 14,
+    paddingTop: 12,
+    paddingBottom: 14,
+    gap: 12,
+  },
+  sectionTitle: {
+    fontSize: FONT_SUB(),
+    fontWeight: '700',
+    marginBottom: 4,
+  },
+  exerciseListSection: {
+    marginBottom: 4,
+  },
+  pickerSection: {},
+  ctaBtn: {
+    backgroundColor: '#f59e0b',
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 4,
+  },
+  ctaText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: FONT_BODY(),
+  },
+  // Rest day styles
+  restCard: {
+    borderRadius: 14,
+    borderWidth: 1,
+    marginBottom: 10,
+    overflow: 'hidden',
+  },
+  restContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    gap: 10,
+  },
+  restIcon: {
+    fontSize: 28,
+  },
+  restTextCol: {
+    flex: 1,
+  },
+  restDayLabel: {
+    fontSize: FONT_SMALL(),
+    fontWeight: '500',
+  },
+  restTitle: {
+    fontSize: FONT_BODY(),
+    fontWeight: '600',
+    marginTop: 1,
+  },
+  restDetail: {
+    borderTopWidth: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  restDetailText: {
+    fontSize: FONT_SUB(),
+    textAlign: 'center',
+    lineHeight: 20,
+  },
 });

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { calcBMI, calcBMR, calcGoalProgress, recommendStrategy, createBodyGoal } from './body';
+import { calcBMI, calcBMR, calcGoalProgress, recommendStrategy, createBodyGoal, getDayOverview } from './body';
+import type { BodyTrainingPlan } from '../types';
 
 // ─── calcBMI ──────────────────────────────────────────────────
 describe('calcBMI', () => {
@@ -112,5 +113,98 @@ describe('createBodyGoal', () => {
     expect(goal.targetWeight).toBe(70);
     expect(goal.strategy).toBe('lose_fat');
     expect(goal.note).toBe('test');
+  });
+});
+
+// ─── getDayOverview ────────────────────────────────────────────
+describe('getDayOverview', () => {
+  const basePlan: BodyTrainingPlan = {
+    id: 'plan-1',
+    name: '测试计划',
+    startDate: '2026-07-01',
+    endDate: '2026-07-28',
+    tasks: [
+      { weekday: 1, sportKey: 'chest_triceps', exercises: [
+        { id: 'ex1', nameZh: '卧推', nameI18nKey: '', icon: '🏋️', category: 'chest_triceps', type: 'strength', muscleGroups: ['胸'], difficulty: 'beginner', defaultSets: 4, defaultReps: 10 },
+        { id: 'ex2', nameZh: '飞鸟', nameI18nKey: '', icon: '🏋️', category: 'chest_triceps', type: 'strength', muscleGroups: ['胸'], difficulty: 'beginner', defaultSets: 3, defaultReps: 12 },
+      ]},
+      { weekday: 3, sportKey: 'rest', exercises: [] },
+      { weekday: 5, sportKey: 'legs_core', exercises: [
+        { id: 'ex3', nameZh: '深蹲', nameI18nKey: '', icon: '🦵', category: 'legs_core', type: 'strength', muscleGroups: ['腿'], difficulty: 'intermediate', defaultSets: 4, defaultReps: 10 },
+      ]},
+    ],
+    status: 'active',
+    updatedAt: Date.now(),
+    deleted: false,
+  };
+
+  it('returns 7 days for a Monday reference date', () => {
+    // 2026-07-06 is a Monday
+    const ref = new Date('2026-07-06T00:00:00');
+    const days = getDayOverview(basePlan, ref);
+    expect(days).toHaveLength(7);
+    expect(days[0].weekday).toBe(1);
+    expect(days[6].weekday).toBe(7);
+  });
+
+  it('marks Monday (weekday=1) as planned with exercises', () => {
+    const ref = new Date('2026-07-06T00:00:00');
+    const days = getDayOverview(basePlan, ref);
+    const mon = days.find(d => d.weekday === 1);
+    expect(mon).toBeDefined();
+    expect(mon!.status).toBe('planned');
+    expect(mon!.exerciseCount).toBe(2);
+    expect(mon!.intensity).toBeGreaterThan(0);
+    expect(mon!.partIcon).toBe('💪');
+  });
+
+  it('marks Wednesday (weekday=3) as rest', () => {
+    const ref = new Date('2026-07-06T00:00:00');
+    const days = getDayOverview(basePlan, ref);
+    const wed = days.find(d => d.weekday === 3);
+    expect(wed).toBeDefined();
+    expect(wed!.status).toBe('rest');
+    expect(wed!.intensity).toBe(0);
+  });
+
+  it('marks days without tasks as empty', () => {
+    const ref = new Date('2026-07-06T00:00:00');
+    const days = getDayOverview(basePlan, ref);
+    const tue = days.find(d => d.weekday === 2);
+    expect(tue).toBeDefined();
+    expect(tue!.status).toBe('empty');
+    expect(tue!.intensity).toBe(0);
+  });
+
+  it('returns empty array for undefined plan', () => {
+    const days = getDayOverview(undefined, new Date());
+    expect(days).toEqual([]);
+  });
+
+  it('handles a plan with no tasks', () => {
+    const emptyPlan: BodyTrainingPlan = { ...basePlan, tasks: [] };
+    const ref = new Date('2026-07-06T00:00:00');
+    const days = getDayOverview(emptyPlan, ref);
+    expect(days).toHaveLength(7);
+    expect(days.every(d => d.status === 'empty')).toBe(true);
+  });
+
+  it('adjusts week range based on reference date mid-week', () => {
+    // 2026-07-09 is a Thursday
+    const ref = new Date('2026-07-09T00:00:00');
+    const days = getDayOverview(basePlan, ref);
+    expect(days).toHaveLength(7);
+    // Monday should be 2026-07-06
+    expect(days[0].date).toBe('2026-07-06');
+    // Sunday should be 2026-07-12
+    expect(days[6].date).toBe('2026-07-12');
+  });
+
+  it('estimates duration for planned days', () => {
+    const ref = new Date('2026-07-06T00:00:00');
+    const days = getDayOverview(basePlan, ref);
+    const mon = days.find(d => d.weekday === 1);
+    expect(mon).toBeDefined();
+    expect(mon!.durationMin).toBeGreaterThan(0);
   });
 });

@@ -9,10 +9,11 @@ interface Props {
   message: string;
   onUndo: () => void;
   onDismiss: () => void;
+  T: (key: string) => string;
   durationMs?: number;
 }
 
-export default function SnackbarHost({ TH, visible, message, onUndo, onDismiss, durationMs = 5000 }: Props) {
+export default function SnackbarHost({ TH, visible, message, onUndo, onDismiss, T, durationMs = 5000 }: Props) {
   const opacity = useRef(new Animated.Value(0)).current;
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -37,9 +38,9 @@ export default function SnackbarHost({ TH, visible, message, onUndo, onDismiss, 
     <Animated.View style={[styles.container, { opacity }]}>
       <View style={[styles.snackbar, { backgroundColor: TH.text }]}>
         <Text style={[styles.message, { color: TH.bg }]}>{message}</Text>
-        <TouchableOpacity onPress={onUndo} style={styles.undoBtn} accessibilityLabel="撤回">
+        <TouchableOpacity onPress={onUndo} style={styles.undoBtn} accessibilityLabel={T('bodyUndo') || '撤回'}>
           <Undo2 size={16} color={TH.bg} />
-          <Text style={[styles.undoText, { color: TH.bg }]}>撤回</Text>
+          <Text style={[styles.undoText, { color: TH.bg }]}>{T('bodyUndo') || '撤回'}</Text>
         </TouchableOpacity>
       </View>
     </Animated.View>

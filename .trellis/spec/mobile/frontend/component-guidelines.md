@@ -89,6 +89,93 @@ Rules:
 
 ---
 
+## Interaction Patterns
+
+### Toggle-to-Add with Snackbar Undo
+
+用于快速添加/移除操作（如动作选择），零确认步骤 + 撤销兜底：
+
+```tsx
+// ExercisePickerGrid: tap = toggle, no confirm step
+const handleToggle = useCallback((exId: string) => {
+  setSelected(prev => {
+    const next = new Set(prev);
+    const isAdding = !next.has(exId);
+    if (isAdding) next.add(exId); else next.delete(exId);
+    onShowSnackbar(isAdding ? 'added' : 'removed', exId);
+    return next;
+  });
+}, [onShowSnackbar]);
+
+// SnackbarHost: 5s auto-dismiss + undo button
+// Usage: <SnackbarHost snackbar={snackbar} onUndo={handleUndo} />
+```
+
+**Rules:**
+- Toggle 操作必须有即时视觉反馈（checkmark + 高亮/暗化）
+- 必须有 Snackbar 撤销兜底（5s 内可撤回）
+- 不可用两步确认（如"选 + 添加/确认"）
+
+### Inline Editing (Avoid Modal)
+
+简单数值编辑（组数/次数/重量）使用内联输入框，而非 Modal：
+
+```tsx
+// ExerciseCard: blur/enter save, no modal
+{isEditing ? (
+  <View style={styles.inlineRow}>
+    <TextInput value={sets} onChangeText={setSets} keyboardType="numeric" />
+    <Text>{T('bodySets')}</Text>
+    <TextInput value={reps} onChangeText={setReps} keyboardType="numeric" />
+    <Text>{T('bodyReps')}</Text>
+  </View>
+) : (
+  <TouchableOpacity onPress={() => setIsEditing(true)}>
+    <Text>{sets}×{reps}</Text>
+  </TouchableOpacity>
+)}
+```
+
+**Rules:**
+- 仅用于 2-4 个数值字段的简单编辑
+- blur 或 Enter 自动保存，无需确认按钮
+- 超过 4 个字段或需要复杂选择 → 仍用 Modal
+
+### Expand/Collapse Card with LayoutAnimation
+
+卡片折叠/展开动画使用 `LayoutAnimation.configureNext`（不引入额外动画库）：
+
+```tsx
+import { LayoutAnimation } from 'react-native';
+
+const handleToggle = useCallback(() => {
+  LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+  setExpanded(prev => !prev);
+}, []);
+```
+
+**Rules:**
+- 使用 `LayoutAnimation.Presets.easeInEaseOut`（250ms）
+- 无需手动 Animated.Value，LayoutAnimation 处理所有子元素动画
+- 折叠态和展开态应有明显视觉区分（概要行 vs 完整内容）
+
+### Mini Calendar / Heatmap Navigation
+
+横向周历组件：色块表示训练状态，点击跳转：
+
+```tsx
+// MiniWeekCalendar: horizontal ScrollView + colored blocks
+// Color mapping: rest=gray / empty=light border / has-intensity=primary gradient
+// Auto-scroll to active day via scrollRef
+```
+
+**Rules:**
+- 使用 `ScrollView` + `ref.scrollTo()` 实现自动滚动到选中日
+- 色块颜色映射：`rest=gray` / `empty=lightBorder` / `withIntensity=primaryGradient`
+- 高度 60-80px，紧凑布局
+
+---
+
 ## Logging
 
 Use `@egoless-do/core`'s `createLogger`:
