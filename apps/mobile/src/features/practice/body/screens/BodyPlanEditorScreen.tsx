@@ -452,9 +452,6 @@ export default function BodyPlanEditorScreen() {
                   <View style={{ alignItems: 'center', paddingVertical: 16 }}>
                     <Text style={{ fontSize: 32 }}>😴</Text>
                     <Text style={{ fontSize: FONT_BODY(), color: TH.sub, marginTop: 6 }}>{T('bodyPlanRestDay')}</Text>
-                  </View>
-                )}
-            );
                 {/* Added exercises */}
                 {hasExs && (
                   <View style={{ marginBottom: 8, marginTop: 8 }}>
@@ -504,6 +501,9 @@ export default function BodyPlanEditorScreen() {
                 <TextInput value={task.note ?? ''} onChangeText={v => setTasks(prev => prev.map(t => t.weekday === activeDay ? { ...t, note: v } : t))}
                   placeholder={T('bodyPlanNote')} placeholderTextColor={TH.sub}
                   style={{ backgroundColor: TH.card, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 6, color: TH.text, fontSize: FONT_SMALL(), borderWidth: 1, borderColor: TH.border }} />
+                  </View>
+                )}
+            );
               </View>
             );
           })()}
