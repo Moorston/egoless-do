@@ -104,7 +104,7 @@ export default function PlanManagementScreen() {
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
         {/* ── 调身目标 ── */}
         <CollapsibleSection
-          title={T('bodyGoal') || '调身目标'}
+          title={T('bodyGoal')}
           icon="🎯"
           color="#8b5cf6"
           TH={TH}
@@ -219,7 +219,7 @@ export default function PlanManagementScreen() {
         visible={showGoalEdit}
         onClose={() => setShowGoalEdit(false)}
         onConfirm={handleSaveGoal}
-        initialStrategy={activeGoal?.strategy as any}
+        initialStrategy={activeGoal?.strategy}
         initialTargetWeight={activeGoal?.targetWeight}
         initialTargetBodyFat={activeGoal?.targetBodyFat}
         initialGoalNote={activeGoal?.goalNote}

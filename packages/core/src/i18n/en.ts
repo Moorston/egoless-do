@@ -1061,6 +1061,7 @@ export const en: I18nKeys = {
   bodyPartBaduanjin:'Baduanjin', bodyPartWuqinxi:'Wuqinxi', bodyPartTaiji:'Tai Chi',
   bodyPartZhanzhuang:'Zhanzhuang', bodyPartJingluo:'Meridian Tapping', bodyPartYoga:'Stretch/Yoga', bodyPartWalking:'Walking Meditation',
   bodyCatTraditional:'Traditional', bodyCatModern:'Modern', bodyCatFree:'Free',
+  bodyPlanFreeTraining:'Free Training', bodyPlanTraditional:'Traditional', bodyPlanModern:'Modern',
   bodyStrategyLoseFat:'Fat Loss', bodyStrategyGainMuscle:'Muscle Gain', bodyStrategyTone:'Tone',
   bodyStrategyGainWeight:'Gain Weight', bodyStrategyMaintain:'Maintain', bodyStrategyPosture:'Posture', bodyStrategyRecovery:'Recovery',
   bodyRecommendHint:'Based on your tags, suggested strategy:', bodyRecommendLabel:'Suggested:',

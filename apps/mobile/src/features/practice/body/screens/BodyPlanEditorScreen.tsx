@@ -87,11 +87,6 @@ export default function BodyPlanEditorScreen() {
   }, [exerciseLibrary]);
 
   const currentTask = activeDay ? tasks.find(t => t.weekday === activeDay) : null;
-  const currentExs = currentTask?.sportKey
-    ? (currentTask.sportKey === 'free'
-        ? exerciseLibrary
-        : (exercisesByCategory.get(currentTask.sportKey) ?? []))
-    : [];
   const searchedExs = useMemo(() => {
     let exs = exerciseLibrary;
     if (exFilter === 'traditional') {
@@ -146,6 +141,7 @@ export default function BodyPlanEditorScreen() {
     setTasks(prev => prev.map(t =>
       t.weekday === activeDay ? {
         ...t,
+        sportKey: t.sportKey || selected[0]?.category || 'full_body',
         exercises: [
           ...(t.exercises ?? []),
           ...selected.map((ex, i) => ({
@@ -370,9 +366,9 @@ export default function BodyPlanEditorScreen() {
                     {/* Category filter tabs */}
                     <View style={{ flexDirection: 'row', gap: 6, marginBottom: 10 }}>
                       {([
-                        { key: 'all', label: '自由训练', icon: '🎯' },
-                        { key: 'traditional', label: '传统养生', icon: '☯️' },
-                        { key: 'modern', label: '现代训练', icon: '💪' },
+                        { key: 'all', label: T('bodyPlanFreeTraining'), icon: '🎯' },
+                        { key: 'traditional', label: T('bodyPlanTraditional'), icon: '☯️' },
+                        { key: 'modern', label: T('bodyPlanModern'), icon: '💪' },
                       ] as const).map(tab => (
                         <TouchableOpacity key={tab.key} onPress={() => setExFilter(tab.key)}
                           style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingVertical: 8, borderRadius: 8, backgroundColor: exFilter === tab.key ? `${P}20` : TH.card, borderWidth: 1, borderColor: exFilter === tab.key ? `${P}50` : TH.border }}>

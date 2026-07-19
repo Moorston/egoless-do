@@ -1059,6 +1059,7 @@ export const zh: I18nKeys = {
   bodyPartBaduanjin:'八段锦', bodyPartWuqinxi:'五禽戏', bodyPartTaiji:'太极拳',
   bodyPartZhanzhuang:'站桩', bodyPartJingluo:'经络拍打', bodyPartYoga:'拉伸/瑜伽', bodyPartWalking:'散步行禅',
   bodyCatTraditional:'传统养生', bodyCatModern:'现代训练', bodyCatFree:'自由训练',
+  bodyPlanFreeTraining:'自由训练', bodyPlanTraditional:'传统养生', bodyPlanModern:'现代训练',
   bodyStrategyLoseFat:'减脂', bodyStrategyGainMuscle:'增肌', bodyStrategyTone:'塑形',
   bodyStrategyGainWeight:'增重', bodyStrategyMaintain:'维持', bodyStrategyPosture:'体态', bodyStrategyRecovery:'康复',
   bodyRecommendHint:'根据你的自评标签，建议策略：', bodyRecommendLabel:'根据你的标签推荐:',
