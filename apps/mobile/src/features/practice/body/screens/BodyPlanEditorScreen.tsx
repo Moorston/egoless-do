@@ -422,7 +422,7 @@ export default function BodyPlanEditorScreen() {
                                       <Text style={{ fontSize: 10, color: isSelected ? P : TH.sub }}>{ex.defaultSets}×{ex.defaultReps}</Text>
                                     )}
                                     {!ex.defaultSets && ex.defaultDurationSec && (
-                                      <Text style={{ fontSize: 10, color: isSelected ? P : TH.sub }}>{Math.round(ex.defaultDurationSec / 60)}分钟</Text>
+                                      <Text style={{ fontSize: 10, color: isSelected ? P : TH.sub }}>{String(Math.round(ex.defaultDurationSec / 60))}分钟</Text>
                                     )}
                                   </TouchableOpacity>
                                 );
@@ -435,7 +435,7 @@ export default function BodyPlanEditorScreen() {
 
                     {/* Selection bar */}
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: `${P}10`, borderRadius: 10, padding: 8, borderWidth: 1, borderColor: `${P}30` }}>
-                      <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: P }}>已选 {selectedExIds.size} 个</Text>
+                      <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: P }}>已选 {String(selectedExIds.size)} 个</Text>
                       <TouchableOpacity onPress={addSelectedExercises} disabled={selectedExIds.size === 0}
                         style={{ backgroundColor: selectedExIds.size > 0 ? P : TH.border, borderRadius: 8, paddingHorizontal: 16, paddingVertical: 8 }}>
                         <Text style={{ color: selectedExIds.size > 0 ? '#fff' : TH.sub, fontWeight: '700', fontSize: FONT_BODY() }}>添加</Text>

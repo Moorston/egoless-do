@@ -129,7 +129,9 @@ module.exports = {
           }
           return false;
         case 'UnaryExpression':
-          return true;
+          // Only flag unary operators that produce numeric values: -, +, ~
+          // Do NOT flag ! (logical not, always boolean) or typeof (always string)
+          return ['-', '+', '~'].includes(node.operator);
         case 'ConditionalExpression':
           // Flag when branches are numeric (cond ? len : 0), or when test is an
           // arithmetic/binary expression (count > 0 ? 'yes' : 'no').
