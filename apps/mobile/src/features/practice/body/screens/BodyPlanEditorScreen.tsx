@@ -10,6 +10,7 @@ import { useRootNavigation, type RootStackParamList } from '../../../../navigati
 import { useShallowStore } from '../../../../store/useAppStore';
 import { getDayOverview, getActivePlan } from '@egoless-do/core';
 import MiniWeekCalendar from '../components/MiniWeekCalendar';
+import DayPlanCard from '../components/DayPlanCard';
 
 const WEEKDAY_KEYS = ['bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'bodyWeekThu', 'bodyWeekFri', 'bodyWeekSat', 'bodyWeekSun'];
 const P = '#f59e0b';
