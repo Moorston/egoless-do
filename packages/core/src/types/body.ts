@@ -193,3 +193,18 @@ export interface PlanTemplate {
   }[];
   icon: string;
 }
+
+// ─── DayOverview (周历每日摘要) ──────────────────────────────────────
+// 用于顶部迷你周历显示每天的状态色块
+
+export type DayStatus = 'rest' | 'planned' | 'completed' | 'empty';
+
+export interface DayOverview {
+  weekday: number;            // 1=Mon..7=Sun
+  date: string;               // YYYY-MM-DD
+  status: DayStatus;          // rest | planned | completed | empty
+  intensity: number;          // 0..1, heatmap color (基于动作容量)
+  partIcon?: string;          // emoji, 当天训练部位
+  exerciseCount: number;      // 当天动作数
+  durationMin: number;        // 预估时长
+}

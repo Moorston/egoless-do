@@ -8,8 +8,8 @@ import { useRoute, RouteProp } from '@react-navigation/native';
 import { useTheme, useT } from '../../../../components/UI';
 import { useRootNavigation, type RootStackParamList } from '../../../../navigation/hooks';
 import { useShallowStore } from '../../../../store/useAppStore';
-import TemplatePickerModal from '../modals/TemplatePickerModal';
-import DatePickerModal from '../../../../components/DatePickerModal';
+import { getDayOverview, getActivePlan } from '@egoless-do/core';
+import MiniWeekCalendar from '../components/MiniWeekCalendar';
 
 const WEEKDAY_KEYS = ['bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'bodyWeekThu', 'bodyWeekFri', 'bodyWeekSat', 'bodyWeekSun'];
 const P = '#f59e0b';
@@ -233,7 +233,9 @@ export default function BodyPlanEditorScreen() {
     nav.goBack();
   };
 
-  return (
+  const activePlan = useMemo(() => getActivePlan(bodyTrainingPlans ?? []), [bodyTrainingPlans]);
+
+      return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
       <SafeAreaView style={{ flex: 1, backgroundColor: TH.bg }}>
       {/* ── Header ── */}
@@ -310,6 +312,13 @@ export default function BodyPlanEditorScreen() {
             <ClipboardList size={18} color={P} />
             <Text style={{ fontWeight: '600', fontSize: FONT_BODY(), color: TH.text }}>{T('bodyWeeklyPlan')}</Text>
           </View>
+
+          {/* ── Week Overview Bar ── */}
+          <MiniWeekCalendar
+            days={getDayOverview(activePlan, new Date())}
+            activeWeekday={activeDay}
+            onPressDay={setActiveDay}
+          />
 
           {/* Quick overview row */}
           <View style={{ flexDirection: 'row', gap: 4, marginBottom: 14 }}>

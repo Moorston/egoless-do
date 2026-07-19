@@ -1,5 +1,5 @@
 // ─── Body regulation business logic (pure functions) ──────────
-import type { BodyStrategy, ExerciseEntry, ExerciseDef } from '../types';
+import type { BodyStrategy, BodyTrainingPlan, DayOverview, DayStatus, ExerciseEntry, ExerciseDef } from '../types';
 import { uid } from '../utils';
 
 export function calcBMI(weight: number, heightCm: number): number {
@@ -355,4 +355,78 @@ export function generateSuggestions(
   // Sort by priority
   const priorityOrder = { high: 0, medium: 1, low: 2 };
   return suggestions.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
+}
+
+// ─── DayOverview (周历每日摘要) ──────────────────────────────────────
+// 用于顶部迷你周历显示每天的状态色块
+
+export { type DayOverview, type DayStatus } from '../types';
+
+/**
+ * Generate week-overview data for the mini week calendar.
+ * Pure function — derives DayOverview[] from a BodyTrainingPlan.
+ */
+export function getDayOverview(plan: BodyTrainingPlan | undefined, referenceDate: Date): DayOverview[] {
+  if (!plan) return [];
+  const tasks = plan.tasks ?? [];
+  const start = new Date(plan.startDate + 'T00:00:00');
+  const end = new Date(plan.endDate + 'T00:00:00');
+  const refDay = referenceDate.getDay() === 0 ? 7 : referenceDate.getDay();
+  const monday = new Date(referenceDate);
+  monday.setDate(referenceDate.getDate() - (refDay - 1));
+  const days: DayOverview[] = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    const weekday = d.getDay() === 0 ? 7 : d.getDay();
+    const dateStr = formatDate(d);
+    const inRange = d >= start && d <= end;
+    const task = tasks.find(t => t.weekday === weekday);
+    let status: DayStatus = 'empty';
+    let exerciseCount = 0;
+    let durationMin = 0;
+    if (inRange) {
+      if (task?.sportKey === 'rest') {
+        status = 'rest';
+      } else if (task && (task.exercises?.length ?? 0) > 0) {
+        status = 'planned';
+        exerciseCount = task.exercises?.length ?? 0;
+        durationMin = estimateDuration(task.exercises ?? []);
+      }
+    }
+    const intensity = status === 'rest' || status === 'empty' ? 0 : Math.min(1, exerciseCount / 6);
+    days.push({
+      weekday,
+      date: dateStr,
+      status,
+      intensity,
+      partIcon: task && task.sportKey !== 'rest' ? getPartIcon(task.sportKey) : undefined,
+      exerciseCount,
+      durationMin,
+    });
+  }
+  return days;
+}
+
+function estimateDuration(exercises: Partial<ExerciseDef>[]): number {
+  if (exercises.length === 0) return 0;
+  const totalSec = exercises.reduce((s, ex) => s + (ex.defaultDurationSec ?? ((ex.defaultSets ?? 3) * 45)), 0);
+  return Math.round(totalSec / 60);
+}
+
+function getPartIcon(sportKey: string): string {
+  const PART_ICONS: Record<string, string> = {
+    chest_triceps: '💪', back_biceps: '🔙', legs_core: '🦵', cardio: '❤️',
+    shoulders_arms: '🤲', full_body: '🏃', hiit: '⚡', baduanjin: '🧘',
+    wuqinxi: '🦌', taiji: '☯️', zhanzhuang: '🧍', jingluo: '👋',
+    yoga: '🧘‍♀️', walking: '🚶',
+  };
+  return PART_ICONS[sportKey] ?? '🏋️';
+}
+
+function formatDate(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
 }
