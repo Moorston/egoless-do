@@ -1285,3 +1285,36 @@ StatsScreen计划任务进度改为countItemDoneDays动态计算；补全planIte
 ### Next Steps
 
 - None - task complete
+
+
+## Session 38: weekly-plan-exercise-grid-redesign: implement + check + commit
+
+**Date**: 2026-07-19
+**Task**: weekly-plan-exercise-grid-redesign: implement + check + commit
+**Branch**: `master`
+
+### Summary
+
+周计划运动选择 UX 优化：一体化网格布局。新建 UnifiedExercisePool 组件（屏幕级统一动作池 + 天勾选列表 + 500ms 防抖自动保存），简化 DayPlanCard（移除 per-day grid），重构 BodyPlanEditorScreen（批量写入 + 冲突检测/跳过）。Code review 修复 9 个问题（关键冲突检测 bug：用 nameZh 而非生成 ID 匹配）。补充 10 个 i18n 键。Spec 更新：新增 Unified Exercise Pool 交互模式。917 行改动，1,820 测试通过。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `7468572` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
