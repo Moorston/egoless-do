@@ -11,6 +11,8 @@ import { useShallowStore } from '../../../../store/useAppStore';
 import { getDayOverview, getActivePlan } from '@egoless-do/core';
 import MiniWeekCalendar from '../components/MiniWeekCalendar';
 import SnackbarHost from '../components/SnackbarHost';
+import TemplatePickerModal from '../modals/TemplatePickerModal';
+import DatePickerModal from '../../../../components/DatePickerModal';
 
 const WEEKDAY_KEYS = ['bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'bodyWeekThu', 'bodyWeekFri', 'bodyWeekSat', 'bodyWeekSun'];
 const P = '#f59e0b';
