@@ -1252,3 +1252,36 @@ StatsScreen计划任务进度改为countItemDoneDays动态计算；补全planIte
 ### Next Steps
 
 - None - task complete
+
+
+## Session 37: weekly-plan-ux-redesign: implement + check + commit
+
+**Date**: 2026-07-19
+**Task**: weekly-plan-ux-redesign: implement + check + commit
+**Branch**: `master`
+
+### Summary
+
+调身计划周计划任务模块 UX 重构对标。5 个新组件（MiniWeekCalendar/DayPlanCard/ExercisePickerGrid/ExerciseCard/SnackbarHost）+ BodyPlanEditorScreen 重构 + getDayOverview() 测试 + 8 个单元测试。Code review 修复 22 个问题（运算符优先级 bug、数据绑定、i18n 硬编码、未使用 import、exhaustive-deps、useMemo 性能）。Spec 更新：新增 Interaction Patterns 章节。1,413 行改动，1,820 测试通过。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `b811eeb` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
