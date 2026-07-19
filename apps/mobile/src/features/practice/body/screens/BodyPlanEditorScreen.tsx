@@ -10,6 +10,7 @@ import { useRootNavigation, type RootStackParamList } from '../../../../navigati
 import { useShallowStore } from '../../../../store/useAppStore';
 import { getDayOverview, getActivePlan } from '@egoless-do/core';
 import MiniWeekCalendar from '../components/MiniWeekCalendar';
+import DayPlanCard from '../components/DayPlanCard';
 import SnackbarHost from '../components/SnackbarHost';
 import TemplatePickerModal from '../modals/TemplatePickerModal';
 import DatePickerModal from '../../../../components/DatePickerModal';
