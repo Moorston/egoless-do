@@ -23,6 +23,7 @@ interface Props {
   onRemoveExercise: (exId: string) => void;
   onUndo: () => void;
   selectedIds: Set<string>;
+  onStartTraining?: () => void;
 }
 
 export default function DayPlanCard({
@@ -34,10 +35,13 @@ export default function DayPlanCard({
   onRemoveExercise,
   onUndo,
   selectedIds,
+  onStartTraining,
 }: Props) {
   const T = useT();
   const [exFilter, setExFilter] = useState<ExFilter>('all');
   const [exSearch, setExSearch] = useState('');
+  const [editingEx, setEditingEx] = useState<{ id: string; field: 'sets' | 'reps' | 'weight' } | null>(null);
+  const [editValue, setEditValue] = useState('');
 
   const isRest = task.sportKey === 'rest';
 
@@ -184,7 +188,12 @@ export default function DayPlanCard({
                 <Text style={{ fontSize: 16 }}>{ex.icon}</Text>
                 <Text style={[styles.addedName, { color: TH.text }]}>{ex.nameZh || ex.name}</Text>
                 {ex.defaultSets && ex.defaultReps && (
-                  <Text style={[styles.addedMeta, { color: TH.sub }]}>{ex.defaultSets}×{ex.defaultReps}</Text>
+                  <TouchableOpacity
+                    onPress={() => { setEditingEx({ id: ex.id, field: 'sets' }); setEditValue(String(ex.defaultSets)); }}
+                    style={styles.editPill}
+                  >
+                    <Text style={[styles.addedMeta, { color: TH.sub }]}>{String(ex.defaultSets)}×</Text>
+                  </TouchableOpacity>
                 )}
               </View>
               <TouchableOpacity onPress={() => onRemoveExercise(ex.id)} accessibilityLabel="移除">
@@ -193,6 +202,13 @@ export default function DayPlanCard({
             </View>
           ))}
         </View>
+      )}
+
+      {/* Start Training CTA */}
+      {onStartTraining && addedExs.length > 0 && (
+        <TouchableOpacity onPress={onStartTraining} style={[styles.ctaBtn, { backgroundColor: P }]}>
+          <Text style={styles.ctaText}>{T('bodyStartTraining') || '开始训练'}</Text>
+        </TouchableOpacity>
       )}
     </View>
   );
@@ -226,4 +242,7 @@ const styles = StyleSheet.create({
   addedInfo: { flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 },
   addedName: { fontSize: 14, fontWeight: '500', flex: 1 },
   addedMeta: { fontSize: 12 },
+  editPill: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6, backgroundColor: 'rgba(255,255,255,0.1)' },
+  ctaBtn: { borderRadius: 10, paddingVertical: 12, alignItems: 'center', marginTop: 10 },
+  ctaText: { color: '#fff', fontWeight: '700', fontSize: 14 },
 });
