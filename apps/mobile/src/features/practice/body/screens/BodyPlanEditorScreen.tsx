@@ -10,7 +10,7 @@ import { useRootNavigation, type RootStackParamList } from '../../../../navigati
 import { useShallowStore } from '../../../../store/useAppStore';
 import { getDayOverview, getActivePlan } from '@egoless-do/core';
 import MiniWeekCalendar from '../components/MiniWeekCalendar';
-import DayPlanCard from '../components/DayPlanCard';
+import SnackbarHost from '../components/SnackbarHost';
 
 const WEEKDAY_KEYS = ['bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'bodyWeekThu', 'bodyWeekFri', 'bodyWeekSat', 'bodyWeekSun'];
 const P = '#f59e0b';
@@ -56,6 +56,24 @@ export default function BodyPlanEditorScreen() {
   const [showTemplatePicker, setShowTemplatePicker] = useState(false);
   const [selectedExIds, setSelectedExIds] = useState<Set<string>>(new Set());
   const [pickingDate, setPickingDate] = useState<'start' | 'end' | null>(null);
+  const [snackbar, setSnackbar] = useState<{ visible: boolean; message: string; undoFn: (() => void) | null }>({
+    visible: false,
+    message: '',
+    undoFn: null,
+  });
+
+  const showSnackbar = useCallback((message: string, undoFn: () => void) => {
+    setSnackbar({ visible: true, message, undoFn });
+  }, []);
+
+  const dismissSnackbar = useCallback(() => {
+    setSnackbar(s => ({ ...s, visible: false }));
+  }, []);
+
+  const handleUndo = useCallback(() => {
+    snackbar.undoFn?.();
+    dismissSnackbar();
+  }, [snackbar.undoFn, dismissSnackbar]);
 
   // Load existing plan for editing
   useEffect(() => {
@@ -354,167 +372,47 @@ export default function BodyPlanEditorScreen() {
           </View>
 
           {/* Active day detail */}
-          {activeDay !== null && (() => {
-            const task = currentTask!;
-            const isRest = task.sportKey === 'rest';
-            const hasExs = (task.exercises ?? []).length > 0;
-
-            return (
-              <View style={{ backgroundColor: TH.bg, borderRadius: 12, padding: 12, borderWidth: 1, borderColor: TH.border }}>
-                {/* Header: Day + Rest toggle */}
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-                  <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T(WEEKDAY_KEYS[activeDay - 1])}</Text>
-                  <TouchableOpacity onPress={() => setTaskSportKey(activeDay, isRest ? '' : 'rest')}
-                    style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8, backgroundColor: isRest ? `${P}20` : TH.card, borderWidth: 1, borderColor: isRest ? `${P}40` : TH.border }}>
-                    <Text style={{ fontSize: 16 }}>😴</Text>
-                    <Text style={{ fontSize: FONT_SMALL(), fontWeight: '600', color: isRest ? P : TH.sub }}>{T('bodyPlanRestDay')}</Text>
-                  </TouchableOpacity>
-                </View>
-
-                {!isRest && (
-                  <>
-                    {/* Category filter tabs */}
-                    <View style={{ flexDirection: 'row', gap: 6, marginBottom: 10 }}>
-                      {([
-                        { key: 'all', label: T('bodyPlanFreeTraining'), icon: '🎯' },
-                        { key: 'traditional', label: T('bodyPlanTraditional'), icon: '☯️' },
-                        { key: 'modern', label: T('bodyPlanModern'), icon: '💪' },
-                      ] as const).map(tab => (
-                        <TouchableOpacity key={tab.key} onPress={() => setExFilter(tab.key)}
-                          style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingVertical: 8, borderRadius: 8, backgroundColor: exFilter === tab.key ? `${P}20` : TH.card, borderWidth: 1, borderColor: exFilter === tab.key ? `${P}50` : TH.border }}>
-                          <Text style={{ fontSize: 14 }}>{tab.icon}</Text>
-                          <Text style={{ fontSize: FONT_SMALL(), fontWeight: exFilter === tab.key ? '700' : '500', color: exFilter === tab.key ? P : TH.sub }}>{tab.label}</Text>
-                        </TouchableOpacity>
-                      ))}
-                    </View>
-
-                    {/* Search bar */}
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10, backgroundColor: TH.card, borderRadius: 8, paddingHorizontal: 10, borderWidth: 1, borderColor: TH.border }}>
-                      <Search size={14} color={TH.sub} />
-                      <TextInput value={exSearch} onChangeText={setExSearch} placeholder="搜索动作" placeholderTextColor={TH.sub}
-                        style={{ flex: 1, paddingVertical: 8, color: TH.text, fontSize: FONT_SMALL() }} />
-                      {exSearch ? <TouchableOpacity onPress={() => setExSearch('')}><X size={14} color={TH.sub} /></TouchableOpacity> : null}
-                    </View>
-
-                    {/* Exercise grid — grouped by category */}
-                    <View style={{ marginBottom: 10 }}>
-                      {(() => {
-                        const groups: { cat: typeof EXERCISE_CATEGORIES[number]; items: typeof searchedExs }[] = [];
-                        const addedKeys = new Set<string>();
-                        for (const ex of searchedExs) {
-                          if (!addedKeys.has(ex.category)) {
-                            addedKeys.add(ex.category);
-                            const cat = EXERCISE_CATEGORIES.find(c => c.key === ex.category);
-                            if (cat) groups.push({ cat, items: searchedExs.filter(e => e.category === ex.category) });
-                          }
-                        }
-                        const uncategorized = searchedExs.filter(e => !EXERCISE_CATEGORIES.some(c => c.key === e.category));
-                        if (uncategorized.length > 0) groups.push({ cat: { category: '', key: '__other__', icon: '🏋️', type: 'modern', i18nKey: 'bodyCatModern' }, items: uncategorized });
-                        return groups.map(({ cat, items }) => (
-                          <View key={cat.key} style={{ marginBottom: 12 }}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-                              <Text style={{ fontSize: 18 }}>{cat.icon}</Text>
-                              <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text }}>{T(cat.i18nKey)}</Text>
-                            </View>
-                            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
-                              {items.map(ex => {
-                                const alreadyAdded = hasExs && (task.exercises ?? []).some(e => e.nameZh === ex.nameZh);
-                                const isSelected = selectedExIds.has(ex.id);
-                                return (
-                                  <TouchableOpacity key={ex.id}
-                                    onPress={() => alreadyAdded ? null : toggleExSelect(ex.id)}
-                                    style={{ width: '31%', minWidth: 90, borderRadius: 10, padding: 10, borderWidth: isSelected ? 2 : 1, borderColor: isSelected ? P : alreadyAdded ? `${P}30` : TH.border, backgroundColor: isSelected ? `${P}18` : alreadyAdded ? `${P}08` : TH.card, opacity: alreadyAdded ? 0.45 : 1 }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 2 }}>
-                                      <Text style={{ fontSize: 16 }}>{ex.icon}</Text>
-                                      <Text style={{ fontSize: FONT_SMALL(), color: isSelected ? P : TH.text, fontWeight: isSelected ? '700' : '500', flex: 1 }} numberOfLines={1}>{isSelected && '☑ '}{alreadyAdded && !isSelected && '✓ '}{ex.nameZh}</Text>
-                                    </View>
-                                    {ex.defaultSets && ex.defaultReps && (
-                                      <Text style={{ fontSize: 10, color: isSelected ? P : TH.sub }}>{ex.defaultSets}×{ex.defaultReps}</Text>
-                                    )}
-                                    {!ex.defaultSets && ex.defaultDurationSec && (
-                                      <Text style={{ fontSize: 10, color: isSelected ? P : TH.sub }}>{String(Math.round(ex.defaultDurationSec / 60))}分钟</Text>
-                                    )}
-                                  </TouchableOpacity>
-                                );
-                              })}
-                            </View>
-                          </View>
-                        ));
-                      })()}
-                    </View>
-
-                    {/* Selection bar */}
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: `${P}10`, borderRadius: 10, padding: 8, borderWidth: 1, borderColor: `${P}30` }}>
-                      <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: P }}>已选 {String(selectedExIds.size)} 个</Text>
-                      <TouchableOpacity onPress={addSelectedExercises} disabled={selectedExIds.size === 0}
-                        style={{ backgroundColor: selectedExIds.size > 0 ? P : TH.border, borderRadius: 8, paddingHorizontal: 16, paddingVertical: 8 }}>
-                        <Text style={{ color: selectedExIds.size > 0 ? '#fff' : TH.sub, fontWeight: '700', fontSize: FONT_BODY() }}>添加</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </>
-                )}
-
-                {isRest && (
-                  <View style={{ alignItems: 'center', paddingVertical: 16 }}>
-                    <Text style={{ fontSize: 32 }}>😴</Text>
-                    <Text style={{ fontSize: FONT_BODY(), color: TH.sub, marginTop: 6 }}>{T('bodyPlanRestDay')}</Text>
-                {/* Added exercises */}
-                {hasExs && (
-                  <View style={{ marginBottom: 8, marginTop: 8 }}>
-                    {(task.exercises ?? []).map(ex => (
-                      <View key={ex.id} style={[styles.exRow, { backgroundColor: `${P}08` }]}>
-                        <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }}>
-                          {ex.icon} {ex.nameZh || ex.name}
-                          {ex.defaultSets && ex.defaultReps ? `  ${ex.defaultSets}×${ex.defaultReps}` : ''}
-                          {ex.defaultWeight ? `  ${ex.defaultWeight}kg` : ''}
-                          {ex.defaultDurationSec ? `  ${Math.round(ex.defaultDurationSec / 60)}min` : ''}
-                        </Text>
-                        <TouchableOpacity onPress={() => removeExercise(activeDay, ex.id)}><X size={14} color="#EF4444" /></TouchableOpacity>
-                      </View>
-                    ))}
-                  </View>
-                )}
-
-                {/* Custom exercise */}
-                {showCustomEx === activeDay ? (
-                  <View style={{ backgroundColor: TH.card, borderRadius: 8, padding: 8, borderWidth: 1, borderColor: TH.border, marginBottom: 8 }}>
-                    <View style={{ flexDirection: 'row', gap: 6, marginBottom: 6 }}>
-                      <TextInput value={customExName} onChangeText={setCustomExName} placeholder="动作名称" placeholderTextColor={TH.sub}
-                        style={[styles.smallInput, { flex: 2, backgroundColor: TH.bg, color: TH.text, borderColor: TH.border }]} />
-                      <TextInput value={customExSets} onChangeText={setCustomExSets} placeholder="组" keyboardType="numeric" placeholderTextColor={TH.sub}
-                        style={[styles.smallInput, { flex: 1, backgroundColor: TH.bg, color: TH.text, borderColor: TH.border }]} />
-                      <TextInput value={customExReps} onChangeText={setCustomExReps} placeholder="次" keyboardType="numeric" placeholderTextColor={TH.sub}
-                        style={[styles.smallInput, { flex: 1, backgroundColor: TH.bg, color: TH.text, borderColor: TH.border }]} />
-                    </View>
-                    <View style={{ flexDirection: 'row', gap: 6 }}>
-                      <TouchableOpacity onPress={() => addCustomExercise(activeDay)}
-                        style={{ flex: 1, paddingVertical: 6, borderRadius: 6, backgroundColor: P, alignItems: 'center' }}>
-                        <Text style={{ color: '#fff', fontSize: FONT_SMALL(), fontWeight: '600' }}>{T('confirm')}</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={() => { setShowCustomEx(null); setCustomExName(''); }}
-                        style={{ paddingVertical: 6, paddingHorizontal: 12, borderRadius: 6, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
-                        <Text style={{ color: TH.sub, fontSize: FONT_SMALL() }}>{T('cancel')}</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                ) : (
-                  <TouchableOpacity onPress={() => setShowCustomEx(activeDay)} style={{ marginBottom: 4 }}>
-                    <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>+ {T('bodyPlanAddCustom')}</Text>
-                  </TouchableOpacity>
-                )}
-
-                {/* Note */}
-                <TextInput value={task.note ?? ''} onChangeText={v => setTasks(prev => prev.map(t => t.weekday === activeDay ? { ...t, note: v } : t))}
-                  placeholder={T('bodyPlanNote')} placeholderTextColor={TH.sub}
-                  style={{ backgroundColor: TH.card, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 6, color: TH.text, fontSize: FONT_SMALL(), borderWidth: 1, borderColor: TH.border }} />
-                  </View>
-                )}
-            );
-              </View>
-            );
-          })()}
+          {activeDay !== null && currentTask && (
+            <DayPlanCard
+              TH={TH}
+              task={currentTask}
+              exerciseLibrary={exerciseLibrary}
+              selectedIds={selectedExIds}
+              onToggleExercise={(ex) => {
+                const isSelected = selectedExIds.has(ex.id);
+                const isAlreadyAdded = (currentTask.exercises ?? []).some(e => e.nameZh === ex.nameZh);
+                if (isSelected) {
+                  setSelectedExIds(prev => { const n = new Set(prev); n.delete(ex.id); return n; });
+                  showSnackbar(`${ex.nameZh} 已移除`, () => setSelectedExIds(prev => new Set([...prev, ex.id])));
+                } else if (!isAlreadyAdded) {
+                  setSelectedExIds(prev => new Set([...prev, ex.id]));
+                  showSnackbar(`${ex.nameZh} 已添加`, () => setSelectedExIds(prev => { const n = new Set(prev); n.delete(ex.id); return n; }));
+                }
+              }}
+              onUpdateExercise={(exId, updates) => {
+                setTasks(prev => prev.map(t =>
+                  t.weekday === activeDay ? { ...t, exercises: (t.exercises ?? []).map(e => e.id === exId ? { ...e, ...updates } : e) } : t
+                ));
+              }}
+              onRemoveExercise={(exId) => {
+                setTasks(prev => prev.map(t =>
+                  t.weekday === activeDay ? { ...t, exercises: (t.exercises ?? []).filter(e => e.id !== exId) } : t
+                ));
+              }}
+              onUndo={handleUndo}
+            />
+          )}
         </View>
       </ScrollView>
+
+      {/* ── Snackbar for undo ── */}
+      <SnackbarHost
+        TH={TH}
+        visible={snackbar.visible}
+        message={snackbar.message}
+        onUndo={handleUndo}
+        onDismiss={dismissSnackbar}
+      />
 
       {/* ── Floating Save ── */}
       <View style={[styles.footer, { backgroundColor: TH.bg, borderTopColor: TH.border }]}>
