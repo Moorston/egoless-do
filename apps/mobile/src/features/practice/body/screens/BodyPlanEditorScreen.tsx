@@ -378,28 +378,7 @@ export default function BodyPlanEditorScreen() {
               task={currentTask}
               exerciseLibrary={exerciseLibrary}
               selectedIds={selectedExIds}
-              onToggleExercise={(ex) => {
-                const isSelected = selectedExIds.has(ex.id);
-                const isAlreadyAdded = (currentTask.exercises ?? []).some(e => e.nameZh === ex.nameZh);
-                if (isSelected) {
-                  setSelectedExIds(prev => { const n = new Set(prev); n.delete(ex.id); return n; });
-                  showSnackbar(`${ex.nameZh} 已移除`, () => setSelectedExIds(prev => new Set([...prev, ex.id])));
-                } else if (!isAlreadyAdded) {
-                  setSelectedExIds(prev => new Set([...prev, ex.id]));
-                  showSnackbar(`${ex.nameZh} 已添加`, () => setSelectedExIds(prev => { const n = new Set(prev); n.delete(ex.id); return n; }));
-                }
-              }}
-              onUpdateExercise={(exId, updates) => {
-                setTasks(prev => prev.map(t =>
-                  t.weekday === activeDay ? { ...t, exercises: (t.exercises ?? []).map(e => e.id === exId ? { ...e, ...updates } : e) } : t
-                ));
-              }}
-              onRemoveExercise={(exId) => {
-                setTasks(prev => prev.map(t =>
-                  t.weekday === activeDay ? { ...t, exercises: (t.exercises ?? []).filter(e => e.id !== exId) } : t
-                ));
-              }}
-              onUndo={handleUndo}
+              onShowSnackbar={showSnackbar}
             />
           )}
         </View>

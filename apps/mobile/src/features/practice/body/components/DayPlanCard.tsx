@@ -18,30 +18,21 @@ interface Props {
   TH: Theme;
   task: BodyPlanTask;
   exerciseLibrary: ExerciseDef[];
-  onToggleExercise: (ex: ExerciseDef) => void;
-  onUpdateExercise: (exId: string, updates: Partial<ExerciseDef>) => void;
-  onRemoveExercise: (exId: string) => void;
-  onUndo: () => void;
+  onShowSnackbar: (message: string, undoFn: () => void) => void;
   selectedIds: Set<string>;
-  onStartTraining?: () => void;
 }
 
 export default function DayPlanCard({
   TH,
   task,
   exerciseLibrary,
-  onToggleExercise,
-  onUpdateExercise,
-  onRemoveExercise,
-  onUndo,
+  onShowSnackbar,
   selectedIds,
-  onStartTraining,
 }: Props) {
   const T = useT();
   const [exFilter, setExFilter] = useState<ExFilter>('all');
   const [exSearch, setExSearch] = useState('');
-  const [editingEx, setEditingEx] = useState<{ id: string; field: 'sets' | 'reps' | 'weight' } | null>(null);
-  const [editValue, setEditValue] = useState('');
+  const [selectedExIds, setSelectedExIds] = useState<Set<string>>(new Set());
 
   const isRest = task.sportKey === 'rest';
 
@@ -76,9 +67,16 @@ export default function DayPlanCard({
   const addedExs = useMemo(() => task.exercises ?? [], [task.exercises]);
 
   const handleToggle = useCallback((ex: ExerciseDef) => {
-    onToggleExercise(ex);
-    onUndo(); // show snackbar with undo
-  }, [onToggleExercise, onUndo]);
+    const isSelected = selectedIds.has(ex.id);
+    const isAlreadyAdded = addedExs.some(e => e.nameZh === ex.nameZh);
+    if (isSelected) {
+      setSelectedExIds(prev => { const n = new Set(prev); n.delete(ex.id); return n; });
+      onShowSnackbar(`${ex.nameZh} 已移除`, () => setSelectedExIds(prev => new Set([...prev, ex.id])));
+    } else if (!isAlreadyAdded) {
+      setSelectedExIds(prev => new Set([...prev, ex.id]));
+      onShowSnackbar(`${ex.nameZh} 已添加`, () => setSelectedExIds(prev => { const n = new Set(prev); n.delete(ex.id); return n; }));
+    }
+  }, [selectedIds, addedExs, onShowSnackbar]);
 
   if (isRest) {
     return (
