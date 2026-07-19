@@ -12,6 +12,7 @@ import { useShallowStore } from '../../../../store/useAppStore';
 import DayPlanCard from '../components/DayPlanCard';
 import MiniWeekCalendar from '../components/MiniWeekCalendar';
 import SnackbarHost from '../components/SnackbarHost';
+import UnifiedExercisePool from '../components/UnifiedExercisePool';
 import TemplatePickerModal from '../modals/TemplatePickerModal';
 
 const P = '#f59e0b';
@@ -48,7 +49,6 @@ export default function BodyPlanEditorScreen() {
     Array.from({ length: 7 }, (_, i) => ({ weekday: i + 1, sportKey: '', note: '' }))
   );
   const [activeDay, setActiveDay] = useState<number | null>(null);
-  const [selectedExIds] = useState<Set<string>>(new Set());
   const [showTemplatePicker, setShowTemplatePicker] = useState(false);
   const [pickingDate, setPickingDate] = useState<'start' | 'end' | null>(null);
   const [snackbar, setSnackbar] = useState<{ visible: boolean; message: string; undoFn: (() => void) | null }>({
@@ -56,6 +56,10 @@ export default function BodyPlanEditorScreen() {
     message: '',
     undoFn: null,
   });
+
+  // ── Day chooser state (UnifiedExercisePool) ──
+  const [dayChooserEx, setDayChooserEx] = useState<ExerciseDef | null>(null);
+  const [selectedDays, setSelectedDays] = useState<Set<number>>(new Set());
 
   const showSnackbar = useCallback((message: string, undoFn: () => void) => {
     setSnackbar({ visible: true, message, undoFn });
@@ -98,23 +102,76 @@ export default function BodyPlanEditorScreen() {
     ));
   }, []);
 
-  const toggleExercise = useCallback((weekday: number, ex: ExerciseDef) => {
-    const task = tasks.find(t => t.weekday === weekday);
-    if (!task) return;
-    const currentExs = task.exercises ?? [];
-    const existingIdx = currentExs.findIndex(e => e.id === ex.id);
+  // Build a map of weekday → exercises for the UnifiedExercisePool
+  const dayTasksMap = useMemo(() => {
+    const map = new Map<number, ExerciseDef[]>();
+    for (const task of tasks) {
+      map.set(task.weekday, task.exercises ?? []);
+    }
+    return map;
+  }, [tasks]);
 
-    if (existingIdx >= 0) {
-      updateTask(weekday, { exercises: currentExs.filter((_, i) => i !== existingIdx) });
-    } else {
+  // Batch add exercise to multiple days
+  const handleAddToDays = useCallback((ex: ExerciseDef, days: number[]) => {
+    let added = 0;
+    let skipped = 0;
+
+    setTasks(prev => prev.map(t => {
+      if (!days.includes(t.weekday)) return t;
+      const currentExs = t.exercises ?? [];
+      const existingIdx = currentExs.findIndex(e => e.nameZh === ex.nameZh);
+      if (existingIdx >= 0) {
+        skipped++;
+        return t;
+      }
       const newEx = {
         ...ex,
-        id: `planex_${weekday}_${Date.now()}_${currentExs.length}`,
+        id: `planex_${t.weekday}_${Date.now()}_${currentExs.length}`,
       };
-      const sportKey = task.sportKey || ex.category || 'full_body';
-      updateTask(weekday, { sportKey, exercises: [...currentExs, newEx] });
+      const sportKey = t.sportKey || ex.category || 'full_body';
+      added++;
+      return { ...t, sportKey, exercises: [...currentExs, newEx] };
+    }));
+
+    // Show snackbar feedback
+    if (added > 0) {
+      let msg = `${T('bodyPlanAddedTo') || '已添加到'} ${added} ${T('bodyPlanDays') || '天'}`;
+      if (skipped > 0) {
+        msg += `，${T('bodyPlanSkipped') || '已跳过'} ${skipped} ${T('bodyPlanDays') || '天'}（${T('bodyPlanAlreadyExists') || '已存在'}）`;
+      }
+      showSnackbar(msg, () => {
+        // Undo: remove the added exercise from all target days
+        setTasks(prev => prev.map(t => {
+          if (!days.includes(t.weekday)) return t;
+          // Remove the last added instance of this exercise
+          const currentExs = t.exercises ?? [];
+          const idx = currentExs.findLastIndex(e => e.nameZh === ex.nameZh);
+          if (idx >= 0) {
+            return { ...t, exercises: currentExs.filter((_, i) => i !== idx) };
+          }
+          return t;
+        }));
+      });
+    } else if (skipped > 0) {
+      showSnackbar(
+        `${T('bodyPlanAlreadyExists') || '已存在'} — ${T('bodyPlanSkipped') || '跳过'} ${skipped} ${T('bodyPlanDays') || '天'}`,
+        () => {} // No-op undo for skip-only
+      );
     }
-  }, [tasks, updateTask]);
+
+    // Clear day chooser state after save
+    setDayChooserEx(null);
+    setSelectedDays(new Set());
+  }, [T, showSnackbar]);
+
+  // Handle day chooser changes from UnifiedExercisePool
+  const handleDayChooserChange = useCallback((days: Set<number>) => {
+    setSelectedDays(days);
+  }, []);
+
+  const handleDayChooserSetEx = useCallback((ex: ExerciseDef | null) => {
+    setDayChooserEx(ex);
+  }, []);
 
   const handleSelectTemplate = useCallback((template: PlanTemplate) => {
     setName(T(template.nameI18nKey as never));
@@ -181,8 +238,6 @@ export default function BodyPlanEditorScreen() {
   }, [handleSave, nav]);
 
   const dayOverviews = useMemo(() => {
-    // Use the local editing state (tasks + startDate + endDate) so the MiniWeekCalendar
-    // reflects the plan being edited, not the active plan from the store.
     const syntheticPlan: BodyTrainingPlan = {
       id: 'editing',
       name: 'Editing Plan',
@@ -289,17 +344,33 @@ export default function BodyPlanEditorScreen() {
               T={T}
             />
 
+            {/* Unified Exercise Pool — screen-level, replaces per-day ExercisePickerGrid */}
+            <View style={[styles.unifiedPoolContainer, { backgroundColor: TH.bg, borderColor: TH.border }]}>
+              <Text style={[styles.unifiedPoolTitle, { color: TH.text }]}>
+                {T('bodyPlanExercisePool') || '动作库'}
+              </Text>
+              <UnifiedExercisePool
+                TH={TH}
+                T={T}
+                exerciseLibrary={exerciseLibrary}
+                dayTasks={dayTasksMap}
+                activeDay={activeDay}
+                selectedDays={selectedDays}
+                onDayChooserChange={handleDayChooserChange}
+                onDayChooserEx={dayChooserEx}
+                onDayChooserSetEx={handleDayChooserSetEx}
+                onAddToDays={handleAddToDays}
+              />
+            </View>
+
             {tasks.map((task) => (
               <DayPlanCard
                 key={task.weekday}
                 TH={TH}
                 T={T}
                 task={task}
-                exerciseLibrary={exerciseLibrary}
-                selectedIds={selectedExIds}
                 onStartTraining={handleStartDayTraining}
                 onUpdateTask={updateTask}
-                onToggleExercise={toggleExercise}
                 onShowSnackbar={showSnackbar}
               />
             ))}
@@ -366,4 +437,15 @@ const styles = StyleSheet.create({
   footer: { position: 'absolute', bottom: 0, left: 0, right: 0, padding: 16, paddingBottom: 24, borderTopWidth: 1, flexDirection: 'row', gap: 10 },
   saveBtn: { flex: 1, paddingVertical: 14, borderRadius: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6 },
   startBtn: { flex: 2, paddingVertical: 14, borderRadius: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
+  unifiedPoolContainer: {
+    borderRadius: 12,
+    borderWidth: 1,
+    padding: 12,
+    marginBottom: 12,
+  },
+  unifiedPoolTitle: {
+    fontSize: FONT_SUB(),
+    fontWeight: '700',
+    marginBottom: 8,
+  },
 });

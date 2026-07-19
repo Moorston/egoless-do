@@ -9,7 +9,6 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 }
 
 import ExerciseCard from './ExerciseCard';
-import ExercisePickerGrid from './ExercisePickerGrid';
 
 const P = '#f59e0b';
 
@@ -17,23 +16,18 @@ interface Props {
   TH: Theme;
   T: (key: string) => string;
   task: BodyPlanTask;
-  exerciseLibrary: ExerciseDef[];
   onStartTraining: (weekday: number) => void;
   onUpdateTask: (weekday: number, updates: Partial<BodyPlanTask>) => void;
-  onToggleExercise: (weekday: number, ex: ExerciseDef) => void;
-  selectedIds: Set<string>;
   onShowSnackbar: (message: string, undoFn: () => void) => void;
 }
 
 export default function DayPlanCard({
-  TH, T, task, exerciseLibrary,
-  onStartTraining, onUpdateTask, onToggleExercise,
-  selectedIds, onShowSnackbar,
+  TH, T, task,
+  onStartTraining, onUpdateTask, onShowSnackbar,
 }: Props) {
   const [expanded, setExpanded] = useState(false);
   const isRest = task.sportKey === 'rest';
   const addedExs = useMemo(() => task.exercises ?? [], [task.exercises]);
-  const addedExIds = useMemo(() => new Set(addedExs.map(e => e.id)), [addedExs]);
 
   // Part icon
   const partIcon = useMemo(() => {
@@ -91,34 +85,6 @@ export default function DayPlanCard({
     );
     onUpdateTask(task.weekday, { exercises: newExs });
   }, [addedExs, task.weekday, onUpdateTask]);
-
-  const handleToggleExercise = useCallback((ex: ExerciseDef) => {
-    const isSelected = selectedIds.has(ex.id);
-    const isAlreadyAdded = addedExIds.has(ex.id);
-
-    if (isSelected) {
-      // Deselect (undo-ready)
-      onToggleExercise(task.weekday, ex);
-      onShowSnackbar(
-        `${ex.nameZh} ${T('bodyPlanRemoved') || '已移除'}`,
-        () => onToggleExercise(task.weekday, ex)
-      );
-    } else if (isAlreadyAdded) {
-      // Remove from day plan
-      handleRemoveExercise(ex.id);
-    } else {
-      // Add to day plan
-      onToggleExercise(task.weekday, ex);
-      onShowSnackbar(
-        `${ex.nameZh} ${T('bodyPlanAdded') || '已添加'}`,
-        () => {
-          // Undo: remove it again
-          const newExs = (task.exercises ?? []).filter(e => e.id !== ex.id);
-          onUpdateTask(task.weekday, { exercises: newExs });
-        }
-      );
-    }
-  }, [selectedIds, addedExIds, task, onToggleExercise, onShowSnackbar, handleRemoveExercise, onUpdateTask, T]);
 
   // ── Rest day view ──
   if (isRest) {
@@ -183,7 +149,7 @@ export default function DayPlanCard({
       {/* Expanded content */}
       {expanded && (
         <View style={[styles.expandedContent, { borderTopColor: TH.border }]}>
-          {/* Exercise List (already added) */}
+          {/* Exercise List (already added) — only inline edit/remove */}
           {addedExs.length > 0 && (
             <View style={styles.exerciseListSection}>
               <Text style={[styles.sectionTitle, { color: TH.text }]}>
@@ -202,20 +168,14 @@ export default function DayPlanCard({
             </View>
           )}
 
-          {/* Exercise Picker Grid */}
-          <View style={styles.pickerSection}>
-            <Text style={[styles.sectionTitle, { color: TH.text }]}>
-              {T('bodyPlanAddExercise') || '添加动作'}
-            </Text>
-            <ExercisePickerGrid
-              TH={TH}
-              T={T}
-              exerciseLibrary={exerciseLibrary}
-              addedExIds={addedExIds}
-              selectedIds={selectedIds}
-              onToggle={handleToggleExercise}
-            />
-          </View>
+          {/* Empty state when no exercises */}
+          {addedExs.length === 0 && (
+            <View style={styles.emptySection}>
+              <Text style={[styles.emptyText, { color: TH.sub }]}>
+                {T('bodyPlanNoExercises') || '暂无动作，请从上方动作池添加'}
+              </Text>
+            </View>
+          )}
 
           {/* CTA - Start Training this day */}
           {addedExs.length > 0 && (
@@ -304,7 +264,14 @@ const styles = StyleSheet.create({
   exerciseListSection: {
     marginBottom: 4,
   },
-  pickerSection: {},
+  emptySection: {
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: FONT_SUB(),
+    textAlign: 'center',
+  },
   ctaBtn: {
     backgroundColor: '#f59e0b',
     borderRadius: 12,

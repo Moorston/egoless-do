@@ -1,1 +1,5 @@
-{"_example": "Fill with {\"file\": \"<path>\", \"reason\": \"<why>\"}. Put spec/research files only — no code paths. Run `python .trellis/scripts/get_context.py --mode packages` to list available specs. Delete this line once real entries are added."}
+{"file": ".trellis/spec/mobile/frontend/component-guidelines.md", "reason": "Component 模式、交互模式（Toggle-to-Add / Inline Editing / Expand-Collapse）"}
+{"file": ".trellis/spec/mobile/frontend/state-management.md", "reason": "Zustand slice + SQLite 持久化模式，确保天动作批量写入路径正确"}
+{"file": ".trellis/spec/mobile/frontend/quality-guidelines.md", "reason": "UI 组件质量规则、禁止模式、可访问性要求"}
+{"file": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md", "reason": "全局代码规范：类型安全、命名规范、ESLint 规则"}
+{"file": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md", "reason": "架构约束：包依赖方向、store 契约、禁止模式"}

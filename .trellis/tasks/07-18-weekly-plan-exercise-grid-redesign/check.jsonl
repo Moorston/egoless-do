@@ -1,1 +1,4 @@
-{"_example": "Fill with {\"file\": \"<path>\", \"reason\": \"<why>\"}. Put spec/research files only — no code paths. Run `python .trellis/scripts/get_context.py --mode packages` to list available specs. Delete this line once real entries are added."}
+{"file": ".trellis/spec/mobile/frontend/quality-guidelines.md", "reason": "UI 质量检查清单：可访问性、性能、样式规范"}
+{"file": ".trellis/spec/mobile/frontend/type-safety.md", "reason": "类型安全规则，检查 props 接口变更"}
+{"file": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md", "reason": "全局代码规范验证：类型安全、ESLint、命名"}
+{"file": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md", "reason": "架构约束验证：包依赖方向、禁止模式"}

@@ -174,6 +174,33 @@ const handleToggle = useCallback(() => {
 - 色块颜色映射：`rest=gray` / `empty=lightBorder` / `withIntensity=primaryGradient`
 - 高度 60-80px，紧凑布局
 
+### Unified Exercise Pool with Multi-Day Assignment
+
+屏幕级统一动作池，替代 per-day 的选择器，支持批量分配到多天：
+
+```tsx
+// UnifiedExercisePool: screen-level grid with day checkboxes
+<UnifiedExercisePool
+  TH={TH}
+  T={T}
+  exerciseLibrary={exerciseLibrary}
+  dayTasks={dayTasks}          // Map<weekday, ExerciseDef[]>
+  activeDay={activeDay}
+  selectedDays={selectedDays}
+  selectedEx={dayChooserEx}
+  onDayChooserChange={setSelectedDays}
+  onDayChooserSetEx={setDayChooserEx}
+  onAddToDays={handleAddToDays}
+/>
+```
+
+**Rules:**
+- 统一池是唯一的添加动作入口，不在 per-day 视图内重复
+- 天勾选列表使用紧凑的 7 天复选框（Mon Tue Wed ...），预勾选当前展开的天
+- 冲突检测：使用 `nameZh`（库标识符）而非生成的 `id` 匹配，因为计划中的动作 ID 是动态生成的
+- 批量分配后 500ms debounce 自动保存，无需确认步骤
+- 已存在动作的天显示 dimmed checkbox + snackbar 提示跳过数量
+
 ---
 
 ## Logging
