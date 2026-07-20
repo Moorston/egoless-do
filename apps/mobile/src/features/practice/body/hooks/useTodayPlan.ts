@@ -43,13 +43,19 @@ export function useTodayPlan(): TodayPlanData {
 
     // Old bodyPlans lookup (backward compat)
     const plans = (bodyPlans ?? []).filter((p: BodyPlan) => !p.deleted);
-    const todayPlan = plans.find((p: BodyPlan) => p.weekday === weekday);
+    const oldTodayPlan = plans.find((p: BodyPlan) => p.weekday === weekday);
 
     // Active training plan + override
     const activeTrainingPlan = (bodyTrainingPlans ?? []).find(
       (p: BodyTrainingPlan) => !p.deleted && p.status === 'active'
     );
     const todayOverride = activeTrainingPlan?.overrides?.[ds];
+
+    // 从训练计划中推导今日方案（当旧 bodyPlan 无数据时）
+    const trainingTodayTask = activeTrainingPlan?.tasks.find(t => t.weekday === weekday);
+    const todayPlan = oldTodayPlan ?? (trainingTodayTask?.sportKey && trainingTodayTask.sportKey !== 'rest'
+      ? { id: `training-${weekday}`, weekday, part: trainingTodayTask.sportKey, note: trainingTodayTask.note } as BodyPlan
+      : undefined);
 
     // Resolve exercises from training plan task (with override applied)
     let todayExercises: ExerciseDef[] | undefined;
