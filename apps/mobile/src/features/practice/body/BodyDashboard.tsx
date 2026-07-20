@@ -364,8 +364,33 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                     )}
                   </View>
                 </View>
+                {/* 今日动作列表 */}
+                {todayExercises && todayExercises.length > 0 && (
+                  <View style={{ backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 8, padding: 8, marginBottom: 10 }}>
+                    {todayExercises.map((e, i) => {
+                      const sets = e.defaultSets;
+                      const reps = e.defaultReps;
+                      const dur = e.defaultDurationSec;
+                      let detail = '';
+                      if (sets && reps) detail = `${sets}组×${reps}次`;
+                      else if (sets) detail = `${sets}组`;
+                      else if (dur) detail = `${Math.round(dur / 60)}分钟`;
+                      return (
+                        <Text key={i} style={{ fontSize: FONT_SMALL(), color: '#fff', lineHeight: 18 }}>
+                          {e.nameZh}{detail ? ` ${detail}` : ''}
+                        </Text>
+                      );
+                    })}
+                  </View>
+                )}
                 <TouchableOpacity
-                  onPress={() => onFlowStart?.()}
+                  onPress={() => {
+                    if (activeTrainingPlan?.id) {
+                      onFlowStartWithPlan?.(activeTrainingPlan.id);
+                    } else {
+                      onFlowStart?.();
+                    }
+                  }}
                   activeOpacity={0.85}
                   style={styles.bannerButton}
                 >
