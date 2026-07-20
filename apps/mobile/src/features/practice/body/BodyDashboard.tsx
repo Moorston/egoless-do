@@ -818,13 +818,23 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                   return e.nameZh;
                 };
                 return (
-                  <View key={task.weekday} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4 }}>
+                  <View key={task.weekday} style={{ flexDirection: 'row', gap: 8, paddingVertical: 4 }}>
                     <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: isRest ? TH.border : '#f59e0b20', alignItems: 'center', justifyContent: 'center' }}>
                       <Text style={{ fontSize: 11, color: isRest ? TH.sub : '#f59e0b', fontWeight: '600' }}>{dayLabels[task.weekday - 1]}</Text>
                     </View>
-                    <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }} numberOfLines={1}>
-                      {isRest ? (T('bodyPlanRestDay') || '休息') : exercises.length > 0 ? exercises.map(formatEx).join('、') : (T('bodyPlanNoExercises'))}
-                    </Text>
+                    <View style={{ flex: 1 }}>
+                      {isRest ? (
+                        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyPlanRestDay') || '休息'}</Text>
+                      ) : exercises.length > 0 ? (
+                        exercises.map((e, i) => (
+                          <Text key={i} style={{ fontSize: FONT_SMALL(), color: TH.text }}>
+                            {formatEx(e)}
+                          </Text>
+                        ))
+                      ) : (
+                        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyPlanNoExercises')}</Text>
+                      )}
+                    </View>
                   </View>
                 );
               })}
