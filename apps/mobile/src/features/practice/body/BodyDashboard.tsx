@@ -801,6 +801,25 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                 </View>
               </View>
             )}
+            {/* 周计划任务 */}
+            <View style={{ marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: TH.border }}>
+              <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 8 }}>{T('bodyWeeklyPlan')}</Text>
+              {activeTrainingPlan.tasks.map((task) => {
+                const exercises = task.exercises ?? [];
+                const isRest = !task.sportKey || task.sportKey === 'rest';
+                const dayLabels = [T('bodyWeekMon') || '一', T('bodyWeekTue') || '二', T('bodyWeekWed') || '三', T('bodyWeekThu') || '四', T('bodyWeekFri') || '五', T('bodyWeekSat') || '六', T('bodyWeekSun') || '日'];
+                return (
+                  <View key={task.weekday} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4 }}>
+                    <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: isRest ? TH.border : '#f59e0b20', alignItems: 'center', justifyContent: 'center' }}>
+                      <Text style={{ fontSize: 11, color: isRest ? TH.sub : '#f59e0b', fontWeight: '600' }}>{dayLabels[task.weekday - 1]}</Text>
+                    </View>
+                    <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }} numberOfLines={1}>
+                      {isRest ? (T('bodyPlanRestDay') || '休息') : exercises.length > 0 ? exercises.map(e => e.nameZh).join('、') : (T('bodyPlanNoExercises'))}
+                    </Text>
+                  </View>
+                );
+              })}
+            </View>
           </View>
         ) : (
           <View style={styles.planEmpty}>
