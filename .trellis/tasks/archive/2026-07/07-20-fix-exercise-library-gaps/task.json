@@ -1,0 +1,31 @@
+{
+  "id": "fix-exercise-library-gaps",
+  "name": "fix-exercise-library-gaps",
+  "title": "修复瑜伽太极去重bug + 增加全部缺失运动",
+  "description": "",
+  "status": "completed",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P2",
+  "creator": "freebytes",
+  "assignee": "freebytes",
+  "createdAt": "2026-07-20",
+  "completedAt": "2026-07-20",
+  "branch": null,
+  "base_branch": "master",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [
+    "07-20-fix-yoga-taiji-dedup",
+    "07-20-add-p0-sports",
+    "07-20-add-p1-sports",
+    "07-20-add-p2-sports"
+  ],
+  "parent": null,
+  "relatedFiles": [],
+  "notes": "",
+  "meta": {}
+}
