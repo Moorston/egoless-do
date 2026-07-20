@@ -1,12 +1,13 @@
 import { FONT_TITLE, FONT_BODY, FONT_SMALL, dateStr, type BodyTrainingPlan } from '@egoless-do/core';
-import { ChevronLeft, Play, Pause, Trash2, Clock } from 'lucide-react-native';
-import React, { useMemo, useCallback } from 'react';
+import { ChevronLeft, Play, Pause, Trash2, Clock, Pencil, Eye } from 'lucide-react-native';
+import React, { useMemo, useCallback, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../../../components/UI';
 import { useRootNavigation } from '../../../../navigation/hooks';
 import { useShallowStore } from '../../../../store/useAppStore';
+import PlanDetailModal from '../modals/PlanDetailModal';
 
 const STATUS_CONFIG = {
   active: { icon: '🟢', color: '#10b981', labelKey: 'bodyPlanActive' },
@@ -23,6 +24,7 @@ export default function PlanManagementScreen() {
     updateBodyTrainingPlan: s.updateBodyTrainingPlan,
     removeBodyTrainingPlan: s.removeBodyTrainingPlan,
   }));
+  const [detailPlan, setDetailPlan] = useState<BodyTrainingPlan | null>(null);
 
   const plans = useMemo(() =>
     (bodyTrainingPlans ?? [])
@@ -150,35 +152,42 @@ export default function PlanManagementScreen() {
                 </View>
 
                 {/* Actions */}
-                <View style={{ flexDirection: 'row', gap: 8 }}>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
                   {isActive ? (
-                    <>
-                      <TouchableOpacity onPress={() => handlePause(plan)} style={[styles.actionBtn, { backgroundColor: TH.border }]}>
-                        <Pause size={14} color={TH.text} />
-                        <Text style={{ fontSize: FONT_SMALL(), color: TH.text, fontWeight: '600' }}>{T('bodyPlanPause') || '暂停'}</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={() => nav.navigate('BodyPlanEditor' as never, { planId: plan.id } as never)} style={[styles.actionBtn, { backgroundColor: '#f59e0b20' }]}>
-                        <Text style={{ fontSize: FONT_SMALL(), color: '#f59e0b', fontWeight: '600' }}>{T('bodyPlanEdit')}</Text>
-                      </TouchableOpacity>
-                    </>
+                    <TouchableOpacity onPress={() => handlePause(plan)} style={[styles.actionBtn, { backgroundColor: TH.border }]}>
+                      <Pause size={14} color={TH.text} />
+                      <Text style={{ fontSize: FONT_SMALL(), color: TH.text, fontWeight: '600' }}>{T('bodyPlanPause') || '暂停'}</Text>
+                    </TouchableOpacity>
                   ) : (
-                    <>
-                      <TouchableOpacity onPress={() => handleActivate(plan)} style={[styles.actionBtn, { backgroundColor: '#10b981' }]}>
-                        <Play size={14} color="#fff" />
-                        <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600' }}>{T('bodyPlanActivate') || '激活'}</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={() => handleDelete(plan)} style={[styles.actionBtn, { backgroundColor: '#ef444420' }]}>
-                        <Trash2 size={14} color="#ef4444" />
-                        <Text style={{ fontSize: FONT_SMALL(), color: '#ef4444', fontWeight: '600' }}>{T('bodyDelete') || '删除'}</Text>
-                      </TouchableOpacity>
-                    </>
+                    <TouchableOpacity onPress={() => handleActivate(plan)} style={[styles.actionBtn, { backgroundColor: '#10b981' }]}>
+                      <Play size={14} color="#fff" />
+                      <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600' }}>{T('bodyPlanActivate') || '激活'}</Text>
+                    </TouchableOpacity>
                   )}
+                  <TouchableOpacity onPress={() => nav.navigate('BodyPlanEditor' as never, { planId: plan.id } as never)} style={[styles.actionBtn, { backgroundColor: '#f59e0b20' }]}>
+                    <Pencil size={14} color="#f59e0b" />
+                    <Text style={{ fontSize: FONT_SMALL(), color: '#f59e0b', fontWeight: '600' }}>{T('bodyPlanEdit')}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => setDetailPlan(plan)} style={[styles.actionBtn, { backgroundColor: '#6366f120' }]}>
+                    <Eye size={14} color="#6366f1" />
+                    <Text style={{ fontSize: FONT_SMALL(), color: '#6366f1', fontWeight: '600' }}>{T('bodyPlanDetail')}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => handleDelete(plan)} style={[styles.actionBtn, { backgroundColor: '#ef444420' }]}>
+                    <Trash2 size={14} color="#ef4444" />
+                    <Text style={{ fontSize: FONT_SMALL(), color: '#ef4444', fontWeight: '600' }}>{T('bodyDelete') || '删除'}</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             );
           })
         )}
       </ScrollView>
+
+      <PlanDetailModal
+        visible={detailPlan !== null}
+        plan={detailPlan}
+        onClose={() => setDetailPlan(null)}
+      />
 
       </SafeAreaView>
   );

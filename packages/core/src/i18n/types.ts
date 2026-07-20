@@ -876,10 +876,10 @@ export interface I18nKeys {
   bodyTargetWeight: string; bodyTargetBodyFat: string; bodyTargetDate: string;
   bodyStrategyLabel: string; bodyProgress: string;
   bodyWeeklyProgress: string;
-  bodyPlanNotSet: string; bodyPlanEdit: string; bodyPlanTitle: string; bodyPlanSave: string;
+  bodyPlanNotSet: string; bodyPlanEdit: string; bodyPlanDetail: string; bodyPlanDetailTitle: string; bodyPlanTitle: string; bodyPlanSave: string;
   bodyPlanNote: string; bodyPlanRestDay: string;
   bodyPlanCreate: string; bodyPlanName: string; bodyPlanNamePlaceholder: string; bodyPlanNameRequired: string;
-  bodyPlanDateRange: string; bodyPlanStart: string; bodyPlanEnd: string;
+  bodyPlanDateRange: string; bodyPlanStart: string; bodyPlanEnd: string; bodyPlanExercisesCount: string; bodyPlanNoExercises: string; bodyPlanClose: string;
   bodyPlanGoalNote: string; bodyGoalNotePlaceholder: string;
   bodyWeeklyPlan: string; bodySelectExercise: string;
   bodyPlanTemplateChoose: string; bodyPlanUseTemplate: string; bodyPlanCustom: string;

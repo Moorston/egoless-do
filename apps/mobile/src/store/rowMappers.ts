@@ -11,7 +11,7 @@ import type {
   Vision, VisionPractice, Dedication, FearEntry, CourageEntry, FearAchievement,
   MantraDef, MantraSession, SutraReadingSession,
   ZhiguanSession,
-  BodyGoal, BodyPlan, WeightRecord, BodyCheckin, GiveEntry, CustomFoodPreset,
+  BodyGoal, BodyPlan, BodyTrainingPlan, WeightRecord, BodyCheckin, GiveEntry, CustomFoodPreset,
 } from '@egoless-do/core';
 import { SCHEMAS, buildRowToEntity } from '@egoless-do/core';
 
@@ -46,6 +46,7 @@ const mappers = {
   checkinReview:   buildRowToEntity<CheckinReview>(SCHEMAS.checkinReview),
   bodyGoal:        buildRowToEntity<BodyGoal>(SCHEMAS.bodyGoal),
   bodyPlan:        buildRowToEntity<BodyPlan>(SCHEMAS.bodyPlan),
+  bodyTrainingPlan: buildRowToEntity<BodyTrainingPlan>(SCHEMAS.bodyTrainingPlan),
   weightRecord:    buildRowToEntity<WeightRecord>(SCHEMAS.weightRecord),
   bodyCheckin:     buildRowToEntity<BodyCheckin>(SCHEMAS.bodyCheckin),
   sleep:           buildRowToEntity<SleepEntry>(SCHEMAS.sleep),
@@ -88,6 +89,7 @@ export const rowToAIConfig        = mappers.aiConfig;
 export const rowToCheckinReview   = mappers.checkinReview;
 export const rowToBodyGoal        = mappers.bodyGoal;
 export const rowToBodyPlan        = mappers.bodyPlan;
+export const rowToBodyTrainingPlan = mappers.bodyTrainingPlan;
 export const rowToWeightRecord    = mappers.weightRecord;
 export const rowToBodyCheckin     = mappers.bodyCheckin;
 export const rowToSleep           = mappers.sleep;
