@@ -1,6 +1,6 @@
 import { FONT_TITLE, FONT_BODY, FONT_SMALL, dateStr, type BodyTrainingPlan } from '@egoless-do/core';
 import { ChevronLeft, Play, Pause, Trash2, Clock, Pencil } from 'lucide-react-native';
-import React, { useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
