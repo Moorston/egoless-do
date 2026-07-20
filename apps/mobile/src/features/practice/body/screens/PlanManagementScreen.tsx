@@ -1,13 +1,12 @@
 import { FONT_TITLE, FONT_BODY, FONT_SMALL, dateStr, type BodyTrainingPlan } from '@egoless-do/core';
-import { ChevronLeft, Play, Pause, Trash2, Clock, Pencil, Eye } from 'lucide-react-native';
-import React, { useMemo, useCallback, useState } from 'react';
+import { ChevronLeft, Play, Pause, Trash2, Clock, Pencil } from 'lucide-react-native';
+import React, { useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../../../components/UI';
 import { useRootNavigation } from '../../../../navigation/hooks';
 import { useShallowStore } from '../../../../store/useAppStore';
-import PlanDetailModal from '../modals/PlanDetailModal';
 
 const STATUS_CONFIG = {
   active: { icon: '🟢', color: '#10b981', labelKey: 'bodyPlanActive' },
@@ -24,8 +23,6 @@ export default function PlanManagementScreen() {
     updateBodyTrainingPlan: s.updateBodyTrainingPlan,
     removeBodyTrainingPlan: s.removeBodyTrainingPlan,
   }));
-  const [detailPlan, setDetailPlan] = useState<BodyTrainingPlan | null>(null);
-
   const plans = useMemo(() =>
     (bodyTrainingPlans ?? [])
       .filter(p => !p.deleted)
@@ -146,7 +143,7 @@ export default function PlanManagementScreen() {
                   </View>
                   {plan.strategy && (
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                      <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T(`bodyStrategy${plan.strategy.charAt(0).toUpperCase() + plan.strategy.slice(1)}` as never) || plan.strategy}</Text>
+                      <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T(`bodyStrategy${plan.strategy.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('')}` as never) || plan.strategy}</Text>
                     </View>
                   )}
                 </View>
@@ -168,10 +165,6 @@ export default function PlanManagementScreen() {
                     <Pencil size={14} color="#f59e0b" />
                     <Text style={{ fontSize: FONT_SMALL(), color: '#f59e0b', fontWeight: '600' }}>{T('bodyPlanEdit')}</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => setDetailPlan(plan)} style={[styles.actionBtn, { backgroundColor: '#6366f120' }]}>
-                    <Eye size={14} color="#6366f1" />
-                    <Text style={{ fontSize: FONT_SMALL(), color: '#6366f1', fontWeight: '600' }}>{T('bodyPlanDetail')}</Text>
-                  </TouchableOpacity>
                   <TouchableOpacity onPress={() => handleDelete(plan)} style={[styles.actionBtn, { backgroundColor: '#ef444420' }]}>
                     <Trash2 size={14} color="#ef4444" />
                     <Text style={{ fontSize: FONT_SMALL(), color: '#ef4444', fontWeight: '600' }}>{T('bodyDelete') || '删除'}</Text>
@@ -182,12 +175,6 @@ export default function PlanManagementScreen() {
           })
         )}
       </ScrollView>
-
-      <PlanDetailModal
-        visible={detailPlan !== null}
-        plan={detailPlan}
-        onClose={() => setDetailPlan(null)}
-      />
 
       </SafeAreaView>
   );
