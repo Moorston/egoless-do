@@ -114,9 +114,8 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, s
     resetFlow,
   } = useBodyFlowState();
 
-  // Use hook state if available, else fall back to local state
-  const [localStep, setLocalStep] = useState<FlowStep>('practice');
-  const step = flowState?.step ?? localStep;
+  // 单一状态源：优先使用 store，否则本地
+  const step = flowState?.step ?? 'practice';
   const [selectedSportKey, setSelectedSportKey] = useState<string | undefined>(todayPlan?.sportKey || todayPlan?.part || trainingPlanTask?.task.sportKey);
 
   // Animation for step transitions
@@ -132,7 +131,6 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, s
       useNativeDriver: true,
     }).start(() => {
       setStep(newStep);
-      setLocalStep(newStep);
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: TRANSITION_DURATION / 2,
@@ -143,7 +141,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, s
     });
   }, [fadeAnim, setStep]);
 
-  const startTimeRef = useRef(Date.now());
+  const startTimeRef = useRef(0);
   const practiceStartRef = useRef(0);
   const breathingStartRef = useRef(0);
   const [practiceCompleted, setPracticeCompleted] = useState(flowState?.practiceCompleted ?? false);
@@ -151,7 +149,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, s
   const [breathingDurationMs, setBreathingDurationMs] = useState(flowState?.breathingDurationMs ?? 0);
   const [awarenessData, setAwarenessData] = useState<BodyCheckin | null>(flowState?.awarenessData ?? null);
 
-  // Sync local state from flowState when it changes
+  // Sync completed flags from flowState
   useEffect(() => {
     if (flowState) {
       if (flowState.practiceCompleted) setPracticeCompleted(true);
@@ -190,12 +188,21 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, s
   }, [T, onExit, resetFlow]);
 
   const navigateToSport = useCallback((sportKey: string) => {
+    if (startTimeRef.current === 0) startTimeRef.current = Date.now();
     practiceStartRef.current = Date.now();
     setPracticeCompleted(false);
     setSelectedSportKey(sportKey);
     setSelectedSport(sportKey);
     onGoToSport?.(sportKey);
   }, [onGoToSport, setSelectedSport]);
+
+  // 进入流程时重置计时 ref，避免旧值残留
+  useEffect(() => {
+    if (step === 'practice') {
+      practiceStartRef.current = 0;
+      breathingStartRef.current = 0;
+    }
+  }, [step]);
 
   const navigateToBreathing = useCallback(() => {
     breathingStartRef.current = Date.now();
@@ -291,7 +298,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, s
                     <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text, marginBottom: 8 }}>{currentPlan?.name}</Text>
                     {planExercises.length > 0 ? (
                       planExercises.map((ex, i) => (
-                        <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 6, paddingHorizontal: 10, borderRadius: 8, backgroundColor: `${TH.border}40`, marginBottom: 4 }}>
+                        <View key={ex.id || i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 6, paddingHorizontal: 10, borderRadius: 8, backgroundColor: `${TH.border}40`, marginBottom: 4 }}>
                           <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }}>
                             {ex.icon} {ex.nameZh || ex.name}
                             {ex.defaultSets && ex.defaultReps ? `  ${ex.defaultSets}×${ex.defaultReps}` : ''}
@@ -312,8 +319,8 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, s
                   </Text>
                 </View>
                 <PrimaryButton
-                  label={T('bodyFlowStartBreathing')}
-                  onPress={() => navigateToSport(selectedSportKey || activeSportKey || '')}
+                  label={T('bodyFlowStartSport')}
+                  onPress={() => { if (selectedSportKey || activeSportKey) navigateToSport(selectedSportKey || activeSportKey); }}
                   color="#f59e0b"
                   icon={<Activity size={18} color="#fff" />}
                 />

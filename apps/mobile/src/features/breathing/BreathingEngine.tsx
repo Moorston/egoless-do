@@ -27,7 +27,7 @@ interface Props {
   /** The selected breathing preset to run (e.g. 4-7-8, box breathing). */
   initialPreset: BreathingPreset;
   /** Callback to navigate back to the preset selection screen. */
-  onBack: () => void;
+  onBack: (completed?: boolean, durationMs?: number) => void;
 }
 
 /**
@@ -344,17 +344,18 @@ export default function BreathingEngine({ initialPreset, onBack }: Props) {
    * Cleans up all animation state and navigates back.
    * Called when user dismisses the report page or finishes early.
    */
-  const handleFinish = useCallback(() => {
+  const handleFinish = useCallback((completed = false) => {
     if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
     if (holdTimeoutRef.current) { clearTimeout(holdTimeoutRef.current); holdTimeoutRef.current = null; }
     holdAnim.setValue(0);
     holdScale.setValue(1);
     holdCompletedRef.current = false;
     isPausedRef.current = false;
+    const durMs = totalElapsed * 1000;
     setReflection('');
     setSaving(false);
-    onBack();
-  }, [holdAnim, holdScale, onBack]);
+    onBack(completed, durMs);
+  }, [holdAnim, holdScale, onBack, totalElapsed]);
 
   /**
    * Persists the completed breathing session to the store.
@@ -383,7 +384,7 @@ export default function BreathingEngine({ initialPreset, onBack }: Props) {
       Alert.alert(T('breathSaveFailed') || '保存失败', T('breathRetry') || '请重试');
     }
     setSaving(false);
-    handleFinish();
+    handleFinish(true);
   }, [reflection, totalElapsed, cycles, preDistress, postDistress, settings.guideStyle, selectedPreset, handleFinish, addBreathRecord, addMedMinutes, addReflection]);
 
   // ── Page routing ──────────────────────────────────────────────

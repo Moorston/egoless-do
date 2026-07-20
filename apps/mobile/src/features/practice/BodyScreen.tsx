@@ -69,21 +69,20 @@ export default function BodyScreen() {
   const [returnTick, setReturnTick] = useState(0);
 
   useFocusEffect(useCallback(() => {
-    setReturnTick(t => t + 1);
-
-    // Check for navigation result params (primary mechanism)
-    // Using route.params?.xxx directly — no dependency on the params object reference
+    // 只在有结果参数时才 tick，避免无关心跳误触发
     const sr = route.params?.sportResult as { completed?: boolean; durationSec?: number } | undefined;
     if (sr?.completed) {
+      setReturnTick(t => t + 1);
       setBodyFlowState({ practiceCompleted: true, practiceDurationSec: sr.durationSec ?? 0 });
       (nav as { setParams?: (p: Record<string, unknown>) => void }).setParams?.({ sportResult: undefined });
     }
     const br = route.params?.breathingResult as { completed?: boolean; durationMs?: number } | undefined;
     if (br?.completed) {
+      setReturnTick(t => t + 1);
       setBodyFlowState({ breathingCompleted: true, breathingDurationMs: br.durationMs ?? 0 });
       (nav as { setParams?: (p: Record<string, unknown>) => void }).setParams?.({ breathingResult: undefined });
     }
-  }, [setBodyFlowState, nav]));
+  }, [setBodyFlowState, nav, route]));
 
   const handleGoToSport = useCallback((sportKey: string) => {
     const sport = ALL_SPORTS.find(s => s.key === sportKey || s.keyEn === sportKey);

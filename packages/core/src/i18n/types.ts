@@ -917,7 +917,7 @@ export interface I18nKeys {
   bodyWeightTrend: string; bodyWeightNoData: string;
   bodyRecordWeight: string;
   bodyFlowPrepare: string; bodyFlowPractice: string; bodyFlowBreathing: string;
-  bodyFlowSummary: string; bodyFlowSkip: string; bodyFlowStartBreathing: string;
+  bodyFlowSummary: string; bodyFlowSkip: string; bodyFlowStartBreathing: string; bodyFlowStartSport: string;
   bodyFlowChooseExercise: string; bodyFlowExitConfirm: string;
   bodyFlowTotalTime: string; bodyFlowBreathingTime: string;
   bodyFlowBreathingHint: string; bodyFlowBreathingDone: string; bodyFlowBreathingDesc: string;

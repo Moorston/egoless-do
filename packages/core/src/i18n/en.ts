@@ -1076,7 +1076,7 @@ export const en: I18nKeys = {
   bodyWeightTrend:'Weight Trend', bodyWeightNoData:'Start recording weight',
   bodyRecordWeight:'Record Weight',
   bodyFlowPrepare:'Prepare', bodyFlowPractice:'Body Practice', bodyFlowBreathing:'Breathing',
-  bodyFlowSummary:'Summary', bodyFlowSkip:'Skip', bodyFlowStartBreathing:'Start Breathing',
+  bodyFlowSummary:'Summary', bodyFlowSkip:'Skip', bodyFlowStartBreathing:'Start Breathing', bodyFlowStartSport:'Start Sport',
   bodyFlowChooseExercise:'Choose Exercise', bodyFlowExitConfirm:'Exit flow? Completed records will be kept.',
   bodyFlowTotalTime:'Total Time', bodyFlowBreathingTime:'Breathing Time',
   bodyFlowBreathingHint:'Deep breath, relax body and mind', bodyFlowBreathingDone:'Breathing done',

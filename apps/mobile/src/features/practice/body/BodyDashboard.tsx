@@ -263,6 +263,22 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
     });
   }, [setOverride, todayDateStr]);
 
+  // Resolve selected day's state for DayActionSheet（必须在 handleDaySwap/handleDaySkip 之前定义）
+  const selectedDayTask = selectedDay ? activeTrainingPlan?.tasks.find(t => t.weekday === selectedDay) : undefined;
+  const selectedDayIsRest = selectedDayTask?.sportKey === 'rest' || !selectedDayTask?.sportKey;
+  // Compute the date for the selected day (offset from today)
+  const getSelectedDayDate = useCallback(() => {
+    if (!selectedDay) return todayDateStr;
+    const today = new Date();
+    const todayDow = today.getDay() === 0 ? 7 : today.getDay();
+    const diff = selectedDay - todayDow;
+    const target = new Date(today);
+    target.setDate(today.getDate() + diff);
+    return dateStr(target);
+  }, [selectedDay, todayDateStr]);
+  const selectedDayDate = getSelectedDayDate();
+  const selectedDayOverride = activeTrainingPlan?.overrides?.[selectedDayDate];
+
   const handleDaySwap = useCallback((sportKey: string, exercises?: ExerciseDef[]) => {
     if (!selectedDay) return;
     setOverride(selectedDayDate, {
@@ -289,22 +305,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
     setSelectedDay(day);
     setShowDayAction(true);
   }, []);
-
-  // Resolve selected day's state for DayActionSheet
-  const selectedDayTask = selectedDay ? activeTrainingPlan?.tasks.find(t => t.weekday === selectedDay) : undefined;
-  const selectedDayIsRest = selectedDayTask?.sportKey === 'rest' || !selectedDayTask?.sportKey;
-  // Compute the date for the selected day (offset from today)
-  const getSelectedDayDate = useCallback(() => {
-    if (!selectedDay) return todayDateStr;
-    const today = new Date();
-    const todayDow = today.getDay() === 0 ? 7 : today.getDay();
-    const diff = selectedDay - todayDow;
-    const target = new Date(today);
-    target.setDate(today.getDate() + diff);
-    return dateStr(target);
-  }, [selectedDay, todayDateStr]);
-  const selectedDayDate = getSelectedDayDate();
-  const selectedDayOverride = activeTrainingPlan?.overrides?.[selectedDayDate];
 
   return (
     <View>
@@ -376,7 +376,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                       else if (sets) detail = `${sets}组`;
                       else if (dur) detail = `${Math.round(dur / 60)}分钟`;
                       return (
-                        <Text key={i} style={{ fontSize: FONT_SMALL(), color: '#fff', lineHeight: 18 }}>
+                        <Text key={e.id || i} style={{ fontSize: FONT_SMALL(), color: '#fff', lineHeight: 18 }}>
                           {e.nameZh}{detail ? ` ${detail}` : ''}
                         </Text>
                       );

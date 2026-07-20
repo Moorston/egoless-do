@@ -1071,7 +1071,7 @@ export const zhHant: I18nKeys = {
   bodyWeightTrend:'體重趨勢', bodyWeightNoData:'開始記錄體重',
   bodyRecordWeight:'記錄體重',
   bodyFlowPrepare:'準備開始', bodyFlowPractice:'調身練習', bodyFlowBreathing:'調息安神',
-  bodyFlowSummary:'今日總結', bodyFlowSkip:'跳過', bodyFlowStartBreathing:'開始調息',
+  bodyFlowSummary:'今日總結', bodyFlowSkip:'跳過', bodyFlowStartBreathing:'開始調息', bodyFlowStartSport:'開始運動',
   bodyFlowChooseExercise:'自選運動', bodyFlowExitConfirm:'確定退出流程嗎？已完成的記錄將保留。',
   bodyFlowTotalTime:'總耗時', bodyFlowBreathingTime:'調息時長',
   bodyFlowBreathingHint:'深呼吸，放鬆身心', bodyFlowBreathingDone:'調息已完成',
