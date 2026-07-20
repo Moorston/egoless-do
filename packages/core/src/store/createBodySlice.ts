@@ -194,6 +194,21 @@ export function createBodySlice(
     // ── Body training plans ────────────────────────────────────────────
     bodyTrainingPlans: [],
 
+    /** 将当前进行中计划标记为暂停，确保只有一个进行中 */
+    _deactivateOthers(exceptId: string) {
+      const others = (get().bodyTrainingPlans ?? []).filter((p: BodyTrainingPlan) => p.id !== exceptId && p.status === 'active' && !p.deleted);
+      for (const p of others) {
+        adapter.persistChange('bodyTrainingPlan', p.id, { ...p, status: 'cancelled', updatedAt: Date.now() }).catch(e => log.error(e));
+      }
+      if (others.length > 0) {
+        set(s => ({
+          bodyTrainingPlans: (s.bodyTrainingPlans ?? []).map((p: BodyTrainingPlan) =>
+            p.id !== exceptId && p.status === 'active' && !p.deleted ? { ...p, status: 'cancelled', updatedAt: Date.now() } : p
+          ),
+        }));
+      }
+    },
+
     addBodyTrainingPlan(plan) {
       // 去重守卫：同名+同日期范围+同状态的计划视为重复，跳过写入
       const duplicate = (get().bodyTrainingPlans ?? []).find((p: BodyTrainingPlan) =>
@@ -208,12 +223,16 @@ export function createBodySlice(
       const id = uid();
       const entry: BodyTrainingPlan = { ...plan, id, updatedAt: Date.now(), deleted: false };
       set(s => ({ bodyTrainingPlans: [...(s.bodyTrainingPlans ?? []), entry] }));
+      // 新计划为进行中时，暂停其他进行中计划
+      if (entry.status === 'active') this._deactivateOthers(id);
       adapter.persistChange('bodyTrainingPlan', id, entry).catch(e => log.error(e));
       onSync?.();
     },
 
     updateBodyTrainingPlan(id, updates) {
       let entry: BodyTrainingPlan | undefined;
+      // 激活某计划时，暂停其他进行中计划
+      if (updates.status === 'active') this._deactivateOthers(id);
       set(s => {
         const newList = (s.bodyTrainingPlans ?? []).map(p =>
           p.id === id ? { ...p, ...updates, updatedAt: Date.now() } : p
