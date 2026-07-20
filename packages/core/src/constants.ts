@@ -189,7 +189,9 @@ export const SPORT_GROUPS: SportGroup[] = [
   { group:'我的运动', groupEn:'My Sports', items:[
     { key:'户外骑行', keyEn:'Outdoor Cycling', icon:'🚴', color:'#4CAF50', gps:true },
     { key:'室内跑步', keyEn:'Indoor Running',  icon:'🏃', color:'#2196F3', gps:false },
+    { key:'户外跑步', keyEn:'Outdoor Running', icon:'🏃‍♂️', color:'#1565C0', gps:true },
     { key:'爬楼梯',   keyEn:'Stair Climbing',  icon:'🧗', color:'#9C27B0', gps:false },
+    { key:'行走',     keyEn:'Walking',         icon:'🚶', color:'#66BB6A', gps:true },
   ]},
   { group:'传统功法', groupEn:'Traditional', items:[
     { key:'太极',     keyEn:'Tai Chi',          icon:'☯', color:'#4CAF50', gps:false },
@@ -212,6 +214,8 @@ export const SPORT_GROUPS: SportGroup[] = [
     { key:'热身运动', keyEn:'Warm-up',            icon:'🔥', color:'#FFB74D', gps:false },
     { key:'游泳',     keyEn:'Swimming',           icon:'🏊', color:'#00BCD4', gps:false },
     { key:'滑板',     keyEn:'Skateboarding',      icon:'🛹', color:'#7E57C2', gps:true },
+    { key:'划船机',   keyEn:'Rowing Machine',     icon:'🚣', color:'#0288D1', gps:false },
+    { key:'舞蹈',     keyEn:'Dance',              icon:'💃', color:'#E91E63', gps:false },
   ]},
   { group:'球类运动', groupEn:'Ball Sports', items:[
     { key:'羽毛球',   keyEn:'Badminton',         icon:'🏸', color:'#4CAF50', gps:false },
@@ -219,6 +223,20 @@ export const SPORT_GROUPS: SportGroup[] = [
     { key:'篮球',     keyEn:'Basketball',         icon:'🏀', color:'#FF5722', gps:false },
     { key:'乒乓球',   keyEn:'Table Tennis',       icon:'🏓', color:'#009688', gps:false },
     { key:'网球',     keyEn:'Tennis',             icon:'🎾', color:'#8BC34A', gps:false },
+    { key:'排球',     keyEn:'Volleyball',         icon:'🏐', color:'#00BCD4', gps:false },
+  ]},
+  { group:'格斗/HIIT', groupEn:'Martial/HIIT', items:[
+    { key:'拳击',     keyEn:'Boxing',             icon:'🥊', color:'#D32F2F', gps:false },
+    { key:'高抬腿',   keyEn:'High Knees',         icon:'🦵', color:'#FF5722', gps:false },
+    { key:'深蹲跳',   keyEn:'Jump Squat',         icon:'⬆️', color:'#F57C00', gps:false },
+  ]},
+  { group:'柔韧/平衡', groupEn:'Flexibility', items:[
+    { key:'下犬式',   keyEn:'Downward Dog',       icon:'🐕', color:'#7B1FA2', gps:false },
+    { key:'鸽子式',   keyEn:'Pigeon Pose',        icon:'🐦', color:'#9C27B0', gps:false },
+    { key:'眼镜蛇式', keyEn:'Cobra Pose',         icon:'🐍', color:'#AB47BC', gps:false },
+  ]},
+  { group:'户外/GPS', groupEn:'Outdoor/GPS', items:[
+    { key:'徒步',     keyEn:'Hiking',             icon:'🥾', color:'#388E3C', gps:true },
   ]},
 ];
 
@@ -228,13 +246,13 @@ export const ALL_SPORTS = SPORT_GROUPS.flatMap(g => g.items);
 export type SportType = 'gps' | 'timed' | 'repetition';
 
 // GPS sports: track distance with GPS
-const GPS_SPORTS = ['行走', '跑步', '骑行', '户外骑行', '室内跑步', '滑板'];
+const GPS_SPORTS = ['行走', '跑步', '骑行', '户外骑行', '室内跑步', '户外跑步', '滑板', '徒步'];
 
 // Repetition sports: count reps (push-ups, pull-ups, squats, etc.)
 const REP_SPORTS = ['俯卧撑', '引体向上', '深蹲', '波比跳', '跳绳'];
 
 // Timed sports: only track time (yoga, tai chi, plank, etc.)
-const TIMED_SPORTS = ['太极', '八卦', '形意', '铁牛', '太阳摸经', '平板支撑', '瑜伽', '放松运动', '热身运动', '游泳', '爬楼梯'];
+const TIMED_SPORTS = ['太极', '八卦', '形意', '铁牛', '太阳摸经', '平板支撑', '瑜伽', '放松运动', '热身运动', '游泳', '爬楼梯', '划船机', '舞蹈', '拳击', '下犬式', '鸽子式', '眼镜蛇式', '排球'];
 
 export function getSportType(sportKey: string, isGps: boolean): SportType {
   if (isGps || GPS_SPORTS.includes(sportKey)) return 'gps';
@@ -246,7 +264,8 @@ export function getSportType(sportKey: string, isGps: boolean): SportType {
 const MIN_DURATION_60S = [
   ...GPS_SPORTS,                                            // GPS 运动
   '太极', '八卦', '形意', '铁牛', '太阳摸经', '瑜伽',     // 冥想类
-  '羽毛球', '足球', '篮球', '乒乓球', '网球',             // 球类
+  '羽毛球', '足球', '篮球', '乒乓球', '网球', '排球', // 球类
+  '划船机', '舞蹈', '拳击',                               // 有氧/格斗
 ];
 const DEFAULT_MIN_DURATION = 30;
 
@@ -307,12 +326,14 @@ export const TARGET_PRESETS: Record<SportType, { distance?: Array<{ label: strin
 };
 
 export const MET_MAP: Record<string, number> = {
-  '行走': 3.5, '跑步': 7, '骑行': 6, '户外骑行': 6, '室内跑步': 7,
+  '行走': 3.5, '跑步': 7, '骑行': 6, '户外骑行': 6, '室内跑步': 7, '户外跑步': 8,
   '太极': 3, '八卦': 4, '形意': 5, '铁牛': 6, '太阳摸经': 3.5,
   '俯卧撑': 8, '引体向上': 8, '深蹲': 6, '平板支撑': 4, '波比跳': 10,
   '跳绳': 12, '瑜伽': 3, '放松运动': 2.5, '热身运动': 3.5, '滑板': 5,
   '游泳': 8, '爬楼梯': 9, '羽毛球': 7, '足球': 10, '篮球': 8,
-  '乒乓球': 4, '网球': 7,
+  '乒乓球': 4, '网球': 7, '划船机': 7, '舞蹈': 5, '拳击': 9,
+  '高抬腿': 8, '深蹲跳': 10, '下犬式': 2.5, '鸽子式': 2.5, '眼镜蛇式': 2.5,
+  '排球': 6, '徒步': 6.5,
 };
 
 export function estimateCalories(sportKey: string, durationSec: number, weight = 70): number {
@@ -354,6 +375,17 @@ export const SOFT_TARGETS: Record<string, SoftTarget> = {
   '深蹲':    { beginner: 30, intermediate: 60, advanced: 100, unit: 'reps' },
   '波比跳':  { beginner: 20, intermediate: 40, advanced: 60, unit: 'reps' },
   '跳绳':    { beginner: 100, intermediate: 300, advanced: 500, unit: 'reps' },
+  '高抬腿':  { beginner: 30, intermediate: 60, advanced: 100, unit: 'reps' },
+  '深蹲跳':  { beginner: 15, intermediate: 30, advanced: 50, unit: 'reps' },
+  '户外跑步': { beginner: 15, intermediate: 30, advanced: 60, unit: 'min' },
+  '划船机':  { beginner: 10, intermediate: 20, advanced: 30, unit: 'min' },
+  '舞蹈':    { beginner: 15, intermediate: 30, advanced: 45, unit: 'min' },
+  '拳击':    { beginner: 10, intermediate: 20, advanced: 30, unit: 'min' },
+  '下犬式':  { beginner: 1, intermediate: 2, advanced: 3, unit: 'min' },
+  '鸽子式':  { beginner: 1, intermediate: 2, advanced: 3, unit: 'min' },
+  '眼镜蛇式': { beginner: 1, intermediate: 2, advanced: 3, unit: 'min' },
+  '排球':    { beginner: 15, intermediate: 30, advanced: 60, unit: 'min' },
+  '徒步':    { beginner: 30, intermediate: 60, advanced: 120, unit: 'min' },
 };
 
 export function getSoftTarget(sportKey: string): SoftTarget | undefined {
@@ -395,6 +427,10 @@ export const SPORT_BG_COLORS: Record<string, string> = {
   俯卧撑: '#FF5722', 引体向上: '#E64A19', 深蹲: '#F57C00', 平板支撑: '#FF9800', 波比跳: '#FF7043',
   放松运动: '#81C784', 热身运动: '#FFB74D', 滑板: '#7E57C2',
   户外骑行: '#4CAF50', 室内跑步: '#2196F3', 乒乓球: '#009688', 网球: '#8BC34A',
+  户外跑步: '#1565C0', 行走: '#66BB6A', 划船机: '#0288D1', 舞蹈: '#E91E63',
+  拳击: '#D32F2F', 高抬腿: '#FF5722', 深蹲跳: '#F57C00',
+  下犬式: '#7B1FA2', 鸽子式: '#9C27B0', 眼镜蛇式: '#AB47BC',
+  排球: '#00BCD4', 徒步: '#388E3C',
 };
 
 export * from './constants/music';
@@ -430,9 +466,13 @@ const SPORT_TO_CATEGORY: Record<string, ExerciseCategoryKey> = {
   '俯卧撑': 'chest_triceps', '引体向上': 'back_biceps', '深蹲': 'legs_core',
   '平板支撑': 'legs_core', '波比跳': 'hiit', '跳绳': 'cardio',
   '瑜伽': 'yoga', '太极': 'taiji', '游泳': 'cardio', '爬楼梯': 'cardio',
-  '户外骑行': 'cardio', '室内跑步': 'cardio', '滑板': 'full_body',
+  '户外骑行': 'cardio', '室内跑步': 'cardio', '户外跑步': 'cardio', '滑板': 'full_body',
   '羽毛球': 'full_body', '足球': 'full_body', '篮球': 'full_body',
-  '乒乓球': 'full_body', '网球': 'full_body',
+  '乒乓球': 'full_body', '网球': 'full_body', '排球': 'full_body',
+  '行走': 'cardio', '划船机': 'cardio', '舞蹈': 'full_body',
+  '拳击': 'hiit', '高抬腿': 'hiit', '深蹲跳': 'hiit',
+  '下犬式': 'yoga', '鸽子式': 'yoga', '眼镜蛇式': 'yoga',
+  '徒步': 'cardio',
 };
 
 // 中文名 → ExerciseCategoryKey 映射（用于去重判断 SPORTS 是否与 CATEGORIES 重叠）
@@ -445,7 +485,8 @@ export function buildExerciseLibrary(): ExerciseDef[] {
   const seen = new Set<string>();
   const library: ExerciseDef[] = [];
 
-  // 0. 预标记 SPORTS 中与 EXERCISE_CATEGORIES 重叠的中文名
+  // 0. 预标记 EXERCISE_CATEGORIES 中纯类别（非具体运动）的中文名，避免重复导入
+  // 注意：不包含 yoga/taiji，因为它们也是 ALL_SPORTS 中的具体运动
   for (const cat of EXERCISE_CATEGORIES) {
     const zhName = getCategoryZhName(cat);
     if (zhName) seen.add(zhName);
@@ -513,7 +554,8 @@ export function buildExerciseLibrary(): ExerciseDef[] {
 
 /** 获取 EXERCISE_CATEGORY 的中文名（用于去重） */
 function getCategoryZhName(cat: typeof EXERCISE_CATEGORIES[number]): string | undefined {
-  const map: Record<string, string> = { taiji: '太极', yoga: '瑜伽' };
+  // 注意：不包含 taiji/yoga，因为它们也是 ALL_SPORTS 中的具体运动，不应被去重跳过
+  const map: Record<string, string> = {};
   return map[cat.key];
 }
 

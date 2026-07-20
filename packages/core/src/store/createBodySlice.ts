@@ -52,6 +52,7 @@ export interface BodySlice {
   addBodyTrainingPlan: (plan: Omit<BodyTrainingPlan, 'id' | 'updatedAt' | 'deleted'>) => void;
   updateBodyTrainingPlan: (id: string, updates: Partial<BodyTrainingPlan>) => void;
   removeBodyTrainingPlan: (id: string) => void;
+  _deactivateOthers: (exceptId: string) => void;
 
   // BodyFlow session state (persisted for progress recovery)
   bodyFlowState: BodyFlowPersistedState | null;
