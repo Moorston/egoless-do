@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SMALL, FONT_LABEL, dateStr, type BodyTrainingPlan } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SMALL, FONT_LABEL, dateStr, type BodyTrainingPlan, type ExerciseDef } from '@egoless-do/core';
 import { ChevronLeft, Play, Pause, Trash2, Clock, Pencil } from 'lucide-react-native';
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert, StyleSheet } from 'react-native';
@@ -155,21 +155,41 @@ export default function PlanManagementScreen() {
                 {/* Expanded: Weekly schedule */}
                 {isExpanded && (
                   <View style={[styles.expandSection, { backgroundColor: TH.bg, borderColor: TH.border }]}>
-                    <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 8 }}>{T('bodyWeeklyPlan')}</Text>
-                    {plan.tasks.map((task) => {
-                      const exercises = task.exercises ?? [];
-                      const isRest = !task.sportKey || task.sportKey === 'rest';
-                      return (
-                        <View key={task.weekday} style={styles.dayRow}>
-                          <View style={[styles.dayBadge, { backgroundColor: isRest ? TH.border : '#f59e0b20' }]}>
-                            <Text style={{ fontSize: FONT_SMALL(), color: isRest ? TH.sub : '#f59e0b', fontWeight: '600' }}>{WEEKDAY_LABELS[task.weekday - 1]}</Text>
+                    <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 10 }}>{T('bodyWeeklyPlan')}</Text>
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                      {plan.tasks.map((task) => {
+                        const exercises = task.exercises ?? [];
+                        const isRest = !task.sportKey || task.sportKey === 'rest';
+                        const formatEx = (e: ExerciseDef) => {
+                          const sets = e.defaultSets;
+                          const reps = e.defaultReps;
+                          const dur = e.defaultDurationSec;
+                          if (sets && reps) return `${sets}×${reps}`;
+                          if (sets) return `${sets}组`;
+                          if (dur) return `${Math.round(dur / 60)}分钟`;
+                          return '';
+                        };
+                        return (
+                          <View key={task.weekday} style={{ width: 'calc((100% - 24px) / 4)', minWidth: 72, borderRadius: 10, borderWidth: 1, borderColor: isRest ? TH.border : '#f59e0b30', backgroundColor: isRest ? TH.bg : '#f59e0b08', padding: 8 }}>
+                            <View style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: isRest ? TH.border : '#f59e0b', alignItems: 'center', justifyContent: 'center', marginBottom: 6 }}>
+                              <Text style={{ fontSize: 10, color: isRest ? TH.sub : '#fff', fontWeight: '700' }}>{WEEKDAY_LABELS[task.weekday - 1]}</Text>
+                            </View>
+                            {isRest ? (
+                              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, fontStyle: 'italic' }}>{T('bodyPlanRestDay') || '休息'}</Text>
+                            ) : exercises.length > 0 ? (
+                              exercises.map((e, i) => (
+                                <Text key={i} style={{ fontSize: 11, color: TH.text, lineHeight: 16 }}>
+                                  <Text style={{ fontWeight: '600' }}>{e.nameZh}</Text>
+                                  {formatEx(e) ? <Text style={{ color: TH.sub }}> {formatEx(e)}</Text> : null}
+                                </Text>
+                              ))
+                            ) : (
+                              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>—</Text>
+                            )}
                           </View>
-                          <Text style={{ fontSize: FONT_BODY(), color: TH.text, flex: 1 }} numberOfLines={2}>
-                            {isRest ? (T('bodyPlanRestDay') || '休息') : exercises.length > 0 ? exercises.map(e => e.nameZh).join('、') : (T('bodyPlanNoExercises'))}
-                          </Text>
-                        </View>
-                      );
-                    })}
+                        );
+                      })}
+                    </View>
                   </View>
                 )}
 
