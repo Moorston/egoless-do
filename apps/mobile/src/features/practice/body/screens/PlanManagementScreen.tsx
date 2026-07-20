@@ -23,6 +23,9 @@ export default function PlanManagementScreen() {
     updateBodyTrainingPlan: s.updateBodyTrainingPlan,
     removeBodyTrainingPlan: s.removeBodyTrainingPlan,
   }));
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const WEEKDAY_LABELS = [T('bodyWeekMon') || '一', T('bodyWeekTue') || '二', T('bodyWeekWed') || '三', T('bodyWeekThu') || '四', T('bodyWeekFri') || '五', T('bodyWeekSat') || '六', T('bodyWeekSun') || '日'];
+
   const plans = useMemo(() =>
     (bodyTrainingPlans ?? [])
       .filter(p => !p.deleted)
@@ -96,8 +99,9 @@ export default function PlanManagementScreen() {
             const weeks = Math.max(1, Math.round((new Date(plan.endDate).getTime() - new Date(plan.startDate).getTime()) / 604800000));
             const activeDays = plan.tasks.filter(t => t.sportKey && t.sportKey !== 'rest').length;
 
+            const isExpanded = expandedId === plan.id;
             return (
-              <View key={plan.id} style={[styles.planCard, {
+              <TouchableOpacity key={plan.id} activeOpacity={0.7} onPress={() => setExpandedId(isExpanded ? null : plan.id)} style={[styles.planCard, {
                 backgroundColor: TH.card,
                 borderColor: isActive ? '#f59e0b30' : config.color + '20',
                 borderLeftWidth: 4,
@@ -148,6 +152,27 @@ export default function PlanManagementScreen() {
                   )}
                 </View>
 
+                {/* Expanded: Weekly schedule */}
+                {isExpanded && (
+                  <View style={[styles.expandSection, { backgroundColor: TH.bg, borderColor: TH.border }]}>
+                    <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 8 }}>{T('bodyWeeklyPlan')}</Text>
+                    {plan.tasks.map((task) => {
+                      const exCount = task.exercises?.length ?? 0;
+                      const isRest = !task.sportKey || task.sportKey === 'rest';
+                      return (
+                        <View key={task.weekday} style={styles.dayRow}>
+                          <View style={[styles.dayBadge, { backgroundColor: isRest ? TH.border : '#f59e0b20' }]}>
+                            <Text style={{ fontSize: FONT_SMALL(), color: isRest ? TH.sub : '#f59e0b', fontWeight: '600' }}>{WEEKDAY_LABELS[task.weekday - 1]}</Text>
+                          </View>
+                          <Text style={{ fontSize: FONT_BODY(), color: TH.text, flex: 1 }}>
+                            {isRest ? (T('bodyPlanRestDay') || '休息') : exCount > 0 ? T('bodyPlanExercisesCount').replace('{}', String(exCount)) : (T('bodyPlanNoExercises'))}
+                          </Text>
+                        </View>
+                      );
+                    })}
+                  </View>
+                )}
+
                 {/* Actions */}
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
                   {isActive ? (
@@ -170,7 +195,7 @@ export default function PlanManagementScreen() {
                     <Text style={{ fontSize: FONT_SMALL(), color: '#ef4444', fontWeight: '600' }}>{T('bodyDelete') || '删除'}</Text>
                   </TouchableOpacity>
                 </View>
-              </View>
+              </TouchableOpacity>
             );
           })
         )}
@@ -219,5 +244,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 8,
+  },
+  expandSection: {
+    borderRadius: 10,
+    borderWidth: 1,
+    padding: 12,
+    marginBottom: 12,
+  },
+  dayRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 6,
+  },
+  dayBadge: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
