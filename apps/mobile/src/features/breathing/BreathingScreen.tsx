@@ -57,12 +57,12 @@ export default function BreathingScreen() {
   }, []);
 
   const handleBack = useCallback((completed?: boolean, durationMs?: number) => {
-    setStarted(false);
-    setSelectedPreset(null);
-    // 完成呼吸后导航回 Body 并传递结果
+    // 完成呼吸后先导航回 Body，再重置状态（避免卸载后 setState 警告）
     if (completed) {
       nav.navigate('Body' as never, { breathingResult: { completed: true, durationMs: durationMs ?? 0 } } as never);
     }
+    setStarted(false);
+    setSelectedPreset(null);
   }, [nav]);
 
   // Engine mode — lazy-loaded

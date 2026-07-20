@@ -1,4 +1,4 @@
-import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, ALL_SPORTS, EXERCISE_CATEGORIES, FONT_LABEL, FONT_STAT_SECTION, scaleFontSize,
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, ALL_SPORTS, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, SPORT_GROUPS, FONT_LABEL, FONT_STAT_SECTION, scaleFontSize,
   type BodyPlan, type BodyPlanTask, type BodyCheckin, type Theme, type BodySlice} from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { X, ChevronRight, CheckCircle2, Wind, Activity } from 'lucide-react-native';
@@ -67,16 +67,11 @@ function StepIndicator({ current, TH }: { current: FlowStep; TH: Theme }) {
 
 function ExercisePicker({ TH, T, onSelect }: { TH: Theme; T: (key: string) => string; onSelect: (key: string) => void }) {
   const groups = useMemo(() => {
-    const map = new Map<string, { key: string; label: string; icon: string }[]>();
-    for (const cat of EXERCISE_CATEGORIES) {
-      const gk = cat.category || 'bodyCatModern';
-      if (!map.has(gk)) map.set(gk, []);
-      map.get(gk)!.push({ key: cat.key, label: T(cat.i18nKey), icon: cat.icon });
-    }
-    return [
-      { label: T('bodyCatTraditional'), items: map.get('bodyCatTraditional') ?? [] },
-      { label: T('bodyCatModern'), items: map.get('bodyCatModern') ?? [] },
-    ];
+    // 按 SPORT_GROUPS 分组展示具体运动（而非训练类别）
+    return SPORT_GROUPS.map(g => ({
+      label: T(g.group) !== g.group ? T(g.group) : g.group,
+      items: g.items.map(s => ({ key: s.key, label: s.key, icon: s.icon })),
+    })).filter(g => g.items.length > 0);
   }, [T]);
 
   return (
@@ -116,7 +111,13 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, s
 
   // 单一状态源：优先使用 store，否则本地
   const step = flowState?.step ?? 'practice';
-  const [selectedSportKey, setSelectedSportKey] = useState<string | undefined>(todayPlan?.sportKey || todayPlan?.part || trainingPlanTask?.task.sportKey);
+  const getInitialSportKey = () => {
+    const raw = todayPlan?.sportKey || todayPlan?.part || trainingPlanTask?.task.sportKey;
+    if (!raw) return undefined;
+    // 中文描述 → 标准 key（如"胸+三头" → "chest_triceps"）
+    return PART_STRING_TO_KEY[raw] ?? raw;
+  };
+  const [selectedSportKey, setSelectedSportKey] = useState<string | undefined>(getInitialSportKey);
 
   // Animation for step transitions
   const fadeAnim = useRef(new Animated.Value(1)).current;
@@ -255,7 +256,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, s
   // ── Render steps ──
   const renderStep = () => {
     if (step === 'success') {
-      const totalMs = Date.now() - startTimeRef.current;
+      const totalMs = startTimeRef.current > 0 ? Date.now() - startTimeRef.current : 0;
       return (
         <CheckinSuccessCard
           TH={TH} T={T}
@@ -320,7 +321,14 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, s
                 </View>
                 <PrimaryButton
                   label={T('bodyFlowStartSport')}
-                  onPress={() => { if (selectedSportKey || activeSportKey) navigateToSport(selectedSportKey || activeSportKey); }}
+                  onPress={() => {
+                    const key = selectedSportKey || activeSportKey;
+                    if (key) {
+                      navigateToSport(key);
+                    } else {
+                      Alert.alert(T('bodyFlowChooseExercise') || '请先选择运动');
+                    }
+                  }}
                   color="#f59e0b"
                   icon={<Activity size={18} color="#fff" />}
                 />

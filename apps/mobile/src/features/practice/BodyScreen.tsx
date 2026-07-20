@@ -74,13 +74,13 @@ export default function BodyScreen() {
     if (sr?.completed) {
       setReturnTick(t => t + 1);
       setBodyFlowState({ practiceCompleted: true, practiceDurationSec: sr.durationSec ?? 0 });
-      (nav as { setParams?: (p: Record<string, unknown>) => void }).setParams?.({ sportResult: undefined });
+      nav.setParams({ sportResult: undefined });
     }
     const br = route.params?.breathingResult as { completed?: boolean; durationMs?: number } | undefined;
     if (br?.completed) {
       setReturnTick(t => t + 1);
       setBodyFlowState({ breathingCompleted: true, breathingDurationMs: br.durationMs ?? 0 });
-      (nav as { setParams?: (p: Record<string, unknown>) => void }).setParams?.({ breathingResult: undefined });
+      nav.setParams({ breathingResult: undefined });
     }
   }, [setBodyFlowState, nav, route]));
 
