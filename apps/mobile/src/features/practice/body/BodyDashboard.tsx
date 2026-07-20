@@ -332,24 +332,35 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                 onPress={() => nav.navigate('ExerciseHistory' as never)}
                 style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8 }}
               >
-                <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600' }}>{T('exerciseHistory') || '锻炼记录'}</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600' }}>{T('exerciseHistory')}</Text>
               </TouchableOpacity>
             </View>
             {/* Override status bar */}
             {hasOverride && todayOverride && (
               <View style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8, padding: 8, marginBottom: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>
-                  {todayOverride.type === 'skip' ? (T('bodyOverrideSkip') || '已标记跳过')
-                    : todayOverride.type === 'swap' ? (T('bodyOverrideSwap') || '已换动作')
-                    : todayOverride.type === 'adjust' ? (T('bodyOverrideAdjust') || '已调整组数')
-                    : (T('bodyOverrideCustom') || '已自定义')}
+                  {todayOverride.type === 'skip' ? T('bodyOverrideSkip')
+                    : todayOverride.type === 'swap' ? T('bodyOverrideSwap')
+                    : todayOverride.type === 'adjust' ? T('bodyOverrideAdjust')
+                    : T('bodyOverrideCustom')}
                 </Text>
                 <TouchableOpacity onPress={handleUndoOverride} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                  <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600', textDecorationLine: 'underline' }}>{T('bodyUndo') || '撤销'}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600', textDecorationLine: 'underline' }}>{T('bodyUndo')}</Text>
                 </TouchableOpacity>
               </View>
             )}
-            {todayPlanDisplay ? (
+            {todayOverride?.type === 'skip' ? (
+              /* 跳过状态：显示已跳过 + 撤销，无开始按钮 */
+              <View style={styles.bannerContent}>
+                <View style={styles.bannerIconCircle}>
+                  <Text style={{ fontSize: 24 }}>⏭️</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>{T('bodyOverrideSkip')}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', marginTop: 2 }}>{T('bodyUndoHint')}</Text>
+                </View>
+              </View>
+            ) : todayPlanDisplay ? (
               <>
                 <View style={styles.bannerContent}>
                   <View style={styles.bannerIconCircle}>
@@ -407,7 +418,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                   <View style={{ flex: 1 }}>
                     <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>{T('bodyTodayPlanRest')}</Text>
                     <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', marginTop: 2 }}>
-                      {T('bodyFlowChooseExercise') || '也可以选择其他运动'}
+                      {T('bodyFlowChooseExercise')}
                     </Text>
                   </View>
                 </View>
@@ -420,7 +431,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                   ].map((item, i) => (
                     <TouchableOpacity
                       key={i}
-                      onPress={() => onFlowStart?.()}
+                      onPress={() => { if (activeTrainingPlan?.id) onFlowStartWithPlan?.(activeTrainingPlan.id); else onFlowStart?.(); }}
                       style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8 }}
                     >
                       <Text style={{ fontSize: 14 }}>{item.icon}</Text>

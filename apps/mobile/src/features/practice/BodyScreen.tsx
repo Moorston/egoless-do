@@ -29,7 +29,7 @@ export default function BodyScreen() {
     setBodyFlowState: s.setBodyFlowState,
   }));
   const [page, setPage] = useState<BodyPage>('dashboard');
-  const { todayPlan, weekday: todayWeekday } = useTodayPlan();
+  const { todayPlan, weekday: todayWeekday, todayOverride } = useTodayPlan();
   const [activePlanId, setActivePlanId] = useState<string | null>(null);
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const transitioningRef = useRef(false);
@@ -61,7 +61,8 @@ export default function BodyScreen() {
     const plan = (bodyTrainingPlans ?? []).find(p => p.id === activePlanId && !p.deleted && p.status === 'active');
     if (!plan) return null;
     const task = plan.tasks.find(t => t.weekday === todayWeekday);
-    if (!task || task.sportKey === 'rest') return null;
+    if (!task) return null;
+    // 不过滤 rest：rest day 也需要传入计划上下文，BodyFlow 会显示休息状态
     return { planId: plan.id, planName: plan.name, task };
   }, [activePlanId, bodyTrainingPlans, todayWeekday]);
 
@@ -119,6 +120,7 @@ export default function BodyScreen() {
               store={{ upsertBodyCheckin }}
               todayPlan={todayPlan}
               trainingPlanTask={todayTrainingTask}
+              todayOverride={todayOverride}
               returnTick={returnTick}
               onGoToSport={handleGoToSport}
               onGoToBreathing={handleGoToBreathing}

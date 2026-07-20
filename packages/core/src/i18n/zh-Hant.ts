@@ -1083,7 +1083,7 @@ export const zhHant: I18nKeys = {
   bodyStartPractice:'開始練習', bodyStartToday:'開始今日訓練', bodyToday:'今天',
   bodyWeekProgress:'本週進度', bodyDayCompleted:'已完成', bodyDayRestShort:'休',
   bodySetPlan:'去設置', bodyTodayDone:'今日已打卡',
-  bodyUndo:'撤銷', bodyOverrideSkip:'已標記跳過', bodyOverrideSwap:'已換動作', bodyOverrideAdjust:'已調整組數', bodyOverrideCustom:'已自定義',
+  bodyUndo:'撤銷', bodyUndoHint:'可撤銷後繼續訓練', bodyOverrideSkip:'已標記跳過', bodyOverrideSwap:'已換動作', bodyOverrideAdjust:'已調整組數', bodyOverrideCustom:'已自定義',
   bodyPlanRemoved:'已移除', bodyPlanRestDayHint:'今天是休息日，好好恢復身體吧', bodyPlanUnitExercise:'個動作', bodyPlanAddedExercises:'當天動作',
   bodyStartTraining:'開始訓練', bodyAdjust:'調整', bodyRemove:'移除', bodySets:'組', bodyReps:'次', bodyWeightUnit:'kg',
   bodySearchExercise:'搜索動作', bodyClear:'清除', bodyAll:'全部', bodyWeekDay:'', bodyMin:'分鐘',

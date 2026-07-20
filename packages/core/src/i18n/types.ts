@@ -928,7 +928,7 @@ export interface I18nKeys {
   bodyStartPractice: string; bodyStartToday: string; bodyToday: string;
   bodyWeekProgress: string; bodyDayCompleted: string; bodyDayRestShort: string;
   bodySetPlan: string; bodyTodayDone: string;
-  bodyUndo: string; bodyOverrideSkip: string; bodyOverrideSwap: string; bodyOverrideAdjust: string; bodyOverrideCustom: string;
+  bodyUndo: string; bodyUndoHint: string; bodyOverrideSkip: string; bodyOverrideSwap: string; bodyOverrideAdjust: string; bodyOverrideCustom: string;
   bodyPlanRemoved: string; bodyPlanRestDayHint: string; bodyPlanUnitExercise: string; bodyPlanAddedExercises: string;
   bodyStartTraining: string; bodyAdjust: string; bodyRemove: string; bodySets: string; bodyReps: string; bodyWeightUnit: string;
   bodySearchExercise: string; bodyClear: string; bodyAll: string; bodyWeekDay: string; bodyMin: string;

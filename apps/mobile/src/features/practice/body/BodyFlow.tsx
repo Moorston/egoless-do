@@ -1,5 +1,5 @@
 import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, ALL_SPORTS, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, SPORT_GROUPS, FONT_LABEL, FONT_STAT_SECTION, scaleFontSize,
-  type BodyPlan, type BodyPlanTask, type BodyCheckin, type Theme, type BodySlice} from '@egoless-do/core';
+  type BodyPlan, type BodyPlanTask, type BodyCheckin, type DayOverride, type Theme, type BodySlice} from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { X, ChevronRight, CheckCircle2, Wind, Activity } from 'lucide-react-native';
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
@@ -19,6 +19,7 @@ interface FlowProps {
   onExit: () => void;
   todayPlan?: BodyPlan;
   trainingPlanTask?: { planId: string; planName: string; task: BodyPlanTask } | null;
+  todayOverride?: DayOverride;
   store: Record<string, unknown> & Pick<BodySlice, 'upsertBodyCheckin'>;
   returnTick?: number;
   onGoToSport?: (sportKey: string) => void;
@@ -98,7 +99,7 @@ function ExercisePicker({ TH, T, onSelect }: { TH: Theme; T: (key: string) => st
   );
 }
 
-export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, store, returnTick, onGoToSport, onGoToBreathing }: FlowProps) {
+export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, todayOverride, store, returnTick, onGoToSport, onGoToBreathing }: FlowProps) {
   const {
     flowState,
     setStep,
@@ -142,13 +143,20 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, s
     });
   }, [fadeAnim, setStep]);
 
-  const startTimeRef = useRef(0);
+  const startTimeRef = useRef(Date.now());
   const practiceStartRef = useRef(0);
   const breathingStartRef = useRef(0);
-  const [practiceCompleted, setPracticeCompleted] = useState(flowState?.practiceCompleted ?? false);
-  const [breathingCompleted, setBreathingCompleted] = useState(flowState?.breathingCompleted ?? false);
-  const [breathingDurationMs, setBreathingDurationMs] = useState(flowState?.breathingDurationMs ?? 0);
-  const [awarenessData, setAwarenessData] = useState<BodyCheckin | null>(flowState?.awarenessData ?? null);
+  const [practiceCompleted, setPracticeCompleted] = useState(false);
+  const [breathingCompleted, setBreathingCompleted] = useState(false);
+  const [breathingDurationMs, setBreathingDurationMs] = useState(0);
+  const [awarenessData, setAwarenessData] = useState<BodyCheckin | null>(null);
+
+  // 挂载时重置本地状态（避免跨 flow 残留）并同步 flowState
+  useEffect(() => {
+    if (flowState?.practiceCompleted) setPracticeCompleted(true);
+    if (flowState?.breathingCompleted) { setBreathingCompleted(true); setBreathingDurationMs(flowState.breathingDurationMs); }
+    if (flowState?.awarenessData) setAwarenessData(flowState.awarenessData);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Sync completed flags from flowState
   useEffect(() => {
@@ -218,20 +226,27 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, s
       ?? EXERCISE_CATEGORIES.find(c => c.key === selectedSportKey);
   }, [selectedSportKey]);
 
-  // ── Helper: resolve current plan info ──
+  // ── Helper: resolve current plan info（感知 override） ──
   const currentPlan = useMemo(() => {
+    // override 修正：swap 时使用新 sportKey，skip 时视为休息
+    const overrideSportKey = todayOverride?.type === 'swap' ? todayOverride.swapSportKey : undefined;
+    const effectiveSportKey = overrideSportKey || trainingPlanTask?.task.sportKey || todayPlan?.sportKey || todayPlan?.part;
+
+    if (todayOverride?.type === 'skip') {
+      return { name: todayOverride.note || '跳过', sportKey: 'rest', exercises: [], isRest: true };
+    }
     if (trainingPlanTask) {
       return {
         name: trainingPlanTask.planName,
-        sportKey: trainingPlanTask.task.sportKey,
-        exercises: trainingPlanTask.task.exercises ?? [],
-        isRest: trainingPlanTask.task.sportKey === 'rest',
+        sportKey: effectiveSportKey ?? trainingPlanTask.task.sportKey,
+        exercises: todayOverride?.type === 'adjust' ? undefined : (trainingPlanTask.task.exercises ?? []),
+        isRest: effectiveSportKey === 'rest',
       };
     }
     if (todayPlan?.part && todayPlan.part !== 'rest') {
       return {
         name: todayPlan.part,
-        sportKey: todayPlan.sportKey ?? todayPlan.part,
+        sportKey: effectiveSportKey ?? todayPlan.part,
         exercises: [] as BodyPlanTask['exercises'],
         isRest: false,
       };

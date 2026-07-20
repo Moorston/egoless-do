@@ -1088,7 +1088,7 @@ export const en: I18nKeys = {
   bodyStartPractice:'Start', bodyStartToday:'Start Today', bodyToday:'Today',
   bodyWeekProgress:'Week progress', bodyDayCompleted:'Done', bodyDayRestShort:'Rest',
   bodySetPlan:'Set', bodyTodayDone:'Checked in today',
-  bodyUndo:'Undo', bodyOverrideSkip:'Marked skip', bodyOverrideSwap:'Swapped', bodyOverrideAdjust:'Adjusted', bodyOverrideCustom:'Custom',
+  bodyUndo:'Undo', bodyUndoHint:'Undo to continue training', bodyOverrideSkip:'Marked skip', bodyOverrideSwap:'Swapped', bodyOverrideAdjust:'Adjusted', bodyOverrideCustom:'Custom',
   bodyPlanRemoved:'Removed', bodyPlanRestDayHint:'Rest day, recover well', bodyPlanUnitExercise:'exercises', bodyPlanAddedExercises:"Today's exercises",
   bodyStartTraining:'Start Training', bodyAdjust:'Adjust', bodyRemove:'Remove', bodySets:'sets', bodyReps:'reps', bodyWeightUnit:'kg',
   bodySearchExercise:'Search exercises', bodyClear:'Clear', bodyAll:'All', bodyWeekDay:'', bodyMin:'min',
