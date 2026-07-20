@@ -157,15 +157,15 @@ export default function PlanManagementScreen() {
                   <View style={[styles.expandSection, { backgroundColor: TH.bg, borderColor: TH.border }]}>
                     <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 8 }}>{T('bodyWeeklyPlan')}</Text>
                     {plan.tasks.map((task) => {
-                      const exCount = task.exercises?.length ?? 0;
+                      const exercises = task.exercises ?? [];
                       const isRest = !task.sportKey || task.sportKey === 'rest';
                       return (
                         <View key={task.weekday} style={styles.dayRow}>
                           <View style={[styles.dayBadge, { backgroundColor: isRest ? TH.border : '#f59e0b20' }]}>
                             <Text style={{ fontSize: FONT_SMALL(), color: isRest ? TH.sub : '#f59e0b', fontWeight: '600' }}>{WEEKDAY_LABELS[task.weekday - 1]}</Text>
                           </View>
-                          <Text style={{ fontSize: FONT_BODY(), color: TH.text, flex: 1 }}>
-                            {isRest ? (T('bodyPlanRestDay') || '休息') : exCount > 0 ? T('bodyPlanExercisesCount').replace('{}', String(exCount)) : (T('bodyPlanNoExercises'))}
+                          <Text style={{ fontSize: FONT_BODY(), color: TH.text, flex: 1 }} numberOfLines={2}>
+                            {isRest ? (T('bodyPlanRestDay') || '休息') : exercises.length > 0 ? exercises.map(e => e.nameZh).join('、') : (T('bodyPlanNoExercises'))}
                           </Text>
                         </View>
                       );
