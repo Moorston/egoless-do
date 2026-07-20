@@ -148,7 +148,7 @@ export async function initApp(): Promise<void> {
         }
       }
       if (duplicates.length > 0) {
-        log.warn(`dedupBodyPlans: removing ${duplicates.length} duplicate plan(s)");
+        log.warn(`dedupBodyPlans: removing ${duplicates.length} duplicate plan(s)`);
         const dupSet = new Set(duplicates);
         setState({
           bodyTrainingPlans: plans.filter((p: Record<string, unknown>) => !dupSet.has(p.id)),
@@ -189,7 +189,7 @@ export async function initApp(): Promise<void> {
         const items = (s[storeKey as keyof typeof s] ?? []) as Array<Record<string, unknown>>;
         const ghosts = items.filter(i => !i.deleted && isGhost(i));
         if (ghosts.length > 0) {
-          log.warn(`cleanupGhosts: ${storeKey} — removing ${ghosts.length} ghost entries`);
+          log.warn(`cleanupGhosts: ${storeKey} - removing ${ghosts.length} ghost entries`);
           ghostPatch[storeKey] = items.map(i => ghosts.some(g => g.id === i.id) ? { ...i, deleted: true, updatedAt: Date.now() } : i);
           for (const g of ghosts) toDelete.push({ entity, id: g.id as string });
         }

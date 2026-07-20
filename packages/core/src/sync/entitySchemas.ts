@@ -764,7 +764,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
 
   bodyTrainingPlan: {
     sqlite: { table: 'body_training_plans', pk: 'id' },
-    pocketbase: { collection: 'body_training_plans', serverIdField: 'plan_id' },
+    pocketbase: { collection: 'body_plans', serverIdField: 'plan_id' },
     fields: [
       { entity: 'id',          col: 'id',           server: 'id',           fallback: null },
       { entity: 'name',        col: 'name',         server: 'name',         fallback: '' },

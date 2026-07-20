@@ -1318,3 +1318,32 @@ StatsScreen计划任务进度改为countItemDoneDays动态计算；补全planIte
 ### Next Steps
 
 - None - task complete
+
+### 2026-07-20 — 调身模块硬编码全量修复
+
+**任务**: 07-20-body-plan-create-save-btn-disabled
+**提交**: 12f49a1
+
+**发现**: 计划名称必填提示缺失 → 扩展为全模块硬编码审查（110 个问题）
+**修复**: 
+- 名称输入框加「计划名称 *」标签 + 空值必填提示
+- 补充 65 个 i18n key（bodyUndo/bodyStartTraining/bodyMin 等）
+- 修复 63 假国际化 + 27 完全硬编码（11 个 body 文件）
+- CheckinSuccessCard 鼓励语改 i18n + try/catch 兜底
+**规范**: GLOBAL-CODE-STANDARDS 新增 8.3「禁止假国际化」
+
+**经验**: `T('key') || '回退'` 模式只有 key 真正存在才有意义；批量补 key 前应先 grep 确认 key 是否已声明
+
+### 2026-07-20 — 调身计划持久化与卡片功能缺陷
+
+**任务**: 07-20-body-plan-persist-card-defects (父) + 2 子任务
+**提交**: 50f20c0
+
+**子1 持久化根因**: REHYDRATE_MAP 无 bodyTrainingPlan 条目 + rowToTrainingPlan mapper 缺失
+→ 数据写入 body_training_plans 后重启无人读回
+**修复**: rowMappers.ts 加 mapper + SyncRehydrationManager 注册条目
+
+**子2 卡片按钮**: 编辑仅限 active、无详情入口
+→ 统一按钮（编辑+详情+删除+暂停/激活）+ PlanDetailModal 只读预览弹窗
+
+**经验**: 新增 SyncEntity 时必须同步检查 persist/rehydrate/sync 三链路 + rowMapper
