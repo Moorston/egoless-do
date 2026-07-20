@@ -70,7 +70,7 @@ export default function GoalEditLightModal({ visible, onClose, onConfirm, initia
             <TextInput
               value={targetWeight}
               onChangeText={setTargetWeight}
-              placeholder="如: 70"
+              placeholder={T('bodyGoalWeightPlaceholder')}
               placeholderTextColor={TH.sub}
               keyboardType="numeric"
               style={{ backgroundColor: TH.border + '40', borderRadius: 10, padding: 12, color: TH.text, fontSize: FONT_BODY(), marginBottom: 16 }}
@@ -81,7 +81,7 @@ export default function GoalEditLightModal({ visible, onClose, onConfirm, initia
             <TextInput
               value={targetBodyFat}
               onChangeText={setTargetBodyFat}
-              placeholder="如: 15"
+              placeholder={T('bodyGoalFatPlaceholder')}
               placeholderTextColor={TH.sub}
               keyboardType="numeric"
               style={{ backgroundColor: TH.border + '40', borderRadius: 10, padding: 12, color: TH.text, fontSize: FONT_BODY(), marginBottom: 16 }}

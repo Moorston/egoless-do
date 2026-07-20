@@ -189,7 +189,7 @@ export default function WeightTrendChart({ TH, T, checkins }: Props) {
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
           <TrendIcon size={14} color={trendColor} />
           <Text style={{ fontSize: FONT_SMALL(), color: trendColor }}>
-            {diff > 0 ? '+' : ''}{diff.toFixed(1)}kg
+            {diff > 0 ? '+' : ''}{diff.toFixed(1)}{T('bodyUnitKg')}
           </Text>
         </View>
       </View>
@@ -197,7 +197,7 @@ export default function WeightTrendChart({ TH, T, checkins }: Props) {
       {/* Latest weight */}
       <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 4, marginBottom: 12 }}>
         <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '900', color: TH.text }}>{last}</Text>
-        <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>kg</Text>
+        <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('bodyUnitKg')}</Text>
       </View>
 
       {/* Month navigator */}

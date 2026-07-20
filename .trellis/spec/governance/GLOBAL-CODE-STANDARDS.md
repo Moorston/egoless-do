@@ -441,7 +441,26 @@ const mockAdapter = {
 
 使用 snake_case 分层命名：`<module>_<action>_<element>`。
 
-### 8.3 颜色/字号走 Token
+### 8.3 禁止「假国际化」
+
+> [🔴 MUST] [👁 Manual + 🤖 Lint 辅助]
+> 适用范围: mobile
+
+`T('key') || '回退文案'` 模式仅在 key 真实存在于 i18n 文件时才允许。若 key 不存在，`T()` 永远返回空字符串，回退文案始终生效，等同于硬编码。
+
+```typescript
+// ❌ 禁止 — bodyUndo 从未在 types.ts 声明，'撤销' 始终显示
+<Text>{T('bodyUndo') || '撤销'}</Text>
+
+// ✅ 正确 — key 已声明，回退仅作极端兜底
+<Text>{T('bodyUndo') || '撤销'}</Text>
+// 且 types.ts 中声明：bodyUndo: string;
+// 且 zh.ts / en.ts / zh-Hant.ts 中均有对应值
+```
+
+**验收**：新增 `T('someKey')` 引用时，必须同时在 `packages/core/src/i18n/types.ts` 声明 key，并在 zh.ts / en.ts / zh-Hant.ts 三个文件提供翻译。
+
+### 8.4 颜色/字号走 Token
 
 > [🔴 MUST] [👁 Manual]
 > 适用范围: mobile
@@ -470,6 +489,7 @@ const mockAdapter = {
 | 4.2 禁止 core→app | `no-restricted-imports` | ❌ 未配置，需添加 |
 | 4.3 禁止 core→React | `no-restricted-imports` | ❌ 未配置，需添加 |
 | 嵌套深度 | `max-depth: [warn, 4]` | ✅ 已配置 |
+| 8.3 假国际化（key 必须声明） | 自定义 lint 脚本 + code review | 🟡 需确认 |
 | 函数长度 | `max-lines-per-function: [warn, 300]` | ✅ 已配置 |
 | 等号判断 | `eqeqeq: [error, smart]` | ✅ 已配置 |
 | 重复导入 | `import/no-duplicates: error` | ✅ 已配置 |

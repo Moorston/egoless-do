@@ -44,9 +44,9 @@ function TemplateCard({ template, T, TH, onPress }: { template: PlanTemplate; T:
             <View style={{ paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6, backgroundColor: `${intensityColor}20` }}>
               <Text style={{ fontSize: FONT_SMALL(), color: intensityColor, fontWeight: '600' }}>{intensityLabel}</Text>
             </View>
-            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{template.durationDays}天</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{template.durationDays}{T('bodyDayUnit')}</Text>
             <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>·</Text>
-            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{String(template.weekSchedule.filter(s => s.sportKey !== 'rest').length)}练/周</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{String(template.weekSchedule.filter(s => s.sportKey !== 'rest').length)}{T('bodyTimesPerWeek')}</Text>
           </View>
         </View>
         <ChevronRight size={18} color={TH.sub} />

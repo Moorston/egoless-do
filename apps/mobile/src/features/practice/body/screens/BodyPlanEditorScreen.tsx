@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_BUTTON, FONT_SMALL, FONT_LABEL, dateStr, EXERCISE_CATEGORIES, BODY_STRATEGIES, buildExerciseLibrary, getDayOverview, type BodyGoal, type BodyTrainingPlan, type BodyPlanTask, type BodyStrategy, type ExerciseDef, type PlanTemplate } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_LABEL, dateStr, EXERCISE_CATEGORIES, BODY_STRATEGIES, buildExerciseLibrary, getDayOverview, type BodyGoal, type BodyTrainingPlan, type BodyPlanTask, type BodyStrategy, type ExerciseDef, type PlanTemplate } from '@egoless-do/core';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { ChevronLeft, Target, ClipboardList, Save, ChevronDown, ChevronUp, Download, Play } from 'lucide-react-native';
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
@@ -57,8 +57,8 @@ export default function BodyPlanEditorScreen() {
     undoFn: null,
   });
 
-  // ── Day chooser state (UnifiedExercisePool) ──
-  const [dayChooserEx, setDayChooserEx] = useState<ExerciseDef | null>(null);
+  // ── Multi-select state (UnifiedExercisePool) ──
+  const [selectedExIds, setSelectedExIds] = useState<Set<string>>(new Set());
   const [selectedDays, setSelectedDays] = useState<Set<number>>(new Set());
 
   const showSnackbar = useCallback((message: string, undoFn: () => void) => {
@@ -111,66 +111,96 @@ export default function BodyPlanEditorScreen() {
     return map;
   }, [tasks]);
 
-  // Batch add exercise to multiple days
-  const handleAddToDays = useCallback((ex: ExerciseDef, days: number[]) => {
-    let added = 0;
-    let skipped = 0;
+  // Handle exercise toggle (multi-select) from UnifiedExercisePool
+  const handleExerciseToggle = useCallback((exId: string) => {
+    if (exId === '__clear__') {
+      setSelectedExIds(new Set());
+      return;
+    }
+    setSelectedExIds(prev => {
+      const next = new Set(prev);
+      if (next.has(exId)) {
+        next.delete(exId);
+      } else {
+        next.add(exId);
+      }
+      return next;
+    });
+  }, []);
+
+  // Batch add all selected exercises to selected days
+  const handleBatchAddToDays = useCallback(() => {
+    const days = Array.from(selectedDays);
+    if (days.length === 0 || selectedExIds.size === 0) return;
+
+    // Resolve selected exercises from library
+    const selectedExs = Array.from(selectedExIds).map(id =>
+      exerciseLibrary.find(e => e.id === id)
+    ).filter(Boolean) as ExerciseDef[];
+
+    if (selectedExs.length === 0) return;
+
+    let totalAdded = 0;
+    let totalSkipped = 0;
 
     setTasks(prev => prev.map(t => {
       if (!days.includes(t.weekday)) return t;
       const currentExs = t.exercises ?? [];
-      const existingIdx = currentExs.findIndex(e => e.nameZh === ex.nameZh);
-      if (existingIdx >= 0) {
-        skipped++;
-        return t;
+      let added = 0;
+      let skipped = 0;
+      let updatedExs = [...currentExs];
+
+      for (const ex of selectedExs) {
+        const existingIdx = updatedExs.findIndex(e => e.nameZh === ex.nameZh);
+        if (existingIdx >= 0) {
+          skipped++;
+          continue;
+        }
+        const newEx = {
+          ...ex,
+          id: `planex_${t.weekday}_${Date.now()}_${updatedExs.length}`,
+        };
+        updatedExs = [...updatedExs, newEx];
+        added++;
       }
-      const newEx = {
-        ...ex,
-        id: `planex_${t.weekday}_${Date.now()}_${currentExs.length}`,
-      };
-      const sportKey = t.sportKey || ex.category || 'full_body';
-      added++;
-      return { ...t, sportKey, exercises: [...currentExs, newEx] };
+
+      totalAdded += added;
+      totalSkipped += skipped;
+      if (added === 0) return t;
+      return { ...t, sportKey: t.sportKey || selectedExs[0].category || 'full_body', exercises: updatedExs };
     }));
 
     // Show snackbar feedback
-    if (added > 0) {
-      let msg = `${T('bodyPlanAddedTo') || '已添加到'} ${added} ${T('bodyPlanDays') || '天'}`;
-      if (skipped > 0) {
-        msg += `，${T('bodyPlanSkipped') || '已跳过'} ${skipped} ${T('bodyPlanDays') || '天'}（${T('bodyPlanAlreadyExists') || '已存在'}）`;
+    if (totalAdded > 0) {
+      let msg = `${T('bodyPlanAddedTo') || '已添加到'} ${totalAdded} ${T('bodyPlanDays') || '天'}`;
+      if (totalSkipped > 0) {
+        msg += `，${T('bodyPlanSkipped') || '已跳过'} ${totalSkipped} ${T('bodyPlanDays') || '天'}（${T('bodyPlanAlreadyExists') || '已存在'}）`;
       }
+      const snapshot = { exs: selectedExs, days: [...days] };
       showSnackbar(msg, () => {
-        // Undo: remove the added exercise from all target days
+        // Undo: remove all batch-added exercises from target days
         setTasks(prev => prev.map(t => {
-          if (!days.includes(t.weekday)) return t;
-          // Remove the last added instance of this exercise
+          if (!snapshot.days.includes(t.weekday)) return t;
           const currentExs = t.exercises ?? [];
-          const idx = currentExs.findLastIndex(e => e.nameZh === ex.nameZh);
-          if (idx >= 0) {
-            return { ...t, exercises: currentExs.filter((_, i) => i !== idx) };
-          }
-          return t;
+          const exNames = new Set(snapshot.exs.map(e => e.nameZh));
+          return { ...t, exercises: currentExs.filter(e => !exNames.has(e.nameZh)) };
         }));
       });
-    } else if (skipped > 0) {
+    } else if (totalSkipped > 0) {
       showSnackbar(
-        `${T('bodyPlanAlreadyExists') || '已存在'} — ${T('bodyPlanSkipped') || '跳过'} ${skipped} ${T('bodyPlanDays') || '天'}`,
-        () => {} // No-op undo for skip-only
+        `${T('bodyPlanAlreadyExists') || '已存在'} — ${T('bodyPlanSkipped') || '跳过'} ${totalSkipped} ${T('bodyPlanDays') || '天'}`,
+        () => {}
       );
     }
 
-    // Clear day chooser state after save
-    setDayChooserEx(null);
+    // Clear selection after batch add
+    setSelectedExIds(new Set());
     setSelectedDays(new Set());
-  }, [T, showSnackbar]);
+  }, [selectedDays, selectedExIds, exerciseLibrary, T, showSnackbar]);
 
   // Handle day chooser changes from UnifiedExercisePool
   const handleDayChooserChange = useCallback((days: Set<number>) => {
     setSelectedDays(days);
-  }, []);
-
-  const handleDayChooserSetEx = useCallback((ex: ExerciseDef | null) => {
-    setDayChooserEx(ex);
   }, []);
 
   const handleSelectTemplate = useCallback((template: PlanTemplate) => {
@@ -240,7 +270,7 @@ export default function BodyPlanEditorScreen() {
   const dayOverviews = useMemo(() => {
     const syntheticPlan: BodyTrainingPlan = {
       id: 'editing',
-      name: 'Editing Plan',
+      name: '',
       startDate,
       endDate,
       tasks,
@@ -299,11 +329,18 @@ export default function BodyPlanEditorScreen() {
           ) : null}
         </View>
 
-        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 120 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 24 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
           {/* ── Plan Name + Duration ── */}
           <View style={[styles.card, { backgroundColor: TH.card }]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
+              <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, fontWeight: '600' }}>{T('bodyPlanName')}</Text>
+              <Text style={{ color: '#ef4444', fontSize: FONT_LABEL(), marginLeft: 2 }}>*</Text>
+            </View>
             <TextInput value={name} onChangeText={setName} placeholder={T('bodyPlanNamePlaceholder')} placeholderTextColor={TH.sub}
-              style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginBottom: 12 }} />
+              style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginBottom: name.trim() ? 12 : 4 }} />
+            {!name.trim() && (
+              <Text style={{ color: '#ef4444', fontSize: FONT_SMALL(), marginBottom: 8 }}>{T('bodyPlanNameRequired')}</Text>
+            )}
             <View style={{ flexDirection: 'row', gap: 12 }}>
               <View style={{ flex: 1 }}>
                 <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 4 }}>{T('bodyPlanStart')}</Text>
@@ -318,7 +355,7 @@ export default function BodyPlanEditorScreen() {
                 </TouchableOpacity>
               </View>
             </View>
-            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 6, textAlign: 'center' }}>{`约 ${durationWeeks} 周`}</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 6, textAlign: 'center' }}>{`${T('bodyPlanApprox')} ${durationWeeks} ${T('bodyPlanWeeks')}`}</Text>
           </View>
 
           {/* ── Goal (collapsible) ── */}
@@ -355,11 +392,11 @@ export default function BodyPlanEditorScreen() {
                 exerciseLibrary={exerciseLibrary}
                 dayTasks={dayTasksMap}
                 activeDay={activeDay}
+                selectedExIds={selectedExIds}
                 selectedDays={selectedDays}
+                onExerciseToggle={handleExerciseToggle}
                 onDayChooserChange={handleDayChooserChange}
-                onDayChooserEx={dayChooserEx}
-                onDayChooserSetEx={handleDayChooserSetEx}
-                onAddToDays={handleAddToDays}
+                onBatchAddToDays={handleBatchAddToDays}
               />
             </View>
 
@@ -434,7 +471,7 @@ const styles = StyleSheet.create({
   dateInput: { borderRadius: 10, padding: 10, fontSize: FONT_BODY(), borderWidth: 1, textAlign: 'center' },
   smallInput: { borderRadius: 8, padding: 8, fontSize: FONT_BODY(), borderWidth: 1 },
   chip: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, borderWidth: 1 },
-  footer: { position: 'absolute', bottom: 0, left: 0, right: 0, padding: 16, paddingBottom: 24, borderTopWidth: 1, flexDirection: 'row', gap: 10 },
+  footer: { padding: 16, borderTopWidth: 1, flexDirection: 'row', gap: 10 },
   saveBtn: { flex: 1, paddingVertical: 14, borderRadius: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6 },
   startBtn: { flex: 2, paddingVertical: 14, borderRadius: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
   unifiedPoolContainer: {

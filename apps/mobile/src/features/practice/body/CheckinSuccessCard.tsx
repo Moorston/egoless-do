@@ -19,22 +19,21 @@ interface Props {
   onFinish: () => void;
 }
 
-// ── Encouraging quotes ──
-const ENCOURAGEMENTS = [
-  '身体是灵魂的殿堂，照顾好它，就是照顾好自己。',
-  '每一次练习，都是对自己的一次温柔。',
-  '不与他人比，只与昨日较。今日的你，比昨天更好。',
-  '运动不是惩罚，是身体对你的感谢。',
-  '呼吸之间，感受生命的流动。',
-  '坚持下去的意义，藏在每一次不想动却动了的时候。',
-  '身体知道答案，只是需要你去倾听。',
-  '最好的投资，是投资自己的健康。',
-  '千里之行，始于足下。今天这一步，你迈出去了。',
-  '让运动成为习惯，让习惯成就你。',
-];
+function loadEncouragements(T: (key: string) => string): string[] {
+  try {
+    const raw = T('bodyEncouragements');
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
 
-function randomEncouragement(): string {
-  return ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)];
+function randomEncouragement(T: (key: string) => string): string {
+  const list = loadEncouragements(T);
+  if (list.length === 0) return '';
+  return list[Math.floor(Math.random() * list.length)];
 }
 
 function formatElapsed(ms: number): string {
@@ -46,7 +45,7 @@ function formatElapsed(ms: number): string {
 
 function CheckinSuccessCard({ TH, T, awarenessData, practiceCompleted, breathingCompleted, breathingDurationMs, totalMs, onFinish }: Props) {
   const hasData = awarenessData != null;
-  const encouragement = useMemo(() => randomEncouragement(), []);
+  const encouragement = useMemo(() => randomEncouragement(T), [T]);
 
   const DIMENSIONS = hasData
     ? [

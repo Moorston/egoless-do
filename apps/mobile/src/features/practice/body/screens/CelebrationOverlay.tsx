@@ -136,7 +136,7 @@ export default function CelebrationOverlay({ visible, TH, T, data, onDismiss }: 
               {data.weightChange != null && (
                 <View style={{ alignItems: 'center' }}>
                   <Text style={[styles.changeValue, { color: data.weightChange < 0 ? '#10b981' : '#ef4444' }]}>
-                    {data.weightChange > 0 ? '+' : ''}{data.weightChange.toFixed(1)}kg
+                    {data.weightChange > 0 ? '+' : ''}{data.weightChange.toFixed(1)}{T('bodyUnitKg')}
                   </Text>
                   <Text style={[styles.changeLabel, { color: TH.sub }]}>{T('bodyWeight')}</Text>
                 </View>
@@ -144,7 +144,7 @@ export default function CelebrationOverlay({ visible, TH, T, data, onDismiss }: 
               {data.bodyFatChange != null && (
                 <View style={{ alignItems: 'center' }}>
                   <Text style={[styles.changeValue, { color: data.bodyFatChange < 0 ? '#10b981' : '#ef4444' }]}>
-                    {data.bodyFatChange > 0 ? '+' : ''}{data.bodyFatChange.toFixed(1)}%
+                    {data.bodyFatChange > 0 ? '+' : ''}{data.bodyFatChange.toFixed(1)}{T('bodyUnitPercent')}
                   </Text>
                   <Text style={[styles.changeLabel, { color: TH.sub }]}>{T('bodyBodyFat')}</Text>
                 </View>

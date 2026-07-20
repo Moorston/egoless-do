@@ -1,7 +1,7 @@
 import { FONT_SMALL, FONT_SUB, EXERCISE_CATEGORIES, type ExerciseDef, type Theme } from '@egoless-do/core';
 import { Search, X } from 'lucide-react-native';
-import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import React, { useState, useMemo, useCallback } from 'react';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 
 const P = '#f59e0b';
 
@@ -13,11 +13,11 @@ interface Props {
   exerciseLibrary: ExerciseDef[];
   dayTasks: Map<number, ExerciseDef[]>;       // weekday → exercises already in each day
   activeDay: number | null;                    // currently expanded day
+  selectedExIds: Set<string>;                 // multi-select: set of selected exercise IDs
   selectedDays: Set<number>;                   // current day-chooser selection
+  onExerciseToggle: (exId: string) => void;
   onDayChooserChange: (days: Set<number>) => void;
-  onDayChooserEx: ExerciseDef | null;
-  onDayChooserSetEx: (ex: ExerciseDef | null) => void;
-  onAddToDays: (ex: ExerciseDef, days: number[]) => void;
+  onBatchAddToDays: () => void;
 }
 
 // Extract unique muscle groups from the exercise library
@@ -36,15 +36,12 @@ const WEEKDAY_COMPACT_KEYS = ['bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'body
 
 export default function UnifiedExercisePool({
   TH, T, exerciseLibrary, dayTasks,
-  activeDay, selectedDays, onDayChooserChange,
-  onDayChooserEx, onDayChooserSetEx, onAddToDays,
+  activeDay, selectedExIds, selectedDays,
+  onExerciseToggle, onDayChooserChange, onBatchAddToDays,
 }: Props) {
   const [exFilter, setExFilter] = useState<ExFilter>('all');
   const [exSearch, setExSearch] = useState('');
   const [muscleGroup, setMuscleGroup] = useState<string>('all');
-
-  // Debounce timer ref for auto-save
-  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const allMuscleGroups = useMemo(() => extractMuscleGroups(exerciseLibrary), [exerciseLibrary]);
 
@@ -93,41 +90,14 @@ export default function UnifiedExercisePool({
     return exs;
   }, [exerciseLibrary, exFilter, exSearch, muscleGroup]);
 
-  // Handle auto-save with debounce
-  const triggerAutoSave = useCallback((ex: ExerciseDef, days: Set<number>) => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
+  // Handle exercise tap: toggle multi-select
+  const handleExerciseToggle = useCallback((ex: ExerciseDef) => {
+    onExerciseToggle(ex.id);
+    // Auto-pre-check activeDay when first exercise is selected
+    if (selectedExIds.size === 0 && activeDay) {
+      onDayChooserChange(new Set([activeDay]));
     }
-    debounceTimerRef.current = setTimeout(() => {
-      const daysArr = Array.from(days);
-      if (daysArr.length > 0) {
-        onAddToDays(ex, daysArr);
-      }
-    }, 500);
-  }, [onAddToDays]);
-
-  // Clean up timer on unmount
-  useEffect(() => {
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
-  }, []);
-
-  // Handle exercise tap: show day chooser
-  const handleExerciseTap = useCallback((ex: ExerciseDef) => {
-    if (onDayChooserEx?.id === ex.id) {
-      // Tapping the same exercise again deselects it
-      onDayChooserSetEx(null);
-      onDayChooserChange(new Set(activeDay ? [activeDay] : []));
-    } else {
-      // Set the selected exercise and pre-check activeDay
-      const initialDays = new Set<number>(activeDay ? [activeDay] : []);
-      onDayChooserSetEx(ex);
-      onDayChooserChange(initialDays);
-    }
-  }, [onDayChooserEx, onDayChooserSetEx, onDayChooserChange, activeDay]);
+  }, [onExerciseToggle, selectedExIds.size, activeDay, onDayChooserChange]);
 
   // Handle day checkbox toggle
   const handleDayToggle = useCallback((weekday: number) => {
@@ -138,32 +108,21 @@ export default function UnifiedExercisePool({
       newDays.add(weekday);
     }
     onDayChooserChange(newDays);
-    // Trigger auto-save if there's a selected exercise
-    if (onDayChooserEx) {
-      triggerAutoSave(onDayChooserEx, newDays);
-    }
-  }, [selectedDays, onDayChooserChange, onDayChooserEx, triggerAutoSave]);
+  }, [selectedDays, onDayChooserChange]);
 
   // Handle select all / deselect all days
   const handleToggleAllDays = useCallback(() => {
-    if (selectedDays.size >= 7) {
-      onDayChooserChange(new Set());
-    } else {
-      onDayChooserChange(new Set([1, 2, 3, 4, 5, 6, 7]));
-    }
-    if (onDayChooserEx) {
-      const newDays = selectedDays.size >= 7 ? new Set<number>() : new Set([1, 2, 3, 4, 5, 6, 7]);
-      triggerAutoSave(onDayChooserEx, newDays);
-    }
-  }, [selectedDays, onDayChooserChange, onDayChooserEx, triggerAutoSave]);
+    const newDays = selectedDays.size >= 7 ? new Set<number>() : new Set([1, 2, 3, 4, 5, 6, 7]);
+    onDayChooserChange(newDays);
+  }, [selectedDays, onDayChooserChange]);
 
   const renderItem = useCallback(({ item }: { item: ExerciseDef }) => {
     const existingDays = exerciseDayMap.get(item.nameZh);
-    const isSelected = onDayChooserEx?.id === item.id;
+    const isSelected = selectedExIds.has(item.id);
 
     return (
       <TouchableOpacity
-        onPress={() => handleExerciseTap(item)}
+        onPress={() => handleExerciseToggle(item)}
         activeOpacity={0.7}
         accessibilityRole="button"
         accessibilityLabel={`${item.nameZh}${existingDays ? ` (${T('bodyPlanAlreadyExists') || '已存在'} ${existingDays.size} ${T('bodyPlanDays') || '天'})` : ''}`}
@@ -208,14 +167,14 @@ export default function UnifiedExercisePool({
         )}
       </TouchableOpacity>
     );
-  }, [exerciseDayMap, onDayChooserEx, handleExerciseTap, TH, getDayLabel, T]);
+  }, [exerciseDayMap, selectedExIds, handleExerciseToggle, TH, getDayLabel, T]);
 
   return (
     <View style={styles.container}>
       {/* Filter tabs */}
       <View style={styles.filterRow}>
         {([
-          { key: 'all' as ExFilter, label: T('bodyPlanFreeTraining') || '全部', icon: '🎯' },
+          { key: 'all' as ExFilter, label: T('bodyPlanAll') || '全部', icon: '🎯' },
           { key: 'traditional' as ExFilter, label: T('bodyPlanTraditional') || '传统', icon: '☯️' },
           { key: 'modern' as ExFilter, label: T('bodyPlanModern') || '现代', icon: '💪' },
         ]).map(tab => (
@@ -275,24 +234,47 @@ export default function UnifiedExercisePool({
       )}
 
       {/* Exercise grid */}
-      <FlatList
-        data={filteredExercises}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        numColumns={3}
-        columnWrapperStyle={styles.gridRow}
-        scrollEnabled={false}
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={[styles.emptyText, { color: TH.sub }]}>
-              {T('bodyPlanNoExercises') || '未找到动作'}
-            </Text>
-          </View>
-        }
-      />
+      <ScrollView
+        style={{ maxHeight: 280 }}
+        nestedScrollEnabled
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.grid}>
+          {filteredExercises.map(item => (
+            <View key={item.id} style={styles.gridCell}>
+              {renderItem({ item })}
+            </View>
+          ))}
+          {filteredExercises.length === 0 && (
+            <View style={styles.emptyContainer}>
+              <Text style={[styles.emptyText, { color: TH.sub }]}>
+                {T('bodyPlanNoExercises') || '未找到动作'}
+              </Text>
+            </View>
+          )}
+        </View>
+      </ScrollView>
 
-      {/* Day checkbox row (shown when an exercise is selected) */}
-      {onDayChooserEx && (
+      {/* Selection count badge */}
+      {selectedExIds.size > 0 && (
+        <View style={[styles.selectionBar, { backgroundColor: `${P}12`, borderColor: `${P}30` }]}>
+          <Text style={[styles.selectionText, { color: P }]}>
+            {T('bodyPlanSelected') || '已选'} {String(selectedExIds.size)} {T('bodyPlanUnitExercise')}
+          </Text>
+          <TouchableOpacity
+            onPress={() => onExerciseToggle('__clear__')}
+            style={styles.clearBtn}
+            accessibilityRole="button"
+          >
+            <Text style={[styles.clearBtnText, { color: P }]}>
+              {T('bodyClear') || '清除'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {/* Day checkbox row + batch add button (shown when exercises are selected) */}
+      {selectedExIds.size > 0 && (
         <View style={[styles.dayChooserRow, { borderTopColor: TH.border }]}>
           <View style={styles.dayChooserHeader}>
             <Text style={[styles.dayChooserTitle, { color: TH.text }]}>
@@ -311,43 +293,52 @@ export default function UnifiedExercisePool({
           </View>
           <View style={styles.dayCheckboxRow}>
             {[1, 2, 3, 4, 5, 6, 7].map(weekday => {
-              const existingDays = exerciseDayMap.get(onDayChooserEx.nameZh);
-              const isExisting = existingDays?.has(weekday) ?? false;
               const isChecked = selectedDays.has(weekday);
-              const isDimmed = isExisting && !isChecked;
 
               return (
                 <TouchableOpacity
                   key={weekday}
-                  onPress={() => !isDimmed && handleDayToggle(weekday)}
-                  activeOpacity={isDimmed ? 1 : 0.7}
+                  onPress={() => handleDayToggle(weekday)}
+                  activeOpacity={0.7}
                   accessibilityRole="checkbox"
-                  accessibilityLabel={`${getDayLabel(weekday)}${isChecked ? ` ${T('bodyPlanSelected') || '已选'}` : ''}${isExisting ? ` ${T('bodyPlanAlreadyExists') || '已有'}` : ''}`}
+                  accessibilityLabel={`${getDayLabel(weekday)}${isChecked ? ` ${T('bodyPlanSelected') || '已选'}` : ''}`}
                   style={[
                     styles.dayCheckbox,
                     {
-                      backgroundColor: isChecked ? `${P}20` : isDimmed ? TH.border : TH.bg,
-                      borderColor: isChecked ? P : isDimmed ? `${P}20` : TH.border,
-                      opacity: isDimmed ? 0.4 : 1,
+                      backgroundColor: isChecked ? `${P}20` : TH.bg,
+                      borderColor: isChecked ? P : TH.border,
                     },
                   ]}
                 >
                   <Text style={[
                     styles.dayCheckboxLabel,
-                    { color: isChecked ? P : isDimmed ? `${P}60` : TH.sub },
+                    { color: isChecked ? P : TH.sub },
                   ]}>
                     {getDayLabel(weekday)}
                   </Text>
                   {isChecked && (
                     <Text style={styles.dayCheckboxCheck}>✓</Text>
                   )}
-                  {isExisting && !isChecked && (
-                    <Text style={[styles.dayCheckboxExisting, { color: `${P}60` }]}>✓</Text>
-                  )}
                 </TouchableOpacity>
               );
             })}
           </View>
+
+          {/* Batch add button */}
+          <TouchableOpacity
+            onPress={onBatchAddToDays}
+            disabled={selectedDays.size === 0}
+            style={[
+              styles.batchAddBtn,
+              { backgroundColor: selectedDays.size > 0 ? P : `${P}40` },
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel={T('bodyPlanAddSelected') || '添加到选中天'}
+          >
+            <Text style={styles.batchAddBtnText}>
+              {T('bodyPlanAddSelected') || '添加到选中天'} ({String(selectedDays.size)}{T('bodyDayUnit')})
+            </Text>
+          </TouchableOpacity>
         </View>
       )}
     </View>
@@ -407,8 +398,13 @@ const styles = StyleSheet.create({
     fontSize: FONT_SMALL(),
     fontWeight: '500',
   },
-  gridRow: {
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 6,
+  },
+  gridCell: {
+    width: '32%',
     marginBottom: 6,
   },
   exCard: {
@@ -463,6 +459,28 @@ const styles = StyleSheet.create({
     fontSize: 8,
     fontWeight: '600',
   },
+  // Selection bar
+  selectionBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+  selectionText: {
+    fontSize: FONT_SMALL(),
+    fontWeight: '600',
+  },
+  clearBtn: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  clearBtnText: {
+    fontSize: FONT_SMALL(),
+    fontWeight: '600',
+  },
   // Day checkbox row
   dayChooserRow: {
     borderTopWidth: 1,
@@ -510,13 +528,23 @@ const styles = StyleSheet.create({
     color: P,
     fontWeight: '700',
   },
-  dayCheckboxExisting: {
-    fontSize: 10,
+  // Batch add button
+  batchAddBtn: {
+    marginTop: 8,
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  batchAddBtnText: {
+    color: '#fff',
+    fontSize: FONT_SMALL(),
     fontWeight: '700',
   },
   emptyContainer: {
     paddingVertical: 24,
     alignItems: 'center',
+    width: '100%',
   },
   emptyText: {
     fontSize: FONT_SUB(),

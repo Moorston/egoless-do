@@ -1,15 +1,12 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_BADGE, dateStr, type BodyGoal, type BodyTrainingPlan, type Theme } from '@egoless-do/core';
-import { ChevronLeft, Play, Pause, Trash2, CheckCircle2, Clock } from 'lucide-react-native';
-import React, { useMemo, useCallback, useState } from 'react';
+import { FONT_TITLE, FONT_BODY, FONT_SMALL, dateStr, type BodyTrainingPlan } from '@egoless-do/core';
+import { ChevronLeft, Play, Pause, Trash2, Clock } from 'lucide-react-native';
+import React, { useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../../../components/UI';
 import { useRootNavigation } from '../../../../navigation/hooks';
 import { useShallowStore } from '../../../../store/useAppStore';
-import CollapsibleSection from '../components/CollapsibleSection';
-import GoalCard from '../GoalCard';
-import GoalEditLightModal from '../modals/GoalEditLightModal';
 
 const STATUS_CONFIG = {
   active: { icon: '🟢', color: '#10b981', labelKey: 'bodyPlanActive' },
@@ -21,16 +18,11 @@ export default function PlanManagementScreen() {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const { bodyTrainingPlans, updateBodyTrainingPlan, removeBodyTrainingPlan, bodyGoals, userProfile } = useShallowStore(s => ({
+  const { bodyTrainingPlans, updateBodyTrainingPlan, removeBodyTrainingPlan } = useShallowStore(s => ({
     bodyTrainingPlans: s.bodyTrainingPlans,
     updateBodyTrainingPlan: s.updateBodyTrainingPlan,
     removeBodyTrainingPlan: s.removeBodyTrainingPlan,
-    bodyGoals: s.bodyGoals,
-    userProfile: s.userProfile ?? {},
   }));
-
-  const activeGoal = useMemo(() => (bodyGoals ?? []).find((g: BodyGoal) => !g.deleted), [bodyGoals]);
-  const [showGoalEdit, setShowGoalEdit] = useState(false);
 
   const plans = useMemo(() =>
     (bodyTrainingPlans ?? [])
@@ -77,17 +69,6 @@ export default function PlanManagementScreen() {
     return Math.min(100, Math.round((elapsed / totalDays) * 100));
   };
 
-  const handleSaveGoal = useCallback((data: { strategy?: string; targetWeight?: number; targetBodyFat?: number; goalNote?: string }) => {
-    if (activeGoal) {
-      updateBodyTrainingPlan(activeGoal.id, data);
-    } else {
-      // create new goal if none exists
-      const { addBodyGoal } = useShallowStore.getState();
-      addBodyGoal(data);
-    }
-    setShowGoalEdit(false);
-  }, [activeGoal, updateBodyTrainingPlan]);
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: TH.bg }}>
       {/* Header */}
@@ -102,22 +83,6 @@ export default function PlanManagementScreen() {
       </View>
 
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
-        {/* ── 调身目标 ── */}
-        <CollapsibleSection
-          title={T('bodyGoal')}
-          icon="🎯"
-          color="#8b5cf6"
-          TH={TH}
-          defaultExpanded={true}
-        >
-          <GoalCard
-            TH={TH}
-            T={T}
-            goal={activeGoal}
-            profile={userProfile as Record<string, unknown>}
-            onEdit={() => setShowGoalEdit(true)}
-          />
-        </CollapsibleSection>
 
         {plans.length === 0 ? (
           <View style={{ alignItems: 'center', paddingVertical: 60 }}>
@@ -175,7 +140,7 @@ export default function PlanManagementScreen() {
                 <View style={{ flexDirection: 'row', gap: 16, marginBottom: 12 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                     <Clock size={14} color={TH.sub} />
-                    <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{`${weeks}周 · ${activeDays}天/周`}</Text>
+                    <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyPlanSummary').replace('{}', String(weeks)).replace('{}', String(activeDays))}</Text>
                   </View>
                   {plan.strategy && (
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
@@ -215,17 +180,7 @@ export default function PlanManagementScreen() {
         )}
       </ScrollView>
 
-      <GoalEditLightModal
-        visible={showGoalEdit}
-        onClose={() => setShowGoalEdit(false)}
-        onConfirm={handleSaveGoal}
-        initialStrategy={activeGoal?.strategy}
-        initialTargetWeight={activeGoal?.targetWeight}
-        initialTargetBodyFat={activeGoal?.targetBodyFat}
-        initialGoalNote={activeGoal?.goalNote}
-        TH={TH} T={T}
-      />
-    </SafeAreaView>
+      </SafeAreaView>
   );
 }
 

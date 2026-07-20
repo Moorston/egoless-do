@@ -709,7 +709,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
         </View>
         {/* Guide text */}
         <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, textAlign: 'center', marginTop: 6 }}>
-          ← 左右滑动查看更多 →
+          {T('bodySwipeHint')}
         </Text>
       </View>
 
@@ -867,7 +867,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
               <View style={{ flex: 1, marginLeft: 10 }}>
                 <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{e.sportKey}</Text>
                 <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
-                  {String(Math.floor(e.durationSec / 60))}分钟 {e.calories ? `· ${e.calories}kcal` : ''}
+                  {String(Math.floor(e.durationSec / 60))}{T('bodyMin')} {e.calories ? `· ${e.calories}kcal` : ''}
                 </Text>
               </View>
               <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>

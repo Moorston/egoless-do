@@ -1,6 +1,6 @@
 import { FONT_SMALL, FONT_SUB, FONT_BODY, EXERCISE_CATEGORIES, type BodyPlanTask, type ExerciseDef, type Theme } from '@egoless-do/core';
 import { ChevronDown, ChevronUp, Play } from 'lucide-react-native';
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { View, Text, TouchableOpacity, LayoutAnimation, Platform, UIManager, StyleSheet } from 'react-native';
 
 // Enable LayoutAnimation on Android
@@ -16,13 +16,14 @@ interface Props {
   TH: Theme;
   T: (key: string) => string;
   task: BodyPlanTask;
+  isActive?: boolean;
   onStartTraining: (weekday: number) => void;
   onUpdateTask: (weekday: number, updates: Partial<BodyPlanTask>) => void;
   onShowSnackbar: (message: string, undoFn: () => void) => void;
 }
 
 export default function DayPlanCard({
-  TH, T, task,
+  TH, T, task, isActive,
   onStartTraining, onUpdateTask, onShowSnackbar,
 }: Props) {
   const [expanded, setExpanded] = useState(false);
@@ -49,6 +50,18 @@ export default function DayPlanCard({
     const totalSec = addedExs.reduce((s, ex) => s + (ex.defaultDurationSec ?? ((ex.defaultSets ?? 3) * 45)), 0);
     return Math.round(totalSec / 60);
   }, [addedExs]);
+
+  // Auto-expand when this card becomes active
+  useEffect(() => {
+    if (isActive) {
+      LayoutAnimation.configureNext({
+        duration: 250,
+        create: { type: 'easeInEaseOut', property: 'opacity' },
+        update: { type: 'easeInEaseOut' },
+      });
+      setExpanded(true);
+    }
+  }, [isActive]);
 
   // Weekday label
   const WEEKDAY_KEYS = ['', 'bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'bodyWeekThu', 'bodyWeekFri', 'bodyWeekSat', 'bodyWeekSun'];

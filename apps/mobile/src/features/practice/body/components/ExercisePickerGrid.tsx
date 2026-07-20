@@ -68,7 +68,7 @@ export default function ExercisePickerGrid({ TH, T, exerciseLibrary, addedExIds,
         onPress={() => onToggle(item)}
         activeOpacity={0.7}
         accessibilityRole="button"
-        accessibilityLabel={`${item.nameZh}${isAdded ? ' 已添加' : ''}`}
+        accessibilityLabel={`${item.nameZh}${isAdded ? ` ${T('bodyExerciseAdded')}` : ''}`}
         style={[
           styles.exCard,
           {

@@ -46,7 +46,7 @@ export default function WeightRecordModal({ visible, TH, T, currentWeight, curre
           </View>
 
           {/* Weight input */}
-          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 6 }}>{T('bodyWeight')} (kg){currentWeight ? ` - ${T('bodyCurrentWeight')}: ${currentWeight}kg` : ''}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 6 }}>{T('bodyWeight')} ({T('bodyUnitKg')}){currentWeight ? ` - ${T('bodyCurrentWeight')}: ${currentWeight}${T('bodyUnitKg')}` : ''}</Text>
           <TextInput
             style={{ backgroundColor: TH.card, borderRadius: 12, padding: 14, color: TH.text, fontSize: FONT_BODY(), marginBottom: 16 }}
             keyboardType="decimal-pad"
@@ -57,7 +57,7 @@ export default function WeightRecordModal({ visible, TH, T, currentWeight, curre
           />
 
           {/* Body fat input */}
-          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 6 }}>{T('bodyBodyFat')} (%){currentBodyFat ? ` - ${T('bodyCurrentBodyFat')}: ${currentBodyFat}%` : ''}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 6 }}>{T('bodyBodyFat')} ({T('bodyUnitPercent')}){currentBodyFat ? ` - ${T('bodyCurrentBodyFat')}: ${currentBodyFat}${T('bodyUnitPercent')}` : ''}</Text>
           <TextInput
             style={{ backgroundColor: TH.card, borderRadius: 12, padding: 14, color: TH.text, fontSize: FONT_BODY(), marginBottom: 8 }}
             keyboardType="decimal-pad"

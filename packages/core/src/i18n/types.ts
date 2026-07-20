@@ -878,7 +878,7 @@ export interface I18nKeys {
   bodyWeeklyProgress: string;
   bodyPlanNotSet: string; bodyPlanEdit: string; bodyPlanTitle: string; bodyPlanSave: string;
   bodyPlanNote: string; bodyPlanRestDay: string;
-  bodyPlanCreate: string; bodyPlanName: string; bodyPlanNamePlaceholder: string;
+  bodyPlanCreate: string; bodyPlanName: string; bodyPlanNamePlaceholder: string; bodyPlanNameRequired: string;
   bodyPlanDateRange: string; bodyPlanStart: string; bodyPlanEnd: string;
   bodyPlanGoalNote: string; bodyGoalNotePlaceholder: string;
   bodyWeeklyPlan: string; bodySelectExercise: string;
@@ -888,7 +888,7 @@ export interface I18nKeys {
   bodyPlanExercisePool: string; bodyPlanAddedTo: string; bodyPlanSkipped: string;
   bodyPlanAlreadyExists: string; bodyPlanAddToDays: string; bodyPlanSelectAll: string;
   bodyPlanDeselectAll: string; bodyPlanDays: string; bodyPlanSelected: string;
-  bodyPlanFreeTraining: string; bodyPlanTraditional: string; bodyPlanModern: string;
+  bodyPlanFreeTraining: string; bodyPlanAll: string; bodyPlanTraditional: string; bodyPlanModern: string;
   bodyLevelBeginner: string; bodyLevelIntermediate: string; bodyLevelAdvanced: string; bodyDays: string;
   planTemplateTraditional: string; planTemplateTraditionalDesc: string;
   planTemplatePPL: string; planTemplatePPLDesc: string;
@@ -928,6 +928,25 @@ export interface I18nKeys {
   bodyStartPractice: string; bodyStartToday: string; bodyToday: string;
   bodyWeekProgress: string; bodyDayCompleted: string; bodyDayRestShort: string;
   bodySetPlan: string; bodyTodayDone: string;
+  bodyUndo: string; bodyOverrideSkip: string; bodyOverrideSwap: string; bodyOverrideAdjust: string; bodyOverrideCustom: string;
+  bodyPlanRemoved: string; bodyPlanRestDayHint: string; bodyPlanUnitExercise: string; bodyPlanAddedExercises: string;
+  bodyStartTraining: string; bodyAdjust: string; bodyRemove: string; bodySets: string; bodyReps: string; bodyWeightUnit: string;
+  bodySearchExercise: string; bodyClear: string; bodyAll: string; bodyWeekDay: string; bodyMin: string;
+  bodyAdjustExercise: string; bodyDuration: string; bodyConfirm: string;
+  bodySwapExercise: string; bodyRestoreDay: string; bodyMarkRest: string; bodySwapDays: string; bodyEditDayExercises: string; bodyHasOverride: string;
+  bodyQuickSelect: string; bodyFromLibrary: string; bodyBack: string;
+  bodyPartUpperBody: string; bodyPartLowerBody: string; bodyPartCore: string; bodyPartFlexibility: string;
+  bodyEditGoal: string; bodyGoalStrategy: string; bodyGoalNote: string; bodySaveGoal: string;
+  bodyPlanComplete: string; bodyCompletionRate: string; bodyTapToDismiss: string;
+  bodyCheckinNotePlaceholder: string;
+  bodyEncouragements: string;
+  bodyPlanApprox: string; bodyPlanWeeks: string;
+  bodyUnitKg: string; bodyUnitPercent: string;
+  bodyDayUnit: string; bodyTimesPerWeek: string;
+  bodySwipeHint: string;
+  bodyExerciseAdded: string;
+  bodyGoalWeightPlaceholder: string; bodyGoalFatPlaceholder: string;
+  bodyPlanSummary: string;
 
   // Vow
   vowTitle: string; vowLifetime: string; vowLong: string; vowShort: string;
