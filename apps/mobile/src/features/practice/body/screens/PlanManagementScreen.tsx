@@ -97,7 +97,7 @@ export default function PlanManagementScreen() {
             const activeDays = plan.tasks.filter(t => t.sportKey && t.sportKey !== 'rest').length;
 
             return (
-              <View key={plan.id} style={[styles.planCard, {
+              <TouchableOpacity key={plan.id} activeOpacity={0.7} onPress={() => nav.navigate('BodyPlanEditor' as never, { planId: plan.id } as never)} style={[styles.planCard, {
                 backgroundColor: TH.card,
                 borderColor: isActive ? '#f59e0b30' : config.color + '20',
                 borderLeftWidth: 4,
@@ -170,7 +170,7 @@ export default function PlanManagementScreen() {
                     <Text style={{ fontSize: FONT_SMALL(), color: '#ef4444', fontWeight: '600' }}>{T('bodyDelete') || '删除'}</Text>
                   </TouchableOpacity>
                 </View>
-              </View>
+              </TouchableOpacity>
             );
           })
         )}
