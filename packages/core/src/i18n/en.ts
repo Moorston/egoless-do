@@ -1036,7 +1036,7 @@ export const en: I18nKeys = {
   bodyPlanNotSet:'No plan set yet', bodyPlanEdit:'Edit', bodyPlanDetail:'Detail', bodyPlanDetailTitle:'Plan Detail', bodyPlanTitle:'Body Plan', bodyPlanSave:'Save Plan',
   bodyPlanNote:'Note (optional)', bodyPlanRestDay:'Rest',
   bodyPlanCreate:'New Body Plan', bodyPlanName:'Plan Name', bodyPlanNamePlaceholder:'e.g. July Fat Loss', bodyPlanNameRequired:'Please enter a plan name',
-  bodyPlanDateRange:'Duration', bodyPlanStart:'Start Date', bodyPlanEnd:'End Date', bodyPlanExercisesCount:'{} exercises', bodyPlanNoExercises:'No exercises', bodyPlanClose:'Close',
+  bodyPlanDateRange:'Duration', bodyPlanStart:'Start Date', bodyPlanEnd:'End Date', bodyPlanStatus:'Status', bodyPlanExercisesCount:'{} exercises', bodyPlanNoExercises:'No exercises', bodyPlanTrainingDays:'Training days', bodyPlanClose:'Close',
   bodyPlanGoalNote:'Goal Note', bodyGoalNotePlaceholder:'e.g. reach 70kg',
   bodyWeeklyPlan:'Weekly Tasks', bodySelectExercise:'Select Exercise',
   bodyPlanTemplateChoose:'Choose a template or start from scratch',

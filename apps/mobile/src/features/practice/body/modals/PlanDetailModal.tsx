@@ -19,11 +19,8 @@ export default function PlanDetailModal({ visible, plan, onClose }: Props) {
 
   if (!plan) return null;
 
-  const strategyLabel = plan.strategy
-    ? BODY_STRATEGIES.find(s => s.key === plan.strategy)
-      ? T(BODY_STRATEGIES.find(s => s.key === plan.strategy)!.nameKey)
-      : plan.strategy
-    : '';
+  const strategyDef = plan.strategy ? BODY_STRATEGIES.find(s => s.key === plan.strategy) : undefined;
+  const strategyLabel = strategyDef ? T(strategyDef.nameKey) : (plan.strategy || '');
 
   const totalDays = Math.max(1, Math.round((new Date(plan.endDate).getTime() - new Date(plan.startDate).getTime()) / 86400000));
   const activeTaskCount = plan.tasks.filter((t: BodyPlanTask) => t.sportKey && t.sportKey !== 'rest').length;
@@ -60,7 +57,7 @@ export default function PlanDetailModal({ visible, plan, onClose }: Props) {
 
             {/* Status */}
             <View style={[styles.infoRow, { borderColor: TH.border }]}>
-              <Text style={{ fontSize: FONT_LABEL(), color: TH.sub }}>{T('bodyProgress')}</Text>
+              <Text style={{ fontSize: FONT_LABEL(), color: TH.sub }}>{T('bodyPlanStatus')}</Text>
               <Text style={{ fontSize: FONT_BODY(), color: '#f59e0b', fontWeight: '600' }}>
                 {plan.status === 'active' ? (T('bodyPlanActive') || '进行中') : plan.status === 'completed' ? (T('bodyPlanCompleted') || '已完成') : (T('bodyPlanCancelled') || '已暂停')}
               </Text>
@@ -74,7 +71,7 @@ export default function PlanDetailModal({ visible, plan, onClose }: Props) {
               </View>
               <View style={[styles.statCard, { backgroundColor: TH.bg }]}>
                 <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: '#f59e0b' }}>{activeTaskCount}</Text>
-                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyPlanDays') || '训练日'}</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyPlanTrainingDays')}</Text>
               </View>
             </View>
 

@@ -270,7 +270,7 @@ export default function BodyPlanEditorScreen() {
   const dayOverviews = useMemo(() => {
     const syntheticPlan: BodyTrainingPlan = {
       id: 'editing',
-      name: '',
+      name: 'Editing',
       startDate,
       endDate,
       tasks,

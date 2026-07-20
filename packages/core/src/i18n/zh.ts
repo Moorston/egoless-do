@@ -1034,7 +1034,7 @@ export const zh: I18nKeys = {
   bodyPlanNotSet:'尚未设置训练方案', bodyPlanEdit:'编辑', bodyPlanDetail:'详情', bodyPlanDetailTitle:'计划详情', bodyPlanTitle:'调身方案', bodyPlanSave:'保存方案',
   bodyPlanNote:'备注 (可选)', bodyPlanRestDay:'休息',
   bodyPlanCreate:'新建调身计划', bodyPlanName:'计划名称', bodyPlanNamePlaceholder:'如"7月减脂计划"', bodyPlanNameRequired:'请填写计划名称',
-  bodyPlanDateRange:'计划时间', bodyPlanStart:'开始日期', bodyPlanEnd:'结束日期', bodyPlanExercisesCount:'{} 个动作', bodyPlanNoExercises:'暂无动作', bodyPlanClose:'关闭',
+  bodyPlanDateRange:'计划时间', bodyPlanStart:'开始日期', bodyPlanEnd:'结束日期', bodyPlanStatus:'状态', bodyPlanExercisesCount:'{} 个动作', bodyPlanNoExercises:'暂无动作', bodyPlanTrainingDays:'训练日', bodyPlanClose:'关闭',
   bodyPlanGoalNote:'目标备注', bodyGoalNotePlaceholder:'如"减到70kg以下"',
   bodyWeeklyPlan:'周计划任务', bodySelectExercise:'选择运动',
   bodyPlanTemplateChoose:'选择模板快速创建，或从空白开始自定义',
