@@ -23,7 +23,10 @@ export default function PlanManagementScreen() {
     updateBodyTrainingPlan: s.updateBodyTrainingPlan,
     removeBodyTrainingPlan: s.removeBodyTrainingPlan,
   }));
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(() => {
+    const active = (bodyTrainingPlans ?? []).find((p: BodyTrainingPlan) => !p.deleted && p.status === 'active');
+    return active?.id ?? null;
+  });
   const WEEKDAY_LABELS = [T('bodyWeekMon') || '一', T('bodyWeekTue') || '二', T('bodyWeekWed') || '三', T('bodyWeekThu') || '四', T('bodyWeekFri') || '五', T('bodyWeekSat') || '六', T('bodyWeekSun') || '日'];
 
   const plans = useMemo(() =>
