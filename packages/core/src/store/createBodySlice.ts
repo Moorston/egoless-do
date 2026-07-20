@@ -195,6 +195,16 @@ export function createBodySlice(
     bodyTrainingPlans: [],
 
     addBodyTrainingPlan(plan) {
+      // 去重守卫：同名+同日期范围+同状态的计划视为重复，跳过写入
+      const duplicate = (get().bodyTrainingPlans ?? []).find((p: BodyTrainingPlan) =>
+        !p.deleted &&
+        p.name.trim() === plan.name.trim() &&
+        p.startDate === plan.startDate &&
+        p.endDate === plan.endDate &&
+        p.status === 'active'
+      );
+      if (duplicate) return;
+
       const id = uid();
       const entry: BodyTrainingPlan = { ...plan, id, updatedAt: Date.now(), deleted: false };
       set(s => ({ bodyTrainingPlans: [...(s.bodyTrainingPlans ?? []), entry] }));

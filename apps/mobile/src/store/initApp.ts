@@ -134,6 +134,33 @@ export async function initApp(): Promise<void> {
       setState(fullPatch);
     }
 
+    // ── Step 3a: Deduplicate bodyTrainingPlans (cleanup legacy duplicates from pre-fix data) ──
+    try {
+      const plans = (store().bodyTrainingPlans ?? []) as Array<Record<string, unknown>>;
+      const seen = new Set<string>();
+      const duplicates: string[] = [];
+      for (const p of plans) {
+        const sig = `${String(p.name ?? '').trim()}|${p.startDate}|${p.endDate}|${p.status}`;
+        if (seen.has(sig)) {
+          duplicates.push(p.id as string);
+        } else {
+          seen.add(sig);
+        }
+      }
+      if (duplicates.length > 0) {
+        log.warn(`dedupBodyPlans: removing ${duplicates.length} duplicate plan(s)");
+        const dupSet = new Set(duplicates);
+        setState({
+          bodyTrainingPlans: plans.filter((p: Record<string, unknown>) => !dupSet.has(p.id)),
+        } as PartialMobileStore);
+        for (const id of duplicates) {
+          adapter.markDeleted('bodyTrainingPlan' as Parameters<typeof adapter.markDeleted>[0], id).catch(e => log.error(e));
+        }
+      }
+    } catch (err) {
+      log.error(err, { message: 'Plan deduplication failed (non-fatal)' });
+    }
+
     // ── Step 3b: Clean up ghost entries (atomically inside setState to avoid race with realtime) ──
     try {
       const GHOST_CHECKS: Array<[string, string, (item: Record<string, unknown>) => boolean]> = [
