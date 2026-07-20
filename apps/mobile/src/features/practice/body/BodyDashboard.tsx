@@ -803,41 +803,42 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
             )}
             {/* 周计划任务 */}
             <View style={{ marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: TH.border }}>
-              <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 8 }}>{T('bodyWeeklyPlan')}</Text>
-              {activeTrainingPlan.tasks.map((task) => {
-                const exercises = task.exercises ?? [];
-                const isRest = !task.sportKey || task.sportKey === 'rest';
-                const dayLabels = [T('bodyWeekMon') || '一', T('bodyWeekTue') || '二', T('bodyWeekWed') || '三', T('bodyWeekThu') || '四', T('bodyWeekFri') || '五', T('bodyWeekSat') || '六', T('bodyWeekSun') || '日'];
-                const formatEx = (e: ExerciseDef) => {
-                  const sets = e.defaultSets;
-                  const reps = e.defaultReps;
-                  const dur = e.defaultDurationSec;
-                  if (sets && reps) return `${e.nameZh} ${sets}组×${reps}次`;
-                  if (sets) return `${e.nameZh} ${sets}组`;
-                  if (dur) return `${e.nameZh} ${Math.round(dur / 60)}分钟`;
-                  return e.nameZh;
-                };
-                return (
-                  <View key={task.weekday} style={{ flexDirection: 'row', gap: 8, paddingVertical: 4 }}>
-                    <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: isRest ? TH.border : '#f59e0b20', alignItems: 'center', justifyContent: 'center' }}>
-                      <Text style={{ fontSize: 11, color: isRest ? TH.sub : '#f59e0b', fontWeight: '600' }}>{dayLabels[task.weekday - 1]}</Text>
-                    </View>
-                    <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 10 }}>{T('bodyWeeklyPlan')}</Text>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                {activeTrainingPlan.tasks.map((task) => {
+                  const exercises = task.exercises ?? [];
+                  const isRest = !task.sportKey || task.sportKey === 'rest';
+                  const dayLabels = ['一', '二', '三', '四', '五', '六', '日'];
+                  const formatEx = (e: ExerciseDef) => {
+                    const sets = e.defaultSets;
+                    const reps = e.defaultReps;
+                    const dur = e.defaultDurationSec;
+                    if (sets && reps) return `${sets}×${reps}`;
+                    if (sets) return `${sets}组`;
+                    if (dur) return `${Math.round(dur / 60)}分钟`;
+                    return '';
+                  };
+                  return (
+                    <View key={task.weekday} style={{ width: 'calc((100% - 24px) / 4)', minWidth: 72, borderRadius: 10, borderWidth: 1, borderColor: isRest ? TH.border : '#f59e0b30', backgroundColor: isRest ? TH.bg : '#f59e0b08', padding: 8 }}>
+                      <View style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: isRest ? TH.border : '#f59e0b', alignItems: 'center', justifyContent: 'center', marginBottom: 6 }}>
+                        <Text style={{ fontSize: 10, color: isRest ? TH.sub : '#fff', fontWeight: '700' }}>{dayLabels[task.weekday - 1]}</Text>
+                      </View>
                       {isRest ? (
-                        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyPlanRestDay') || '休息'}</Text>
+                        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, fontStyle: 'italic' }}>{T('bodyPlanRestDay') || '休息'}</Text>
                       ) : exercises.length > 0 ? (
                         exercises.map((e, i) => (
-                          <Text key={i} style={{ fontSize: FONT_SMALL(), color: TH.text }}>
-                            {formatEx(e)}
+                          <Text key={i} style={{ fontSize: 11, color: TH.text, lineHeight: 16 }}>
+                            <Text style={{ fontWeight: '600' }}>{e.nameZh}</Text>
+                            {formatEx(e) ? <Text style={{ color: TH.sub }}> {formatEx(e)}</Text> : null}
                           </Text>
                         ))
                       ) : (
-                        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyPlanNoExercises')}</Text>
+                        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>—</Text>
                       )}
                     </View>
-                  </View>
-                );
-              })}
+                  );
+                })}
+              </View>
             </View>
           </View>
         ) : (
