@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md", "reason": "检查 i18n key 四文件一致性、禁止假国际化"}
+{"file": ".trellis/spec/mobile/frontend/quality-guidelines.md", "reason": "组件质量 + TDD 验收"}
+{"file": "apps/mobile/src/features/sync/SyncRehydrationManager.ts", "reason": "rehydrate 入口，验证 bodyTrainingPlan 注册"}
+{"file": "apps/mobile/src/store/rowMappers.ts", "reason": "mapper 实现正确性"}

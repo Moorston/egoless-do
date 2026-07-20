@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md", "reason": "i18n 规范指导，所有新增文案必须走 T() + key 声明"}
+{"file": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md", "reason": "三层架构约束，rehydrate/store/sync 分层边界"}
+{"file": ".trellis/spec/mobile/frontend/component-guidelines.md", "reason": "PlanDetailModal 新建组件遵循"}
+{"file": ".trellis/spec/core/frontend/quality-guidelines.md", "reason": "rowMapper 实现参考"}

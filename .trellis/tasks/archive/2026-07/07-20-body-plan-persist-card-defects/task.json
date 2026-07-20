@@ -1,0 +1,29 @@
+{
+  "id": "body-plan-persist-card-defects",
+  "name": "body-plan-persist-card-defects",
+  "title": "调身计划持久化与卡片功能缺陷",
+  "description": "",
+  "status": "completed",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P2",
+  "creator": "freebytes",
+  "assignee": "freebytes",
+  "createdAt": "2026-07-20",
+  "completedAt": "2026-07-20",
+  "branch": null,
+  "base_branch": "master",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [
+    "07-20-body-plan-persist-sync",
+    "07-20-body-plan-card-edit-detail"
+  ],
+  "parent": null,
+  "relatedFiles": [],
+  "notes": "",
+  "meta": {}
+}
