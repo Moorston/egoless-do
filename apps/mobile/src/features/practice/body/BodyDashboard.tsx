@@ -808,13 +808,22 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                 const exercises = task.exercises ?? [];
                 const isRest = !task.sportKey || task.sportKey === 'rest';
                 const dayLabels = [T('bodyWeekMon') || '一', T('bodyWeekTue') || '二', T('bodyWeekWed') || '三', T('bodyWeekThu') || '四', T('bodyWeekFri') || '五', T('bodyWeekSat') || '六', T('bodyWeekSun') || '日'];
+                const formatEx = (e: ExerciseDef) => {
+                  const sets = e.defaultSets;
+                  const reps = e.defaultReps;
+                  const dur = e.defaultDurationSec;
+                  if (sets && reps) return `${e.nameZh} ${sets}组×${reps}次`;
+                  if (sets) return `${e.nameZh} ${sets}组`;
+                  if (dur) return `${e.nameZh} ${Math.round(dur / 60)}分钟`;
+                  return e.nameZh;
+                };
                 return (
                   <View key={task.weekday} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4 }}>
                     <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: isRest ? TH.border : '#f59e0b20', alignItems: 'center', justifyContent: 'center' }}>
                       <Text style={{ fontSize: 11, color: isRest ? TH.sub : '#f59e0b', fontWeight: '600' }}>{dayLabels[task.weekday - 1]}</Text>
                     </View>
                     <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }} numberOfLines={1}>
-                      {isRest ? (T('bodyPlanRestDay') || '休息') : exercises.length > 0 ? exercises.map(e => e.nameZh).join('、') : (T('bodyPlanNoExercises'))}
+                      {isRest ? (T('bodyPlanRestDay') || '休息') : exercises.length > 0 ? exercises.map(formatEx).join('、') : (T('bodyPlanNoExercises'))}
                     </Text>
                   </View>
                 );
