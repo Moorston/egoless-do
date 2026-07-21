@@ -59,7 +59,7 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
 
         {/* Label */}
         <Text style={[styles.label, { color: TH.text }]} numberOfLines={1}>
-          {currentIndex + 1}/{total} {currentExercise?.nameZh || currentExercise?.nameI18nKey || ''}
+          {currentIndex + 1}/{total} {currentExercise?.nameI18nKey ? T(currentExercise.nameI18nKey) : currentExercise?.nameZh}
         </Text>
 
         {/* Expand/collapse icon */}
@@ -94,7 +94,7 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
                     ]}
                     numberOfLines={1}
                   >
-                    {ex.icon} {ex.nameZh}
+                    {ex.icon} {ex.nameI18nKey ? T(ex.nameI18nKey) : ex.nameZh}
                     {done ? `  ${Math.floor(done.durationSec / 60)}:${String(done.durationSec % 60).padStart(2, '0')}` : ''}
                   </Text>
                 </View>

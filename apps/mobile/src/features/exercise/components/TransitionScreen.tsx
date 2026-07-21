@@ -64,7 +64,7 @@ export default function TransitionScreen({
         <View style={styles.summaryDetail}>
           <Text style={styles.summaryIcon}>{currentExercise.icon}</Text>
           <Text style={[styles.summaryName, { color: TH.text }]}>
-            {currentExercise.nameZh}
+            {currentExercise.nameI18nKey ? T(currentExercise.nameI18nKey) : currentExercise.nameZh}
           </Text>
           <Text style={[styles.summaryTime, { color: TH.sub }]}>
             {Math.floor(currentDuration / 60)}:{String(currentDuration % 60).padStart(2, '0')}
@@ -117,7 +117,7 @@ export default function TransitionScreen({
             <Text style={styles.nextIcon}>{nextExercise.icon}</Text>
             <View style={{ flex: 1 }}>
               <Text style={[styles.nextName, { color: TH.text }]}>
-                {nextExercise.nameZh}
+                {nextExercise.nameI18nKey ? T(nextExercise.nameI18nKey) : nextExercise.nameZh}
               </Text>
               {(nextExercise.defaultSets && nextExercise.defaultReps) ? (
                 <Text style={[styles.nextMeta, { color: TH.sub }]}>

@@ -924,6 +924,8 @@ export interface I18nKeys {
   bodyFlowAwarenessHint: string; bodyFlowAwarenessSaved: string;
   bodyFlowDone: string; bodyFlowSkipped: string; bodyFlowRecorded: string;
   bodyFlowFinish: string; bodyFlowPracticeDone: string;
+  bodyExerciseComplete: string; bodyRestCountdown: string; bodySkipRest: string;
+  bodyAllDone: string; bodyComboCompleteHint: string; bodyNextExercise: string; bodyStartNext: string;
   bodyTodayPlan: string; bodyTodayPlanEmpty: string; bodyTodayPlanRest: string;
   bodyStartPractice: string; bodyStartToday: string; bodyToday: string;
   bodyWeekProgress: string; bodyDayCompleted: string; bodyDayRestShort: string;

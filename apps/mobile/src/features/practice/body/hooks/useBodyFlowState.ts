@@ -18,6 +18,8 @@ export interface FlowState {
   activePlanId: string | null;
   startedAt: number;
   updatedAt: number;
+  isCombo?: boolean;
+  comboExercises?: { sportKey: string; icon: string; durationSec: number; calories: number; reps: number; timestamp: number }[];
 }
 
 export function useBodyFlowState() {

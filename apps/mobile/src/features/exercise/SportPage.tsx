@@ -82,7 +82,9 @@ export default function SportPage() {
   const currentComboExercise = isComboMode ? comboExercises![comboState.current.currentIndex] : null;
   const effectiveSportName = isComboMode ? (currentComboExercise?.category || sportName) : sportName;
   const effectiveIcon = isComboMode ? (currentComboExercise?.icon || icon) : icon;
-  const effectiveGps = isComboMode ? false : (gpsParam ?? false); // 组合模式暂不启用GPS
+  const effectiveGps = isComboMode
+  ? (currentComboExercise?.category === 'walking' || currentComboExercise?.category === 'cardio')
+  : (gpsParam ?? false);
 
   // 翻译运动名称：category key → 可读名称
   const effectiveSportLabel = useMemo(() => {
@@ -650,6 +652,7 @@ export default function SportPage() {
           onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
           TH={TH}
           T={T}
+          safeAreaTop={insets.top}
         />
       )}
       <TransitionScreen

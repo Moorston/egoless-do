@@ -20,7 +20,7 @@ const FADE_DURATION = 350;
 
 export default function BodyScreen() {
   const nav = useRootNavigation();
-  const route = useRoute<RouteProp<{ Body: { sportResult?: { completed: boolean; durationSec: number; calories: number; reps: number; sportKey: string }; breathingResult?: { completed: boolean; durationMs: number } } }, 'Body'>>();
+  const route = useRoute<RouteProp<{ Body: { sportResult?: { completed: boolean; durationSec: number; calories: number; reps: number; sportKey: string; isCombo?: boolean; exercises?: { sportKey: string; icon: string; durationSec: number; calories: number; reps: number; timestamp: number }[] }; breathingResult?: { completed: boolean; durationMs: number } } }, 'Body'>>();
   const TH = useTheme();
   const T = useT();
   const { upsertBodyCheckin, bodyTrainingPlans, setBodyFlowState } = useShallowStore(s => ({
@@ -71,10 +71,15 @@ export default function BodyScreen() {
 
   useFocusEffect(useCallback(() => {
     // 只在有结果参数时才 tick，避免无关心跳误触发
-    const sr = route.params?.sportResult as { completed?: boolean; durationSec?: number } | undefined;
+    const sr = route.params?.sportResult as { completed?: boolean; durationSec?: number; isCombo?: boolean; exercises?: { sportKey: string; icon: string; durationSec: number; calories: number; reps: number; timestamp: number }[] } | undefined;
     if (sr?.completed) {
       setReturnTick(t => t + 1);
-      setBodyFlowState({ practiceCompleted: true, practiceDurationSec: sr.durationSec ?? 0 });
+      setBodyFlowState({
+        practiceCompleted: true,
+        practiceDurationSec: sr.durationSec ?? 0,
+        isCombo: sr.isCombo,
+        comboExercises: sr.exercises,
+      });
       nav.setParams({ sportResult: undefined });
     }
     const br = route.params?.breathingResult as { completed?: boolean; durationMs?: number } | undefined;
