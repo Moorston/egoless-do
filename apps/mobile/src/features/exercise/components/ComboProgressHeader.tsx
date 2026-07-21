@@ -1,6 +1,6 @@
 // ─── ComboProgressHeader ─────────────────────────────────────────
 // 底部引导：横向滚动卡片式，与选运动页风格一致
-// 组合锻炼（combo workout）专用组件
+// 背景色与 Sport 页深色渐变背景融合
 
 import { FONT_SMALL, scaleFontSize, type ExerciseDef, type Theme } from '@egoless-do/core';
 import { CheckCircle2, Play } from 'lucide-react-native';
@@ -23,9 +23,10 @@ interface Props {
   onJumpTo: (index: number) => void;
   TH: Theme;
   T: (key: string) => string;
+  safeAreaBottom?: number;
 }
 
-export default function ComboProgressHeader({ exercises, currentIndex, results, onJumpTo, TH, T }: Props) {
+export default function ComboProgressHeader({ exercises, currentIndex, results, onJumpTo, TH, T, safeAreaBottom = 0 }: Props) {
   const scrollRef = useRef<ScrollView>(null);
 
   // ── 跳转确认 ──
@@ -53,9 +54,9 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
   }, [currentIndex]);
 
   return (
-    <View style={[styles.container, { backgroundColor: TH.bg }]}>
+    <View style={[styles.container, { paddingBottom: 8 + safeAreaBottom }]}>
       {/* 顶部进度条 */}
-      <View style={[styles.progressTrack, { backgroundColor: `${TH.sub}30` }]}>
+      <View style={styles.progressTrack}>
         <View
           style={[
             styles.progressFill,
@@ -84,8 +85,8 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
               style={[
                 styles.chip,
                 {
-                  backgroundColor: done ? '#10b98130' : isCurrent ? '#f59e0b30' : TH.card,
-                  borderColor: done ? '#10b981' : isCurrent ? '#f59e0b' : TH.border,
+                  backgroundColor: done ? '#10b98130' : isCurrent ? '#f59e0b30' : 'rgba(255,255,255,0.08)',
+                  borderColor: done ? '#10b981' : isCurrent ? '#f59e0b' : 'rgba(255,255,255,0.15)',
                   borderWidth: isCurrent ? 2 : 1,
                 },
               ]}
@@ -98,14 +99,14 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
               <Text
                 style={[
                   styles.chipName,
-                  { color: done ? '#10b981' : isCurrent ? '#f59e0b' : TH.text },
+                  { color: done ? '#10b981' : isCurrent ? '#f59e0b' : '#fff' },
                 ]}
                 numberOfLines={1}
               >
                 {exName}
               </Text>
               {result && (
-                <Text style={[styles.chipTime, { color: TH.sub }]}>
+                <Text style={[styles.chipTime, { color: 'rgba(255,255,255,0.5)' }]}>
                   {Math.floor(result.durationSec / 60)}:{(result.durationSec % 60).toString().padStart(2, '0')}
                 </Text>
               )}
@@ -117,15 +118,20 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
   );
 }
 
+const COMBO_BG = 'rgba(0,0,0,0.55)';
+
 const styles = StyleSheet.create({
   container: {
-    paddingBottom: 8,
+    backgroundColor: COMBO_BG,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: 'rgba(255,255,255,0.08)',
   },
   progressTrack: {
     height: 3,
     borderRadius: 1.5,
     marginBottom: 8,
     overflow: 'hidden',
+    backgroundColor: 'rgba(255,255,255,0.1)',
   },
   progressFill: {
     height: 3,
