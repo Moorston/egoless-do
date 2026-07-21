@@ -1,10 +1,10 @@
 // ─── ComboProgressHeader ─────────────────────────────────────────
-// 顶部固定进度条：显示当前动作进度，点击展开完整动作列表
+// 顶部引导：横向滚动卡片式，与选运动页风格一致
 // 组合锻炼（combo workout）专用组件
 
-import { FONT_BODY, FONT_SUB, FONT_SMALL, scaleFontSize, type ExerciseDef, type Theme } from '@egoless-do/core';
-import { ChevronDown, ChevronUp, CheckCircle2, Play } from 'lucide-react-native';
-import React, { useState, useCallback } from 'react';
+import { FONT_SMALL, scaleFontSize, type ExerciseDef, type Theme } from '@egoless-do/core';
+import { CheckCircle2, Play } from 'lucide-react-native';
+import React, { useCallback, useRef } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Alert, StyleSheet } from 'react-native';
 
 export interface ExerciseResult {
@@ -27,16 +27,17 @@ interface Props {
 }
 
 export default function ComboProgressHeader({ exercises, currentIndex, results, onJumpTo, TH, T, safeAreaTop = 0 }: Props) {
-  const [expanded, setExpanded] = useState(false);
-
-  const toggleExpand = useCallback(() => setExpanded(prev => !prev), []);
-
-  const total = exercises.length;
-  const progress = total > 1 ? currentIndex / (total - 1) : 1;
-  const currentExercise = exercises[currentIndex];
+  const scrollRef = useRef<ScrollView>(null);
 
   // ── 跳转确认 ──
-  const handleJump = useCallback((index: number) => {
+  const handlePress = useCallback((index: number) => {
+    if (index === currentIndex) return;
+    if (index < currentIndex) {
+      // 已完成：直接跳转
+      onJumpTo(index);
+      return;
+    }
+    // 未来动作：确认
     Alert.alert(
       `${T('bodyJumpTo')} #${index + 1}`,
       undefined,
@@ -45,90 +46,76 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
         { text: T('bodyJumpTo'), onPress: () => onJumpTo(index) },
       ]
     );
-  }, [T, onJumpTo]);
+  }, [T, onJumpTo, currentIndex]);
+
+  // 滚动到当前动作
+  React.useEffect(() => {
+    setTimeout(() => {
+      scrollRef.current?.scrollTo({ x: Math.max(0, currentIndex * 90 - 60), animated: true });
+    }, 100);
+  }, [currentIndex]);
 
   return (
-    <View style={[styles.container, { backgroundColor: `${TH.card}E0`, borderBottomColor: TH.border, paddingTop: safeAreaTop }]}>
-      {/* Collapsed bar */}
-      <TouchableOpacity onPress={toggleExpand} activeOpacity={0.7} style={styles.bar}>
-        {/* Progress dots */}
-        <View style={styles.dotsRow}>
-          {exercises.map((ex, i) => (
-            <View
+    <View style={[styles.container, { backgroundColor: `${TH.card}E0`, paddingTop: safeAreaTop }]}>
+      <ScrollView
+        ref={scrollRef}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {exercises.map((ex, i) => {
+          const done = i < currentIndex;
+          const isCurrent = i === currentIndex;
+          const result = results[i];
+          const exName = ex.nameI18nKey ? T(ex.nameI18nKey) : ex.nameZh;
+
+          return (
+            <TouchableOpacity
               key={ex.id || i}
+              onPress={() => handlePress(i)}
+              activeOpacity={0.7}
               style={[
-                styles.dot,
+                styles.chip,
                 {
-                  backgroundColor:
-                    i < currentIndex ? '#10b981'
-                    : i === currentIndex ? '#f59e0b'
-                    : `${TH.sub}40`,
+                  backgroundColor: done ? '#10b98120' : isCurrent ? '#f59e0b20' : TH.card,
+                  borderColor: done ? '#10b981' : isCurrent ? '#f59e0b' : TH.border,
+                  borderWidth: isCurrent ? 2 : 1,
                 },
               ]}
-            />
-          ))}
-        </View>
+            >
+              <View style={styles.chipTop}>
+                <Text style={styles.chipIcon}>{ex.icon}</Text>
+                {done && <CheckCircle2 size={12} color="#10b981" style={styles.chipBadge} />}
+                {isCurrent && <Play size={12} color="#f59e0b" style={styles.chipBadge} />}
+              </View>
+              <Text
+                style={[
+                  styles.chipName,
+                  { color: done ? '#10b981' : isCurrent ? '#f59e0b' : TH.text },
+                ]}
+                numberOfLines={1}
+              >
+                {exName}
+              </Text>
+              {result && (
+                <Text style={[styles.chipTime, { color: TH.sub }]}>
+                  {Math.floor(result.durationSec / 60)}:{(result.durationSec % 60).toString().padStart(2, '0')}
+                </Text>
+              )}
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
 
-        {/* Label */}
-        <Text style={[styles.label, { color: TH.text }]} numberOfLines={1}>
-          {currentIndex + 1}/{total} {currentExercise?.nameI18nKey ? T(currentExercise.nameI18nKey) : currentExercise?.nameZh}
-        </Text>
-
-        {/* Expand/collapse icon */}
-        {expanded ? <ChevronUp size={18} color={TH.sub} /> : <ChevronDown size={18} color={TH.sub} />}
-      </TouchableOpacity>
-
-      {/* Linear progress bar */}
+      {/* 底部进度条 */}
       <View style={[styles.progressTrack, { backgroundColor: `${TH.sub}20` }]}>
-        <View style={[styles.progressFill, { width: `${progress * 100}%`, backgroundColor: '#f59e0b' }]} />
+        <View
+          style={[
+            styles.progressFill,
+            { width: `${exercises.length > 1 ? (currentIndex / (exercises.length - 1)) * 100 : 100}%`, backgroundColor: '#f59e0b' },
+          ]}
+        />
       </View>
-
-      {/* Expanded list */}
-      {expanded && (
-        <ScrollView style={styles.listScroll} nestedScrollEnabled>
-          <View style={[styles.list, { backgroundColor: TH.card }]}>
-            {exercises.map((ex, i) => {
-              const done = i < currentIndex;
-              const result = results[i];
-              const isCurrent = i === currentIndex;
-              const isFuture = i > currentIndex;
-
-              return (
-                <View key={ex.id || i} style={styles.listItem}>
-                  <View style={styles.listItemLeft}>
-                    {isCurrent ? (
-                      <Play size={14} color="#f59e0b" />
-                    ) : done ? (
-                      <CheckCircle2 size={14} color="#10b981" />
-                    ) : (
-                      <View style={[styles.futureDot, { backgroundColor: `${TH.sub}40` }]} />
-                    )}
-                    <Text
-                      style={[
-                        styles.listItemText,
-                        {
-                          color: done ? '#10b981' : isCurrent ? '#f59e0b' : TH.text,
-                          fontWeight: isCurrent ? '600' : '400',
-                        },
-                      ]}
-                      numberOfLines={1}
-                    >
-                      {ex.icon} {ex.nameI18nKey ? T(ex.nameI18nKey) : ex.nameZh}
-                      {result ? `  ${Math.floor(result.durationSec / 60)}:${String(result.durationSec % 60).padStart(2, '0')}` : ''}
-                    </Text>
-                  </View>
-
-                  {isFuture && (
-                    <TouchableOpacity onPress={() => handleJump(i)} style={[styles.jumpBtn, { backgroundColor: `${TH.primary}15` }]}>
-                      <Text style={[styles.jumpText, { color: TH.primary }]}>{T('bodyJumpTo')}</Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              );
-            })}
-          </View>
-        </ScrollView>
-      )}
     </View>
   );
 }
@@ -136,75 +123,49 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
 const styles = StyleSheet.create({
   container: {
     borderBottomWidth: StyleSheet.hairlineWidth,
+    paddingBottom: 8,
   },
-  bar: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  scrollContent: {
     paddingHorizontal: 14,
     paddingVertical: 10,
-    gap: 10,
+    gap: 8,
   },
-  dotsRow: {
+  chip: {
+    minWidth: 72,
+    maxWidth: 100,
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    alignItems: 'center',
+  },
+  chipTop: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    marginBottom: 2,
   },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+  chipIcon: {
+    fontSize: scaleFontSize(20),
   },
-  label: {
-    flex: 1,
-    fontSize: FONT_SUB(),
+  chipBadge: {
+    marginLeft: 2,
+  },
+  chipName: {
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
+    textAlign: 'center',
+  },
+  chipTime: {
+    fontSize: 10,
+    marginTop: 1,
   },
   progressTrack: {
     height: 3,
     borderRadius: 1.5,
     marginHorizontal: 14,
-    marginBottom: 8,
     overflow: 'hidden',
   },
   progressFill: {
     height: 3,
     borderRadius: 1.5,
-  },
-  listScroll: {
-    maxHeight: 240,
-  },
-  list: {
-    paddingHorizontal: 14,
-    paddingBottom: 10,
-  },
-  listItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 6,
-  },
-  listItemLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    flex: 1,
-  },
-  listItemText: {
-    fontSize: FONT_SMALL(),
-    flex: 1,
-  },
-  futureDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  jumpBtn: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 6,
-  },
-  jumpText: {
-    fontSize: FONT_SMALL(),
-    fontWeight: '600',
   },
 });
