@@ -66,7 +66,7 @@ export default function TransitionScreen({
         <View style={styles.summaryHeader}>
           <CheckCircle2 size={28} color="#10b981" />
           <Text style={[styles.summaryTitle, { color: TH.text }]}>
-            {T('bodyExerciseComplete') || '动作完成！'}
+            {T('bodyExerciseComplete')}
           </Text>
         </View>
         <View style={styles.summaryDetail}>
@@ -84,7 +84,7 @@ export default function TransitionScreen({
       {!isAllDone && (
         <View style={[styles.restCard, { backgroundColor: TH.card }]}>
           <Text style={[styles.restLabel, { color: TH.sub }]}>
-            {T('bodyRestCountdown') || '休息中'}
+            {T('bodyRestCountdown')}
           </Text>
           <Text style={[styles.restTimer, { color: TH.text }]}>
             {restRemaining}
@@ -92,7 +92,7 @@ export default function TransitionScreen({
           <TouchableOpacity onPress={handleSkipRest} style={styles.skipBtn}>
             <SkipForward size={16} color={TH.primary} />
             <Text style={[styles.skipText, { color: TH.primary }]}>
-              {T('bodySkipRest') || '跳过休息'}
+              {T('bodySkipRest')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -102,15 +102,15 @@ export default function TransitionScreen({
       {isAllDone ? (
         <View style={[styles.nextCard, { backgroundColor: TH.card }]}>
           <Text style={[styles.nextLabel, { color: TH.sub }]}>
-            {T('bodyAllDone') || '全部完成！'}
+            {T('bodyAllDone')}
           </Text>
           <Text style={[styles.nextHint, { color: TH.sub, marginBottom: 16 }]}>
-            {T('bodyComboCompleteHint') || '所有动作已完成，返回总结'}
+            {T('bodyComboCompleteHint')}
           </Text>
           <TouchableOpacity onPress={onFinishAll} style={styles.finishBtn}>
             <LinearGradient colors={['#10b981', '#059669']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.finishGradient}>
               <Text style={styles.finishText}>
-                {T('bodyFinish') || '完成'}
+                {T('bodyFinish')}
               </Text>
               <ChevronRight size={20} color="#fff" />
             </LinearGradient>
@@ -119,7 +119,7 @@ export default function TransitionScreen({
       ) : (
         <View style={[styles.nextCard, { backgroundColor: TH.card }]}>
           <Text style={[styles.nextLabel, { color: TH.sub }]}>
-            {T('bodyNextExercise') || '下一动作'}
+            {T('bodyNextExercise')}
           </Text>
           <View style={styles.nextDetail}>
             <Text style={styles.nextIcon}>{nextExercise.icon}</Text>
@@ -141,7 +141,7 @@ export default function TransitionScreen({
           <TouchableOpacity onPress={onNext} style={styles.nextBtn}>
             <LinearGradient colors={['#f59e0b', '#d97706']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.nextGradient}>
               <Text style={styles.nextBtnText}>
-                {T('bodyStartNext') || '开始下一个'}
+                {T('bodyStartNext')}
               </Text>
               <ChevronRight size={20} color="#fff" />
             </LinearGradient>

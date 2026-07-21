@@ -51,7 +51,7 @@ export default function PrepPage(props: ExercisePageProps) {
         <View style={styles.musicBar}>
           <TouchableOpacity onPress={onPressMusic} style={styles.musicBarButton}>
             <Text style={[styles.musicBarText, { color: musicTrack ? '#fff' : 'rgba(255,255,255,.6)' }]}>
-              {musicTrack ? `🎵 ${musicTrack.name}` : '🎵 ' + (T('exerciseAddMusic') || '添加音乐')}
+              {musicTrack ? `🎵 ${musicTrack.name}` : `🎵 ${T('exerciseAddMusic')}`}
             </Text>
             <Text style={styles.musicBarArrow}>▸</Text>
           </TouchableOpacity>

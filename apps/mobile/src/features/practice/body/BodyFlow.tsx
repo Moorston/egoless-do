@@ -192,8 +192,8 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
       T('bodyFlowExitConfirm') || '退出练习流程？',
       undefined,
       [
-        { text: T('bodyCancel') || '取消', style: 'cancel' },
-        { text: T('bodyFlowSkip') || '退出', style: 'destructive', onPress: () => { resetFlow(); onExit(); } },
+        { text: T('bodyCancel'), style: 'cancel' },
+        { text: T('bodyFlowSkip'), style: 'destructive', onPress: () => { resetFlow(); onExit(); } },
       ]
     );
   }, [T, onExit, resetFlow]);
@@ -312,7 +312,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
                 {flowState?.isCombo && flowState.comboExercises && flowState.comboExercises.length > 0 && (
                   <View style={{ marginTop: 12, width: '100%', backgroundColor: `${TH.border}30`, borderRadius: 12, padding: 12 }}>
                     <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 6 }}>
-                      {flowState.comboExercises.length} {T('bodyPlanUnitExercise') || '个动作'}
+                      {flowState.comboExercises.length} {T('bodyPlanUnitExercise')}
                     </Text>
                     {flowState.comboExercises.map((ex, i) => {
                       const cat = EXERCISE_CATEGORIES.find(c => c.key === ex.sportKey);
@@ -368,7 +368,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
                     if (key) {
                       navigateToSport(key);
                     } else {
-                      Alert.alert(T('bodyFlowChooseExercise') || '请先选择运动');
+                      Alert.alert(T('bodyFlowChooseExercise'));
                     }
                   }}
                   color="#f59e0b"
@@ -411,7 +411,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
               <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff', marginTop: 12, marginBottom: 4 }}>{T('bodyFlowBreathing')}</Text>
               <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.8)' }}>
                 {breathingCompleted
-                  ? `${T('bodyFlowBreathingTime')}: ${Math.floor(breathingDurationMs / 60000)}${T('bodyMin') || '分钟'}`
+                  ? `${T('bodyFlowBreathingTime')}: ${Math.floor(breathingDurationMs / 60000)}${T('bodyMin')}`
                   : T('bodyFlowBreathingHint')}
               </Text>
             </LinearGradient>
