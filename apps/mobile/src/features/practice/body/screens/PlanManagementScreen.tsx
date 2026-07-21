@@ -18,10 +18,11 @@ export default function PlanManagementScreen() {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const { bodyTrainingPlans, updateBodyTrainingPlan, removeBodyTrainingPlan } = useShallowStore(s => ({
+  const { bodyTrainingPlans, updateBodyTrainingPlan, removeBodyTrainingPlan, exerciseLog } = useShallowStore(s => ({
     bodyTrainingPlans: s.bodyTrainingPlans,
     updateBodyTrainingPlan: s.updateBodyTrainingPlan,
     removeBodyTrainingPlan: s.removeBodyTrainingPlan,
+    exerciseLog: s.exerciseLog,
   }));
   const [expandedId, setExpandedId] = useState<string | null>(() => {
     const active = (bodyTrainingPlans ?? []).find((p: BodyTrainingPlan) => !p.deleted && p.status === 'active');
@@ -66,12 +67,11 @@ export default function PlanManagementScreen() {
   }, [T, removeBodyTrainingPlan]);
 
   const getProgress = (plan: BodyTrainingPlan) => {
-    const today = dateStr();
-    const start = plan.startDate;
-    const end = plan.endDate;
-    const totalDays = Math.max(1, Math.round((new Date(end).getTime() - new Date(start).getTime()) / 86400000));
-    const elapsed = Math.max(0, Math.round((new Date(today).getTime() - new Date(start).getTime()) / 86400000));
-    return Math.min(100, Math.round((elapsed / totalDays) * 100));
+    const planLogs = (exerciseLog ?? []).filter(e => !e.deleted && e.planId === plan.id);
+    const completedDays = new Set(planLogs.map((e: { timestamp: number }) => dateStr(new Date(e.timestamp)))).size;
+    const totalTasks = plan.tasks.filter(t => t.sportKey && t.sportKey !== 'rest').length;
+    if (totalTasks === 0) return 0;
+    return Math.min(100, Math.round((completedDays / totalTasks) * 100));
   };
 
   return (

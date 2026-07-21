@@ -55,27 +55,35 @@ export default function PreceptScreen() {
     const allChecked = preceptHabits.filter(h => (h.checkedDates ?? []).includes(today));
     const allDates = new Set<string>();
     preceptHabits.forEach(h => (h.checkedDates ?? []).forEach(d => allDates.add(d)));
-    // Total days with any checkin
     const totalDays = allDates.size;
-    // Streak: consecutive days where ALL precepts were checked
-    const sortedDates = [...allDates].sort().reverse();
+
+    // Streak: count consecutive days backwards from today (or yesterday if today unchecked)
+    const sortedDates = [...allDates].sort();
     let streak = 0;
-    const checkDate = new Date();
-    if (!allDates.has(today)) checkDate.setDate(checkDate.getDate() - 1);
-    for (let i = 0; i < 365; i++) {
-      const ds = `${checkDate.getFullYear()}-${String(checkDate.getMonth() + 1).padStart(2, '0')}-${String(checkDate.getDate()).padStart(2, '0')}`;
-      const allDone = preceptHabits.length > 0 && preceptHabits.every(h => (h.checkedDates ?? []).includes(ds));
-      if (allDone) { streak++; checkDate.setDate(checkDate.getDate() - 1); } else break;
+    const todayDate = new Date();
+    if (!allDates.has(today)) todayDate.setDate(todayDate.getDate() - 1);
+    for (const ds of sortedDates) {
+      const d = new Date(ds + 'T00:00:00');
+      if (d > todayDate) continue;
+      const diff = Math.round((todayDate.getTime() - d.getTime()) / 86400000);
+      if (diff === streak) {
+        const allDone = preceptHabits.length > 0 && preceptHabits.every(h => (h.checkedDates ?? []).includes(ds));
+        if (allDone) streak++;
+        else break;
+      }
     }
+
     // Month rate
     const now = new Date();
     const monthStart = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
     let monthDone = 0;
     let monthTotal = 0;
-    for (let d = new Date(monthStart); d <= now; d.setDate(d.getDate() + 1)) {
-      const ds = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    const monthDate = new Date(monthStart);
+    while (monthDate <= now) {
+      const ds = `${monthDate.getFullYear()}-${String(monthDate.getMonth() + 1).padStart(2, '0')}-${String(monthDate.getDate()).padStart(2, '0')}`;
       monthTotal++;
       if (preceptHabits.length > 0 && preceptHabits.every(h => (h.checkedDates ?? []).includes(ds))) monthDone++;
+      monthDate.setDate(monthDate.getDate() + 1);
     }
     const monthRate = monthTotal > 0 ? Math.round((monthDone / monthTotal) * 100) : 0;
     return { todayDone: allChecked.length, total: preceptHabits.length, totalDays, streak, monthRate };

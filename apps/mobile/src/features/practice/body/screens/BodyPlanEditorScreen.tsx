@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_LABEL, dateStr, EXERCISE_CATEGORIES, BODY_STRATEGIES, buildExerciseLibrary, getDayOverview, type BodyGoal, type BodyTrainingPlan, type BodyPlanTask, type BodyStrategy, type ExerciseDef, type PlanTemplate } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_LABEL, dateStr, EXERCISE_CATEGORIES, BODY_STRATEGIES, buildExerciseLibrary, getDayOverview, type BodyGoal, type BodyTrainingPlan, type BodyPlanTask, type BodyStrategy, type ExerciseDef, type PlanTemplate, type I18nKey } from '@egoless-do/core';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { ChevronLeft, Target, ClipboardList, Save, ChevronDown, ChevronUp, Download, Play } from 'lucide-react-native';
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
@@ -204,7 +204,7 @@ export default function BodyPlanEditorScreen() {
   }, []);
 
   const handleSelectTemplate = useCallback((template: PlanTemplate) => {
-    setName(T(template.nameI18nKey as never));
+    setName(T(template.nameI18nKey as I18nKey));
     setStrategy(template.strategy ?? '');
 
     const start = new Date(startDate);
@@ -259,12 +259,12 @@ export default function BodyPlanEditorScreen() {
 
   const handleStartTraining = useCallback(() => {
     handleSave();
-    nav.navigate('MainTabs' as never, { screen: 'Practice' } as never);
+    nav.navigate('MainTabs', { screen: 'Practice' });
   }, [handleSave, nav]);
 
   const handleStartDayTraining = useCallback((_weekday: number) => {
     handleSave();
-    nav.navigate('MainTabs' as never, { screen: 'Practice' } as never);
+    nav.navigate('MainTabs', { screen: 'Practice' });
   }, [handleSave, nav]);
 
   const dayOverviews = useMemo(() => {
