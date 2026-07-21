@@ -399,7 +399,7 @@ export default function SportPage() {
           exercises: comboState.current.results,
         };
       }
-      nav.navigate('Body', result);
+      nav.navigate('MainTabs' as never, { screen: 'Body', params: result } as never);
     } catch (e) {
       log.error(e, { message: 'Combo save failed' });
     }
@@ -468,7 +468,7 @@ export default function SportPage() {
       savingRef.current = false;
       return;
     }
-    try { nav.navigate('Body', result); } catch { savingRef.current = false; }
+    try { nav.navigate('MainTabs' as never, { screen: 'Body', params: result } as never); } catch { savingRef.current = false; }
   }, [isComboMode, goToNextExercise, timer.sec, sets, sportName, icon, sportType, isGpsSport, distKm, calories, coords, segmentPaces, mode, targetType, targetValue, addExercise, userProfile, auth, nav, musicStop, audio.stopAll, cleanupSession, stopGpsTracking, planId, planTaskWeekday]);
 
   // Stop music and ambient audio when entering report page (exercise ended)
