@@ -5,7 +5,7 @@
 import { FONT_BODY, FONT_SUB, FONT_SMALL, scaleFontSize, type ExerciseDef, type Theme } from '@egoless-do/core';
 import { ChevronDown, ChevronUp, CheckCircle2, Play } from 'lucide-react-native';
 import React, { useState, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Alert, StyleSheet } from 'react-native';
 
 export interface ExerciseResult {
   sportKey: string;
@@ -34,6 +34,18 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
   const total = exercises.length;
   const progress = total > 1 ? currentIndex / (total - 1) : 1;
   const currentExercise = exercises[currentIndex];
+
+  // ── 跳转确认 ──
+  const handleJump = useCallback((index: number) => {
+    Alert.alert(
+      `${T('bodyJumpTo')} #${index + 1}`,
+      undefined,
+      [
+        { text: T('bodyCancel'), style: 'cancel' },
+        { text: T('bodyJumpTo'), onPress: () => onJumpTo(index) },
+      ]
+    );
+  }, [T, onJumpTo]);
 
   return (
     <View style={[styles.container, { backgroundColor: `${TH.card}E0`, borderBottomColor: TH.border, paddingTop: safeAreaTop }]}>
@@ -66,49 +78,56 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
         {expanded ? <ChevronUp size={18} color={TH.sub} /> : <ChevronDown size={18} color={TH.sub} />}
       </TouchableOpacity>
 
+      {/* Linear progress bar */}
+      <View style={[styles.progressTrack, { backgroundColor: `${TH.sub}20` }]}>
+        <View style={[styles.progressFill, { width: `${progress * 100}%`, backgroundColor: '#f59e0b' }]} />
+      </View>
+
       {/* Expanded list */}
       {expanded && (
-        <View style={[styles.list, { backgroundColor: TH.card }]}>
-          {exercises.map((ex, i) => {
-            const done = i < currentIndex;
-            const result = results[i];
-            const isCurrent = i === currentIndex;
-            const isFuture = i > currentIndex;
+        <ScrollView style={styles.listScroll} nestedScrollEnabled>
+          <View style={[styles.list, { backgroundColor: TH.card }]}>
+            {exercises.map((ex, i) => {
+              const done = i < currentIndex;
+              const result = results[i];
+              const isCurrent = i === currentIndex;
+              const isFuture = i > currentIndex;
 
-            return (
-              <View key={ex.id || i} style={styles.listItem}>
-                <View style={styles.listItemLeft}>
-                  {isCurrent ? (
-                    <Play size={14} color="#f59e0b" />
-                  ) : done ? (
-                    <CheckCircle2 size={14} color="#10b981" />
-                  ) : (
-                    <View style={[styles.futureDot, { backgroundColor: `${TH.sub}40` }]} />
+              return (
+                <View key={ex.id || i} style={styles.listItem}>
+                  <View style={styles.listItemLeft}>
+                    {isCurrent ? (
+                      <Play size={14} color="#f59e0b" />
+                    ) : done ? (
+                      <CheckCircle2 size={14} color="#10b981" />
+                    ) : (
+                      <View style={[styles.futureDot, { backgroundColor: `${TH.sub}40` }]} />
+                    )}
+                    <Text
+                      style={[
+                        styles.listItemText,
+                        {
+                          color: done ? '#10b981' : isCurrent ? '#f59e0b' : TH.text,
+                          fontWeight: isCurrent ? '600' : '400',
+                        },
+                      ]}
+                      numberOfLines={1}
+                    >
+                      {ex.icon} {ex.nameI18nKey ? T(ex.nameI18nKey) : ex.nameZh}
+                      {result ? `  ${Math.floor(result.durationSec / 60)}:${String(result.durationSec % 60).padStart(2, '0')}` : ''}
+                    </Text>
+                  </View>
+
+                  {isFuture && (
+                    <TouchableOpacity onPress={() => handleJump(i)} style={[styles.jumpBtn, { backgroundColor: `${TH.primary}15` }]}>
+                      <Text style={[styles.jumpText, { color: TH.primary }]}>{T('bodyJumpTo')}</Text>
+                    </TouchableOpacity>
                   )}
-                  <Text
-                    style={[
-                      styles.listItemText,
-                      {
-                        color: done ? '#10b981' : isCurrent ? '#f59e0b' : TH.text,
-                        fontWeight: isCurrent ? '600' : '400',
-                      },
-                    ]}
-                    numberOfLines={1}
-                  >
-                    {ex.icon} {ex.nameI18nKey ? T(ex.nameI18nKey) : ex.nameZh}
-                    {result ? `  ${Math.floor(result.durationSec / 60)}:${String(result.durationSec % 60).padStart(2, '0')}` : ''}
-                  </Text>
                 </View>
-
-                {isFuture && (
-                  <TouchableOpacity onPress={() => onJumpTo(i)} style={[styles.jumpBtn, { backgroundColor: `${TH.primary}15` }]}>
-                    <Text style={[styles.jumpText, { color: TH.primary }]}>{T('bodyJumpTo')}</Text>
-                  </TouchableOpacity>
-                )}
-              </View>
-            );
-          })}
-        </View>
+              );
+            })}
+          </View>
+        </ScrollView>
       )}
     </View>
   );
@@ -139,6 +158,20 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: FONT_SUB(),
     fontWeight: '600',
+  },
+  progressTrack: {
+    height: 3,
+    borderRadius: 1.5,
+    marginHorizontal: 14,
+    marginBottom: 8,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: 3,
+    borderRadius: 1.5,
+  },
+  listScroll: {
+    maxHeight: 240,
   },
   list: {
     paddingHorizontal: 14,

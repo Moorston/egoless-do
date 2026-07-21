@@ -526,159 +526,102 @@ export default function SportPage() {
   // ── Page routing ──
   const { page } = timer;
 
-  // Prep page
+  // ── 当前动作索引（transition 页用 currentIndex-1）──
+  const headerIndex = page === 'transition' ? comboState.current.currentIndex - 1 : comboState.current.currentIndex;
+
+  // ── 页面内容 ──
+  let pageContent: React.ReactNode;
+
   if (page === 'prep') {
-    return (
+    pageContent = (
       <>
-      {isComboMode && comboExercises && (
-        <ComboProgressHeader
-          exercises={comboExercises}
-          currentIndex={comboState.current.currentIndex}
-          results={comboState.current.results}
-          onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
-          TH={TH}
-          T={T}
-          safeAreaTop={insets.top}
+        <PrepPage
+          icon={effectiveIcon} sportName={effectiveSportLabel} sportType={sportType} experienceType={experienceType}
+          bg={TH.primary} isGpsSport={isGpsSport}
+          sec={timer.sec} countdown={timer.countdown} holdAnim={timer.holdAnim} scaleAnim={timer.scaleAnim} pulseAnim={timer.pulseAnim}
+          mode={mode} setMode={setMode} targetType={targetType} setTargetType={setTargetType}
+          targetValue={targetValue} setTargetValue={setTargetValue}
+          breathGuideEnabled={breathGuideEnabled} setBreathGuideEnabled={setBreathGuideEnabled}
+          isMeditative={isMeditative}
+          selectedSound={audio.selectedSound} cycleSound={audio.cycleSound} selectSound={audio.selectSound} bgPlayer={audio.bgPlayer}
+          sets={sets.sets} currentSetReps={sets.currentSetReps} totalReps={sets.totalReps}
+          distKm={distKm} calories={calories} coords={coords} initialPos={initialPos}
+          amapReady={amapReady} MapView={MapView} Polyline={Polyline} mapRef={mapRef}
+          segmentPaces={segmentPaces}
+          handleGo={handleGo} handlePause={handlePause} handleContinue={handleContinue}
+          handleHoldStart={timer.handleHoldStart} handleHoldEnd={timer.handleHoldEnd}
+          handleSave={handleSave} onGoBack={isComboMode ? handleComboBack : () => nav.goBack()}
+          exerciseLog={(exerciseLog ?? []).filter(e => !e.deleted)}
+          musicTrack={musicTrack} onPressMusic={() => setShowMusicPicker(true)}
+          TH={TH} T={T}
         />
-      )}
-      <PrepPage
-        icon={effectiveIcon} sportName={effectiveSportLabel} sportType={sportType} experienceType={experienceType}
-        bg={TH.primary} isGpsSport={isGpsSport}
-        sec={timer.sec} countdown={timer.countdown} holdAnim={timer.holdAnim} scaleAnim={timer.scaleAnim} pulseAnim={timer.pulseAnim}
-        mode={mode} setMode={setMode} targetType={targetType} setTargetType={setTargetType}
-        targetValue={targetValue} setTargetValue={setTargetValue}
-        breathGuideEnabled={breathGuideEnabled} setBreathGuideEnabled={setBreathGuideEnabled}
-        isMeditative={isMeditative}
-        selectedSound={audio.selectedSound} cycleSound={audio.cycleSound} selectSound={audio.selectSound} bgPlayer={audio.bgPlayer}
-        sets={sets.sets} currentSetReps={sets.currentSetReps} totalReps={sets.totalReps}
-        distKm={distKm} calories={calories} coords={coords} initialPos={initialPos}
-        amapReady={amapReady} MapView={MapView} Polyline={Polyline} mapRef={mapRef}
-        segmentPaces={segmentPaces}
-        handleGo={handleGo} handlePause={handlePause} handleContinue={handleContinue}
-        handleHoldStart={timer.handleHoldStart} handleHoldEnd={timer.handleHoldEnd}
-        handleSave={handleSave} onGoBack={isComboMode ? handleComboBack : () => nav.goBack()}
-        exerciseLog={(exerciseLog ?? []).filter(e => !e.deleted)}
-        musicTrack={musicTrack} onPressMusic={() => setShowMusicPicker(true)}
-        TH={TH} T={T}
-      />
-      <MusicPickerModal
-        visible={showMusicPicker}
-        onClose={() => setShowMusicPicker(false)}
-        primaryColor={TH.primary}
-        selectedTrackId={musicTrack?.id}
-      />
+        <MusicPickerModal visible={showMusicPicker} onClose={() => setShowMusicPicker(false)} primaryColor={TH.primary} selectedTrackId={musicTrack?.id} />
       </>
     );
-  }
-
-  // Countdown page
-  if (page === 'countdown') {
-    return (
+  } else if (page === 'countdown') {
+    pageContent = (
       <>
-      <CountdownPage countdown={timer.countdown} label={T('exerciseCountdown')} musicTrack={musicTrack} musicIsPlaying={musicIsPlaying} musicLoop={musicLoop} onMusicTogglePlay={() => musicIsPlaying ? musicPause() : musicResume()} onMusicToggleLoop={musicToggleLoop} onMusicPress={() => setShowMusicPicker(true)} />
-      <MusicPickerModal visible={showMusicPicker} onClose={() => setShowMusicPicker(false)} primaryColor={TH.primary} selectedTrackId={musicTrack?.id} />
+        <CountdownPage countdown={timer.countdown} label={T('exerciseCountdown')} musicTrack={musicTrack} musicIsPlaying={musicIsPlaying} musicLoop={musicLoop} onMusicTogglePlay={() => musicIsPlaying ? musicPause() : musicResume()} onMusicToggleLoop={musicToggleLoop} onMusicPress={() => setShowMusicPicker(true)} />
+        <MusicPickerModal visible={showMusicPicker} onClose={() => setShowMusicPicker(false)} primaryColor={TH.primary} selectedTrackId={musicTrack?.id} />
       </>
     );
-  }
-
-  // Paused page
-  if (page === 'paused') {
-    return (
+  } else if (page === 'paused') {
+    pageContent = (
       <>
-      {isComboMode && comboExercises && (
-        <ComboProgressHeader
-          exercises={comboExercises}
-          currentIndex={comboState.current.currentIndex}
-          results={comboState.current.results}
-          onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
-          TH={TH}
-          T={T}
-          safeAreaTop={insets.top}
+        <PausedPage
+          icon={effectiveIcon} sportName={effectiveSportLabel} sportType={sportType} experienceType={experienceType}
+          bg={bg} isGpsSport={isGpsSport}
+          sec={timer.sec} countdown={timer.countdown} holdAnim={timer.holdAnim} scaleAnim={timer.scaleAnim} pulseAnim={timer.pulseAnim}
+          mode={mode} setMode={setMode} targetType={targetType} setTargetType={setTargetType}
+          targetValue={targetValue} setTargetValue={setTargetValue}
+          breathGuideEnabled={breathGuideEnabled} setBreathGuideEnabled={setBreathGuideEnabled}
+          isMeditative={isMeditative}
+          selectedSound={audio.selectedSound} cycleSound={audio.cycleSound} selectSound={audio.selectSound} bgPlayer={audio.bgPlayer}
+          musicTrack={musicTrack} musicIsPlaying={musicIsPlaying} musicLoop={musicLoop} onMusicTogglePlay={() => musicIsPlaying ? musicPause() : musicResume()} onMusicToggleLoop={musicToggleLoop} onPressMusic={() => setShowMusicPicker(true)}
+          sets={sets.sets} currentSetReps={sets.currentSetReps} totalReps={sets.totalReps}
+          distKm={distKm} calories={calories} coords={coords} initialPos={initialPos}
+          amapReady={amapReady} MapView={MapView} Polyline={Polyline} mapRef={mapRef}
+          segmentPaces={segmentPaces}
+          handleGo={handleGo} handlePause={handlePause} handleContinue={handleContinue}
+          handleHoldStart={timer.handleHoldStart} handleHoldEnd={timer.handleHoldEnd}
+          handleSave={handleSave} onGoBack={isComboMode ? handleComboBack : () => nav.goBack()} setPage={timer.setPage}
+          exerciseLog={(exerciseLog ?? []).filter(e => !e.deleted)}
+          TH={TH} T={T}
         />
-      )}
-      <PausedPage
-        icon={effectiveIcon} sportName={effectiveSportLabel} sportType={sportType} experienceType={experienceType}
-        bg={bg} isGpsSport={isGpsSport}
-        sec={timer.sec} countdown={timer.countdown} holdAnim={timer.holdAnim} scaleAnim={timer.scaleAnim} pulseAnim={timer.pulseAnim}
-        mode={mode} setMode={setMode} targetType={targetType} setTargetType={setTargetType}
-        targetValue={targetValue} setTargetValue={setTargetValue}
-        breathGuideEnabled={breathGuideEnabled} setBreathGuideEnabled={setBreathGuideEnabled}
-        isMeditative={isMeditative}
-        selectedSound={audio.selectedSound} cycleSound={audio.cycleSound} selectSound={audio.selectSound} bgPlayer={audio.bgPlayer}
-        musicTrack={musicTrack} musicIsPlaying={musicIsPlaying} musicLoop={musicLoop} onMusicTogglePlay={() => musicIsPlaying ? musicPause() : musicResume()} onMusicToggleLoop={musicToggleLoop} onPressMusic={() => setShowMusicPicker(true)}
-        sets={sets.sets} currentSetReps={sets.currentSetReps} totalReps={sets.totalReps}
-        distKm={distKm} calories={calories} coords={coords} initialPos={initialPos}
-        amapReady={amapReady} MapView={MapView} Polyline={Polyline} mapRef={mapRef}
-        segmentPaces={segmentPaces}
-        handleGo={handleGo} handlePause={handlePause} handleContinue={handleContinue}
-        handleHoldStart={timer.handleHoldStart} handleHoldEnd={timer.handleHoldEnd}
-        handleSave={handleSave} onGoBack={isComboMode ? handleComboBack : () => nav.goBack()} setPage={timer.setPage}
-        exerciseLog={(exerciseLog ?? []).filter(e => !e.deleted)}
-        TH={TH} T={T}
-      />
-      <MusicPickerModal visible={showMusicPicker} onClose={() => setShowMusicPicker(false)} primaryColor={COLORS.ORANGE} selectedTrackId={musicTrack?.id} />
+        <MusicPickerModal visible={showMusicPicker} onClose={() => setShowMusicPicker(false)} primaryColor={COLORS.ORANGE} selectedTrackId={musicTrack?.id} />
       </>
     );
-  }
-
-  // Report page
-  if (page === 'report') {
-    return (
+  } else if (page === 'report') {
+    pageContent = (
       <>
-      {isComboMode && comboExercises && (
-        <ComboProgressHeader
-          exercises={comboExercises}
-          currentIndex={comboState.current.currentIndex}
-          results={comboState.current.results}
-          onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
-          TH={TH}
-          T={T}
-          safeAreaTop={insets.top}
+        <ReportPage
+          icon={effectiveIcon} sportName={effectiveSportLabel} sportType={sportType} experienceType={experienceType}
+          bg={bg} isGpsSport={isGpsSport}
+          sec={timer.sec} countdown={timer.countdown} holdAnim={timer.holdAnim} scaleAnim={timer.scaleAnim} pulseAnim={timer.pulseAnim}
+          mode={mode} setMode={setMode} targetType={targetType} setTargetType={setTargetType}
+          targetValue={targetValue} setTargetValue={setTargetValue}
+          breathGuideEnabled={breathGuideEnabled} setBreathGuideEnabled={setBreathGuideEnabled}
+          isMeditative={isMeditative}
+          selectedSound={audio.selectedSound} cycleSound={audio.cycleSound} selectSound={audio.selectSound} bgPlayer={audio.bgPlayer}
+          sets={sets.sets} currentSetReps={sets.currentSetReps} totalReps={sets.totalReps}
+          distKm={distKm} calories={calories} coords={coords} initialPos={initialPos}
+          amapReady={amapReady} MapView={MapView} Polyline={Polyline} mapRef={mapRef}
+          segmentPaces={segmentPaces}
+          handleGo={handleGo} handlePause={handlePause} handleContinue={handleContinue}
+          handleHoldStart={timer.handleHoldStart} handleHoldEnd={timer.handleHoldEnd}
+          handleSave={handleSave} onGoBack={isComboMode ? handleComboBack : () => nav.goBack()}
+          exerciseLog={(exerciseLog ?? []).filter(e => !e.deleted)}
+          TH={TH} T={T}
         />
-      )}
-      <ReportPage
-        icon={effectiveIcon} sportName={effectiveSportLabel} sportType={sportType} experienceType={experienceType}
-        bg={bg} isGpsSport={isGpsSport}
-        sec={timer.sec} countdown={timer.countdown} holdAnim={timer.holdAnim} scaleAnim={timer.scaleAnim} pulseAnim={timer.pulseAnim}
-        mode={mode} setMode={setMode} targetType={targetType} setTargetType={setTargetType}
-        targetValue={targetValue} setTargetValue={setTargetValue}
-        breathGuideEnabled={breathGuideEnabled} setBreathGuideEnabled={setBreathGuideEnabled}
-        isMeditative={isMeditative}
-        selectedSound={audio.selectedSound} cycleSound={audio.cycleSound} selectSound={audio.selectSound} bgPlayer={audio.bgPlayer}
-        sets={sets.sets} currentSetReps={sets.currentSetReps} totalReps={sets.totalReps}
-        distKm={distKm} calories={calories} coords={coords} initialPos={initialPos}
-        amapReady={amapReady} MapView={MapView} Polyline={Polyline} mapRef={mapRef}
-        segmentPaces={segmentPaces}
-        handleGo={handleGo} handlePause={handlePause} handleContinue={handleContinue}
-        handleHoldStart={timer.handleHoldStart} handleHoldEnd={timer.handleHoldEnd}
-        handleSave={handleSave} onGoBack={isComboMode ? handleComboBack : () => nav.goBack()}
-        exerciseLog={(exerciseLog ?? []).filter(e => !e.deleted)}
-        TH={TH} T={T}
-      />
       </>
     );
-  }
-
-  // ── Transition page (combo mode only) ──
-  if (page === 'transition') {
+  } else if (page === 'transition') {
     const currentEx = comboExercises?.[comboState.current.currentIndex - 1];
     const nextEx = comboExercises?.[comboState.current.currentIndex];
     const prevResult = comboState.current.results[comboState.current.results.length - 1];
     const restSec = currentEx ? getRestSec(currentEx) : 30;
 
-    return (
-      <>
-      {isComboMode && comboExercises && (
-        <ComboProgressHeader
-          exercises={comboExercises}
-          currentIndex={comboState.current.currentIndex - 1}
-          results={comboState.current.results}
-          onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
-          TH={TH}
-          T={T}
-          safeAreaTop={insets.top}
-        />
-      )}
+    pageContent = (
       <TransitionScreen
         currentExercise={currentEx || { id: '', nameZh: '', nameI18nKey: '', icon: '', category: '', type: 'traditional', muscleGroups: [], difficulty: 'beginner' }}
         currentDuration={prevResult?.durationSec || 0}
@@ -690,100 +633,97 @@ export default function SportPage() {
         TH={TH}
         T={T}
       />
+    );
+  } else if (page === 'active' && isGpsSport) {
+    pageContent = (
+      <>
+        <View style={{ flex: 1 }}>
+          <GpsActive
+            MapView={MapView} Polyline={Polyline} amapReady={amapReady}
+            mapRef={mapRef} initialPos={initialPos} coords={coords} color={color}
+            mode={mode} targetProgress={actualTargets.targetProgress}
+            distKm={distKm} sec={timer.sec} calories={calories}
+            handlePause={handleGpsPause} T={T}
+            musicTrack={musicTrack} musicIsPlaying={musicIsPlaying} musicLoop={musicLoop}
+            onMusicTogglePlay={() => musicIsPlaying ? musicPause() : musicResume()}
+            onMusicToggleLoop={musicToggleLoop}
+            onMusicPress={() => setShowMusicPicker(true)}
+          />
+          <ActiveInsightBar
+            type="exercise"
+            insight={insight}
+            onInsightChange={handleInsightChange}
+            goal={resolveGoal('exercise')}
+          />
+        </View>
+        <MusicPickerModal visible={showMusicPicker} onClose={() => setShowMusicPicker(false)} primaryColor={COLORS.GREEN} selectedTrackId={musicTrack?.id} />
       </>
     );
-  }
+  } else {
+    // Non-GPS active page — route to layout by experience type
+    const layoutProps = {
+      icon: effectiveIcon, sportName: effectiveSportLabel, experienceType, sportType, bg,
+      sec: timer.sec, active: timer.active,
+      topInset: isComboMode ? 0 : 56,
+      sets: sets.sets, currentSetReps: sets.currentSetReps, totalReps: sets.totalReps, currentSet,
+      mode, targetType, targetValue,
+      targetProgress: actualTargets.targetProgress, targetInfo,
+      softTargetReached: actualTargets.softTargetReached,
+      softTargetLabel: actualTargets.softTargetLabel,
+      softTargetProgress: actualTargets.softTargetProgress,
+      isResting: rest.isResting, restSec: rest.restSec, skipRest: rest.skipRest,
+      selectedSound: audio.selectedSound, showSoundPicker: audio.showSoundPicker,
+      onToggleSoundPicker: () => audio.setShowSoundPicker(!audio.showSoundPicker),
+      onSelectSound: audio.selectSound,
+      bounceAnim: sets.bounceAnim, plusRippleAnim: sets.plusRippleAnim,
+      minusRippleAnim: sets.minusRippleAnim, pulseAnim: actualTargets.pulseAnim,
+      celebrateAnim: actualTargets.celebrateAnim, milestoneAnim: actualTargets.milestoneAnim,
+      milestoneText: actualTargets.milestoneText, showCelebration: actualTargets.showCelebration,
+      breathGuideEnabled, breathPhase, breathAnim,
+      handlePause, handleCompleteSet: sets.handleCompleteSet,
+      startLongPress: sets.startLongPress, stopLongPress: sets.stopLongPress,
+      setCurrentSetReps: sets.setCurrentSetReps,
+      onPressInPauseLong: () => {}, onPressOutPauseLong: () => {},
+      pauseHoldAnim,
+      calories,
+      softTarget: actualTargets.softTarget,
+      musicTrack, musicIsPlaying, musicLoop,
+      onMusicTogglePlay: () => musicIsPlaying ? musicPause() : musicResume(),
+      onMusicToggleLoop: musicToggleLoop,
+      onMusicPressTrackName: () => setShowMusicPicker(true),
+      T,
+    };
 
-  // ── Active page ──
+    const activeLayout = (() => {
+      switch (experienceType) {
+        case 'meditative': return <MeditativeActive {...layoutProps} />;
+        case 'endurance':  return <EnduranceActive {...layoutProps} />;
+        case 'interval':   return <StrengthActive {...layoutProps} restMode="inline" />;
+        default:           return <StrengthActive {...layoutProps} />;
+      }
+    })();
 
-  // GPS active page
-  if (page === 'active' && isGpsSport) {
-    return (
+    pageContent = (
       <>
-      {isComboMode && comboExercises && (
-        <ComboProgressHeader
-          exercises={comboExercises}
-          currentIndex={comboState.current.currentIndex}
-          results={comboState.current.results}
-          onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
-          TH={TH}
-          T={T}
-          safeAreaTop={insets.top}
-        />
-      )}
-      <View style={{ flex: 1 }}>
-        <GpsActive
-          MapView={MapView} Polyline={Polyline} amapReady={amapReady}
-          mapRef={mapRef} initialPos={initialPos} coords={coords} color={color}
-          mode={mode} targetProgress={actualTargets.targetProgress}
-          distKm={distKm} sec={timer.sec} calories={calories}
-          handlePause={handleGpsPause} T={T}
-          musicTrack={musicTrack} musicIsPlaying={musicIsPlaying} musicLoop={musicLoop}
-          onMusicTogglePlay={() => musicIsPlaying ? musicPause() : musicResume()}
-          onMusicToggleLoop={musicToggleLoop}
-          onMusicPress={() => setShowMusicPicker(true)}
-        />
+        {activeLayout}
         <ActiveInsightBar
           type="exercise"
           insight={insight}
           onInsightChange={handleInsightChange}
           goal={resolveGoal('exercise')}
         />
-      </View>
-      <MusicPickerModal visible={showMusicPicker} onClose={() => setShowMusicPicker(false)} primaryColor={COLORS.GREEN} selectedTrackId={musicTrack?.id} />
+        <MusicPickerModal visible={showMusicPicker} onClose={() => setShowMusicPicker(false)} primaryColor={TH.primary} selectedTrackId={musicTrack?.id} />
       </>
     );
   }
 
-  // Non-GPS active page — route to layout by experience type
-  const layoutProps = {
-    icon: effectiveIcon, sportName: effectiveSportLabel, experienceType, sportType, bg,
-    sec: timer.sec, active: timer.active,
-    topInset: isComboMode ? 0 : 56,
-    sets: sets.sets, currentSetReps: sets.currentSetReps, totalReps: sets.totalReps, currentSet,
-    mode, targetType, targetValue,
-    targetProgress: actualTargets.targetProgress, targetInfo,
-    softTargetReached: actualTargets.softTargetReached,
-    softTargetLabel: actualTargets.softTargetLabel,
-    softTargetProgress: actualTargets.softTargetProgress,
-    isResting: rest.isResting, restSec: rest.restSec, skipRest: rest.skipRest,
-    selectedSound: audio.selectedSound, showSoundPicker: audio.showSoundPicker,
-    onToggleSoundPicker: () => audio.setShowSoundPicker(!audio.showSoundPicker),
-    onSelectSound: audio.selectSound,
-    bounceAnim: sets.bounceAnim, plusRippleAnim: sets.plusRippleAnim,
-    minusRippleAnim: sets.minusRippleAnim, pulseAnim: actualTargets.pulseAnim,
-    celebrateAnim: actualTargets.celebrateAnim, milestoneAnim: actualTargets.milestoneAnim,
-    milestoneText: actualTargets.milestoneText, showCelebration: actualTargets.showCelebration,
-    breathGuideEnabled, breathPhase, breathAnim,
-    handlePause, handleCompleteSet: sets.handleCompleteSet,
-    startLongPress: sets.startLongPress, stopLongPress: sets.stopLongPress,
-    setCurrentSetReps: sets.setCurrentSetReps,
-    onPressInPauseLong: () => {}, onPressOutPauseLong: () => {},
-    pauseHoldAnim,
-    calories,
-    softTarget: actualTargets.softTarget,
-    musicTrack, musicIsPlaying, musicLoop,
-    onMusicTogglePlay: () => musicIsPlaying ? musicPause() : musicResume(),
-    onMusicToggleLoop: musicToggleLoop,
-    onMusicPressTrackName: () => setShowMusicPicker(true),
-    T,
-  };
-
-  const activeLayout = (() => {
-    switch (experienceType) {
-      case 'meditative': return <MeditativeActive {...layoutProps} />;
-      case 'endurance':  return <EnduranceActive {...layoutProps} />;
-      case 'interval':   return <StrengthActive {...layoutProps} restMode="inline" />;
-      default:           return <StrengthActive {...layoutProps} />;
-    }
-  })();
-
+  // ── 统一返回：header + pageContent ──
   return (
-    <View style={{ flex: 1, paddingTop: isComboMode ? insets.top : 0 }}>
+    <View style={{ flex: 1 }}>
       {isComboMode && comboExercises && (
         <ComboProgressHeader
           exercises={comboExercises}
-          currentIndex={comboState.current.currentIndex}
+          currentIndex={headerIndex}
           results={comboState.current.results}
           onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
           TH={TH}
@@ -791,14 +731,7 @@ export default function SportPage() {
           safeAreaTop={insets.top}
         />
       )}
-      {activeLayout}
-      <ActiveInsightBar
-        type="exercise"
-        insight={insight}
-        onInsightChange={handleInsightChange}
-        goal={resolveGoal('exercise')}
-      />
-      <MusicPickerModal visible={showMusicPicker} onClose={() => setShowMusicPicker(false)} primaryColor={TH.primary} selectedTrackId={musicTrack?.id} />
+      {pageContent}
     </View>
   );
 }
