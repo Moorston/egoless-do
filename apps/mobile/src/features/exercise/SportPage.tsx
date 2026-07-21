@@ -516,7 +516,7 @@ export default function SportPage() {
         />
       )}
       <PrepPage
-        icon={effectiveIcon} sportName={effectiveSportName} sportType={sportType} experienceType={experienceType}
+        icon={effectiveIcon} sportName={effectiveSportLabel} sportType={sportType} experienceType={experienceType}
         bg={TH.primary} isGpsSport={isGpsSport}
         sec={timer.sec} countdown={timer.countdown} holdAnim={timer.holdAnim} scaleAnim={timer.scaleAnim} pulseAnim={timer.pulseAnim}
         mode={mode} setMode={setMode} targetType={targetType} setTargetType={setTargetType}

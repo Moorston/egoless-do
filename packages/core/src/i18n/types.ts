@@ -140,7 +140,7 @@ export interface I18nKeys {
   medBgm: string; medLoadError: string; medAttribution: string;
   exerciseSelect: string; exerciseWalk: string; exerciseRun: string;
   exerciseCycle: string; exerciseOther: string; exerciseGlobal: string;
-  exerciseCategory: string; exerciseMusic: string;
+  exerciseCategory: string; exerciseMusic: string; exerciseAddMusic: string;
   exerciseMusicDesc: string; exerciseTotalBurn: string;
   exerciseTotalDuration: string; exerciseElevation: string;
   exerciseGpsActive: string; exerciseGpsInactive: string;

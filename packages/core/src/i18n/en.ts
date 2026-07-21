@@ -173,7 +173,7 @@ export const en: I18nKeys = {
   // Exercise
   exerciseSelect:'Select Exercise', exerciseWalk:'Walk', exerciseRun:'Run',
   exerciseCycle:'Cycle', exerciseOther:'Other', exerciseGlobal:'Runners Map',
-  exerciseCategory:'Exercise Category', exerciseMusic:'Select Music',
+  exerciseCategory:'Exercise Category', exerciseMusic:'Select Music', exerciseAddMusic:'Add Music',
   exerciseMusicDesc:'Music for your workout',
   exerciseTotalBurn:'Total Burn', exerciseTotalDuration:'Total Duration',
   exerciseElevation:'Elevation', exerciseGpsActive:'GPS Active',

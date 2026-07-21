@@ -173,7 +173,7 @@ export const zh: I18nKeys = {
   // Exercise
   exerciseSelect:'选择运动', exerciseWalk:'行走', exerciseRun:'跑步',
   exerciseCycle:'骑行', exerciseOther:'其他运动', exerciseGlobal:'跑者运动地图',
-  exerciseCategory:'运动类别', exerciseMusic:'选择运动音乐',
+  exerciseCategory:'运动类别', exerciseMusic:'选择运动音乐', exerciseAddMusic:'添加音乐',
   exerciseMusicDesc:'让音乐陪伴你的每一次运动',
   exerciseTotalBurn:'总消耗', exerciseTotalDuration:'总时长',
   exerciseElevation:'爬升高度', exerciseGpsActive:'GPS 记录中',
