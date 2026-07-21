@@ -1,5 +1,5 @@
 // ─── ComboProgressHeader ─────────────────────────────────────────
-// 底部引导：横向滚动卡片式，透明背景，页面背景自然透出
+// 底部引导：绝对定位叠加在页面内容上，半透明背景透出渐变
 
 import { FONT_SMALL, scaleFontSize, type ExerciseDef } from '@egoless-do/core';
 import { CheckCircle2, Play } from 'lucide-react-native';
@@ -22,6 +22,8 @@ interface Props {
   onJumpTo: (index: number) => void;
   safeAreaBottom?: number;
 }
+
+const COMBO_BG = 'rgba(0,0,0,0.35)';
 
 export default function ComboProgressHeader({ exercises, currentIndex, results, onJumpTo, safeAreaBottom = 0 }: Props) {
   const scrollRef = useRef<ScrollView>(null);
@@ -86,7 +88,7 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'transparent',
+    backgroundColor: COMBO_BG,
   },
   progressTrack: {
     height: 3,

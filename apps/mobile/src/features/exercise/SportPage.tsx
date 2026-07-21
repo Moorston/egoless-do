@@ -717,18 +717,20 @@ export default function SportPage() {
     );
   }
 
-  // ── 统一返回：pageContent + header（底部，透明背景）──
+  // ── 统一返回：pageContent + header 绝对定位底部叠加 ──
   return (
     <View style={{ flex: 1 }}>
       {pageContent}
       {isComboMode && comboExercises && (
-        <ComboProgressHeader
-          exercises={comboExercises}
-          currentIndex={headerIndex}
-          results={comboState.current.results}
-          onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
-          safeAreaBottom={insets.bottom}
-        />
+        <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
+          <ComboProgressHeader
+            exercises={comboExercises}
+            currentIndex={headerIndex}
+            results={comboState.current.results}
+            onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
+            safeAreaBottom={insets.bottom}
+          />
+        </View>
       )}
     </View>
   );
