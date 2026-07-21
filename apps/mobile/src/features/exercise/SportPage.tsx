@@ -717,9 +717,10 @@ export default function SportPage() {
     );
   }
 
-  // ── 统一返回：header + pageContent ──
+  // ── 统一返回：pageContent + header（底部）──
   return (
     <View style={{ flex: 1 }}>
+      {pageContent}
       {isComboMode && comboExercises && (
         <ComboProgressHeader
           exercises={comboExercises}
@@ -728,10 +729,9 @@ export default function SportPage() {
           onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
           TH={TH}
           T={T}
-          safeAreaTop={insets.top}
+          bg={bg}
         />
       )}
-      {pageContent}
     </View>
   );
 }

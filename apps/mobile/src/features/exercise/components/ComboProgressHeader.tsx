@@ -1,5 +1,5 @@
 // ─── ComboProgressHeader ─────────────────────────────────────────
-// 顶部引导：横向滚动卡片式，与选运动页风格一致
+// 底部引导：横向滚动卡片式，与选运动页风格一致
 // 组合锻炼（combo workout）专用组件
 
 import { FONT_SMALL, scaleFontSize, type ExerciseDef, type Theme } from '@egoless-do/core';
@@ -23,21 +23,19 @@ interface Props {
   onJumpTo: (index: number) => void;
   TH: Theme;
   T: (key: string) => string;
-  safeAreaTop?: number;
+  bg?: string;
 }
 
-export default function ComboProgressHeader({ exercises, currentIndex, results, onJumpTo, TH, T, safeAreaTop = 0 }: Props) {
+export default function ComboProgressHeader({ exercises, currentIndex, results, onJumpTo, T, bg = '#1a1a1a' }: Props) {
   const scrollRef = useRef<ScrollView>(null);
 
   // ── 跳转确认 ──
   const handlePress = useCallback((index: number) => {
     if (index === currentIndex) return;
     if (index < currentIndex) {
-      // 已完成：直接跳转
       onJumpTo(index);
       return;
     }
-    // 未来动作：确认
     Alert.alert(
       `${T('bodyJumpTo')} #${index + 1}`,
       undefined,
@@ -56,7 +54,17 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
   }, [currentIndex]);
 
   return (
-    <View style={[styles.container, { backgroundColor: `${TH.card}E0`, paddingTop: safeAreaTop }]}>
+    <View style={[styles.container, { backgroundColor: bg }]}>
+      {/* 顶部进度条 */}
+      <View style={styles.progressTrack}>
+        <View
+          style={[
+            styles.progressFill,
+            { width: `${exercises.length > 1 ? (currentIndex / (exercises.length - 1)) * 100 : 100}%` },
+          ]}
+        />
+      </View>
+
       <ScrollView
         ref={scrollRef}
         horizontal
@@ -77,8 +85,8 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
               style={[
                 styles.chip,
                 {
-                  backgroundColor: done ? '#10b98120' : isCurrent ? '#f59e0b20' : TH.card,
-                  borderColor: done ? '#10b981' : isCurrent ? '#f59e0b' : TH.border,
+                  backgroundColor: done ? '#10b98130' : isCurrent ? '#f59e0b30' : 'rgba(255,255,255,0.08)',
+                  borderColor: done ? '#10b981' : isCurrent ? '#f59e0b' : 'rgba(255,255,255,0.15)',
                   borderWidth: isCurrent ? 2 : 1,
                 },
               ]}
@@ -91,14 +99,14 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
               <Text
                 style={[
                   styles.chipName,
-                  { color: done ? '#10b981' : isCurrent ? '#f59e0b' : TH.text },
+                  { color: done ? '#10b981' : isCurrent ? '#f59e0b' : '#fff' },
                 ]}
                 numberOfLines={1}
               >
                 {exName}
               </Text>
               {result && (
-                <Text style={[styles.chipTime, { color: TH.sub }]}>
+                <Text style={[styles.chipTime, { color: 'rgba(255,255,255,0.5)' }]}>
                   {Math.floor(result.durationSec / 60)}:{(result.durationSec % 60).toString().padStart(2, '0')}
                 </Text>
               )}
@@ -106,24 +114,25 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
           );
         })}
       </ScrollView>
-
-      {/* 底部进度条 */}
-      <View style={[styles.progressTrack, { backgroundColor: `${TH.sub}20` }]}>
-        <View
-          style={[
-            styles.progressFill,
-            { width: `${exercises.length > 1 ? (currentIndex / (exercises.length - 1)) * 100 : 100}%`, backgroundColor: '#f59e0b' },
-          ]}
-        />
-      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
     paddingBottom: 8,
+  },
+  progressTrack: {
+    height: 3,
+    borderRadius: 1.5,
+    marginBottom: 8,
+    overflow: 'hidden',
+    backgroundColor: 'rgba(255,255,255,0.1)',
+  },
+  progressFill: {
+    height: 3,
+    borderRadius: 1.5,
+    backgroundColor: '#f59e0b',
   },
   scrollContent: {
     paddingHorizontal: 14,
@@ -157,15 +166,5 @@ const styles = StyleSheet.create({
   chipTime: {
     fontSize: 10,
     marginTop: 1,
-  },
-  progressTrack: {
-    height: 3,
-    borderRadius: 1.5,
-    marginHorizontal: 14,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: 3,
-    borderRadius: 1.5,
   },
 });
