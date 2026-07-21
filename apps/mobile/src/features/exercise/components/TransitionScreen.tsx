@@ -43,6 +43,14 @@ export default function TransitionScreen({
     };
   }, [restSec]);
 
+  // 倒计时到 0 自动推进
+  useEffect(() => {
+    if (restRemaining === 0 && restTimerRef.current) {
+      if (restTimerRef.current) clearInterval(restTimerRef.current);
+      onNext();
+    }
+  }, [restRemaining, onNext]);
+
   const handleSkipRest = useCallback(() => {
     if (restTimerRef.current) clearInterval(restTimerRef.current);
     setRestRemaining(0);

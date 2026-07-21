@@ -102,7 +102,7 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
 
                 {isFuture && (
                   <TouchableOpacity onPress={() => onJumpTo(i)} style={[styles.jumpBtn, { backgroundColor: `${TH.primary}15` }]}>
-                    <Text style={[styles.jumpText, { color: TH.primary }]}>{T('bodyJumpTo') || '跳转'}</Text>
+                    <Text style={[styles.jumpText, { color: TH.primary }]}>{T('bodyJumpTo')}</Text>
                   </TouchableOpacity>
                 )}
               </View>
