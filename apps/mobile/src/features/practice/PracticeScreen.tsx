@@ -148,8 +148,8 @@ export default function PracticeScreen() {
               { Icon: Binary, color: '#8B5CF6', value: String(totalMedMinutes), unit: T('medMinutes') },
               { Icon: Dumbbell, color: '#10B981', value: String(weeklyStats.exerciseMin), unit: T('medMinutes') },
               { Icon: Timer, color: '#F59E0B', value: String(weeklyStats.fastingCount), unit: T('fastTimes') },
-              { Icon: Shield, color: '#F59E0B', value: String(weeklyStats.preceptDays), unit: T('preceptDays') || '天' },
-              { Icon: HandHeart, color: '#FDE68A', value: String(weeklyStats.giveCount), unit: T('giveTotal') || '次' },
+              { Icon: Shield, color: '#F59E0B', value: String(weeklyStats.preceptDays), unit: T('preceptDays') },
+              { Icon: HandHeart, color: '#FDE68A', value: String(weeklyStats.giveCount), unit: T('giveTotal') },
               { Icon: Flame, color: '#EF4444', value: String(weeklyStats.checkinDays), unit: T('calendarDays') },
             ].map((s, i) => (
               <View key={i} style={styles.summaryItem}>

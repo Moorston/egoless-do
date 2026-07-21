@@ -27,7 +27,7 @@ export default function PlanManagementScreen() {
     const active = (bodyTrainingPlans ?? []).find((p: BodyTrainingPlan) => !p.deleted && p.status === 'active');
     return active?.id ?? null;
   });
-  const WEEKDAY_LABELS = [T('bodyWeekMon') || '一', T('bodyWeekTue') || '二', T('bodyWeekWed') || '三', T('bodyWeekThu') || '四', T('bodyWeekFri') || '五', T('bodyWeekSat') || '六', T('bodyWeekSun') || '日'];
+  const WEEKDAY_LABELS = [T('bodyWeekMon'), T('bodyWeekTue'), T('bodyWeekWed'), T('bodyWeekThu'), T('bodyWeekFri'), T('bodyWeekSat'), T('bodyWeekSun')];
 
   const plans = useMemo(() =>
     (bodyTrainingPlans ?? [])
@@ -56,11 +56,11 @@ export default function PlanManagementScreen() {
 
   const handleDelete = useCallback((plan: BodyTrainingPlan) => {
     Alert.alert(
-      T('bodyPlanDeleteConfirm') || '确认删除',
+      T('bodyPlanDeleteConfirm'),
       T('bodyPlanDeleteMsg') || `删除计划「${plan.name}」？此操作不可撤销。`,
       [
-        { text: T('bodyCancel') || '取消', style: 'cancel' },
-        { text: T('bodyDelete') || '删除', style: 'destructive', onPress: () => removeBodyTrainingPlan(plan.id) },
+        { text: T('bodyCancel'), style: 'cancel' },
+        { text: T('bodyDelete'), style: 'destructive', onPress: () => removeBodyTrainingPlan(plan.id) },
       ]
     );
   }, [T, removeBodyTrainingPlan]);
@@ -81,7 +81,7 @@ export default function PlanManagementScreen() {
         <TouchableOpacity onPress={() => nav.goBack()} style={styles.backBtn}>
           <ChevronLeft size={24} color={TH.text} />
         </TouchableOpacity>
-        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, flex: 1 }}>{T('bodyPlanManagement') || '我的训练计划'}</Text>
+        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, flex: 1 }}>{T('bodyPlanManagement')}</Text>
         <TouchableOpacity onPress={() => nav.navigate('BodyPlanEditor' as never)} style={styles.addBtn}>
           <Text style={{ fontSize: FONT_SMALL(), color: '#f59e0b', fontWeight: '600' }}>+ {T('bodyPlanCreate')}</Text>
         </TouchableOpacity>
@@ -134,7 +134,7 @@ export default function PlanManagementScreen() {
                 {/* Progress bar */}
                 <View style={{ marginBottom: 12 }}>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                    <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyProgress') || '进度'}</Text>
+                    <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyProgress')}</Text>
                     <Text style={{ fontSize: FONT_SMALL(), color: TH.text, fontWeight: '600' }}>{progress}%</Text>
                   </View>
                   <View style={{ height: 6, backgroundColor: TH.border, borderRadius: 3, overflow: 'hidden' }}>
@@ -178,7 +178,7 @@ export default function PlanManagementScreen() {
                               <Text style={{ fontSize: 10, color: isRest ? TH.sub : '#fff', fontWeight: '700' }}>{WEEKDAY_LABELS[task.weekday - 1]}</Text>
                             </View>
                             {isRest ? (
-                              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, fontStyle: 'italic' }}>{T('bodyPlanRestDay') || '休息'}</Text>
+                              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, fontStyle: 'italic' }}>{T('bodyPlanRestDay')}</Text>
                             ) : exercises.length > 0 ? (
                               exercises.map((e, i) => (
                                 <Text key={i} style={{ fontSize: 11, color: TH.text, lineHeight: 16 }}>
@@ -201,12 +201,12 @@ export default function PlanManagementScreen() {
                   {isActive ? (
                     <TouchableOpacity onPress={() => handlePause(plan)} style={[styles.actionBtn, { backgroundColor: TH.border }]}>
                       <Pause size={14} color={TH.text} />
-                      <Text style={{ fontSize: FONT_SMALL(), color: TH.text, fontWeight: '600' }}>{T('bodyPlanPause') || '暂停'}</Text>
+                      <Text style={{ fontSize: FONT_SMALL(), color: TH.text, fontWeight: '600' }}>{T('bodyPlanPause')}</Text>
                     </TouchableOpacity>
                   ) : (
                     <TouchableOpacity onPress={() => handleActivate(plan)} style={[styles.actionBtn, { backgroundColor: '#10b981' }]}>
                       <Play size={14} color="#fff" />
-                      <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600' }}>{T('bodyPlanActivate') || '激活'}</Text>
+                      <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600' }}>{T('bodyPlanActivate')}</Text>
                     </TouchableOpacity>
                   )}
                   <TouchableOpacity onPress={() => nav.navigate('BodyPlanEditor' as never, { planId: plan.id } as never)} style={[styles.actionBtn, { backgroundColor: '#f59e0b20' }]}>
@@ -215,7 +215,7 @@ export default function PlanManagementScreen() {
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => handleDelete(plan)} style={[styles.actionBtn, { backgroundColor: '#ef444420' }]}>
                     <Trash2 size={14} color="#ef4444" />
-                    <Text style={{ fontSize: FONT_SMALL(), color: '#ef4444', fontWeight: '600' }}>{T('bodyDelete') || '删除'}</Text>
+                    <Text style={{ fontSize: FONT_SMALL(), color: '#ef4444', fontWeight: '600' }}>{T('bodyDelete')}</Text>
                   </TouchableOpacity>
                 </View>
               </TouchableOpacity>

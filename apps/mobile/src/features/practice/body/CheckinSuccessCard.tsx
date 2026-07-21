@@ -124,7 +124,7 @@ function CheckinSuccessCard({ TH, T, awarenessData, practiceCompleted, breathing
       </Card>
 
       <PrimaryButton
-        label={T('bodyFlowFinish') || '完成'}
+        label={T('bodyFlowFinish')}
         onPress={onFinish}
         color="#10b981"
         icon={<CheckCircle2 size={18} color="#fff" />}

@@ -172,14 +172,14 @@ export default function PreceptScreen() {
                 onPress={() => handleCheckDone(habit.id)}
               >
                 <Check size={16} color="#fff" />
-                <Text style={styles.actionBtnText}>{T('preceptDone') || '做到了'}</Text>
+                <Text style={styles.actionBtnText}>{T('preceptDone')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.actionBtn, { backgroundColor: '#EF4444' }]}
                 onPress={() => handleViolate(habit.id, habit.name)}
               >
                 <AlertTriangle size={16} color="#fff" />
-                <Text style={styles.actionBtnText}>{T('preceptNotDone') || '未做到'}</Text>
+                <Text style={styles.actionBtnText}>{T('preceptNotDone')}</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -195,21 +195,21 @@ export default function PreceptScreen() {
       <View style={[styles.statsCard, { borderColor: '#F59E0B30' }]}>
         <View style={styles.statsHeader}>
           <Shield size={20} color="#F59E0B" />
-          <Text style={[styles.statsTitle, { color: TH.text }]}>{T('preceptTitle') || '持戒清净'}</Text>
+          <Text style={[styles.statsTitle, { color: TH.text }]}>{T('preceptTitle')}</Text>
         </View>
-        <Text style={[styles.quoteText, { color: TH.sub }]}>{T('preceptQuote') || '持戒清净，禅定现前'}</Text>
+        <Text style={[styles.quoteText, { color: TH.sub }]}>{T('preceptQuote')}</Text>
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
             <Text style={[styles.statValue, { color: '#F59E0B' }]}>{String(stats.streak)}</Text>
-            <Text style={[styles.statLabel, { color: TH.sub }]}>🔥 {T('preceptStreak') || '连续'}</Text>
+            <Text style={[styles.statLabel, { color: TH.sub }]}>🔥 {T('preceptStreak')}</Text>
           </View>
           <View style={styles.statItem}>
             <Text style={[styles.statValue, { color: TH.text }]}>{String(stats.totalDays)}</Text>
-            <Text style={[styles.statLabel, { color: TH.sub }]}>{T('preceptTotalDays') || '累计'}</Text>
+            <Text style={[styles.statLabel, { color: TH.sub }]}>{T('preceptTotalDays')}</Text>
           </View>
           <View style={styles.statItem}>
             <Text style={[styles.statValue, { color: '#10B981' }]}>{stats.monthRate}%</Text>
-            <Text style={[styles.statLabel, { color: TH.sub }]}>{T('preceptMonthRate') || '本月'}</Text>
+            <Text style={[styles.statLabel, { color: TH.sub }]}>{T('preceptMonthRate')}</Text>
           </View>
           <View style={styles.statItem}>
             <Text style={[styles.statValue, { color: TH.text }]}>{stats.todayDone}/{stats.total}</Text>
@@ -252,7 +252,7 @@ export default function PreceptScreen() {
 
       {/* Avoid section title */}
       {avoidHabits.length > 0 && (
-        <Text style={[styles.sectionTitle, { color: '#EF4444', paddingHorizontal: 16, marginTop: 16 }]}>{T('preceptAvoid') || '止持（守护不做的）'}</Text>
+        <Text style={[styles.sectionTitle, { color: '#EF4444', paddingHorizontal: 16, marginTop: 16 }]}>{T('preceptAvoid')}</Text>
       )}
     </>
   ), [TH, T, stats, preceptHabits.length, someUnchecked, someChecked, avoidHabits.length, handleCheckAll, handleUncheckAll]);
@@ -263,7 +263,7 @@ export default function PreceptScreen() {
       {/* Practice section */}
       {practiceHabits.length > 0 && (
         <View style={[styles.section, { paddingHorizontal: 16 }]}>
-          <Text style={[styles.sectionTitle, { color: '#10B981' }]}>{T('preceptPractice') || '作持（守护要做的）'}</Text>
+          <Text style={[styles.sectionTitle, { color: '#10B981' }]}>{T('preceptPractice')}</Text>
           {practiceHabits.map(h => {
             const displayName = getPreceptDisplayName(h.name);
             const isChecked = (h.checkedDates ?? []).includes(today);
@@ -292,14 +292,14 @@ export default function PreceptScreen() {
                         onPress={() => handleCheckDone(h.id)}
                       >
                         <Check size={16} color="#fff" />
-                        <Text style={styles.actionBtnText}>{T('preceptDone') || '做到了'}</Text>
+                        <Text style={styles.actionBtnText}>{T('preceptDone')}</Text>
                       </TouchableOpacity>
                       <TouchableOpacity
                         style={[styles.actionBtn, { backgroundColor: '#EF4444' }]}
                         onPress={() => handleViolate(h.id, h.name)}
                       >
                         <AlertTriangle size={16} color="#fff" />
-                        <Text style={styles.actionBtnText}>{T('preceptNotDone') || '未做到'}</Text>
+                        <Text style={styles.actionBtnText}>{T('preceptNotDone')}</Text>
                       </TouchableOpacity>
                     </View>
                   )}
@@ -317,21 +317,21 @@ export default function PreceptScreen() {
           onPress={() => setShowAddModal(true)}
         >
           <Plus size={18} color={TH.primary} />
-          <Text style={[styles.bottomBtnText, { color: TH.primary }]}>{T('preceptAddNew') || '添加新戒条'}</Text>
+          <Text style={[styles.bottomBtnText, { color: TH.primary }]}>{T('preceptAddNew')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.bottomBtn, { backgroundColor: `${TH.primary}15`, borderColor: `${TH.primary}30` }]}
           onPress={() => nav.navigate('PreceptHistory' as never)}
         >
           <BarChart3 size={18} color={TH.primary} />
-          <Text style={[styles.bottomBtnText, { color: TH.primary }]}>{T('preceptHistory') || '持戒历史'}</Text>
+          <Text style={[styles.bottomBtnText, { color: TH.primary }]}>{T('preceptHistory')}</Text>
         </TouchableOpacity>
       </View>
 
       {/* Recent Insights */}
       {recentInsights.length > 0 && (
         <View style={[styles.section, { paddingHorizontal: 16 }]}>
-          <Text style={[styles.sectionTitle, { color: TH.text }]}>{T('preceptRecentInsight') || '最近觉察'}</Text>
+          <Text style={[styles.sectionTitle, { color: TH.text }]}>{T('preceptRecentInsight')}</Text>
           {recentInsights.map(r => (
             <View key={r.id} style={[styles.insightRow, { borderLeftColor: '#F59E0B' }]}>
               <Text style={[styles.insightDate, { color: TH.sub }]}>
@@ -363,13 +363,13 @@ export default function PreceptScreen() {
       <Modal visible={showViolateModal} animationType="fade">
         <View style={[styles.modalContainer, { backgroundColor: TH.bg }]}>
           <View style={styles.modalHeader}>
-            <Text style={[styles.modalTitle, { color: TH.text }]}>🚫 {violateHabitName} — {T('preceptViolated') || '未做到'}</Text>
+            <Text style={[styles.modalTitle, { color: TH.text }]}>🚫 {violateHabitName} — {T('preceptViolated')}</Text>
             <TouchableOpacity onPress={() => setShowViolateModal(false)}>
               <X size={22} color={TH.sub} />
             </TouchableOpacity>
           </View>
           <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
-            <Text style={[styles.modalLabel, { color: TH.text }]}>{T('preceptTriggerTitle') || '什么触发了？'}</Text>
+            <Text style={[styles.modalLabel, { color: TH.text }]}>{T('preceptTriggerTitle')}</Text>
             <View style={styles.triggerRow}>
               {VIOLATION_TRIGGERS.map(t => (
                 <TouchableOpacity
@@ -385,30 +385,30 @@ export default function PreceptScreen() {
               ))}
             </View>
 
-            <Text style={[styles.modalLabel, { color: TH.text, marginTop: 16 }]}>{T('preceptReflectionTitle') || '觉察反思'}</Text>
+            <Text style={[styles.modalLabel, { color: TH.text, marginTop: 16 }]}>{T('preceptReflectionTitle')}</Text>
             <TextInput
               value={violateReflection}
               onChangeText={setViolateReflection}
-              placeholder={T('preceptReflectionPlaceholder') || '记录此刻的觉察...'}
+              placeholder={T('preceptReflectionPlaceholder')}
               placeholderTextColor={TH.sub}
               multiline
               style={[styles.modalInput, { color: TH.text, borderColor: TH.border, backgroundColor: TH.card }]}
             />
 
-            <Text style={[styles.quoteModal, { color: TH.sub }]}>{T('preceptQuoteText') || '若犯戒者，当自呵责，改往修来 — 小止观'}</Text>
+            <Text style={[styles.quoteModal, { color: TH.sub }]}>{T('preceptQuoteText')}</Text>
 
             <View style={{ flexDirection: 'row', gap: 12, marginTop: 16 }}>
               <TouchableOpacity
                 style={[styles.saveBtn, { backgroundColor: '#F59E0B', flex: 1 }]}
                 onPress={handleSaveViolation}
               >
-                <Text style={styles.saveBtnText}>{T('preceptSave') || '记录觉察'}</Text>
+                <Text style={styles.saveBtnText}>{T('preceptSave')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.saveBtn, { backgroundColor: `${TH.sub}20`, flex: 1 }]}
                 onPress={() => setShowViolateModal(false)}
               >
-                <Text style={[styles.saveBtnText, { color: TH.sub }]}>{T('preceptSkip') || '跳过'}</Text>
+                <Text style={[styles.saveBtnText, { color: TH.sub }]}>{T('preceptSkip')}</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>
@@ -419,7 +419,7 @@ export default function PreceptScreen() {
       <Modal visible={showAddModal} animationType="slide" presentationStyle="pageSheet">
         <View style={[styles.modalContainer, { backgroundColor: TH.bg }]}>
           <View style={styles.modalHeader}>
-            <Text style={[styles.modalTitle, { color: TH.text }]}>{T('preceptAddNew') || '添加新戒条'}</Text>
+            <Text style={[styles.modalTitle, { color: TH.text }]}>{T('preceptAddNew')}</Text>
             <TouchableOpacity onPress={() => setShowAddModal(false)}>
               <X size={22} color={TH.sub} />
             </TouchableOpacity>
@@ -471,7 +471,7 @@ export default function PreceptScreen() {
             </View>
 
             {/* Custom */}
-            <Text style={[styles.modalLabel, { color: TH.text, marginTop: 20 }]}>{T('preceptAddCustom') || '或自定义'}</Text>
+            <Text style={[styles.modalLabel, { color: TH.text, marginTop: 20 }]}>{T('preceptAddCustom')}</Text>
             <View style={{ flexDirection: 'row', gap: 10, marginBottom: 12 }}>
               {(['avoid', 'practice'] as const).map(t => (
                 <TouchableOpacity
@@ -491,21 +491,21 @@ export default function PreceptScreen() {
             <TextInput
               value={customName}
               onChangeText={setCustomName}
-              placeholder={T('preceptTemplateName') || '戒条名称'}
+              placeholder={T('preceptTemplateName')}
               placeholderTextColor={TH.sub}
               style={[styles.modalInput, { color: TH.text, borderColor: TH.border, backgroundColor: TH.card }]}
             />
             <TextInput
               value={customGoal}
               onChangeText={setCustomGoal}
-              placeholder={T('preceptTemplateGuide') || '修行指引'}
+              placeholder={T('preceptTemplateGuide')}
               placeholderTextColor={TH.sub}
               style={[styles.modalInput, { color: TH.text, borderColor: TH.border, backgroundColor: TH.card }]}
             />
             <TextInput
               value={customDays}
               onChangeText={setCustomDays}
-              placeholder={T('preceptTargetDays') || '目标天数'}
+              placeholder={T('preceptTargetDays')}
               placeholderTextColor={TH.sub}
               keyboardType="number-pad"
               style={[styles.modalInput, { color: TH.text, borderColor: TH.border, backgroundColor: TH.card, width: 120 }]}

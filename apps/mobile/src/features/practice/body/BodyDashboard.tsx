@@ -427,9 +427,9 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                 {/* Rest day suggestions */}
                 <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12 }}>
                   {[
-                    { icon: '🧘', label: T('bodyPartWalking') || '散步行禅' },
-                    { icon: '🧘‍♀️', label: T('bodyPartYoga') || '拉伸/瑜伽' },
-                    { icon: '🌬️', label: T('bodyFlowBreathing') || '呼吸引导' },
+                    { icon: '🧘', label: T('bodyPartWalking') },
+                    { icon: '🧘‍♀️', label: T('bodyPartYoga') },
+                    { icon: '🌬️', label: T('bodyFlowBreathing') },
                   ].map((item, i) => (
                     <TouchableOpacity
                       key={i}
@@ -445,9 +445,9 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                 {latestCheckin && (
                   <View style={{ flexDirection: 'row', justifyContent: 'space-around', backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 8, padding: 8 }}>
                     {[
-                      { label: T('bodyEnergy') || '能量', value: latestCheckin.energy, color: '#fff' },
-                      { label: T('bodyPain') || '疼痛', value: latestCheckin.pain, color: '#fff' },
-                      { label: T('bodyComfort') || '舒适', value: latestCheckin.comfort, color: '#fff' },
+                      { label: T('bodyEnergy'), value: latestCheckin.energy, color: '#fff' },
+                      { label: T('bodyPain'), value: latestCheckin.pain, color: '#fff' },
+                      { label: T('bodyComfort'), value: latestCheckin.comfort, color: '#fff' },
                     ].map((item, i) => (
                       <View key={i} style={{ alignItems: 'center' }}>
                         <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: item.color }}>{String(item.value)}</Text>
@@ -465,7 +465,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
             <View style={styles.bannerHeader}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                 <Text style={{ fontSize: 20 }}>📋</Text>
-                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyProfile') || '身体档案'}</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyProfile')}</Text>
               </View>
             </View>
             <View style={styles.bannerContent}>
@@ -473,10 +473,10 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                 {/* Body metrics - single row */}
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 }}>
                   {[
-                    { value: profile.weight ? `${profile.weight}` : '-', unit: 'kg', label: T('bodyWeight') || '体重' },
-                    { value: profile.height ? `${profile.height}` : '-', unit: 'cm', label: T('bodyHeight') || '身高' },
+                    { value: profile.weight ? `${profile.weight}` : '-', unit: 'kg', label: T('bodyWeight') },
+                    { value: profile.height ? `${profile.height}` : '-', unit: 'cm', label: T('bodyHeight') },
                     { value: profile.weight && profile.height ? `${(profile.weight / ((profile.height / 100) ** 2)).toFixed(1)}` : '-', unit: '', label: 'BMI' },
-                    { value: profile.bodyFat ? `${profile.bodyFat}` : '-', unit: '%', label: T('bodyBodyFat') || '体脂' },
+                    { value: profile.bodyFat ? `${profile.bodyFat}` : '-', unit: '%', label: T('bodyBodyFat') },
                   ].map((item, i) => (
                     <View key={i} style={{ alignItems: 'center' }}>
                       <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: '#fff' }}>{String(item.value)}{item.unit}</Text>
@@ -502,7 +502,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                   </View>
                 ) : (
                   <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>
-                    {T('bodySelfAssessmentPlaceholder') || '记录你的身体状态和感受...'}
+                    {T('bodySelfAssessmentPlaceholder')}
                   </Text>
                 )}
               </View>
@@ -512,7 +512,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
               activeOpacity={0.85}
               style={[styles.bannerButton, { backgroundColor: 'rgba(255,255,255,0.9)' }]}
             >
-              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#8b5cf6' }}>{T('bodySelfAssessment') || '自我评估'}</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#8b5cf6' }}>{T('bodySelfAssessment')}</Text>
             </TouchableOpacity>
           </View>
 
@@ -521,13 +521,13 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
             <View style={styles.bannerHeader}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                 <Text style={{ fontSize: 20 }}>🧘</Text>
-                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyAwareness') || '身体觉知'}</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyAwareness')}</Text>
               </View>
               <TouchableOpacity
                 onPress={() => nav.navigate('BodyCheckinHistory' as never)}
                 style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 }}
               >
-                <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>{T('bodyAwarenessRecords') || '记录'}</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>{T('bodyAwarenessRecords')}</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.bannerContent}>
@@ -536,10 +536,10 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                   <>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
                       {[
-                        { label: T('bodyEnergy') || '能量', value: latestCheckin.energy, color: '#fff' },
-                        { label: T('bodyPain') || '疼痛', value: latestCheckin.pain, color: '#fff' },
-                        { label: T('bodyComfort') || '舒适', value: latestCheckin.comfort, color: '#fff' },
-                        { label: T('bodySleepQuality') || '睡眠', value: latestCheckin.sleep, color: '#fff' },
+                        { label: T('bodyEnergy'), value: latestCheckin.energy, color: '#fff' },
+                        { label: T('bodyPain'), value: latestCheckin.pain, color: '#fff' },
+                        { label: T('bodyComfort'), value: latestCheckin.comfort, color: '#fff' },
+                        { label: T('bodySleepQuality'), value: latestCheckin.sleep, color: '#fff' },
                       ].map((item, i) => (
                         <View key={i} style={{ alignItems: 'center' }}>
                           <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: item.color }}>{String(item.value)}</Text>
@@ -569,7 +569,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                   </>
                 ) : (
                   <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.8)' }}>
-                    {T('bodyAwarenessNoData') || '暂无觉知记录'}
+                    {T('bodyAwarenessNoData')}
                   </Text>
                 )}
               </View>
@@ -579,7 +579,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
               activeOpacity={0.85}
               style={[styles.bannerButton, { backgroundColor: 'rgba(255,255,255,0.9)' }]}
             >
-              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#10b981' }}>{T('bodyFlowAwareness') || '记录觉知'}</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#10b981' }}>{T('bodyFlowAwareness')}</Text>
             </TouchableOpacity>
           </View>
 
@@ -588,13 +588,13 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
             <View style={styles.bannerHeader}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                 <Text style={{ fontSize: 20 }}>⚖️</Text>
-                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyWeightTrend') || '体重趋势'}</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyWeightTrend')}</Text>
               </View>
               <TouchableOpacity
                 onPress={() => setShowWeightRecord(true)}
                 style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8 }}
               >
-                <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600' }}>{T('bodyRecordWeight') || '记录体重'}</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600' }}>{T('bodyRecordWeight')}</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.bannerContent}>
@@ -717,7 +717,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                   <View style={{ alignItems: 'center', paddingVertical: 20 }}>
                     <Text style={{ fontSize: 40, marginBottom: 8 }}>📊</Text>
                     <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.8)' }}>
-                      {T('bodyWeightNoData') || '暂无体重记录'}
+                      {T('bodyWeightNoData')}
                     </Text>
                   </View>
                 )}
@@ -728,7 +728,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
               activeOpacity={0.85}
               style={[styles.bannerButton, { backgroundColor: 'rgba(255,255,255,0.9)' }]}
             >
-              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#3b82f6' }}>{T('bodyMoreWeightTrend') || '更多体重趋势'}</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#3b82f6' }}>{T('bodyMoreWeightTrend')}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -762,7 +762,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
             <View style={[styles.goalIconCircle, { backgroundColor: '#8b5cf6' }]}>
               <Target size={18} color="#fff" />
             </View>
-            <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T('bodyGoal') || '调身目标'}</Text>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T('bodyGoal')}</Text>
           </View>
           <Text style={{ fontSize: FONT_SMALL(), color: '#8b5cf6' }}>{activeGoal ? T('bodyGoalEdit') : T('bodyGoalSet')}</Text>
         </View>
@@ -796,7 +796,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
           </View>
         ) : (
           <View style={styles.goalEmpty}>
-            <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{T('bodyGoalNotSet') || '设定目标，开始调身之旅'}</Text>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{T('bodyGoalNotSet')}</Text>
           </View>
         )}
       </TouchableOpacity>
@@ -812,7 +812,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
             <View style={[styles.planIconCircle, { backgroundColor: '#f59e0b' }]}>
               <Dumbbell size={18} color="#fff" />
             </View>
-            <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T('bodyPlanManagement') || '我的训练计划'}</Text>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T('bodyPlanManagement')}</Text>
           </View>
           <Text style={{ fontSize: FONT_SMALL(), color: '#f59e0b' }}>{activeTrainingPlan ? T('bodyPlanEdit') : T('bodyPlanCreate')}</Text>
         </View>
@@ -821,7 +821,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
               <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{activeTrainingPlan.name}</Text>
               <View style={[styles.planBadge, { backgroundColor: '#10b98115' }]}>
-                <Text style={{ fontSize: FONT_SMALL(), color: '#10b981', fontWeight: '600' }}>{T('bodyPlanActive') || '进行中'}</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: '#10b981', fontWeight: '600' }}>{T('bodyPlanActive')}</Text>
               </View>
             </View>
             <View style={{ flexDirection: 'row', gap: 12, marginBottom: 8 }}>
@@ -831,7 +831,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
             {planProgress && (
               <View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyProgress') || '本周进度'}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyProgress')}</Text>
                   <Text style={{ fontSize: FONT_SMALL(), color: TH.text, fontWeight: '600' }}>{String(planProgress.weekComplete)}/{String(planProgress.weekTotal)}</Text>
                 </View>
                 <View style={[styles.progressBarBg, { backgroundColor: TH.border, height: 6 }]}>
@@ -862,7 +862,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                         <Text style={{ fontSize: 10, color: isRest ? TH.sub : '#fff', fontWeight: '700' }}>{T(weekdayKeys[task.weekday - 1])}</Text>
                       </View>
                       {isRest ? (
-                        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, fontStyle: 'italic' }}>{T('bodyPlanRestDay') || '休息'}</Text>
+                        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, fontStyle: 'italic' }}>{T('bodyPlanRestDay')}</Text>
                       ) : exercises.length > 0 ? (
                         exercises.map((e, i) => (
                           <Text key={i} style={{ fontSize: 11, color: TH.text, lineHeight: 16 }}>
@@ -881,7 +881,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
           </View>
         ) : (
           <View style={styles.planEmpty}>
-            <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{T('bodyPlanNotSet') || '创建训练计划，开始系统训练'}</Text>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{T('bodyPlanNotSet')}</Text>
           </View>
         )}
       </TouchableOpacity>
@@ -892,7 +892,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
           <View style={styles.progressHeader}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <TrendingUp size={18} color="#10b981" />
-              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T('bodyWeeklyProgress') || '本周进度'}</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T('bodyWeeklyProgress')}</Text>
             </View>
             <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
               {String(planProgress.weekComplete)}/{String(planProgress.weekTotal)}
@@ -911,7 +911,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
           <View style={styles.progressStats}>
             <View style={styles.progressStatItem}>
               <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: '#f59e0b' }}>{String(planProgress.totalDuration)}</Text>
-              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('exerciseMin') || '分钟'}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('exerciseMin')}</Text>
             </View>
             <View style={styles.progressStatItem}>
               <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: '#ef4444' }}>{String(planProgress.totalCal)}</Text>
@@ -919,7 +919,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
             </View>
             <View style={styles.progressStatItem}>
               <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: '#8b5cf6' }}>{String(planProgress.weekComplete)}</Text>
-              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyDayCompleted') || '天'}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyDayCompleted')}</Text>
             </View>
           </View>
         </View>
@@ -931,10 +931,10 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
           <View style={styles.recentHeader}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <Activity size={18} color="#f59e0b" />
-              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T('exerciseRecentActivity') || '最近训练'}</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T('exerciseRecentActivity')}</Text>
             </View>
             <TouchableOpacity onPress={() => nav.navigate('ExerciseHistory' as never)} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-              <Text style={{ fontSize: FONT_SMALL(), color: TH.primary }}>{T('exerciseHistory') || '锻炼记录'}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.primary }}>{T('exerciseHistory')}</Text>
               <ChevronRight size={14} color={TH.primary} />
             </TouchableOpacity>
           </View>

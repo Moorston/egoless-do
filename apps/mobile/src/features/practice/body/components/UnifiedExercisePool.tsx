@@ -125,7 +125,7 @@ export default function UnifiedExercisePool({
         onPress={() => handleExerciseToggle(item)}
         activeOpacity={0.7}
         accessibilityRole="button"
-        accessibilityLabel={`${item.nameZh}${existingDays ? ` (${T('bodyPlanAlreadyExists') || '已存在'} ${existingDays.size} ${T('bodyPlanDays') || '天'})` : ''}`}
+        accessibilityLabel={`${item.nameZh}${existingDays ? ` (${T('bodyPlanAlreadyExists')} ${existingDays.size} ${T('bodyPlanDays')})` : ''}`}
         style={[
           styles.exCard,
           {
@@ -174,9 +174,9 @@ export default function UnifiedExercisePool({
       {/* Filter tabs */}
       <View style={styles.filterRow}>
         {([
-          { key: 'all' as ExFilter, label: T('bodyPlanAll') || '全部', icon: '🎯' },
-          { key: 'traditional' as ExFilter, label: T('bodyPlanTraditional') || '传统', icon: '☯️' },
-          { key: 'modern' as ExFilter, label: T('bodyPlanModern') || '现代', icon: '💪' },
+          { key: 'all' as ExFilter, label: T('bodyPlanAll'), icon: '🎯' },
+          { key: 'traditional' as ExFilter, label: T('bodyPlanTraditional'), icon: '☯️' },
+          { key: 'modern' as ExFilter, label: T('bodyPlanModern'), icon: '💪' },
         ]).map(tab => (
           <TouchableOpacity
             key={tab.key}
@@ -197,13 +197,13 @@ export default function UnifiedExercisePool({
           <TextInput
             value={exSearch}
             onChangeText={setExSearch}
-            placeholder={T('bodySearchExercise') || '搜索动作'}
+            placeholder={T('bodySearchExercise')}
             placeholderTextColor={TH.sub}
             style={[styles.searchInput, { color: TH.text }]}
-            accessibilityLabel={T('bodySearchExercise') || '搜索动作'}
+            accessibilityLabel={T('bodySearchExercise')}
           />
           {exSearch.length > 0 && (
-            <TouchableOpacity onPress={() => setExSearch('')} accessibilityLabel={T('bodyClear') || '清除'}>
+            <TouchableOpacity onPress={() => setExSearch('')} accessibilityLabel={T('bodyClear')}>
               <X size={14} color={TH.sub} />
             </TouchableOpacity>
           )}
@@ -218,7 +218,7 @@ export default function UnifiedExercisePool({
             style={[styles.muscleChip, { borderColor: muscleGroup === 'all' ? P : TH.border }, muscleGroup === 'all' && { backgroundColor: `${P}15` }]}
           >
             <Text style={[styles.muscleChipText, { color: muscleGroup === 'all' ? P : TH.sub }]}>
-              {T('bodyAll') || '全部'}
+              {T('bodyAll')}
             </Text>
           </TouchableOpacity>
           {allMuscleGroups.map(mg => (
@@ -248,7 +248,7 @@ export default function UnifiedExercisePool({
           {filteredExercises.length === 0 && (
             <View style={styles.emptyContainer}>
               <Text style={[styles.emptyText, { color: TH.sub }]}>
-                {T('bodyPlanNoExercises') || '未找到动作'}
+                {T('bodyPlanNoExercises')}
               </Text>
             </View>
           )}
@@ -259,7 +259,7 @@ export default function UnifiedExercisePool({
       {selectedExIds.size > 0 && (
         <View style={[styles.selectionBar, { backgroundColor: `${P}12`, borderColor: `${P}30` }]}>
           <Text style={[styles.selectionText, { color: P }]}>
-            {T('bodyPlanSelected') || '已选'} {String(selectedExIds.size)} {T('bodyPlanUnitExercise')}
+            {T('bodyPlanSelected')} {String(selectedExIds.size)} {T('bodyPlanUnitExercise')}
           </Text>
           <TouchableOpacity
             onPress={() => onExerciseToggle('__clear__')}
@@ -267,7 +267,7 @@ export default function UnifiedExercisePool({
             accessibilityRole="button"
           >
             <Text style={[styles.clearBtnText, { color: P }]}>
-              {T('bodyClear') || '清除'}
+              {T('bodyClear')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -278,16 +278,16 @@ export default function UnifiedExercisePool({
         <View style={[styles.dayChooserRow, { borderTopColor: TH.border }]}>
           <View style={styles.dayChooserHeader}>
             <Text style={[styles.dayChooserTitle, { color: TH.text }]}>
-              {T('bodyPlanAddToDays') || '分配到天'}
+              {T('bodyPlanAddToDays')}
             </Text>
             <TouchableOpacity
               onPress={handleToggleAllDays}
               style={styles.toggleAllBtn}
               accessibilityRole="button"
-              accessibilityLabel={T('bodyPlanSelectAll') || '全选/取消'}
+              accessibilityLabel={T('bodyPlanSelectAll')}
             >
               <Text style={[styles.toggleAllText, { color: P }]}>
-                {selectedDays.size >= 7 ? (T('bodyPlanDeselectAll') || '取消全选') : (T('bodyPlanSelectAll') || '全选')}
+                {selectedDays.size >= 7 ? (T('bodyPlanDeselectAll')) : (T('bodyPlanSelectAll'))}
               </Text>
             </TouchableOpacity>
           </View>
@@ -301,7 +301,7 @@ export default function UnifiedExercisePool({
                   onPress={() => handleDayToggle(weekday)}
                   activeOpacity={0.7}
                   accessibilityRole="checkbox"
-                  accessibilityLabel={`${getDayLabel(weekday)}${isChecked ? ` ${T('bodyPlanSelected') || '已选'}` : ''}`}
+                  accessibilityLabel={`${getDayLabel(weekday)}${isChecked ? ` ${T('bodyPlanSelected')}` : ''}`}
                   style={[
                     styles.dayCheckbox,
                     {
@@ -333,10 +333,10 @@ export default function UnifiedExercisePool({
               { backgroundColor: selectedDays.size > 0 ? P : `${P}40` },
             ]}
             accessibilityRole="button"
-            accessibilityLabel={T('bodyPlanAddSelected') || '添加到选中天'}
+            accessibilityLabel={T('bodyPlanAddSelected')}
           >
             <Text style={styles.batchAddBtnText}>
-              {T('bodyPlanAddSelected') || '添加到选中天'} ({String(selectedDays.size)}{T('bodyDayUnit')})
+              {T('bodyPlanAddSelected')} ({String(selectedDays.size)}{T('bodyDayUnit')})
             </Text>
           </TouchableOpacity>
         </View>

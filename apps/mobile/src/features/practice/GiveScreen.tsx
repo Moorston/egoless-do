@@ -92,21 +92,21 @@ export default function GiveScreen() {
       <View style={[styles.statsCard, { borderColor: `${TH.primary}30` }]}>
         <View style={styles.statsHeader}>
           <HandHeart size={20} color="#F59E0B" />
-          <Text style={[styles.statsTitle, { color: TH.text }]}>{T('giveTitle') || '布施波罗蜜'}</Text>
+          <Text style={[styles.statsTitle, { color: TH.text }]}>{T('giveTitle')}</Text>
         </View>
-        <Text style={[styles.quoteText, { color: TH.sub }]}>{T('giveQuote') || '应无所住而行布施 — 金刚经'}</Text>
+        <Text style={[styles.quoteText, { color: TH.sub }]}>{T('giveQuote')}</Text>
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
             <Text style={[styles.statValue, { color: '#F59E0B' }]}>{String(stats.total)}</Text>
-            <Text style={[styles.statLabel, { color: TH.sub }]}>{T('giveTotal') || '累计'}</Text>
+            <Text style={[styles.statLabel, { color: TH.sub }]}>{T('giveTotal')}</Text>
           </View>
           <View style={styles.statItem}>
             <Text style={[styles.statValue, { color: TH.text }]}>{String(stats.month)}</Text>
-            <Text style={[styles.statLabel, { color: TH.sub }]}>{T('giveMonth') || '本月'}</Text>
+            <Text style={[styles.statLabel, { color: TH.sub }]}>{T('giveMonth')}</Text>
           </View>
           <View style={styles.statItem}>
             <Text style={[styles.statValue, { color: '#10B981' }]}>{String(stats.week)}</Text>
-            <Text style={[styles.statLabel, { color: TH.sub }]}>{T('giveWeek') || '本周'}</Text>
+            <Text style={[styles.statLabel, { color: TH.sub }]}>{T('giveWeek')}</Text>
           </View>
         </View>
         {/* Type breakdown */}
@@ -127,11 +127,11 @@ export default function GiveScreen() {
         onPress={() => setShowModal(true)}
       >
         <Plus size={20} color="#fff" />
-        <Text style={styles.recordBtnText}>{T('giveRecord') || '记录一次布施'}</Text>
+        <Text style={styles.recordBtnText}>{T('giveRecord')}</Text>
       </TouchableOpacity>
 
       {recentRecords.length > 0 && (
-        <Text style={[styles.sectionTitle, { color: TH.text }]}>{T('giveRecent') || '最近善行'}</Text>
+        <Text style={[styles.sectionTitle, { color: TH.text }]}>{T('giveRecent')}</Text>
       )}
     </>
   ), [TH, T, stats, recentRecords.length]);
@@ -143,7 +143,7 @@ export default function GiveScreen() {
         onPress={() => nav.navigate('GiveHistory' as never)}
       >
         <BarChart3 size={18} color={TH.primary} />
-        <Text style={[styles.historyBtnText, { color: TH.primary }]}>{T('giveHistory') || '布施历史'}</Text>
+        <Text style={[styles.historyBtnText, { color: TH.primary }]}>{T('giveHistory')}</Text>
       </TouchableOpacity>
     ) : (
       <TouchableOpacity
@@ -151,7 +151,7 @@ export default function GiveScreen() {
         onPress={() => nav.navigate('GiveHistory' as never)}
       >
         <BarChart3 size={18} color={TH.primary} />
-        <Text style={[styles.historyBtnText, { color: TH.primary }]}>{T('giveHistory') || '布施历史'}</Text>
+        <Text style={[styles.historyBtnText, { color: TH.primary }]}>{T('giveHistory')}</Text>
       </TouchableOpacity>
     )
   ), [TH, T, nav, recentRecords.length]);
@@ -173,14 +173,14 @@ export default function GiveScreen() {
       <Modal visible={showModal} animationType="slide" presentationStyle="pageSheet">
         <View style={[styles.modalContainer, { backgroundColor: TH.bg }]}>
           <View style={styles.modalHeader}>
-            <Text style={[styles.modalTitle, { color: TH.text }]}>{T('giveRecord') || '记录一次布施'}</Text>
+            <Text style={[styles.modalTitle, { color: TH.text }]}>{T('giveRecord')}</Text>
             <TouchableOpacity onPress={() => setShowModal(false)}>
               <X size={22} color={TH.sub} />
             </TouchableOpacity>
           </View>
           <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
             {/* Type selection */}
-            <Text style={[styles.modalLabel, { color: TH.text }]}>{T('giveType') || '类型'}</Text>
+            <Text style={[styles.modalLabel, { color: TH.text }]}>{T('giveType')}</Text>
             <View style={styles.typeSelectRow}>
               {GIVE_TYPES.map(gt => (
                 <TouchableOpacity
@@ -200,22 +200,22 @@ export default function GiveScreen() {
             </View>
 
             {/* Content */}
-            <Text style={[styles.modalLabel, { color: TH.text }]}>{T('giveContent') || '做了什么？'}</Text>
+            <Text style={[styles.modalLabel, { color: TH.text }]}>{T('giveContent')}</Text>
             <TextInput
               value={content}
               onChangeText={setContent}
-              placeholder={T('giveContentPlaceholder') || '记录你的善行...'}
+              placeholder={T('giveContentPlaceholder')}
               placeholderTextColor={TH.sub}
               multiline
               style={[styles.modalInput, { color: TH.text, borderColor: TH.border, backgroundColor: TH.card }]}
             />
 
             {/* Motivation (collapsible) */}
-            <Text style={[styles.modalLabel, { color: TH.text }]}>{T('giveMotivation') || '布施心念（可选）'}</Text>
+            <Text style={[styles.modalLabel, { color: TH.text }]}>{T('giveMotivation')}</Text>
             <TextInput
               value={motivation}
               onChangeText={setMotivation}
-              placeholder={T('giveMotivationPlaceholder') || '记录布施时的发心...'}
+              placeholder={T('giveMotivationPlaceholder')}
               placeholderTextColor={TH.sub}
               multiline
               style={[styles.modalInput, { color: TH.text, borderColor: TH.border, backgroundColor: TH.card }]}
@@ -224,7 +224,7 @@ export default function GiveScreen() {
             {/* Amount (material only) */}
             {giveType === 'material' && (
               <>
-                <Text style={[styles.modalLabel, { color: TH.text }]}>{T('giveAmount') || '金额（元）'}</Text>
+                <Text style={[styles.modalLabel, { color: TH.text }]}>{T('giveAmount')}</Text>
                 <TextInput
                   value={amount}
                   onChangeText={setAmount}
@@ -244,9 +244,9 @@ export default function GiveScreen() {
               <View style={[styles.checkbox, { borderColor: TH.primary, backgroundColor: anonymous ? TH.primary : 'transparent' }]}>
                 {anonymous && <Check size={14} color="#fff" />}
               </View>
-              <Text style={[styles.anonLabel, { color: TH.text }]}>{T('giveAnonymous') || '匿名布施'}</Text>
+              <Text style={[styles.anonLabel, { color: TH.text }]}>{T('giveAnonymous')}</Text>
             </TouchableOpacity>
-            <Text style={[styles.anonHint, { color: TH.sub }]}>{T('giveAnonymousHint') || '布施不留名，功德不可思量'}</Text>
+            <Text style={[styles.anonHint, { color: TH.sub }]}>{T('giveAnonymousHint')}</Text>
 
             {/* Save */}
             <TouchableOpacity
@@ -254,7 +254,7 @@ export default function GiveScreen() {
               onPress={handleSave}
               disabled={!content.trim()}
             >
-              <Text style={styles.saveBtnText}>{T('giveSave') || '记录善行'}</Text>
+              <Text style={styles.saveBtnText}>{T('giveSave')}</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>

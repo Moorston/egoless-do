@@ -189,7 +189,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
 
   const handleExitPress = useCallback(() => {
     Alert.alert(
-      T('bodyFlowExitConfirm') || '退出练习流程？',
+      T('bodyFlowExitConfirm'),
       undefined,
       [
         { text: T('bodyCancel'), style: 'cancel' },
