@@ -263,15 +263,18 @@ export function createBodySlice(
         const current = s.bodyFlowState;
         return {
           bodyFlowState: {
-            step: 'practice',
-            selectedSportKey: '',
-            practiceCompleted: false,
-            practiceDurationSec: 0,
-            breathingCompleted: false,
-            breathingDurationMs: 0,
-            awarenessData: null,
-            activePlanId: null,
-            startedAt: Date.now(),
+            // 当 current 为 null 时，全部使用 updates；否则合并
+            ...(current ?? {
+              step: 'practice',
+              selectedSportKey: '',
+              practiceCompleted: false,
+              practiceDurationSec: 0,
+              breathingCompleted: false,
+              breathingDurationMs: 0,
+              awarenessData: null,
+              activePlanId: null,
+              startedAt: Date.now(),
+            }),
             ...current,
             ...updates,
             updatedAt: Date.now(),

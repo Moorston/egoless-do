@@ -75,14 +75,23 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
   [exerciseLog, bodyCheckins, activeTrainingPlan]);
 
   // Auto-mark expired plans as completed
-  useEffect(() => {
+  const expiredPlanIds = useMemo(() => {
     const today = dateStr();
+    const ids: string[] = [];
     for (const plan of bodyTrainingPlans ?? []) {
       if (plan.status === 'active' && plan.endDate < today && !plan.deleted) {
-        updateBodyTrainingPlan(plan.id, { status: 'completed' });
+        ids.push(plan.id);
       }
     }
-  }, [bodyTrainingPlans, updateBodyTrainingPlan]);
+    return ids;
+  }, [bodyTrainingPlans]);
+
+  useEffect(() => {
+    if (expiredPlanIds.length === 0) return;
+    for (const id of expiredPlanIds) {
+      updateBodyTrainingPlan(id, { status: 'completed' });
+    }
+  }, [expiredPlanIds, updateBodyTrainingPlan]);
 
   // ── Celebration overlay ──
   const [showCelebration, setShowCelebration] = useState(false);
@@ -277,7 +286,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
     return dateStr(target);
   }, [selectedDay, todayDateStr]);
   const selectedDayDate = getSelectedDayDate();
-  const selectedDayOverride = activeTrainingPlan?.overrides?.[selectedDayDate];
+  const selectedDayOverride = selectedDay ? activeTrainingPlan?.overrides?.[selectedDayDate] : undefined;
 
   const handleDaySwap = useCallback((sportKey: string, exercises?: ExerciseDef[]) => {
     if (!selectedDay) return;

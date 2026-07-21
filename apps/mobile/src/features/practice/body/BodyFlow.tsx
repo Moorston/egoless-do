@@ -174,6 +174,9 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
       prevReturnTick.current = returnTick;
       // 组合模式：时长由 SportPage 回传，不用本地计时器
       if (flowState?.isCombo) return;
+      // 如果 flowState 已标记完成（由 useFocusEffect 设置），跳过
+      if (flowState?.practiceCompleted && step === 'practice') return;
+      if (flowState?.breathingCompleted && step === 'breathing') return;
       if (step === 'practice' && practiceStartRef.current > 0) {
         const durSec = Math.floor((Date.now() - practiceStartRef.current) / 1000);
         setPracticeCompleted(true);
@@ -185,7 +188,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
         markBreathingDone(durMs);
       }
     }
-  }, [step, returnTick, markPracticeDone, markBreathingDone, flowState?.isCombo]);
+  }, [step, returnTick, markPracticeDone, markBreathingDone, flowState?.isCombo, flowState?.practiceCompleted, flowState?.breathingCompleted]);
 
   const handleExitPress = useCallback(() => {
     Alert.alert(
