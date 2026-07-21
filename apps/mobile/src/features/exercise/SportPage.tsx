@@ -718,6 +718,15 @@ export default function SportPage() {
   }
 
   // ── 统一返回：pageContent + header（底部）──
+  // 根据体验类型匹配底部背景色
+  const BOTTOM_BG_MAP: Record<string, string> = {
+    meditative: '#0a1520',
+    endurance: '#0a150a',
+    interval: '#150a0a',
+    gps: '#1a1a2e',
+  };
+  const bottomBg = isComboMode ? (isGpsSport ? BOTTOM_BG_MAP.gps : (BOTTOM_BG_MAP[experienceType] ?? '#0a0a0a')) : undefined;
+
   return (
     <View style={{ flex: 1 }}>
       {pageContent}
@@ -727,8 +736,7 @@ export default function SportPage() {
           currentIndex={headerIndex}
           results={comboState.current.results}
           onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
-          TH={TH}
-          T={T}
+          bg={bottomBg}
           safeAreaBottom={insets.bottom}
         />
       )}

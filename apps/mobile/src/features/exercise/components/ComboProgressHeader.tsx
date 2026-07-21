@@ -1,8 +1,8 @@
 // ─── ComboProgressHeader ─────────────────────────────────────────
 // 底部引导：横向滚动卡片式，与选运动页风格一致
-// 背景色与 Sport 页深色渐变背景融合
+// 背景色通过 bg 属性传入，与 Sport 页渐变背景底部颜色一致
 
-import { FONT_SMALL, scaleFontSize, type ExerciseDef, type Theme } from '@egoless-do/core';
+import { FONT_SMALL, scaleFontSize, type ExerciseDef } from '@egoless-do/core';
 import { CheckCircle2, Play } from 'lucide-react-native';
 import React, { useCallback, useRef } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Alert, StyleSheet } from 'react-native';
@@ -21,15 +21,13 @@ interface Props {
   currentIndex: number;
   results: ExerciseResult[];
   onJumpTo: (index: number) => void;
-  TH: Theme;
-  T: (key: string) => string;
+  bg?: string;
   safeAreaBottom?: number;
 }
 
-export default function ComboProgressHeader({ exercises, currentIndex, results, onJumpTo, TH, T, safeAreaBottom = 0 }: Props) {
+export default function ComboProgressHeader({ exercises, currentIndex, results, onJumpTo, bg = '#0a0a0a', safeAreaBottom = 0 }: Props) {
   const scrollRef = useRef<ScrollView>(null);
 
-  // ── 跳转确认 ──
   const handlePress = useCallback((index: number) => {
     if (index === currentIndex) return;
     if (index < currentIndex) {
@@ -37,16 +35,15 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
       return;
     }
     Alert.alert(
-      `${T('bodyJumpTo')} #${index + 1}`,
+      `跳转 #${index + 1}`,
       undefined,
       [
-        { text: T('bodyCancel'), style: 'cancel' },
-        { text: T('bodyJumpTo'), onPress: () => onJumpTo(index) },
+        { text: '取消', style: 'cancel' },
+        { text: '跳转', onPress: () => onJumpTo(index) },
       ]
     );
-  }, [T, onJumpTo, currentIndex]);
+  }, [onJumpTo, currentIndex]);
 
-  // 滚动到当前动作
   React.useEffect(() => {
     setTimeout(() => {
       scrollRef.current?.scrollTo({ x: Math.max(0, currentIndex * 90 - 60), animated: true });
@@ -54,62 +51,34 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
   }, [currentIndex]);
 
   return (
-    <View style={[styles.container, { paddingBottom: 8 + safeAreaBottom }]}>
-      {/* 顶部进度条 */}
+    <View style={[styles.container, { backgroundColor: bg, paddingBottom: 8 + safeAreaBottom }]}>
       <View style={styles.progressTrack}>
-        <View
-          style={[
-            styles.progressFill,
-            { width: `${exercises.length > 1 ? (currentIndex / (exercises.length - 1)) * 100 : 100}%` },
-          ]}
-        />
+        <View style={[styles.progressFill, { width: `${exercises.length > 1 ? (currentIndex / (exercises.length - 1)) * 100 : 100}%` }]} />
       </View>
 
-      <ScrollView
-        ref={scrollRef}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
+      <ScrollView ref={scrollRef} horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         {exercises.map((ex, i) => {
           const done = i < currentIndex;
           const isCurrent = i === currentIndex;
           const result = results[i];
-          const exName = ex.nameI18nKey ? T(ex.nameI18nKey) : ex.nameZh;
+          const exName = ex.nameZh;
 
           return (
-            <TouchableOpacity
-              key={ex.id || i}
-              onPress={() => handlePress(i)}
-              activeOpacity={0.7}
-              style={[
-                styles.chip,
-                {
-                  backgroundColor: done ? '#10b98130' : isCurrent ? '#f59e0b30' : 'rgba(255,255,255,0.08)',
-                  borderColor: done ? '#10b981' : isCurrent ? '#f59e0b' : 'rgba(255,255,255,0.15)',
-                  borderWidth: isCurrent ? 2 : 1,
-                },
-              ]}
-            >
+            <TouchableOpacity key={ex.id || i} onPress={() => handlePress(i)} activeOpacity={0.7}
+              style={[styles.chip, {
+                backgroundColor: done ? '#10b98130' : isCurrent ? '#f59e0b30' : 'rgba(255,255,255,0.08)',
+                borderColor: done ? '#10b981' : isCurrent ? '#f59e0b' : 'rgba(255,255,255,0.15)',
+                borderWidth: isCurrent ? 2 : 1,
+              }]}>
               <View style={styles.chipTop}>
                 <Text style={styles.chipIcon}>{ex.icon}</Text>
                 {done && <CheckCircle2 size={12} color="#10b981" style={styles.chipBadge} />}
                 {isCurrent && <Play size={12} color="#f59e0b" style={styles.chipBadge} />}
               </View>
-              <Text
-                style={[
-                  styles.chipName,
-                  { color: done ? '#10b981' : isCurrent ? '#f59e0b' : '#fff' },
-                ]}
-                numberOfLines={1}
-              >
+              <Text style={[styles.chipName, { color: done ? '#10b981' : isCurrent ? '#f59e0b' : '#fff' }]} numberOfLines={1}>
                 {exName}
               </Text>
-              {result && (
-                <Text style={[styles.chipTime, { color: 'rgba(255,255,255,0.5)' }]}>
-                  {Math.floor(result.durationSec / 60)}:{(result.durationSec % 60).toString().padStart(2, '0')}
-                </Text>
-              )}
+              {result && <Text style={[styles.chipTime, { color: 'rgba(255,255,255,0.5)' }]}>{Math.floor(result.durationSec / 60)}:{(result.durationSec % 60).toString().padStart(2, '0')}</Text>}
             </TouchableOpacity>
           );
         })}
@@ -118,11 +87,8 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
   );
 }
 
-const COMBO_BG = 'rgba(0,0,0,0.55)';
-
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: COMBO_BG,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: 'rgba(255,255,255,0.08)',
   },
