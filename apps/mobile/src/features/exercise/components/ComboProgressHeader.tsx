@@ -23,7 +23,7 @@ interface Props {
   safeAreaBottom?: number;
 }
 
-const COMBO_BG = 'rgba(0,0,0,0.35)';
+const COMBO_BG = 'transparent';
 
 export default function ComboProgressHeader({ exercises, currentIndex, results, onJumpTo, safeAreaBottom = 0 }: Props) {
   const scrollRef = useRef<ScrollView>(null);
