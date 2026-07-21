@@ -1,8 +1,9 @@
-import { SPORT_BG_COLORS, COLORS, getSportType, TARGET_PRESETS, estimateCalories, MET_MAP, getSportExperienceType, createLogger, type ExerciseDef } from '@egoless-do/core';
+import { SPORT_BG_COLORS, COLORS, getSportType, TARGET_PRESETS, estimateCalories, MET_MAP, getSportExperienceType, createLogger, EXERCISE_CATEGORIES, type ExerciseDef } from '@egoless-do/core';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useKeepAwake } from 'expo-keep-awake';
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { View, Animated, Alert } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
@@ -57,6 +58,7 @@ export default function SportPage() {
   const route = useRoute<Route>();
   const TH    = useTheme();
   const T     = useT();
+  const insets = useSafeAreaInsets();
   const { auth, userProfile, addExercise, exerciseLog, updateBodyTrainingPlan } = useShallowStore(s => ({ auth: s.auth, userProfile: s.userProfile, addExercise: s.addExercise, exerciseLog: s.exerciseLog, updateBodyTrainingPlan: s.updateBodyTrainingPlan }));
   const { MapView, Polyline, ready: amapReady } = useAmapComponents();
   const { key: sportName, icon, color, gps: gpsParam, planId, planTaskWeekday, exercises: comboExercises, comboPlanId } = route.params;
@@ -81,6 +83,12 @@ export default function SportPage() {
   const effectiveSportName = isComboMode ? (currentComboExercise?.category || sportName) : sportName;
   const effectiveIcon = isComboMode ? (currentComboExercise?.icon || icon) : icon;
   const effectiveGps = isComboMode ? false : (gpsParam ?? false); // 组合模式暂不启用GPS
+
+  // 翻译运动名称：category key → 可读名称
+  const effectiveSportLabel = useMemo(() => {
+    const cat = EXERCISE_CATEGORIES.find(c => c.key === effectiveSportName);
+    return cat ? T(cat.i18nKey) : effectiveSportName;
+  }, [effectiveSportName, T]);
 
   const isGpsSport = effectiveGps;
   const weight = userProfile?.weight ?? 70;
@@ -504,6 +512,7 @@ export default function SportPage() {
           onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
           TH={TH}
           T={T}
+          safeAreaTop={insets.top}
         />
       )}
       <PrepPage
@@ -558,10 +567,11 @@ export default function SportPage() {
           onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
           TH={TH}
           T={T}
+          safeAreaTop={insets.top}
         />
       )}
       <PausedPage
-        icon={icon} sportName={sportName} sportType={sportType} experienceType={experienceType}
+        icon={effectiveIcon} sportName={effectiveSportLabel} sportType={sportType} experienceType={experienceType}
         bg={bg} isGpsSport={isGpsSport}
         sec={timer.sec} countdown={timer.countdown} holdAnim={timer.holdAnim} scaleAnim={timer.scaleAnim} pulseAnim={timer.pulseAnim}
         mode={mode} setMode={setMode} targetType={targetType} setTargetType={setTargetType}
@@ -597,10 +607,11 @@ export default function SportPage() {
           onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
           TH={TH}
           T={T}
+          safeAreaTop={insets.top}
         />
       )}
       <ReportPage
-        icon={icon} sportName={sportName} sportType={sportType} experienceType={experienceType}
+        icon={effectiveIcon} sportName={effectiveSportLabel} sportType={sportType} experienceType={experienceType}
         bg={bg} isGpsSport={isGpsSport}
         sec={timer.sec} countdown={timer.countdown} holdAnim={timer.holdAnim} scaleAnim={timer.scaleAnim} pulseAnim={timer.pulseAnim}
         mode={mode} setMode={setMode} targetType={targetType} setTargetType={setTargetType}
@@ -670,6 +681,7 @@ export default function SportPage() {
           onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
           TH={TH}
           T={T}
+          safeAreaTop={insets.top}
         />
       )}
       <View style={{ flex: 1 }}>
@@ -698,7 +710,7 @@ export default function SportPage() {
 
   // Non-GPS active page — route to layout by experience type
   const layoutProps = {
-    icon: effectiveIcon, sportName: effectiveSportName, experienceType, sportType, bg,
+    icon: effectiveIcon, sportName: effectiveSportLabel, experienceType, sportType, bg,
     sec: timer.sec, active: timer.active,
     topInset: isComboMode ? 0 : 56,
     sets: sets.sets, currentSetReps: sets.currentSetReps, totalReps: sets.totalReps, currentSet,
@@ -740,7 +752,7 @@ export default function SportPage() {
   })();
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, paddingTop: isComboMode ? insets.top : 0 }}>
       {isComboMode && comboExercises && (
         <ComboProgressHeader
           exercises={comboExercises}
@@ -749,6 +761,7 @@ export default function SportPage() {
           onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
           TH={TH}
           T={T}
+          safeAreaTop={insets.top}
         />
       )}
       {activeLayout}

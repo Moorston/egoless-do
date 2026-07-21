@@ -23,9 +23,10 @@ interface Props {
   onJumpTo: (index: number) => void;
   TH: Theme;
   T: (key: string) => string;
+  safeAreaTop?: number;
 }
 
-export default function ComboProgressHeader({ exercises, currentIndex, results, onJumpTo, TH, T }: Props) {
+export default function ComboProgressHeader({ exercises, currentIndex, results, onJumpTo, TH, T, safeAreaTop = 0 }: Props) {
   const [expanded, setExpanded] = useState(false);
 
   const toggleExpand = useCallback(() => setExpanded(prev => !prev), []);
@@ -35,7 +36,7 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
   const currentExercise = exercises[currentIndex];
 
   return (
-    <View style={[styles.container, { backgroundColor: `${TH.card}E0`, borderBottomColor: TH.border }]}>
+    <View style={[styles.container, { backgroundColor: `${TH.card}E0`, borderBottomColor: TH.border, paddingTop: safeAreaTop }]}>
       {/* Collapsed bar */}
       <TouchableOpacity onPress={toggleExpand} activeOpacity={0.7} style={styles.bar}>
         {/* Progress dots */}
