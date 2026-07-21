@@ -70,7 +70,8 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
       {expanded && (
         <View style={[styles.list, { backgroundColor: TH.card }]}>
           {exercises.map((ex, i) => {
-            const done = results.find(r => r.sportKey === ex.id || r.sportKey === ex.category);
+            const done = i < currentIndex;
+            const result = results[i];
             const isCurrent = i === currentIndex;
             const isFuture = i > currentIndex;
 
@@ -95,7 +96,7 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
                     numberOfLines={1}
                   >
                     {ex.icon} {ex.nameI18nKey ? T(ex.nameI18nKey) : ex.nameZh}
-                    {done ? `  ${Math.floor(done.durationSec / 60)}:${String(done.durationSec % 60).padStart(2, '0')}` : ''}
+                    {result ? `  ${Math.floor(result.durationSec / 60)}:${String(result.durationSec % 60).padStart(2, '0')}` : ''}
                   </Text>
                 </View>
 

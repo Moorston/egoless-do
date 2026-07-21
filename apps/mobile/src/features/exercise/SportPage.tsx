@@ -325,6 +325,30 @@ export default function SportPage() {
     if (isGpsSport) startGpsTracking();
   }, [timer, isGpsSport, startGpsTracking]);
 
+  // ── 组合模式：返回确认 ──
+  const handleComboBack = useCallback(() => {
+    if (comboState.current.currentIndex === 0 && !comboState.current.results.length) {
+      nav.goBack();
+      return;
+    }
+    Alert.alert(
+      T('bodyFlowExitConfirm') || '退出练习流程？',
+      undefined,
+      [
+        { text: T('bodyCancel') || '取消', style: 'cancel' },
+        { text: T('bodyFlowSkip') || '退出', style: 'destructive', onPress: () => { resetComboSession(); nav.goBack(); } },
+      ]
+    );
+  }, [T, nav]);
+
+  const resetComboSession = useCallback(() => {
+    musicStop();
+    try { audioPlayerRef.current?.pause(); } catch {}
+    audio.stopAll();
+    cleanupSession();
+    stopGpsTracking();
+  }, [musicStop, audio.stopAll, cleanupSession, stopGpsTracking]);
+
   // ── 组合模式：获取当前动作的休息时间 ──
   const getRestSec = useCallback((exercise: ExerciseDef): number => {
     if (exercise.type === 'strength') return 60;
@@ -532,7 +556,7 @@ export default function SportPage() {
         segmentPaces={segmentPaces}
         handleGo={handleGo} handlePause={handlePause} handleContinue={handleContinue}
         handleHoldStart={timer.handleHoldStart} handleHoldEnd={timer.handleHoldEnd}
-        handleSave={handleSave} onGoBack={() => nav.goBack()}
+        handleSave={handleSave} onGoBack={isComboMode ? handleComboBack : () => nav.goBack()}
         exerciseLog={(exerciseLog ?? []).filter(e => !e.deleted)}
         musicTrack={musicTrack} onPressMusic={() => setShowMusicPicker(true)}
         TH={TH} T={T}
@@ -588,7 +612,7 @@ export default function SportPage() {
         segmentPaces={segmentPaces}
         handleGo={handleGo} handlePause={handlePause} handleContinue={handleContinue}
         handleHoldStart={timer.handleHoldStart} handleHoldEnd={timer.handleHoldEnd}
-        handleSave={handleSave} onGoBack={() => nav.goBack()} setPage={timer.setPage}
+        handleSave={handleSave} onGoBack={isComboMode ? handleComboBack : () => nav.goBack()} setPage={timer.setPage}
         exerciseLog={(exerciseLog ?? []).filter(e => !e.deleted)}
         TH={TH} T={T}
       />
@@ -627,7 +651,7 @@ export default function SportPage() {
         segmentPaces={segmentPaces}
         handleGo={handleGo} handlePause={handlePause} handleContinue={handleContinue}
         handleHoldStart={timer.handleHoldStart} handleHoldEnd={timer.handleHoldEnd}
-        handleSave={handleSave} onGoBack={() => nav.goBack()}
+        handleSave={handleSave} onGoBack={isComboMode ? handleComboBack : () => nav.goBack()}
         exerciseLog={(exerciseLog ?? []).filter(e => !e.deleted)}
         TH={TH} T={T}
       />
