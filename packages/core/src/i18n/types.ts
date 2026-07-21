@@ -930,7 +930,7 @@ export interface I18nKeys {
   bodySetPlan: string; bodyTodayDone: string;
   bodyUndo: string; bodyUndoHint: string; bodyOverrideSkip: string; bodyOverrideSwap: string; bodyOverrideAdjust: string; bodyOverrideCustom: string;
   bodyPlanRemoved: string; bodyPlanRestDayHint: string; bodyPlanUnitExercise: string; bodyPlanAddedExercises: string;
-  bodyStartTraining: string; bodyAdjust: string; bodyRemove: string; bodySets: string; bodyReps: string; bodyWeightUnit: string;
+  bodyStartTraining: string; bodyAdjust: string; bodyRemove: string; bodySets: string; bodyReps: string; bodyWeightUnit: string; bodyJumpTo: string;
   bodySearchExercise: string; bodyClear: string; bodyAll: string; bodyWeekDay: string; bodyMin: string;
   bodyAdjustExercise: string; bodyDuration: string; bodyConfirm: string;
   bodySwapExercise: string; bodyRestoreDay: string; bodyMarkRest: string; bodySwapDays: string; bodyEditDayExercises: string; bodyHasOverride: string;

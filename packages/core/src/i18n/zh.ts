@@ -1088,7 +1088,7 @@ export const zh: I18nKeys = {
   bodySetPlan:'去设置', bodyTodayDone:'今日已打卡',
   bodyUndo:'撤销', bodyUndoHint:'可撤销后继续训练', bodyOverrideSkip:'已标记跳过', bodyOverrideSwap:'已换动作', bodyOverrideAdjust:'已调整组数', bodyOverrideCustom:'已自定义',
   bodyPlanRemoved:'已移除', bodyPlanRestDayHint:'今天是休息日，好好恢复身体吧', bodyPlanUnitExercise:'个动作', bodyPlanAddedExercises:'当天动作',
-  bodyStartTraining:'开始训练', bodyAdjust:'调整', bodyRemove:'移除', bodySets:'组', bodyReps:'次', bodyWeightUnit:'kg',
+  bodyStartTraining:'开始训练', bodyAdjust:'调整', bodyRemove:'移除', bodySets:'组', bodyReps:'次', bodyWeightUnit:'kg', bodyJumpTo:'跳转',
   bodySearchExercise:'搜索动作', bodyClear:'清除', bodyAll:'全部', bodyWeekDay:'', bodyMin:'分钟',
   bodyAdjustExercise:'调整组数/次数', bodyDuration:'时长(秒)', bodyConfirm:'确认调整',
   bodySwapExercise:'换运动类型', bodyRestoreDay:'恢复训练', bodyMarkRest:'标记为休息', bodySwapDays:'与另一天互换', bodyEditDayExercises:'编辑该天动作', bodyHasOverride:'该天有临时调整',
