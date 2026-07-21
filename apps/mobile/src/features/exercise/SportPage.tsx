@@ -723,6 +723,7 @@ export default function SportPage() {
     meditative: '#0a1520',
     endurance: '#0a150a',
     interval: '#150a0a',
+    strength: '#150a0a',
     gps: '#1a1a2e',
   };
   const bottomBg = isComboMode ? (isGpsSport ? BOTTOM_BG_MAP.gps : (BOTTOM_BG_MAP[experienceType] ?? '#0a0a0a')) : undefined;
