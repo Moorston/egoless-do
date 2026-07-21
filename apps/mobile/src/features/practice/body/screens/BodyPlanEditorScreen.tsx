@@ -172,9 +172,9 @@ export default function BodyPlanEditorScreen() {
 
     // Show snackbar feedback
     if (totalAdded > 0) {
-      let msg = `${T('bodyPlanAddedTo') || '已添加到'} ${totalAdded} ${T('bodyPlanDays') || '天'}`;
+      let msg = `${T('bodyPlanAddedTo')} ${totalAdded} ${T('bodyPlanDays')}`;
       if (totalSkipped > 0) {
-        msg += `，${T('bodyPlanSkipped') || '已跳过'} ${totalSkipped} ${T('bodyPlanDays') || '天'}（${T('bodyPlanAlreadyExists') || '已存在'}）`;
+        msg += `，${T('bodyPlanSkipped')} ${totalSkipped} ${T('bodyPlanDays')}（${T('bodyPlanAlreadyExists')}）`;
       }
       const snapshot = { exs: selectedExs, days: [...days] };
       showSnackbar(msg, () => {
@@ -188,7 +188,7 @@ export default function BodyPlanEditorScreen() {
       });
     } else if (totalSkipped > 0) {
       showSnackbar(
-        `${T('bodyPlanAlreadyExists') || '已存在'} — ${T('bodyPlanSkipped') || '跳过'} ${totalSkipped} ${T('bodyPlanDays') || '天'}`,
+        `${T('bodyPlanAlreadyExists')} — ${T('bodyPlanSkipped')} ${totalSkipped} ${T('bodyPlanDays')}`,
         () => {}
       );
     }
@@ -324,7 +324,7 @@ export default function BodyPlanEditorScreen() {
           {!isEditing ? (
             <TouchableOpacity onPress={() => setShowTemplatePicker(true)} style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8, backgroundColor: `${P}15` }}>
               <Download size={16} color={P} />
-              <Text style={{ fontSize: FONT_SMALL(), color: P, fontWeight: '600' }}>{T('bodyPlanTemplate') || '模板'}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: P, fontWeight: '600' }}>{T('bodyPlanTemplate')}</Text>
             </TouchableOpacity>
           ) : null}
         </View>
@@ -384,7 +384,7 @@ export default function BodyPlanEditorScreen() {
             {/* Unified Exercise Pool — screen-level, replaces per-day ExercisePickerGrid */}
             <View style={[styles.unifiedPoolContainer, { backgroundColor: TH.bg, borderColor: TH.border }]}>
               <Text style={[styles.unifiedPoolTitle, { color: TH.text }]}>
-                {T('bodyPlanExercisePool') || '动作库'}
+                {T('bodyPlanExercisePool')}
               </Text>
               <UnifiedExercisePool
                 TH={TH}
@@ -435,10 +435,10 @@ export default function BodyPlanEditorScreen() {
             disabled={!name.trim()}
             style={[styles.startBtn, { backgroundColor: name.trim() ? P : TH.border }]}
             accessibilityRole="button"
-            accessibilityLabel={T('bodyStartTraining') || '开始训练'}
+            accessibilityLabel={T('bodyStartTraining')}
           >
             <Play size={18} color="#fff" />
-            <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON() }}>{T('bodyStartTraining') || '开始训练'}</Text>
+            <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON() }}>{T('bodyStartTraining')}</Text>
           </TouchableOpacity>
         </View>
 

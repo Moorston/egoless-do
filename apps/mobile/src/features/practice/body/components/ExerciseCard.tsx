@@ -87,15 +87,15 @@ export default function ExerciseCard({ exercise, TH, T, onRemove, onUpdate }: Pr
         {/* Actions */}
         <View style={styles.actions}>
           {editing ? (
-            <TouchableOpacity onPress={saveEdit} style={styles.saveBtn} accessibilityLabel={T('bodySave') || '保存'}>
-              <Text style={styles.saveText}>{T('bodySave') || '保存'}</Text>
+            <TouchableOpacity onPress={saveEdit} style={styles.saveBtn} accessibilityLabel={T('bodySave')}>
+              <Text style={styles.saveText}>{T('bodySave')}</Text>
             </TouchableOpacity>
           ) : (
             <>
-              <TouchableOpacity onPress={enterEditMode} style={[styles.editBtn, { borderColor: `${P}40` }]} accessibilityLabel={T('bodyAdjust') || '调整'}>
-                <Text style={[styles.editText, { color: P }]}>{T('bodyAdjust') || '调整'}</Text>
+              <TouchableOpacity onPress={enterEditMode} style={[styles.editBtn, { borderColor: `${P}40` }]} accessibilityLabel={T('bodyAdjust')}>
+                <Text style={[styles.editText, { color: P }]}>{T('bodyAdjust')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleRemove} style={styles.removeBtn} accessibilityLabel={T('bodyRemove') || '移除'}>
+              <TouchableOpacity onPress={handleRemove} style={styles.removeBtn} accessibilityLabel={T('bodyRemove')}>
                 <Text style={styles.removeText}>✕</Text>
               </TouchableOpacity>
             </>
@@ -107,7 +107,7 @@ export default function ExerciseCard({ exercise, TH, T, onRemove, onUpdate }: Pr
       {editing && (
         <View style={[styles.editRow, { borderTopColor: TH.border }]}>
           <View style={styles.editField}>
-            <Text style={[styles.editLabel, { color: TH.sub }]}>{T('bodySets') || '组'}</Text>
+            <Text style={[styles.editLabel, { color: TH.sub }]}>{T('bodySets')}</Text>
             <TextInput
               value={sets}
               onChangeText={setSets}
@@ -121,7 +121,7 @@ export default function ExerciseCard({ exercise, TH, T, onRemove, onUpdate }: Pr
           </View>
           <Text style={[styles.editMul, { color: TH.sub }]}>×</Text>
           <View style={styles.editField}>
-            <Text style={[styles.editLabel, { color: TH.sub }]}>{T('bodyReps') || '次'}</Text>
+            <Text style={[styles.editLabel, { color: TH.sub }]}>{T('bodyReps')}</Text>
             <TextInput
               value={reps}
               onChangeText={setReps}

@@ -111,7 +111,7 @@ export default function CelebrationOverlay({ visible, TH, T, data, onDismiss }: 
         {/* Content */}
         <Animated.View style={[styles.content, { transform: [{ scale: scaleAnim }] }]}>
           <Trophy size={56} color="#f59e0b" />
-          <Text style={styles.title}>{T('bodyPlanComplete') || '🎉 训练计划完成！'}</Text>
+          <Text style={styles.title}>{T('bodyPlanComplete')}</Text>
           <Text style={[styles.planName, { color: TH.text }]}>{data.planName}</Text>
 
           {/* Stats grid */}

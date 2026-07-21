@@ -117,9 +117,9 @@ export default function ExercisePickerGrid({ TH, T, exerciseLibrary, addedExIds,
       {/* Filter tabs */}
       <View style={styles.filterRow}>
         {([
-          { key: 'all' as ExFilter, label: T('bodyPlanFreeTraining') || '全部', icon: '🎯' },
-          { key: 'traditional' as ExFilter, label: T('bodyPlanTraditional') || '传统', icon: '☯️' },
-          { key: 'modern' as ExFilter, label: T('bodyPlanModern') || '现代', icon: '💪' },
+          { key: 'all' as ExFilter, label: T('bodyPlanFreeTraining'), icon: '🎯' },
+          { key: 'traditional' as ExFilter, label: T('bodyPlanTraditional'), icon: '☯️' },
+          { key: 'modern' as ExFilter, label: T('bodyPlanModern'), icon: '💪' },
         ]).map(tab => (
           <TouchableOpacity
             key={tab.key}
@@ -139,13 +139,13 @@ export default function ExercisePickerGrid({ TH, T, exerciseLibrary, addedExIds,
         <TextInput
           value={exSearch}
           onChangeText={setExSearch}
-          placeholder={T('bodySearchExercise') || '搜索动作'}
+          placeholder={T('bodySearchExercise')}
           placeholderTextColor={TH.sub}
           style={[styles.searchInput, { color: TH.text }]}
-          accessibilityLabel={T('bodySearchExercise') || '搜索动作'}
+          accessibilityLabel={T('bodySearchExercise')}
         />
         {exSearch.length > 0 && (
-          <TouchableOpacity onPress={() => setExSearch('')} accessibilityLabel={T('bodyClear') || '清除'}>
+          <TouchableOpacity onPress={() => setExSearch('')} accessibilityLabel={T('bodyClear')}>
             <X size={14} color={TH.sub} />
           </TouchableOpacity>
         )}
@@ -159,7 +159,7 @@ export default function ExercisePickerGrid({ TH, T, exerciseLibrary, addedExIds,
             style={[styles.muscleChip, { borderColor: muscleGroup === 'all' ? P : TH.border }, muscleGroup === 'all' && { backgroundColor: `${P}15` }]}
           >
             <Text style={[styles.muscleChipText, { color: muscleGroup === 'all' ? P : TH.sub }]}>
-              {T('bodyAll') || '全部'}
+              {T('bodyAll')}
             </Text>
           </TouchableOpacity>
           {allMuscleGroups.map(mg => (
@@ -185,7 +185,7 @@ export default function ExercisePickerGrid({ TH, T, exerciseLibrary, addedExIds,
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Text style={[styles.emptyText, { color: TH.sub }]}>
-              {T('bodyPlanNoExercises') || '未找到动作'}
+              {T('bodyPlanNoExercises')}
             </Text>
           </View>
         }

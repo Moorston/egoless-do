@@ -39,7 +39,7 @@ export default function DayPlanCard({
 
   // Part name
   const partName = useMemo(() => {
-    if (isRest) return T('bodyPlanRestDay') || '休息';
+    if (isRest) return T('bodyPlanRestDay');
     const cat = EXERCISE_CATEGORIES.find(c => c.key === task.sportKey);
     return cat ? T(cat.i18nKey) : task.sportKey;
   }, [isRest, T, task.sportKey]);
@@ -84,7 +84,7 @@ export default function DayPlanCard({
 
     if (removedEx) {
       onShowSnackbar(
-        `${removedEx.nameZh} ${T('bodyPlanRemoved') || '已移除'}`,
+        `${removedEx.nameZh} ${T('bodyPlanRemoved')}`,
         () => {
           onUpdateTask(task.weekday, { exercises: [...newExs, removedEx] });
         }
@@ -106,21 +106,21 @@ export default function DayPlanCard({
         onPress={toggleExpand}
         activeOpacity={0.7}
         accessibilityRole="button"
-        accessibilityLabel={`${weekdayLabel} ${T('bodyPlanRestDay') || '休息日'}`}
+        accessibilityLabel={`${weekdayLabel} ${T('bodyPlanRestDay')}`}
         style={[styles.restCard, { backgroundColor: TH.card, borderColor: TH.border }]}
       >
         <View style={styles.restContent}>
           <Text style={styles.restIcon}>😴</Text>
           <View style={styles.restTextCol}>
             <Text style={[styles.restDayLabel, { color: TH.sub }]}>{weekdayLabel}</Text>
-            <Text style={[styles.restTitle, { color: TH.text }]}>{T('bodyPlanRestDay') || '休息日'}</Text>
+            <Text style={[styles.restTitle, { color: TH.text }]}>{T('bodyPlanRestDay')}</Text>
           </View>
           {expanded ? <ChevronUp size={20} color={TH.sub} /> : <ChevronDown size={20} color={TH.sub} />}
         </View>
         {expanded && (
           <View style={[styles.restDetail, { borderTopColor: TH.border }]}>
             <Text style={[styles.restDetailText, { color: TH.sub }]}>
-              {T('bodyPlanRestDayHint') || '今天是休息日，好好恢复身体吧'}
+              {T('bodyPlanRestDayHint')}
             </Text>
           </View>
         )}
@@ -149,7 +149,7 @@ export default function DayPlanCard({
         <View style={styles.summaryRight}>
           {addedExs.length > 0 && (
             <View style={[styles.summaryBadge, { backgroundColor: `${P}15` }]}>
-              <Text style={[styles.summaryCount, { color: P }]}>{String(addedExs.length)}{T('bodyPlanUnitExercise') || '个动作'}</Text>
+              <Text style={[styles.summaryCount, { color: P }]}>{String(addedExs.length)}{T('bodyPlanUnitExercise')}</Text>
             </View>
           )}
           {estimatedDuration > 0 && (
@@ -166,7 +166,7 @@ export default function DayPlanCard({
           {addedExs.length > 0 && (
             <View style={styles.exerciseListSection}>
               <Text style={[styles.sectionTitle, { color: TH.text }]}>
-                {T('bodyPlanAddedExercises') || '当天动作'} ({String(addedExs.length)})
+                {T('bodyPlanAddedExercises')} ({String(addedExs.length)})
               </Text>
               {addedExs.map(ex => (
                 <ExerciseCard
@@ -185,7 +185,7 @@ export default function DayPlanCard({
           {addedExs.length === 0 && (
             <View style={styles.emptySection}>
               <Text style={[styles.emptyText, { color: TH.sub }]}>
-                {T('bodyPlanNoExercises') || '暂无动作，请从上方动作池添加'}
+                {T('bodyPlanNoExercises')}
               </Text>
             </View>
           )}
@@ -197,10 +197,10 @@ export default function DayPlanCard({
               activeOpacity={0.8}
               style={styles.ctaBtn}
               accessibilityRole="button"
-              accessibilityLabel={T('bodyStartTraining') || '开始训练'}
+              accessibilityLabel={T('bodyStartTraining')}
             >
               <Play size={18} color="#fff" />
-              <Text style={styles.ctaText}>{T('bodyStartTraining') || '开始训练'}</Text>
+              <Text style={styles.ctaText}>{T('bodyStartTraining')}</Text>
             </TouchableOpacity>
           )}
         </View>
