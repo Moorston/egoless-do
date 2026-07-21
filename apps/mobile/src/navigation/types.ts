@@ -1,10 +1,12 @@
+import type { ExerciseDef } from '@egoless-do/core';
+
 export type RootStackParamList = {
   MainTabs: { screen?: keyof MainTabParamList; [key: string]: unknown } | undefined;
   Login: undefined;
   Register: undefined;
   ForgotPassword: undefined;
   GlobalMap: { icon?: string; title?: string; type?: 'exercise' | 'fasting' | 'meditation' } | undefined;
-  Sport: { key: string; icon: string; color: string; gps?: boolean; planId?: string; planTaskWeekday?: number };
+  Sport: { key: string; icon: string; color: string; gps?: boolean; planId?: string; planTaskWeekday?: number; exercises?: ExerciseDef[]; comboPlanId?: string };
   FastHistory: undefined;
   FastCalendar: undefined;
   MedHistory: undefined;

@@ -174,6 +174,43 @@ const handleToggle = useCallback(() => {
 - 色块颜色映射：`rest=gray` / `empty=lightBorder` / `withIntensity=primaryGradient`
 - 高度 60-80px，紧凑布局
 
+### Combo Workout (Multi-Exercise Session)
+
+组合锻炼模式：SportPage 内部按顺序执行多个动作，每个动作独立计时/计数，完成后自动过渡到下一个。
+
+**架构**：不新建页面，在 SportPage 内部通过 `comboState ref` 管理多动作切换。
+
+```tsx
+// 1. 路由参数扩展（navigation/types.ts）
+Sport: { key: string; icon: string; color: string; gps?: boolean; planId?: string; planTaskWeekday?: number; exercises?: ExerciseDef[]; comboPlanId?: string };
+
+// 2. 组合状态管理（SportPage.tsx）
+const comboState = useRef({
+  exercises: ExerciseDef[],
+  currentIndex: number,
+  results: ExerciseResult[],
+  totalDurationSec: number,
+  totalCalories: number,
+});
+
+// 3. 动作切换（goToNextExercise）
+// - 保存当前动作结果到 store（addExercise）
+// - 累加总时长/总热量
+// - 重置 hooks（timer.reset(), sets.reset()）
+// - 进入过渡页或全部完成
+```
+
+**组件**：
+- `ComboProgressHeader` — 顶部进度条 + 可展开动作列表（已完成 ✅ / 当前 ▶ / 未开始 ○）
+- `TransitionScreen` — 动作间过渡页（休息倒计时 + 当前摘要 + 下一动作预览）
+
+**规则**：
+- hooks 必须暴露 `reset()` 方法以支持动作间状态重置
+- 每个动作完成时立即 `addExercise` 保存到 store，防止中途退出丢失数据
+- 全部完成后一次性返回 BodyFlow 聚合结果（`sportKey: 'combo'`, `isCombo: true`, `exercises: [...]`）
+- 单运动场景向后兼容（无 `exercises` 参数时走原有流程）
+- 休息时间按动作类型自适应：strength=60s, traditional/flexibility=15s, cardio=30s
+
 ### Unified Exercise Pool with Multi-Day Assignment
 
 屏幕级统一动作池，替代 per-day 的选择器，支持批量分配到多天：

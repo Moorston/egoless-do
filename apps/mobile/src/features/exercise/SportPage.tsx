@@ -1,11 +1,15 @@
-import { SPORT_BG_COLORS, COLORS, getSportType, TARGET_PRESETS, estimateCalories, MET_MAP, getSportExperienceType, createLogger } from '@egoless-do/core';
+import { SPORT_BG_COLORS, COLORS, getSportType, TARGET_PRESETS, estimateCalories, MET_MAP, getSportExperienceType, createLogger, type ExerciseDef } from '@egoless-do/core';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useKeepAwake } from 'expo-keep-awake';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { View, Animated } from 'react-native';
+import { View, Animated, Alert } from 'react-native';
 
 import { useTheme, useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
+
+import ComboProgressHeader from './components/ComboProgressHeader';
+import TransitionScreen from './components/TransitionScreen';
+import type { ExerciseResult } from './components/ComboProgressHeader';
 
 
 
@@ -55,14 +59,35 @@ export default function SportPage() {
   const T     = useT();
   const { auth, userProfile, addExercise, exerciseLog, updateBodyTrainingPlan } = useShallowStore(s => ({ auth: s.auth, userProfile: s.userProfile, addExercise: s.addExercise, exerciseLog: s.exerciseLog, updateBodyTrainingPlan: s.updateBodyTrainingPlan }));
   const { MapView, Polyline, ready: amapReady } = useAmapComponents();
-  const { key: sportName, icon, color, gps: gpsParam, planId, planTaskWeekday } = route.params;
+  const { key: sportName, icon, color, gps: gpsParam, planId, planTaskWeekday, exercises: comboExercises, comboPlanId } = route.params;
 
-  const isGpsSport = gpsParam ?? false;
+  const isComboMode = !!comboExercises && comboExercises.length > 0;
+  const comboState = useRef<{
+    exercises: ExerciseDef[];
+    currentIndex: number;
+    results: ExerciseResult[];
+    totalDurationSec: number;
+    totalCalories: number;
+  }>({
+    exercises: comboExercises ?? [],
+    currentIndex: 0,
+    results: [],
+    totalDurationSec: 0,
+    totalCalories: 0,
+  });
+
+  // 组合模式下，当前动作的属性动态变化
+  const currentComboExercise = isComboMode ? comboExercises![comboState.current.currentIndex] : null;
+  const effectiveSportName = isComboMode ? (currentComboExercise?.category || sportName) : sportName;
+  const effectiveIcon = isComboMode ? (currentComboExercise?.icon || icon) : icon;
+  const effectiveGps = isComboMode ? false : (gpsParam ?? false); // 组合模式暂不启用GPS
+
+  const isGpsSport = effectiveGps;
   const weight = userProfile?.weight ?? 70;
-  const sportType = getSportType(sportName, isGpsSport);
-  const experienceType = getSportExperienceType(sportName, sportType);
+  const sportType = getSportType(effectiveSportName, isGpsSport);
+  const experienceType = getSportExperienceType(effectiveSportName, sportType);
   const isMeditative = experienceType === 'meditative';
-  const bg = SPORT_BG_COLORS[sportName] || color || '#4CAF50';
+  const bg = SPORT_BG_COLORS[effectiveSportName] || color || '#4CAF50';
 
   useKeepAwake();
 
@@ -100,8 +125,8 @@ export default function SportPage() {
         nickname: userProfile?.nickname || '',
         type: 'exercise',
         goal: goal || undefined,
-        sport_key: sportName,
-        sport_icon: icon,
+        sport_key: effectiveSportName,
+        sport_icon: effectiveIcon,
       }).then(result => {
         if (result.success && result.data) {
           sessionIdRef.current = result.data.session_id;
@@ -167,11 +192,11 @@ export default function SportPage() {
 
   // ── Computed ──
   const distKm = computeDistance(coords);
-  const calories = estimateCalories(sportName, timer.sec, weight);
+  const calories = estimateCalories(effectiveSportName, timer.sec, weight);
 
   // Recalculate targets with actual values
   const actualTargets = useExerciseTargets({
-    sportName, sportType, mode, targetType, targetValue,
+    sportName: effectiveSportName, sportType, mode, targetType, targetValue,
     sec: timer.sec, distKm, calories, totalReps: sets.totalReps,
     playBell: audio.playBell,
   });
@@ -290,6 +315,88 @@ export default function SportPage() {
     if (isGpsSport) startGpsTracking();
   }, [timer, isGpsSport, startGpsTracking]);
 
+  // ── 组合模式：获取当前动作的休息时间 ──
+  const getRestSec = useCallback((exercise: ExerciseDef): number => {
+    if (exercise.type === 'strength') return 60;
+    if (exercise.type === 'cardio') return 30;
+    if (exercise.type === 'traditional' || exercise.type === 'flexibility') return 15;
+    return 30;
+  }, []);
+
+  // ── 组合模式：保存当前动作，前进到下一个 ──
+  const goToNextExercise = useCallback(() => {
+    if (!isComboMode || !comboExercises) return;
+
+    // 1. 保存当前动作结果
+    const finalReps = sportType === 'repetition' ? sets.totalReps : undefined;
+    const entry: Record<string, unknown> = {
+      sportKey: effectiveSportName, sportIcon: effectiveIcon, durationSec: timer.sec,
+      timestamp: Date.now(), isGpsSport: false,
+      distanceKm: undefined,
+      calories,
+      reps: finalReps,
+      sets: sets.sets.length > 0 ? sets.sets : undefined,
+      met: MET_MAP[effectiveSportName] || currentComboExercise?.met,
+      planId: comboPlanId || planId,
+      planTaskWeekday,
+    };
+    addExercise(entry);
+
+    const result: ExerciseResult = {
+      sportKey: effectiveSportName,
+      icon: effectiveIcon,
+      durationSec: timer.sec,
+      calories,
+      reps: finalReps ?? 0,
+      timestamp: entry.timestamp as number,
+    };
+
+    comboState.current.results.push(result);
+    comboState.current.totalDurationSec += timer.sec;
+    comboState.current.totalCalories += calories;
+
+    // 2. 前进到下一动作
+    comboState.current.currentIndex++;
+    if (comboState.current.currentIndex < comboExercises.length) {
+      // 重置 hooks
+      timer.reset();
+      sets.reset();
+      // 进入过渡页
+      timer.setPage('transition');
+    } else {
+      // 全部完成 → 保存并返回
+      handleSaveAll();
+    }
+  }, [isComboMode, comboExercises, effectiveSportName, effectiveIcon, timer, sets, calories, comboPlanId, planId, planTaskWeekday, sportType]);
+
+  // ── 组合模式：全部完成，返回聚合结果到 BodyFlow ──
+  const handleSaveAll = useCallback(() => {
+    try {
+      musicStop();
+      try { audioPlayerRef.current?.pause(); } catch {}
+      audio.stopAll();
+      cleanupSession();
+      stopGpsTracking();
+
+      const totalRepsVal = comboState.current.results.reduce((s, r) => s + r.reps, 0);
+      const result: Record<string, unknown> = {};
+      if (comboState.current.totalDurationSec > 0) {
+        result.sportResult = {
+          completed: true,
+          durationSec: comboState.current.totalDurationSec,
+          calories: comboState.current.totalCalories,
+          reps: totalRepsVal,
+          sportKey: 'combo',
+          isCombo: true,
+          exercises: comboState.current.results,
+        };
+      }
+      nav.navigate('Body', result);
+    } catch (e) {
+      log.error(e, { message: 'Combo save failed' });
+    }
+  }, [nav, musicStop, audio.stopAll, cleanupSession, stopGpsTracking]);
+
   // 组件卸载时清理会话
   useEffect(() => {
     return () => { cleanupSession(); };
@@ -299,6 +406,15 @@ export default function SportPage() {
   const handleSave = useCallback(() => {
     if (savingRef.current) return;
     savingRef.current = true;
+
+    // 组合模式：保存当前动作并前进到下一个
+    if (isComboMode) {
+      savingRef.current = false;
+      goToNextExercise();
+      return;
+    }
+
+    // 单运动模式：原有逻辑
     try {
       musicStop();
       try { audioPlayerRef.current?.pause(); } catch {}
@@ -345,7 +461,7 @@ export default function SportPage() {
       return;
     }
     try { nav.navigate('Body', result); } catch { savingRef.current = false; }
-  }, [timer.sec, sets, sportName, icon, sportType, isGpsSport, distKm, calories, coords, segmentPaces, mode, targetType, targetValue, addExercise, userProfile, auth, nav, musicStop, audio.stopAll, cleanupSession, stopGpsTracking, planId, planTaskWeekday]);
+  }, [isComboMode, goToNextExercise, timer.sec, sets, sportName, icon, sportType, isGpsSport, distKm, calories, coords, segmentPaces, mode, targetType, targetValue, addExercise, userProfile, auth, nav, musicStop, audio.stopAll, cleanupSession, stopGpsTracking, planId, planTaskWeekday]);
 
   // Stop music and ambient audio when entering report page (exercise ended)
   useEffect(() => {
@@ -380,8 +496,18 @@ export default function SportPage() {
   if (page === 'prep') {
     return (
       <>
+      {isComboMode && comboExercises && (
+        <ComboProgressHeader
+          exercises={comboExercises}
+          currentIndex={comboState.current.currentIndex}
+          results={comboState.current.results}
+          onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
+          TH={TH}
+          T={T}
+        />
+      )}
       <PrepPage
-        icon={icon} sportName={sportName} sportType={sportType} experienceType={experienceType}
+        icon={effectiveIcon} sportName={effectiveSportName} sportType={sportType} experienceType={experienceType}
         bg={TH.primary} isGpsSport={isGpsSport}
         sec={timer.sec} countdown={timer.countdown} holdAnim={timer.holdAnim} scaleAnim={timer.scaleAnim} pulseAnim={timer.pulseAnim}
         mode={mode} setMode={setMode} targetType={targetType} setTargetType={setTargetType}
@@ -424,6 +550,16 @@ export default function SportPage() {
   if (page === 'paused') {
     return (
       <>
+      {isComboMode && comboExercises && (
+        <ComboProgressHeader
+          exercises={comboExercises}
+          currentIndex={comboState.current.currentIndex}
+          results={comboState.current.results}
+          onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
+          TH={TH}
+          T={T}
+        />
+      )}
       <PausedPage
         icon={icon} sportName={sportName} sportType={sportType} experienceType={experienceType}
         bg={bg} isGpsSport={isGpsSport}
@@ -452,6 +588,17 @@ export default function SportPage() {
   // Report page
   if (page === 'report') {
     return (
+      <>
+      {isComboMode && comboExercises && (
+        <ComboProgressHeader
+          exercises={comboExercises}
+          currentIndex={comboState.current.currentIndex}
+          results={comboState.current.results}
+          onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
+          TH={TH}
+          T={T}
+        />
+      )}
       <ReportPage
         icon={icon} sportName={sportName} sportType={sportType} experienceType={experienceType}
         bg={bg} isGpsSport={isGpsSport}
@@ -471,6 +618,41 @@ export default function SportPage() {
         exerciseLog={(exerciseLog ?? []).filter(e => !e.deleted)}
         TH={TH} T={T}
       />
+      </>
+    );
+  }
+
+  // ── Transition page (combo mode only) ──
+  if (page === 'transition') {
+    const currentEx = comboExercises?.[comboState.current.currentIndex - 1];
+    const nextEx = comboExercises?.[comboState.current.currentIndex];
+    const prevResult = comboState.current.results[comboState.current.results.length - 1];
+    const restSec = currentEx ? getRestSec(currentEx) : 30;
+
+    return (
+      <>
+      {isComboMode && comboExercises && (
+        <ComboProgressHeader
+          exercises={comboExercises}
+          currentIndex={comboState.current.currentIndex - 1}
+          results={comboState.current.results}
+          onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
+          TH={TH}
+          T={T}
+        />
+      )}
+      <TransitionScreen
+        currentExercise={currentEx || { id: '', nameZh: '', nameI18nKey: '', icon: '', category: '', type: 'traditional', muscleGroups: [], difficulty: 'beginner' }}
+        currentDuration={prevResult?.durationSec || 0}
+        nextExercise={nextEx || null}
+        restSec={restSec}
+        onSkipRest={() => timer.setPage('prep')}
+        onNext={() => timer.setPage('prep')}
+        onFinishAll={handleSaveAll}
+        TH={TH}
+        T={T}
+      />
+      </>
     );
   }
 
@@ -480,6 +662,16 @@ export default function SportPage() {
   if (page === 'active' && isGpsSport) {
     return (
       <>
+      {isComboMode && comboExercises && (
+        <ComboProgressHeader
+          exercises={comboExercises}
+          currentIndex={comboState.current.currentIndex}
+          results={comboState.current.results}
+          onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
+          TH={TH}
+          T={T}
+        />
+      )}
       <View style={{ flex: 1 }}>
         <GpsActive
           MapView={MapView} Polyline={Polyline} amapReady={amapReady}
@@ -548,6 +740,16 @@ export default function SportPage() {
 
   return (
     <View style={{ flex: 1 }}>
+      {isComboMode && comboExercises && (
+        <ComboProgressHeader
+          exercises={comboExercises}
+          currentIndex={comboState.current.currentIndex}
+          results={comboState.current.results}
+          onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
+          TH={TH}
+          T={T}
+        />
+      )}
       {activeLayout}
       <ActiveInsightBar
         type="exercise"

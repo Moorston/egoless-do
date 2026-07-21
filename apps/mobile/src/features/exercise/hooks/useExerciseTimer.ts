@@ -101,10 +101,24 @@ export function useExerciseTimer() {
     });
   }, [holdAnim, scaleAnim]);
 
+  const reset = useCallback(() => {
+    if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+    if (holdTimeoutRef.current) { clearTimeout(holdTimeoutRef.current); holdTimeoutRef.current = null; }
+    setSec(0);
+    setPage('prep');
+    setActive(false);
+    setCountdown(3);
+    setPausedSec(0);
+    holdAnim.setValue(0);
+    scaleAnim.setValue(1);
+    pulseAnim.setValue(0);
+  }, [holdAnim, scaleAnim, pulseAnim]);
+
   return {
     page, setPage, sec, setSec, active, setActive,
     countdown, pausedSec,
     holdAnim, scaleAnim, pulseAnim, timerRef,
     handleGo, handlePause, handleContinue, handleHoldStart, handleHoldEnd,
+    reset,
   };
 }

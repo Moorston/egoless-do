@@ -29,7 +29,7 @@ export default function BodyScreen() {
     setBodyFlowState: s.setBodyFlowState,
   }));
   const [page, setPage] = useState<BodyPage>('dashboard');
-  const { todayPlan, weekday: todayWeekday, todayOverride } = useTodayPlan();
+  const { todayPlan, weekday: todayWeekday, todayOverride, todayExercises, activeTrainingPlan } = useTodayPlan();
   const [activePlanId, setActivePlanId] = useState<string | null>(null);
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const transitioningRef = useRef(false);
@@ -92,12 +92,21 @@ export default function BodyScreen() {
       icon: sport?.icon ?? '🏃',
       color: sport?.color ?? '#f59e0b',
     };
-    if (activePlanId && todayTrainingTask) {
-      navParams.planId = activePlanId;
-      navParams.planTaskWeekday = todayTrainingTask.task.weekday;
+
+    // 组合模式：当日有多个动作时，传递全部动作到 SportPage
+    if (todayExercises && todayExercises.length > 1) {
+      navParams.exercises = todayExercises;
+      navParams.comboPlanId = activePlanId ?? undefined;
+    } else {
+      // 单运动模式：传递 planId 和 planTaskWeekday
+      if (activePlanId && todayTrainingTask) {
+        navParams.planId = activePlanId;
+        navParams.planTaskWeekday = todayTrainingTask.task.weekday;
+      }
     }
+
     nav.navigate('Sport' as never, navParams as never);
-  }, [nav, activePlanId, todayTrainingTask]);
+  }, [nav, activePlanId, todayTrainingTask, todayExercises, activeTrainingPlan]);
 
   const handleGoToBreathing = useCallback(() => {
     nav.navigate('Breathing' as never);

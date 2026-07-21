@@ -84,6 +84,11 @@ export function useExerciseSets(onCompleteSet: () => void) {
 
   const totalReps = sets.reduce((s, set) => s + set.reps, 0) + currentSetReps;
 
+  const reset = useCallback(() => {
+    setSets([]);
+    setCurrentSetReps(0);
+  }, []);
+
   return {
     sets, setSets,
     currentSetReps, setCurrentSetReps,
@@ -91,5 +96,6 @@ export function useExerciseSets(onCompleteSet: () => void) {
     bounceAnim, plusRippleAnim, minusRippleAnim,
     startLongPress, stopLongPress, triggerBounce,
     handleCompleteSet,
+    reset,
   };
 }
