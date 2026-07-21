@@ -379,6 +379,8 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                 {todayExercises && todayExercises.length > 0 && (
                   <View style={{ backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 8, padding: 8, marginBottom: 10 }}>
                     {todayExercises.map((e, i) => {
+                      const cat = EXERCISE_CATEGORIES.find(c => c.key === e.category);
+                      const exName = cat ? T(cat.i18nKey) : (e.nameI18nKey ? T(e.nameI18nKey) : e.nameZh);
                       const sets = e.defaultSets;
                       const reps = e.defaultReps;
                       const dur = e.defaultDurationSec;
@@ -388,7 +390,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                       else if (dur) detail = `${Math.round(dur / 60)}分钟`;
                       return (
                         <Text key={e.id || i} style={{ fontSize: FONT_SMALL(), color: '#fff', lineHeight: 18 }}>
-                          {e.nameZh}{detail ? ` ${detail}` : ''}
+                          {e.icon} {exName}{detail ? ` ${detail}` : ''}
                         </Text>
                       );
                     })}
