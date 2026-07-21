@@ -13,6 +13,8 @@ import SimpleHeader from '../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
 
+const PRECEPT_TAG = '持戒';
+
 
 export default function PreceptScreen() {
   const TH = useTheme();
@@ -82,7 +84,7 @@ export default function PreceptScreen() {
   // Recent violation insights (reflections with #持戒 tag)
   const recentInsights = useMemo(() => {
     return (reflections ?? [])
-      .filter(r => !r.deleted && (r.tags ?? []).includes('持戒'))
+      .filter(r => !r.deleted && (r.tags ?? []).includes(PRECEPT_TAG))
       .sort((a, b) => b.timestamp - a.timestamp)
       .slice(0, 3);
   }, [reflections]);
@@ -101,7 +103,7 @@ export default function PreceptScreen() {
 
   const handleSaveViolation = useCallback(() => {
     // Save as reflection with #持戒 tag
-    const tags = ['持戒'];
+    const tags = [PRECEPT_TAG];
     if (violateTrigger) tags.push(violateTrigger);
     const content = violateHabitName + (violateReflection ? `：${violateReflection}` : '');
     addReflection({ content, tags, mood: '' });

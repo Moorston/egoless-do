@@ -753,7 +753,7 @@ export const en: I18nKeys = {
   preceptTemplateName:'Precept name', preceptTemplateGuide:'Practice guide', preceptTargetDays:'Target days',
   preceptType:'Type', preceptTypeAvoid:'Avoid', preceptTypePractice:'Practice',
   preceptHistory:'Precept History', preceptViolations:'Violations', preceptInsights:'Insights', preceptRecentInsight:'Recent Insights',
-  preceptAllDone:'All precepts kept today 🙏', preceptQuoteText:'If you break a precept, reflect and improve — Xiao Zhi Guan', preceptDays:'days',
+  preceptAllDone:'All precepts kept today 🙏', preceptQuoteText:'If you break a precept, reflect and improve — Xiao Zhi Guan', preceptDays:'days', preceptLongestStreak:'Longest Streak', preceptPerPreceptStats:'Per-Precept Stats', preceptInsightTimeline:'Insight Timeline', preceptViolation:'x',
   preceptToday:'Today', preceptEmptyHint:'No precepts yet, add from below', preceptBatchDone:'All done', preceptBatchUndo:'Undo all',
   practiceActionMantra:'Mantra', practiceActionMantraDesc:'Sacred chanting',
   practiceActionSutra:'Sutra', practiceActionSutraDesc:'Study & realize',
@@ -762,7 +762,7 @@ export const en: I18nKeys = {
   giveTotal:'Total', giveMonth:'This Month', giveWeek:'This Week', giveRecord:'Record a Gift', giveRecent:'Recent Acts',
   giveHistory:'Giving History', giveContent:'What did you give?', giveContentPlaceholder:'Record your kindness...', giveMotivation:'Motivation (optional)',
   giveMotivationPlaceholder:'Record your intention...', giveAmount:'Amount', giveAnonymous:'Anonymous', giveAnonymousHint:'Giving without a name — merit beyond measure',
-  giveSave:'Record', giveCancel:'Cancel', giveDistribution:'Type Distribution', giveType:'Type',
+  giveSave:'Record', giveCancel:'Cancel', giveDistribution:'Type Distribution', giveType:'Type', giveLongestStreak:'Longest Streak', giveTimeline:'Give Timeline',
   practiceOtherSound:'Sound', practiceOtherSoundDesc:'Sound healing',
   practiceOtherRead:'Read', practiceOtherReadDesc:'Learn & reflect',
 

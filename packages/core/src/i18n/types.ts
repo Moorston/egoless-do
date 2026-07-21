@@ -616,13 +616,13 @@ export interface I18nKeys {
   preceptTemplateName: string; preceptTemplateGuide: string; preceptTargetDays: string;
   preceptType: string; preceptTypeAvoid: string; preceptTypePractice: string;
   preceptHistory: string; preceptViolations: string; preceptInsights: string; preceptRecentInsight: string;
-  preceptAllDone: string; preceptQuoteText: string; preceptDays: string;
+  preceptAllDone: string; preceptQuoteText: string; preceptDays: string; preceptLongestStreak: string; preceptPerPreceptStats: string; preceptInsightTimeline: string; preceptViolation: string;
   preceptToday: string; preceptEmptyHint: string; preceptBatchDone: string; preceptBatchUndo: string;
   giveTitle: string; giveQuote: string; giveMaterial: string; giveDharma: string; giveFearless: string;
   giveTotal: string; giveMonth: string; giveWeek: string; giveRecord: string; giveRecent: string;
   giveHistory: string; giveContent: string; giveContentPlaceholder: string; giveMotivation: string;
   giveMotivationPlaceholder: string; giveAmount: string; giveAnonymous: string; giveAnonymousHint: string;
-  giveSave: string; giveCancel: string; giveDistribution: string; giveType: string;
+  giveSave: string; giveCancel: string; giveDistribution: string; giveType: string; giveLongestStreak: string; giveTimeline: string;
   practiceActionMantra: string; practiceActionMantraDesc: string;
   practiceActionSutra: string; practiceActionSutraDesc: string;
   practiceActionGive: string; practiceActionGiveDesc: string;

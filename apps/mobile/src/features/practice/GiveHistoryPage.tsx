@@ -14,6 +14,8 @@ const GIVE_TYPE_CONFIG: Record<string, { icon: string; color: string; labelKey: 
   fearless: { icon: '🛡', color: '#10B981', labelKey: 'giveFearless' },
 };
 
+const WEEKDAY_KEYS = ['bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'bodyWeekThu', 'bodyWeekFri', 'bodyWeekSat', 'bodyWeekSun'];
+
 export default function GiveHistoryPage() {
   const TH = useTheme();
   const T = useT();
@@ -102,7 +104,7 @@ export default function GiveHistoryPage() {
         <Text style={{ fontSize: FONT_BODY(), color: TH.text }} numberOfLines={2}>{item.content}</Text>
         {item.motivation && (
           <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, fontStyle: 'italic', marginTop: 2 }}>
-            心念：{item.motivation}
+            {T('giveMotivation')}：{item.motivation}
           </Text>
         )}
       </View>
@@ -115,9 +117,9 @@ export default function GiveHistoryPage() {
       <View style={{ borderRadius: 16, borderWidth: 1, borderColor: `${TH.primary}30`, padding: 16, marginBottom: 16 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
           {[
-            { value: String(stats.total), label: '累计' },
-            { value: String(stats.monthCount), label: '本月' },
-            { value: String(stats.longest), label: '最长连续' },
+            { value: String(stats.total), label: T('giveTotal') },
+            { value: String(stats.monthCount), label: T('giveMonth') },
+            { value: String(stats.longest), label: T('giveLongestStreak') },
           ].map((s, i) => (
             <View key={i} style={{ alignItems: 'center', gap: 2 }}>
               <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.text }}>{s.value}</Text>
@@ -134,16 +136,16 @@ export default function GiveHistoryPage() {
             <ChevronLeft size={20} color={TH.sub} />
           </TouchableOpacity>
           <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text }}>
-            {year}年{String(month + 1)}月 · {String(stats.monthCount)}次
+            {year}/{String(month + 1)} · {String(stats.monthCount)}次
           </Text>
           <TouchableOpacity onPress={() => setMonthOffset(o => Math.min(o + 1, 0))}>
             <ChevronRight size={20} color={TH.sub} />
           </TouchableOpacity>
         </View>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-          {['一', '二', '三', '四', '五', '六', '日'].map(d => (
-            <View key={d} style={{ width: '14.28%', alignItems: 'center', paddingVertical: 4 }}>
-              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{d}</Text>
+          {WEEKDAY_KEYS.map(k => (
+            <View key={k} style={{ width: '14.28%', alignItems: 'center', paddingVertical: 4 }}>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T(k)}</Text>
             </View>
           ))}
           {heatmapDays.map((day, i) => (
@@ -165,7 +167,7 @@ export default function GiveHistoryPage() {
 
       {/* Type Distribution */}
       <View style={{ marginBottom: 16 }}>
-        <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text, marginBottom: 10 }}>{T('giveDistribution') || '类型分布'}</Text>
+        <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text, marginBottom: 10 }}>{T('giveDistribution')}</Text>
         {Object.entries(GIVE_TYPE_CONFIG).map(([type, config]) => {
           const count = stats.byType[type as keyof typeof stats.byType] || 0;
           const percent = stats.typePercent[type as keyof typeof stats.typePercent] || 0;
@@ -183,7 +185,7 @@ export default function GiveHistoryPage() {
       </View>
 
       {giveHistory.length > 0 && (
-        <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text, marginBottom: 10 }}>善行时间线</Text>
+        <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text, marginBottom: 10 }}>{T('giveTimeline')}</Text>
       )}
     </>
   ), [TH, T, stats, year, month, heatmapDays, giveHistory.length]);
@@ -191,7 +193,7 @@ export default function GiveHistoryPage() {
   return (
     <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: TH.bg }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, paddingBottom: 0 }}>
-        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('giveHistory') || '布施历史'}</Text>
+        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('giveHistory')}</Text>
         <TouchableOpacity onPress={() => nav.goBack()}>
           <X size={22} color={TH.sub} />
         </TouchableOpacity>

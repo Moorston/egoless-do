@@ -753,7 +753,7 @@ export const zh: I18nKeys = {
   preceptTemplateName:'戒条名称', preceptTemplateGuide:'修行指引', preceptTargetDays:'目标天数',
   preceptType:'类型', preceptTypeAvoid:'止持', preceptTypePractice:'作持',
   preceptHistory:'持戒历史', preceptViolations:'违戒次数', preceptInsights:'觉察记录', preceptRecentInsight:'最近觉察',
-  preceptAllDone:'今日已全部持戒 🙏', preceptQuoteText:'若犯戒者，当自呵责，改往修来 — 小止观', preceptDays:'天',
+  preceptAllDone:'今日已全部持戒 🙏', preceptQuoteText:'若犯戒者，当自呵责，改往修来 — 小止观', preceptDays:'天', preceptLongestStreak:'最长连续', preceptPerPreceptStats:'每条戒统计', preceptInsightTimeline:'觉察时间线', preceptViolation:'违',
   preceptToday:'今日', preceptEmptyHint:'还没有戒条，从下方添加开始', preceptBatchDone:'全部做到', preceptBatchUndo:'全部未做到',
   practiceActionMantra:'持咒', practiceActionMantraDesc:'持诵真言',
   practiceActionSutra:'诵经', practiceActionSutraDesc:'闻经悟道',
@@ -762,7 +762,7 @@ export const zh: I18nKeys = {
   giveTotal:'累计', giveMonth:'本月', giveWeek:'本周', giveRecord:'记录一次布施', giveRecent:'最近善行',
   giveHistory:'布施历史', giveContent:'做了什么？', giveContentPlaceholder:'记录你的善行...', giveMotivation:'布施心念（可选）',
   giveMotivationPlaceholder:'记录布施时的发心...', giveAmount:'金额（元）', giveAnonymous:'匿名布施', giveAnonymousHint:'布施不留名，功德不可思量',
-  giveSave:'记录善行', giveCancel:'取消', giveDistribution:'类型分布', giveType:'类型',
+  giveSave:'记录善行', giveCancel:'取消', giveDistribution:'类型分布', giveType:'类型', giveLongestStreak:'最长连续', giveTimeline:'善行时间线',
   practiceOtherSound:'音疗', practiceOtherSoundDesc:'声音疗愈',
   practiceOtherRead:'阅读', practiceOtherReadDesc:'闻思修学',
 

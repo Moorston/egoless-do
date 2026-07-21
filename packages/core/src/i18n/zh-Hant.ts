@@ -751,7 +751,7 @@ export const zhHant: I18nKeys = {
   preceptTemplateName:'戒條名稱', preceptTemplateGuide:'修行指引', preceptTargetDays:'目標天數',
   preceptType:'類型', preceptTypeAvoid:'止持', preceptTypePractice:'作持',
   preceptHistory:'持戒歷史', preceptViolations:'違戒次數', preceptInsights:'覺察記錄', preceptRecentInsight:'最近覺察',
-  preceptAllDone:'今日已全部持戒 🙏', preceptQuoteText:'若犯戒者，當自呵責，改往修來 — 小止觀', preceptDays:'天',
+  preceptAllDone:'今日已全部持戒 🙏', preceptQuoteText:'若犯戒者，當自呵責，改往修來 — 小止觀', preceptDays:'天', preceptLongestStreak:'最長連續', preceptPerPreceptStats:'每條戒統計', preceptInsightTimeline:'覺察時間線', preceptViolation:'違',
   preceptToday:'今日', preceptEmptyHint:'還沒有戒條，從下方添加開始', preceptBatchDone:'全部做到', preceptBatchUndo:'全部未做到',
   practiceActionMantra:'持咒', practiceActionMantraDesc:'持誦真言',
   practiceActionSutra:'誦經', practiceActionSutraDesc:'聞經悟道',

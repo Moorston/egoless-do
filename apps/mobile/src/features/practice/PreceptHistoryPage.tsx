@@ -1,3 +1,6 @@
+// ─── PreceptHistoryPage ─────────────────────────────────────────
+// 持戒历史记录页
+
 import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr, computeStreak , isPreceptHabit, getPreceptDisplayName, getPreceptType, PRECEPT_PREFIX_AVOID , FONT_LABEL, FONT_SMALL} from '@egoless-do/core';
 import type { Habit } from '@egoless-do/core';
 import { ChevronLeft, ChevronRight, Shield, X, Trash2 } from 'lucide-react-native';
@@ -9,6 +12,8 @@ import { useTheme, useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
 
+const PRECEPT_TAG = '持戒';
+const WEEKDAY_KEYS = ['bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'bodyWeekThu', 'bodyWeekFri', 'bodyWeekSat', 'bodyWeekSun'];
 
 export default function PreceptHistoryPage() {
   const TH = useTheme();
@@ -35,7 +40,7 @@ export default function PreceptHistoryPage() {
 
   const violationReflections = useMemo(() => {
     return (reflections ?? [])
-      .filter(r => !r.deleted && (r.tags ?? []).includes('持戒'))
+      .filter(r => !r.deleted && (r.tags ?? []).includes(PRECEPT_TAG))
       .sort((a, b) => b.timestamp - a.timestamp);
   }, [reflections]);
 
@@ -45,14 +50,12 @@ export default function PreceptHistoryPage() {
     preceptHabits.forEach(h => (h.checkedDates ?? []).forEach(d => allDates.add(d)));
     const totalDays = allDates.size;
 
-    // Longest streak
     let longestStreak = 0;
     preceptHabits.forEach(h => {
       const s = computeStreak(h.checkedDates ?? []);
       if (s > longestStreak) longestStreak = s;
     });
 
-    // Month data
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     let monthDone = 0;
     let monthTotal = 0;
@@ -87,7 +90,7 @@ export default function PreceptHistoryPage() {
   return (
     <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: TH.bg }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, paddingBottom: 0 }}>
-        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('preceptHistory') || '持戒历史'}</Text>
+        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('preceptHistory')}</Text>
         <TouchableOpacity onPress={() => nav.goBack()}>
           <X size={22} color={TH.sub} />
         </TouchableOpacity>
@@ -98,10 +101,10 @@ export default function PreceptHistoryPage() {
         <View style={{ borderRadius: 16, borderWidth: 1, borderColor: `${TH.primary}30`, padding: 16, marginBottom: 16 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
             {[
-              { value: stats.totalDays, label: '累计天数' },
-              { value: String(stats.longestStreak), label: '最长连续' },
-              { value: `${stats.monthRate}%`, label: '本月完成' },
-              { value: stats.violationCount, label: '觉察记录' },
+              { value: stats.totalDays, label: T('preceptTotalDays') },
+              { value: String(stats.longestStreak), label: T('preceptLongestStreak') },
+              { value: `${stats.monthRate}%`, label: T('preceptMonthRate') },
+              { value: stats.violationCount, label: T('preceptViolations') },
             ].map((s, i) => (
               <View key={i} style={{ alignItems: 'center', gap: 2 }}>
                 <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: i === 3 ? '#EF4444' : TH.text }}>{String(s.value)}</Text>
@@ -118,16 +121,16 @@ export default function PreceptHistoryPage() {
               <ChevronLeft size={20} color={TH.sub} />
             </TouchableOpacity>
             <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text }}>
-              {year}年{month + 1}月 · {stats.monthDone}/{stats.monthTotal}天
+              {year}/{String(month + 1)} · {stats.monthDone}/{stats.monthTotal} {T('preceptDays')}
             </Text>
             <TouchableOpacity onPress={() => setMonthOffset(o => Math.min(o + 1, 0))}>
               <ChevronRight size={20} color={TH.sub} />
             </TouchableOpacity>
           </View>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-            {['一', '二', '三', '四', '五', '六', '日'].map(d => (
-              <View key={d} style={{ width: '14.28%', alignItems: 'center', paddingVertical: 4 }}>
-                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{d}</Text>
+            {WEEKDAY_KEYS.map(k => (
+              <View key={k} style={{ width: '14.28%', alignItems: 'center', paddingVertical: 4 }}>
+                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T(k)}</Text>
               </View>
             ))}
             {heatmapDays.map((day, i) => (
@@ -150,7 +153,7 @@ export default function PreceptHistoryPage() {
         {/* Per-precept stats */}
         {preceptHabits.length > 0 && (
           <View style={{ marginBottom: 16 }}>
-            <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text, marginBottom: 10 }}>每条戒统计</Text>
+            <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text, marginBottom: 10 }}>{T('preceptPerPreceptStats')}</Text>
             {preceptHabits.map(h => {
               const name = getPreceptDisplayName(h.name);
               const type = getPreceptType(h.name);
@@ -161,9 +164,9 @@ export default function PreceptHistoryPage() {
                 <View key={h.id} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: `${TH.border}20` }}>
                   <Text style={{ fontSize: FONT_LABEL(), marginRight: 8 }}>{isAvoid ? '🚫' : '✨'}</Text>
                   <Text style={{ flex: 1, fontSize: FONT_BODY(), color: TH.text, fontWeight: '600' }}>{name}</Text>
-                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginRight: 8 }}>{String(h.doneDays)}天 🔥{String(h.streak)}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginRight: 8 }}>{String(h.doneDays)}{T('preceptDays')} 🔥{String(h.streak)}</Text>
                   {violations.length > 0 && (
-                    <Text style={{ fontSize: FONT_SMALL(), color: '#EF4444' }}>违{violations.length}</Text>
+                    <Text style={{ fontSize: FONT_SMALL(), color: '#EF4444' }}>{T('preceptViolation')}{violations.length}</Text>
                   )}
                 </View>
               );
@@ -174,11 +177,11 @@ export default function PreceptHistoryPage() {
         {/* Insight Timeline */}
         {violationReflections.length > 0 && (
           <View>
-            <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text, marginBottom: 10 }}>觉察时间线</Text>
+            <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text, marginBottom: 10 }}>{T('preceptInsightTimeline')}</Text>
             {violationReflections.map(r => {
               const d = new Date(r.timestamp);
               const dateLabel = `${d.getMonth() + 1}/${d.getDate()}`;
-              const triggerTag = (r.tags ?? []).find(t => t !== '持戒');
+              const triggerTag = (r.tags ?? []).find(t => t !== PRECEPT_TAG);
               return (
                 <View key={r.id} style={{ borderLeftWidth: 3, borderLeftColor: '#F59E0B', paddingLeft: 12, paddingVertical: 8, marginBottom: 8 }}>
                   <View style={{ flexDirection: 'row', gap: 8, marginBottom: 2 }}>

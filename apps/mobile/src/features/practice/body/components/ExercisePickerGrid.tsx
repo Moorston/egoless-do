@@ -27,6 +27,7 @@ function extractMuscleGroups(library: ExerciseDef[]): string[] {
   return Array.from(groups).sort();
 }
 
+// @deprecated 使用 UnifiedExercisePool 替代
 export default function ExercisePickerGrid({ TH, T, exerciseLibrary, addedExIds, selectedIds, onToggle }: Props) {
   const [exFilter, setExFilter] = useState<ExFilter>('all');
   const [exSearch, setExSearch] = useState('');
