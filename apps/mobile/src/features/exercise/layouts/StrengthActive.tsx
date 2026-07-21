@@ -31,7 +31,7 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
     onPressInPauseLong, onPressOutPauseLong, pauseHoldAnim,
     calories, softTargetReached, softTargetLabel, softTargetProgress, softTarget,
     musicTrack, musicIsPlaying, musicLoop, onMusicTogglePlay, onMusicToggleLoop, onMusicPressTrackName,
-    T,
+    T, topInset,
   } = props;
 
   const lastSetReps = sets.length > 0 ? sets[sets.length - 1].reps : null;
@@ -56,6 +56,7 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
         targetInfo={targetInfo}
         selectedSound={selectedSound} showSoundPicker={showSoundPicker}
         onToggleSoundPicker={onToggleSoundPicker} onSelectSound={onSelectSound}
+        topInset={topInset}
         rightSlot={
           <Text style={s.setLabel}>
             {T('exerciseSet').replace('{n}', String(currentSet))} · {sets.reduce((s, set) => s + set.reps, 0)} {T('exerciseReps')}

@@ -20,7 +20,7 @@ export default function MeditativeActive(props: ExerciseLayoutProps) {
     handlePause, onPressInPauseLong, onPressOutPauseLong, pauseHoldAnim,
     showCelebration, celebrateAnim, milestoneText, milestoneAnim, calories,
     musicTrack, musicIsPlaying, musicLoop, onMusicTogglePlay, onMusicToggleLoop, onMusicPressTrackName,
-    T,
+    T, topInset,
   } = props;
 
   return (
@@ -39,6 +39,7 @@ export default function MeditativeActive(props: ExerciseLayoutProps) {
         targetInfo={targetInfo}
         selectedSound={selectedSound} showSoundPicker={showSoundPicker}
         onToggleSoundPicker={onToggleSoundPicker} onSelectSound={onSelectSound}
+        topInset={topInset}
       />
 
       {/* Music bar — meditation style */}

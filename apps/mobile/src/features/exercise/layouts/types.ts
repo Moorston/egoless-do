@@ -86,4 +86,7 @@ export interface ExerciseLayoutProps {
 
   // i18n
   T: (key: string) => string;
+
+  // Layout inset
+  topInset?: number;
 }

@@ -17,7 +17,7 @@ export default function EnduranceActive(props: ExerciseLayoutProps) {
     showCelebration, celebrateAnim, milestoneText, milestoneAnim,
     handlePause, calories,
     musicTrack, musicIsPlaying, musicLoop, onMusicTogglePlay, onMusicToggleLoop, onMusicPressTrackName,
-    T,
+    T, topInset,
   } = props;
 
   // Placeholder data for fields without data sources
@@ -35,6 +35,7 @@ export default function EnduranceActive(props: ExerciseLayoutProps) {
         targetInfo={targetInfo}
         selectedSound={selectedSound} showSoundPicker={showSoundPicker}
         onToggleSoundPicker={onToggleSoundPicker} onSelectSound={onSelectSound}
+        topInset={topInset}
       />
 
       {/* Music bar — meditation style */}

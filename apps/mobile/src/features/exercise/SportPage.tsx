@@ -698,8 +698,9 @@ export default function SportPage() {
 
   // Non-GPS active page — route to layout by experience type
   const layoutProps = {
-    icon, sportName, experienceType, sportType, bg,
+    icon: effectiveIcon, sportName: effectiveSportName, experienceType, sportType, bg,
     sec: timer.sec, active: timer.active,
+    topInset: isComboMode ? 0 : 56,
     sets: sets.sets, currentSetReps: sets.currentSetReps, totalReps: sets.totalReps, currentSet,
     mode, targetType, targetValue,
     targetProgress: actualTargets.targetProgress, targetInfo,

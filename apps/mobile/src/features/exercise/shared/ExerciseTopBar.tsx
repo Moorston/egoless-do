@@ -12,11 +12,12 @@ interface Props {
   onToggleSoundPicker: () => void;
   onSelectSound: (key: string) => void;
   rightSlot?: React.ReactNode;
+  topInset?: number;
 }
 
-export default function ExerciseTopBar({ icon, sportName, targetInfo, selectedSound, showSoundPicker, onToggleSoundPicker, onSelectSound, rightSlot }: Props) {
+export default function ExerciseTopBar({ icon, sportName, targetInfo, selectedSound, showSoundPicker, onToggleSoundPicker, onSelectSound, rightSlot, topInset = 56 }: Props) {
   return (
-    <View style={{ paddingTop: 56, paddingHorizontal: 20, paddingBottom: 12 }}>
+    <View style={{ paddingTop: topInset, paddingHorizontal: 20, paddingBottom: 12 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           <Text style={{ fontSize: FONT_CLOSE() }}>{icon}</Text>
