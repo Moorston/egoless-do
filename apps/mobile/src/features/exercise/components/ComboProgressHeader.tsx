@@ -1,5 +1,5 @@
 // ─── ComboProgressHeader ─────────────────────────────────────────
-// 底部引导：绝对定位叠加在页面内容上，半透明背景透出渐变
+// 底部引导：横向滚动卡片式，叠加在页面内容上
 
 import { FONT_SMALL, scaleFontSize, type ExerciseDef } from '@egoless-do/core';
 import { CheckCircle2, Play } from 'lucide-react-native';
@@ -23,7 +23,16 @@ interface Props {
   safeAreaBottom?: number;
 }
 
-const COMBO_BG = 'transparent';
+const COLORS = {
+  done: '#10b981',
+  current: '#f59e0b',
+  doneBg: '#10b98130',
+  currentBg: '#f59e0b30',
+  inactiveBg: 'rgba(255,255,255,0.08)',
+  inactiveBorder: 'rgba(255,255,255,0.15)',
+  text: '#fff',
+  textSecondary: 'rgba(255,255,255,0.5)',
+};
 
 export default function ComboProgressHeader({ exercises, currentIndex, results, onJumpTo, safeAreaBottom = 0 }: Props) {
   const scrollRef = useRef<ScrollView>(null);
@@ -31,23 +40,31 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
   const handlePress = useCallback((index: number) => {
     if (index === currentIndex) return;
     if (index < currentIndex) {
-      onJumpTo(index);
+      Alert.alert(
+        `Jump to #${index + 1}?`,
+        'Current progress will be lost.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Jump', onPress: () => onJumpTo(index) },
+        ]
+      );
       return;
     }
     Alert.alert(
-      `跳转 #${index + 1}`,
+      `Jump to #${index + 1}?`,
       undefined,
       [
-        { text: '取消', style: 'cancel' },
-        { text: '跳转', onPress: () => onJumpTo(index) },
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Jump', onPress: () => onJumpTo(index) },
       ]
     );
   }, [onJumpTo, currentIndex]);
 
   React.useEffect(() => {
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       scrollRef.current?.scrollTo({ x: Math.max(0, currentIndex * 90 - 60), animated: true });
     }, 100);
+    return () => clearTimeout(timer);
   }, [currentIndex]);
 
   return (
@@ -65,19 +82,19 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
           return (
             <TouchableOpacity key={ex.id || i} onPress={() => handlePress(i)} activeOpacity={0.7}
               style={[styles.chip, {
-                backgroundColor: done ? '#10b98130' : isCurrent ? '#f59e0b30' : 'rgba(255,255,255,0.08)',
-                borderColor: done ? '#10b981' : isCurrent ? '#f59e0b' : 'rgba(255,255,255,0.15)',
+                backgroundColor: done ? COLORS.doneBg : isCurrent ? COLORS.currentBg : COLORS.inactiveBg,
+                borderColor: done ? COLORS.done : isCurrent ? COLORS.current : COLORS.inactiveBorder,
                 borderWidth: isCurrent ? 2 : 1,
               }]}>
               <View style={styles.chipTop}>
                 <Text style={styles.chipIcon}>{ex.icon}</Text>
-                {done && <CheckCircle2 size={12} color="#10b981" style={styles.chipBadge} />}
-                {isCurrent && <Play size={12} color="#f59e0b" style={styles.chipBadge} />}
+                {done && <CheckCircle2 size={12} color={COLORS.done} style={styles.chipBadge} />}
+                {isCurrent && <Play size={12} color={COLORS.current} style={styles.chipBadge} />}
               </View>
-              <Text style={[styles.chipName, { color: done ? '#10b981' : isCurrent ? '#f59e0b' : '#fff' }]} numberOfLines={1}>
+              <Text style={[styles.chipName, { color: done ? COLORS.done : isCurrent ? COLORS.current : COLORS.text }]} numberOfLines={1}>
                 {ex.nameZh}
               </Text>
-              {result && <Text style={[styles.chipTime, { color: 'rgba(255,255,255,0.5)' }]}>{Math.floor(result.durationSec / 60)}:{(result.durationSec % 60).toString().padStart(2, '0')}</Text>}
+              {result && <Text style={[styles.chipTime, { color: COLORS.textSecondary }]}>{Math.floor(result.durationSec / 60)}:{(result.durationSec % 60).toString().padStart(2, '0')}</Text>}
             </TouchableOpacity>
           );
         })}
@@ -88,7 +105,7 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: COMBO_BG,
+    backgroundColor: 'transparent',
   },
   progressTrack: {
     height: 3,
@@ -100,7 +117,7 @@ const styles = StyleSheet.create({
   progressFill: {
     height: 3,
     borderRadius: 1.5,
-    backgroundColor: '#f59e0b',
+    backgroundColor: COLORS.current,
   },
   scrollContent: {
     paddingHorizontal: 14,

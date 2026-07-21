@@ -44,16 +44,20 @@ export default function TransitionScreen({
   }, [restSec]);
 
   // 倒计时到 0 自动推进
+  const autoAdvanceRef = useRef(false);
   useEffect(() => {
     if (restRemaining === 0 && restTimerRef.current) {
       if (restTimerRef.current) clearInterval(restTimerRef.current);
-      onNext();
+      if (!autoAdvanceRef.current) {
+        autoAdvanceRef.current = true;
+        onNextRef.current();
+      }
     }
-  }, [restRemaining, onNext]);
+  }, [restRemaining]);
 
   const handleSkipRest = useCallback(() => {
     if (restTimerRef.current) clearInterval(restTimerRef.current);
-    setRestRemaining(0);
+    autoAdvanceRef.current = true;
     onSkipRest();
   }, [onSkipRest]);
 

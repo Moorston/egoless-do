@@ -332,14 +332,14 @@ export default function SportPage() {
       return;
     }
     Alert.alert(
-      T('bodyFlowExitConfirm') || '退出练习流程？',
+      T('bodyFlowExitConfirm') || 'Exit workout flow?',
       undefined,
       [
-        { text: T('bodyCancel') || '取消', style: 'cancel' },
-        { text: T('bodyFlowSkip') || '退出', style: 'destructive', onPress: () => { resetComboSession(); nav.goBack(); } },
+        { text: T('bodyCancel') || 'Cancel', style: 'cancel' },
+        { text: T('bodyFlowSkip') || 'Exit', style: 'destructive', onPress: () => { resetComboSession(); nav.goBack(); } },
       ]
     );
-  }, [T, nav]);
+  }, [T, nav, resetComboSession]);
 
   const resetComboSession = useCallback(() => {
     musicStop();
@@ -664,7 +664,7 @@ export default function SportPage() {
     const layoutProps = {
       icon: effectiveIcon, sportName: effectiveSportLabel, experienceType, sportType, bg,
       sec: timer.sec, active: timer.active,
-      topInset: isComboMode ? 0 : 56,
+      topInset: isComboMode ? insets.top : 56,
       sets: sets.sets, currentSetReps: sets.currentSetReps, totalReps: sets.totalReps, currentSet,
       mode, targetType, targetValue,
       targetProgress: actualTargets.targetProgress, targetInfo,
