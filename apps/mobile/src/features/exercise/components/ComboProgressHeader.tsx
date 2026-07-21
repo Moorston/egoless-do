@@ -23,10 +23,9 @@ interface Props {
   onJumpTo: (index: number) => void;
   TH: Theme;
   T: (key: string) => string;
-  bg?: string;
 }
 
-export default function ComboProgressHeader({ exercises, currentIndex, results, onJumpTo, T, bg = '#1a1a1a' }: Props) {
+export default function ComboProgressHeader({ exercises, currentIndex, results, onJumpTo, TH, T }: Props) {
   const scrollRef = useRef<ScrollView>(null);
 
   // ── 跳转确认 ──
@@ -54,9 +53,9 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
   }, [currentIndex]);
 
   return (
-    <View style={[styles.container, { backgroundColor: bg }]}>
+    <View style={[styles.container, { backgroundColor: TH.bg }]}>
       {/* 顶部进度条 */}
-      <View style={styles.progressTrack}>
+      <View style={[styles.progressTrack, { backgroundColor: `${TH.sub}30` }]}>
         <View
           style={[
             styles.progressFill,
@@ -85,8 +84,8 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
               style={[
                 styles.chip,
                 {
-                  backgroundColor: done ? '#10b98130' : isCurrent ? '#f59e0b30' : 'rgba(255,255,255,0.08)',
-                  borderColor: done ? '#10b981' : isCurrent ? '#f59e0b' : 'rgba(255,255,255,0.15)',
+                  backgroundColor: done ? '#10b98130' : isCurrent ? '#f59e0b30' : TH.card,
+                  borderColor: done ? '#10b981' : isCurrent ? '#f59e0b' : TH.border,
                   borderWidth: isCurrent ? 2 : 1,
                 },
               ]}
@@ -99,14 +98,14 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
               <Text
                 style={[
                   styles.chipName,
-                  { color: done ? '#10b981' : isCurrent ? '#f59e0b' : '#fff' },
+                  { color: done ? '#10b981' : isCurrent ? '#f59e0b' : TH.text },
                 ]}
                 numberOfLines={1}
               >
                 {exName}
               </Text>
               {result && (
-                <Text style={[styles.chipTime, { color: 'rgba(255,255,255,0.5)' }]}>
+                <Text style={[styles.chipTime, { color: TH.sub }]}>
                   {Math.floor(result.durationSec / 60)}:{(result.durationSec % 60).toString().padStart(2, '0')}
                 </Text>
               )}
@@ -127,7 +126,6 @@ const styles = StyleSheet.create({
     borderRadius: 1.5,
     marginBottom: 8,
     overflow: 'hidden',
-    backgroundColor: 'rgba(255,255,255,0.1)',
   },
   progressFill: {
     height: 3,

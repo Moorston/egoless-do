@@ -729,7 +729,6 @@ export default function SportPage() {
           onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
           TH={TH}
           T={T}
-          bg={bg}
         />
       )}
     </View>
