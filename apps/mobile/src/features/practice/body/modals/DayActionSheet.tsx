@@ -21,25 +21,25 @@ export default function DayActionSheet({ visible, onClose, dayLabel, isRest, has
   const actions = [
     {
       icon: <RefreshCw size={18} color="#f59e0b" />,
-      label: T('bodySwapExercise') || '换运动类型',
+      label: T('bodySwapExercise'),
       onPress: () => { onClose(); onSwap(); },
       color: '#f59e0b',
     },
     {
       icon: <SkipForward size={18} color="#ef4444" />,
-      label: isRest ? (T('bodyRestoreDay') || '恢复训练') : (T('bodyMarkRest') || '标记为休息'),
+      label: isRest ? (T('bodyRestoreDay')) : (T('bodyMarkRest')),
       onPress: () => { onClose(); onSkip(); },
       color: '#ef4444',
     },
     {
       icon: <ArrowLeftRight size={18} color="#6366f1" />,
-      label: T('bodySwapDays') || '与另一天互换',
+      label: T('bodySwapDays'),
       onPress: () => { onClose(); onSwapDays(); },
       color: '#6366f1',
     },
     {
       icon: <Settings size={18} color="#8b5cf6" />,
-      label: T('bodyEditDayExercises') || '编辑该天动作',
+      label: T('bodyEditDayExercises'),
       onPress: () => { onClose(); onAdjust(); },
       color: '#8b5cf6',
       hide: isRest,
@@ -61,7 +61,7 @@ export default function DayActionSheet({ visible, onClose, dayLabel, isRest, has
           {/* Override indicator */}
           {hasOverride && (
             <View style={{ backgroundColor: '#f59e0b15', borderRadius: 8, padding: 10, marginBottom: 16 }}>
-              <Text style={{ fontSize: FONT_SMALL(), color: '#f59e0b' }}>{T('bodyHasOverride') || '该天有临时调整'}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: '#f59e0b' }}>{T('bodyHasOverride')}</Text>
             </View>
           )}
 

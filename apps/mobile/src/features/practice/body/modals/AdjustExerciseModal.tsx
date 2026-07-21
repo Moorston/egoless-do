@@ -49,7 +49,7 @@ export default function AdjustExerciseModal({ visible, onClose, onConfirm, exerc
         <View style={{ backgroundColor: TH.cardSolid, borderTopLeftRadius: 24, borderTopRightRadius: 24, maxHeight: '80%' }}>
           {/* Header */}
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('bodyAdjustExercise') || '调整组数/次数'}</Text>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('bodyAdjustExercise')}</Text>
             <TouchableOpacity onPress={onClose}>
               <X size={24} color={TH.sub} />
             </TouchableOpacity>
@@ -70,7 +70,7 @@ export default function AdjustExerciseModal({ visible, onClose, onConfirm, exerc
 
                   {/* Sets */}
                   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                    <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('bodySets') || '组数'}</Text>
+                    <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('bodySets')}</Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
                       <TouchableOpacity onPress={() => updateAdjustment(ex.id, 'sets', -1)} style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: TH.border + '60', alignItems: 'center', justifyContent: 'center' }}>
                         <Minus size={16} color={TH.text} />
@@ -84,7 +84,7 @@ export default function AdjustExerciseModal({ visible, onClose, onConfirm, exerc
 
                   {/* Reps */}
                   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                    <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('bodyReps') || '次数'}</Text>
+                    <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('bodyReps')}</Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
                       <TouchableOpacity onPress={() => updateAdjustment(ex.id, 'reps', -1)} style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: TH.border + '60', alignItems: 'center', justifyContent: 'center' }}>
                         <Minus size={16} color={TH.text} />
@@ -99,7 +99,7 @@ export default function AdjustExerciseModal({ visible, onClose, onConfirm, exerc
                   {/* Duration (if applicable) */}
                   {adj.durationSec != null && (
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('bodyDuration') || '时长(秒)'}</Text>
+                      <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('bodyDuration')}</Text>
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
                         <TouchableOpacity onPress={() => updateAdjustment(ex.id, 'durationSec', -30)} style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: TH.border + '60', alignItems: 'center', justifyContent: 'center' }}>
                           <Minus size={16} color={TH.text} />
@@ -119,7 +119,7 @@ export default function AdjustExerciseModal({ visible, onClose, onConfirm, exerc
           {/* Confirm button */}
           <View style={{ padding: 20, paddingTop: 0 }}>
             <TouchableOpacity onPress={handleConfirm} style={{ backgroundColor: '#f59e0b', borderRadius: 14, padding: 16, alignItems: 'center' }}>
-              <Text style={{ fontSize: FONT_BUTTON(), fontWeight: '700', color: '#fff' }}>{T('bodyConfirm') || '确认调整'}</Text>
+              <Text style={{ fontSize: FONT_BUTTON(), fontWeight: '700', color: '#fff' }}>{T('bodyConfirm')}</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -38,9 +38,9 @@ export default function SnackbarHost({ TH, visible, message, onUndo, onDismiss, 
     <Animated.View style={[styles.container, { opacity }]}>
       <View style={[styles.snackbar, { backgroundColor: TH.text }]}>
         <Text style={[styles.message, { color: TH.bg }]}>{message}</Text>
-        <TouchableOpacity onPress={onUndo} style={styles.undoBtn} accessibilityLabel={T('bodyUndo') || '撤回'}>
+        <TouchableOpacity onPress={onUndo} style={styles.undoBtn} accessibilityLabel={T('bodyUndo')}>
           <Undo2 size={16} color={TH.bg} />
-          <Text style={[styles.undoText, { color: TH.bg }]}>{T('bodyUndo') || '撤回'}</Text>
+          <Text style={[styles.undoText, { color: TH.bg }]}>{T('bodyUndo')}</Text>
         </TouchableOpacity>
       </View>
     </Animated.View>

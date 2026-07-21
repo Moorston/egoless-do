@@ -19,7 +19,7 @@ export default function WeightTrendModal({ visible, TH, T, checkins, onClose }: 
       <View style={{ flex: 1, backgroundColor: TH.cardSolid }}>
         {/* Header */}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 56, paddingBottom: 16, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-          <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('bodyWeightTrend') || '体重趋势'}</Text>
+          <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('bodyWeightTrend')}</Text>
           <TouchableOpacity onPress={onClose} style={{ padding: 8 }}>
             <X size={24} color={TH.sub} />
           </TouchableOpacity>

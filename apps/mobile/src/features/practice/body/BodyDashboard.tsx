@@ -846,7 +846,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                 {activeTrainingPlan.tasks.map((task) => {
                   const exercises = task.exercises ?? [];
                   const isRest = !task.sportKey || task.sportKey === 'rest';
-                  const dayLabels = ['一', '二', '三', '四', '五', '六', '日'];
+                  const weekdayKeys = ['bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'bodyWeekThu', 'bodyWeekFri', 'bodyWeekSat', 'bodyWeekSun'];
                   const formatEx = (e: ExerciseDef) => {
                     const sets = e.defaultSets;
                     const reps = e.defaultReps;
@@ -859,7 +859,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                   return (
                     <View key={task.weekday} style={{ width: 'calc((100% - 24px) / 4)', minWidth: 72, borderRadius: 10, borderWidth: 1, borderColor: isRest ? TH.border : '#f59e0b30', backgroundColor: isRest ? TH.bg : '#f59e0b08', padding: 8 }}>
                       <View style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: isRest ? TH.border : '#f59e0b', alignItems: 'center', justifyContent: 'center', marginBottom: 6 }}>
-                        <Text style={{ fontSize: 10, color: isRest ? TH.sub : '#fff', fontWeight: '700' }}>{dayLabels[task.weekday - 1]}</Text>
+                        <Text style={{ fontSize: 10, color: isRest ? TH.sub : '#fff', fontWeight: '700' }}>{T(weekdayKeys[task.weekday - 1])}</Text>
                       </View>
                       {isRest ? (
                         <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, fontStyle: 'italic' }}>{T('bodyPlanRestDay') || '休息'}</Text>

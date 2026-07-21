@@ -36,14 +36,14 @@ export default function BodyCheckinHistoryScreen() {
         <TouchableOpacity onPress={() => nav.goBack()} style={styles.backBtn}>
           <ChevronLeft size={24} color={TH.text} />
         </TouchableOpacity>
-        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('bodyAwarenessRecords') || '身体觉知记录'}</Text>
+        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('bodyAwarenessRecords')}</Text>
       </View>
 
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
         {sortedCheckins.length === 0 ? (
           <View style={{ alignItems: 'center', paddingVertical: 60 }}>
             <Text style={{ fontSize: 40, marginBottom: 12 }}>🧘</Text>
-            <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>{T('bodyAwarenessNoData') || '暂无觉知记录'}</Text>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>{T('bodyAwarenessNoData')}</Text>
           </View>
         ) : (
           sortedCheckins.map(checkin => (

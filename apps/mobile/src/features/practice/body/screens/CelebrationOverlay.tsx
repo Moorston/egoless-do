@@ -118,11 +118,11 @@ export default function CelebrationOverlay({ visible, TH, T, data, onDismiss }: 
           <View style={styles.statsGrid}>
             <View style={[styles.statItem, { borderColor: TH.border }]}>
               <Text style={[styles.statValue, { color: '#10b981' }]}>{completionRate}%</Text>
-              <Text style={[styles.statLabel, { color: TH.sub }]}>{T('bodyCompletionRate') || '完成率'}</Text>
+              <Text style={[styles.statLabel, { color: TH.sub }]}>{T('bodyCompletionRate')}</Text>
             </View>
             <View style={[styles.statItem, { borderColor: TH.border }]}>
               <Text style={[styles.statValue, { color: '#f59e0b' }]}>{String(data.totalDurationMin)}</Text>
-              <Text style={[styles.statLabel, { color: TH.sub }]}>{T('bodyMin') || '分钟'}</Text>
+              <Text style={[styles.statLabel, { color: TH.sub }]}>{T('bodyMin')}</Text>
             </View>
             <View style={[styles.statItem, { borderColor: TH.border }]}>
               <Text style={[styles.statValue, { color: '#ef4444' }]}>{String(data.totalCalories)}</Text>
@@ -152,7 +152,7 @@ export default function CelebrationOverlay({ visible, TH, T, data, onDismiss }: 
             </View>
           )}
 
-          <Text style={styles.tapHint}>{T('bodyTapToDismiss') || '点击任意位置关闭'}</Text>
+          <Text style={styles.tapHint}>{T('bodyTapToDismiss')}</Text>
         </Animated.View>
       </Animated.View>
     </TouchableWithoutFeedback>

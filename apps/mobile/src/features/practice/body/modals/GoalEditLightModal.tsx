@@ -42,7 +42,7 @@ export default function GoalEditLightModal({ visible, onClose, onConfirm, initia
         <View style={{ backgroundColor: TH.cardSolid, borderTopLeftRadius: 24, borderTopRightRadius: 24, maxHeight: '80%' }}>
           {/* Header */}
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('bodyEditGoal') || '编辑目标'}</Text>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('bodyEditGoal')}</Text>
             <TouchableOpacity onPress={onClose}>
               <X size={24} color={TH.sub} />
             </TouchableOpacity>
@@ -50,7 +50,7 @@ export default function GoalEditLightModal({ visible, onClose, onConfirm, initia
 
           <ScrollView style={{ padding: 20 }}>
             {/* Strategy */}
-            <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.sub, marginBottom: 8 }}>{T('bodyGoalStrategy') || '策略'}</Text>
+            <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.sub, marginBottom: 8 }}>{T('bodyGoalStrategy')}</Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
               {BODY_STRATEGIES.map(s => (
                 <TouchableOpacity
@@ -66,7 +66,7 @@ export default function GoalEditLightModal({ visible, onClose, onConfirm, initia
             </View>
 
             {/* Target weight */}
-            <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.sub, marginBottom: 8 }}>{T('bodyTargetWeight') || '目标体重(kg)'}</Text>
+            <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.sub, marginBottom: 8 }}>{T('bodyTargetWeight')}</Text>
             <TextInput
               value={targetWeight}
               onChangeText={setTargetWeight}
@@ -77,7 +77,7 @@ export default function GoalEditLightModal({ visible, onClose, onConfirm, initia
             />
 
             {/* Target body fat */}
-            <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.sub, marginBottom: 8 }}>{T('bodyTargetBodyFat') || '目标体脂(%)'}</Text>
+            <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.sub, marginBottom: 8 }}>{T('bodyTargetBodyFat')}</Text>
             <TextInput
               value={targetBodyFat}
               onChangeText={setTargetBodyFat}
@@ -88,11 +88,11 @@ export default function GoalEditLightModal({ visible, onClose, onConfirm, initia
             />
 
             {/* Goal note */}
-            <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.sub, marginBottom: 8 }}>{T('bodyGoalNote') || '备注'}</Text>
+            <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.sub, marginBottom: 8 }}>{T('bodyGoalNote')}</Text>
             <TextInput
               value={goalNote}
               onChangeText={setGoalNote}
-              placeholder={T('bodyGoalNotePlaceholder') || '可选备注...'}
+              placeholder={T('bodyGoalNotePlaceholder')}
               placeholderTextColor={TH.sub}
               multiline
               style={{ backgroundColor: TH.border + '40', borderRadius: 10, padding: 12, color: TH.text, fontSize: FONT_BODY(), marginBottom: 20, minHeight: 60, textAlignVertical: 'top' }}
@@ -102,7 +102,7 @@ export default function GoalEditLightModal({ visible, onClose, onConfirm, initia
           {/* Confirm button */}
           <View style={{ padding: 20, paddingTop: 0 }}>
             <TouchableOpacity onPress={handleConfirm} style={{ backgroundColor: '#f59e0b', borderRadius: 14, padding: 16, alignItems: 'center' }}>
-              <Text style={{ fontSize: FONT_BUTTON(), fontWeight: '700', color: '#fff' }}>{T('bodySaveGoal') || '保存目标'}</Text>
+              <Text style={{ fontSize: FONT_BUTTON(), fontWeight: '700', color: '#fff' }}>{T('bodySaveGoal')}</Text>
             </TouchableOpacity>
           </View>
         </View>

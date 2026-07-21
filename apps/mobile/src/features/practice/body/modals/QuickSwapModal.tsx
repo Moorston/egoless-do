@@ -54,7 +54,7 @@ export default function QuickSwapModal({ visible, onClose, onConfirm, TH, T }: P
         <View style={{ backgroundColor: TH.cardSolid, borderTopLeftRadius: 24, borderTopRightRadius: 24, maxHeight: '80%' }}>
           {/* Header */}
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('bodySwapExercise') || '换动作'}</Text>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('bodySwapExercise')}</Text>
             <TouchableOpacity onPress={onClose}>
               <X size={24} color={TH.sub} />
             </TouchableOpacity>
@@ -65,7 +65,7 @@ export default function QuickSwapModal({ visible, onClose, onConfirm, TH, T }: P
               <>
                 {/* Quick options */}
                 <View style={{ padding: 20 }}>
-                  <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.sub, marginBottom: 12 }}>{T('bodyQuickSelect') || '快速选择'}</Text>
+                  <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.sub, marginBottom: 12 }}>{T('bodyQuickSelect')}</Text>
                   <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
                     {QUICK_OPTIONS.map(opt => (
                       <TouchableOpacity
@@ -85,7 +85,7 @@ export default function QuickSwapModal({ visible, onClose, onConfirm, TH, T }: P
                   onPress={() => setShowLibrary(true)}
                   style={{ marginHorizontal: 20, marginBottom: 20, paddingVertical: 14, borderRadius: 12, borderWidth: 1, borderColor: '#f59e0b40', alignItems: 'center' }}
                 >
-                  <Text style={{ fontSize: FONT_BODY(), color: '#f59e0b', fontWeight: '600' }}>{T('bodyFromLibrary') || '从动作库选择'}</Text>
+                  <Text style={{ fontSize: FONT_BODY(), color: '#f59e0b', fontWeight: '600' }}>{T('bodyFromLibrary')}</Text>
                 </TouchableOpacity>
               </>
             ) : (
@@ -96,7 +96,7 @@ export default function QuickSwapModal({ visible, onClose, onConfirm, TH, T }: P
                   <TextInput
                     value={search}
                     onChangeText={setSearch}
-                    placeholder={T('bodySearchExercise') || '搜索动作...'}
+                    placeholder={T('bodySearchExercise')}
                     placeholderTextColor={TH.sub}
                     style={{ flex: 1, paddingVertical: 10, marginLeft: 8, color: TH.text, fontSize: FONT_BODY() }}
                   />
@@ -124,7 +124,7 @@ export default function QuickSwapModal({ visible, onClose, onConfirm, TH, T }: P
                   onPress={() => { setShowLibrary(false); setSearch(''); }}
                   style={{ margin: 20, paddingVertical: 12, borderRadius: 10, backgroundColor: TH.border + '60', alignItems: 'center' }}
                 >
-                  <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{T('bodyBack') || '返回'}</Text>
+                  <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{T('bodyBack')}</Text>
                 </TouchableOpacity>
               </>
             )}

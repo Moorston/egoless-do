@@ -79,7 +79,7 @@ export default function TemplatePickerModal({ visible, TH, T, onClose, onSelect 
         <View style={{ backgroundColor: TH.cardSolid, borderTopLeftRadius: 24, borderTopRightRadius: 24, maxHeight: '85%' }}>
           {/* Header */}
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, paddingBottom: 12 }}>
-            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('bodyPlanTemplate') || '从模板导入'}</Text>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('bodyPlanTemplate')}</Text>
             <TouchableOpacity onPress={onClose} style={{ padding: 4 }}>
               <X size={22} color={TH.sub} />
             </TouchableOpacity>
@@ -87,7 +87,7 @@ export default function TemplatePickerModal({ visible, TH, T, onClose, onSelect 
 
           <ScrollView style={{ paddingHorizontal: 20, paddingBottom: 30 }} showsVerticalScrollIndicator={false}>
             <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 16, lineHeight: 20 }}>
-              {T('bodyTemplateHint') || '选择一个预设训练计划，创建后可在编辑器中微调。'}
+              {T('bodyTemplateHint')}
             </Text>
 
             {PLAN_TEMPLATES.map(template => (

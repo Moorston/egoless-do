@@ -5,7 +5,7 @@ import { Modal, View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'rea
 
 import { useTheme, useT } from '../../../../components/UI';
 
-const WEEKDAY_LABELS = ['一', '二', '三', '四', '五', '六', '日'];
+const WEEKDAY_KEYS = ['bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'bodyWeekThu', 'bodyWeekFri', 'bodyWeekSat', 'bodyWeekSun'];
 
 interface Props {
   visible: boolean;
@@ -59,7 +59,7 @@ export default function PlanDetailModal({ visible, plan, onClose }: Props) {
             <View style={[styles.infoRow, { borderColor: TH.border }]}>
               <Text style={{ fontSize: FONT_LABEL(), color: TH.sub }}>{T('bodyPlanStatus')}</Text>
               <Text style={{ fontSize: FONT_BODY(), color: '#f59e0b', fontWeight: '600' }}>
-                {plan.status === 'active' ? (T('bodyPlanActive') || '进行中') : plan.status === 'completed' ? (T('bodyPlanCompleted') || '已完成') : (T('bodyPlanCancelled') || '已暂停')}
+                {plan.status === 'active' ? (T('bodyPlanActive')) : plan.status === 'completed' ? (T('bodyPlanCompleted')) : (T('bodyPlanCancelled'))}
               </Text>
             </View>
 
@@ -67,7 +67,7 @@ export default function PlanDetailModal({ visible, plan, onClose }: Props) {
             <View style={styles.statsRow}>
               <View style={[styles.statCard, { backgroundColor: TH.bg }]}>
                 <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: '#f59e0b' }}>{totalDays}</Text>
-                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyPlanDays') || '天'}</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyPlanDays')}</Text>
               </View>
               <View style={[styles.statCard, { backgroundColor: TH.bg }]}>
                 <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: '#f59e0b' }}>{activeTaskCount}</Text>
@@ -83,10 +83,10 @@ export default function PlanDetailModal({ visible, plan, onClose }: Props) {
               return (
                 <View key={task.weekday} style={[styles.dayRow, { backgroundColor: TH.bg, borderColor: TH.border }]}>
                   <View style={[styles.dayBadge, { backgroundColor: isRest ? TH.border : '#f59e0b20' }]}>
-                    <Text style={{ fontSize: FONT_SMALL(), color: isRest ? TH.sub : '#f59e0b', fontWeight: '600' }}>{WEEKDAY_LABELS[task.weekday - 1]}</Text>
+                    <Text style={{ fontSize: FONT_SMALL(), color: isRest ? TH.sub : '#f59e0b', fontWeight: '600' }}>{T(WEEKDAY_KEYS[task.weekday - 1])}</Text>
                   </View>
                   <Text style={{ fontSize: FONT_BODY(), color: TH.text, flex: 1 }}>
-                    {isRest ? (T('bodyPlanRestDay') || '休息') : exCount > 0 ? T('bodyPlanExercisesCount').replace('{}', String(exCount)) : (T('bodyPlanNoExercises'))}
+                    {isRest ? (T('bodyPlanRestDay')) : exCount > 0 ? T('bodyPlanExercisesCount').replace('{}', String(exCount)) : (T('bodyPlanNoExercises'))}
                   </Text>
                 </View>
               );

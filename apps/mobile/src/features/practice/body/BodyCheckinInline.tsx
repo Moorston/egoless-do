@@ -64,12 +64,12 @@ function BodyCheckinInline({ TH, T, plan, onSave, onSkip }: Props) {
         </View>
       )}
 
-      {renderSlider(T('bodyEnergy') || '能量', energy, setEnergy, '低', '高', '#f59e0b')}
-      {renderSlider(T('bodyPain') || '疼痛', pain, setPain, '无痛', '剧痛', '#ef4444')}
-      {renderSlider(T('bodyComfort') || '舒适', comfort, setComfort, '不适', '舒适', '#10b981')}
-      {renderSlider(T('bodySleepQuality') || '睡眠', sleepQuality, setSleepQuality, '差', '好', '#3b82f6')}
+      {renderSlider(T('bodyEnergy'), energy, setEnergy, '低', '高', '#f59e0b')}
+      {renderSlider(T('bodyPain'), pain, setPain, '无痛', '剧痛', '#ef4444')}
+      {renderSlider(T('bodyComfort'), comfort, setComfort, '不适', '舒适', '#10b981')}
+      {renderSlider(T('bodySleepQuality'), sleepQuality, setSleepQuality, '差', '好', '#3b82f6')}
 
-      <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text, marginBottom: 8 }}>{T('bodyTagsLabel') || '标签'}</Text>
+      <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text, marginBottom: 8 }}>{T('bodyTagsLabel')}</Text>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
         {allTags.map(tag => (
           <TagPill key={tag} label={tag} active={selectedTags.includes(tag)}
@@ -81,7 +81,7 @@ function BodyCheckinInline({ TH, T, plan, onSave, onSkip }: Props) {
 
       <TextInput
         style={{ backgroundColor: TH.card, borderRadius: 10, padding: 12, color: TH.text, fontSize: FONT_BODY(), borderWidth: 1, borderColor: TH.border, minHeight: 60, marginBottom: 16, textAlignVertical: 'top' }}
-        placeholder={T('bodyCheckinNotePlaceholder') || '补充说明...'}
+        placeholder={T('bodyCheckinNotePlaceholder')}
         placeholderTextColor={TH.sub}
         multiline maxLength={500}
         value={note} onChangeText={setNote}
