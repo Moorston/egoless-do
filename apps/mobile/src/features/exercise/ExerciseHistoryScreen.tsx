@@ -245,7 +245,7 @@ export default function ExerciseHistoryScreen() {
         </TouchableOpacity>
         {sportKeys.map(([key, { icon, count }]) => {
           const cat = EXERCISE_CATEGORIES.find(c => c.key === key);
-          const label = cat ? T(cat.i18nKey) : key;
+          const label = key === COMBO_WORKOUT_SPORT_KEY ? T('bodyComboTraining') : (cat ? T(cat.i18nKey) : key);
           const active = selectedSport === key;
           return (
             <TouchableOpacity

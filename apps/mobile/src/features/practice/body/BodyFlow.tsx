@@ -293,7 +293,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
                     {flowState.comboExercises.map((ex, i) => (
                       <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 3 }}>
                         <Text style={{ fontSize: FONT_SMALL() }}>{ex.icon}</Text>
-                        <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }} numberOfLines={1}>{ex.sportKey}</Text>
+                        <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }} numberOfLines={1}>{(() => { const cat = EXERCISE_CATEGORIES.find(c => c.key === ex.sportKey); return cat ? T(cat.i18nKey) : ex.sportKey; })()}</Text>
                         <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
                           {Math.floor(ex.durationSec / 60)}:{(ex.durationSec % 60).toString().padStart(2, '0')}
                         </Text>

@@ -1,7 +1,7 @@
 // ─── ComboReportPage ─────────────────────────────────────────
 // 组合训练汇总报告页：展示总时长、总卡路里、各动作完成列表
 
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, scaleFontSize, type Theme } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, scaleFontSize, EXERCISE_CATEGORIES, type Theme } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { CheckCircle2, ChevronRight, Clock, Flame, List } from 'lucide-react-native';
 import React from 'react';
@@ -71,7 +71,7 @@ export default function ComboReportPage({ totalDurationSec, totalCalories, exerc
                 <Text style={styles.exerciseIcon}>{ex.icon}</Text>
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.exerciseName, { color: TH.text }]} numberOfLines={1}>
-                    {ex.sportKey}
+                    {(() => { const cat = EXERCISE_CATEGORIES.find(c => c.key === ex.sportKey); return cat ? T(cat.i18nKey) : ex.sportKey; })()}
                   </Text>
                   {ex.reps > 0 && (
                     <Text style={[styles.exerciseMeta, { color: TH.sub }]}>
