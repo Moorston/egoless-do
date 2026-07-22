@@ -6,6 +6,7 @@
 // Supports DayOverride: checks active BodyTrainingPlan for today's
 // date override (skip/swap/adjust/custom).
 import type { BodyPlan, BodyTrainingPlan, DayOverride, ExerciseDef } from '@egoless-do/core';
+import { buildExerciseLibrary } from '@egoless-do/core';
 import { useMemo } from 'react';
 
 import { useShallowStore } from '../../../../store/useAppStore';
@@ -78,6 +79,15 @@ export function useTodayPlan(): TodayPlanData {
     } else {
       const task = activeTrainingPlan?.tasks.find(t => t.weekday === weekday);
       todayExercises = task?.exercises;
+    }
+
+    // 回退: 如果 task 没有 exercises 但有 sportKey, 从动作库查找
+    if (!todayExercises || todayExercises.length === 0) {
+      const task = activeTrainingPlan?.tasks.find(t => t.weekday === weekday);
+      if (task?.sportKey && task.sportKey !== 'rest') {
+        const library = buildExerciseLibrary();
+        todayExercises = library.filter(ex => ex.category === task.sportKey);
+      }
     }
 
     return {
