@@ -53,9 +53,10 @@ export function useTodayPlan(): TodayPlanData {
 
     // 从训练计划中推导今日方案（当旧 bodyPlan 无数据时）
     const trainingTodayTask = activeTrainingPlan?.tasks.find(t => t.weekday === weekday);
-    let todayPlan = oldTodayPlan ?? (trainingTodayTask?.sportKey && trainingTodayTask.sportKey !== 'rest'
+    // 当有训练计划时，优先使用训练计划的 task 数据，确保 label 和 exercises 一致
+    let todayPlan = trainingTodayTask?.sportKey && trainingTodayTask.sportKey !== 'rest'
       ? { id: `training-${weekday}`, weekday, part: trainingTodayTask.sportKey, note: trainingTodayTask.note } as BodyPlan
-      : undefined);
+      : (oldTodayPlan ?? undefined);
 
     // Resolve exercises from training plan task (with override applied)
     let todayExercises: ExerciseDef[] | undefined;
