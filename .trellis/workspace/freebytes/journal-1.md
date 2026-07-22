@@ -1542,3 +1542,36 @@ StatsScreen计划任务进度改为countItemDoneDays动态计算；补全planIte
 ### Next Steps
 
 - None - task complete
+
+
+## Session 44: BodyFlow 完成状态 UI 重构 — 统计横幅/动作列表/数据流
+
+**Date**: 2026-07-23
+**Task**: BodyFlow 完成状态 UI 重构 — 统计横幅/动作列表/数据流
+**Branch**: `master`
+
+### Summary
+
+1. 新增 practiceExercises 字段到 FlowState / BodyFlowPersistedState\n2. SportPage 单运动模式保存 practiceExercises 到 flowState\n3. 完成状态增加统计横幅（总时长/动作数/总消耗）\n4. 优先显示实际完成的练习列表（comboExercises > practiceExercises > planExercises）\n5. 增大字号和行间距，添加分隔线\n6. 移除 navigateToBreathing 中无效的 setBreathingCompleted 调用
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `ead2611a` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
