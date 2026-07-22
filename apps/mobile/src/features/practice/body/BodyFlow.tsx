@@ -276,7 +276,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
                     {planExercises.map((ex, i) => (
                       <View key={ex.id || i} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 3 }}>
                         <Text style={{ fontSize: FONT_SMALL() }}>{ex.icon}</Text>
-                        <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }} numberOfLines={1}>{ex.nameZh}</Text>
+                        <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }} numberOfLines={1}>{ex.nameZh || ex.sportKey}</Text>
                         {ex.defaultSets && ex.defaultReps && (
                           <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{ex.defaultSets}×{ex.defaultReps}</Text>
                         )}
@@ -293,7 +293,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
                     {flowState.comboExercises.map((ex, i) => (
                       <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 3 }}>
                         <Text style={{ fontSize: FONT_SMALL() }}>{ex.icon}</Text>
-                        <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }} numberOfLines={1}>{ex.nameZh}</Text>
+                        <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }} numberOfLines={1}>{ex.nameZh || ex.sportKey}</Text>
                         <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
                           {Math.floor(ex.durationSec / 60)}:{(ex.durationSec % 60).toString().padStart(2, '0')}
                         </Text>
