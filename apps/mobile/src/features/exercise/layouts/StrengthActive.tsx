@@ -131,12 +131,12 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
         {/* Set history cards */}
         {sets.length > 0 && (
           <View style={s.setHistoryRow}>
-            {sets.slice(-4).map((setReps, i) => {
+            {sets.slice(-4).map((setItem, i) => {
               const idx = sets.length - 4 + i;
               return (
-                <View key={idx} style={[s.setHistoryCard, plannedReps > 0 && setReps >= plannedReps && s.setHistoryCardDone]}>
+                <View key={idx} style={[s.setHistoryCard, plannedReps > 0 && setItem.reps >= plannedReps && s.setHistoryCardDone]}>
                   <Text style={s.setHistoryText}>
-                    {T('exerciseSet').replace('{n}', String(idx + 1))}: {setReps}
+                    {T('exerciseSet').replace('{n}', String(idx + 1))}: {setItem.reps}
                   </Text>
                 </View>
               );
