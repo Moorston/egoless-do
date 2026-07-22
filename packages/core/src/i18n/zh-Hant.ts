@@ -760,7 +760,7 @@ export const zhHant: I18nKeys = {
   giveTotal:'累計', giveMonth:'本月', giveWeek:'本週', giveRecord:'記錄一次佈施', giveRecent:'最近善行',
   giveHistory:'佈施歷史', giveContent:'做了什麼？', giveContentPlaceholder:'記錄你的善行...', giveMotivation:'佈施心念（可選）',
   giveMotivationPlaceholder:'記錄佈施時的發心...', giveAmount:'金額（元）', giveAnonymous:'匿名佈施', giveAnonymousHint:'佈施不留名，功德不可思量',
-  giveSave:'記錄善行', giveCancel:'取消', giveDistribution:'類型分佈', giveType:'類型',
+  giveSave:'記錄善行', giveCancel:'取消', giveDistribution:'類型分佈', giveType:'類型', giveLongestStreak:'最長連續', giveTimeline:'善行時間線',
   practiceOtherSound:'音療', practiceOtherSoundDesc:'聲音療癒',
   practiceOtherRead:'閱讀', practiceOtherReadDesc:'聞思修學',
 
