@@ -281,6 +281,9 @@ export const SPORT_GROUPS: SportGroup[] = [
 
 export const ALL_SPORTS = SPORT_GROUPS.flatMap(g => g.items);
 
+/** 组合训练聚合记录的 sportKey */
+export const COMBO_WORKOUT_SPORT_KEY = 'combo_workout';
+
 // Sport type classification
 export type SportType = 'gps' | 'timed' | 'repetition';
 

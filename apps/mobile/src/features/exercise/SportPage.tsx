@@ -1,4 +1,4 @@
-import { SPORT_BG_COLORS, COLORS, getSportType, TARGET_PRESETS, estimateCalories, MET_MAP, getSportExperienceType, createLogger, EXERCISE_CATEGORIES, type ExerciseDef } from '@egoless-do/core';
+import { SPORT_BG_COLORS, COLORS, getSportType, TARGET_PRESETS, estimateCalories, MET_MAP, getSportExperienceType, createLogger, EXERCISE_CATEGORIES, COMBO_WORKOUT_SPORT_KEY, type ExerciseDef } from '@egoless-do/core';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useKeepAwake } from 'expo-keep-awake';
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
@@ -444,7 +444,7 @@ export default function SportPage() {
       // 保存聚合组合训练记录
       if (isComboMode && comboState.current.results.length > 0) {
         addExercise({
-          sportKey: 'combo_workout',
+          sportKey: COMBO_WORKOUT_SPORT_KEY,
           sportIcon: '🏋️',
           durationSec: comboState.current.totalDurationSec,
           timestamp: Date.now(),
