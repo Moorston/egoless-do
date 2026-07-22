@@ -361,6 +361,38 @@ export default function SportPage() {
   const goToNextExercise = useCallback(() => {
     if (!isComboMode || !comboExercises) return;
 
+    // 验证当前动作是否完成
+    const ex = currentComboExercise;
+    if (ex) {
+      if (ex.type === 'strength') {
+        if (sets.sets.length < 1) {
+          Alert.alert(
+            T('bodyExerciseIncomplete'),
+            T('bodyExerciseCompleteHint'),
+            [{ text: T('bodyCancel'), style: 'cancel' }]
+          );
+          return;
+        }
+      } else if (ex.defaultDurationSec) {
+        const minSec = Math.round(ex.defaultDurationSec * 0.3);
+        if (timer.sec < minSec) {
+          Alert.alert(
+            T('bodyExerciseIncomplete'),
+            T('bodyExerciseCompleteDurationHint').replace('{percent}', '30').replace('{min}', String(minSec)),
+            [{ text: T('bodyCancel'), style: 'cancel' }]
+          );
+          return;
+        }
+      } else if (timer.sec <= 5) {
+        Alert.alert(
+          T('bodyExerciseIncomplete'),
+          T('bodyExerciseCompleteMinHint'),
+          [{ text: T('bodyCancel'), style: 'cancel' }]
+        );
+        return;
+      }
+    }
+
     // 1. 保存当前动作结果
     const finalReps = sportType === 'repetition' ? sets.totalReps : undefined;
     const entry: Record<string, unknown> = {
@@ -717,11 +749,11 @@ export default function SportPage() {
     );
   }
 
-  // ── 统一返回：pageContent + header 绝对定位底部叠加 ──
+  // ── 统一返回：pageContent + header（仅 transition 页显示）──
   return (
     <View style={{ flex: 1 }}>
       {pageContent}
-      {isComboMode && comboExercises && (
+      {isComboMode && comboExercises && (page === 'prep' || page === 'transition') && (
         <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
           <ComboProgressHeader
             exercises={comboExercises}
