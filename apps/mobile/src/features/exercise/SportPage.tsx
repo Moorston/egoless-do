@@ -365,31 +365,37 @@ export default function SportPage() {
     const ex = currentComboExercise;
     if (ex) {
       if (ex.type === 'strength') {
-        if (sets.sets.length < 1) {
+        // 力量训练: 必须完成所有计划组数
+        const plannedSets = ex.defaultSets ?? 1;
+        if (sets.sets.length < plannedSets) {
           Alert.alert(
             T('bodyExerciseIncomplete'),
-            T('bodyExerciseCompleteHint'),
+            `${T('bodyExerciseCompleteHint') || '请完成所有计划组数'} (${sets.sets.length}/${plannedSets})`,
+            [{ text: T('bodyCancel'), style: 'cancel' }]
+          );
+          return;
+        }
+        // 检查组数是否达标
+        const incompleteSet = sets.sets.find(s => s.reps < (ex.defaultReps ?? 1));
+        if (incompleteSet) {
+          Alert.alert(
+            T('bodyExerciseIncomplete'),
+            T('bodyExerciseCompleteRepsHint') || '请完成每组计划次数',
             [{ text: T('bodyCancel'), style: 'cancel' }]
           );
           return;
         }
       } else if (ex.defaultDurationSec) {
-        const minSec = Math.round(ex.defaultDurationSec * 0.3);
+        // 有氧/传统: 必须完成 80% 以上时长
+        const minSec = Math.round(ex.defaultDurationSec * 0.8);
         if (timer.sec < minSec) {
           Alert.alert(
             T('bodyExerciseIncomplete'),
-            T('bodyExerciseCompleteDurationHint').replace('{percent}', '30').replace('{min}', String(minSec)),
+            T('bodyExerciseCompleteDurationHint').replace('{percent}', '80').replace('{min}', String(minSec)),
             [{ text: T('bodyCancel'), style: 'cancel' }]
           );
           return;
         }
-      } else if (timer.sec <= 5) {
-        Alert.alert(
-          T('bodyExerciseIncomplete'),
-          T('bodyExerciseCompleteMinHint'),
-          [{ text: T('bodyCancel'), style: 'cancel' }]
-        );
-        return;
       }
     }
 
@@ -695,6 +701,7 @@ export default function SportPage() {
     // Non-GPS active page — route to layout by experience type
     const layoutProps = {
       icon: effectiveIcon, sportName: effectiveSportLabel, experienceType, sportType, bg,
+      currentExercise: isComboMode ? currentComboExercise : undefined,
       sec: timer.sec, active: timer.active,
       topInset: isComboMode ? insets.top : 56,
       sets: sets.sets, currentSetReps: sets.currentSetReps, totalReps: sets.totalReps, currentSet,

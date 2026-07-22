@@ -1087,7 +1087,7 @@ export const en: I18nKeys = {
   bodyExerciseComplete:'Exercise Complete!', bodyRestCountdown:'Resting', bodySkipRest:'Skip Rest',
   bodyAllDone:'All Done!', bodyComboCompleteHint:'All exercises completed',
   bodyNextExercise:'Next Exercise', bodyStartNext:'Start Next', bodyJumpTo:'Jump',
-  bodyExerciseIncomplete:'Exercise Incomplete', bodyExerciseCompleteHint:'Please complete at least 1 set before moving on', bodyExerciseCompleteDurationHint:'Please complete at least {percent}% of duration ({min}s)', bodyExerciseCompleteMinHint:'Please complete this exercise before moving on',
+  bodyExerciseIncomplete:'Exercise Incomplete', bodyExerciseCompleteHint:'Please complete all planned sets', bodyExerciseCompleteRepsHint:'Please complete planned reps for each set', bodyExerciseCompleteDurationHint:'Please complete at least {percent}% of duration ({min}s)', bodyExerciseCompleteMinHint:'Please complete this exercise before moving on',
   bodyTodayPlan:'Today\'s Plan', bodyTodayPlanEmpty:'No plan set for today', bodyTodayPlanRest:'Rest day',
   bodyStartPractice:'Start', bodyStartToday:'Start Today', bodyToday:'Today',
   bodyWeekProgress:'Week progress', bodyDayCompleted:'Done', bodyDayRestShort:'Rest',

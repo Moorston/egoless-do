@@ -31,10 +31,13 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
     onPressInPauseLong, onPressOutPauseLong, pauseHoldAnim,
     calories, softTargetReached, softTargetLabel, softTargetProgress, softTarget,
     musicTrack, musicIsPlaying, musicLoop, onMusicTogglePlay, onMusicToggleLoop, onMusicPressTrackName,
-    T, topInset,
+    T, topInset, currentExercise,
   } = props;
 
   const lastSetReps = sets.length > 0 ? sets[sets.length - 1].reps : null;
+  const plannedSets = currentExercise?.defaultSets ?? 0;
+  const plannedReps = currentExercise?.defaultReps ?? 0;
+  const allSetsCompleted = plannedSets > 0 && sets.length >= plannedSets;
 
   return (
     <LinearGradient colors={['#2e1a1a', '#1f0f0f', '#150a0a']} style={s.root}>
@@ -58,9 +61,15 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
         onToggleSoundPicker={onToggleSoundPicker} onSelectSound={onSelectSound}
         topInset={topInset}
         rightSlot={
-          <Text style={s.setLabel}>
-            {T('exerciseSet').replace('{n}', String(currentSet))} · {sets.reduce((s, set) => s + set.reps, 0)} {T('exerciseReps')}
-          </Text>
+          <View style={{ alignItems: 'flex-end' }}>
+            {currentExercise && (
+              <Text style={s.exerciseName} numberOfLines={1}>{currentExercise.nameZh}</Text>
+            )}
+            <Text style={s.setLabel}>
+              {currentExercise ? `${sets.length}/${plannedSets} ${T('exerciseSet')}` : T('exerciseSet').replace('{n}', String(currentSet))}
+              {plannedReps ? ` × ${plannedReps}` : ''}
+            </Text>
+          </View>
         }
       />
 
@@ -107,32 +116,34 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
           </Animated.View>
         </View>
 
-        <Text style={s.repsLabel}>{T('exerciseReps')}</Text>
+        <Text style={s.repsLabel}>{plannedReps ? `${currentSetReps}/${plannedReps} ${T('exerciseReps')}` : T('exerciseReps')}</Text>
 
         {/* Complete set button */}
         {currentSetReps > 0 && (
           <TouchableOpacity onPress={handleCompleteSet}
             style={s.completeSetBtn}>
-            <Text style={s.completeSetLabel}>{T('exerciseSetComplete')}</Text>
+            <Text style={s.completeSetLabel}>
+              {allSetsCompleted ? (T('bodyFlowFinish') || '完成') : T('exerciseSetComplete')}
+            </Text>
           </TouchableOpacity>
         )}
 
         {/* Set history cards */}
         {sets.length > 0 && (
           <View style={s.setHistoryRow}>
-            {sets.slice(-3).map((s, i) => {
-              const idx = sets.length - 3 + i;
+            {sets.slice(-4).map((setReps, i) => {
+              const idx = sets.length - 4 + i;
               return (
-                <View key={idx} style={s.setHistoryCard}>
+                <View key={idx} style={[s.setHistoryCard, plannedReps > 0 && setReps >= plannedReps && s.setHistoryCardDone]}>
                   <Text style={s.setHistoryText}>
-                    {T('exerciseSet').replace('{n}', String(idx + 1))}: {s.reps}
+                    {T('exerciseSet').replace('{n}', String(idx + 1))}: {setReps}
                   </Text>
                 </View>
               );
             })}
-            {sets.length > 3 && (
+            {sets.length > 4 && (
               <View style={s.setHistoryOverflowCard}>
-                <Text style={s.setHistoryOverflowText}>+{sets.length - 3}</Text>
+                <Text style={s.setHistoryOverflowText}>+{sets.length - 4}</Text>
               </View>
             )}
           </View>
@@ -203,6 +214,7 @@ const s = StyleSheet.create({
   bottomStat: { alignItems: 'center', flex: 1 },
 
   /* Text */
+  exerciseName: { fontSize: FONT_SUB_SIZE, color: 'rgba(255,255,255,.7)', fontWeight: '600', marginBottom: 2 },
   setLabel: { fontSize: FONT_SUB_SIZE, color: 'rgba(255,255,255,.5)' },
   quickPlusLabel: { color: '#fff', fontWeight: '700', fontSize: FONT_BODY_SIZE },
   mainReps: { fontSize: FONT_HERO_SIZE + 8, fontWeight: '900', color: '#fff', fontVariant: ['tabular-nums'], minWidth: 80, textAlign: 'center' },
@@ -225,6 +237,7 @@ const s = StyleSheet.create({
 
   /* Cards */
   setHistoryCard: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12, backgroundColor: 'rgba(255,255,255,.08)' },
+  setHistoryCardDone: { backgroundColor: `${COLORS.GREEN}20`, borderColor: COLORS.GREEN, borderWidth: 1 },
   setHistoryOverflowCard: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12, backgroundColor: 'rgba(255,255,255,.05)' },
 
   /* Progress */
