@@ -1,7 +1,7 @@
-import { FONT_TITLE, FONT_SUB, FONT_SMALL, ALL_SPORTS, type BodyPlanTask } from '@egoless-do/core';
+import { FONT_TITLE, FONT_SUB, FONT_SMALL, ALL_SPORTS, type BodyPlanTask, type ExerciseDef } from '@egoless-do/core';
 import { useFocusEffect, useRoute, RouteProp } from '@react-navigation/native';
-import React, { useState, useCallback, useMemo } from 'react';
-import { View, ScrollView } from 'react-native';
+import React, { useState, useCallback, useMemo, useRef } from 'react';
+import { View, ScrollView, Animated } from 'react-native';
 
 import { useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
@@ -9,10 +9,15 @@ import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
 
 import BodyDashboard from './body/BodyDashboard';
+import BodyFlow from './body/BodyFlow';
 import { useTodayPlan } from './body/hooks/useTodayPlan';
 import { useBodyFlowState } from './body/hooks/useBodyFlowState';
 
-// ── Page ──
+// ── Page state machine ──
+type BodyPage = 'dashboard' | 'flow';
+
+const FADE_DURATION = 350;
+
 export default function BodyScreen() {
   const nav = useRootNavigation();
   const TH = useTheme();
@@ -21,14 +26,48 @@ export default function BodyScreen() {
     bodyTrainingPlans: s.bodyTrainingPlans,
     setBodyFlowState: s.setBodyFlowState,
   }));
+  const [page, setPage] = useState<BodyPage>('dashboard');
   const { todayPlan, weekday: todayWeekday, todayOverride, todayExercises, activeTrainingPlan } = useTodayPlan();
   const [activePlanId, setActivePlanId] = useState<string | null>(null);
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const transitioningRef = useRef(false);
   const { flowState } = useBodyFlowState();
+
+  // Animated page transition
+  const transitionTo = useCallback((target: BodyPage, extra?: () => void) => {
+    if (transitioningRef.current) return;
+    transitioningRef.current = true;
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: FADE_DURATION / 2,
+      useNativeDriver: true,
+    }).start(() => {
+      setPage(target);
+      extra?.();
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: FADE_DURATION / 2,
+        useNativeDriver: true,
+      }).start(() => {
+        transitioningRef.current = false;
+      });
+    });
+  }, [fadeAnim]);
+
+  // Find today's training plan task
+  const todayTrainingTask = useMemo(() => {
+    if (!activePlanId) return null;
+    const plan = (bodyTrainingPlans ?? []).find(p => p.id === activePlanId && !p.deleted && p.status === 'active');
+    if (!plan) return null;
+    const task = plan.tasks.find(t => t.weekday === todayWeekday);
+    if (!task) return null;
+    return { planId: plan.id, planName: plan.name, task };
+  }, [activePlanId, bodyTrainingPlans, todayWeekday]);
 
   // 检测组合模式
   const isComboMode = !!todayExercises && todayExercises.length > 1;
 
-  const handleGoToSport = useCallback((sportKey: string) => {
+  const handleGoToSport = useCallback((sportKey: string, exercises?: ExerciseDef[]) => {
     const sport = ALL_SPORTS.find(s => s.key === sportKey || s.keyEn === sportKey);
     const navParams: Record<string, unknown> = {
       key: sportKey,
@@ -37,8 +76,8 @@ export default function BodyScreen() {
     };
 
     // 组合模式：传递全部动作到 SportPage
-    if (isComboMode && todayExercises) {
-      navParams.exercises = todayExercises;
+    if (exercises && exercises.length > 1) {
+      navParams.exercises = exercises;
       navParams.comboPlanId = activePlanId ?? undefined;
     } else if (activePlanId) {
       const plan = (bodyTrainingPlans ?? []).find(p => p.id === activePlanId && !p.deleted && p.status === 'active');
@@ -58,19 +97,37 @@ export default function BodyScreen() {
 
   const startFlowWithPlan = useCallback((planId: string) => {
     setActivePlanId(planId);
-  }, []);
+    transitionTo('flow');
+  }, [transitionTo]);
 
   return (
     <View style={{ flex: 1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Body" />
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
-        <BodyDashboard
-          onFlowStart={() => {}}
-          onFlowStartWithPlan={startFlowWithPlan}
-          onGoToSport={handleGoToSport}
-          onGoToBreathing={handleGoToBreathing}
-        />
-      </ScrollView>
+      <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
+        <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
+          {page === 'flow' ? (
+            <BodyFlow
+              TH={TH}
+              T={T}
+              store={{ upsertBodyCheckin: useShallowStore(s => s.upsertBodyCheckin) }}
+              todayPlan={todayPlan}
+              trainingPlanTask={todayTrainingTask}
+              todayOverride={todayOverride}
+              returnTick={0}
+              onGoToSport={handleGoToSport}
+              onGoToBreathing={handleGoToBreathing}
+              onExit={() => { setActivePlanId(null); transitionTo('dashboard'); }}
+            />
+          ) : (
+            <BodyDashboard
+              onFlowStart={() => transitionTo('flow')}
+              onFlowStartWithPlan={startFlowWithPlan}
+              onGoToSport={handleGoToSport}
+              onGoToBreathing={handleGoToBreathing}
+            />
+          )}
+        </ScrollView>
+      </Animated.View>
     </View>
   );
 }
