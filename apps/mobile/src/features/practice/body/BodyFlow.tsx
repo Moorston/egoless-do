@@ -269,28 +269,40 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
               <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('bodyFlowPractice')}</Text>
             </View>
             {practiceCompleted ? (
-              <View style={{ alignItems: 'center', paddingVertical: 12 }}>
-                <CheckCircle2 size={48} color="#10b981" />
-                <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#10b981', marginTop: 8 }}>{T('bodyFlowPracticeDone')}</Text>
-                {/* 组合锻炼汇总 */}
+              <View>
+                <View style={{ alignItems: 'center', paddingVertical: 12 }}>
+                  <CheckCircle2 size={48} color="#10b981" />
+                  <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#10b981', marginTop: 8 }}>{T('bodyFlowPracticeDone')}</Text>
+                </View>
+                {/* 已完成动作列表 */}
+                {planExercises.length > 0 && (
+                  <View style={{ backgroundColor: `${TH.border}30`, borderRadius: 12, padding: 12, marginTop: 8 }}>
+                    {planExercises.map((ex, i) => (
+                      <View key={ex.id || i} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 3 }}>
+                        <Text style={{ fontSize: FONT_SMALL() }}>{ex.icon}</Text>
+                        <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }} numberOfLines={1}>{ex.nameZh}</Text>
+                        {ex.defaultSets && ex.defaultReps && (
+                          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{ex.defaultSets}×{ex.defaultReps}</Text>
+                        )}
+                      </View>
+                    ))}
+                  </View>
+                )}
+                {/* 组合锻炼汇总（使用具体动作名而非分类名） */}
                 {flowState?.isCombo && flowState.comboExercises && flowState.comboExercises.length > 0 && (
                   <View style={{ marginTop: 12, width: '100%', backgroundColor: `${TH.border}30`, borderRadius: 12, padding: 12 }}>
                     <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 6 }}>
                       {flowState.comboExercises.length} {T('bodyPlanUnitExercise')}
                     </Text>
-                    {flowState.comboExercises.map((ex, i) => {
-                      const cat = EXERCISE_CATEGORIES.find(c => c.key === ex.sportKey);
-                      const name = cat ? T(cat.i18nKey) : ex.sportKey;
-                      return (
-                        <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 3 }}>
-                          <Text style={{ fontSize: FONT_SMALL() }}>{ex.icon}</Text>
-                          <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }} numberOfLines={1}>{name}</Text>
-                          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
-                            {Math.floor(ex.durationSec / 60)}:{(ex.durationSec % 60).toString().padStart(2, '0')}
-                          </Text>
-                        </View>
-                      );
-                    })}
+                    {flowState.comboExercises.map((ex, i) => (
+                      <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 3 }}>
+                        <Text style={{ fontSize: FONT_SMALL() }}>{ex.icon}</Text>
+                        <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }} numberOfLines={1}>{ex.sportKey}</Text>
+                        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
+                          {Math.floor(ex.durationSec / 60)}:{(ex.durationSec % 60).toString().padStart(2, '0')}
+                        </Text>
+                      </View>
+                    ))}
                   </View>
                 )}
               </View>
