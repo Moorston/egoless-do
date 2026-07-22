@@ -168,6 +168,8 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
   }, [onGoToBreathing]);
 
   const exerciseLibrary = useMemo(() => buildExerciseLibrary(), []);
+
+  const sportInfo = useMemo(() => {
     if (!selectedSportKey) return null;
     return ALL_SPORTS.find(s => s.key === selectedSportKey || s.keyEn === selectedSportKey)
       ?? EXERCISE_CATEGORIES.find(c => c.key === selectedSportKey);
