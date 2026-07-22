@@ -406,7 +406,7 @@ export default function SportPage() {
     const result: ExerciseResult = {
       sportKey: effectiveSportName,
       icon: effectiveIcon,
-      nameZh: currentComboExercise?.nameZh || buildExerciseLibrary().find(lib => lib.category === currentComboExercise?.category)?.nameZh || currentComboExercise?.sportKey || effectiveSportName,
+      nameZh: currentComboExercise?.nameZh || comboExercises![comboState.current.currentIndex]?.nameZh || buildExerciseLibrary().find(lib => lib.category === currentComboExercise?.category || lib.category === effectiveSportName)?.nameZh || effectiveSportName,
       durationSec: timer.sec,
       calories,
       reps: finalReps ?? 0,
