@@ -359,48 +359,34 @@ export default function SportPage() {
     return 30;
   }, []);
 
+  // ── 组合模式：验证当前动作是否完成（在用户尝试结束时调用）
+  const validateCurrentExercise = useCallback((): { valid: boolean; message?: string } => {
+    if (!isComboMode) return { valid: true };
+    const ex = currentComboExercise;
+    if (!ex) return { valid: true };
+    if (ex.type === 'strength') {
+      const plannedSets = ex.defaultSets ?? 1;
+      if (sets.sets.length < plannedSets) {
+        return { valid: false, message: `${T('bodyExerciseCompleteHint') || '请完成所有计划组数'} (${sets.sets.length}/${plannedSets})` };
+      }
+      const incompleteSet = sets.sets.find(s => s.reps < (ex.defaultReps ?? 1));
+      if (incompleteSet) {
+        return { valid: false, message: T('bodyExerciseCompleteRepsHint') || '请完成每组计划次数' };
+      }
+    } else if (ex.defaultDurationSec) {
+      const minSec = Math.round(ex.defaultDurationSec * 0.8);
+      if (timer.sec < minSec) {
+        return { valid: false, message: (T('bodyExerciseCompleteDurationHint') || '请至少完成 {percent}% 时长 ({min}秒)').replace('{percent}', '80').replace('{min}', String(minSec)) };
+      }
+    }
+    return { valid: true };
+  }, [isComboMode, currentComboExercise, sets, timer.sec, T]);
+
   // ── 组合模式：保存当前动作，前进到下一个 ──
   const goToNextExercise = useCallback(() => {
     if (!isComboMode || !comboExercises) return;
 
-    // 验证当前动作是否完成
-    const ex = currentComboExercise;
-    if (ex) {
-      if (ex.type === 'strength') {
-        // 力量训练: 必须完成所有计划组数
-        const plannedSets = ex.defaultSets ?? 1;
-        if (sets.sets.length < plannedSets) {
-          Alert.alert(
-            T('bodyExerciseIncomplete'),
-            `${T('bodyExerciseCompleteHint')} (${sets.sets.length}/${plannedSets})`,
-            [{ text: T('bodyCancel'), style: 'cancel' }]
-          );
-          return;
-        }
-        // 检查组数是否达标
-        const incompleteSet = sets.sets.find(s => s.reps < (ex.defaultReps ?? 1));
-        if (incompleteSet) {
-          Alert.alert(
-            T('bodyExerciseIncomplete'),
-            T('bodyExerciseCompleteRepsHint'),
-            [{ text: T('bodyCancel'), style: 'cancel' }]
-          );
-          return;
-        }
-      } else if (ex.defaultDurationSec) {
-        // 有氧/传统: 必须完成 80% 以上时长
-        const minSec = Math.round(ex.defaultDurationSec * 0.8);
-        if (timer.sec < minSec) {
-          Alert.alert(
-            T('bodyExerciseIncomplete'),
-            T('bodyExerciseCompleteDurationHint').replace('{percent}', '80').replace('{min}', String(minSec)),
-            [{ text: T('bodyCancel'), style: 'cancel' }]
-          );
-          return;
-        }
-      }
-    }
-
+    // 注意：验证已在 handleFinishExercise 中完成，此处直接保存
     // 1. 保存当前动作结果
     const finalReps = sportType === 'repetition' ? sets.totalReps : undefined;
     const entry = {
@@ -569,6 +555,22 @@ export default function SportPage() {
   // ── 页面内容 ──
   let pageContent: React.ReactNode;
 
+  // ── 组合模式：用户尝试结束当前动作（验证 → 进入报告页）
+  const handleFinishExercise = useCallback(() => {
+    if (isComboMode) {
+      const { valid, message } = validateCurrentExercise();
+      if (!valid) {
+        Alert.alert(
+          T('bodyExerciseIncomplete') || '动作未完成',
+          message,
+          [{ text: T('bodyCancel') || '取消', style: 'cancel' }]
+        );
+        return;
+      }
+    }
+    timer.handleHoldEnd();
+  }, [isComboMode, validateCurrentExercise, timer.handleHoldEnd, T]);
+
   if (page === 'prep') {
     pageContent = (
       <>
@@ -586,7 +588,7 @@ export default function SportPage() {
           amapReady={amapReady} MapView={MapView} Polyline={Polyline} mapRef={mapRef}
           segmentPaces={segmentPaces}
           handleGo={handleGo} handlePause={handlePause} handleContinue={handleContinue}
-          handleHoldStart={timer.handleHoldStart} handleHoldEnd={timer.handleHoldEnd}
+          handleHoldStart={timer.handleHoldStart} handleHoldEnd={handleFinishExercise}
           handleSave={handleSave} onGoBack={isComboMode ? handleComboBack : () => nav.goBack()}
           exerciseLog={(exerciseLog ?? []).filter(e => !e.deleted)}
           musicTrack={musicTrack} onPressMusic={() => setShowMusicPicker(true)}
@@ -620,7 +622,7 @@ export default function SportPage() {
           amapReady={amapReady} MapView={MapView} Polyline={Polyline} mapRef={mapRef}
           segmentPaces={segmentPaces}
           handleGo={handleGo} handlePause={handlePause} handleContinue={handleContinue}
-          handleHoldStart={timer.handleHoldStart} handleHoldEnd={timer.handleHoldEnd}
+          handleHoldStart={timer.handleHoldStart} handleHoldEnd={handleFinishExercise}
           handleSave={handleSave} onGoBack={isComboMode ? handleComboBack : () => nav.goBack()} setPage={timer.setPage}
           exerciseLog={(exerciseLog ?? []).filter(e => !e.deleted)}
           TH={TH} T={T}
@@ -645,7 +647,7 @@ export default function SportPage() {
           amapReady={amapReady} MapView={MapView} Polyline={Polyline} mapRef={mapRef}
           segmentPaces={segmentPaces}
           handleGo={handleGo} handlePause={handlePause} handleContinue={handleContinue}
-          handleHoldStart={timer.handleHoldStart} handleHoldEnd={timer.handleHoldEnd}
+          handleHoldStart={timer.handleHoldStart} handleHoldEnd={handleFinishExercise}
           handleSave={handleSave} onGoBack={isComboMode ? handleComboBack : () => nav.goBack()}
           exerciseLog={(exerciseLog ?? []).filter(e => !e.deleted)}
           TH={TH} T={T}
