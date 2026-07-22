@@ -1,4 +1,4 @@
-import { dateStr, type AgeBracket, type BodyGoal, type BodyTrainingPlan, type ExerciseEntry, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_LABEL, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BADGE, generateSuggestions, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, BODY_TAGS_PRESET, ALL_SPORTS, type DayOverride, type ExerciseDef, type BodyCheckin } from '@egoless-do/core';
+import { dateStr, type AgeBracket, type BodyGoal, type BodyTrainingPlan, type ExerciseEntry, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_LABEL, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BADGE, generateSuggestions, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, BODY_TAGS_PRESET, type DayOverride, type ExerciseDef, type BodyCheckin } from '@egoless-do/core';
 import { ChevronRight, Play, Calendar, Target, Dumbbell, TrendingUp, Activity, Scale, History, Settings, ChevronLeft, ChevronDown } from 'lucide-react-native';
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Dimensions, Animated, Alert, Modal } from 'react-native';
@@ -19,7 +19,6 @@ import AdjustExerciseModal from './modals/AdjustExerciseModal';
 import DayActionSheet from './modals/DayActionSheet';
 import GoalEditLightModal from './modals/GoalEditLightModal';
 import { useBodyFlowState } from './hooks/useBodyFlowState';
-import WorkoutFlowBanner from './components/WorkoutFlowBanner';
 import ExerciseProgressBanner from './components/ExerciseProgressBanner';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -332,85 +331,14 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
     }
   }, [activeTrainingPlan, updateBodyTrainingPlan]);
 
-  // ── Workout step tracking ──
-  type WorkoutStep = 'idle' | 'exercise' | 'breathing' | 'checkin' | 'done';
-  const [workoutStep, setWorkoutStep] = useState<WorkoutStep>('idle');
+  // ── Workout flow state tracking ──
   const { flowState } = useBodyFlowState();
-  const setBodyFlowState = useShallowStore(s => s.setBodyFlowState);
+  const hasActiveFlow = flowState && flowState.startedAt && (Date.now() - flowState.startedAt < 24 * 60 * 60 * 1000);
+  const allFlowDone = hasActiveFlow && flowState.exerciseCompleted && flowState.breathingCompleted && flowState.awarenessCompleted;
 
-  // 从 flowState 恢复进度
-  useEffect(() => {
-    if (flowState?.exerciseCompleted) {
-      if (flowState?.breathingCompleted) {
-        setWorkoutStep(flowState?.awarenessCompleted ? 'done' : 'checkin');
-      } else {
-        setWorkoutStep('breathing');
-      }
-    }
-  }, [flowState]);
-
-  // ── 开始运动 ──
-  const handleStartExercise = useCallback(() => {
-    if (todayExercises && todayExercises.length > 1) {
-      // 组合模式：直接跳转到 SportPage
-      const sport = ALL_SPORTS.find(s => s.key === todayExercises[0]?.category || s.keyEn === todayExercises[0]?.category);
-      nav.navigate('Sport' as never, {
-        exercises: todayExercises,
-        comboPlanId: activeTrainingPlan?.id,
-        icon: sport?.icon ?? todayExercises[0]?.icon ?? '🏃',
-        color: sport?.color ?? '#f59e0b',
-      } as never);
-    } else if (activeTrainingPlan?.id) {
-      // 单运动模式：使用现有流程
-      onFlowStartWithPlan?.(activeTrainingPlan.id);
-    } else {
-      // 自由训练
-      onFlowStart?.();
-    }
-  }, [todayExercises, activeTrainingPlan, nav, onFlowStart, onFlowStartWithPlan]);
-
-  // ── 开始调息 ──
-  const handleStartBreathing = useCallback(() => {
-    nav.navigate('Breathing' as never);
-  }, [nav]);
-
-  // ── 跳过步骤 ──
-  const handleSkipStep = useCallback((step: string) => {
-    setBodyFlowState({ skippedSteps: [...(flowState?.skippedSteps ?? []), step] });
-    if (step === 'breathing') {
-      setWorkoutStep('checkin');
-    } else if (step === 'checkin') {
-      setWorkoutStep('done');
-    }
-  }, [flowState, setBodyFlowState]);
-
-  // ── 完成觉知 ──
-  const handleCheckinComplete = useCallback((data: Omit<BodyCheckin, 'id' | 'updatedAt' | 'deleted' | 'synced'>) => {
-    const fullData = { ...data, id: '', updatedAt: Date.now(), deleted: false, synced: false };
-    upsertBodyCheckin(fullData);
-    setBodyFlowState({ awarenessCompleted: true, awarenessData: fullData });
-    setWorkoutStep('done');
-  }, [upsertBodyCheckin, setBodyFlowState]);
 
   return (
     <View>
-      {/* ── Workout Flow Banner (分步训练模式) ── */}
-      {(flowState?.isCombo || flowState?.exerciseCompleted) && flowState?.startedAt && (Date.now() - flowState.startedAt < 24 * 60 * 60 * 1000) && (
-        <WorkoutFlowBanner
-          TH={TH}
-          T={T}
-          isCombo={!!flowState?.isCombo}
-          exerciseCompleted={!!flowState?.exerciseCompleted}
-          breathingCompleted={!!flowState?.breathingCompleted}
-          awarenessCompleted={!!flowState?.awarenessCompleted}
-          showActions={false}
-          onStartExercise={handleStartExercise}
-          onStartBreathing={handleStartBreathing}
-          onSkipStep={handleSkipStep}
-          onCheckinComplete={handleCheckinComplete}
-        />
-      )}
-
       {/* ── Banner Carousel ── */}
       <View style={styles.bannerContainer}>
         <ScrollView
@@ -497,20 +425,57 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                     })}
                   </View>
                 )}
-                <TouchableOpacity
-                  onPress={() => {
-                    if (activeTrainingPlan?.id) {
-                      onFlowStartWithPlan?.(activeTrainingPlan.id);
-                    } else {
-                      onFlowStart?.();
-                    }
-                  }}
-                  activeOpacity={0.85}
-                  style={styles.bannerButton}
-                >
-                  <Play size={20} color="#f59e0b" />
-                  <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#f59e0b' }}>{T('bodyStartToday')}</Text>
-                </TouchableOpacity>
+                {/* ── Flow progress (when BodyFlow is active) ── */}
+                {hasActiveFlow && !allFlowDone && (
+                  <View style={{ backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 8, padding: 10, marginBottom: 10 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                      {[
+                        { key: 'exercise', icon: '🏃', done: !!flowState.exerciseCompleted },
+                        { key: 'breathing', icon: '🌬️', done: !!flowState.breathingCompleted },
+                        { key: 'checkin', icon: '🧠', done: !!flowState.awarenessCompleted },
+                      ].map((s, i) => (
+                        <React.Fragment key={s.key}>
+                          <View style={{ alignItems: 'center', gap: 4 }}>
+                            <View style={{
+                              width: 32, height: 32, borderRadius: 16,
+                              backgroundColor: s.done ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.15)',
+                              alignItems: 'center', justifyContent: 'center',
+                            }}>
+                              <Text style={{ fontSize: 16 }}>{s.done ? '✓' : s.icon}</Text>
+                            </View>
+                          </View>
+                          {i < 2 && <View style={{ width: 20, height: 2, backgroundColor: 'rgba(255,255,255,0.2)' }} />}
+                        </React.Fragment>
+                      ))}
+                    </View>
+                    <Text style={{ fontSize: FONT_SMALL(), color: '#fff', textAlign: 'center', marginTop: 6, opacity: 0.8 }}>
+                      {!flowState.exerciseCompleted ? T('bodyFlowPractice')
+                        : !flowState.breathingCompleted ? T('bodyFlowBreathing')
+                        : T('bodyFlowAwareness')}
+                    </Text>
+                  </View>
+                )}
+                {hasActiveFlow && allFlowDone && (
+                  <View style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8, padding: 10, marginBottom: 10, alignItems: 'center' }}>
+                    <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{'✅ '}{T('bodyTodayComplete')}</Text>
+                  </View>
+                )}
+                {!hasActiveFlow ? (
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (activeTrainingPlan?.id) {
+                        onFlowStartWithPlan?.(activeTrainingPlan.id);
+                      } else {
+                        onFlowStart?.();
+                      }
+                    }}
+                    activeOpacity={0.85}
+                    style={styles.bannerButton}
+                  >
+                    <Play size={20} color="#f59e0b" />
+                    <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#f59e0b' }}>{T('bodyStartToday')}</Text>
+                  </TouchableOpacity>
+                ) : null}
               </>
             ) : (
               <>
