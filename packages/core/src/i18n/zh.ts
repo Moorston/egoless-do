@@ -1097,7 +1097,7 @@ export const zh: I18nKeys = {
   bodyNextExercise:'下一动作', bodyStartNext:'开始下一个', bodyJumpTo:'跳转',
   bodyExerciseIncomplete:'动作未完成', bodyExerciseCompleteHint:'请完成所有计划组数', bodyExerciseCompleteRepsHint:'请完成每组计划次数', bodyExerciseCompleteDurationHint:'请至少完成 {percent}% 时长 ({min}秒)', bodyExerciseCompleteMinHint:'请完成该动作后再进入下一动作',
   bodyTodayPlan:'今日方案', bodyTodayPlanEmpty:'尚未设置今日方案', bodyTodayPlanRest:'今日休息日',
-  bodyStartPractice:'开始练习', bodyStartToday:'开始今日训练', bodyToday:'今天',
+  bodyStartPractice:'开始练习', bodyStartToday:'开始今日训练', bodyContinue:'继续', bodyToday:'今天',
   bodyWeekProgress:'本周进度', bodyDayCompleted:'已完成', bodyDayRestShort:'休',
   bodySetPlan:'去设置', bodyTodayDone:'今日已打卡',
   bodyUndo:'撤销', bodyUndoHint:'可撤销后继续训练', bodyOverrideSkip:'已标记跳过', bodyOverrideSwap:'已换动作', bodyOverrideAdjust:'已调整组数', bodyOverrideCustom:'已自定义',

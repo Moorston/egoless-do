@@ -1099,7 +1099,7 @@ export const en: I18nKeys = {
   bodyNextExercise:'Next Exercise', bodyStartNext:'Start Next', bodyJumpTo:'Jump',
   bodyExerciseIncomplete:'Exercise Incomplete', bodyExerciseCompleteHint:'Please complete all planned sets', bodyExerciseCompleteRepsHint:'Please complete planned reps for each set', bodyExerciseCompleteDurationHint:'Please complete at least {percent}% of duration ({min}s)', bodyExerciseCompleteMinHint:'Please complete this exercise before moving on',
   bodyTodayPlan:'Today\'s Plan', bodyTodayPlanEmpty:'No plan set for today', bodyTodayPlanRest:'Rest day',
-  bodyStartPractice:'Start', bodyStartToday:'Start Today', bodyToday:'Today',
+  bodyStartPractice:'Start', bodyStartToday:'Start Today', bodyContinue:'Continue', bodyToday:'Today',
   bodyWeekProgress:'Week progress', bodyDayCompleted:'Done', bodyDayRestShort:'Rest',
   bodySetPlan:'Set', bodyTodayDone:'Checked in today',
   bodyUndo:'Undo', bodyUndoHint:'Undo to continue training', bodyOverrideSkip:'Marked skip', bodyOverrideSwap:'Swapped', bodyOverrideAdjust:'Adjusted', bodyOverrideCustom:'Custom',

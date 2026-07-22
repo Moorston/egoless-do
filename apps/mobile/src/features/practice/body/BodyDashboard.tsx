@@ -475,6 +475,21 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                     <Play size={20} color="#f59e0b" />
                     <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#f59e0b' }}>{T('bodyStartToday')}</Text>
                   </TouchableOpacity>
+                ) : !allFlowDone ? (
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (activeTrainingPlan?.id) {
+                        onFlowStartWithPlan?.(activeTrainingPlan.id);
+                      } else {
+                        onFlowStart?.();
+                      }
+                    }}
+                    activeOpacity={0.85}
+                    style={styles.bannerButton}
+                  >
+                    <Play size={20} color="#f59e0b" />
+                    <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#f59e0b' }}>{T('bodyContinue')}</Text>
+                  </TouchableOpacity>
                 ) : null}
               </>
             ) : (
