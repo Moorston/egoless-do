@@ -1347,3 +1347,39 @@ StatsScreen计划任务进度改为countItemDoneDays动态计算；补全planIte
 → 统一按钮（编辑+详情+删除+暂停/激活）+ PlanDetailModal 只读预览弹窗
 
 **经验**: 新增 SyncEntity 时必须同步检查 persist/rehydrate/sync 三链路 + rowMapper
+
+
+## Session 39: 调身页组合锻炼优化 + 修行模块审查
+
+**Date**: 2026-07-22
+**Task**: 调身页组合锻炼优化 + 修行模块审查
+**Branch**: `master`
+
+### Summary
+
+修复调身页今日方案banner和BodyFlow动作显示bug（分类名→动作名），增强todayExercises回退到动作库逻辑，深度审查修行模块全部代码和功能逻辑，修复useVowProgress语法错误，修复checkinReview同步schema不匹配，添加refreshAuth失败Toast提示
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `77b8f39c` | (see git log) |
+| `4857f4f6` | (see git log) |
+| `40b34268` | (see git log) |
+| `111f08f9` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

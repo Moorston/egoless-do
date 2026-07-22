@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 38
-- **Last Active**: 2026-07-19
+- **Total Sessions**: 39
+- **Last Active**: 2026-07-22
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~1320 | Active |
+| `journal-1.md` | ~1385 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 39 | 2026-07-22 | 调身页组合锻炼优化 + 修行模块审查 | `77b8f39c`, `4857f4f6`, `40b34268`, `111f08f9` | `master` |
 | 38 | 2026-07-19 | weekly-plan-exercise-grid-redesign: implement + check + commit | `7468572` | `master` |
 | 37 | 2026-07-19 | weekly-plan-ux-redesign: implement + check + commit | `b811eeb` | `master` |
 | 36 | 2026-07-18 | 调身页布局调整 + iOS Text strings 根因修复 | `e4172ed`, `2b6d14e` | `master` |
