@@ -11,6 +11,7 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-nati
 import { useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../navigation/hooks';
+import { useShallowStore } from '../../store/useAppStore';
 
 
 const log = createLogger('Breathing');
@@ -35,6 +36,7 @@ export default function BreathingScreen() {
   const TH = useTheme();
   const T = useT();
   const nav = useRootNavigation();
+  const setBodyFlowState = useShallowStore(s => s.setBodyFlowState);
   const [guideStyle, setGuideStyle] = useState<GuideStyle>('scientific');
   const [started, setStarted] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState<BreathingPreset | null>(null);
@@ -57,13 +59,17 @@ export default function BreathingScreen() {
   }, []);
 
   const handleBack = useCallback((completed?: boolean, durationMs?: number) => {
+    // 完成呼吸后写入 flowState，BodyFlow 可检测到调息完成
+    if (completed && durationMs != null) {
+      setBodyFlowState({ breathingCompleted: true, breathingDurationMs: durationMs });
+    }
     // 完成呼吸后先导航回 Body，再重置状态（避免卸载后 setState 警告）
     if (completed) {
       nav.navigate('Body' as never, { breathingResult: { completed: true, durationMs: durationMs ?? 0 } } as never);
     }
     setStarted(false);
     setSelectedPreset(null);
-  }, [nav]);
+  }, [nav, setBodyFlowState]);
 
   // Engine mode — lazy-loaded
   if (started && selectedPreset) {
