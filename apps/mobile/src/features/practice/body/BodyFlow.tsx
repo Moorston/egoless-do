@@ -134,15 +134,14 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
       undefined,
       [
         { text: T('bodyCancel'), style: 'cancel' },
-        { text: T('bodyFlowSkip'), style: 'destructive', onPress: () => { resetFlow(); onExit(); } },
+        { text: T('bodyFlowSkip'), style: 'destructive', onPress: () => { onExit(); } },
       ]
     );
-  }, [T, onExit, resetFlow]);
+  }, [T, onExit]);
 
   const handleBackPress = useCallback(() => {
-    resetFlow();
     onExit();
-  }, [onExit, resetFlow]);
+  }, [onExit]);
 
   const navigateToSport = useCallback((sportKey: string) => {
     if (startTimeRef.current === 0) startTimeRef.current = Date.now();
@@ -259,9 +258,6 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
 
       return (
         <View>
-          <TouchableOpacity onPress={handleExitPress} style={{ position: 'absolute', top: 0, right: 0, zIndex: 10, padding: 8 }}>
-            <X size={24} color={TH.sub} />
-          </TouchableOpacity>
           <ExerciseProgressBanner steps={getFlowSteps("practice", T, practiceCompleted, breathingCompleted, awarenessData != null)} TH={TH} T={T} readOnly />
           <Card>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 12 }}>
@@ -387,9 +383,6 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
     if (step === 'breathing') {
       return (
         <View>
-          <TouchableOpacity onPress={handleExitPress} style={{ position: 'absolute', top: 0, right: 0, zIndex: 10, padding: 8 }}>
-            <X size={24} color={TH.sub} />
-          </TouchableOpacity>
           <ExerciseProgressBanner steps={getFlowSteps("breathing", T, practiceCompleted, breathingCompleted, awarenessData != null)} TH={TH} T={T} readOnly />
           <View style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 16 }}>
             <LinearGradient colors={['#06b6d4', '#0891b2']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ padding: 24, alignItems: 'center' }}>
@@ -431,9 +424,6 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
     // step === 'checkin'
     return (
       <View>
-        <TouchableOpacity onPress={handleExitPress} style={{ position: 'absolute', top: 0, right: 0, zIndex: 10, padding: 8 }}>
-          <X size={24} color={TH.sub} />
-        </TouchableOpacity>
         <ExerciseProgressBanner steps={getFlowSteps("checkin", T, practiceCompleted, breathingCompleted, awarenessData != null)} TH={TH} T={T} readOnly />
         <View style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 16 }}>
           <LinearGradient colors={['#8b5cf6', '#7c3aed']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ padding: 24, alignItems: 'center' }}>
@@ -456,10 +446,15 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
 
   return (
     <View>
-      {/* Back button — 直接退出，无确认弹窗 */}
-      <TouchableOpacity onPress={handleBackPress} style={{ paddingVertical: 8, paddingHorizontal: 4, marginBottom: 8, alignSelf: 'flex-start' }}>
-        <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{'← '}{T('bodyBack')}</Text>
-      </TouchableOpacity>
+      {/* Top bar: back + X on same row */}
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+        <TouchableOpacity onPress={handleBackPress} style={{ paddingVertical: 8, paddingHorizontal: 4 }}>
+          <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{'← '}{T('bodyBack')}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleExitPress} style={{ paddingVertical: 8, paddingHorizontal: 4 }}>
+          <X size={22} color={TH.sub} />
+        </TouchableOpacity>
+      </View>
       <Animated.View style={{ opacity: fadeAnim }}>
         {renderStep()}
       </Animated.View>
