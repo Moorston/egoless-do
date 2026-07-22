@@ -17,11 +17,12 @@ interface Props {
   steps: Step[];
   TH: Theme;
   T: (key: string) => string;
-  onStartStep: (key: string) => void;
-  onSkipStep: (key: string) => void;
+  readOnly?: boolean;
+  onStartStep?: (key: string) => void;
+  onSkipStep?: (key: string) => void;
 }
 
-export default function ExerciseProgressBanner({ steps, TH, T, onStartStep, onSkipStep }: Props) {
+export default function ExerciseProgressBanner({ steps, TH, T, readOnly = false, onStartStep, onSkipStep }: Props) {
   return (
     <View style={[styles.container, { backgroundColor: TH.card, borderColor: TH.border }]}>
       {/* Progress dots */}
@@ -60,23 +61,29 @@ export default function ExerciseProgressBanner({ steps, TH, T, onStartStep, onSk
             <Text style={[styles.stepLabel, { color: step.status === 'completed' ? '#10b981' : step.status === 'skipped' ? '#f59e0b' : TH.text }]}>
               {step.label}
             </Text>
-            {step.status === 'pending' && (
+            {step.status === 'pending' && !readOnly && (
               <View style={styles.stepActions}>
-                <TouchableOpacity onPress={() => onStartStep(step.key)} style={[styles.stepBtn, { backgroundColor: `${TH.primary}15` }]}>
+                <TouchableOpacity onPress={() => onStartStep?.(step.key)} style={[styles.stepBtn, { backgroundColor: `${TH.primary}15` }]}>
                   <Text style={[styles.stepBtnText, { color: TH.primary }]}>{T('bodyStart') || '开始'}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => onSkipStep(step.key)} style={styles.skipBtn}>
+                <TouchableOpacity onPress={() => onSkipStep?.(step.key)} style={styles.skipBtn}>
                   <Text style={[styles.skipText, { color: TH.sub }]}>{T('bodyFlowSkip') || '跳过'}</Text>
                 </TouchableOpacity>
               </View>
             )}
+            {step.status === 'pending' && readOnly && (
+              <Text style={[styles.statusText, { color: TH.sub }]}>···</Text>
+            )}
             {step.status === 'completed' && (
               <Text style={[styles.statusText, { color: '#10b981' }]}>✅</Text>
             )}
-            {step.status === 'skipped' && (
-              <TouchableOpacity onPress={() => onStartStep(step.key)}>
+            {step.status === 'skipped' && !readOnly && (
+              <TouchableOpacity onPress={() => onStartStep?.(step.key)}>
                 <Text style={[styles.statusText, { color: '#f59e0b' }]}>⏭️ {T('bodyRedo') || '重做'}</Text>
               </TouchableOpacity>
+            )}
+            {step.status === 'skipped' && readOnly && (
+              <Text style={[styles.statusText, { color: '#f59e0b' }]}>⏭️</Text>
             )}
           </View>
         ))}

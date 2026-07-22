@@ -1,5 +1,5 @@
 import { FONT_TITLE, FONT_SUB, FONT_SMALL, ALL_SPORTS, type BodyPlanTask, type ExerciseDef } from '@egoless-do/core';
-import { useFocusEffect, useRoute, RouteProp } from '@react-navigation/native';
+import { useRoute, RouteProp } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo, useRef } from 'react';
 import { View, ScrollView, Animated } from 'react-native';
 
@@ -115,7 +115,6 @@ export default function BodyScreen() {
               trainingPlanTask={todayTrainingTask}
               todayOverride={todayOverride}
               todayExercises={todayExercises}
-              returnTick={0}
               onGoToSport={handleGoToSport}
               onGoToBreathing={handleGoToBreathing}
               onExit={() => { setActivePlanId(null); transitionTo('dashboard'); }}

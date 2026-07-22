@@ -9,6 +9,7 @@ import { PrimaryButton, OutlineButton, Card } from '../../../components/UI';
 
 import BodyCheckinInline from './BodyCheckinInline';
 import CheckinSuccessCard from './CheckinSuccessCard';
+import ExerciseProgressBanner from './components/ExerciseProgressBanner';
 import { useBodyFlowState } from './hooks/useBodyFlowState';
 
 type FlowStep = 'practice' | 'breathing' | 'checkin' | 'success';
@@ -22,49 +23,19 @@ interface FlowProps {
   todayOverride?: DayOverride;
   todayExercises?: ExerciseDef[];
   store: Record<string, unknown> & Pick<BodySlice, 'upsertBodyCheckin'>;
-  returnTick?: number;
   onGoToSport?: (sportKey: string, exercises?: ExerciseDef[]) => void;
   onGoToBreathing?: () => void;
 }
 
-const STEPS = [
-  { key: 'practice', color: '#f59e0b' },
-  { key: 'breathing', color: '#06b6d4' },
-  { key: 'checkin', color: '#8b5cf6' },
-] as const;
-
-const STEP_ICONS: Record<string, string> = {
-  practice: '🏃',
-  breathing: '🌬️',
-  checkin: '🧠',
-};
-
 const TRANSITION_DURATION = 300;
 
-function StepIndicator({ current, TH }: { current: FlowStep; TH: Theme }) {
-  const currentIdx = current === 'success' ? STEPS.length : STEPS.findIndex(s => s.key === current);
-  return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginBottom: 20 }}>
-      {STEPS.map((step, idx) => {
-        const done = idx < currentIdx;
-        const active = idx === currentIdx;
-        return (
-          <React.Fragment key={step.key}>
-            <View style={{
-              width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center',
-              backgroundColor: active ? step.color : done ? '#10b981' : TH.card,
-              borderWidth: active || done ? 0 : 1, borderColor: TH.border,
-            }}>
-              <Text style={{ fontSize: FONT_SUB() }}>{done ? '✓' : STEP_ICONS[step.key]}</Text>
-            </View>
-            {idx < STEPS.length - 1 && (
-              <View style={{ width: 24, height: 2, backgroundColor: done ? '#10b981' : TH.border }} />
-            )}
-          </React.Fragment>
-        );
-      })}
-    </View>
-  );
+function getFlowSteps(current: FlowStep, practiceDone: boolean, breathingDone: boolean, awarenessDone: boolean): { key: string; label: string; status: 'pending' | 'completed' | 'skipped' }[] {
+  const currentIdx = current === 'success' ? 3 : ['practice', 'breathing', 'checkin'].indexOf(current);
+  return [
+    { key: 'practice', label: '🏃', status: practiceDone ? 'completed' : (currentIdx > 0 ? 'skipped' : 'pending') },
+    { key: 'breathing', label: '🌬️', status: breathingDone ? 'completed' : (currentIdx > 1 ? 'skipped' : (currentIdx === 1 ? 'pending' : 'skipped')) },
+    { key: 'checkin', label: '🧠', status: awarenessDone ? 'completed' : (currentIdx > 2 ? 'skipped' : (currentIdx === 2 ? 'pending' : 'skipped')) },
+  ];
 }
 
 function ExercisePicker({ TH, T, onSelect }: { TH: Theme; T: (key: string) => string; onSelect: (key: string) => void }) {
@@ -100,7 +71,7 @@ function ExercisePicker({ TH, T, onSelect }: { TH: Theme; T: (key: string) => st
   );
 }
 
-export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, todayOverride, todayExercises, store, returnTick, onGoToSport, onGoToBreathing }: FlowProps) {
+export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, todayOverride, todayExercises, store, onGoToSport, onGoToBreathing }: FlowProps) {
   const {
     flowState,
     setStep,
@@ -147,49 +118,15 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
   const startTimeRef = useRef(Date.now());
   const practiceStartRef = useRef(0);
   const breathingStartRef = useRef(0);
-  const [practiceCompleted, setPracticeCompleted] = useState(false);
-  const [breathingCompleted, setBreathingCompleted] = useState(false);
-  const [breathingDurationMs, setBreathingDurationMs] = useState(0);
-  const [awarenessData, setAwarenessData] = useState<BodyCheckin | null>(null);
+  // 单一状态源：所有状态从 flowState 读取，无局部 useState 副本
+  const practiceCompleted = flowState?.practiceCompleted ?? false;
+  const breathingCompleted = flowState?.breathingCompleted ?? false;
+  const breathingDurationMs = flowState?.breathingDurationMs ?? 0;
+  const awarenessData = flowState?.awarenessData ?? null;
+  const successStartTimeRef = useRef(0);
 
-  // 挂载时重置本地状态（避免跨 flow 残留）并同步 flowState
-  useEffect(() => {
-    if (flowState?.practiceCompleted) setPracticeCompleted(true);
-    if (flowState?.breathingCompleted) { setBreathingCompleted(true); setBreathingDurationMs(flowState.breathingDurationMs); }
-    if (flowState?.awarenessData) setAwarenessData(flowState.awarenessData);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Sync completed flags from flowState
-  useEffect(() => {
-    if (flowState) {
-      if (flowState.practiceCompleted) setPracticeCompleted(true);
-      if (flowState.breathingCompleted) { setBreathingCompleted(true); setBreathingDurationMs(flowState.breathingDurationMs); }
-      if (flowState.awarenessData) setAwarenessData(flowState.awarenessData);
-    }
-  }, [flowState]);
-
-  // Return detection (fallback — will be replaced by navigation params in R2.3)
-  const prevReturnTick = useRef(returnTick);
-  useEffect(() => {
-    if (returnTick !== undefined && returnTick !== prevReturnTick.current) {
-      prevReturnTick.current = returnTick;
-      // 组合模式：时长由 SportPage 回传，不用本地计时器
-      if (flowState?.isCombo) return;
-      // 如果 flowState 已标记完成（由 useFocusEffect 设置），跳过
-      if (flowState?.practiceCompleted && step === 'practice') return;
-      if (flowState?.breathingCompleted && step === 'breathing') return;
-      if (step === 'practice' && practiceStartRef.current > 0) {
-        const durSec = Math.floor((Date.now() - practiceStartRef.current) / 1000);
-        setPracticeCompleted(true);
-        markPracticeDone(durSec);
-      } else if (step === 'breathing' && breathingStartRef.current > 0) {
-        const durMs = Date.now() - breathingStartRef.current;
-        setBreathingCompleted(true);
-        setBreathingDurationMs(durMs);
-        markBreathingDone(durMs);
-      }
-    }
-  }, [step, returnTick, markPracticeDone, markBreathingDone, flowState?.isCombo, flowState?.practiceCompleted, flowState?.breathingCompleted]);
+  // 单一状态源：flowState，无局部状态同步
+  // （移除旧的 useEffect 同步，flowState 直接驱动渲染）
 
   const handleExitPress = useCallback(() => {
     Alert.alert(
@@ -202,10 +139,14 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
     );
   }, [T, onExit, resetFlow]);
 
+  const handleBackPress = useCallback(() => {
+    resetFlow();
+    onExit();
+  }, [onExit, resetFlow]);
+
   const navigateToSport = useCallback((sportKey: string) => {
     if (startTimeRef.current === 0) startTimeRef.current = Date.now();
     practiceStartRef.current = Date.now();
-    setPracticeCompleted(false);
     setSelectedSportKey(sportKey);
     setSelectedSport(sportKey);
     // 通知 BodyScreen 跳转到 SportPage
@@ -274,21 +215,23 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
   const handleSaveCheckin = useCallback((data: Omit<BodyCheckin, 'id' | 'updatedAt' | 'deleted' | 'synced'>) => {
     store.upsertBodyCheckin(data);
     const checkinData: BodyCheckin = { ...data, id: '', updatedAt: Date.now(), deleted: false, synced: false };
-    setAwarenessData(checkinData);
     saveAwareness(checkinData);
+    successStartTimeRef.current = Date.now();
     transitionTo('success');
   }, [store, saveAwareness, transitionTo]);
 
   const handleSkipCheckin = useCallback(() => {
-    setAwarenessData(null);
     saveAwareness(null);
+    successStartTimeRef.current = Date.now();
     transitionTo('success');
   }, [saveAwareness, transitionTo]);
 
   // ── Render steps ──
   const renderStep = () => {
     if (step === 'success') {
-      const totalMs = startTimeRef.current > 0 ? Date.now() - startTimeRef.current : 0;
+      const totalMs = successStartTimeRef.current > 0
+        ? successStartTimeRef.current - startTimeRef.current
+        : 0;
       return (
         <CheckinSuccessCard
           TH={TH} T={T}
@@ -313,7 +256,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
           <TouchableOpacity onPress={handleExitPress} style={{ position: 'absolute', top: 0, right: 0, zIndex: 10, padding: 8 }}>
             <X size={24} color={TH.sub} />
           </TouchableOpacity>
-          <StepIndicator current="practice" TH={TH} />
+          <ExerciseProgressBanner steps={getFlowSteps("practice", practiceCompleted, breathingCompleted, awarenessData != null)} TH={TH} T={T} readOnly />
           <Card>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 12 }}>
               <Activity size={22} color="#f59e0b" />
@@ -415,7 +358,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
           <TouchableOpacity onPress={handleExitPress} style={{ position: 'absolute', top: 0, right: 0, zIndex: 10, padding: 8 }}>
             <X size={24} color={TH.sub} />
           </TouchableOpacity>
-          <StepIndicator current="breathing" TH={TH} />
+          <ExerciseProgressBanner steps={getFlowSteps("breathing", practiceCompleted, breathingCompleted, awarenessData != null)} TH={TH} T={T} readOnly />
           <View style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 16 }}>
             <LinearGradient colors={['#06b6d4', '#0891b2']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ padding: 24, alignItems: 'center' }}>
               <Wind size={40} color="#fff" />
@@ -459,7 +402,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
         <TouchableOpacity onPress={handleExitPress} style={{ position: 'absolute', top: 0, right: 0, zIndex: 10, padding: 8 }}>
           <X size={24} color={TH.sub} />
         </TouchableOpacity>
-        <StepIndicator current="checkin" TH={TH} />
+        <ExerciseProgressBanner steps={getFlowSteps("checkin", practiceCompleted, breathingCompleted, awarenessData != null)} TH={TH} T={T} readOnly />
         <View style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 16 }}>
           <LinearGradient colors={['#8b5cf6', '#7c3aed']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ padding: 24, alignItems: 'center' }}>
             <Text style={{ fontSize: scaleFontSize(40), marginBottom: 8 }}>🧠</Text>
@@ -470,6 +413,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
         <Card style={{ borderWidth: 0 }}>
           <BodyCheckinInline
             TH={TH} T={T} plan={todayPlan}
+            durationSec={flowState?.practiceDurationSec}
             onSave={handleSaveCheckin}
             onSkip={handleSkipCheckin}
           />
@@ -480,8 +424,8 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
 
   return (
     <View>
-      {/* Back button */}
-      <TouchableOpacity onPress={handleExitPress} style={{ paddingVertical: 8, paddingHorizontal: 4, marginBottom: 8, alignSelf: 'flex-start' }}>
+      {/* Back button — 直接退出，无确认弹窗 */}
+      <TouchableOpacity onPress={handleBackPress} style={{ paddingVertical: 8, paddingHorizontal: 4, marginBottom: 8, alignSelf: 'flex-start' }}>
         <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{'← '}{T('bodyBack')}</Text>
       </TouchableOpacity>
       <Animated.View style={{ opacity: fadeAnim }}>

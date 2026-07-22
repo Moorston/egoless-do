@@ -11,11 +11,12 @@ interface Props {
   TH: Theme;
   T: (key: string) => string;
   plan?: BodyPlan;
+  durationSec?: number;
   onSave: (data: Omit<BodyCheckin, 'id' | 'updatedAt' | 'deleted' | 'synced'>) => void;
   onSkip: () => void;
 }
 
-function BodyCheckinInline({ TH, T, plan, onSave, onSkip }: Props) {
+function BodyCheckinInline({ TH, T, plan, durationSec, onSave, onSkip }: Props) {
   const [energy, setEnergy] = useState(3);
   const [pain, setPain] = useState(1);
   const [comfort, setComfort] = useState(3);
@@ -65,6 +66,11 @@ function BodyCheckinInline({ TH, T, plan, onSave, onSkip }: Props) {
           <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text, marginTop: 4 }}>
             {partLabel} {plan.note ? `— ${plan.note}` : ''}
           </Text>
+          {durationSec != null && durationSec > 0 && (
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 4 }}>
+              {Math.floor(durationSec / 60)}:{String(durationSec % 60).padStart(2, '0')}
+            </Text>
+          )}
         </View>
         );
       })()}
