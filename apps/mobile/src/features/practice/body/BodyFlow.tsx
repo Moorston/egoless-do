@@ -29,12 +29,12 @@ interface FlowProps {
 
 const TRANSITION_DURATION = 300;
 
-function getFlowSteps(current: FlowStep, practiceDone: boolean, breathingDone: boolean, awarenessDone: boolean): { key: string; label: string; status: 'pending' | 'completed' | 'skipped' }[] {
+function getFlowSteps(current: FlowStep, T: (key: string) => string, practiceDone: boolean, breathingDone: boolean, awarenessDone: boolean): { key: string; label: string; status: 'pending' | 'completed' | 'skipped' }[] {
   const currentIdx = current === 'success' ? 3 : ['practice', 'breathing', 'checkin'].indexOf(current);
   return [
-    { key: 'practice', label: '🏃', status: practiceDone ? 'completed' : (currentIdx > 0 ? 'skipped' : 'pending') },
-    { key: 'breathing', label: '🌬️', status: breathingDone ? 'completed' : (currentIdx > 1 ? 'skipped' : (currentIdx === 1 ? 'pending' : 'skipped')) },
-    { key: 'checkin', label: '🧠', status: awarenessDone ? 'completed' : (currentIdx > 2 ? 'skipped' : (currentIdx === 2 ? 'pending' : 'skipped')) },
+    { key: 'practice', label: T('bodyFlowPractice'), status: practiceDone ? 'completed' : (currentIdx > 0 ? 'skipped' : 'pending') },
+    { key: 'breathing', label: T('bodyFlowBreathing'), status: breathingDone ? 'completed' : (currentIdx > 1 ? 'skipped' : (currentIdx === 1 ? 'pending' : 'skipped')) },
+    { key: 'checkin', label: T('bodyFlowAwareness'), status: awarenessDone ? 'completed' : (currentIdx > 2 ? 'skipped' : (currentIdx === 2 ? 'pending' : 'skipped')) },
   ];
 }
 
@@ -262,7 +262,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
           <TouchableOpacity onPress={handleExitPress} style={{ position: 'absolute', top: 0, right: 0, zIndex: 10, padding: 8 }}>
             <X size={24} color={TH.sub} />
           </TouchableOpacity>
-          <ExerciseProgressBanner steps={getFlowSteps("practice", practiceCompleted, breathingCompleted, awarenessData != null)} TH={TH} T={T} readOnly />
+          <ExerciseProgressBanner steps={getFlowSteps("practice", T, practiceCompleted, breathingCompleted, awarenessData != null)} TH={TH} T={T} readOnly />
           <Card>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 12 }}>
               <Activity size={22} color="#f59e0b" />
@@ -315,6 +315,20 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
                     )}
                   </View>
                 )}
+                {!trainingPlanTask && planExercises.length > 0 && (
+                  <View style={{ marginBottom: 16 }}>
+                    <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text, marginBottom: 8 }}>{currentPlan?.sportKey ? T(`bodyPart${currentPlan.sportKey.charAt(0).toUpperCase() + currentPlan.sportKey.slice(1)}` as never) || currentPlan.name : currentPlan?.name}</Text>
+                    {planExercises.map((ex, i) => (
+                      <View key={ex.id || i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 6, paddingHorizontal: 10, borderRadius: 8, backgroundColor: `${TH.border}40`, marginBottom: 4 }}>
+                        <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }}>
+                          {ex.icon} {ex.nameZh}
+                          {ex.defaultSets && ex.defaultReps ? `  ${ex.defaultSets}×${ex.defaultReps}` : ''}
+                          {ex.defaultDurationSec ? `  ${Math.round(ex.defaultDurationSec / 60)}min` : ''}
+                        </Text>
+                      </View>
+                    ))}
+                  </View>
+                )}
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 16 }}>
                   <Text style={{ fontSize: FONT_STAT_SECTION() }}>{sportInfo && 'icon' in sportInfo ? (sportInfo as { icon: string }).icon : '🏋️'}</Text>
                   <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
@@ -364,7 +378,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
           <TouchableOpacity onPress={handleExitPress} style={{ position: 'absolute', top: 0, right: 0, zIndex: 10, padding: 8 }}>
             <X size={24} color={TH.sub} />
           </TouchableOpacity>
-          <ExerciseProgressBanner steps={getFlowSteps("breathing", practiceCompleted, breathingCompleted, awarenessData != null)} TH={TH} T={T} readOnly />
+          <ExerciseProgressBanner steps={getFlowSteps("breathing", T, practiceCompleted, breathingCompleted, awarenessData != null)} TH={TH} T={T} readOnly />
           <View style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 16 }}>
             <LinearGradient colors={['#06b6d4', '#0891b2']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ padding: 24, alignItems: 'center' }}>
               <Wind size={40} color="#fff" />
@@ -408,7 +422,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
         <TouchableOpacity onPress={handleExitPress} style={{ position: 'absolute', top: 0, right: 0, zIndex: 10, padding: 8 }}>
           <X size={24} color={TH.sub} />
         </TouchableOpacity>
-        <ExerciseProgressBanner steps={getFlowSteps("checkin", practiceCompleted, breathingCompleted, awarenessData != null)} TH={TH} T={T} readOnly />
+        <ExerciseProgressBanner steps={getFlowSteps("checkin", T, practiceCompleted, breathingCompleted, awarenessData != null)} TH={TH} T={T} readOnly />
         <View style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 16 }}>
           <LinearGradient colors={['#8b5cf6', '#7c3aed']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ padding: 24, alignItems: 'center' }}>
             <Text style={{ fontSize: scaleFontSize(40), marginBottom: 8 }}>🧠</Text>
