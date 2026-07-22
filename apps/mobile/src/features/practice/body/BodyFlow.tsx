@@ -367,7 +367,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 16 }}>
                   <Text style={{ fontSize: FONT_STAT_SECTION() }}>{sportInfo && 'icon' in sportInfo ? (sportInfo as { icon: string }).icon : '🏋️'}</Text>
                   <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
-                    {sportInfo && 'i18nKey' in sportInfo ? T((sportInfo as { i18nKey: string }).i18nKey) : todayPlan?.part ?? ''}
+                    {sportInfo && 'i18nKey' in sportInfo ? T((sportInfo as { i18nKey: string }).i18nKey) : (() => { const mapped = PART_STRING_TO_KEY[todayPlan?.part ?? ''] ?? todayPlan?.part; const cat = EXERCISE_CATEGORIES.find(c => c.key === mapped); return cat ? T(cat.i18nKey) : todayPlan?.part ?? ''; })()}
                   </Text>
                 </View>
                 <PrimaryButton

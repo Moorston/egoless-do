@@ -55,14 +55,19 @@ function BodyCheckinInline({ TH, T, plan, onSave, onSkip }: Props) {
 
   return (
     <View>
-      {plan && (
+      {plan && (() => {
+        const mappedKey = PART_STRING_TO_KEY[plan.part] || plan.part;
+        const cat = EXERCISE_CATEGORIES.find(c => c.key === mappedKey);
+        const partLabel = cat ? T(cat.i18nKey) : plan.part;
+        return (
         <View style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, marginBottom: 16, borderWidth: 1, borderColor: TH.border }}>
           <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('bodyFlowPractice')}</Text>
           <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text, marginTop: 4 }}>
-            {plan.part} {plan.note ? `— ${plan.note}` : ''}
+            {partLabel} {plan.note ? `— ${plan.note}` : ''}
           </Text>
         </View>
-      )}
+        );
+      })()}
 
       {renderSlider(T('bodyEnergy'), energy, setEnergy, T('bodyEnergyLow'), T('bodyEnergyHigh'), '#f59e0b')}
       {renderSlider(T('bodyPain'), pain, setPain, T('bodyPainNone'), T('bodyPainSevere'), '#ef4444')}

@@ -244,6 +244,8 @@ export default function ExerciseHistoryScreen() {
           <Text style={[styles.badgeFont, { fontWeight: '600', color: !selectedSport ? '#fff' : TH.sub }]}>{T('allStatus')}</Text>
         </TouchableOpacity>
         {sportKeys.map(([key, { icon, count }]) => {
+          const cat = EXERCISE_CATEGORIES.find(c => c.key === key);
+          const label = cat ? T(cat.i18nKey) : key;
           const active = selectedSport === key;
           return (
             <TouchableOpacity
@@ -252,7 +254,7 @@ export default function ExerciseHistoryScreen() {
               style={[styles.filterBtnBase, { backgroundColor: active ? P : TH.card, borderWidth: 1, borderColor: active ? P : TH.border, flexDirection: 'row', alignItems: 'center', gap: 4 }]}
             >
               <Text style={styles.badgeFont}>{icon}</Text>
-              <Text style={[styles.badgeFont, { fontWeight: '600', color: active ? '#fff' : TH.text }]}>{key}</Text>
+              <Text style={[styles.badgeFont, { fontWeight: '600', color: active ? '#fff' : TH.text }]}>{label}</Text>
               <Text style={[styles.badgeFont, { color: active ? '#fff' : TH.sub }]}>({count})</Text>
             </TouchableOpacity>
           );
