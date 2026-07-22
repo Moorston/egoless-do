@@ -315,7 +315,8 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
   // ── Workout step tracking ──
   type WorkoutStep = 'idle' | 'exercise' | 'breathing' | 'checkin' | 'done';
   const [workoutStep, setWorkoutStep] = useState<WorkoutStep>('idle');
-  const { flowState, setBodyFlowState } = useBodyFlowState();
+  const { flowState } = useBodyFlowState();
+  const setBodyFlowState = useShallowStore(s => s.setBodyFlowState);
 
   // 从 flowState 恢复进度
   useEffect(() => {
@@ -364,11 +365,12 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
   }, [flowState, setBodyFlowState]);
 
   // ── 完成觉知 ──
-  const handleCheckinComplete = useCallback((data: BodyCheckin) => {
-    store.upsertBodyCheckin(data);
-    setBodyFlowState({ awarenessCompleted: true, awarenessData: data });
+  const handleCheckinComplete = useCallback((data: Omit<BodyCheckin, 'id' | 'updatedAt' | 'deleted' | 'synced'>) => {
+    const fullData = { ...data, id: '', updatedAt: Date.now(), deleted: false, synced: false };
+    upsertBodyCheckin(fullData);
+    setBodyFlowState({ awarenessCompleted: true, awarenessData: fullData });
     setWorkoutStep('done');
-  }, [store, setBodyFlowState]);
+  }, [upsertBodyCheckin, setBodyFlowState]);
 
   return (
     <View>

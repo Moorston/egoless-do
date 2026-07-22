@@ -25,7 +25,7 @@ interface Props {
   onStartExercise: () => void;
   onStartBreathing: () => void;
   onSkipStep: (step: string) => void;
-  onCheckinComplete: (data: BodyCheckin) => void;
+  onCheckinComplete: (data: Omit<BodyCheckin, 'id' | 'updatedAt' | 'deleted' | 'synced'>) => void;
 }
 
 export default function WorkoutFlowBanner({
