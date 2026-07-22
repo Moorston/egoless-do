@@ -83,16 +83,23 @@ export function useTodayPlan(): TodayPlanData {
 
     // 回退: 如果 task 没有 exercises 但有 sportKey, 从动作库查找
     if (!todayExercises || todayExercises.length === 0) {
-      const task = activeTrainingPlan?.tasks.find(t => t.weekday === weekday);
-      const rawKey = task?.sportKey
-        || (todayPlan?.part && PART_STRING_TO_KEY[todayPlan.part])
-        || todayPlan?.part
-        || todayPlan?.sportKey
-        || '';
-      const sportKey = PART_STRING_TO_KEY[rawKey] || rawKey;
-      if (sportKey && sportKey !== 'rest') {
-        const library = buildExerciseLibrary();
-        todayExercises = library.filter(ex => ex.category === sportKey);
+      try {
+        const task = activeTrainingPlan?.tasks.find(t => t.weekday === weekday);
+        const rawKey = task?.sportKey
+          || (todayPlan?.part && PART_STRING_TO_KEY[todayPlan.part])
+          || todayPlan?.part
+          || todayPlan?.sportKey
+          || '';
+        const sportKey = PART_STRING_TO_KEY[rawKey] || rawKey;
+        if (sportKey && sportKey !== 'rest') {
+          const library = buildExerciseLibrary();
+          const found = library.filter(ex => ex.category === sportKey);
+          if (found.length > 0) {
+            todayExercises = found;
+          }
+        }
+      } catch (e) {
+        // 静默失败，不影响主流程
       }
     }
 
