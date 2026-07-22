@@ -17,7 +17,7 @@ import {
 import { captureException, captureMessage, addBreadcrumb, setSentryUser, clearSentryUser } from '../sentry';
 
 import { migrateAsyncStorageToSQLite, migrateSettingsToSQLite } from './migrateAsyncStorage';
-import { loadSecureTokens, saveSecureTokens, clearSecureTokens } from './secureAuth';
+import { loadSecureTokensWithRetry, saveSecureTokens, clearSecureTokens } from './secureAuth';
 import { mobileStorageAdapter as adapter, flushWrites } from './storageAdapter';
 import { useAppStore, setAutoSyncCallback, type PartialMobileStore, type MobileStore } from './useAppStore';
 
@@ -208,7 +208,7 @@ export async function initApp(): Promise<void> {
 
     // ── Step 4: Restore auth tokens from SecureStore ──────────
     try {
-      const secureTokens = await loadSecureTokens();
+      const secureTokens = await loadSecureTokensWithRetry();
       if (secureTokens) {
         const currentAuth = store().auth;
         // Always restore tokens from SecureStore if available (regardless of isSignedIn state)
