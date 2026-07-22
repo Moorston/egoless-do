@@ -31,6 +31,7 @@ const SETTINGS_KEYS = [
   'sleepGoal',      // SleepGoal object — persisted via SleepSlice.persistSettings, not in profile
   'auth',           // { isSignedIn, user, isGuest } — no tokens
   'recycleBin',     // RecycleBinItem[]
+  'bodyFlowState',  // BodyFlow session state — persisted via BodySlice.setBodyFlowState
 ] as const;
 
 /**

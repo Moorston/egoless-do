@@ -22,6 +22,7 @@ interface Props {
   exerciseCompleted: boolean;
   breathingCompleted: boolean;
   awarenessCompleted: boolean;
+  showActions?: boolean;
   onStartExercise: () => void;
   onStartBreathing: () => void;
   onSkipStep: (step: string) => void;
@@ -29,7 +30,7 @@ interface Props {
 }
 
 export default function WorkoutFlowBanner({
-  TH, T, isCombo, exerciseCompleted, breathingCompleted, awarenessCompleted,
+  TH, T, isCombo, exerciseCompleted, breathingCompleted, awarenessCompleted, showActions = true,
   onStartExercise, onStartBreathing, onSkipStep, onCheckinComplete,
 }: Props) {
   const [showCheckin, setShowCheckin] = useState(false);
@@ -104,21 +105,23 @@ export default function WorkoutFlowBanner({
         {currentStep === 'checkin' && T('bodyFlowAwareness') || '觉知'}
       </Text>
 
-      {/* Actions */}
-      <View style={styles.actions}>
-        <TouchableOpacity onPress={() => {
-          if (currentStep === 'exercise') onStartExercise();
-          else if (currentStep === 'breathing') onStartBreathing();
-          else if (currentStep === 'checkin') setShowCheckin(true);
-        }} style={[styles.startBtn, { backgroundColor: TH.primary }]}>
-          <Text style={styles.startBtnText}>{T('bodyStart') || '开始'}</Text>
-        </TouchableOpacity>
-        {currentStep !== 'exercise' && (
-          <TouchableOpacity onPress={() => onSkipStep(currentStep)} style={styles.skipBtn}>
-            <Text style={[styles.skipBtnText, { color: TH.sub }]}>{T('bodyFlowSkip') || '跳过'}</Text>
+      {/* Actions — only shown when showActions is true (BodyFlow) */}
+      {showActions && (
+        <View style={styles.actions}>
+          <TouchableOpacity onPress={() => {
+            if (currentStep === 'exercise') onStartExercise();
+            else if (currentStep === 'breathing') onStartBreathing();
+            else if (currentStep === 'checkin') setShowCheckin(true);
+          }} style={[styles.startBtn, { backgroundColor: TH.primary }]}>
+            <Text style={styles.startBtnText}>{T('bodyStart') || '开始'}</Text>
           </TouchableOpacity>
-        )}
-      </View>
+          {currentStep !== 'exercise' && (
+            <TouchableOpacity onPress={() => onSkipStep(currentStep)} style={styles.skipBtn}>
+              <Text style={[styles.skipBtnText, { color: TH.sub }]}>{T('bodyFlowSkip') || '跳过'}</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
     </View>
   );
 }

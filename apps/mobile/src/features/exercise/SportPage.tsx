@@ -399,6 +399,7 @@ export default function SportPage() {
       met: MET_MAP[effectiveSportName] || currentComboExercise?.met,
       planId: comboPlanId || planId,
       planTaskWeekday,
+      note: currentComboExercise?.nameZh,
     };
     addExercise(entry);
 

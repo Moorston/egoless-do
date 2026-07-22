@@ -403,6 +403,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
           exerciseCompleted={!!flowState?.exerciseCompleted}
           breathingCompleted={!!flowState?.breathingCompleted}
           awarenessCompleted={!!flowState?.awarenessCompleted}
+          showActions={false}
           onStartExercise={handleStartExercise}
           onStartBreathing={handleStartBreathing}
           onSkipStep={handleSkipStep}

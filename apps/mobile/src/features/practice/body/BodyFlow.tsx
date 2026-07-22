@@ -479,8 +479,14 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
   };
 
   return (
-    <Animated.View style={{ opacity: fadeAnim }}>
-      {renderStep()}
-    </Animated.View>
+    <View>
+      {/* Back button */}
+      <TouchableOpacity onPress={handleExitPress} style={{ paddingVertical: 8, paddingHorizontal: 4, marginBottom: 8, alignSelf: 'flex-start' }}>
+        <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{'← '}{T('bodyBack')}</Text>
+      </TouchableOpacity>
+      <Animated.View style={{ opacity: fadeAnim }}>
+        {renderStep()}
+      </Animated.View>
+    </View>
   );
 }

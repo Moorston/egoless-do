@@ -291,12 +291,12 @@ export function createBodySlice(
       });
       // Persist for cross-session recovery (local settings, no sync)
       const state = get().bodyFlowState;
-      if (state) adapter.persistSettings('_bodyFlow', state).catch(e => log.error(e));
+      if (state) adapter.persistSettings('bodyFlowState', state).catch(e => log.error(e));
     },
 
     resetBodyFlowState() {
       set({ bodyFlowState: null });
-      adapter.persistSettings('_bodyFlow', null).catch(e => log.error(e));
+      adapter.persistSettings('bodyFlowState', null).catch(e => log.error(e));
     },
   });
 }
