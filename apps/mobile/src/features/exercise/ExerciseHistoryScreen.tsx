@@ -483,6 +483,19 @@ export default function ExerciseHistoryScreen() {
               <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{e.calories} kcal</Text>
             ) : null}
           </View>
+          {isExpanded && e.comboExercises && e.comboExercises.length > 0 && (
+            <View style={{ marginTop: 8, backgroundColor: `${TH.border}30`, borderRadius: 8, padding: 8 }}>
+              {e.comboExercises.map((ex, i) => (
+                <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 2 }}>
+                  <Text style={{ fontSize: FONT_SMALL() }}>{ex.icon}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }} numberOfLines={1}>{ex.nameZh || ex.sportKey}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
+                    {Math.floor(ex.durationSec / 60)}:{(ex.durationSec % 60).toString().padStart(2, '0')}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          )}
           {isExpanded && <DetailCard e={e} TH={TH} P={P} T={T} MapView={MapView} Polyline={Polyline} />}
         </TouchableOpacity>
       </View>

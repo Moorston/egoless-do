@@ -167,7 +167,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
     onGoToBreathing?.();
   }, [onGoToBreathing]);
 
-  const sportInfo = useMemo(() => {
+  const exerciseLibrary = useMemo(() => buildExerciseLibrary(), []);
     if (!selectedSportKey) return null;
     return ALL_SPORTS.find(s => s.key === selectedSportKey || s.keyEn === selectedSportKey)
       ?? EXERCISE_CATEGORIES.find(c => c.key === selectedSportKey);
@@ -276,7 +276,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
                     {planExercises.map((ex, i) => (
                       <View key={ex.id || i} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 3 }}>
                         <Text style={{ fontSize: FONT_SMALL() }}>{ex.icon}</Text>
-                        <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }} numberOfLines={1}>{ex.nameZh || ex.sportKey}</Text>
+                        <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }} numberOfLines={1}>{ex.nameZh || exerciseLibrary.find(lib => lib.category === ex.category || lib.sportKey === ex.sportKey)?.nameZh || ex.sportKey}</Text>
                         {ex.defaultSets && ex.defaultReps && (
                           <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{ex.defaultSets}×{ex.defaultReps}</Text>
                         )}

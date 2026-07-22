@@ -37,6 +37,7 @@ export interface ExerciseEntry extends Syncable {
   planId?: string;           // 关联的训练计划 ID
   planTaskWeekday?: number;  // 关联的计划任务星期 (1-7)
   note?: string;             // 备注（如组合训练中的具体动作名称）
+  comboExercises?: { sportKey: string; icon: string; nameZh: string; durationSec: number; calories: number; reps: number; timestamp: number }[];
 }
 
 export interface SportItem {
