@@ -185,13 +185,16 @@ export default function ExerciseScreen() {
           <View style={styles.sectionContainer}>
             <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 12 }}>{T('exerciseRecentActivity')}</Text>
             <View style={{ backgroundColor: TH.card, borderRadius: 14, overflow: 'hidden', borderWidth: 1, borderColor: TH.border }}>
-              {recentSports.map((s, i) => (
+              {recentSports.map((s, i) => {
+                const cat = EXERCISE_CATEGORIES.find(c => c.key === s.key);
+                const label = cat ? T(cat.i18nKey) : s.key;
+                return (
                 <TouchableOpacity key={s.key}
                   onPress={() => startSport(s)}
-                  accessibilityLabel={s.key}
+                  accessibilityLabel={label}
                   style={{ flexDirection: 'row', alignItems: 'center', padding: 14, gap: 12, borderBottomWidth: i < recentSports.length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
                   <Text style={styles.sportIcon}>{s.icon}</Text>
-                  <Text style={{ fontSize: FONT_BODY(), color: TH.text, flex: 1 }}>{s.key}</Text>
+                  <Text style={{ fontSize: FONT_BODY(), color: TH.text, flex: 1 }}>{label}</Text>
                   {s.gps && (
                     <View style={{ backgroundColor: `${P}20`, borderRadius: 6, paddingHorizontal: 6, paddingVertical: 2 }}>
                       <Text style={{ fontSize: FONT_BADGE(), color: P, fontWeight: '600' }}>{T('exerciseGpsTag')}</Text>
@@ -199,7 +202,8 @@ export default function ExerciseScreen() {
                   )}
                   <ChevronRight size={16} color={TH.sub} />
                 </TouchableOpacity>
-              ))}
+                );
+              })}
             </View>
           </View>
         )}
