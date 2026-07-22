@@ -15,6 +15,7 @@ export function createAuthSlice(
   onLogout?: () => void | Promise<void>,
   onPullServerData?: (token: string, userId?: string) => Promise<void>,
   onClearData?: () => void | Promise<void>,
+  onAuthFailure?: () => void,
 ): SliceCreator<AuthSlice> {
   // Guard against concurrent refresh calls (shared across the slice lifetime)
   let _refreshInFlight: Promise<void> | null = null;
@@ -180,6 +181,7 @@ export function createAuthSlice(
         // so callers know the refresh failed (don't silently resolve)
         if (lastError) {
           log.error(lastError, { context: 'refreshAuth failed after retries' });
+          onAuthFailure?.();
         }
       })();
       try {

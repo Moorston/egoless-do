@@ -29,6 +29,7 @@ import { useMusicStore, setMusicSyncCallback } from '../features/music/useMusicS
 import { runSync, resetSyncState, softResetSyncState, resetMigrationFlag, rehydrateFromDb, initialSync } from '../features/sync/SyncService';
 
 import { createMobileUiSlice, type MobileUiSlice } from './createMobileUiSlice';
+import { useUiStore } from './uiStore';
 import { mobileStorageAdapter, flushWrites, setPersistErrorHandler } from './storageAdapter';
 import { API_URL, PB_URL } from '../config';
 
@@ -192,6 +193,8 @@ export const useAppStore = create<MobileStore>()(
       }
     }, async () => {
       await resetSyncState();
+    }, () => {
+      useUiStore.getState().showToast('登录已过期，请重新登录', 'error');
     })(...a);
     // StateCreator factories (needed by createMobileUiSlice before resolution)
     const foodCreator = createFoodSlice(adapter, persistProfileSettings, triggerAutoSync);
