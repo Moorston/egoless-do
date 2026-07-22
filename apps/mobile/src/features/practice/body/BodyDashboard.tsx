@@ -375,7 +375,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
   return (
     <View>
       {/* ── Workout Flow Banner (分步训练模式) ── */}
-      {(flowState?.isCombo || flowState?.exerciseCompleted) && (
+      {(flowState?.isCombo || flowState?.exerciseCompleted) && flowState?.startedAt && (Date.now() - flowState.startedAt < 24 * 60 * 60 * 1000) && (
         <WorkoutFlowBanner
           TH={TH}
           T={T}
