@@ -2,7 +2,7 @@ import * as Haptics from 'expo-haptics';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Animated, Easing } from 'react-native';
 
-export type Page = 'prep' | 'countdown' | 'active' | 'paused' | 'report';
+export type Page = 'prep' | 'countdown' | 'active' | 'paused' | 'report' | 'transition';
 
 export function useExerciseTimer() {
   const [page, setPage]         = useState<Page>('prep');

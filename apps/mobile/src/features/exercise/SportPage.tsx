@@ -326,6 +326,15 @@ export default function SportPage() {
     if (isGpsSport) startGpsTracking();
   }, [timer, isGpsSport, startGpsTracking]);
 
+  // ── Combo session cleanup ──
+  const resetComboSession = useCallback(() => {
+    musicStop();
+    try { audioPlayerRef.current?.pause(); } catch {}
+    audio.stopAll();
+    cleanupSession();
+    stopGpsTracking();
+  }, [musicStop, audio.stopAll, cleanupSession, stopGpsTracking]);
+
   // ── 组合模式：返回确认 ──
   const handleComboBack = useCallback(() => {
     if (comboState.current.currentIndex === 0 && !comboState.current.results.length) {
@@ -341,14 +350,6 @@ export default function SportPage() {
       ]
     );
   }, [T, nav, resetComboSession]);
-
-  const resetComboSession = useCallback(() => {
-    musicStop();
-    try { audioPlayerRef.current?.pause(); } catch {}
-    audio.stopAll();
-    cleanupSession();
-    stopGpsTracking();
-  }, [musicStop, audio.stopAll, cleanupSession, stopGpsTracking]);
 
   // ── 组合模式：获取当前动作的休息时间 ──
   const getRestSec = useCallback((exercise: ExerciseDef): number => {
@@ -402,10 +403,9 @@ export default function SportPage() {
 
     // 1. 保存当前动作结果
     const finalReps = sportType === 'repetition' ? sets.totalReps : undefined;
-    const entry: Record<string, unknown> = {
+    const entry = {
       sportKey: effectiveSportName, sportIcon: effectiveIcon, durationSec: timer.sec,
-      timestamp: Date.now(), isGpsSport: false,
-      distanceKm: undefined,
+      timestamp: Date.now(), isGpsSport: false as const,
       calories,
       reps: finalReps,
       sets: sets.sets.length > 0 ? sets.sets : undefined,
@@ -495,7 +495,7 @@ export default function SportPage() {
       stopGpsTracking();
       const finalReps = sportType === 'repetition' ? sets.totalReps : undefined;
       if (timer.sec > 0 || (finalReps && finalReps > 0)) {
-        const entry: Record<string, unknown> = {
+        const entry = {
           sportKey: sportName, sportIcon: icon, durationSec: timer.sec,
           timestamp: Date.now(), isGpsSport,
           distanceKm: isGpsSport ? distKm : undefined,
