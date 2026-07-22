@@ -1095,7 +1095,7 @@ export const en: I18nKeys = {
   bodyFlowDone:'Done', bodyFlowSkipped:'Skipped', bodyFlowRecorded:'Recorded',
   bodyFlowFinish:'Finish', bodyFlowPracticeDone:'Exercise done',
   bodyExerciseComplete:'Exercise Complete!', bodyRestCountdown:'Resting', bodySkipRest:'Skip Rest',
-  bodyAllDone:'All Done!', bodyComboCompleteHint:'All exercises completed',
+  bodyAllDone:'All Done!', bodyComboCompleteHint:'All exercises completed', bodyComboJumpTo:'Jump to {name}?', bodyComboJumpConfirm:'Current exercise progress will be lost.', bodyComboJump:'Jump', bodyComboSetsReps:'{sets} sets × {reps} reps', bodyComboMinutes:'{min} min', bodyComboReport:'Combo Workout Report', bodyComboTotalDuration:'Total Duration', bodyComboTotalCalories:'Total Calories', bodyComboExercises:'Exercises', bodyComboReturn:'Return',
   bodyNextExercise:'Next Exercise', bodyStartNext:'Start Next', bodyJumpTo:'Jump',
   bodyExerciseIncomplete:'Exercise Incomplete', bodyExerciseCompleteHint:'Please complete all planned sets', bodyExerciseCompleteRepsHint:'Please complete planned reps for each set', bodyExerciseCompleteDurationHint:'Please complete at least {percent}% of duration ({min}s)', bodyExerciseCompleteMinHint:'Please complete this exercise before moving on',
   bodyTodayPlan:'Today\'s Plan', bodyTodayPlanEmpty:'No plan set for today', bodyTodayPlanRest:'Rest day',

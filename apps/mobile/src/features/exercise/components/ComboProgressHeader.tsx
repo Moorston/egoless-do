@@ -21,6 +21,7 @@ interface Props {
   results: ExerciseResult[];
   onJumpTo: (index: number) => void;
   safeAreaBottom?: number;
+  T: (key: string, params?: Record<string, string | number>) => string;
 }
 
 const COLORS = {
@@ -34,31 +35,31 @@ const COLORS = {
   textSecondary: 'rgba(255,255,255,0.5)',
 };
 
-export default function ComboProgressHeader({ exercises, currentIndex, results, onJumpTo, safeAreaBottom = 0 }: Props) {
+export default function ComboProgressHeader({ exercises, currentIndex, results, onJumpTo, safeAreaBottom = 0, T }: Props) {
   const scrollRef = useRef<ScrollView>(null);
 
   const handlePress = useCallback((index: number) => {
     if (index === currentIndex) return;
     if (index < currentIndex) {
       Alert.alert(
-        `Jump to #${index + 1}?`,
-        'Current progress will be lost.',
+        T('bodyComboJumpTo').replace('{name}', `#${index + 1}`),
+        T('bodyComboJumpConfirm'),
         [
-          { text: 'Cancel', style: 'cancel' },
-          { text: 'Jump', onPress: () => onJumpTo(index) },
+          { text: T('commonCancel'), style: 'cancel' },
+          { text: T('bodyComboJump'), onPress: () => onJumpTo(index) },
         ]
       );
       return;
     }
     Alert.alert(
-      `Jump to #${index + 1}?`,
+      T('bodyComboJumpTo').replace('{name}', `#${index + 1}`),
       undefined,
       [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Jump', onPress: () => onJumpTo(index) },
+        { text: T('commonCancel'), style: 'cancel' },
+        { text: T('bodyComboJump'), onPress: () => onJumpTo(index) },
       ]
     );
-  }, [onJumpTo, currentIndex]);
+  }, [onJumpTo, currentIndex, T]);
 
   React.useEffect(() => {
     const timer = setTimeout(() => {

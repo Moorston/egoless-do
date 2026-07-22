@@ -1093,7 +1093,7 @@ export const zh: I18nKeys = {
   bodyFlowDone:'已完成', bodyFlowSkipped:'已跳过', bodyFlowRecorded:'已记录',
   bodyFlowFinish:'完成', bodyFlowPracticeDone:'运动已完成',
   bodyExerciseComplete:'动作完成！', bodyRestCountdown:'休息中', bodySkipRest:'跳过休息',
-  bodyAllDone:'全部完成！', bodyComboCompleteHint:'所有动作已完成',
+  bodyAllDone:'全部完成！', bodyComboCompleteHint:'所有动作已完成', bodyComboJumpTo:'跳转到 {name}？', bodyComboJumpConfirm:'当前训练进度将丢失', bodyComboJump:'跳转', bodyComboSetsReps:'{sets}组 × {reps}次', bodyComboMinutes:'{min}分钟', bodyComboReport:'组合训练报告', bodyComboTotalDuration:'总时长', bodyComboTotalCalories:'总消耗', bodyComboExercises:'动作列表', bodyComboReturn:'返回',
   bodyNextExercise:'下一动作', bodyStartNext:'开始下一个', bodyJumpTo:'跳转',
   bodyExerciseIncomplete:'动作未完成', bodyExerciseCompleteHint:'请完成所有计划组数', bodyExerciseCompleteRepsHint:'请完成每组计划次数', bodyExerciseCompleteDurationHint:'请至少完成 {percent}% 时长 ({min}秒)', bodyExerciseCompleteMinHint:'请完成该动作后再进入下一动作',
   bodyTodayPlan:'今日方案', bodyTodayPlanEmpty:'尚未设置今日方案', bodyTodayPlanRest:'今日休息日',

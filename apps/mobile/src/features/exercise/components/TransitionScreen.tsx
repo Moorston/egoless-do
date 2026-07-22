@@ -7,6 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { CheckCircle2, ChevronRight, SkipForward } from 'lucide-react-native';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface Props {
   currentExercise: ExerciseDef;
@@ -24,6 +25,7 @@ export default function TransitionScreen({
   currentExercise, currentDuration, nextExercise, restSec,
   onSkipRest, onNext, onFinishAll, TH, T,
 }: Props) {
+  const insets = useSafeAreaInsets();
   const [restRemaining, setRestRemaining] = useState(restSec);
   const restTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const autoAdvanceRef = useRef(false);
@@ -66,7 +68,7 @@ export default function TransitionScreen({
   const isAllDone = !nextExercise;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingBottom: insets.bottom }]}>
       {/* Current exercise summary */}
       <View style={[styles.summaryCard, { backgroundColor: TH.card }]}>
         <View style={styles.summaryHeader}>
@@ -135,11 +137,11 @@ export default function TransitionScreen({
               </Text>
               {(nextExercise.defaultSets && nextExercise.defaultReps) ? (
                 <Text style={[styles.nextMeta, { color: TH.sub }]}>
-                  {nextExercise.defaultSets}组 × {nextExercise.defaultReps}次
+                  {T('bodyComboSetsReps', { sets: nextExercise.defaultSets, reps: nextExercise.defaultReps })}
                 </Text>
               ) : nextExercise.defaultDurationSec ? (
                 <Text style={[styles.nextMeta, { color: TH.sub }]}>
-                  {Math.round(nextExercise.defaultDurationSec / 60)}分钟
+                  {T('bodyComboMinutes', { min: Math.round(nextExercise.defaultDurationSec / 60) })}
                 </Text>
               ) : null}
             </View>

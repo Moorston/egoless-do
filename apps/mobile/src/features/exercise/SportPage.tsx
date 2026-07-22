@@ -9,6 +9,7 @@ import { useTheme, useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
 
 import ComboProgressHeader from './components/ComboProgressHeader';
+import ComboReportPage from './components/ComboReportPage';
 import TransitionScreen from './components/TransitionScreen';
 import type { ExerciseResult } from './components/ComboProgressHeader';
 
@@ -439,6 +440,22 @@ export default function SportPage() {
 
       const totalRepsVal = comboState.current.results.reduce((s, r) => s + r.reps, 0);
 
+      // 保存聚合组合训练记录
+      if (isComboMode && comboState.current.results.length > 0) {
+        addExercise({
+          sportKey: 'combo_workout',
+          sportIcon: '🏋️',
+          durationSec: comboState.current.totalDurationSec,
+          timestamp: Date.now(),
+          isGpsSport: false as const,
+          calories: comboState.current.totalCalories,
+          reps: totalRepsVal,
+          planId: comboPlanId || planId,
+          planTaskWeekday,
+          comboExercises: comboState.current.results,
+        } as any);
+      }
+
       // 保存组合训练结果到 flowState
       setBodyFlowState({
         exerciseCompleted: true,
@@ -447,13 +464,24 @@ export default function SportPage() {
         totalDurationSec: comboState.current.totalDurationSec,
         totalCalories: comboState.current.totalCalories,
         comboExercises: comboState.current.results,
+        startedAt: Date.now(),
+        updatedAt: Date.now(),
       });
 
-      nav.navigate('MainTabs' as never, { screen: 'Body' } as never);
+      // 延迟导航，确保 store 写入完成
+      setTimeout(() => {
+        try {
+          nav.navigate('MainTabs' as never, { screen: 'Body' } as never);
+        } catch (navErr) {
+          log.error(navErr, { message: 'Combo navigation failed' });
+          setBodyFlowState({ exerciseCompleted: false, isCombo: false });
+        }
+      }, 100);
     } catch (e) {
       log.error(e, { message: 'Combo save failed' });
+      resetComboSession();
     }
-  }, [nav, musicStop, audio.stopAll, cleanupSession, stopGpsTracking, setBodyFlowState]);
+  }, [nav, musicStop, audio.stopAll, cleanupSession, stopGpsTracking, setBodyFlowState, addExercise, isComboMode, comboPlanId, planId, planTaskWeekday, resetComboSession]);
 
   // 组件卸载时清理会话
   useEffect(() => {
@@ -668,9 +696,20 @@ export default function SportPage() {
         restSec={restSec}
         onSkipRest={() => timer.setPage('prep')}
         onNext={() => timer.setPage('prep')}
-        onFinishAll={handleSaveAll}
+        onFinishAll={() => timer.setPage('combo_report')}
         TH={TH}
         T={T}
+      />
+    );
+  } else if (page === 'combo_report') {
+    pageContent = (
+      <ComboReportPage
+        totalDurationSec={comboState.current.totalDurationSec}
+        totalCalories={comboState.current.totalCalories}
+        exercises={comboState.current.results}
+        TH={TH}
+        T={T}
+        onFinish={handleSaveAll}
       />
     );
   } else if (page === 'active' && isGpsSport) {
@@ -761,7 +800,7 @@ export default function SportPage() {
   return (
     <View style={{ flex: 1 }}>
       {pageContent}
-      {isComboMode && comboExercises && (page === 'prep' || page === 'transition') && (
+      {isComboMode && comboExercises && (page === 'prep' || page === 'transition' || page === 'combo_report') && (
         <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
           <ComboProgressHeader
             exercises={comboExercises}
@@ -769,6 +808,7 @@ export default function SportPage() {
             results={comboState.current.results}
             onJumpTo={(index) => { comboState.current.currentIndex = index; timer.reset(); sets.reset(); timer.setPage('prep'); }}
             safeAreaBottom={insets.bottom}
+            T={T}
           />
         </View>
       )}

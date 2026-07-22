@@ -934,7 +934,7 @@ export interface I18nKeys {
   bodyFlowDone: string; bodyFlowSkipped: string; bodyFlowRecorded: string;
   bodyFlowFinish: string; bodyFlowPracticeDone: string;
   bodyExerciseComplete: string; bodyRestCountdown: string; bodySkipRest: string;
-  bodyAllDone: string; bodyComboCompleteHint: string; bodyNextExercise: string; bodyStartNext: string;
+  bodyAllDone: string; bodyComboCompleteHint: string; bodyComboJumpTo: string; bodyComboJumpConfirm: string; bodyComboJump: string; bodyComboSetsReps: string; bodyComboMinutes: string; bodyComboReport: string; bodyComboTotalDuration: string; bodyComboTotalCalories: string; bodyComboExercises: string; bodyComboReturn: string; bodyNextExercise: string; bodyStartNext: string;
   bodyExerciseIncomplete: string; bodyExerciseCompleteHint: string; bodyExerciseCompleteRepsHint: string; bodyExerciseCompleteDurationHint: string; bodyExerciseCompleteMinHint: string;
   bodyTodayPlan: string; bodyTodayPlanEmpty: string; bodyTodayPlanRest: string;
   bodyStartPractice: string; bodyStartToday: string; bodyToday: string;
