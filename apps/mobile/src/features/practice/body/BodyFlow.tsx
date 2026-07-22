@@ -1,4 +1,4 @@
-import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, ALL_SPORTS, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, SPORT_GROUPS, FONT_LABEL, FONT_STAT_SECTION, scaleFontSize,
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, ALL_SPORTS, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, SPORT_GROUPS, FONT_LABEL, FONT_STAT_SECTION, scaleFontSize, buildExerciseLibrary,
   type BodyPlan, type BodyPlanTask, type BodyCheckin, type DayOverride, type Theme, type BodySlice} from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { X, ChevronRight, CheckCircle2, Wind, Activity } from 'lucide-react-native';
@@ -241,10 +241,19 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
       return { name: todayOverride.note || '跳过', sportKey: 'rest', exercises: [], isRest: true };
     }
     if (trainingPlanTask) {
+      let exercises = todayOverride?.type === 'adjust' ? undefined : (trainingPlanTask.task.exercises ?? []);
+      // 回退: 如果 task 没有 exercises 但有 sportKey, 从动作库查找
+      if (!exercises || exercises.length === 0) {
+        const sk = effectiveSportKey ?? trainingPlanTask.task.sportKey;
+        if (sk && sk !== 'rest') {
+          const library = buildExerciseLibrary();
+          exercises = library.filter(ex => ex.category === sk);
+        }
+      }
       return {
         name: trainingPlanTask.planName,
         sportKey: effectiveSportKey ?? trainingPlanTask.task.sportKey,
-        exercises: todayOverride?.type === 'adjust' ? undefined : (trainingPlanTask.task.exercises ?? []),
+        exercises,
         isRest: effectiveSportKey === 'rest',
       };
     }
