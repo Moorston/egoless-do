@@ -945,11 +945,14 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
               <ChevronRight size={14} color={TH.primary} />
             </TouchableOpacity>
           </View>
-          {recentExercises.map((e, i) => (
+          {recentExercises.map((e, i) => {
+            const cat = EXERCISE_CATEGORIES.find(c => c.key === e.sportKey);
+            const sportLabel = cat ? T(cat.i18nKey) : e.sportKey;
+            return (
             <View key={e.id} style={[styles.recentItem, { borderBottomWidth: i < recentExercises.length - 1 ? 1 : 0, borderBottomColor: TH.border }]}>
               <Text style={{ fontSize: 20 }}>{e.sportIcon}</Text>
               <View style={{ flex: 1, marginLeft: 10 }}>
-                <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{e.sportKey}</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{sportLabel}</Text>
                 <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
                   {String(Math.floor(e.durationSec / 60))}{T('bodyMin')} {e.calories ? `· ${e.calories}kcal` : ''}
                 </Text>
@@ -958,7 +961,8 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                 {new Date(e.timestamp).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}
               </Text>
             </View>
-          ))}
+            );
+          })}
         </View>
       )}
 

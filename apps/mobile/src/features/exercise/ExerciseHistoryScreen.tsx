@@ -284,9 +284,12 @@ export default function ExerciseHistoryScreen() {
             <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>{T('exercisePR')}</Text>
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10 }}>
-            {topPRs.map(pr => (
+            {topPRs.map(pr => {
+                const cat = EXERCISE_CATEGORIES.find(c => c.key === pr.sportKey);
+                const label = cat ? T(cat.i18nKey) : pr.sportKey;
+                return (
               <View key={pr.sportKey} style={{ backgroundColor: `${P}10`, borderRadius: 10, padding: 10, minWidth: 90, alignItems: 'center' }}>
-                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 4 }}>{pr.sportKey}</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 4 }}>{label}</Text>
                 {pr.bestDistance && (
                   <View style={{ alignItems: 'center' }}>
                     <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: P }}>{pr.bestDistance.value.toFixed(1)}</Text>
@@ -306,7 +309,8 @@ export default function ExerciseHistoryScreen() {
                   </View>
                 )}
               </View>
-            ))}
+                );
+              })}
           </ScrollView>
         </Card>
       );
@@ -467,7 +471,7 @@ export default function ExerciseHistoryScreen() {
             </View>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-            <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{e.sportKey}</Text>
+            {(() => { const cat = EXERCISE_CATEGORIES.find(c => c.key === e.sportKey); return <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{cat ? T(cat.i18nKey) : e.sportKey}</Text>; })()}
             {e.reps != null ? (
               <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{e.reps} {T('exerciseReps')}</Text>
             ) : e.distanceKm ? (
