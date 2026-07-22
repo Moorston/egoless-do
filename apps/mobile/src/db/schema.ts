@@ -762,6 +762,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   await tryAddCol('exercise_entries', 'reps', 'INTEGER');
   await tryAddCol('exercise_entries', 'sets', 'TEXT');
   await tryAddCol('exercise_entries', 'met', 'REAL');
+  await tryAddCol('exercise_entries', 'combo_exercises', 'TEXT');
 
   // Add trail_id column to plan_items if missing
   await tryAddCol('plan_items', 'trail_id', 'TEXT');
