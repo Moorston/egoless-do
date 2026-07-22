@@ -202,10 +202,16 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
       };
     }
     if (todayPlan?.part && todayPlan.part !== 'rest') {
+      let exercises: BodyPlanTask['exercises'] = [];
+      const rawKey = PART_STRING_TO_KEY[effectiveSportKey ?? todayPlan.part] || effectiveSportKey || todayPlan.part;
+      if (rawKey && rawKey !== 'rest') {
+        const library = buildExerciseLibrary();
+        exercises = library.filter(ex => ex.category === rawKey);
+      }
       return {
         name: todayPlan.part,
         sportKey: effectiveSportKey ?? todayPlan.part,
-        exercises: [] as BodyPlanTask['exercises'],
+        exercises,
         isRest: false,
       };
     }
