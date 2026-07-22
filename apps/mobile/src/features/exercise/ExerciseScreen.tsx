@@ -238,7 +238,7 @@ export default function ExerciseScreen() {
             <View style={styles.modalHeaderRow}>
               <Text style={{ fontWeight: '700', fontSize: FONT_BACK(), color: TH.text }}>{T('exerciseCategory')}</Text>
               <TouchableOpacity onPress={() => setShowOther(false)}
-                accessibilityLabel="关闭"
+                accessibilityLabel={T('bodyClose') || '关闭'}
                 style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: TH.card, alignItems: 'center', justifyContent: 'center' }}>
                 <X size={18} color={TH.text} />
               </TouchableOpacity>
@@ -260,7 +260,7 @@ export default function ExerciseScreen() {
                 style={styles.searchInput}
               />
               {searchQuery.length > 0 && (
-                <TouchableOpacity onPress={() => setSearchQuery('')} accessibilityLabel="清除搜索">
+                <TouchableOpacity onPress={() => setSearchQuery('')} accessibilityLabel={T('bodyClear') || '清除搜索'}>
                   <X size={16} color={TH.sub} />
                 </TouchableOpacity>
               )}

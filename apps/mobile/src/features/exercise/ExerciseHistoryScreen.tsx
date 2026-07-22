@@ -296,7 +296,7 @@ export default function ExerciseHistoryScreen() {
                 {pr.bestReps && !pr.bestDistance && (
                   <View style={{ alignItems: 'center' }}>
                     <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: P }}>{pr.bestReps.value}</Text>
-                    <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>次 · {pr.bestReps.date.slice(5)}</Text>
+                    <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>{T('exerciseTimes') || '次'} · {pr.bestReps.date.slice(5)}</Text>
                   </View>
                 )}
                 {pr.bestDuration && !pr.bestDistance && !pr.bestReps && (
@@ -323,7 +323,7 @@ export default function ExerciseHistoryScreen() {
             <View key={stat.muscle} style={{ marginBottom: 6 }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 3 }}>
                 <Text style={{ fontSize: FONT_SMALL(), color: TH.text }}>{stat.muscle}</Text>
-                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{stat.count}次 · {stat.lastTrained.slice(5)}</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{stat.count}{T('exerciseTimes')} · {stat.lastTrained.slice(5)}</Text>
               </View>
               <View style={{ height: 6, backgroundColor: `${P}15`, borderRadius: 3, overflow: 'hidden' }}>
                 <View style={{ height: 6, width: `${(stat.count / maxCount) * 100}%`, backgroundColor: P, borderRadius: 3 }} />
@@ -391,7 +391,7 @@ export default function ExerciseHistoryScreen() {
               <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                 <View style={{ width: 10, height: 10, borderRadius: 3, backgroundColor: c }} />
                 <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>
-                  {i === 0 ? '无' : i === 1 ? '<20m' : i === 2 ? '20-60m' : '>60m'}
+                  {i === 0 ? T('exerciseDurationNone') || '无' : i === 1 ? T('exerciseDurationShort') || '<20m' : i === 2 ? T('exerciseDurationMedium') || '20-60m' : T('exerciseDurationLong') || '>60m'}
                 </Text>
               </View>
             ))}
