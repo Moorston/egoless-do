@@ -1498,3 +1498,47 @@ StatsScreen计划任务进度改为countItemDoneDays动态计算；补全planIte
 ### Next Steps
 
 - None - task complete
+
+
+## Session 43: 组合训练修复 — nameZh 回退/持久化/锻炼记录/安全区域/语法修复
+
+**Date**: 2026-07-23
+**Task**: 组合训练修复 — nameZh 回退/持久化/锻炼记录/安全区域/语法修复
+**Branch**: `master`
+
+### Summary
+
+1. TransitionScreen 增加顶部安全区域和背景色\n2. BreathingScreen 写入 flowState 修复调息返回断裂\n3. comboExercises 存储具体动作名称而非仅分类键\n4. ExerciseHistoryScreen 展开显示组合训练详细动作\n5. comboExercises 持久化到数据库（entity schema + SQLite）\n6. SecureStore 增加重试机制处理 iOS User interaction is not allowed\n7. 多层回退确保 ExerciseResult nameZh 正确获取
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `3cf08b83` | (see git log) |
+| `d6ed3c5f` | (see git log) |
+| `ba26e574` | (see git log) |
+| `cb559f3c` | (see git log) |
+| `f3d3a4f1` | (see git log) |
+| `72bacb38` | (see git log) |
+| `38a379fa` | (see git log) |
+| `c7ef36ab` | (see git log) |
+| `a6f4d22a` | (see git log) |
+| `b81e9c46` | (see git log) |
+| `b07ea979` | (see git log) |
+| `af4a46bf` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
