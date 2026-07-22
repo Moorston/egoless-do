@@ -5,7 +5,7 @@ import { FONT_BODY, FONT_SMALL, FONT_SUB, FONT_TITLE, type Theme } from '@egoles
 import React, { useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-import BodyCheckinInline from './BodyCheckinInline';
+import BodyCheckinInline from '../BodyCheckinInline';
 import type { BodyCheckin } from '@egoless-do/core';
 
 type Step = 'exercise' | 'breathing' | 'checkin' | 'done';
