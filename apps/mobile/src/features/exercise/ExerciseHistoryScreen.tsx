@@ -1,4 +1,4 @@
-import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_SMALL, FONT_TINY, getSportType, formatPace, computePRs, computeMuscleGroupStats, buildExerciseLibrary, computeMonthFrequency } from '@egoless-do/core';
+import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_SMALL, FONT_TINY, getSportType, formatPace, computePRs, computeMuscleGroupStats, buildExerciseLibrary, computeMonthFrequency, EXERCISE_CATEGORIES } from '@egoless-do/core';
 import type { ExerciseEntry, Theme, PRRecord, MuscleGroupStat, DayFrequency } from '@egoless-do/core';
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, FlatList, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';

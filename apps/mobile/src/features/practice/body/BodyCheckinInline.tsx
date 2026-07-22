@@ -1,6 +1,6 @@
 import {
   FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_SECTION, dateStr,
-  BODY_TAGS_PRESET, type BodyCheckin, type BodyPlan, type Theme,
+  BODY_TAGS_PRESET, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, type BodyCheckin, type BodyPlan, type Theme,
 } from '@egoless-do/core';
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput } from 'react-native';

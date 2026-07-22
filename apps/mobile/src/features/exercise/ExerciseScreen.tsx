@@ -1,4 +1,4 @@
-import { SPORT_GROUPS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_SECTION, FONT_BADGE, FONT_BACK, FONT_CLOSE, formatPace } from '@egoless-do/core';
+import { SPORT_GROUPS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_SECTION, FONT_BADGE, FONT_BACK, FONT_CLOSE, formatPace, EXERCISE_CATEGORIES } from '@egoless-do/core';
 import type { SportItem } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
