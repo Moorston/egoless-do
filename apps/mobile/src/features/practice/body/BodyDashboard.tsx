@@ -1,7 +1,7 @@
 import { dateStr, type AgeBracket, type BodyGoal, type BodyTrainingPlan, type ExerciseEntry, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_LABEL, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BADGE, generateSuggestions, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, BODY_TAGS_PRESET, ALL_SPORTS, type DayOverride, type ExerciseDef, type BodyCheckin } from '@egoless-do/core';
 import { ChevronRight, Play, Calendar, Target, Dumbbell, TrendingUp, Activity, Scale, History, Settings, ChevronLeft, ChevronDown } from 'lucide-react-native';
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Dimensions, Animated, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Dimensions, Animated, Alert, Modal } from 'react-native';
 
 import { useT, useTheme } from '../../../components/UI';
 import { useRootNavigation } from '../../../navigation/hooks';
@@ -65,6 +65,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
   const [showAdjustExercise, setShowAdjustExercise] = useState(false);
   const [showDayAction, setShowDayAction] = useState(false);
   const [showGoalEditLight, setShowGoalEditLight] = useState(false);
+  const [showDaySwapPicker, setShowDaySwapPicker] = useState(false);
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
   // Banner carousel state (no auto-rotate, user manual swipe)
@@ -307,6 +308,23 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
     if (!selectedDay) return;
     setOverride(selectedDayDate, { type: 'skip', createdAt: Date.now() });
   }, [selectedDay, selectedDayDate, setOverride]);
+
+  const handleDaySwapConfirm = useCallback((targetDay: number) => {
+    if (!selectedDay || !activeTrainingPlan || targetDay === selectedDay) return;
+    const tasks = [...activeTrainingPlan.tasks];
+    const srcIdx = tasks.findIndex(t => t.weekday === selectedDay);
+    const dstIdx = tasks.findIndex(t => t.weekday === targetDay);
+    if (srcIdx === -1 && dstIdx === -1) return;
+    // Swap the two tasks (or move if one day has no task)
+    const newTasks = tasks.map(t => ({ ...t }));
+    const srcTask = newTasks.find(t => t.weekday === selectedDay);
+    const dstTask = newTasks.find(t => t.weekday === targetDay);
+    if (srcTask) srcTask.weekday = targetDay;
+    if (dstTask) dstTask.weekday = selectedDay;
+    updateBodyTrainingPlan(activeTrainingPlan.id, { tasks: newTasks, updatedAt: Date.now() });
+    setShowDaySwapPicker(false);
+    setShowDayAction(false);
+  }, [selectedDay, activeTrainingPlan, updateBodyTrainingPlan]);
 
   const handleSaveGoalLight = useCallback((data: { strategy?: string; targetWeight?: number; targetBodyFat?: number; goalNote?: string }) => {
     if (activeTrainingPlan) {
@@ -1060,7 +1078,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
         hasOverride={!!selectedDayOverride}
         onSwap={() => { setShowDayAction(false); setShowQuickSwap(true); }}
         onSkip={handleDaySkip}
-        onSwapDays={() => {/* TODO: implement day swap picker */}}
+        onSwapDays={() => { setShowDayAction(false); setShowDaySwapPicker(true); }}
         onAdjust={() => { setShowDayAction(false); setShowAdjustExercise(true); }}
         TH={TH} T={T}
       />
@@ -1076,6 +1094,34 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
           TH={TH} T={T}
         />
       )}
+
+      {/* Day swap picker modal */}
+      <Modal visible={showDaySwapPicker} transparent animationType="fade">
+        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.5)', justifyContent: 'center', alignItems: 'center' }}>
+          <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24, width: '80%', maxWidth: 320 }}>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginBottom: 16, textAlign: 'center' }}>
+              {T('bodySwapDays')}
+            </Text>
+            {[1,2,3,4,5,6,7].filter(d => d !== selectedDay).map(d => (
+              <TouchableOpacity
+                key={d}
+                onPress={() => handleDaySwapConfirm(d)}
+                style={{ paddingVertical: 14, paddingHorizontal: 20, borderRadius: 12, marginBottom: 8, backgroundColor: `${TH.primary}15`, borderWidth: 1, borderColor: `${TH.primary}30` }}
+              >
+                <Text style={{ fontSize: FONT_BODY(), color: TH.text, fontWeight: '600', textAlign: 'center' }}>
+                  {T(`bodyWeek${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][d - 1]}`)}
+                </Text>
+              </TouchableOpacity>
+            ))}
+            <TouchableOpacity
+              onPress={() => setShowDaySwapPicker(false)}
+              style={{ paddingVertical: 12, alignItems: 'center', marginTop: 8 }}
+            >
+              <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{T('commonCancel')}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       {celebrationData && (
         <CelebrationOverlay

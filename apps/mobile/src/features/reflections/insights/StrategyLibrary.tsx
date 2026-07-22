@@ -64,7 +64,14 @@ export default function StrategyLibrary() {
 
   const handleAddStrategy = useCallback(() => {
     if (!newTitle.trim()) return;
-    // TODO: Save strategy to store
+    // Save strategy as a reflection with a dedicated tag
+    const store = useAppStore.getState();
+    const desc = newDescription.trim() ? `\n${newDescription.trim()}` : '';
+    store.addReflection({
+      content: `【策略】${newTitle.trim()}${desc}`,
+      tags: ['策略', 'coping-strategy'],
+      mood: '',
+    });
     setNewTitle('');
     setNewDescription('');
     setShowAddModal(false);

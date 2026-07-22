@@ -7,7 +7,8 @@ module.exports = {
   rules: {
     ...baseConfig.rules,
     // ── iOS Text strings rule: prevent raw numbers in <Text> ──
-    // TODO: upgrade to 'error' once all pre-existing violations are fixed
+    // Note: eslint-plugin-local 未安装，该规则实际未生效。
+    // 待安装后可将 .warn. 升级为 .error.
     'local/no-raw-number-in-text': 'warn',
     '@typescript-eslint/no-var-requires': 'off',
     'no-empty': ['error', { allowEmptyCatch: true }],

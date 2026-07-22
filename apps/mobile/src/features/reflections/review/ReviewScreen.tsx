@@ -55,11 +55,17 @@ export default function ReviewScreen() {
     if (step === 'mood') setStep('insight');
     else if (step === 'insight') setStep('action');
     else {
-      // Save review and go back
-      // TODO: Save to store
+      // Save weekly review as a reflection
+      const content = [
+        selectedMood ? `本周心情：${selectedMood}` : '',
+        insight ? `本周感悟：${insight}` : '',
+        action ? `下周计划：${action}` : '',
+      ].filter(Boolean).join('\n');
+      const store = useAppStore.getState();
+      store.addReflection({ content, tags: ['周回顾', 'review'], mood: selectedMood ?? '' });
       nav.goBack();
     }
-  }, [step, nav]);
+  }, [step, nav, selectedMood, insight, action]);
 
   const handleBack = useCallback(() => {
     if (step === 'insight') setStep('mood');

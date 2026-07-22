@@ -119,7 +119,7 @@ export default function PracticeScreen() {
     if (item.route) {
       nav.navigate(item.route as never);
     }
-    // TODO: navigate to other sub-pages when implemented
+    // sound 和 read 子页面尚未实现，有 route 时自动导航
   };
 
   return (
