@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 40
+- **Total Sessions**: 41
 - **Last Active**: 2026-07-22
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~1421 | Active |
+| `journal-1.md` | ~1457 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 41 | 2026-07-22 | 调身页全面优化 — 组合训练/流程修复/清理未完成项 | `325e6b4e`, `b903362e`, `5f924058`, `dde9425f` | `master` |
 | 40 | 2026-07-22 | 调身页开始今日训练全流程修复 | `10dc2673`, `c88b448c`, `f72b0716`, `ce24da69` | `master` |
 | 39 | 2026-07-22 | 调身页组合锻炼优化 + 修行模块审查 | `77b8f39c`, `4857f4f6`, `40b34268`, `111f08f9` | `master` |
 | 38 | 2026-07-19 | weekly-plan-exercise-grid-redesign: implement + check + commit | `7468572` | `master` |

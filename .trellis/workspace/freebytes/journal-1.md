@@ -1419,3 +1419,39 @@ StatsScreen计划任务进度改为countItemDoneDays动态计算；补全planIte
 ### Next Steps
 
 - None - task complete
+
+
+## Session 41: 调身页全面优化 — 组合训练/流程修复/清理未完成项
+
+**Date**: 2026-07-22
+**Task**: 调身页全面优化 — 组合训练/流程修复/清理未完成项
+**Branch**: `master`
+
+### Summary
+
+1. 清理未完成项：归档07-18任务、修复4个TODO、ESLint注释、合并AI集成计划分支\n2. 组合训练优化：新增ComboReportPage汇总报告页、i18n国际化、异常处理、聚合记录\n3. 修复3个问题：持久化bodyFlowState、锻炼记录保存详细动作名、引导卡片移至BodyFlow\n4. 修复BodyFlow全部问题：统一状态源、移除returnTick死代码、返回按钮优化、替换StepIndicator、时间固定
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `325e6b4e` | (see git log) |
+| `b903362e` | (see git log) |
+| `5f924058` | (see git log) |
+| `dde9425f` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
