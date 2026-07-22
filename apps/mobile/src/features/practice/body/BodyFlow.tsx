@@ -449,10 +449,10 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
       {/* Top bar: back + X on same row */}
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
         <TouchableOpacity onPress={handleBackPress} style={{ paddingVertical: 8, paddingHorizontal: 4 }}>
-          <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{'← '}{T('bodyBack')}</Text>
+          <Text style={{ fontSize: FONT_TITLE(), color: TH.sub }}>{'← '}{T('bodyBack')}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleExitPress} style={{ paddingVertical: 8, paddingHorizontal: 4 }}>
-          <X size={22} color={TH.sub} />
+          <X size={24} color={TH.sub} />
         </TouchableOpacity>
       </View>
       <Animated.View style={{ opacity: fadeAnim }}>
