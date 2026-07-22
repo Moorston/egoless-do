@@ -114,6 +114,7 @@ export default function BodyScreen() {
               todayPlan={todayPlan}
               trainingPlanTask={todayTrainingTask}
               todayOverride={todayOverride}
+              todayExercises={todayExercises}
               returnTick={0}
               onGoToSport={handleGoToSport}
               onGoToBreathing={handleGoToBreathing}

@@ -1,5 +1,5 @@
 import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, ALL_SPORTS, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, SPORT_GROUPS, FONT_LABEL, FONT_STAT_SECTION, scaleFontSize, buildExerciseLibrary,
-  type BodyPlan, type BodyPlanTask, type BodyCheckin, type DayOverride, type Theme, type BodySlice} from '@egoless-do/core';
+  type BodyPlan, type BodyPlanTask, type BodyCheckin, type DayOverride, type Theme, type BodySlice, type ExerciseDef} from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { X, ChevronRight, CheckCircle2, Wind, Activity } from 'lucide-react-native';
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
@@ -20,6 +20,7 @@ interface FlowProps {
   todayPlan?: BodyPlan;
   trainingPlanTask?: { planId: string; planName: string; task: BodyPlanTask } | null;
   todayOverride?: DayOverride;
+  todayExercises?: ExerciseDef[];
   store: Record<string, unknown> & Pick<BodySlice, 'upsertBodyCheckin'>;
   returnTick?: number;
   onGoToSport?: (sportKey: string, exercises?: ExerciseDef[]) => void;
@@ -99,7 +100,7 @@ function ExercisePicker({ TH, T, onSelect }: { TH: Theme; T: (key: string) => st
   );
 }
 
-export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, todayOverride, store, returnTick, onGoToSport, onGoToBreathing }: FlowProps) {
+export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, todayOverride, todayExercises, store, returnTick, onGoToSport, onGoToBreathing }: FlowProps) {
   const {
     flowState,
     setStep,
