@@ -406,6 +406,7 @@ export default function SportPage() {
     const result: ExerciseResult = {
       sportKey: effectiveSportName,
       icon: effectiveIcon,
+      nameZh: currentComboExercise?.nameZh ?? effectiveSportName,
       durationSec: timer.sec,
       calories,
       reps: finalReps ?? 0,

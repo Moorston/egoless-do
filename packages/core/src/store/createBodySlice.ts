@@ -25,7 +25,7 @@ export interface BodyFlowPersistedState {
   totalDurationSec?: number;
   totalCalories?: number;
   isCombo?: boolean;
-  comboExercises?: { sportKey: string; icon: string; durationSec: number; calories: number; reps: number; timestamp: number }[];
+  comboExercises?: { sportKey: string; icon: string; nameZh: string; durationSec: number; calories: number; reps: number; timestamp: number }[];
 }
 
 export const BODY_FLOW_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 hours

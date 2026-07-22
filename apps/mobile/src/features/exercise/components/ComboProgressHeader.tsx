@@ -9,6 +9,7 @@ import { View, Text, TouchableOpacity, ScrollView, Alert, StyleSheet } from 'rea
 export interface ExerciseResult {
   sportKey: string;
   icon: string;
+  nameZh: string;
   durationSec: number;
   calories: number;
   reps: number;

@@ -71,7 +71,7 @@ export default function ComboReportPage({ totalDurationSec, totalCalories, exerc
                 <Text style={styles.exerciseIcon}>{ex.icon}</Text>
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.exerciseName, { color: TH.text }]} numberOfLines={1}>
-                    {(() => { const cat = EXERCISE_CATEGORIES.find(c => c.key === ex.sportKey); return cat ? T(cat.i18nKey) : ex.sportKey; })()}
+                    {ex.nameZh}
                   </Text>
                   {ex.reps > 0 && (
                     <Text style={[styles.exerciseMeta, { color: TH.sub }]}>
