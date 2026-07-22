@@ -19,6 +19,8 @@ import AdjustExerciseModal from './modals/AdjustExerciseModal';
 import DayActionSheet from './modals/DayActionSheet';
 import GoalEditLightModal from './modals/GoalEditLightModal';
 import { useBodyFlowState } from './hooks/useBodyFlowState';
+import WorkoutFlowBanner from './components/WorkoutFlowBanner';
+import ExerciseProgressBanner from './components/ExerciseProgressBanner';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const BANNER_WIDTH = SCREEN_WIDTH - 32; // 16px padding on each side

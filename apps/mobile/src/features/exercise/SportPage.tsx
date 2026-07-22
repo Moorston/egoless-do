@@ -59,7 +59,7 @@ export default function SportPage() {
   const TH    = useTheme();
   const T     = useT();
   const insets = useSafeAreaInsets();
-  const { auth, userProfile, addExercise, exerciseLog, updateBodyTrainingPlan } = useShallowStore(s => ({ auth: s.auth, userProfile: s.userProfile, addExercise: s.addExercise, exerciseLog: s.exerciseLog, updateBodyTrainingPlan: s.updateBodyTrainingPlan }));
+  const { auth, userProfile, addExercise, exerciseLog, updateBodyTrainingPlan, setBodyFlowState } = useShallowStore(s => ({ auth: s.auth, userProfile: s.userProfile, addExercise: s.addExercise, exerciseLog: s.exerciseLog, updateBodyTrainingPlan: s.updateBodyTrainingPlan, setBodyFlowState: s.setBodyFlowState }));
   const { MapView, Polyline, ready: amapReady } = useAmapComponents();
   const { key: sportName, icon, color, gps: gpsParam, planId, planTaskWeekday, exercises: comboExercises, comboPlanId } = route.params;
 
@@ -442,7 +442,7 @@ export default function SportPage() {
     }
   }, [isComboMode, comboExercises, effectiveSportName, effectiveIcon, timer, sets, calories, comboPlanId, planId, planTaskWeekday, sportType]);
 
-  // ── 组合模式：全部完成，返回聚合结果到 BodyFlow ──
+  // ── 组合模式：全部完成，返回聚合结果到 Body ──
   const handleSaveAll = useCallback(() => {
     try {
       musicStop();
@@ -452,23 +452,22 @@ export default function SportPage() {
       stopGpsTracking();
 
       const totalRepsVal = comboState.current.results.reduce((s, r) => s + r.reps, 0);
-      const result: Record<string, unknown> = {};
-      if (comboState.current.totalDurationSec > 0) {
-        result.sportResult = {
-          completed: true,
-          durationSec: comboState.current.totalDurationSec,
-          calories: comboState.current.totalCalories,
-          reps: totalRepsVal,
-          sportKey: 'combo',
-          isCombo: true,
-          exercises: comboState.current.results,
-        };
-      }
-      nav.navigate('MainTabs' as never, { screen: 'Body', params: result } as never);
+
+      // 保存组合训练结果到 flowState
+      setBodyFlowState({
+        exerciseCompleted: true,
+        practiceCompleted: true,
+        isCombo: true,
+        totalDurationSec: comboState.current.totalDurationSec,
+        totalCalories: comboState.current.totalCalories,
+        comboExercises: comboState.current.results,
+      });
+
+      nav.navigate('MainTabs' as never, { screen: 'Body' } as never);
     } catch (e) {
       log.error(e, { message: 'Combo save failed' });
     }
-  }, [nav, musicStop, audio.stopAll, cleanupSession, stopGpsTracking]);
+  }, [nav, musicStop, audio.stopAll, cleanupSession, stopGpsTracking, setBodyFlowState]);
 
   // 组件卸载时清理会话
   useEffect(() => {
@@ -495,7 +494,6 @@ export default function SportPage() {
       cleanupSession();
       stopGpsTracking();
       const finalReps = sportType === 'repetition' ? sets.totalReps : undefined;
-      const result: Record<string, unknown> = {};
       if (timer.sec > 0 || (finalReps && finalReps > 0)) {
         const entry: Record<string, unknown> = {
           sportKey: sportName, sportIcon: icon, durationSec: timer.sec,
@@ -514,14 +512,14 @@ export default function SportPage() {
           planTaskWeekday,
         };
         addExercise(entry);
-        // Prepare result for BodyFlow
-        result.sportResult = {
-          completed: true,
-          durationSec: timer.sec,
-          calories,
-          reps: finalReps ?? 0,
-          sportKey: sportName,
-        };
+        // 保存到 flowState
+        setBodyFlowState({
+          exerciseCompleted: true,
+          practiceCompleted: true,
+          practiceDurationSec: timer.sec,
+          totalDurationSec: timer.sec,
+          totalCalories: calories,
+        });
         if (useAppStore.getState().healthSyncEnabled) {
           import('../health/HealthService').then(({ writeWorkout }) => {
             return writeWorkout({ ...entry, id: '', updatedAt: 0, deleted: false });
@@ -533,8 +531,8 @@ export default function SportPage() {
       savingRef.current = false;
       return;
     }
-    try { nav.navigate('MainTabs' as never, { screen: 'Body', params: result } as never); } catch { savingRef.current = false; }
-  }, [isComboMode, goToNextExercise, timer.sec, sets, sportName, icon, sportType, isGpsSport, distKm, calories, coords, segmentPaces, mode, targetType, targetValue, addExercise, userProfile, auth, nav, musicStop, audio.stopAll, cleanupSession, stopGpsTracking, planId, planTaskWeekday]);
+    try { nav.navigate('MainTabs' as never, { screen: 'Body' } as never); } catch { savingRef.current = false; }
+  }, [isComboMode, goToNextExercise, timer.sec, sets, sportName, icon, sportType, isGpsSport, distKm, calories, coords, segmentPaces, mode, targetType, targetValue, addExercise, userProfile, auth, nav, musicStop, audio.stopAll, cleanupSession, stopGpsTracking, planId, planTaskWeekday, setBodyFlowState]);
 
   // Stop music and ambient audio when entering report page (exercise ended)
   useEffect(() => {

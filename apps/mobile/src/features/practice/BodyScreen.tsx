@@ -33,6 +33,7 @@ export default function BodyScreen() {
   const [activePlanId, setActivePlanId] = useState<string | null>(null);
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const transitioningRef = useRef(false);
+  const { flowState } = useBodyFlowState();
 
   // Animated page transition
   const transitionTo = useCallback((target: BodyPage, extra?: () => void) => {
@@ -62,33 +63,25 @@ export default function BodyScreen() {
     if (!plan) return null;
     const task = plan.tasks.find(t => t.weekday === todayWeekday);
     if (!task) return null;
-    // 不过滤 rest：rest day 也需要传入计划上下文，BodyFlow 会显示休息状态
     return { planId: plan.id, planName: plan.name, task };
   }, [activePlanId, bodyTrainingPlans, todayWeekday]);
 
-  // Tick that BodyFlow uses to detect return from Sport/Breathing (fallback)
-  const [returnTick, setReturnTick] = useState(0);
+  // 检测组合模式
+  const isComboMode = !!todayExercises && todayExercises.length > 1;
+
+  // 当 flowState 显示运动完成时，自动进入 breathing 步骤
+  useEffect(() => {
+    if (flowState?.exerciseCompleted && page === 'flow') {
+      // 运动已完成，BodyDashboard Banner 会显示下一步
+    }
+  }, [flowState?.exerciseCompleted, page]);
 
   useFocusEffect(useCallback(() => {
-    // 只在有结果参数时才 tick，避免无关心跳误触发
-    const sr = route.params?.sportResult as { completed?: boolean; durationSec?: number; isCombo?: boolean; exercises?: { sportKey: string; icon: string; durationSec: number; calories: number; reps: number; timestamp: number }[] } | undefined;
-    if (sr?.completed) {
-      setReturnTick(t => t + 1);
-      setBodyFlowState({
-        practiceCompleted: true,
-        practiceDurationSec: sr.durationSec ?? 0,
-        isCombo: sr.isCombo,
-        comboExercises: sr.exercises,
-      });
-      nav.setParams({ sportResult: undefined });
+    // 不再依赖 returnTick，直接读取 flowState
+    if (flowState?.breathingCompleted) {
+      // 调息已完成
     }
-    const br = route.params?.breathingResult as { completed?: boolean; durationMs?: number } | undefined;
-    if (br?.completed) {
-      setReturnTick(t => t + 1);
-      setBodyFlowState({ breathingCompleted: true, breathingDurationMs: br.durationMs ?? 0 });
-      nav.setParams({ breathingResult: undefined });
-    }
-  }, [setBodyFlowState, nav, route]));
+  }, [flowState, nav, route]));
 
   const handleGoToSport = useCallback((sportKey: string) => {
     const sport = ALL_SPORTS.find(s => s.key === sportKey || s.keyEn === sportKey);
@@ -98,20 +91,18 @@ export default function BodyScreen() {
       color: sport?.color ?? '#f59e0b',
     };
 
-    // 组合模式：当日有多个动作时，传递全部动作到 SportPage
-    if (todayExercises && todayExercises.length > 1) {
+    // 组合模式：传递全部动作到 SportPage
+    if (isComboMode && todayExercises) {
       navParams.exercises = todayExercises;
       navParams.comboPlanId = activePlanId ?? undefined;
-    } else {
-      // 单运动模式：传递 planId 和 planTaskWeekday
-      if (activePlanId && todayTrainingTask) {
-        navParams.planId = activePlanId;
-        navParams.planTaskWeekday = todayTrainingTask.task.weekday;
-      }
+    } else if (activePlanId && todayTrainingTask) {
+      // 单运动模式
+      navParams.planId = activePlanId;
+      navParams.planTaskWeekday = todayTrainingTask.task.weekday;
     }
 
     nav.navigate('Sport' as never, navParams as never);
-  }, [nav, activePlanId, todayTrainingTask, todayExercises, activeTrainingPlan]);
+  }, [nav, activePlanId, todayTrainingTask, todayExercises, isComboMode, activeTrainingPlan]);
 
   const handleGoToBreathing = useCallback(() => {
     nav.navigate('Breathing' as never);
