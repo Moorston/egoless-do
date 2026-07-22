@@ -173,9 +173,8 @@ export interface I18nKeys {
   exerciseSetComplete: string; exerciseMet: string;
   exerciseEstRemaining: string; exerciseConfirmFinish: string;
   exerciseHoldToEnd: string; exerciseTimes: string; exerciseLast7Days: string; exerciseCalBreakdown: string; exerciseDailyCal: string;
-  exerciseStatsActiveStreak: string; exerciseDurationNone: string; exerciseDurationShort: string; exerciseDurationMedium: string; exerciseDurationLong: string;
-  bodyClose: string; bodyClear: string; bodyStart: string; bodyRedo: string;
-  bodyComboTraining: string; bodyTodayComplete: string;
+  exerciseDurationNone: string; exerciseDurationShort: string; exerciseDurationMedium: string; exerciseDurationLong: string;
+  bodyStart: string; bodyRedo: string; bodyComboTraining: string; bodyTodayComplete: string;
   exerciseTotalReps: string; exerciseRepsPerSet: string;
   exerciseSkip: string;
   exerciseRepsTarget: string; exerciseBreathGuide: string; exerciseBgSound: string;
