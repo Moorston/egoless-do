@@ -1,4 +1,4 @@
-import { SPORT_BG_COLORS, COLORS, getSportType, TARGET_PRESETS, estimateCalories, MET_MAP, getSportExperienceType, createLogger, EXERCISE_CATEGORIES, COMBO_WORKOUT_SPORT_KEY, type ExerciseDef } from '@egoless-do/core';
+import { SPORT_BG_COLORS, COLORS, getSportType, TARGET_PRESETS, estimateCalories, MET_MAP, getSportExperienceType, createLogger, EXERCISE_CATEGORIES, COMBO_WORKOUT_SPORT_KEY, buildExerciseLibrary, type ExerciseDef } from '@egoless-do/core';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useKeepAwake } from 'expo-keep-awake';
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
@@ -406,7 +406,7 @@ export default function SportPage() {
     const result: ExerciseResult = {
       sportKey: effectiveSportName,
       icon: effectiveIcon,
-      nameZh: currentComboExercise?.nameZh || currentComboExercise?.sportKey || effectiveSportName,
+      nameZh: currentComboExercise?.nameZh || buildExerciseLibrary().find(lib => lib.category === currentComboExercise?.category)?.nameZh || currentComboExercise?.sportKey || effectiveSportName,
       durationSec: timer.sec,
       calories,
       reps: finalReps ?? 0,
