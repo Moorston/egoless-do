@@ -84,9 +84,15 @@ export function useTodayPlan(): TodayPlanData {
     // 回退: 如果 task 没有 exercises 但有 sportKey, 从动作库查找
     if (!todayExercises || todayExercises.length === 0) {
       const task = activeTrainingPlan?.tasks.find(t => t.weekday === weekday);
-      if (task?.sportKey && task.sportKey !== 'rest') {
+      const rawKey = task?.sportKey
+        || (todayPlan?.part && PART_STRING_TO_KEY[todayPlan.part])
+        || todayPlan?.part
+        || todayPlan?.sportKey
+        || '';
+      const sportKey = PART_STRING_TO_KEY[rawKey] || rawKey;
+      if (sportKey && sportKey !== 'rest') {
         const library = buildExerciseLibrary();
-        todayExercises = library.filter(ex => ex.category === task.sportKey);
+        todayExercises = library.filter(ex => ex.category === sportKey);
       }
     }
 

@@ -244,7 +244,8 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
       let exercises = todayOverride?.type === 'adjust' ? undefined : (trainingPlanTask.task.exercises ?? []);
       // 回退: 如果 task 没有 exercises 但有 sportKey, 从动作库查找
       if (!exercises || exercises.length === 0) {
-        const sk = effectiveSportKey ?? trainingPlanTask.task.sportKey;
+        const rawKey = effectiveSportKey ?? trainingPlanTask.task.sportKey;
+        const sk = PART_STRING_TO_KEY[rawKey] || rawKey;
         if (sk && sk !== 'rest') {
           const library = buildExerciseLibrary();
           exercises = library.filter(ex => ex.category === sk);
