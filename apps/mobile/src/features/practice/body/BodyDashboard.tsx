@@ -477,7 +477,13 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                   </View>
                 )}
                 <TouchableOpacity
-                  onPress={handleStartExercise}
+                  onPress={() => {
+                    if (activeTrainingPlan?.id) {
+                      onFlowStartWithPlan?.(activeTrainingPlan.id);
+                    } else {
+                      onFlowStart?.();
+                    }
+                  }}
                   activeOpacity={0.85}
                   style={styles.bannerButton}
                 >

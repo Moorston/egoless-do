@@ -22,7 +22,7 @@ interface FlowProps {
   todayOverride?: DayOverride;
   store: Record<string, unknown> & Pick<BodySlice, 'upsertBodyCheckin'>;
   returnTick?: number;
-  onGoToSport?: (sportKey: string) => void;
+  onGoToSport?: (sportKey: string, exercises?: ExerciseDef[]) => void;
   onGoToBreathing?: () => void;
 }
 
@@ -207,8 +207,9 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
     setPracticeCompleted(false);
     setSelectedSportKey(sportKey);
     setSelectedSport(sportKey);
-    onGoToSport?.(sportKey);
-  }, [onGoToSport, setSelectedSport]);
+    // 通知 BodyScreen 跳转到 SportPage
+    onGoToSport?.(sportKey, todayExercises && todayExercises.length > 1 ? todayExercises : undefined);
+  }, [onGoToSport, setSelectedSport, todayExercises]);
 
   // 进入流程时重置计时 ref，避免旧值残留
   useEffect(() => {
