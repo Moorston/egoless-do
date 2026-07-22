@@ -139,15 +139,15 @@ export default function TrainingCalendar({ TH, T, exerciseLog, plans }: Props) {
       <View style={styles.statsRow}>
         <View style={styles.statItem}>
           <Text style={[styles.statValue, { color: '#10b981' }]}>{monthStats.activeDays}</Text>
-          <Text style={[styles.statLabel, { color: TH.sub }]}>{T('bodyDayCompleted') || '运动'}</Text>
+          <Text style={[styles.statLabel, { color: TH.sub }]}>{T('bodyDayCompleted')}</Text>
         </View>
         <View style={styles.statItem}>
           <Text style={[styles.statValue, { color: '#f59e0b' }]}>{Math.round(monthStats.totalMin / 60)}h</Text>
-          <Text style={[styles.statLabel, { color: TH.sub }]}>{T('exerciseMin') || '时长'}</Text>
+          <Text style={[styles.statLabel, { color: TH.sub }]}>{T('exerciseMin')}</Text>
         </View>
         <View style={styles.statItem}>
           <Text style={[styles.statValue, { color: '#6366f1' }]}>{monthStats.restDays}</Text>
-          <Text style={[styles.statLabel, { color: TH.sub }]}>{T('bodyDayRest') || '休息'}</Text>
+          <Text style={[styles.statLabel, { color: TH.sub }]}>{T('bodyDayRest')}</Text>
         </View>
       </View>
 
@@ -207,15 +207,15 @@ export default function TrainingCalendar({ TH, T, exerciseLog, plans }: Props) {
       <View style={styles.legend}>
         <View style={styles.legendItem}>
           <View style={[styles.legendDot, { backgroundColor: '#f59e0b' }]} />
-          <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>{T('bodyToday') || '今天'}</Text>
+          <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>{T('bodyToday')}</Text>
         </View>
         <View style={styles.legendItem}>
           <View style={[styles.legendDot, { backgroundColor: '#10b981' }]} />
-          <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>{T('bodyDayCompleted') || '已运动'}</Text>
+          <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>{T('bodyDayCompleted')}</Text>
         </View>
         <View style={styles.legendItem}>
           <Text style={{ fontSize: 10 }}>😴</Text>
-          <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>{T('bodyDayRest') || '休息'}</Text>
+          <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>{T('bodyDayRest')}</Text>
         </View>
       </View>
     </View>

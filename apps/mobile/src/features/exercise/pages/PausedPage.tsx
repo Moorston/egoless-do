@@ -118,7 +118,7 @@ export default function PausedPage(props: ExercisePageProps) {
           )}
           <View style={{ alignItems: 'center' }}>
             <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '700', color: '#fff' }}>{sets.length}</Text>
-            <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.7)' }}>{T('exerciseSets') || '组'}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.7)' }}>{T('exerciseSets')}</Text>
           </View>
           <View style={{ alignItems: 'center' }}>
             <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '700', color: COLORS.ORANGE }}>{props.calories}</Text>
@@ -184,7 +184,7 @@ export default function PausedPage(props: ExercisePageProps) {
           </TouchableOpacity>
         </View>
         <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.4)', marginTop: 16, textAlign: 'center' }}>
-          {T('exerciseHoldToEnd') || '长按红色按钮结束 · 点击绿色按钮继续'}
+          {T('exerciseHoldToEnd')}
         </Text>
       </View>
     </View>

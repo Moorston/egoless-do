@@ -281,7 +281,7 @@ export default function ExerciseHistoryScreen() {
         <Card style={{ marginBottom: 14 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10 }}>
             <Text style={{ fontSize: FONT_STAT_SECTION() }}>🏆</Text>
-            <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>{T('exercisePR') || '个人最佳'}</Text>
+            <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>{T('exercisePR')}</Text>
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10 }}>
             {topPRs.map(pr => (
@@ -317,7 +317,7 @@ export default function ExerciseHistoryScreen() {
         <Card style={{ marginBottom: 14 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10 }}>
             <Text style={{ fontSize: FONT_STAT_SECTION() }}>💪</Text>
-            <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>{T('exerciseMuscleDistribution') || '肌群训练分布'}</Text>
+            <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>{T('exerciseMuscleDistribution')}</Text>
           </View>
           {topMuscles.map(stat => (
             <View key={stat.muscle} style={{ marginBottom: 6 }}>
@@ -349,7 +349,7 @@ export default function ExerciseHistoryScreen() {
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
               <Text style={{ fontSize: FONT_STAT_SECTION() }}>📅</Text>
-              <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>{T('exerciseFrequency') || '运动频率'}</Text>
+              <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>{T('exerciseFrequency')}</Text>
             </View>
             <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
               {activeDays}天运动 · 连续{streakDays}天 🔥

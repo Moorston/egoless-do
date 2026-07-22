@@ -78,7 +78,7 @@ export default function ReportPage(props: ExercisePageProps) {
       {weekHistory.length > 0 && (
         <View style={{ paddingHorizontal: 16, marginBottom: 16 }}>
           <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 8 }}>
-            {T('exerciseLast7Days') || '近 7 天对比'}
+            {T('exerciseLast7Days')}
           </Text>
           <View style={{ backgroundColor: TH.cardSolid, borderRadius: 12, padding: 12 }}>
             {weekHistory.slice(-7).map((day, i) => {
@@ -118,7 +118,7 @@ export default function ReportPage(props: ExercisePageProps) {
       {/* ── Calorie ring ── */}
       <View style={{ paddingHorizontal: 16, marginBottom: 16 }}>
         <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 8 }}>
-          {T('exerciseCalBreakdown') || '卡路里明细'}
+          {T('exerciseCalBreakdown')}
         </Text>
         <View style={{ backgroundColor: TH.cardSolid, borderRadius: 12, padding: 16, flexDirection: 'row', alignItems: 'center', gap: 16 }}>
           {/* Simple progress circle */}
@@ -137,7 +137,7 @@ export default function ReportPage(props: ExercisePageProps) {
           <View style={{ flex: 1 }}>
             <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: COLORS.GREEN }}>{calories} kcal</Text>
             <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 2 }}>
-              {T('exerciseDailyCal') || '当日目标'} {dailyCalGoal} kcal
+              {T('exerciseDailyCal')} {dailyCalGoal} kcal
             </Text>
           </View>
         </View>
