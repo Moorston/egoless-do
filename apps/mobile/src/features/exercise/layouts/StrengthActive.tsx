@@ -123,7 +123,7 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
           <TouchableOpacity onPress={handleCompleteSet}
             style={s.completeSetBtn}>
             <Text style={s.completeSetLabel}>
-              {allSetsCompleted ? (T('bodyFlowFinish') || '完成') : T('exerciseSetComplete')}
+              {allSetsCompleted ? (T('bodyFlowFinish')) : T('exerciseSetComplete')}
             </Text>
           </TouchableOpacity>
         )}

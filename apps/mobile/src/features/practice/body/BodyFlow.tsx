@@ -238,7 +238,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
     const effectiveSportKey = overrideSportKey || trainingPlanTask?.task.sportKey || todayPlan?.sportKey || todayPlan?.part;
 
     if (todayOverride?.type === 'skip') {
-      return { name: todayOverride.note || '跳过', sportKey: 'rest', exercises: [], isRest: true };
+      return { name: todayOverride.note || T('bodyOverrideSkip'), sportKey: 'rest', exercises: [], isRest: true };
     }
     if (trainingPlanTask) {
       let exercises = todayOverride?.type === 'adjust' ? undefined : (trainingPlanTask.task.exercises ?? []);

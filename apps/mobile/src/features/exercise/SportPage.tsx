@@ -371,7 +371,7 @@ export default function SportPage() {
         if (sets.sets.length < plannedSets) {
           Alert.alert(
             T('bodyExerciseIncomplete'),
-            `${T('bodyExerciseCompleteHint') || '请完成所有计划组数'} (${sets.sets.length}/${plannedSets})`,
+            `${T('bodyExerciseCompleteHint')} (${sets.sets.length}/${plannedSets})`,
             [{ text: T('bodyCancel'), style: 'cancel' }]
           );
           return;
@@ -381,7 +381,7 @@ export default function SportPage() {
         if (incompleteSet) {
           Alert.alert(
             T('bodyExerciseIncomplete'),
-            T('bodyExerciseCompleteRepsHint') || '请完成每组计划次数',
+            T('bodyExerciseCompleteRepsHint'),
             [{ text: T('bodyCancel'), style: 'cancel' }]
           );
           return;
