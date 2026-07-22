@@ -206,7 +206,7 @@ export default function ExerciseScreen() {
 
         {/* ── My Sports ── */}
         <View style={styles.sectionContainerMarginTop}>
-          <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 12 }}>{SPORT_GROUPS[0]?.group ?? '我的运动'}</Text>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 12 }}>{T('exerciseMySports')}</Text>
           <View style={{ backgroundColor: TH.card, borderRadius: 14, overflow: 'hidden', borderWidth: 1, borderColor: TH.border }}>
             {mySports.map((s, i) => (
               <TouchableOpacity key={s.key}
@@ -255,7 +255,7 @@ export default function ExerciseScreen() {
               <TextInput
                 value={searchQuery}
                 onChangeText={setSearchQuery}
-                placeholder={T('exerciseSearchPlaceholder') ?? '搜索运动...'}
+                placeholder={T('exerciseSearchPlaceholder')}
                 placeholderTextColor={TH.sub}
                 style={styles.searchInput}
               />
@@ -291,7 +291,7 @@ export default function ExerciseScreen() {
                 ))
               ) : (
                 <View style={styles.emptySearchState}>
-                  <Text style={{ color: TH.sub, fontSize: FONT_BODY() }}>{T('exerciseNoResults') ?? '未找到匹配的运动'}</Text>
+                  <Text style={{ color: TH.sub, fontSize: FONT_BODY() }}>{T('exerciseNoResults')}</Text>
                 </View>
               )}
             </ScrollView>

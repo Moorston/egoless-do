@@ -15,10 +15,11 @@ export interface UseExerciseTargetsParams {
   calories: number;
   totalReps: number;
   playBell: () => void;
+  T: (key: string) => string;
 }
 
 export function useExerciseTargets(params: UseExerciseTargetsParams) {
-  const { sportName, sportType, mode, targetType, targetValue, sec, distKm, calories, totalReps, playBell } = params;
+  const { sportName, sportType, mode, targetType, targetValue, sec, distKm, calories, totalReps, playBell, T } = params;
 
   const reachedMilestonesRef = useRef(new Set<number>());
   const [milestoneText, setMilestoneText] = useState<string | null>(null);
@@ -49,7 +50,7 @@ export function useExerciseTargets(params: UseExerciseTargetsParams) {
     : 0;
   const softTargetReached = softTargetProgress >= 1;
   const softTargetLabel = softTarget
-    ? (softTarget.unit === 'min' ? `💡 建议 ${softTarget.intermediate} 分钟` : `💡 建议 ${softTarget.intermediate} 次`)
+    ? (softTarget.unit === 'min' ? T('exerciseSoftTargetMin').replace('{n}', String(softTarget.intermediate)) : T('exerciseSoftTargetReps').replace('{n}', String(softTarget.intermediate)))
     : '';
 
   // Celebration

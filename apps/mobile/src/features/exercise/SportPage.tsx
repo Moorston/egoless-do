@@ -209,6 +209,7 @@ export default function SportPage() {
     sportName: effectiveSportName, sportType, mode, targetType, targetValue,
     sec: timer.sec, distKm, calories, totalReps: sets.totalReps,
     playBell: audio.playBell,
+    T,
   });
 
   // ── Breathing guide cycle ──

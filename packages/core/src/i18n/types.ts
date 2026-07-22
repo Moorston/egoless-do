@@ -562,7 +562,8 @@ export interface I18nKeys {
   musicImportSuccess: string; musicImportFailed: string; musicCategory: string;
   weekdaySun: string; weekdayMon: string; weekdayTue: string;
   weekdayWed: string; weekdayThu: string; weekdayFri: string;
-  weekdaySat: string; clearReviewData: string; clearReviewDataConfirm: string; clearReviewDataDone: string;
+  weekdaySat: string;
+  clearReviewData: string; clearReviewDataConfirm: string; clearReviewDataDone: string;
   planNotFound: string; heatmapLess: string; heatmapMore: string; month: string;
   planTodoToday: string; planTodoHistory: string; planTodoDone: string; planTodoTotal: string; planAutoChecked: string;
   planDailyCustomTodos: string; planAddCustomTodoPlaceholder: string; planNoCustomTodos: string; planRecurring: string;
@@ -898,6 +899,11 @@ export interface I18nKeys {
   bodyPlanOverwriteTitle: string; bodyPlanOverwriteMsg: string; bodyPlanOverwriteConfirm: string;
   bodyExecNotSet: string; bodyCompletedDays: string; bodyKcal: string;
   bodyDayComplete: string; bodyDayIncomplete: string; bodyDayPending: string; bodyDayRest: string;
+  exerciseStatsActiveStreak: string;
+  bodyEnergyLow: string; bodyEnergyHigh: string;
+  bodyPainNone: string; bodyPainSevere: string;
+  bodyComfortLow: string; bodyComfortHigh: string;
+  bodySleepLow: string; bodySleepHigh: string;
   bodyWeekMon: string; bodyWeekTue: string; bodyWeekWed: string; bodyWeekThu: string;
   bodyWeekFri: string; bodyWeekSat: string; bodyWeekSun: string;
   bodyCancel: string; bodySave: string;

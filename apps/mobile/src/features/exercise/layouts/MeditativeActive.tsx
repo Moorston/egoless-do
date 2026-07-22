@@ -62,7 +62,7 @@ export default function MeditativeActive(props: ExerciseLayoutProps) {
               opacity: breathAnim.interpolate({ inputRange: [0, 1], outputRange: [0.5, 1] }),
             }}>
               <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>
-                {breathPhase === 'inhale' ? '吸气...' : breathPhase === 'hold' ? '屏住...' : '呼气...'}
+                {breathPhase === 'inhale' ? T('breathInhale') : breathPhase === 'hold' ? T('breathHold') : T('breathExhale')}
               </Text>
             </Animated.View>
             <View style={{ flexDirection: 'row', marginTop: 16, gap: 8 }}>

@@ -335,7 +335,7 @@ export default function ExerciseHistoryScreen() {
     }
     if (item.type === 'heatmap') {
       const LEVEL_COLORS = ['#0F172A', '#065F46', '#059669', '#10B981'];
-      const weekdays = ['一', '二', '三', '四', '五', '六', '日'];
+      const weekdays = [T('weekdayMon'), T('weekdayTue'), T('weekdayWed'), T('weekdayThu'), T('weekdayFri'), T('weekdaySat'), T('weekdaySun')];
       // Pad to start on Monday
       const firstDay = new Date(monthFrequency[0].date).getDay();
       const padDays = firstDay === 0 ? 6 : firstDay - 1; // Monday=0
@@ -352,7 +352,7 @@ export default function ExerciseHistoryScreen() {
               <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>{T('exerciseFrequency')}</Text>
             </View>
             <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
-              {activeDays}天运动 · 连续{streakDays}天 🔥
+              {T('exerciseStatsActiveStreak').replace('{activeDays}', String(activeDays)).replace('{streakDays}', String(streakDays))}
             </Text>
           </View>
           {/* Weekday headers */}

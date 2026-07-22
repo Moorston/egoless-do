@@ -64,10 +64,10 @@ function BodyCheckinInline({ TH, T, plan, onSave, onSkip }: Props) {
         </View>
       )}
 
-      {renderSlider(T('bodyEnergy'), energy, setEnergy, '低', '高', '#f59e0b')}
-      {renderSlider(T('bodyPain'), pain, setPain, '无痛', '剧痛', '#ef4444')}
-      {renderSlider(T('bodyComfort'), comfort, setComfort, '不适', '舒适', '#10b981')}
-      {renderSlider(T('bodySleepQuality'), sleepQuality, setSleepQuality, '差', '好', '#3b82f6')}
+      {renderSlider(T('bodyEnergy'), energy, setEnergy, T('bodyEnergyLow'), T('bodyEnergyHigh'), '#f59e0b')}
+      {renderSlider(T('bodyPain'), pain, setPain, T('bodyPainNone'), T('bodyPainSevere'), '#ef4444')}
+      {renderSlider(T('bodyComfort'), comfort, setComfort, T('bodyComfortLow'), T('bodyComfortHigh'), '#10b981')}
+      {renderSlider(T('bodySleepQuality'), sleepQuality, setSleepQuality, T('bodySleepLow'), T('bodySleepHigh'), '#3b82f6')}
 
       <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text, marginBottom: 8 }}>{T('bodyTagsLabel')}</Text>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>

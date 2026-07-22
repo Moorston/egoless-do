@@ -10,9 +10,10 @@ interface Props {
   plans?: BodyPlan[];
 }
 
-const WEEKDAY_LABELS = ['一', '二', '三', '四', '五', '六', '日'];
-
 export default function TrainingCalendar({ TH, T, exerciseLog, plans }: Props) {
+  const WEEKDAY_LABELS = [
+    T('bodyWeekMon'), T('bodyWeekTue'), T('bodyWeekWed'), T('bodyWeekThu'),
+    T('bodyWeekFri'), T('bodyWeekSat'), T('bodyWeekSun')];
   const [currentMonth, setCurrentMonth] = useState(() => {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;

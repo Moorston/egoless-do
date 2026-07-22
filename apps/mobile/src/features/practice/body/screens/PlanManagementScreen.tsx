@@ -58,7 +58,7 @@ export default function PlanManagementScreen() {
   const handleDelete = useCallback((plan: BodyTrainingPlan) => {
     Alert.alert(
       T('bodyPlanDeleteConfirm'),
-      T('bodyPlanDeleteMsg') || `删除计划「${plan.name}」？此操作不可撤销。`,
+      T('bodyPlanDeleteMsg'),
       [
         { text: T('bodyCancel'), style: 'cancel' },
         { text: T('bodyDelete'), style: 'destructive', onPress: () => removeBodyTrainingPlan(plan.id) },
