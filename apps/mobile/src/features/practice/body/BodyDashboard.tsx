@@ -1,4 +1,4 @@
-import { dateStr, type AgeBracket, type BodyGoal, type BodyTrainingPlan, type ExerciseEntry, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_LABEL, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BADGE, generateSuggestions, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, BODY_TAGS_PRESET, type DayOverride, type ExerciseDef } from '@egoless-do/core';
+import { dateStr, type AgeBracket, type BodyGoal, type BodyTrainingPlan, type ExerciseEntry, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_LABEL, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BADGE, generateSuggestions, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, BODY_TAGS_PRESET, ALL_SPORTS, type DayOverride, type ExerciseDef, type BodyCheckin } from '@egoless-do/core';
 import { ChevronRight, Play, Calendar, Target, Dumbbell, TrendingUp, Activity, Scale, History, Settings, ChevronLeft, ChevronDown } from 'lucide-react-native';
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Dimensions, Animated, Alert } from 'react-native';
@@ -18,6 +18,7 @@ import QuickSwapModal from './modals/QuickSwapModal';
 import AdjustExerciseModal from './modals/AdjustExerciseModal';
 import DayActionSheet from './modals/DayActionSheet';
 import GoalEditLightModal from './modals/GoalEditLightModal';
+import { useBodyFlowState } from './hooks/useBodyFlowState';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const BANNER_WIDTH = SCREEN_WIDTH - 32; // 16px padding on each side
@@ -309,11 +310,63 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
     }
   }, [activeTrainingPlan, updateBodyTrainingPlan]);
 
-  // Open DayActionSheet for a specific day
-  const openDayAction = useCallback((day: number) => {
-    setSelectedDay(day);
-    setShowDayAction(true);
-  }, []);
+  // ── Workout step tracking ──
+  type WorkoutStep = 'idle' | 'exercise' | 'breathing' | 'checkin' | 'done';
+  const [workoutStep, setWorkoutStep] = useState<WorkoutStep>('idle');
+  const { flowState, setBodyFlowState } = useBodyFlowState();
+
+  // 从 flowState 恢复进度
+  useEffect(() => {
+    if (flowState?.exerciseCompleted) {
+      if (flowState?.breathingCompleted) {
+        setWorkoutStep(flowState?.awarenessCompleted ? 'done' : 'checkin');
+      } else {
+        setWorkoutStep('breathing');
+      }
+    }
+  }, [flowState]);
+
+  // ── 开始运动 ──
+  const handleStartExercise = useCallback(() => {
+    if (todayExercises && todayExercises.length > 1) {
+      // 组合模式：直接跳转到 SportPage
+      const sport = ALL_SPORTS.find(s => s.key === todayExercises[0]?.category || s.keyEn === todayExercises[0]?.category);
+      nav.navigate('Sport' as never, {
+        exercises: todayExercises,
+        comboPlanId: activeTrainingPlan?.id,
+        icon: sport?.icon ?? todayExercises[0]?.icon ?? '🏃',
+        color: sport?.color ?? '#f59e0b',
+      } as never);
+    } else if (activeTrainingPlan?.id) {
+      // 单运动模式：使用现有流程
+      onFlowStartWithPlan?.(activeTrainingPlan.id);
+    } else {
+      // 自由训练
+      onFlowStart?.();
+    }
+  }, [todayExercises, activeTrainingPlan, nav, onFlowStart, onFlowStartWithPlan]);
+
+  // ── 开始调息 ──
+  const handleStartBreathing = useCallback(() => {
+    nav.navigate('Breathing' as never);
+  }, [nav]);
+
+  // ── 跳过步骤 ──
+  const handleSkipStep = useCallback((step: string) => {
+    setBodyFlowState({ skippedSteps: [...(flowState?.skippedSteps ?? []), step] });
+    if (step === 'breathing') {
+      setWorkoutStep('checkin');
+    } else if (step === 'checkin') {
+      setWorkoutStep('done');
+    }
+  }, [flowState, setBodyFlowState]);
+
+  // ── 完成觉知 ──
+  const handleCheckinComplete = useCallback((data: BodyCheckin) => {
+    store.upsertBodyCheckin(data);
+    setBodyFlowState({ awarenessCompleted: true, awarenessData: data });
+    setWorkoutStep('done');
+  }, [store, setBodyFlowState]);
 
   return (
     <View>
@@ -404,13 +457,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                   </View>
                 )}
                 <TouchableOpacity
-                  onPress={() => {
-                    if (activeTrainingPlan?.id) {
-                      onFlowStartWithPlan?.(activeTrainingPlan.id);
-                    } else {
-                      onFlowStart?.();
-                    }
-                  }}
+                  onPress={handleStartExercise}
                   activeOpacity={0.85}
                   style={styles.bannerButton}
                 >

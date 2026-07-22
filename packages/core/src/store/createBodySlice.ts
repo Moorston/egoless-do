@@ -18,6 +18,14 @@ export interface BodyFlowPersistedState {
   activePlanId: string | null;
   startedAt: number;
   updatedAt: number;
+  // 新增: 分步执行状态
+  exerciseCompleted?: boolean;
+  awarenessCompleted?: boolean;
+  skippedSteps?: string[];
+  totalDurationSec?: number;
+  totalCalories?: number;
+  isCombo?: boolean;
+  comboExercises?: { sportKey: string; icon: string; durationSec: number; calories: number; reps: number; timestamp: number }[];
 }
 
 export const BODY_FLOW_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 hours
