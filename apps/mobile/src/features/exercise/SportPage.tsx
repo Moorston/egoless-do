@@ -455,7 +455,7 @@ export default function SportPage() {
           planId: comboPlanId || planId,
           planTaskWeekday,
           comboExercises: comboState.current.results,
-        } as any);
+        });
       }
 
       // 保存组合训练结果到 flowState
