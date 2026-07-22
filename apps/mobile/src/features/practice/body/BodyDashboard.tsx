@@ -372,6 +372,22 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
 
   return (
     <View>
+      {/* ── Workout Flow Banner (分步训练模式) ── */}
+      {(flowState?.isCombo || flowState?.exerciseCompleted) && (
+        <WorkoutFlowBanner
+          TH={TH}
+          T={T}
+          isCombo={!!flowState?.isCombo}
+          exerciseCompleted={!!flowState?.exerciseCompleted}
+          breathingCompleted={!!flowState?.breathingCompleted}
+          awarenessCompleted={!!flowState?.awarenessCompleted}
+          onStartExercise={handleStartExercise}
+          onStartBreathing={handleStartBreathing}
+          onSkipStep={handleSkipStep}
+          onCheckinComplete={handleCheckinComplete}
+        />
+      )}
+
       {/* ── Banner Carousel ── */}
       <View style={styles.bannerContainer}>
         <ScrollView

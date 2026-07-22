@@ -26,6 +26,9 @@ export default function TransitionScreen({
 }: Props) {
   const [restRemaining, setRestRemaining] = useState(restSec);
   const restTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const autoAdvanceRef = useRef(false);
+  const onNextRef = useRef(onNext);
+  onNextRef.current = onNext;
 
   useEffect(() => {
     setRestRemaining(restSec);
@@ -44,7 +47,6 @@ export default function TransitionScreen({
   }, [restSec]);
 
   // 倒计时到 0 自动推进
-  const autoAdvanceRef = useRef(false);
   useEffect(() => {
     if (restRemaining === 0 && restTimerRef.current) {
       if (restTimerRef.current) clearInterval(restTimerRef.current);
