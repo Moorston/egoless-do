@@ -1,4 +1,4 @@
-import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_SMALL, FONT_TINY, getSportType, formatPace, computePRs, computeMuscleGroupStats, buildExerciseLibrary, computeMonthFrequency, EXERCISE_CATEGORIES } from '@egoless-do/core';
+import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_SMALL, FONT_TINY, getSportType, formatPace, computePRs, computeMuscleGroupStats, buildExerciseLibrary, computeMonthFrequency, EXERCISE_CATEGORIES, COMBO_WORKOUT_SPORT_KEY } from '@egoless-do/core';
 import type { ExerciseEntry, Theme, PRRecord, MuscleGroupStat, DayFrequency } from '@egoless-do/core';
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, FlatList, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
@@ -288,7 +288,7 @@ export default function ExerciseHistoryScreen() {
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10 }}>
             {topPRs.map(pr => {
                 const cat = EXERCISE_CATEGORIES.find(c => c.key === pr.sportKey);
-                const label = cat ? T(cat.i18nKey) : pr.sportKey;
+                const label = pr.sportKey === COMBO_WORKOUT_SPORT_KEY ? T('bodyComboTraining') : (cat ? T(cat.i18nKey) : pr.sportKey);
                 return (
               <View key={pr.sportKey} style={{ backgroundColor: `${P}10`, borderRadius: 10, padding: 10, minWidth: 90, alignItems: 'center' }}>
                 <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 4 }}>{label}</Text>
@@ -473,7 +473,7 @@ export default function ExerciseHistoryScreen() {
             </View>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-            {(() => { const cat = EXERCISE_CATEGORIES.find(c => c.key === e.sportKey); return <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{cat ? T(cat.i18nKey) : e.sportKey}</Text>; })()}
+            {(() => { const cat = EXERCISE_CATEGORIES.find(c => c.key === e.sportKey); return <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{e.sportKey === COMBO_WORKOUT_SPORT_KEY ? T('bodyComboTraining') : (cat ? T(cat.i18nKey) : e.sportKey)}</Text>; })()}
             {e.reps != null ? (
               <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{e.reps} {T('exerciseReps')}</Text>
             ) : e.distanceKm ? (

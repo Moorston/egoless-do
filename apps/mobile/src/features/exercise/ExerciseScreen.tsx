@@ -1,4 +1,4 @@
-import { SPORT_GROUPS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_SECTION, FONT_BADGE, FONT_BACK, FONT_CLOSE, formatPace, EXERCISE_CATEGORIES } from '@egoless-do/core';
+import { SPORT_GROUPS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_SECTION, FONT_BADGE, FONT_BACK, FONT_CLOSE, formatPace, EXERCISE_CATEGORIES, COMBO_WORKOUT_SPORT_KEY } from '@egoless-do/core';
 import type { SportItem } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
@@ -187,7 +187,7 @@ export default function ExerciseScreen() {
             <View style={{ backgroundColor: TH.card, borderRadius: 14, overflow: 'hidden', borderWidth: 1, borderColor: TH.border }}>
               {recentSports.map((s, i) => {
                 const cat = EXERCISE_CATEGORIES.find(c => c.key === s.key);
-                const label = cat ? T(cat.i18nKey) : s.key;
+                const label = s.key === COMBO_WORKOUT_SPORT_KEY ? T('bodyComboTraining') : (cat ? T(cat.i18nKey) : s.key);
                 return (
                 <TouchableOpacity key={s.key}
                   onPress={() => startSport(s)}
