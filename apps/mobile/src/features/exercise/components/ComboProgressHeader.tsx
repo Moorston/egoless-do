@@ -94,7 +94,16 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
               <Text style={[styles.chipName, { color: done ? COLORS.done : isCurrent ? COLORS.current : COLORS.text }]} numberOfLines={1}>
                 {ex.nameZh}
               </Text>
-              {result && <Text style={[styles.chipTime, { color: COLORS.textSecondary }]}>{Math.floor(result.durationSec / 60)}:{(result.durationSec % 60).toString().padStart(2, '0')}</Text>}
+              {result ? (
+                <Text style={[styles.chipMeta, { color: COLORS.textSecondary }]}>
+                  {Math.floor(result.durationSec / 60)}:{(result.durationSec % 60).toString().padStart(2, '0')}
+                </Text>
+              ) : (
+                <Text style={[styles.chipMeta, { color: COLORS.textSecondary }]} numberOfLines={1}>
+                  {ex.defaultSets && ex.defaultReps ? `${ex.defaultSets}×${ex.defaultReps}` : ''}
+                  {ex.defaultDurationSec ? `${Math.round(ex.defaultDurationSec / 60)}min` : ''}
+                </Text>
+              )}
             </TouchableOpacity>
           );
         })}
@@ -148,8 +157,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
   },
-  chipTime: {
+  chipMeta: {
     fontSize: 10,
     marginTop: 1,
+    textAlign: 'center',
   },
 });

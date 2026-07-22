@@ -60,16 +60,13 @@ export function useTodayPlan(): TodayPlanData {
     // Resolve exercises from training plan task (with override applied)
     let todayExercises: ExerciseDef[] | undefined;
     if (todayOverride?.type === 'skip') {
-      // 跳过：无动作
       todayExercises = undefined;
     } else if (todayOverride?.type === 'custom' && todayOverride.exercises) {
       todayExercises = todayOverride.exercises;
     } else if (todayOverride?.type === 'swap' && todayOverride.swapSportKey) {
-      // 换运动：更新 part 为新的 sportKey
       todayPlan = { ...(todayPlan ?? { id: `training-${weekday}`, weekday, part: '', note: undefined }), part: todayOverride.swapSportKey, note: todayOverride.note } as BodyPlan;
-      todayExercises = undefined; // swap 不指定具体动作，由流程页按 sportKey 处理
+      todayExercises = undefined;
     } else if (todayOverride?.type === 'adjust' && todayOverride.exerciseAdjustments) {
-      // Merge adjustments into original exercises
       const task = activeTrainingPlan?.tasks.find(t => t.weekday === weekday);
       if (task?.exercises) {
         todayExercises = task.exercises.map(ex => {
