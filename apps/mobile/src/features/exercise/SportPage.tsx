@@ -535,6 +535,15 @@ export default function SportPage() {
           practiceDurationSec: timer.sec,
           totalDurationSec: timer.sec,
           totalCalories: calories,
+          practiceExercises: [{
+            sportKey: sportName,
+            icon: icon,
+            nameZh: effectiveSportLabel,
+            durationSec: timer.sec,
+            calories: calories ?? 0,
+            reps: (sportType === 'repetition' ? sets.totalReps : 0) ?? 0,
+            timestamp: Date.now(),
+          }],
         });
         if (useAppStore.getState().healthSyncEnabled) {
           import('../health/HealthService').then(({ writeWorkout }) => {

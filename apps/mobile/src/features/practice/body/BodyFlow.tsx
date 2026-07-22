@@ -1,4 +1,4 @@
-import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, ALL_SPORTS, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, SPORT_GROUPS, FONT_LABEL, FONT_STAT_SECTION, scaleFontSize, buildExerciseLibrary,
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, ALL_SPORTS, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, SPORT_GROUPS, FONT_LABEL, FONT_STAT_SECTION, scaleFontSize, buildExerciseLibrary,
   type BodyPlan, type BodyPlanTask, type BodyCheckin, type DayOverride, type Theme, type BodySlice, type ExerciseDef} from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { X, ChevronRight, CheckCircle2, Wind, Activity } from 'lucide-react-native';
@@ -162,8 +162,6 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
 
   const navigateToBreathing = useCallback(() => {
     breathingStartRef.current = Date.now();
-    setBreathingCompleted(false);
-    setBreathingDurationMs(0);
     onGoToBreathing?.();
   }, [onGoToBreathing]);
 
@@ -272,37 +270,65 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
                   <CheckCircle2 size={48} color="#10b981" />
                   <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#10b981', marginTop: 8 }}>{T('bodyFlowPracticeDone')}</Text>
                 </View>
-                {/* 已完成动作列表 */}
-                {planExercises.length > 0 && (
-                  <View style={{ backgroundColor: `${TH.border}30`, borderRadius: 12, padding: 12, marginTop: 8 }}>
-                    {planExercises.map((ex, i) => (
-                      <View key={ex.id || i} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 3 }}>
-                        <Text style={{ fontSize: FONT_SMALL() }}>{ex.icon}</Text>
-                        <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }} numberOfLines={1}>{ex.nameZh || exerciseLibrary.find(lib => lib.category === ex.category || lib.sportKey === ex.sportKey)?.nameZh || ex.sportKey}</Text>
-                        {ex.defaultSets && ex.defaultReps && (
-                          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{ex.defaultSets}×{ex.defaultReps}</Text>
-                        )}
+                {/* 统计横幅 */}
+                {(flowState?.totalDurationSec || flowState?.totalCalories) && (
+                  <View style={{ flexDirection: 'row', backgroundColor: `${TH.border}30`, borderRadius: 12, padding: 12, marginTop: 8, gap: 8 }}>
+                    {flowState?.totalDurationSec ? (
+                      <View style={{ flex: 1, alignItems: 'center' }}>
+                        <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.text }}>
+                          {Math.floor(flowState.totalDurationSec / 60)}:{String(flowState.totalDurationSec % 60).padStart(2, '0')}
+                        </Text>
+                        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyFlowTotalTime')}</Text>
                       </View>
-                    ))}
+                    ) : null}
+                    <View style={{ flex: 1, alignItems: 'center' }}>
+                      <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.text }}>{flowState?.comboExercises?.length ?? flowState?.practiceExercises?.length ?? planExercises.length}</Text>
+                      <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyPlanUnitExercise')}</Text>
+                    </View>
+                    {flowState?.totalCalories ? (
+                      <View style={{ flex: 1, alignItems: 'center' }}>
+                        <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.text }}>{flowState.totalCalories}</Text>
+                        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>kcal</Text>
+                      </View>
+                    ) : null}
                   </View>
                 )}
-                {/* 组合锻炼汇总（使用具体动作名而非分类名） */}
-                {flowState?.isCombo && flowState.comboExercises && flowState.comboExercises.length > 0 && (
-                  <View style={{ marginTop: 12, width: '100%', backgroundColor: `${TH.border}30`, borderRadius: 12, padding: 12 }}>
-                    <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 6 }}>
-                      {flowState.comboExercises.length} {T('bodyPlanUnitExercise')}
-                    </Text>
+                {/* 动作列表 — 优先显示实际完成的练习 */}
+                {flowState?.comboExercises && flowState.comboExercises.length > 0 ? (
+                  <View style={{ backgroundColor: `${TH.border}30`, borderRadius: 12, padding: 12, marginTop: 8 }}>
                     {flowState.comboExercises.map((ex, i) => (
-                      <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 3 }}>
-                        <Text style={{ fontSize: FONT_SMALL() }}>{ex.icon}</Text>
-                        <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }} numberOfLines={1}>{ex.nameZh || ex.sportKey}</Text>
+                      <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4, borderBottomWidth: i < flowState.comboExercises.length - 1 ? 1 : 0, borderBottomColor: `${TH.border}50` }}>
+                        <Text style={{ fontSize: 20 }}>{ex.icon}</Text>
+                        <Text style={{ fontSize: FONT_BODY(), color: TH.text, flex: 1 }} numberOfLines={1}>{ex.nameZh || ex.sportKey}</Text>
                         <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
                           {Math.floor(ex.durationSec / 60)}:{(ex.durationSec % 60).toString().padStart(2, '0')}
                         </Text>
                       </View>
                     ))}
                   </View>
-                )}
+                ) : flowState?.practiceExercises && flowState.practiceExercises.length > 0 ? (
+                  <View style={{ backgroundColor: `${TH.border}30`, borderRadius: 12, padding: 12, marginTop: 8 }}>
+                    {flowState.practiceExercises.map((ex, i) => (
+                      <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4, borderBottomWidth: i < flowState.practiceExercises.length - 1 ? 1 : 0, borderBottomColor: `${TH.border}50` }}>
+                        <Text style={{ fontSize: 20 }}>{ex.icon}</Text>
+                        <Text style={{ fontSize: FONT_BODY(), color: TH.text, flex: 1 }} numberOfLines={1}>{ex.nameZh || ex.sportKey}</Text>
+                        {ex.reps > 0 && <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{ex.reps} reps</Text>}
+                      </View>
+                    ))}
+                  </View>
+                ) : planExercises.length > 0 ? (
+                  <View style={{ backgroundColor: `${TH.border}30`, borderRadius: 12, padding: 12, marginTop: 8 }}>
+                    {planExercises.map((ex, i) => (
+                      <View key={ex.id || i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4, borderBottomWidth: i < planExercises.length - 1 ? 1 : 0, borderBottomColor: `${TH.border}50` }}>
+                        <Text style={{ fontSize: 20 }}>{ex.icon}</Text>
+                        <Text style={{ fontSize: FONT_BODY(), color: TH.text, flex: 1 }} numberOfLines={1}>{ex.nameZh || exerciseLibrary.find(lib => lib.category === ex.category || lib.sportKey === ex.sportKey)?.nameZh || ex.sportKey}</Text>
+                        {ex.defaultSets && ex.defaultReps && (
+                          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{ex.defaultSets}×{ex.defaultReps}</Text>
+                        )}
+                      </View>
+                    ))}
+                  </View>
+                ) : null}
               </View>
             ) : hasTodayPlan ? (
               <>
