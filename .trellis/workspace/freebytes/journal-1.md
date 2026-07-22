@@ -1455,3 +1455,46 @@ StatsScreen计划任务进度改为countItemDoneDays动态计算；补全planIte
 ### Next Steps
 
 - None - task complete
+
+
+## Session 42: BodyFlow 全面优化 — 进度集成/退出机制/动作显示/硬编码清理
+
+**Date**: 2026-07-22
+**Task**: BodyFlow 全面优化 — 进度集成/退出机制/动作显示/硬编码清理
+**Branch**: `master`
+
+### Summary
+
+1. BodyFlow 进度集成到今日方案 banner，删除独立 WorkoutFlowBanner 组件\n2. 退出不重置进度 + X按钮与返回按钮同行 + 字号增大\n3. 完成状态显示具体动作而非分类名\n4. 非训练计划模式也显示动作列表 + 步骤文案\n5. 抽取 combo_workout 硬编码为常量，全面修复各处显示
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `082418c7` | (see git log) |
+| `bcad35a2` | (see git log) |
+| `6715cd09` | (see git log) |
+| `a8d3afd4` | (see git log) |
+| `2fe13797` | (see git log) |
+| `9411d5d5` | (see git log) |
+| `1eef0346` | (see git log) |
+| `930fcee3` | (see git log) |
+| `a314006e` | (see git log) |
+| `0230a406` | (see git log) |
+| `d8d86ac4` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
