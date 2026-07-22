@@ -349,20 +349,16 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
                   <View style={{ marginBottom: 16 }}>
                     <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text, marginBottom: 8 }}>{currentPlan?.name}</Text>
                     {planExercises.length > 0 ? (
-                      planExercises.map((ex, i) => {
-                        const cat = EXERCISE_CATEGORIES.find(c => c.key === ex.category);
-                        const exName = cat ? T(cat.i18nKey) : (ex.nameI18nKey ? T(ex.nameI18nKey) : ex.nameZh);
-                        return (
+                      planExercises.map((ex, i) => (
                           <View key={ex.id || i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 6, paddingHorizontal: 10, borderRadius: 8, backgroundColor: `${TH.border}40`, marginBottom: 4 }}>
                             <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }}>
-                              {ex.icon} {exName}
+                              {ex.icon} {ex.nameZh}
                               {ex.defaultSets && ex.defaultReps ? `  ${ex.defaultSets}×${ex.defaultReps}` : ''}
                               {ex.defaultWeight ? `  ${ex.defaultWeight}kg` : ''}
                               {ex.defaultDurationSec ? `  ${Math.round(ex.defaultDurationSec / 60)}min` : ''}
                             </Text>
                           </View>
-                        );
-                      })
+                        ))
                     ) : (
                       <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>{T('bodyPlanNoExercises')}</Text>
                     )}
