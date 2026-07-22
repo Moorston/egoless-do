@@ -172,8 +172,6 @@ export function useVowProgress(): VowProgressData {
         totalCompleted += completed;
         totalExpected += Math.max(completed, 30);
       }
-        }
-      }
 
       if (totalExpected === 0) return { vision, pct: 0 };
       const pct = Math.round((totalCompleted / totalExpected) * 100);
