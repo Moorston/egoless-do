@@ -1383,3 +1383,39 @@ StatsScreen计划任务进度改为countItemDoneDays动态计算；补全planIte
 ### Next Steps
 
 - None - task complete
+
+
+## Session 40: 调身页开始今日训练全流程修复
+
+**Date**: 2026-07-22
+**Task**: 调身页开始今日训练全流程修复
+**Branch**: `master`
+
+### Summary
+
+修复调身页开始今日训练全流程: 动作名称显示(分类名→动作名), 动作库回退, 引导模块显隐控制, 进行中页面动作信息+组数/次数+进度显示, 完成验证(力量所有组+次数, 有氧80%时长), refreshAuth失败Toast, checkinReview同步schema修复
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `10dc2673` | (see git log) |
+| `c88b448c` | (see git log) |
+| `f72b0716` | (see git log) |
+| `ce24da69` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
