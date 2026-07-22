@@ -387,26 +387,26 @@ export default function SportPage() {
   const goToNextExercise = useCallback(() => {
     if (!isComboMode || !comboExercises) return;
 
-    // 注意：验证已在 handleFinishExercise 中完成，此处直接保存
-    // 1. 保存当前动作结果
+    const currentEx = comboExercises![comboState.current.currentIndex];
     const finalReps = sportType === 'repetition' ? sets.totalReps : undefined;
+    const exName = currentEx?.nameZh || buildExerciseLibrary().find(lib => lib.category === (currentEx?.category || effectiveSportName))?.nameZh || currentEx?.sportKey || effectiveSportName;
     const entry = {
       sportKey: effectiveSportName, sportIcon: effectiveIcon, durationSec: timer.sec,
       timestamp: Date.now(), isGpsSport: false as const,
       calories,
       reps: finalReps,
       sets: sets.sets.length > 0 ? sets.sets : undefined,
-      met: MET_MAP[effectiveSportName] || currentComboExercise?.met,
+      met: MET_MAP[effectiveSportName] || currentEx?.met,
       planId: comboPlanId || planId,
       planTaskWeekday,
-      note: currentComboExercise?.nameZh,
+      note: exName,
     };
     addExercise(entry);
 
     const result: ExerciseResult = {
       sportKey: effectiveSportName,
       icon: effectiveIcon,
-      nameZh: currentComboExercise?.nameZh || comboExercises![comboState.current.currentIndex]?.nameZh || buildExerciseLibrary().find(lib => lib.category === currentComboExercise?.category || lib.category === effectiveSportName)?.nameZh || effectiveSportName,
+      nameZh: exName,
       durationSec: timer.sec,
       calories,
       reps: finalReps ?? 0,
