@@ -28,9 +28,11 @@ const BANNER_WIDTH = SCREEN_WIDTH - 32; // 16px padding on each side
 interface DashboardProps {
   onFlowStart?: () => void;
   onFlowStartWithPlan?: (planId: string) => void;
+  onGoToSport?: (sportKey: string, exercises?: ExerciseDef[]) => void;
+  onGoToBreathing?: () => void;
 }
 
-export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: DashboardProps) {
+export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoToSport, onGoToBreathing }: DashboardProps) {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();

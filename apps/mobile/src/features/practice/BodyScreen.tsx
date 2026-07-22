@@ -22,9 +22,10 @@ export default function BodyScreen() {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const { bodyTrainingPlans, setBodyFlowState } = useShallowStore(s => ({
+  const { bodyTrainingPlans, setBodyFlowState, upsertBodyCheckin } = useShallowStore(s => ({
     bodyTrainingPlans: s.bodyTrainingPlans,
     setBodyFlowState: s.setBodyFlowState,
+    upsertBodyCheckin: s.upsertBodyCheckin,
   }));
   const [page, setPage] = useState<BodyPage>('dashboard');
   const { todayPlan, weekday: todayWeekday, todayOverride, todayExercises, activeTrainingPlan } = useTodayPlan();
@@ -109,7 +110,7 @@ export default function BodyScreen() {
             <BodyFlow
               TH={TH}
               T={T}
-              store={{ upsertBodyCheckin: useShallowStore(s => s.upsertBodyCheckin) }}
+              store={{ upsertBodyCheckin }}
               todayPlan={todayPlan}
               trainingPlanTask={todayTrainingTask}
               todayOverride={todayOverride}
