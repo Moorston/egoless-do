@@ -1,7 +1,7 @@
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_BUTTON, type ExerciseDef, type Theme } from '@egoless-do/core';
 import { X, Plus, Minus } from 'lucide-react-native';
 import React, { useState } from 'react';
-import { View, Text, Modal, TouchableOpacity, ScrollView, TextInput } , KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, ScrollView, TextInput , KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 interface ExerciseAdjustment {
   exerciseId: string;

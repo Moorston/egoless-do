@@ -1,7 +1,7 @@
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_BUTTON, EXERCISE_CATEGORIES, buildExerciseLibrary, type ExerciseDef, type Theme } from '@egoless-do/core';
 import { X, Search } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
-import { View, Text, Modal, TouchableOpacity, TextInput, ScrollView, Alert } , KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, TextInput, ScrollView, Alert , KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 interface Props {
   visible: boolean;

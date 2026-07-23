@@ -1,7 +1,7 @@
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_BUTTON, BODY_STRATEGIES, type BodyStrategy, type Theme } from '@egoless-do/core';
 import { X } from 'lucide-react-native';
 import React, { useState } from 'react';
-import { View, Text, Modal, TouchableOpacity, TextInput, ScrollView } , KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, TextInput, ScrollView , KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 interface Props {
   visible: boolean;
