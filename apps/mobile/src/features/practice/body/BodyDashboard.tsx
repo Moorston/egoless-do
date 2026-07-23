@@ -1,20 +1,28 @@
 import { dateStr, type AgeBracket, type BodyGoal, type BodyTrainingPlan, type ExerciseEntry, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_LABEL, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BADGE, generateSuggestions, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, BODY_TAGS_PRESET, COMBO_WORKOUT_SPORT_KEY, type DayOverride, type ExerciseDef, type BodyCheckin } from '@egoless-do/core';
 import { ChevronRight, Play, Calendar, Target, Dumbbell, TrendingUp, Activity, Scale, History, Settings, ChevronLeft, ChevronDown } from 'lucide-react-native';
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Dimensions, Animated, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Dimensions, Animated, Alert, Modal } from 'react-native';
 
 import { useT, useTheme } from '../../../components/UI';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useShallowStore } from '../../../store/useAppStore';
 
-import { styles } from './BodyDashboardStyles';
-import BannerCarousel from './BodyDashboardBanners';
-import BodyDashboardModals from './BodyDashboardModals';
-import ExerciseProgressBanner from './components/ExerciseProgressBanner';
-import { useBodyFlowState } from './hooks/useBodyFlowState';
+import CelebrationOverlay from './screens/CelebrationOverlay';
 import { useTodayPlan } from './hooks/useTodayPlan';
+import AssessmentModal from './modals/AssessmentModal';
+import BodyCheckinModal from './modals/BodyCheckinModal';
+import GoalEditModal from './modals/GoalEditModal';
+import WeightRecordModal from './modals/WeightRecordModal';
+import WeightTrendModal from './modals/WeightTrendModal';
+import QuickSwapModal from './modals/QuickSwapModal';
+import AdjustExerciseModal from './modals/AdjustExerciseModal';
+import DayActionSheet from './modals/DayActionSheet';
+import GoalEditLightModal from './modals/GoalEditLightModal';
+import { styles } from './BodyDashboardStyles';
+import ExerciseProgressBanner from './components/ExerciseProgressBanner';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
+export const BANNER_WIDTH = SCREEN_WIDTH - 32; // 16px padding on each side
 
 interface DashboardProps {
   onFlowStart?: () => void;
@@ -343,25 +351,519 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
 
   return (
     <View>
-      <BannerCarousel
-        TH={TH} T={T} nav={nav}
-        currentBanner={currentBanner} onBannerChange={(i) => setCurrentBanner(i)}
-        bannerScrollRef={bannerScrollRef as React.RefObject<ScrollView>}
-        todayPlanDisplay={todayPlanDisplay} todayExercises={todayExercises}
-        hasOverride={hasOverride} todayOverride={todayOverride}
-        hasActiveFlow={hasActiveFlow} allFlowDone={allFlowDone}
-        flowState={flowState} activeTrainingPlan={activeTrainingPlan}
-        onFlowStart={() => onFlowStart?.()} onFlowStartWithPlan={(id) => onFlowStartWithPlan?.(id)}
-        onUndoOverride={handleUndoOverride}
-        profile={profile}
-        onOpenAssessment={() => setShowAssessment(true)}
-        onOpenCheckin={() => setShowCheckin(true)}
-        onOpenWeightRecord={() => setShowWeightRecord(true)}
-        onOpenWeightTrend={() => setShowWeightTrend(true)}
-        latestCheckin={latestCheckin}
-        checkinHistory={checkinHistory}
-        weightTrend={weightTrend}
-      />
+      {/* ── Banner Carousel ── */}
+      <View style={styles.bannerContainer}>
+        <ScrollView
+          ref={bannerScrollRef}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onMomentumScrollEnd={(e) => {
+            const index = Math.round(e.nativeEvent.contentOffset.x / BANNER_WIDTH);
+            setCurrentBanner(index);
+          }}
+          style={{ width: BANNER_WIDTH }}
+        >
+          {/* Banner 1: 今日方案 */}
+          <View style={[styles.bannerCard, { backgroundColor: '#f59e0b' }]}>
+            <View style={styles.bannerHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <Text style={{ fontSize: 20 }}>📋</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyTodayPlan')}</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => nav.navigate('ExerciseHistory' as never)}
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8 }}
+              >
+                <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600' }}>{T('exerciseHistory')}</Text>
+              </TouchableOpacity>
+            </View>
+            {/* Override status bar */}
+            {hasOverride && todayOverride && (
+              <View style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8, padding: 8, marginBottom: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>
+                  {todayOverride.type === 'skip' ? T('bodyOverrideSkip')
+                    : todayOverride.type === 'swap' ? T('bodyOverrideSwap')
+                    : todayOverride.type === 'adjust' ? T('bodyOverrideAdjust')
+                    : T('bodyOverrideCustom')}
+                </Text>
+                <TouchableOpacity onPress={handleUndoOverride} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                  <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600', textDecorationLine: 'underline' }}>{T('bodyUndo')}</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            {todayOverride?.type === 'skip' ? (
+              /* 跳过状态：显示已跳过 + 撤销，无开始按钮 */
+              <View style={styles.bannerContent}>
+                <View style={styles.bannerIconCircle}>
+                  <Text style={{ fontSize: 24 }}>⏭️</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>{T('bodyOverrideSkip')}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', marginTop: 2 }}>{T('bodyUndoHint')}</Text>
+                </View>
+              </View>
+            ) : todayPlanDisplay ? (
+              <>
+                <View style={styles.bannerContent}>
+                  <View style={styles.bannerIconCircle}>
+                    <Text style={{ fontSize: 24 }}>{todayPlanDisplay.icon}</Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>{todayPlanDisplay.label}</Text>
+                    {todayPlanDisplay.note && (
+                      <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', marginTop: 2 }} numberOfLines={1}>
+                        {todayPlanDisplay.note}
+                      </Text>
+                    )}
+                  </View>
+                </View>
+                {/* ── Flow progress — 今日有计划即显示，不管 flowState 状态 ── */}
+                {!allFlowDone && (
+                  <View style={{ backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: 12, padding: 12, marginBottom: 10, gap: 8 }}>
+                    {/* Step 1: 调身练习 */}
+                    <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
+                      <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: flowState?.exerciseCompleted ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.15)', alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ fontSize: 14 }}>{flowState?.exerciseCompleted ? '✅' : '🏃'}</Text>
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyFlowPractice')}</Text>
+                          {flowState?.exerciseCompleted && (
+                            <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>
+                              {flowState?.totalDurationSec ? `${Math.floor(flowState.totalDurationSec / 60)}:${String(flowState.totalDurationSec % 60).padStart(2, '0')}` : T('bodyFlowDone')}
+                            </Text>
+                          )}
+                        </View>
+                        {todayExercises && todayExercises.length > 0 && (
+                          <View style={{ marginTop: 4 }}>
+                            {todayExercises.slice(0, 5).map((e, i) => (
+                              <Text key={i} style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', lineHeight: 16 }}>
+                                {e.icon} {e.nameZh}{e.defaultSets && e.defaultReps ? `  ${e.defaultSets}组×${e.defaultReps}次` : ''}
+                              </Text>
+                            ))}
+                          </View>
+                        )}
+                      </View>
+                    </View>
+                    {/* Separator */}
+                    <View style={{ height: 1, backgroundColor: 'rgba(255,255,255,0.15)', marginLeft: 38 }} />
+                    {/* Step 2: 调息安神 */}
+                    <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
+                      <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: flowState?.breathingCompleted ? 'rgba(255,255,255,0.3)' : !flowState?.exerciseCompleted ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.15)', alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ fontSize: 14 }}>{flowState?.breathingCompleted ? '✅' : flowState?.exerciseCompleted ? '🌬️' : '○'}</Text>
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: flowState?.exerciseCompleted ? '#fff' : 'rgba(255,255,255,0.5)' }}>{T('bodyFlowBreathing')}</Text>
+                        {flowState?.breathingCompleted && (
+                          <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>
+                            {Math.floor((flowState?.breathingDurationMs ?? 0) / 60000)}{T('bodyMin')}
+                          </Text>
+                        )}
+                        {!flowState?.breathingCompleted && flowState?.exerciseCompleted && (
+                          <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.6)', marginTop: 2 }}>{T('bodyFlowBreathingHint')}</Text>
+                        )}
+                      </View>
+                    </View>
+                    {/* Separator */}
+                    <View style={{ height: 1, backgroundColor: 'rgba(255,255,255,0.15)', marginLeft: 38 }} />
+                    {/* Step 3: 记录感受 */}
+                    <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
+                      <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: flowState?.awarenessCompleted ? 'rgba(255,255,255,0.3)' : flowState?.breathingCompleted ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.08)', alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ fontSize: 14 }}>{flowState?.awarenessCompleted ? '✅' : flowState?.breathingCompleted ? '🧠' : '○'}</Text>
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: flowState?.breathingCompleted ? '#fff' : 'rgba(255,255,255,0.5)' }}>{T('bodyFlowAwareness')}</Text>
+                        {flowState?.awarenessCompleted && (
+                          <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>{T('bodyFlowDone')}</Text>
+                        )}
+                        {!flowState?.awarenessCompleted && flowState?.breathingCompleted && (
+                          <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.6)', marginTop: 2 }}>{T('bodyFlowAwarenessHint')}</Text>
+                        )}
+                      </View>
+                    </View>
+                  </View>
+                )}
+                {allFlowDone && (
+                  <View style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8, padding: 10, marginBottom: 10, alignItems: 'center' }}>
+                    <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{'✅ '}{T('bodyTodayComplete')}</Text>
+                  </View>
+                )}
+                {!hasActiveFlow ? (
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (activeTrainingPlan?.id) {
+                        onFlowStartWithPlan?.(activeTrainingPlan.id);
+                      } else {
+                        onFlowStart?.();
+                      }
+                    }}
+                    activeOpacity={0.85}
+                    style={styles.bannerButton}
+                  >
+                    <Play size={20} color="#f59e0b" />
+                    <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#f59e0b' }}>{T('bodyStartToday')}</Text>
+                  </TouchableOpacity>
+                ) : !allFlowDone ? (
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (activeTrainingPlan?.id) {
+                        onFlowStartWithPlan?.(activeTrainingPlan.id);
+                      } else {
+                        onFlowStart?.();
+                      }
+                    }}
+                    activeOpacity={0.85}
+                    style={styles.bannerButton}
+                  >
+                    <Play size={20} color="#f59e0b" />
+                    <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#f59e0b' }}>
+                      {!flowState.exerciseCompleted ? T('bodyStartToday')
+                        : !flowState.breathingCompleted ? T('bodyFlowStartBreathing')
+                        : T('bodyFlowAwareness')}
+                    </Text>
+                  </TouchableOpacity>
+                ) : null}
+              </>
+            ) : (
+              <>
+                <View style={styles.bannerContent}>
+                  <View style={styles.bannerIconCircle}>
+                    <Text style={{ fontSize: 24 }}>😴</Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>{T('bodyTodayPlanRest')}</Text>
+                    <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', marginTop: 2 }}>
+                      {T('bodyFlowChooseExercise')}
+                    </Text>
+                  </View>
+                </View>
+                {/* Rest day suggestions */}
+                <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12 }}>
+                  {[
+                    { icon: '🧘', label: T('bodyPartWalking') },
+                    { icon: '🧘‍♀️', label: T('bodyPartYoga') },
+                    { icon: '🌬️', label: T('bodyFlowBreathing') },
+                  ].map((item, i) => (
+                    <TouchableOpacity
+                      key={i}
+                      onPress={() => { if (activeTrainingPlan?.id) onFlowStartWithPlan?.(activeTrainingPlan.id); else onFlowStart?.(); }}
+                      style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8 }}
+                    >
+                      <Text style={{ fontSize: 14 }}>{item.icon}</Text>
+                      <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>{item.label}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                {/* Body awareness quick stats */}
+                {latestCheckin && (
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-around', backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 8, padding: 8 }}>
+                    {[
+                      { label: T('bodyEnergy'), value: latestCheckin.energy, color: '#fff' },
+                      { label: T('bodyPain'), value: latestCheckin.pain, color: '#fff' },
+                      { label: T('bodyComfort'), value: latestCheckin.comfort, color: '#fff' },
+                    ].map((item, i) => (
+                      <View key={i} style={{ alignItems: 'center' }}>
+                        <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: item.color }}>{String(item.value)}</Text>
+                        <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>{item.label}</Text>
+                      </View>
+                    ))}
+                  </View>
+                )}
+              </>
+            )}
+          </View>
+
+          {/* Banner 2: 身体档案 */}
+          <View style={[styles.bannerCard, { backgroundColor: '#8b5cf6' }]}>
+            <View style={styles.bannerHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <Text style={{ fontSize: 20 }}>📋</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyProfile')}</Text>
+              </View>
+            </View>
+            <View style={styles.bannerContent}>
+              <View style={{ flex: 1 }}>
+                {/* Body metrics - single row */}
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 }}>
+                  {[
+                    { value: profile.weight ? `${profile.weight}` : '-', unit: 'kg', label: T('bodyWeight') },
+                    { value: profile.height ? `${profile.height}` : '-', unit: 'cm', label: T('bodyHeight') },
+                    { value: profile.weight && profile.height ? `${(profile.weight / ((profile.height / 100) ** 2)).toFixed(1)}` : '-', unit: '', label: 'BMI' },
+                    { value: profile.bodyFat ? `${profile.bodyFat}` : '-', unit: '%', label: T('bodyBodyFat') },
+                  ].map((item, i) => (
+                    <View key={i} style={{ alignItems: 'center' }}>
+                      <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: '#fff' }}>{String(item.value)}{item.unit}</Text>
+                      <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>{item.label}</Text>
+                    </View>
+                  ))}
+                </View>
+                {/* Self assessment full content */}
+                {profile.selfAssessment ? (
+                  <View style={{ backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 8, padding: 10 }}>
+                    <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.9)', lineHeight: 18 }}>
+                      🗣️ {profile.selfAssessment}
+                    </Text>
+                    {(profile.bodyTags as string[] ?? []).length > 0 && (
+                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
+                        {(profile.bodyTags as string[]).map((tag: string) => (
+                          <View key={tag} style={{ backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
+                            <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>#{tag}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    )}
+                  </View>
+                ) : (
+                  <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>
+                    {T('bodySelfAssessmentPlaceholder')}
+                  </Text>
+                )}
+              </View>
+            </View>
+            <TouchableOpacity
+              onPress={() => setShowAssessment(true)}
+              activeOpacity={0.85}
+              style={[styles.bannerButton, { backgroundColor: 'rgba(255,255,255,0.9)' }]}
+            >
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#8b5cf6' }}>{T('bodySelfAssessment')}</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Banner 3: 身体觉知 */}
+          <View style={[styles.bannerCard, { backgroundColor: '#10b981' }]}>
+            <View style={styles.bannerHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <Text style={{ fontSize: 20 }}>🧘</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyAwareness')}</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => nav.navigate('BodyCheckinHistory' as never)}
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 }}
+              >
+                <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>{T('bodyAwarenessRecords')}</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.bannerContent}>
+              <View style={{ flex: 1 }}>
+                {latestCheckin ? (
+                  <>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+                      {[
+                        { label: T('bodyEnergy'), value: latestCheckin.energy, color: '#fff' },
+                        { label: T('bodyPain'), value: latestCheckin.pain, color: '#fff' },
+                        { label: T('bodyComfort'), value: latestCheckin.comfort, color: '#fff' },
+                        { label: T('bodySleepQuality'), value: latestCheckin.sleep, color: '#fff' },
+                      ].map((item, i) => (
+                        <View key={i} style={{ alignItems: 'center' }}>
+                          <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: item.color }}>{String(item.value)}</Text>
+                          <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>{item.label}</Text>
+                        </View>
+                      ))}
+                    </View>
+                    {/* Tags */}
+                    {latestCheckin.tags && latestCheckin.tags.length > 0 && (
+                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
+                        {latestCheckin.tags.map((tag: string) => (
+                          <View key={tag} style={{ backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
+                            <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>#{tag}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    )}
+                    {/* Note */}
+                    {latestCheckin.note && (
+                      <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.8)', marginBottom: 4 }} numberOfLines={2}>
+                        📝 {latestCheckin.note}
+                      </Text>
+                    )}
+                    <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.6)' }}>
+                      {latestCheckin.date}
+                    </Text>
+                  </>
+                ) : (
+                  <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.8)' }}>
+                    {T('bodyAwarenessNoData')}
+                  </Text>
+                )}
+              </View>
+            </View>
+            <TouchableOpacity
+              onPress={() => setShowCheckin(true)}
+              activeOpacity={0.85}
+              style={[styles.bannerButton, { backgroundColor: 'rgba(255,255,255,0.9)' }]}
+            >
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#10b981' }}>{T('bodyFlowAwareness')}</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Banner 4: 体重趋势 */}
+          <View style={[styles.bannerCard, { backgroundColor: '#3b82f6' }]}>
+            <View style={styles.bannerHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <Text style={{ fontSize: 20 }}>⚖️</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyWeightTrend')}</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => setShowWeightRecord(true)}
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8 }}
+              >
+                <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600' }}>{T('bodyRecordWeight')}</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.bannerContent}>
+              <View style={{ flex: 1 }}>
+                {weightTrend ? (
+                  <>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 10 }}>
+                      <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>
+                        {`${weightTrend.current} kg`}
+                      </Text>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                        <TrendingUp size={16} color={weightTrend.diff > 0 ? '#fbbf24' : '#34d399'} style={weightTrend.diff < 0 ? { transform: [{ scaleY: -1 }] } : undefined} />
+                        <Text style={{ fontSize: FONT_BODY(), color: weightTrend.diff > 0 ? '#fbbf24' : '#34d399', fontWeight: '600' }}>
+                          {`${weightTrend.diff > 0 ? '+' : ''}${weightTrend.diff.toFixed(1)} kg`}
+                        </Text>
+                      </View>
+                    </View>
+                    {/* Line chart - last 7 days */}
+                    <View style={{ height: 80, marginTop: 4 }}>
+                      {(() => {
+                        const records = (checkinHistory ?? [])
+                          .filter(r => !r.deleted && r.weight != null && r.weight > 0)
+                          .sort((a, b) => a.date.localeCompare(b.date))
+                          .slice(-7);
+                        if (records.length < 2) return null;
+                        const weights = records.map(r => r.weight);
+                        const minW = Math.min(...weights);
+                        const maxW = Math.max(...weights);
+                        const range = maxW - minW || 1;
+                        const chartHeight = 50;
+                        const labelHeight = 20;
+                        const totalHeight = chartHeight + labelHeight;
+                        const chartWidth = BANNER_WIDTH - 80;
+                        const stepX = chartWidth / (records.length - 1);
+
+                        return (
+                          <View style={{ position: 'relative', height: totalHeight }}>
+                            {/* Line segments */}
+                            {records.map((r, i) => {
+                              if (i === 0) return null;
+                              const prevR = records[i - 1];
+                              const x1 = (i - 1) * stepX;
+                              const y1 = chartHeight - ((prevR.weight - minW) / range) * (chartHeight - 15);
+                              const x2 = i * stepX;
+                              const y2 = chartHeight - ((r.weight - minW) / range) * (chartHeight - 15);
+                              const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+                              const angle = Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
+                              return (
+                                <View
+                                  key={`line-${i}`}
+                                  style={{
+                                    position: 'absolute',
+                                    left: x1,
+                                    top: y1,
+                                    width: length,
+                                    height: 2,
+                                    backgroundColor: 'rgba(255,255,255,0.8)',
+                                    transform: [{ rotate: `${angle}deg` }],
+                                    transformOrigin: '0 0',
+                                  }}
+                                />
+                              );
+                            })}
+                            {/* Data points with weight labels */}
+                            {records.map((r, i) => {
+                              const x = i * stepX;
+                              const y = chartHeight - ((r.weight - minW) / range) * (chartHeight - 15);
+                              const isLast = i === records.length - 1;
+                              return (
+                                <React.Fragment key={`point-${i}`}>
+                                  {/* Weight value above point */}
+                                  <Text style={{
+                                    position: 'absolute',
+                                    left: x - 15,
+                                    top: y - 18,
+                                    fontSize: FONT_SMALL(),
+                                    color: '#fff',
+                                    fontWeight: isLast ? '700' : '500',
+                                    width: 30,
+                                    textAlign: 'center',
+                                  }}>
+                                    {String(r.weight)}
+                                  </Text>
+                                  {/* Point */}
+                                  <View style={{
+                                    position: 'absolute',
+                                    left: x - 5,
+                                    top: y - 5,
+                                    width: isLast ? 12 : 8,
+                                    height: isLast ? 12 : 8,
+                                    borderRadius: isLast ? 6 : 4,
+                                    backgroundColor: isLast ? '#fff' : 'rgba(255,255,255,0.7)',
+                                  }} />
+                                </React.Fragment>
+                              );
+                            })}
+                            {/* Date labels at bottom */}
+                            {records.map((r, i) => (
+                              <Text
+                                key={`label-${i}`}
+                                style={{
+                                  position: 'absolute',
+                                  left: i * stepX - 12,
+                                  top: chartHeight + 4,
+                                  fontSize: FONT_SMALL(),
+                                  color: 'rgba(255,255,255,0.8)',
+                                  width: 24,
+                                  textAlign: 'center',
+                                }}
+                              >
+                                {r.date.slice(8)}
+                              </Text>
+                            ))}
+                          </View>
+                        );
+                      })()}
+                    </View>
+                  </>
+                ) : (
+                  <View style={{ alignItems: 'center', paddingVertical: 20 }}>
+                    <Text style={{ fontSize: 40, marginBottom: 8 }}>📊</Text>
+                    <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.8)' }}>
+                      {T('bodyWeightNoData')}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            </View>
+            <TouchableOpacity
+              onPress={() => setShowWeightTrend(true)}
+              activeOpacity={0.85}
+              style={[styles.bannerButton, { backgroundColor: 'rgba(255,255,255,0.9)' }]}
+            >
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#3b82f6' }}>{T('bodyMoreWeightTrend')}</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+
+        {/* Banner indicators */}
+        <View style={styles.bannerIndicators}>
+          {[0, 1, 2, 3].map(i => (
+            <View
+              key={i}
+              style={[
+                styles.bannerDot,
+                { backgroundColor: i === currentBanner ? '#fff' : 'rgba(255,255,255,0.4)' }
+              ]}
+            />
+          ))}
+        </View>
+        {/* Guide text */}
+        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, textAlign: 'center', marginTop: 6 }}>
+          {T('bodySwipeHint')}
+        </Text>
+      </View>
 
       {/* ── 调身目标 ── */}
       <TouchableOpacity
@@ -571,44 +1073,77 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
         </View>
       )}
 
-      <BodyDashboardModals
-        TH={TH} T={T} todayPlan={todayPlan}
-        activeGoal={activeGoal} activeTrainingPlan={activeTrainingPlan}
-        profile={profile} todayExercises={todayExercises}
-        selectedDay={selectedDay} selectedDayIsRest={selectedDayIsRest}
-        selectedDayOverride={selectedDayOverride}
-        showAssessment={showAssessment} showGoalEdit={showGoalEdit}
-        showCheckin={showCheckin} showWeightRecord={showWeightRecord}
-        showWeightTrend={showWeightTrend} showQuickSwap={showQuickSwap}
-        showAdjustExercise={showAdjustExercise} showDayAction={showDayAction}
-        showGoalEditLight={showGoalEditLight} showDaySwapPicker={showDaySwapPicker}
-        showCelebration={showCelebration}
-        onCloseAssessment={() => setShowAssessment(false)}
-        onCloseGoalEdit={() => setShowGoalEdit(false)}
-        onCloseCheckin={() => setShowCheckin(false)}
-        onCloseWeightRecord={() => setShowWeightRecord(false)}
-        onCloseWeightTrend={() => setShowWeightTrend(false)}
-        onCloseQuickSwap={() => setShowQuickSwap(false)}
-        onCloseAdjustExercise={() => setShowAdjustExercise(false)}
-        onCloseDayAction={() => setShowDayAction(false)}
-        onCloseGoalEditLight={() => setShowGoalEditLight(false)}
-        onCloseDaySwapPicker={() => setShowDaySwapPicker(false)}
-        onCloseCelebration={() => setShowCelebration(false)}
-        onSaveAssessment={handleSaveAssessment}
-        onSaveGoal={handleSaveGoal}
-        onSaveCheckin={handleSaveCheckin}
-        onSaveWeight={handleSaveWeight}
-        onSwapConfirm={handleSwapConfirm}
-        onAdjustConfirm={handleAdjustConfirm}
-        onDaySkip={handleDaySkip}
-        onOpenQuickSwap={() => { setShowQuickSwap(true); }}
-        onOpenDaySwapPicker={() => { setShowDaySwapPicker(true); }}
-        onOpenAdjustExercise={() => { setShowAdjustExercise(true); }}
-        onDaySwapConfirm={handleDaySwapConfirm}
-        onSaveGoalLight={handleSaveGoalLight}
-        checkinHistory={checkinHistory}
-        celebrationData={celebrationData}
+      <AssessmentModal visible={showAssessment} TH={TH} T={T} profile={profile} onClose={() => setShowAssessment(false)} onSave={handleSaveAssessment} />
+      <GoalEditModal visible={showGoalEdit} TH={TH} T={T} goal={activeGoal} profile={profile} onClose={() => setShowGoalEdit(false)} onSave={handleSaveGoal} />
+      <BodyCheckinModal visible={showCheckin} TH={TH} T={T} todayPlan={todayPlan} onClose={() => setShowCheckin(false)} onSave={handleSaveCheckin} />
+      <WeightRecordModal visible={showWeightRecord} TH={TH} T={T} currentWeight={profile.weight as number | undefined} currentBodyFat={profile.bodyFat as number | undefined} onClose={() => setShowWeightRecord(false)} onSave={handleSaveWeight} />
+      <WeightTrendModal visible={showWeightTrend} TH={TH} T={T} checkins={checkinHistory ?? []} onClose={() => setShowWeightTrend(false)} />
+
+      {/* Override modals */}
+      <QuickSwapModal visible={showQuickSwap} onClose={() => setShowQuickSwap(false)} onConfirm={handleSwapConfirm} TH={TH} T={T} />
+      {todayExercises && (
+        <AdjustExerciseModal visible={showAdjustExercise} onClose={() => setShowAdjustExercise(false)} onConfirm={handleAdjustConfirm} exercises={todayExercises} TH={TH} T={T} />
+      )}
+      <DayActionSheet
+        visible={showDayAction}
+        onClose={() => setShowDayAction(false)}
+        dayLabel={selectedDay ? T(`bodyWeek${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][selectedDay - 1]}`) : ''}
+        isRest={selectedDayIsRest}
+        hasOverride={!!selectedDayOverride}
+        onSwap={() => { setShowDayAction(false); setShowQuickSwap(true); }}
+        onSkip={handleDaySkip}
+        onSwapDays={() => { setShowDayAction(false); setShowDaySwapPicker(true); }}
+        onAdjust={() => { setShowDayAction(false); setShowAdjustExercise(true); }}
+        TH={TH} T={T}
       />
+      {activeTrainingPlan && (
+        <GoalEditLightModal
+          visible={showGoalEditLight}
+          onClose={() => setShowGoalEditLight(false)}
+          onConfirm={handleSaveGoalLight}
+          initialStrategy={activeTrainingPlan.strategy}
+          initialTargetWeight={activeTrainingPlan.targetWeight}
+          initialTargetBodyFat={activeTrainingPlan.targetBodyFat}
+          initialGoalNote={activeTrainingPlan.goalNote}
+          TH={TH} T={T}
+        />
+      )}
+
+      {/* Day swap picker modal */}
+      <Modal visible={showDaySwapPicker} transparent animationType="fade">
+        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.5)', justifyContent: 'center', alignItems: 'center' }}>
+          <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24, width: '80%', maxWidth: 320 }}>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginBottom: 16, textAlign: 'center' }}>
+              {T('bodySwapDays')}
+            </Text>
+            {[1,2,3,4,5,6,7].filter(d => d !== selectedDay).map(d => (
+              <TouchableOpacity
+                key={d}
+                onPress={() => handleDaySwapConfirm(d)}
+                style={{ paddingVertical: 14, paddingHorizontal: 20, borderRadius: 12, marginBottom: 8, backgroundColor: `${TH.primary}15`, borderWidth: 1, borderColor: `${TH.primary}30` }}
+              >
+                <Text style={{ fontSize: FONT_BODY(), color: TH.text, fontWeight: '600', textAlign: 'center' }}>
+                  {T(`bodyWeek${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][d - 1]}`)}
+                </Text>
+              </TouchableOpacity>
+            ))}
+            <TouchableOpacity
+              onPress={() => setShowDaySwapPicker(false)}
+              style={{ paddingVertical: 12, alignItems: 'center', marginTop: 8 }}
+            >
+              <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{T('commonCancel')}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {celebrationData && (
+        <CelebrationOverlay
+          visible={showCelebration}
+          TH={TH} T={T}
+          data={celebrationData}
+          onDismiss={() => setShowCelebration(false)}
+        />
       )}
     </View>
   );
