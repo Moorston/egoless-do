@@ -245,7 +245,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
           breathingCompleted={breathingCompleted}
           breathingDurationMs={breathingDurationMs}
           totalMs={totalMs}
-          onFinish={() => { startTimeRef.current = 0; practiceStartRef.current = 0; resetFlow(); onExit(); }}
+          onFinish={() => { startTimeRef.current = 0; practiceStartRef.current = 0; onExit(); }}
         />
       );
     }
