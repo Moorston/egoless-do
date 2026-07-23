@@ -19,6 +19,9 @@ patchedDependencies:
   expo-image-picker@57.0.2:
     hash: z73mm55b6n3gzcarftwrpxn7vq
     path: patches/expo-image-picker@57.0.2.patch
+  expo-location@57.0.2:
+    hash: 4xa2huntpulpdbe7cave2g3kei
+    path: patches/expo-location@57.0.2.patch
 
 importers:
 
@@ -147,7 +150,7 @@ importers:
         version: 17.0.9(expo@54.0.35(@babel/core@7.29.7)(graphql@16.14.2)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3))(react@19.1.0)
       expo-location:
         specifier: ~57.0.2
-        version: 57.0.2(expo@54.0.35(@babel/core@7.29.7)(graphql@16.14.2)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3))(typescript@5.9.3)
+        version: 57.0.2(patch_hash=4xa2huntpulpdbe7cave2g3kei)(expo@54.0.35(@babel/core@7.29.7)(graphql@16.14.2)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3))(typescript@5.9.3)
       expo-notifications:
         specifier: ~57.0.3
         version: 57.0.3(expo@54.0.35(@babel/core@7.29.7)(graphql@16.14.2)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3)
@@ -7892,7 +7895,7 @@ snapshots:
       react: 19.1.0
       rtl-detect: 1.1.2
 
-  expo-location@57.0.2(expo@54.0.35(@babel/core@7.29.7)(graphql@16.14.2)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3))(typescript@5.9.3):
+  expo-location@57.0.2(patch_hash=4xa2huntpulpdbe7cave2g3kei)(expo@54.0.35(@babel/core@7.29.7)(graphql@16.14.2)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3))(typescript@5.9.3):
     dependencies:
       '@expo/image-utils': 0.11.1(typescript@5.9.3)
       expo: 54.0.35(@babel/core@7.29.7)(graphql@16.14.2)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3)

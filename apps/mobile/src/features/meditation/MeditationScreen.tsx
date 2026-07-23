@@ -449,4 +449,144 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
   },
+  // Hero Banner 区域
+  heroTitle: {
+    fontSize: FONT_TITLE(),
+    fontWeight: '700',
+    color: '#fff',
+  },
+  heroHistoryLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  heroHistoryText: {
+    fontSize: FONT_BODY(),
+    color: 'rgba(255,255,255,.8)',
+    fontWeight: '600',
+  },
+  heroStatsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  heroStatCol: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  heroStatNumber: {
+    fontSize: FONT_STAT_SECTION(),
+    fontWeight: '900',
+    color: '#fff',
+  },
+  heroStatLabel: {
+    fontSize: FONT_SUB(),
+    color: 'rgba(255,255,255,.7)',
+    marginTop: 2,
+  },
+  heroStatSub: {
+    fontSize: FONT_SUB(),
+    color: 'rgba(255,255,255,.5)',
+    marginTop: 2,
+  },
+  heroDivider: {
+    width: 1,
+    backgroundColor: 'rgba(255,255,255,.2)',
+    marginVertical: 4,
+  },
+  heroGlobalLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,.2)',
+  },
+  heroGlobalText: {
+    fontSize: FONT_BODY(),
+    color: 'rgba(255,255,255,.8)',
+    fontWeight: '600',
+    flex: 1,
+  },
+  // 主卡片
+  mainCard: {
+    paddingVertical: 32,
+  },
+  // 时长选择器
+  durationSelector: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 16,
+  },
+  // 分享卡片
+  shareOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,.75)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  shareViewShot: {
+    width: 300,
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  shareCard: {
+    backgroundColor: '#1a1040',
+    paddingVertical: 40,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+  },
+  shareTitle: {
+    color: '#e2d9f3',
+    fontSize: FONT_TITLE(),
+    fontWeight: '600',
+    marginBottom: 20,
+  },
+  shareIcon: {
+    marginBottom: 12,
+  },
+  shareDate: {
+    color: 'rgba(255,255,255,0.5)',
+    fontSize: FONT_SUB(),
+    marginBottom: 20,
+  },
+  shareDivider: {
+    width: '100%',
+    height: 1,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    marginBottom: 28,
+  },
+  shareStatsContainer: {
+    width: '100%',
+    gap: 28,
+    alignItems: 'center',
+  },
+  shareStatCol: {
+    alignItems: 'center',
+  },
+  shareStatNumber: {
+    color: '#a78bfa',
+    fontSize: FONT_STAT_SECTION(),
+    fontWeight: '800',
+  },
+  shareStatLabel: {
+    color: 'rgba(255,255,255,0.6)',
+    fontSize: FONT_SUB(),
+  },
+  shareFooter: {
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: FONT_BADGE(),
+    marginTop: 32,
+  },
+  shareButtonsRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 20,
+    width: 300,
+  },
+  shareBtnFlex: {
+    flex: 1,
+  },
 });
