@@ -70,6 +70,7 @@ export function useBodyFlowState() {
   const saveAwareness = useCallback((data: BodyCheckin | null) => {
     setBodyFlowState({
       awarenessData: data,
+      awarenessCompleted: true,
       step: 'success',
     });
   }, [setBodyFlowState]);
