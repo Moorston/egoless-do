@@ -1,7 +1,7 @@
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, BODY_TAGS_PRESET, type Theme } from '@egoless-do/core';
 import { X } from 'lucide-react-native';
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput } , KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 import { PrimaryButton, OutlineButton } from '../../../../components/UI';
 
@@ -24,7 +24,10 @@ export default function AssessmentModal({ visible, TH, T, profile, onClose, onSa
 
   return (
     <Modal visible={visible} transparent animationType="slide">
-      <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'flex-end' }}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+          <View={{ flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'flex-end' }}>
         <View style={{ backgroundColor: TH.cardSolid, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, maxHeight: '85%' }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('bodySelfAssessment')}</Text>
@@ -35,7 +38,9 @@ export default function AssessmentModal({ visible, TH, T, profile, onClose, onSa
             style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY(), minHeight: 100, maxHeight: 150, textAlignVertical: 'top', marginBottom: 8 }}
             multiline maxLength={500} value={text} onChangeText={setText}
             placeholder={T('bodySelfAssessmentInputPlaceholder')} placeholderTextColor={TH.sub}
-          />
+          blurOnSubmit
+          returnKeyType="done"
+        />
           <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, textAlign: 'right', marginBottom: 16 }}>{String(text.length)}/500</Text>
           <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text, marginBottom: 8 }}>{T('bodyTagsLabel')}</Text>
           <ScrollView style={{ maxHeight: 200 }}>
@@ -59,6 +64,9 @@ export default function AssessmentModal({ visible, TH, T, profile, onClose, onSa
           </View>
         </View>
       </View>
+              </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

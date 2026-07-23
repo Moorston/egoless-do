@@ -1,7 +1,7 @@
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, dateStr, type Theme } from '@egoless-do/core';
 import { X } from 'lucide-react-native';
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, TextInput, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native';
 
 import { PrimaryButton, OutlineButton } from '../../../../components/UI';
 
@@ -38,7 +38,10 @@ export default function WeightRecordModal({ visible, TH, T, currentWeight, curre
 
   return (
     <Modal visible={visible} transparent animationType="slide">
-      <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'flex-end' }}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'flex-end' }}>
+            <ScrollView keyboardShouldPersistTaps="handled" bounces={false}>
         <View style={{ backgroundColor: TH.cardSolid, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
             <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('bodyRecordWeight')}</Text>
@@ -54,6 +57,8 @@ export default function WeightRecordModal({ visible, TH, T, currentWeight, curre
             onChangeText={setWeightStr}
             placeholder={currentWeight ? `${currentWeight}` : '0.0'}
             placeholderTextColor={TH.sub}
+            blurOnSubmit
+            returnKeyType="done"
           />
 
           {/* Body fat input */}
@@ -65,6 +70,8 @@ export default function WeightRecordModal({ visible, TH, T, currentWeight, curre
             onChangeText={setBodyFatStr}
             placeholder={currentBodyFat ? `${currentBodyFat}` : T('bodyNotSet')}
             placeholderTextColor={TH.sub}
+            blurOnSubmit
+            returnKeyType="done"
           />
 
           <View style={{ flexDirection: 'row', gap: 10, marginTop: 16 }}>
@@ -72,7 +79,10 @@ export default function WeightRecordModal({ visible, TH, T, currentWeight, curre
             <PrimaryButton label={T('bodySave')} onPress={handleSave} color="#10b981" style={{ flex: 1 }} />
           </View>
         </View>
-      </View>
+            </ScrollView>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

@@ -2,8 +2,8 @@ import {
   FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_SECTION, dateStr,
   BODY_TAGS_PRESET, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, type BodyCheckin, type BodyPlan, type Theme,
 } from '@egoless-do/core';
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, TouchableOpacity, TextInput, ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 import { PrimaryButton, OutlineButton, TagPill } from '../../../components/UI';
 
@@ -24,6 +24,12 @@ function BodyCheckinInline({ TH, T, plan, durationSec, onSave, onSkip }: Props) 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [note, setNote] = useState('');
   const allTags = BODY_TAGS_PRESET.flatMap(g => g.tags);
+  const noteInputRef = useRef<TextInput>(null);
+
+  const dismissKeyboard = () => {
+    noteInputRef.current?.blur();
+    Keyboard.dismiss();
+  };
 
   const handleSave = () => {
     onSave({ date: dateStr(), energy, pain, comfort, sleep: sleepQuality, tags: selectedTags, note: note || undefined });
@@ -55,8 +61,11 @@ function BodyCheckinInline({ TH, T, plan, durationSec, onSave, onSkip }: Props) 
   );
 
   return (
-    <View>
-      {plan && (() => {
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <TouchableWithoutFeedback onPress={dismissKeyboard}>
+        <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+      <View>
+        {plan && (() => {
         const mappedKey = PART_STRING_TO_KEY[plan.part] || plan.part;
         const cat = EXERCISE_CATEGORIES.find(c => c.key === mappedKey);
         const partLabel = cat ? T(cat.i18nKey) : plan.part;
@@ -91,11 +100,14 @@ function BodyCheckinInline({ TH, T, plan, durationSec, onSave, onSkip }: Props) 
       </View>
 
       <TextInput
+        ref={noteInputRef}
         style={{ backgroundColor: TH.card, borderRadius: 10, padding: 12, color: TH.text, fontSize: FONT_BODY(), borderWidth: 1, borderColor: TH.border, minHeight: 60, marginBottom: 16, textAlignVertical: 'top' }}
         placeholder={T('bodyCheckinNotePlaceholder')}
         placeholderTextColor={TH.sub}
         multiline maxLength={500}
         value={note} onChangeText={setNote}
+        blurOnSubmit
+        returnKeyType="done"
       />
 
       <View style={{ flexDirection: 'row', gap: 10 }}>
@@ -103,6 +115,9 @@ function BodyCheckinInline({ TH, T, plan, durationSec, onSave, onSkip }: Props) 
         <PrimaryButton label={T('bodySave')} onPress={handleSave} color="#8b5cf6" style={{ flex: 1 }} />
       </View>
     </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 
