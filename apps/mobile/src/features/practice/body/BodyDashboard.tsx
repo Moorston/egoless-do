@@ -15,7 +15,6 @@ import { useBodyFlowState } from './hooks/useBodyFlowState';
 import { useTodayPlan } from './hooks/useTodayPlan';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
-export const BANNER_WIDTH = SCREEN_WIDTH - 32; // 16px padding on each side
 
 interface DashboardProps {
   onFlowStart?: () => void;

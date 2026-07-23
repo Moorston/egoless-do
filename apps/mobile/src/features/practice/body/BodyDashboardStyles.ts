@@ -1,5 +1,6 @@
-import { StyleSheet } from 'react-native';
-import { BANNER_WIDTH } from './BodyDashboard';
+import { StyleSheet, Dimensions } from 'react-native';
+
+export const BANNER_WIDTH = typeof Dimensions !== 'undefined' ? Dimensions.get('window').width - 32 : 300;
 
 export const styles = StyleSheet.create({
   bannerContainer: {
