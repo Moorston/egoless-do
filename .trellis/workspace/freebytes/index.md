@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 46
+- **Total Sessions**: 47
 - **Last Active**: 2026-07-23
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~1650 | Active |
+| `journal-1.md` | ~1685 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 47 | 2026-07-23 | 身体觉知 Banner 优化 — 布局/字体/字号 | `578d8827`, `2cd2c416`, `954d5d2b` | `master` |
 | 46 | 2026-07-23 | Banner 完成状态修复 — flowState 重置/awarenessCompleted 缺失 | `3e6c0271`, `83cb1492`, `8d29196b`, `c2f5cc59`, `8ef5377e` | `master` |
 | 45 | 2026-07-23 | BodyDashboard 重构 — 提取样式/Banner/Modal 组件 | `9b37999f`, `af558067`, `cf391f1b`, `a68bf88b` | `master` |
 | 44 | 2026-07-23 | BodyFlow 完成状态 UI 重构 — 统计横幅/动作列表/数据流 | `ead2611a` | `master` |

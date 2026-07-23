@@ -1648,3 +1648,38 @@ StatsScreen计划任务进度改为countItemDoneDays动态计算；补全planIte
 ### Next Steps
 
 - None - task complete
+
+
+## Session 47: 身体觉知 Banner 优化 — 布局/字体/字号
+
+**Date**: 2026-07-23
+**Task**: 身体觉知 Banner 优化 — 布局/字体/字号
+**Branch**: `master`
+
+### Summary
+
+1. 优化身体觉知 Banner 布局（卡片式指标、标签样式、备注样式）\n2. 增大全部字体（标题18px、指标18px、标签15px、日期15px）
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `578d8827` | (see git log) |
+| `2cd2c416` | (see git log) |
+| `954d5d2b` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
