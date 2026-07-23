@@ -736,7 +736,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                         <Text style={{ fontSize: FONT_BODY(), color: weightTrend.diff > 0 ? '#fbbf24' : '#34d399', fontWeight: '600' }}>
                           {`${weightTrend.diff > 0 ? '+' : ''}${weightTrend.diff.toFixed(1)} kg`}
                         </Text>
-                        </Text>
                       </View>
                     </View>
                     {/* Line chart - last 7 days */}
