@@ -11,9 +11,9 @@ import { useAppStore, useShallowStore } from '../../store/useAppStore';
 
 
 const GIVE_TYPES: { type: GiveType; icon: string; color: string }[] = [
+  { type: 'fearless', icon: '🛡', color: '#10B981' },
   { type: 'material', icon: '💰', color: '#F59E0B' },
   { type: 'dharma', icon: '📖', color: '#3B82F6' },
-  { type: 'fearless', icon: '🛡', color: '#10B981' },
 ];
 
 export default function GiveScreen() {
@@ -26,7 +26,7 @@ export default function GiveScreen() {
   }));
 
   const [showModal, setShowModal] = useState(false);
-  const [giveType, setGiveType] = useState<GiveType>('material');
+  const [giveType, setGiveType] = useState<GiveType>('fearless');
   const [content, setContent] = useState('');
   const [motivation, setMotivation] = useState('');
   const [amount, setAmount] = useState('');

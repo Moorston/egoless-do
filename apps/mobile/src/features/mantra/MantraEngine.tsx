@@ -53,7 +53,7 @@ export default function MantraEngine() {
   const startSessionSeq = useRef(0);
 
   const myMantras = useMemo(() =>
-    (mantraDefs ?? []).filter((d: MantraDef) => !d.deleted && !d.preset && !!d.name).sort((a: MantraDef, b: MantraDef) => a.sortOrder - b.sortOrder),
+    (mantraDefs ?? []).filter((d: MantraDef) => !d.deleted && !d.preset && d.category !== 'sutra' && !!d.name).sort((a: MantraDef, b: MantraDef) => a.sortOrder - b.sortOrder),
     [mantraDefs]
   );
 
