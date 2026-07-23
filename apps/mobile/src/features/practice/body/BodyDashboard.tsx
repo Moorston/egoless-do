@@ -418,25 +418,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                     )}
                   </View>
                 </View>
-                {/* 今日动作列表 */}
-                {todayExercises && todayExercises.length > 0 && (
-                  <View style={{ backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 8, padding: 8, marginBottom: 10 }}>
-                    {todayExercises.map((e, i) => {
-                      const sets = e.defaultSets;
-                      const reps = e.defaultReps;
-                      const dur = e.defaultDurationSec;
-                      let detail = '';
-                      if (sets && reps) detail = `${sets}组×${reps}次`;
-                      else if (sets) detail = `${sets}组`;
-                      else if (dur) detail = `${Math.round(dur / 60)}分钟`;
-                      return (
-                        <Text key={e.id || i} style={{ fontSize: FONT_SMALL(), color: '#fff', lineHeight: 18 }}>
-                          {e.icon} {e.nameZh}{detail ? ` ${detail}` : ''}
-                        </Text>
-                      );
-                    })}
-                  </View>
-                )}
                 {/* ── Flow progress — 今日有计划即显示，不管 flowState 状态 ── */}
                 {!allFlowDone && (
                   <View style={{ backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: 12, padding: 12, marginBottom: 10, gap: 8 }}>
@@ -456,7 +437,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                         </View>
                         {todayExercises && todayExercises.length > 0 && (
                           <View style={{ marginTop: 4 }}>
-                            {todayExercises.slice(0, 3).map((e, i) => (
+                            {todayExercises.slice(0, 5).map((e, i) => (
                               <Text key={i} style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', lineHeight: 16 }}>
                                 {e.icon} {e.nameZh}{e.defaultSets && e.defaultReps ? `  ${e.defaultSets}组×${e.defaultReps}次` : ''}
                               </Text>
