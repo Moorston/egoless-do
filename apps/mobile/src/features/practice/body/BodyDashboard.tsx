@@ -406,19 +406,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
               </View>
             ) : todayPlanDisplay ? (
               <>
-                <View style={styles.bannerContent}>
-                  <View style={styles.bannerIconCircle}>
-                    <Text style={{ fontSize: 24 }}>{todayPlanDisplay.icon}</Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>{todayPlanDisplay.label}</Text>
-                    {todayPlanDisplay.note && (
-                      <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', marginTop: 2 }} numberOfLines={1}>
-                        {todayPlanDisplay.note}
-                      </Text>
-                    )}
-                  </View>
-                </View>
                 {/* ── Flow progress — 今日有计划即显示，不管 flowState 状态 ── */}
                 {!allFlowDone && (
                   <View style={{ backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: 12, padding: 12, marginBottom: 10, gap: 8 }}>
@@ -429,7 +416,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                       </View>
                       <View style={{ flex: 1 }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyFlowPractice')}</Text>
+                          <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }} numberOfLines={1}>{T('bodyFlowPractice')}{todayPlanDisplay ? ` · ${todayPlanDisplay.label}` : ''}</Text>
                           {flowState?.exerciseCompleted && (
                             <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>
                               {flowState?.totalDurationSec ? `${Math.floor(flowState.totalDurationSec / 60)}:${String(flowState.totalDurationSec % 60).padStart(2, '0')}` : T('bodyFlowDone')}
