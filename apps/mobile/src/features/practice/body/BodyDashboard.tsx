@@ -443,6 +443,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                               </Text>
                             ))}
                           </View>
+                        )}
                       </View>
                     </View>
                     {/* Separator */}

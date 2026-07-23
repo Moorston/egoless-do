@@ -102,8 +102,8 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
                 </Text>
               ) : (
                 <Text style={[styles.chipMeta, { color: COLORS.textSecondary }]} numberOfLines={1}>
-                  {ex.defaultSets && ex.defaultReps ? `${ex.defaultSets}×${ex.defaultReps}` : ''}
-                  {ex.defaultDurationSec ? `${Math.round(ex.defaultDurationSec / 60)}min` : ''}
+                  {ex.defaultSets && ex.defaultReps ? T('bodyComboSetsReps', { sets: ex.defaultSets, reps: ex.defaultReps }) : ''}
+                  {ex.defaultDurationSec ? T('bodyComboMinutes', { min: Math.round(ex.defaultDurationSec / 60) }) : ''}
                 </Text>
               )}
             </TouchableOpacity>
