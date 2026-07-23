@@ -48,6 +48,7 @@ export default function BannerCarousel({
   profile, onOpenAssessment, onOpenCheckin, onOpenWeightRecord, onOpenWeightTrend,
   latestCheckin, checkinHistory, weightTrend,
 }: BannerCarouselProps) {
+  return (
   {/* ── Banner Carousel ── */}
   <View style={styles.bannerContainer}>
     <ScrollView
@@ -561,20 +562,5 @@ export default function BannerCarousel({
       {T('bodySwipeHint')}
     </Text>
   </View>
-  // Banner indicators
-  <View style={styles.bannerIndicators}>
-    {[0, 1, 2, 3].map(i => (
-      <View
-        key={i}
-        style={[
-          styles.bannerDot,
-          { backgroundColor: i === currentBanner ? '#fff' : 'rgba(255,255,255,0.4)' }
-        ]}
-      />
-    ))}
-  </View>
-  {/* Guide text */}
-  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, textAlign: 'center', marginTop: 6 }}>
-    {T('bodySwipeHint')}
-  </Text>
-</View>
+  );
+}
