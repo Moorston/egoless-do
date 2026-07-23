@@ -644,8 +644,8 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                         { label: T('bodySleepQuality'), value: latestCheckin.sleep, color: '#60a5fa' },
                       ].map((item, i) => (
                         <View key={i} style={{ flex: 1, alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 10, paddingVertical: 10, paddingHorizontal: 4 }}>
-                          <Text style={{ fontSize: FONT_BODY(), fontWeight: '800', color: item.color }}>{String(item.value)}</Text>
-                          <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,0.7)', marginTop: 2, textAlign: 'center' }}>{item.label}</Text>
+                          <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: item.color }}>{String(item.value)}</Text>
+                          <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.7)', marginTop: 2, textAlign: 'center' }}>{item.label}</Text>
                         </View>
                       ))}
                     </View>
@@ -667,7 +667,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                         </Text>
                       </View>
                     )}
-                    <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,0.5)', textAlign: 'right' }}>
+                    <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.5)', textAlign: 'right' }}>
                       {latestCheckin.date}
                     </Text>
                   </>
