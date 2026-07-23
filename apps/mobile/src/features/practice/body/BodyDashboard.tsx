@@ -1,26 +1,18 @@
 import { dateStr, type AgeBracket, type BodyGoal, type BodyTrainingPlan, type ExerciseEntry, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_LABEL, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BADGE, generateSuggestions, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, BODY_TAGS_PRESET, COMBO_WORKOUT_SPORT_KEY, type DayOverride, type ExerciseDef, type BodyCheckin } from '@egoless-do/core';
 import { ChevronRight, Play, Calendar, Target, Dumbbell, TrendingUp, Activity, Scale, History, Settings, ChevronLeft, ChevronDown } from 'lucide-react-native';
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Dimensions, Animated, Alert, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Dimensions, Animated, Alert } from 'react-native';
 
 import { useT, useTheme } from '../../../components/UI';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useShallowStore } from '../../../store/useAppStore';
 
-import CelebrationOverlay from './screens/CelebrationOverlay';
-import { useTodayPlan } from './hooks/useTodayPlan';
-import AssessmentModal from './modals/AssessmentModal';
-import BodyCheckinModal from './modals/BodyCheckinModal';
-import GoalEditModal from './modals/GoalEditModal';
-import WeightRecordModal from './modals/WeightRecordModal';
-import WeightTrendModal from './modals/WeightTrendModal';
-import QuickSwapModal from './modals/QuickSwapModal';
-import AdjustExerciseModal from './modals/AdjustExerciseModal';
-import DayActionSheet from './modals/DayActionSheet';
-import GoalEditLightModal from './modals/GoalEditLightModal';
 import { styles } from './BodyDashboardStyles';
 import BannerCarousel from './BodyDashboardBanners';
+import BodyDashboardModals from './BodyDashboardModals';
 import ExerciseProgressBanner from './components/ExerciseProgressBanner';
+import { useBodyFlowState } from './hooks/useBodyFlowState';
+import { useTodayPlan } from './hooks/useTodayPlan';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export const BANNER_WIDTH = SCREEN_WIDTH - 32; // 16px padding on each side
@@ -580,77 +572,44 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
         </View>
       )}
 
-      <AssessmentModal visible={showAssessment} TH={TH} T={T} profile={profile} onClose={() => setShowAssessment(false)} onSave={handleSaveAssessment} />
-      <GoalEditModal visible={showGoalEdit} TH={TH} T={T} goal={activeGoal} profile={profile} onClose={() => setShowGoalEdit(false)} onSave={handleSaveGoal} />
-      <BodyCheckinModal visible={showCheckin} TH={TH} T={T} todayPlan={todayPlan} onClose={() => setShowCheckin(false)} onSave={handleSaveCheckin} />
-      <WeightRecordModal visible={showWeightRecord} TH={TH} T={T} currentWeight={profile.weight as number | undefined} currentBodyFat={profile.bodyFat as number | undefined} onClose={() => setShowWeightRecord(false)} onSave={handleSaveWeight} />
-      <WeightTrendModal visible={showWeightTrend} TH={TH} T={T} checkins={checkinHistory ?? []} onClose={() => setShowWeightTrend(false)} />
-
-      {/* Override modals */}
-      <QuickSwapModal visible={showQuickSwap} onClose={() => setShowQuickSwap(false)} onConfirm={handleSwapConfirm} TH={TH} T={T} />
-      {todayExercises && (
-        <AdjustExerciseModal visible={showAdjustExercise} onClose={() => setShowAdjustExercise(false)} onConfirm={handleAdjustConfirm} exercises={todayExercises} TH={TH} T={T} />
-      )}
-      <DayActionSheet
-        visible={showDayAction}
-        onClose={() => setShowDayAction(false)}
-        dayLabel={selectedDay ? T(`bodyWeek${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][selectedDay - 1]}`) : ''}
-        isRest={selectedDayIsRest}
-        hasOverride={!!selectedDayOverride}
-        onSwap={() => { setShowDayAction(false); setShowQuickSwap(true); }}
-        onSkip={handleDaySkip}
-        onSwapDays={() => { setShowDayAction(false); setShowDaySwapPicker(true); }}
-        onAdjust={() => { setShowDayAction(false); setShowAdjustExercise(true); }}
-        TH={TH} T={T}
+      <BodyDashboardModals
+        TH={TH} T={T} todayPlan={todayPlan}
+        activeGoal={activeGoal} activeTrainingPlan={activeTrainingPlan}
+        profile={profile} todayExercises={todayExercises}
+        selectedDay={selectedDay} selectedDayIsRest={selectedDayIsRest}
+        selectedDayOverride={selectedDayOverride}
+        showAssessment={showAssessment} showGoalEdit={showGoalEdit}
+        showCheckin={showCheckin} showWeightRecord={showWeightRecord}
+        showWeightTrend={showWeightTrend} showQuickSwap={showQuickSwap}
+        showAdjustExercise={showAdjustExercise} showDayAction={showDayAction}
+        showGoalEditLight={showGoalEditLight} showDaySwapPicker={showDaySwapPicker}
+        showCelebration={showCelebration}
+        onCloseAssessment={() => setShowAssessment(false)}
+        onCloseGoalEdit={() => setShowGoalEdit(false)}
+        onCloseCheckin={() => setShowCheckin(false)}
+        onCloseWeightRecord={() => setShowWeightRecord(false)}
+        onCloseWeightTrend={() => setShowWeightTrend(false)}
+        onCloseQuickSwap={() => setShowQuickSwap(false)}
+        onCloseAdjustExercise={() => setShowAdjustExercise(false)}
+        onCloseDayAction={() => setShowDayAction(false)}
+        onCloseGoalEditLight={() => setShowGoalEditLight(false)}
+        onCloseDaySwapPicker={() => setShowDaySwapPicker(false)}
+        onCloseCelebration={() => setShowCelebration(false)}
+        onSaveAssessment={handleSaveAssessment}
+        onSaveGoal={handleSaveGoal}
+        onSaveCheckin={handleSaveCheckin}
+        onSaveWeight={handleSaveWeight}
+        onSwapConfirm={handleSwapConfirm}
+        onAdjustConfirm={handleAdjustConfirm}
+        onDaySkip={handleDaySkip}
+        onOpenQuickSwap={() => { setShowQuickSwap(true); }}
+        onOpenDaySwapPicker={() => { setShowDaySwapPicker(true); }}
+        onOpenAdjustExercise={() => { setShowAdjustExercise(true); }}
+        onDaySwapConfirm={handleDaySwapConfirm}
+        onSaveGoalLight={handleSaveGoalLight}
+        checkinHistory={checkinHistory}
+        celebrationData={celebrationData}
       />
-      {activeTrainingPlan && (
-        <GoalEditLightModal
-          visible={showGoalEditLight}
-          onClose={() => setShowGoalEditLight(false)}
-          onConfirm={handleSaveGoalLight}
-          initialStrategy={activeTrainingPlan.strategy}
-          initialTargetWeight={activeTrainingPlan.targetWeight}
-          initialTargetBodyFat={activeTrainingPlan.targetBodyFat}
-          initialGoalNote={activeTrainingPlan.goalNote}
-          TH={TH} T={T}
-        />
-      )}
-
-      {/* Day swap picker modal */}
-      <Modal visible={showDaySwapPicker} transparent animationType="fade">
-        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.5)', justifyContent: 'center', alignItems: 'center' }}>
-          <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24, width: '80%', maxWidth: 320 }}>
-            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginBottom: 16, textAlign: 'center' }}>
-              {T('bodySwapDays')}
-            </Text>
-            {[1,2,3,4,5,6,7].filter(d => d !== selectedDay).map(d => (
-              <TouchableOpacity
-                key={d}
-                onPress={() => handleDaySwapConfirm(d)}
-                style={{ paddingVertical: 14, paddingHorizontal: 20, borderRadius: 12, marginBottom: 8, backgroundColor: `${TH.primary}15`, borderWidth: 1, borderColor: `${TH.primary}30` }}
-              >
-                <Text style={{ fontSize: FONT_BODY(), color: TH.text, fontWeight: '600', textAlign: 'center' }}>
-                  {T(`bodyWeek${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][d - 1]}`)}
-                </Text>
-              </TouchableOpacity>
-            ))}
-            <TouchableOpacity
-              onPress={() => setShowDaySwapPicker(false)}
-              style={{ paddingVertical: 12, alignItems: 'center', marginTop: 8 }}
-            >
-              <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{T('commonCancel')}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
-      {celebrationData && (
-        <CelebrationOverlay
-          visible={showCelebration}
-          TH={TH} T={T}
-          data={celebrationData}
-          onDismiss={() => setShowCelebration(false)}
-        />
       )}
     </View>
   );
