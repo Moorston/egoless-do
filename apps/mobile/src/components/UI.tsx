@@ -21,7 +21,7 @@ export function useTheme() {
 // ── useT ──────────────────────────────────────────────────────────
 export function useT() {
   const language = useAppStore((s: MobileStore) => s.language);
-  return (key: I18nKey) => t(key, language);
+  return (key: I18nKey, params?: Record<string, string | number>) => t(key, language, params);
 }
 
 // ── Card ──────────────────────────────────────────────────────────

@@ -23,9 +23,15 @@ export const getT = (lang: string): I18nKeys => translations[lang] ?? zh;
  * @param lang - Language code ('zh', 'en', 'zh-Hant'). Defaults to 'zh'.
  * @returns Translated string, or the key itself if translation is missing.
  */
-export const t = (key: I18nKey, lang: string = 'zh'): string => {
+export const t = (key: I18nKey, lang: string = 'zh', params?: Record<string, string | number>): string => {
   const dict = translations[lang] ?? translations['zh'];
-  return (dict as unknown as Record<string, string>)?.[key]
+  let text = (dict as unknown as Record<string, string>)?.[key]
     ?? (translations['en'] as unknown as Record<string, string>)?.[key]
     ?? key;
+  if (params) {
+    for (const [k, v] of Object.entries(params)) {
+      text = text.replace(`{${k}}`, String(v));
+    }
+  }
+  return text;
 };
