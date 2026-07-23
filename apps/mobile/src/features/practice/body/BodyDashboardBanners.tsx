@@ -563,7 +563,5 @@ export default function BannerCarousel({
       {T('bodySwipeHint')}
     </Text>
   </View>
-    </>
-    </View>
   );
 }
