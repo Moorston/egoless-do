@@ -217,8 +217,8 @@ export default function BannerCarousel({
               >
                 <Play size={20} color="#f59e0b" />
                 <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#f59e0b' }}>
-                  {!flowState.exerciseCompleted ? T('bodyStartToday')
-                    : !flowState.breathingCompleted ? T('bodyFlowStartBreathing')
+                  {!flowState?.exerciseCompleted ? T('bodyStartToday')
+                    : !flowState?.breathingCompleted ? T('bodyFlowStartBreathing')
                     : T('bodyFlowAwareness')}
                 </Text>
               </TouchableOpacity>
