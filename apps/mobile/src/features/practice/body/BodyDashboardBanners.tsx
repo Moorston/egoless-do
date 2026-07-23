@@ -2,13 +2,13 @@
 // Banner 轮播组件：4 个 Banner 卡片 + 指示器
 // 从 BodyDashboard.tsx 提取，所有数据通过 Props 传入
 
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, COMBO_WORKOUT_SPORT_KEY, type BodyGoal, type BodyTrainingPlan, type DayOverride, type ExerciseDef, type BodyCheckin } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, type BodyGoal, type BodyTrainingPlan, type DayOverride, type ExerciseDef, type BodyCheckin } from '@egoless-do/core';
 import type { FlowState } from './hooks/useBodyFlowState';
 import { Play, TrendingUp, Scale, History, ChevronRight, Calendar } from 'lucide-react-native';
-import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 
-import { BANNER_WIDTH, styles } from './BodyDashboardStyles';
+import { BANNER_WIDTH } from './BodyDashboard';
+import { styles } from './BodyDashboardStyles';
 
 interface BannerCarouselProps {
   TH: { primary: string; sub: string; bg: string; card: string; border: string; text: string };
@@ -49,7 +49,8 @@ export default function BannerCarousel({
   latestCheckin, checkinHistory, weightTrend,
 }: BannerCarouselProps) {
   return (
-  {/* ── Banner Carousel ── */}
+    <>
+      {/* ── Banner Carousel ── */}
   <View style={styles.bannerContainer}>
     <ScrollView
       ref={bannerScrollRef}
@@ -562,5 +563,6 @@ export default function BannerCarousel({
       {T('bodySwipeHint')}
     </Text>
   </View>
+    </>
   );
 }
