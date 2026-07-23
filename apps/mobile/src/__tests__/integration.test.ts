@@ -60,7 +60,7 @@ vi.mock('../store/migrateAsyncStorage', () => ({
 }));
 
 vi.mock('../store/secureAuth', () => ({
-  loadSecureTokens: vi.fn().mockResolvedValue(null),
+  loadSecureTokensWithRetry: vi.fn().mockResolvedValue(null),
   saveSecureTokens: vi.fn().mockResolvedValue(undefined),
   clearSecureTokens: vi.fn().mockResolvedValue(undefined),
 }));
@@ -128,10 +128,10 @@ describe('Integration tests', () => {
     });
 
     it('loads secure tokens during init', async () => {
-      const { loadSecureTokens } = await import('../store/secureAuth');
+      const { loadSecureTokensWithRetry } = await import('../store/secureAuth');
       const { initApp } = await import('../store/initApp');
       await initApp();
-      expect(loadSecureTokens).toHaveBeenCalled();
+      expect(loadSecureTokensWithRetry).toHaveBeenCalled();
     });
   });
 
@@ -164,8 +164,8 @@ describe('Integration tests', () => {
     });
 
     it('continues initialization when secure tokens fail', async () => {
-      const { loadSecureTokens } = await import('../store/secureAuth');
-      vi.mocked(loadSecureTokens).mockRejectedValueOnce(new Error('secure store error'));
+      const { loadSecureTokensWithRetry } = await import('../store/secureAuth');
+      vi.mocked(loadSecureTokensWithRetry).mockRejectedValueOnce(new Error('secure store error'));
       const { initApp } = await import('../store/initApp');
       await expect(initApp()).resolves.toBeUndefined();
     });
