@@ -473,8 +473,24 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                   </View>
                 )}
                 {allFlowDone && (
-                  <View style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8, padding: 10, marginBottom: 10, alignItems: 'center' }}>
-                    <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{'✅ '}{T('bodyTodayComplete')}</Text>
+                  <View>
+                    <View style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8, padding: 10, marginBottom: 10, alignItems: 'center' }}>
+                      <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{'✅ '}{T('bodyTodayComplete')}</Text>
+                    </View>
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (activeTrainingPlan?.id) {
+                          onFlowStartWithPlan?.(activeTrainingPlan.id);
+                        } else {
+                          onFlowStart?.();
+                        }
+                      }}
+                      activeOpacity={0.85}
+                      style={styles.bannerButton}
+                    >
+                      <Play size={20} color="#f59e0b" />
+                      <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#f59e0b' }}>{T('bodyRedo')}</Text>
+                    </TouchableOpacity>
                   </View>
                 )}
                 {!hasActiveFlow ? (
@@ -572,38 +588,38 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
             </View>
             <View style={styles.bannerContent}>
               <View style={{ flex: 1 }}>
-                {/* Body metrics - single row */}
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 }}>
+                {/* Body metrics - card style */}
+                <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 12, gap: 4 }}>
                   {[
                     { value: profile.weight ? `${profile.weight}` : '-', unit: 'kg', label: T('bodyWeight') },
                     { value: profile.height ? `${profile.height}` : '-', unit: 'cm', label: T('bodyHeight') },
                     { value: profile.weight && profile.height ? `${(profile.weight / ((profile.height / 100) ** 2)).toFixed(1)}` : '-', unit: '', label: 'BMI' },
                     { value: profile.bodyFat ? `${profile.bodyFat}` : '-', unit: '%', label: T('bodyBodyFat') },
                   ].map((item, i) => (
-                    <View key={i} style={{ alignItems: 'center' }}>
-                      <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: '#fff' }}>{String(item.value)}{item.unit}</Text>
-                      <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>{item.label}</Text>
+                    <View key={i} style={{ flex: 1, alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 10, paddingVertical: 10, paddingHorizontal: 4 }}>
+                      <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>{String(item.value)}<Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,0.7)' }}>{item.unit}</Text></Text>
+                      <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.7)', marginTop: 2, textAlign: 'center' }}>{item.label}</Text>
                     </View>
                   ))}
                 </View>
-                {/* Self assessment full content */}
+                {/* Self assessment */}
                 {profile.selfAssessment ? (
-                  <View style={{ backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 8, padding: 10 }}>
-                    <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.9)', lineHeight: 18 }}>
-                      🗣️ {profile.selfAssessment}
+                  <View style={{ backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 8, padding: 10 }}>
+                    <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.9)', lineHeight: 20 }}>
+                      {profile.selfAssessment}
                     </Text>
                     {(profile.bodyTags as string[] ?? []).length > 0 && (
-                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
+                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginTop: 8 }}>
                         {(profile.bodyTags as string[]).map((tag: string) => (
-                          <View key={tag} style={{ backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
-                            <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>#{tag}</Text>
+                          <View key={tag} style={{ backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3 }}>
+                            <Text style={{ fontSize: FONT_BODY(), color: '#fff' }}>{tag}</Text>
                           </View>
                         ))}
                       </View>
                     )}
                   </View>
                 ) : (
-                  <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>
+                  <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.7)', textAlign: 'center' }}>
                     {T('bodySelfAssessmentPlaceholder')}
                   </Text>
                 )}
@@ -698,7 +714,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
             <View style={styles.bannerHeader}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                 <Text style={{ fontSize: 20 }}>⚖️</Text>
-                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyWeightTrend')}</Text>
+                <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: '#fff' }}>{T('bodyWeightTrend')}</Text>
               </View>
               <TouchableOpacity
                 onPress={() => setShowWeightRecord(true)}
@@ -716,9 +732,10 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                         {`${weightTrend.current} kg`}
                       </Text>
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                        <TrendingUp size={16} color={weightTrend.diff > 0 ? '#fbbf24' : '#34d399'} style={weightTrend.diff < 0 ? { transform: [{ scaleY: -1 }] } : undefined} />
+                        <TrendingUp size={18} color={weightTrend.diff > 0 ? '#fbbf24' : '#34d399'} style={weightTrend.diff < 0 ? { transform: [{ scaleY: -1 }] } : undefined} />
                         <Text style={{ fontSize: FONT_BODY(), color: weightTrend.diff > 0 ? '#fbbf24' : '#34d399', fontWeight: '600' }}>
                           {`${weightTrend.diff > 0 ? '+' : ''}${weightTrend.diff.toFixed(1)} kg`}
+                        </Text>
                         </Text>
                       </View>
                     </View>
