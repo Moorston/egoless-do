@@ -1611,3 +1611,40 @@ StatsScreen计划任务进度改为countItemDoneDays动态计算；补全planIte
 ### Next Steps
 
 - None - task complete
+
+
+## Session 46: Banner 完成状态修复 — flowState 重置/awarenessCompleted 缺失
+
+**Date**: 2026-07-23
+**Task**: Banner 完成状态修复 — flowState 重置/awarenessCompleted 缺失
+**Branch**: `master`
+
+### Summary
+
+1. restore BodyDashboard.tsx, remove broken BannerCarousel extraction\n2. add useBodyFlowState import\n3. compact plan name into Step 1 line\n4. remove resetFlow from CheckinSuccessCard onFinish\n5. fix saveAwareness missing awarenessCompleted:true
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `3e6c0271` | (see git log) |
+| `83cb1492` | (see git log) |
+| `8d29196b` | (see git log) |
+| `c2f5cc59` | (see git log) |
+| `8ef5377e` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
