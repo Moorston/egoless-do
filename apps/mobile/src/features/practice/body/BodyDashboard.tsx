@@ -9,6 +9,7 @@ import { useShallowStore } from '../../../store/useAppStore';
 
 import CelebrationOverlay from './screens/CelebrationOverlay';
 import { useTodayPlan } from './hooks/useTodayPlan';
+import { useBodyFlowState } from './hooks/useBodyFlowState';
 import AssessmentModal from './modals/AssessmentModal';
 import BodyCheckinModal from './modals/BodyCheckinModal';
 import GoalEditModal from './modals/GoalEditModal';
