@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 44
+- **Total Sessions**: 45
 - **Last Active**: 2026-07-23
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~1577 | Active |
+| `journal-1.md` | ~1613 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 45 | 2026-07-23 | BodyDashboard 重构 — 提取样式/Banner/Modal 组件 | `9b37999f`, `af558067`, `cf391f1b`, `a68bf88b` | `master` |
 | 44 | 2026-07-23 | BodyFlow 完成状态 UI 重构 — 统计横幅/动作列表/数据流 | `ead2611a` | `master` |
 | 43 | 2026-07-23 | 组合训练修复 — nameZh 回退/持久化/锻炼记录/安全区域/语法修复 | `3cf08b83`, `d6ed3c5f`, `ba26e574`, `cb559f3c`, `f3d3a4f1`, `72bacb38`, `38a379fa`, `c7ef36ab`, `a6f4d22a`, `b81e9c46`, `b07ea979`, `af4a46bf` | `master` |
 | 42 | 2026-07-22 | BodyFlow 全面优化 — 进度集成/退出机制/动作显示/硬编码清理 | `082418c7`, `bcad35a2`, `6715cd09`, `a8d3afd4`, `2fe13797`, `9411d5d5`, `1eef0346`, `930fcee3`, `a314006e`, `0230a406`, `d8d86ac4` | `master` |

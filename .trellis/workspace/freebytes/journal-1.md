@@ -1575,3 +1575,39 @@ StatsScreen计划任务进度改为countItemDoneDays动态计算；补全planIte
 ### Next Steps
 
 - None - task complete
+
+
+## Session 45: BodyDashboard 重构 — 提取样式/Banner/Modal 组件
+
+**Date**: 2026-07-23
+**Task**: BodyDashboard 重构 — 提取样式/Banner/Modal 组件
+**Branch**: `master`
+
+### Summary
+
+1. 提取 BodyDashboardStyles.ts（184行）\n2. 提取 BodyDashboardBanners.tsx（580行）- 4个Banner轮播\n3. 提取 BodyDashboardModals.tsx（152行）- 11个Modal\n4. BodyDashboard.tsx 从1333行缩减到617行（-54%）\n5. 修复测试中 loadSecureTokens 引用
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `9b37999f` | (see git log) |
+| `af558067` | (see git log) |
+| `cf391f1b` | (see git log) |
+| `a68bf88b` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
