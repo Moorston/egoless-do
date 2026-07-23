@@ -68,7 +68,7 @@ export default function TransitionScreen({
   const isAllDone = !nextExercise;
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom, backgroundColor: TH.bg }]}>
+    <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom, backgroundColor: `${TH.primary}15` }]}>
       {/* Current exercise summary */}
       <View style={[styles.summaryCard, { backgroundColor: TH.card }]}>
         <View style={styles.summaryHeader}>
