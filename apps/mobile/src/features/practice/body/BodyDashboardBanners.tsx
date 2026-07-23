@@ -49,7 +49,7 @@ export default function BannerCarousel({
   latestCheckin, checkinHistory, weightTrend,
 }: BannerCarouselProps) {
   return (
-    <>
+    <View>
       {/* ── Banner Carousel ── */}
   <View style={styles.bannerContainer}>
     <ScrollView
@@ -564,5 +564,6 @@ export default function BannerCarousel({
     </Text>
   </View>
     </>
+    </View>
   );
 }
