@@ -425,34 +425,79 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                     })}
                   </View>
                 )}
-                {/* ── Flow progress (when BodyFlow is active) ── */}
+                {/* ── Flow progress (方案 B: 垂直卡片式步骤条) ── */}
                 {hasActiveFlow && !allFlowDone && (
-                  <View style={{ backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 8, padding: 10, marginBottom: 10 }}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                      {[
-                        { key: 'exercise', icon: '🏃', done: !!flowState.exerciseCompleted },
-                        { key: 'breathing', icon: '🌬️', done: !!flowState.breathingCompleted },
-                        { key: 'checkin', icon: '🧠', done: !!flowState.awarenessCompleted },
-                      ].map((s, i) => (
-                        <React.Fragment key={s.key}>
-                          <View style={{ alignItems: 'center', gap: 4 }}>
-                            <View style={{
-                              width: 32, height: 32, borderRadius: 16,
-                              backgroundColor: s.done ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.15)',
-                              alignItems: 'center', justifyContent: 'center',
-                            }}>
-                              <Text style={{ fontSize: 16 }}>{s.done ? '✓' : s.icon}</Text>
-                            </View>
+                  <View style={{ backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: 12, padding: 12, marginBottom: 10, gap: 8 }}>
+                    {/* Step 1: 调身练习 */}
+                    <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
+                      <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: flowState.exerciseCompleted ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.15)', alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ fontSize: 14 }}>{flowState.exerciseCompleted ? '✅' : '🏃'}</Text>
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyFlowPractice')}</Text>
+                          {flowState.exerciseCompleted && (
+                            <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>
+                              {flowState.totalDurationSec ? `${Math.floor(flowState.totalDurationSec / 60)}:${String(flowState.totalDurationSec % 60).padStart(2, '0')}` : T('bodyFlowDone')}
+                            </Text>
+                          )}
+                        </View>
+                        {flowState.exerciseCompleted && todayExercises && todayExercises.length > 0 && (
+                          <View style={{ marginTop: 4 }}>
+                            {todayExercises.slice(0, 3).map((e, i) => (
+                              <Text key={i} style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', lineHeight: 16 }}>
+                                {e.icon} {e.nameZh}{e.defaultSets && e.defaultReps ? `  ${e.defaultSets}×${e.defaultReps}` : ''}
+                              </Text>
+                            ))}
                           </View>
-                          {i < 2 && <View style={{ width: 20, height: 2, backgroundColor: 'rgba(255,255,255,0.2)' }} />}
-                        </React.Fragment>
-                      ))}
+                        )}
+                        {flowState.exerciseCompleted && flowState.practiceExercises && flowState.practiceExercises.length > 0 && (
+                          <View style={{ marginTop: 4 }}>
+                            {flowState.practiceExercises.slice(0, 3).map((ex, i) => (
+                              <Text key={i} style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', lineHeight: 16 }}>
+                                {ex.icon} {ex.nameZh || ex.sportKey}
+                              </Text>
+                            ))}
+                          </View>
+                        )}
+                      </View>
                     </View>
-                    <Text style={{ fontSize: FONT_SMALL(), color: '#fff', textAlign: 'center', marginTop: 6, opacity: 0.8 }}>
-                      {!flowState.exerciseCompleted ? T('bodyFlowPractice')
-                        : !flowState.breathingCompleted ? T('bodyFlowBreathing')
-                        : T('bodyFlowAwareness')}
-                    </Text>
+                    {/* Separator */}
+                    <View style={{ height: 1, backgroundColor: 'rgba(255,255,255,0.15)', marginLeft: 38 }} />
+                    {/* Step 2: 调息安神 */}
+                    <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
+                      <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: flowState.breathingCompleted ? 'rgba(255,255,255,0.3)' : !flowState.exerciseCompleted ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.15)', alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ fontSize: 14 }}>{flowState.breathingCompleted ? '✅' : flowState.exerciseCompleted ? '🌬️' : '○'}</Text>
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: flowState.exerciseCompleted ? '#fff' : 'rgba(255,255,255,0.5)' }}>{T('bodyFlowBreathing')}</Text>
+                        {flowState.breathingCompleted && (
+                          <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>
+                            {Math.floor((flowState.breathingDurationMs ?? 0) / 60000)}{T('bodyMin')}
+                          </Text>
+                        )}
+                        {!flowState.breathingCompleted && flowState.exerciseCompleted && (
+                          <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.6)', marginTop: 2 }}>{T('bodyFlowBreathingHint')}</Text>
+                        )}
+                      </View>
+                    </View>
+                    {/* Separator */}
+                    <View style={{ height: 1, backgroundColor: 'rgba(255,255,255,0.15)', marginLeft: 38 }} />
+                    {/* Step 3: 记录感受 */}
+                    <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
+                      <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: flowState.awarenessCompleted ? 'rgba(255,255,255,0.3)' : flowState.breathingCompleted ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.08)', alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ fontSize: 14 }}>{flowState.awarenessCompleted ? '✅' : flowState.breathingCompleted ? '🧠' : '○'}</Text>
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: flowState.breathingCompleted ? '#fff' : 'rgba(255,255,255,0.5)' }}>{T('bodyFlowAwareness')}</Text>
+                        {flowState.awarenessCompleted && (
+                          <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>{T('bodyFlowDone')}</Text>
+                        )}
+                        {!flowState.awarenessCompleted && flowState.breathingCompleted && (
+                          <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.6)', marginTop: 2 }}>{T('bodyFlowAwarenessHint')}</Text>
+                        )}
+                      </View>
+                    </View>
                   </View>
                 )}
                 {hasActiveFlow && allFlowDone && (
@@ -488,7 +533,11 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                     style={styles.bannerButton}
                   >
                     <Play size={20} color="#f59e0b" />
-                    <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#f59e0b' }}>{T('bodyContinue')}</Text>
+                    <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#f59e0b' }}>
+                      {!flowState.exerciseCompleted ? T('bodyStartToday')
+                        : !flowState.breathingCompleted ? T('bodyFlowStartBreathing')
+                        : T('bodyFlowAwareness')}
+                    </Text>
                   </TouchableOpacity>
                 ) : null}
               </>

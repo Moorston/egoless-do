@@ -1049,7 +1049,7 @@ export const zhHant: I18nKeys = {
   planTemplateFatLoss:'四週減脂衝刺', planTemplateFatLossDesc:'ACSM減脂運動指南推薦：每週≥250分鐘中高強度運動。結合HIIT+力量訓練最大化EPOC效應。',
   planTemplateBodyweight:'居家自重三練', planTemplateBodyweightDesc:'無需器械的全身訓練方案，適合初學者/居家。每週3次，每次30分鐘，ACSM推薦最低訓練頻率。',
   bodyPlanOverwriteTitle:'確認覆蓋', bodyPlanOverwriteMsg:'當前編輯內容將被模板資料覆蓋，確認繼續？', bodyPlanOverwriteConfirm:'覆蓋',
-  bodyExecNotSet:'設定訓練方案後自動追蹤', bodyCompletedDays:'完成天數', bodyKcal:'消耗 kcal',
+  bodyExecNotSet:'設定訓練方案後自動追蹤', bodyCompletedDays:'完成天數', bodyCompleted:'完成', bodyKcal:'消耗 kcal',
   bodyDayComplete:'完成', bodyDayIncomplete:'未完成', bodyDayPending:'待執行', bodyDayRest:'休息',
   exerciseStatsActiveStreak: '{activeDays}天運動 · 連續{streakDays}天 🔥',
   exerciseTimes: '次',

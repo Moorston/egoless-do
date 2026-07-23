@@ -1,6 +1,6 @@
-# 调身练习完成状态 UI 详细分析
+# 调身练习完成状态 UI 详细分析与设计方案
 
-## 当前渲染逻辑
+## 当前渲染逻辑（原始代码）
 
 ```
 practiceCompleted = true
@@ -14,156 +14,130 @@ practiceCompleted = true
       └── 显示列表：N 个动作 + icon + nameZh + duration
 ```
 
-## 三种可能的状态
+## 工作区已实现
 
-### 状态 A：单运动模式 + planExercises 有数据
-```
-✅ 运动已完成
-┌─────────────────────┐
-│ 🏋️ 杠铃卧推   4×10  │
-│ 🏋️ 哑铃飞鸟   3×12  │
-│ 🏋️ 绳索下压   3×15  │
-└─────────────────────┘
-```
-**目前 OK**：显示动作列表，`nameZh` 有回退逻辑
+- 统计横幅：总时长 / 动作数 / 消耗 kcal
+- 优先级链：comboExercises > practiceExercises > planExercises（互斥）
+- 视觉增强：FONT_BODY、分隔线、图标 20px
+- SportPage 单运动写入 practiceExercises
+- FlowState + BodySlice 新增 practiceExercises 字段
 
-### 状态 B：单运动模式 + planExercises 为空
-```
-✅ 运动已完成
-```
-**问题**：无动作列表，只有 ✅ 图标和文字，用户看不到任何练习记录
+## 本次设计新增（2026-07-23 探索决定）
 
-### 状态 C：组合模式
-```
-✅ 运动已完成
-┌─────────────────────┐
-│ 🏋️ 杠铃卧推   4×10  │  ← planExercises（可能为空）
-└─────────────────────┘
-┌─────────────────────┐
-│ 3 个动作             │
-│ 🦵 杠铃深蹲   3:00  │  ← comboExercises（实际完成的）
-│ 🏋️ 杠铃卧推   2:30  │
-│ 🧱 平板支撑   1:00  │
-└─────────────────────┘
-```
-**问题 1**：`planExercises` 和 `comboExercises` 可能同时显示，内容重复
-**问题 2**：组合模式总时长和总消耗仅显示在 `comboExercises` 列表中
+### 完成状态最终布局
 
-## 数据来源分析
+#### 单运动模式
 
-### planExercises 的来源
 ```
-currentPlan?.exercises ?? []
-  │
-  ├── trainingPlanTask.task.exercises      ← 训练计划任务中的动作
-  │     └── 可能为空（任务只定义了 sportKey，无具体动作）
-  │
-  └── buildExerciseLibrary().filter(category)  ← 从动作库按分类查找
-        └── 可能为空（分类在库中无匹配动作）
+┌─ Card ─────────────────────────────────────────────┐
+│  ✅ 已完成  📋 腿部训练              ← 同一行左对齐  │
+│                                                      │
+│  ┌── 统计横幅 ──────────────────────────────────┐   │
+│  │  总时长: 15:30   动作: 3个   消耗: 180kcal    │   │
+│  └───────────────────────────────────────────────┘   │
+│                                                      │
+│  ┌── 动作列表 ──────────────────────────────────┐   │
+│  │  🦵 杠铃深蹲   4×10  80kg           ✓ 完成   │   │
+│  │  🏋️ 硬拉       3×8   100kg          ✓ 完成   │   │
+│  │  🦵 腿举       3×12  60kg           ✓ 完成   │   │
+│  └───────────────────────────────────────────────┘   │
+│                                                      │
+│  [▶ 呼吸练习 →]                                      │
+└──────────────────────────────────────────────────────┘
 ```
 
-### comboExercises 的来源
+#### 组合模式
+
 ```
-flowState.comboExercises
-  │
-  └── SportPage 的 goToNextExercise() 中创建
-        └── ExerciseResult { sportKey, icon, nameZh, durationSec, calories, reps }
-              └── nameZh 来自：currentEx.nameZh || library.find(category) || effectiveSportName
-```
-
-### 关键问题：planExercises 可能为空
-
-当 `trainingPlanTask.task.exercises` 为空且 `buildExerciseLibrary()` 没有找到对应分类的动作时，`planExercises` 为 `[]`，完成状态只显示 ✅。
-
-## 具体 UI 缺陷
-
-### 1. 完成状态缺少标题
-当前只有 "运动已完成" 文字，没有显示练习的分类名称（如"腿部训练"）。用户需要回想刚才做了什么。
-
-### 2. 无统计数据
-- 不显示总时长（`flowState.practiceDurationSec` 或 `flowState.totalDurationSec`）
-- 不显示总消耗卡路里（`flowState.totalCalories`）
-- 不显示动作数量
-
-### 3. 动作列表视觉层次弱
-- 使用 `FONT_SMALL()`（最小字号），可读性差
-- 无背景色区分（`${TH.border}30` 透明度低）
-- 行间距小（`paddingVertical: 3`），密集
-
-### 4. 组合模式列表重复
-- `planExercises` 显示的是"计划中的动作"
-- `comboExercises` 显示的是"实际完成的动作"
-- 两者都可能显示，造成重复
-
-### 5. 完成状态与未完成状态的视觉差异
-- 未完成状态：Card 有完整布局（计划名称 + 动作列表 + 按钮）
-- 完成状态：Card 内容简化，只显示 ✅ + 列表
-- 过渡突兀，用户可能感觉"少了什么"
-
-## 数据流问题
-
-### 单运动模式缺少"实际完成"记录
-```
-SportPage 完成单运动
-  → setBodyFlowState({ exerciseCompleted: true, practiceCompleted: true, practiceDurationSec })
-  → flowState 中没有记录"具体做了什么动作"
-  → 完成状态只能从 planExercises 读取"计划中的动作"
-  → 如果 planExercises 为空，则无动作可显示
+┌─ Card ─────────────────────────────────────────────┐
+│  ✅ 已完成  🔥 腿+核心 + 肩+手臂（3 个动作）        │
+│                                                      │
+│  ┌── 统计横幅 ──────────────────────────────────┐   │
+│  │  总时长: 15:30   动作: 3个   消耗: 180kcal    │   │
+│  └───────────────────────────────────────────────┘   │
+│                                                      │
+│  ┌── 动作列表 ──────────────────────────────────┐   │
+│  │  🦵 杠铃深蹲   3:00                ✓ 完成   │   │
+│  │  🧱 平板支撑   1:00                ✓ 完成   │   │
+│  │  🏋️ 哑铃推举   2:30                ✓ 完成   │   │
+│  └───────────────────────────────────────────────┘   │
+│                                                      │
+│  [▶ 呼吸练习 →]                                      │
+└──────────────────────────────────────────────────────┘
 ```
 
-### 组合模式 nameZh 传递链
-```
-BodyFlow 传递 exercises (ExerciseDef[])
-  → SportPage 接收 route.params.exercises
-  → goToNextExercise() 创建 ExerciseResult
-  → ExerciseResult.nameZh 来自 currentComboExercise?.nameZh
-  → 如果 nameZh 为空 → 回退到 library.find(category)?.nameZh
-  → 如果仍为空 → 回退到 effectiveSportName (category key)
-  → 存入 flowState.comboExercises
-  → BodyFlow 完成状态读取 flowState.comboExercises
-  → 显示 ex.nameZh || ex.sportKey
-```
+### 设计决定
 
-## 建议的 UI 改进
+| 决定 | 结论 |
+|------|------|
+| 重量显示 | 保留（与未完成状态一致） |
+| ✓ 完成标记 | 必须添加，每行末尾 |
+| 组合模式列表格式 | 用 duration（与单运动的 sets×reps 不同，不同格式不需要统一） |
+| 组合标题 | 去重后的分类名，用 ` + ` 连接，追加 `（N 个动作）` |
+| visualTitle | 持久化到 flowState.practiceTitle |
+| 头部行 | ✅ 已完成 + 标题，同一行左对齐 |
+| 组合标题文案 | `✓ 完成`（含文字） |
 
-### 改进 1：增加统计横幅
-```
-✅ 运动已完成
-┌─────────────────────────────┐
-│   总时长     动作数    消耗   │
-│   15:30      5个      180kcal │
-└─────────────────────────────┘
-```
+### practiceTitle 数据流
 
-### 改进 2：增加分类标题
 ```
-✅ 运动已完成
-📋 腿部训练（5 个动作）
-┌─────────────────────┐
-│ 🦵 杠铃深蹲   4×10  │
-│ 🏋️ 硬拉      3×8   │
-│ 🦵 腿举      3×12  │
-└─────────────────────┘
+SportPage 完成时
+  ├─ 单运动：practiceTitle = effectiveSportLabel
+  │   (currentEx.nameZh → library.find → effectiveSportName)
+  └─ 组合：  practiceTitle = computeComboTitle() + "（N 个动作）"
+       ↓
+setBodyFlowState({ practiceTitle, ... })
+  → adapter.persistSettings('bodyFlowState', ...)
+  → SQLite app_state 表（SETTINGS_KEYS 中已有 'bodyFlowState'）
+
+BodyFlow 渲染时
+  ├─ flowState?.practiceTitle 存在 → 直接使用
+  └─ 不存在 → 防御性降级（从 store 推导）
 ```
 
-### 改进 3：组合模式只显示 comboExercises
-当 `flowState.isCombo` 为 true 时，隐藏 `planExercises` 列表，只显示 `comboExercises`。
+### 持久化确认
 
-### 改进 4：单运动模式增加 practiceExercises
-在 `flowState` 中增加 `practiceExercises` 字段，记录本次练习的具体动作列表。
+`loadSettingsPatch()` 不做 Zod schema 验证，直接 JSON.parse 后放入 store。`practiceExercises` 和 `practiceTitle` 都会天然被持久化和恢复，**不需要额外改动**。
 
-### 改进 5：视觉增强
-- 增大字号（`FONT_BODY` 替代 `FONT_SMALL`）
-- 增加背景色对比度
-- 增加行间距
+### 组合标题计算逻辑
 
-## 当前代码中的具体问题位置
+```typescript
+function computeComboTitle(exercises: ExerciseResult[], T: TFunction): string {
+  const seen = new Set<string>();
+  const names: string[] = [];
 
-| 行 | 问题 | 代码 |
-|----|------|------|
-| 275-288 | `planExercises.length > 0` 条件可能不满足 | `{planExercises.length > 0 && (...)}` |
-| 290-305 | `comboExercises` 与 `planExercises` 可能同时显示 | 无互斥条件 |
-| 281 | `nameZh` 回退链过长 | `ex.nameZh \|\| library.find(...)?.nameZh \|\| ex.sportKey` |
-| 273 | 无统计数据 | 只有 `bodyFlowPracticeDone` 文字 |
-| 280 | 字号过小 | `FONT_SMALL()` |
-| 282 | 组数次数格式与未完成状态不一致 | 完成状态：`FONT_SMALL()`；未完成：内联文字 |
+  for (const ex of exercises) {
+    const cat = ex.category || ex.sportKey;
+    if (!cat || seen.has(cat)) continue;
+    seen.add(cat);
+
+    const category = EXERCISE_CATEGORIES.find(c => c.key === cat);
+    if (category) {
+      names.push(T(category.i18nKey)); // "腿+核心", "胸+三头"...
+    } else {
+      names.push(cat);
+    }
+  }
+
+  return `${names.join(' + ')}（${exercises.length} ${T('bodyPlanUnitExercise')}）`;
+}
+```
+
+### 改动清单
+
+| # | 文件 | 改动 |
+|---|------|------|
+| 1 | `packages/core/src/store/createBodySlice.ts` | `BodyFlowPersistedState` 加 `practiceTitle?: string` |
+| 2 | `apps/mobile/src/features/exercise/SportPage.tsx` | 单运动完成时写入 `practiceTitle`；组合模式写入 `computeComboTitle(...)` |
+| 3 | `apps/mobile/src/features/practice/body/BodyFlow.tsx` | 完成状态渲染：头部行（✅ + 标题）、动作列表保留重量、每行末尾加 `✓ 完成` |
+| — | `packages/core/src/i18n/*` | 无需改动（已是短名） |
+
+### 验收标准
+
+1. 单运动完成状态显示 ✅ 已完成 + 标题（同一行）
+2. 单运动动作列表保留重量显示（80kg, 100kg...）
+3. 每个动作末尾显示 ✓ 完成
+4. 组合模式标题为去重分类名 + "（N 个动作）"
+5. 组合模式动作列表显示 duration（非 sets×reps）
+6. practiceTitle 持久化，关闭 app 后重新打开仍显示
+7. 无 practiceTitle 时防御性降级，不崩溃

@@ -1,1 +1,4 @@
-{"_example": "Fill with {\"file\": \"<path>\", \"reason\": \"<why>\"}. Put spec/research files only — no code paths. Run `python .trellis/scripts/get_context.py --mode packages` to list available specs. Delete this line once real entries are added."}
+{"file": ".trellis/spec/mobile/frontend/directory-structure.md", "reason": "确认 BodyFlow.tsx 和 SportPage.tsx 的目录位置"}
+{"file": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md", "reason": "确认代码规范：i18n key 命名规则、类型定义位置"}
+{"file": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md", "reason": "确认数据流约束：store 字段新增需遵循 BodyFlowPersistedState 接口"}
+{"file": ".trellis/spec/config/frontend/index.md", "reason": "确认 i18n 配置和翻译文件位置"}

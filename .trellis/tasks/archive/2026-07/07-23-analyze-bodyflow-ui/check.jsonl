@@ -1,1 +1,3 @@
-{"_example": "Fill with {\"file\": \"<path>\", \"reason\": \"<why>\"}. Put spec/research files only — no code paths. Run `python .trellis/scripts/get_context.py --mode packages` to list available specs. Delete this line once real entries are added."}
+{"file": ".trellis/spec/mobile/frontend/quality-guidelines.md", "reason": "确认 UI 渲染规范：完成状态布局、视觉一致性检查"}
+{"file": ".trellis/spec/mobile/frontend/state-management.md", "reason": "确认 flowState 持久化路径：persistSettings 的正确使用方式"}
+{"file": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md", "reason": "确认类型安全：新增字段需有类型定义，避免 any"}

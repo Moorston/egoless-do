@@ -1054,7 +1054,7 @@ export const en: I18nKeys = {
   planTemplateFatLoss:'4-Week Fat Loss', planTemplateFatLossDesc:'ACSM guidelines: ≥250 min/week moderate-high intensity exercise. HIIT + strength training for maximum EPOC effect.',
   planTemplateBodyweight:'Home Bodyweight (3x/Week)', planTemplateBodyweightDesc:'No equipment needed. Full body 3x/week, ~30 min per session. ACSM minimum recommended frequency.',
   bodyPlanOverwriteTitle:'Overwrite?', bodyPlanOverwriteMsg:'This will overwrite your current edits with template data. Continue?', bodyPlanOverwriteConfirm:'Overwrite',
-  bodyExecNotSet:'Set a plan to track execution', bodyCompletedDays:'Completed', bodyKcal:'Kcal burned',
+  bodyExecNotSet:'Set a plan to track execution', bodyCompletedDays:'Completed', bodyCompleted:'Done', bodyKcal:'Kcal burned',
   bodyDayComplete:'Done', bodyDayIncomplete:'Missed', bodyDayPending:'Pending', bodyDayRest:'Rest',
   exerciseStatsActiveStreak: '{activeDays}d exercised · {streakDays}d streak 🔥',
   exerciseTimes: 'times',

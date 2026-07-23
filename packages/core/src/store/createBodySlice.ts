@@ -25,6 +25,7 @@ export interface BodyFlowPersistedState {
   totalDurationSec?: number;
   totalCalories?: number;
   isCombo?: boolean;
+  practiceTitle?: string;
   practiceExercises?: { sportKey: string; icon: string; nameZh: string; durationSec: number; calories: number; reps: number; timestamp: number }[];
   comboExercises?: { sportKey: string; icon: string; nameZh: string; durationSec: number; calories: number; reps: number; timestamp: number }[];
 }

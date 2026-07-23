@@ -266,9 +266,15 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
             </View>
             {practiceCompleted ? (
               <View>
-                <View style={{ alignItems: 'center', paddingVertical: 12 }}>
-                  <CheckCircle2 size={48} color="#10b981" />
-                  <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#10b981', marginTop: 8 }}>{T('bodyFlowPracticeDone')}</Text>
+                {/* 头部行：✅ 已完成 + 标题 */}
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12 }}>
+                  <CheckCircle2 size={24} color="#10b981" />
+                  <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#10b981' }}>
+                    {T('bodyFlowPracticeDone')}
+                  </Text>
+                  <Text style={{ fontSize: FONT_BODY(), color: TH.text, flex: 1 }} numberOfLines={1}>
+                    {flowState?.practiceTitle ?? currentPlan?.name ?? ''}
+                  </Text>
                 </View>
                 {/* 统计横幅 */}
                 {(flowState?.totalDurationSec || flowState?.totalCalories) && (
@@ -296,23 +302,25 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
                 {/* 动作列表 — 优先显示实际完成的练习 */}
                 {flowState?.comboExercises && flowState.comboExercises.length > 0 ? (
                   <View style={{ backgroundColor: `${TH.border}30`, borderRadius: 12, padding: 12, marginTop: 8 }}>
-                    {flowState.comboExercises.map((ex, i) => (
-                      <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4, borderBottomWidth: i < flowState.comboExercises.length - 1 ? 1 : 0, borderBottomColor: `${TH.border}50` }}>
+                    {flowState.comboExercises!.map((ex, i) => (
+                      <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4, borderBottomWidth: i < flowState.comboExercises!.length - 1 ? 1 : 0, borderBottomColor: `${TH.border}50` }}>
                         <Text style={{ fontSize: 20 }}>{ex.icon}</Text>
                         <Text style={{ fontSize: FONT_BODY(), color: TH.text, flex: 1 }} numberOfLines={1}>{ex.nameZh || ex.sportKey}</Text>
                         <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
                           {Math.floor(ex.durationSec / 60)}:{(ex.durationSec % 60).toString().padStart(2, '0')}
                         </Text>
+                        <Text style={{ fontSize: FONT_SMALL(), color: '#10b981' }}>✓ {T('bodyCompleted')}</Text>
                       </View>
                     ))}
                   </View>
                 ) : flowState?.practiceExercises && flowState.practiceExercises.length > 0 ? (
                   <View style={{ backgroundColor: `${TH.border}30`, borderRadius: 12, padding: 12, marginTop: 8 }}>
-                    {flowState.practiceExercises.map((ex, i) => (
-                      <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4, borderBottomWidth: i < flowState.practiceExercises.length - 1 ? 1 : 0, borderBottomColor: `${TH.border}50` }}>
+                    {flowState.practiceExercises!.map((ex, i) => (
+                      <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4, borderBottomWidth: i < flowState.practiceExercises!.length - 1 ? 1 : 0, borderBottomColor: `${TH.border}50` }}>
                         <Text style={{ fontSize: 20 }}>{ex.icon}</Text>
                         <Text style={{ fontSize: FONT_BODY(), color: TH.text, flex: 1 }} numberOfLines={1}>{ex.nameZh || ex.sportKey}</Text>
                         {ex.reps > 0 && <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{ex.reps} reps</Text>}
+                        <Text style={{ fontSize: FONT_SMALL(), color: '#10b981' }}>✓ {T('bodyCompleted')}</Text>
                       </View>
                     ))}
                   </View>
@@ -321,10 +329,14 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
                     {planExercises.map((ex, i) => (
                       <View key={ex.id || i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4, borderBottomWidth: i < planExercises.length - 1 ? 1 : 0, borderBottomColor: `${TH.border}50` }}>
                         <Text style={{ fontSize: 20 }}>{ex.icon}</Text>
-                        <Text style={{ fontSize: FONT_BODY(), color: TH.text, flex: 1 }} numberOfLines={1}>{ex.nameZh || exerciseLibrary.find(lib => lib.category === ex.category || lib.sportKey === ex.sportKey)?.nameZh || ex.sportKey}</Text>
+                        <Text style={{ fontSize: FONT_BODY(), color: TH.text, flex: 1 }} numberOfLines={1}>{ex.nameZh || exerciseLibrary.find(lib => lib.category === ex.category)?.nameZh || (() => { const cat = EXERCISE_CATEGORIES.find(c => c.key === ex.category); return cat ? T(cat.i18nKey) : ex.category; })()}</Text>
                         {ex.defaultSets && ex.defaultReps && (
                           <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{ex.defaultSets}×{ex.defaultReps}</Text>
                         )}
+                        {ex.defaultWeight && (
+                          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{ex.defaultWeight}kg</Text>
+                        )}
+                        <Text style={{ fontSize: FONT_SMALL(), color: '#10b981' }}>✓ {T('bodyCompleted')}</Text>
                       </View>
                     ))}
                   </View>

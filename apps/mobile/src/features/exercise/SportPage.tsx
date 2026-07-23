@@ -1,4 +1,4 @@
-import { SPORT_BG_COLORS, COLORS, getSportType, TARGET_PRESETS, estimateCalories, MET_MAP, getSportExperienceType, createLogger, EXERCISE_CATEGORIES, COMBO_WORKOUT_SPORT_KEY, buildExerciseLibrary, type ExerciseDef } from '@egoless-do/core';
+import { SPORT_BG_COLORS, COLORS, getSportType, TARGET_PRESETS, estimateCalories, MET_MAP, getSportExperienceType, createLogger, EXERCISE_CATEGORIES, COMBO_WORKOUT_SPORT_KEY, buildExerciseLibrary, type I18nKeys, type ExerciseDef } from '@egoless-do/core';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useKeepAwake } from 'expo-keep-awake';
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
@@ -19,6 +19,19 @@ import type { ExerciseResult } from './components/ComboProgressHeader';
 const log = createLogger('Exercise');
 import type { RootStackParamList } from '../../navigation/hooks';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
+
+// 组合标题计算：从 ExerciseDef 提取去重分类名
+function computeComboTitle(exercises: ExerciseDef[], count: number, T: (key: keyof I18nKeys, params?: Record<string, string | number>) => string): string {
+  const seen = new Set<string>();
+  const names: string[] = [];
+  for (const ex of exercises) {
+    if (!ex.category || seen.has(ex.category)) continue;
+    seen.add(ex.category);
+    const category = EXERCISE_CATEGORIES.find(c => c.key === ex.category);
+    names.push(category ? T(category.i18nKey) : ex.category);
+  }
+  return `${names.join(' + ')}（${count} ${T('bodyPlanUnitExercise')}）`;
+}
 
 // 实时会话
 import { ActiveInsightBar } from '../global-pulse/components/ActiveInsightBar';
@@ -465,6 +478,7 @@ export default function SportPage() {
         isCombo: true,
         totalDurationSec: comboState.current.totalDurationSec,
         totalCalories: comboState.current.totalCalories,
+        practiceTitle: computeComboTitle(comboExercises ?? [], comboState.current.results.length, T),
         comboExercises: comboState.current.results,
         startedAt: Date.now(),
         updatedAt: Date.now(),
@@ -535,6 +549,7 @@ export default function SportPage() {
           practiceDurationSec: timer.sec,
           totalDurationSec: timer.sec,
           totalCalories: calories,
+          practiceTitle: effectiveSportLabel,
           practiceExercises: [{
             sportKey: sportName,
             icon: icon,

@@ -899,7 +899,7 @@ export interface I18nKeys {
   planTemplateFatLoss: string; planTemplateFatLossDesc: string;
   planTemplateBodyweight: string; planTemplateBodyweightDesc: string;
   bodyPlanOverwriteTitle: string; bodyPlanOverwriteMsg: string; bodyPlanOverwriteConfirm: string;
-  bodyExecNotSet: string; bodyCompletedDays: string; bodyKcal: string;
+  bodyExecNotSet: string; bodyCompletedDays: string; bodyCompleted: string; bodyKcal: string;
   bodyDayComplete: string; bodyDayIncomplete: string; bodyDayPending: string; bodyDayRest: string;
   exerciseStatsActiveStreak: string;
   bodyEnergyLow: string; bodyEnergyHigh: string;
