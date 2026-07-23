@@ -446,7 +446,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                           <View style={{ marginTop: 4 }}>
                             {todayExercises.slice(0, 3).map((e, i) => (
                               <Text key={i} style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', lineHeight: 16 }}>
-                                {e.icon} {e.nameZh}{e.defaultSets && e.defaultReps ? `  ${e.defaultSets}×${e.defaultReps}` : ''}
+                                {e.icon} {e.nameZh}{e.defaultSets && e.defaultReps ? `  ${e.defaultSets}组×${e.defaultReps}次` : ''}
                               </Text>
                             ))}
                           </View>
