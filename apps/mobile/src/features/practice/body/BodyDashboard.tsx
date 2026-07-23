@@ -623,7 +623,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
             <View style={styles.bannerHeader}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                 <Text style={{ fontSize: 20 }}>🧘</Text>
-                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyAwareness')}</Text>
+                <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: '#fff' }}>{T('bodyAwareness')}</Text>
               </View>
               <TouchableOpacity
                 onPress={() => nav.navigate('BodyCheckinHistory' as never)}
@@ -644,8 +644,8 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                         { label: T('bodySleepQuality'), value: latestCheckin.sleep, color: '#60a5fa' },
                       ].map((item, i) => (
                         <View key={i} style={{ flex: 1, alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 10, paddingVertical: 10, paddingHorizontal: 4 }}>
-                          <Text style={{ fontSize: FONT_SUB(), fontWeight: '800', color: item.color }}>{String(item.value)}</Text>
-                          <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)', marginTop: 2, textAlign: 'center' }}>{item.label}</Text>
+                          <Text style={{ fontSize: FONT_BODY(), fontWeight: '800', color: item.color }}>{String(item.value)}</Text>
+                          <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,0.7)', marginTop: 2, textAlign: 'center' }}>{item.label}</Text>
                         </View>
                       ))}
                     </View>
@@ -654,7 +654,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginBottom: 8 }}>
                         {latestCheckin.tags.map((tag: string) => (
                           <View key={tag} style={{ backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3 }}>
-                            <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>{tag}</Text>
+                            <Text style={{ fontSize: FONT_BODY(), color: '#fff' }}>{tag}</Text>
                           </View>
                         ))}
                       </View>
@@ -667,7 +667,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                         </Text>
                       </View>
                     )}
-                    <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.5)', textAlign: 'right' }}>
+                    <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,0.5)', textAlign: 'right' }}>
                       {latestCheckin.date}
                     </Text>
                   </>
@@ -677,7 +677,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                     <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.8)', textAlign: 'center' }}>
                       {T('bodyAwarenessNoData')}
                     </Text>
-                    <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.5)', marginTop: 4, textAlign: 'center' }}>
+                    <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,0.5)', marginTop: 4, textAlign: 'center' }}>
                       {T('bodyFlowAwarenessHint')}
                     </Text>
                   </View>
