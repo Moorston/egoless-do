@@ -26,8 +26,8 @@ export default function AssessmentModal({ visible, TH, T, profile, onClose, onSa
     <Modal visible={visible} transparent animationType="slide">
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'flex-end' }}>
-          <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-            <View style={{ backgroundColor: TH.cardSolid, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, maxHeight: '85%' }}>
+          <View style={{ backgroundColor: TH.cardSolid, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, maxHeight: '85%' }}>
+            <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                 <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('bodySelfAssessment')}</Text>
                 <TouchableOpacity onPress={onClose}><X size={24} color={TH.sub} /></TouchableOpacity>
@@ -61,8 +61,8 @@ export default function AssessmentModal({ visible, TH, T, profile, onClose, onSa
                 <OutlineButton label={T('bodyCancel')} onPress={onClose} style={{ flex: 1 }} />
                 <PrimaryButton label={T('bodySave')} onPress={() => { onSave(text, tags); onClose(); }} color="#10b981" style={{ flex: 1 }} />
               </View>
-            </View>
-          </ScrollView>
+            </ScrollView>
+          </View>
         </View>
       </TouchableWithoutFeedback>
     </Modal>
