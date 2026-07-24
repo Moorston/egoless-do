@@ -262,6 +262,45 @@ describe('SyncApplyService', () => {
       expect(result.habits).toBeUndefined();
     });
 
+    it('respects clockOffset sign when comparing local vs server updated_at', async () => {
+      // clockOffset = serverTime - Date.now(). Device clock is behind server by 100ms.
+      // local.updated_at (1000, device frame) == 1100 in server frame.
+      // server updated_at = 1050. Local edit (1100) is NEWER than server (1050)
+      // → server record must be skipped (local wins).
+      // Regression guard for the sign-flip bug where `local - clockOffset` was used.
+      mockDb.getAllAsync.mockResolvedValueOnce([
+        { id: 'h1', updated_at: 1000, deleted: 0 },
+      ]);
+      mockDb.runAsync.mockResolvedValue({ changes: 1 });
+
+      const data = {
+        habit: [{ id: 'h1', title: 'Server Title', updated_at: 1050 }],
+      };
+
+      const result = await svc.applyServerChanges(data, undefined, undefined, 100);
+
+      // Local is newer in the server frame → server record skipped
+      expect(result.habits).toBeUndefined();
+    });
+
+    it('applies server record when local is genuinely older under clock skew', async () => {
+      // clockOffset = 100. local.updated_at = 900 (device) → 1000 (server frame).
+      // server updated_at = 1050. Server is newer → apply server record.
+      mockDb.getAllAsync.mockResolvedValueOnce([
+        { id: 'h1', updated_at: 900, deleted: 0 },
+      ]);
+      mockDb.runAsync.mockResolvedValue({ changes: 1 });
+
+      const data = {
+        habit: [{ id: 'h1', title: 'Server Title', updated_at: 1050 }],
+      };
+
+      const result = await svc.applyServerChanges(data, undefined, undefined, 100);
+
+      expect(result.habits).toBeDefined();
+      expect((result.habits as unknown[]).length).toBe(1);
+    });
+
     it('skips records present in deletedIds (recycle bin)', async () => {
       mockDb.runAsync.mockResolvedValue({ changes: 1 });
 

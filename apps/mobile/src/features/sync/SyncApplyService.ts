@@ -277,7 +277,11 @@ export class SyncApplyService {
 
       const local = localMeta.get(id);
       const serverUpdated = (pbField(r, 'updated_at') ?? pbField(r, 'updatedAt') ?? 0) as number;
-      const adjustedLocalUpdated = local ? local.updated_at - clockOffset : 0;
+      // clockOffset = serverTime - Date.now() (see SyncTimestampManager).
+      // local.updated_at is in the device's clock frame; convert it to the
+      // server's frame before comparing against serverUpdated. Adding clockOffset
+      // (NOT subtracting) is correct: serverTime = localTime + clockOffset.
+      const adjustedLocalUpdated = local ? local.updated_at + clockOffset : 0;
       if (local && (local.deleted === 1 || adjustedLocalUpdated > serverUpdated)) continue;
 
       const cols = Object.keys(row);
