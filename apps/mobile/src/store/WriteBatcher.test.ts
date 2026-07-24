@@ -126,8 +126,10 @@ describe('WriteBatcher', () => {
 
   it('fallback path retries per-item when batch flush fails', async () => {
     mockRunAsync
-      .mockRejectedValueOnce(new Error('transaction failed'))
-      .mockResolvedValue({ changes: 1 });
+      .mockResolvedValueOnce({ changes: 1 })                       // BEGIN
+      .mockRejectedValueOnce(new Error('transaction failed'))     // data UPDATE fails
+      .mockResolvedValueOnce({ changes: 1 })                       // ROLLBACK
+      .mockResolvedValue({ changes: 1 });                          // fallback UPDATE + sync_queue
 
     batcher.write('habit', 'h1', { name: 'test' });
     await batcher.flushNow();
@@ -144,6 +146,28 @@ describe('WriteBatcher', () => {
     expect(onFlushed).toHaveBeenCalled();
   });
 
+  it('rolls back data write when sync_queue enqueue fails (no data-without-queue)', async () => {
+    mockRunAsync
+      .mockResolvedValueOnce({ changes: 1 })                       // BEGIN
+      .mockResolvedValueOnce({ changes: 0 })                       // UPDATE (0 changes)
+      .mockResolvedValueOnce({})                                   // INSERT into data table
+      .mockRejectedValueOnce(new Error('queue full'))              // sync_queue enqueue fails
+      .mockResolvedValue({ changes: 1 });                          // ROLLBACK + fallback writes
+
+    batcher.write('habit', 'h1', { name: 'x' });
+    await batcher.flushNow();
+
+    // A failed enqueue must trigger ROLLBACK so the data write isn't left
+    // committed without a corresponding sync_queue entry.
+    expect(mockRunAsync).toHaveBeenCalledWith('ROLLBACK');
+    // Fallback eventually persists both the data row and the sync_queue entry.
+    expect(mockRunAsync).toHaveBeenCalledWith(
+      expect.stringContaining('INSERT OR REPLACE INTO sync_queue'),
+      expect.arrayContaining(['habit', 'h1', 'upsert']),
+    );
+    expect(batcher.pendingCount).toBe(0);
+  });
+
   it('_onPersistError callback fires when fallback write fails', async () => {
     vi.useFakeTimers();
     vi.setSystemTime(42);
@@ -152,9 +176,10 @@ describe('WriteBatcher', () => {
     const b = new WriteBatcher(100, onFlushed, onPersistError as unknown as (error: Error, entity: string, id: string) => void);
 
     mockRunAsync
-      .mockRejectedValueOnce(new Error('transaction failed'))
-      .mockResolvedValueOnce({ changes: 1 })
-      .mockRejectedValueOnce(new Error('disk full'));
+      .mockResolvedValueOnce({ changes: 1 })                       // BEGIN
+      .mockRejectedValueOnce(new Error('transaction failed'))      // data UPDATE fails
+      .mockResolvedValueOnce({ changes: 1 })                       // ROLLBACK
+      .mockRejectedValueOnce(new Error('disk full'));              // fallback UPDATE fails
 
     b.write('habit', 'h1', { name: 'test' });
     await b.flushNow();
@@ -195,10 +220,11 @@ describe('WriteBatcher', () => {
 
   it('UNIQUE constraint triggers UPDATE retry after failed INSERT', async () => {
     mockRunAsync
-      .mockResolvedValueOnce({ changes: 0 })
-      .mockRejectedValueOnce(new Error('UNIQUE constraint failed'))
-      .mockResolvedValueOnce({ changes: 1 })
-      .mockResolvedValue({ changes: 1 });
+      .mockResolvedValueOnce({ changes: 1 })                       // BEGIN
+      .mockResolvedValueOnce({ changes: 0 })                       // UPDATE (0 changes → INSERT)
+      .mockRejectedValueOnce(new Error('UNIQUE constraint failed')) // INSERT rejected
+      .mockResolvedValueOnce({ changes: 1 })                       // UPDATE retry
+      .mockResolvedValue({ changes: 1 });                          // COMMIT + sync_queue
 
     batcher.write('habit', 'h1', { name: 'dup' });
     await batcher.flushNow();
@@ -211,8 +237,9 @@ describe('WriteBatcher', () => {
     vi.setSystemTime(999);
 
     mockRunAsync
-      .mockRejectedValueOnce(new Error('batch fail'))
-      .mockResolvedValue({ changes: 1 });
+      .mockResolvedValueOnce({ changes: 1 })                   // BEGIN
+      .mockRejectedValueOnce(new Error('batch fail'))          // DELETE UPDATE fails
+      .mockResolvedValue({ changes: 1 });                      // ROLLBACK + fallback writes
 
     batcher.markDeleted('habit', 'h1', 500);
     await batcher.flushNow();
@@ -228,10 +255,13 @@ describe('WriteBatcher', () => {
     vi.useFakeTimers();
 
     mockRunAsync
-      .mockRejectedValueOnce(new Error('batch fail'))
-      .mockResolvedValueOnce({ changes: 1 })   // h1 fallback UPDATE ok
-      .mockResolvedValueOnce({ changes: 1 })   // h1 sync_queue ok
-      .mockRejectedValueOnce(new Error('h2 UPSERT fail'));
+      .mockResolvedValueOnce({ changes: 1 })                   // BEGIN
+      .mockRejectedValueOnce(new Error('batch fail'))          // h1 data UPDATE fails
+      .mockResolvedValueOnce({ changes: 1 })                   // ROLLBACK
+      .mockResolvedValueOnce({ changes: 1 })                   // fallback h1 UPDATE ok
+      .mockResolvedValueOnce({ changes: 1 })                   // fallback h1 sync_queue ok
+      .mockRejectedValueOnce(new Error('h2 UPSERT fail'))      // fallback h2 data UPDATE fails
+      .mockResolvedValue({ changes: 1 });                      // retry flush writes
 
     batcher.write('habit', 'h1', { name: 'ok' });
     batcher.write('habit', 'h2', { name: 'fail' });

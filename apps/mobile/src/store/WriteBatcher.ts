@@ -96,53 +96,64 @@ export class WriteBatcher {
           const config = ENTITY_TABLE_MAP[w.entity];
           if (!config) { log.warn(`[Flush] No config for entity=${w.entity} id=${w.id}`); continue; }
 
-          if (w.operation === 'delete') {
-            const nowVal = typeof w.data.updatedAt === 'number' ? w.data.updatedAt : Date.now();
-            await db.runAsync(
-              `UPDATE ${config.table} SET deleted = 1, synced = 0, updated_at = ? WHERE ${config.pk} = ?`,
-              [nowVal, w.id],
-            );
-          } else {
-            const row = config.toRow(w.data);
-            const columns = Object.keys(row);
-            const values = Object.values(row) as (string | number | null)[];
-            const setClause = columns.map(c => `${c}=?`).join(',');
-            const placeholders = columns.map(() => '?').join(',');
+          // Each record's data-write and its sync_queue enqueue must be atomic:
+          // a crash between them would otherwise leave local data persisted but
+          // never queued for sync. Wrap both in a single SQLite transaction.
+          await db.runAsync('BEGIN TRANSACTION');
+          try {
+            if (w.operation === 'delete') {
+              const nowVal = typeof w.data.updatedAt === 'number' ? w.data.updatedAt : Date.now();
+              await db.runAsync(
+                `UPDATE ${config.table} SET deleted = 1, synced = 0, updated_at = ? WHERE ${config.pk} = ?`,
+                [nowVal, w.id],
+              );
+            } else {
+              const row = config.toRow(w.data);
+              const columns = Object.keys(row);
+              const values = Object.values(row) as (string | number | null)[];
+              const setClause = columns.map(c => `${c}=?`).join(',');
+              const placeholders = columns.map(() => '?').join(',');
 
-            log.debug(`[Flush] UPDATE ${config.table} SET ${setClause},synced=0 WHERE ${config.pk}=${w.id}`);
-            const result = await db.runAsync(
-              `UPDATE ${config.table} SET ${setClause},synced=0 WHERE ${config.pk}=?`,
-              [...values, w.id],
-            );
-            log.debug(`[Flush] UPDATE result: changes=${result.changes}`);
-            if (result.changes === 0) {
-              log.debug(`[Flush] INSERT ${config.table} (${columns.join(',')},deleted,synced) VALUES (${placeholders},0,0)`);
-              try {
-                await db.runAsync(
-                  `INSERT INTO ${config.table} (${columns.join(',')},deleted,synced) VALUES (${placeholders},0,0)`,
-                  values,
-                );
-              } catch (insertErr: unknown) {
-                const msg = insertErr instanceof Error ? insertErr.message : String(insertErr);
-                if (msg.includes('UNIQUE constraint')) {
+              log.debug(`[Flush] UPDATE ${config.table} SET ${setClause},synced=0 WHERE ${config.pk}=${w.id}`);
+              const result = await db.runAsync(
+                `UPDATE ${config.table} SET ${setClause},synced=0 WHERE ${config.pk}=?`,
+                [...values, w.id],
+              );
+              log.debug(`[Flush] UPDATE result: changes=${result.changes}`);
+              if (result.changes === 0) {
+                log.debug(`[Flush] INSERT ${config.table} (${columns.join(',')},deleted,synced) VALUES (${placeholders},0,0)`);
+                try {
                   await db.runAsync(
-                    `UPDATE ${config.table} SET ${setClause},synced=0 WHERE ${config.pk}=?`,
-                    [...values, w.id],
+                    `INSERT INTO ${config.table} (${columns.join(',')},deleted,synced) VALUES (${placeholders},0,0)`,
+                    values,
                   );
-                } else throw insertErr;
+                } catch (insertErr: unknown) {
+                  const msg = insertErr instanceof Error ? insertErr.message : String(insertErr);
+                  if (msg.includes('UNIQUE constraint')) {
+                    await db.runAsync(
+                      `UPDATE ${config.table} SET ${setClause},synced=0 WHERE ${config.pk}=?`,
+                      [...values, w.id],
+                    );
+                  } else throw insertErr;
+                }
               }
             }
+
+            // Each record's data write + sync_queue enqueue in one transaction
+            const payload = w.changedFields
+              ? { ...w.data, _changedFields: w.changedFields }
+              : w.data;
+
+            await db.runAsync(
+              SYNC_QUEUE_UPSERT_SQL,
+              [w.entity, w.id, w.operation, JSON.stringify(payload), Date.now(), 'pending'],
+            );
+
+            await db.runAsync('COMMIT');
+          } catch (txErr) {
+            await db.runAsync('ROLLBACK');
+            throw txErr; // abort batch → outer fallback path retries per-item
           }
-
-          // Enqueue sync using UPSERT (no transaction needed)
-          const payload = w.changedFields
-            ? { ...w.data, _changedFields: w.changedFields }
-            : w.data;
-
-          await db.runAsync(
-            SYNC_QUEUE_UPSERT_SQL,
-            [w.entity, w.id, w.operation, JSON.stringify(payload), Date.now(), 'pending'],
-          );
         }
       });
       // Only remove entries that weren't merged with new data during flush
