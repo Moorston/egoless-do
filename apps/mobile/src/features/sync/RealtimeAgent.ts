@@ -24,6 +24,7 @@ export interface RealtimeChangeEvent {
 export class RealtimeAgent {
   private _es: EventSource | null = null;
   private _pbUrl = '';
+  private _token = '';
   private _tokenProvider: (() => string) | null = null;
   private _clientId = '';
   private _reconnectTimer: ReturnType<typeof setTimeout> | null = null;
@@ -40,10 +41,13 @@ export class RealtimeAgent {
   setStatusHandler(fn: (connected: boolean) => void) { this._onStatus = fn; }
   setKickedOutHandler(fn: () => void) { this._onKickedOut = fn; }
 
-  /** Get current token — either the stored value or from the provider */
-  private _getToken(): string {
-    const provided = this._tokenProvider?.();
-    return provided || this._tokenProvider?.() || '';
+  /**
+   * Get current token — prefer the stored token (set via connect/updateToken),
+   * fall back to the live provider. Returns null when no token is available so
+   * callers can bail instead of sending an empty-string Authorization header.
+   */
+  private _getToken(): string | null {
+    return this._token || this._tokenProvider?.() || null;
   }
 
   connect(pbUrl: string, token: string, tokenProvider?: () => string) {
