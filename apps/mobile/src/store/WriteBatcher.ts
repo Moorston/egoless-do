@@ -72,7 +72,8 @@ export class WriteBatcher {
       clearTimeout(this._flushTimer);
       this._flushTimer = null;
     }
-    if (this._pendingWrites.size === 0) return false;
+    if (this._pendingWrites.size === 0) { log.debug("flushNow: no pending writes"); return false; }
+    log.debug(`flushNow: flushing ${this._pendingWrites.size} pending writes`);
     await this._flush();
     return true;
   }
@@ -86,6 +87,7 @@ export class WriteBatcher {
     const writes = keys.map(k => snapRefs.get(k)!);
     if (writes.length === 0) return;
     log.debug(`Flushing ${writes.length} writes: ${writes.map(w => w.entity).join(', ')}`);
+      for (const w of writes) { log.debug(`  flush entity=${w.entity} id=${w.id} op=${w.operation}`); }
 
     const db = await openDatabase();
     try {
