@@ -65,6 +65,9 @@ export function createMantraSlice(
       };
       set((s: MantraSlice) => ({ mantraDefs: [...(s.mantraDefs ?? []), entry] }));
       adapter.persistChange('mantraDef', entry.id, entry).catch(e => log.error(e));
+      log.info('MantraDef persisted: ' + entry.id + ' name=' + entry.name);
+      // Force immediate flush to prevent data loss on app kill
+      if (adapter.flushNow) adapter.flushNow().catch(e => log.error(e));
       onSync?.();
       return entry;
     },

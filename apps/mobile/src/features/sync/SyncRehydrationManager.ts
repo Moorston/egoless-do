@@ -120,6 +120,7 @@ export class SyncRehydrationManager {
     }
 
     // Merge results into patch
+    log.debug('[rehydrateFromDb] mantraDefs rows: ' + (patch.mantraDefs ? (patch.mantraDefs as unknown[]).length : 0));
     for (const result of results) {
       if (!result) continue;
       if ('data' in result && result.data) {
