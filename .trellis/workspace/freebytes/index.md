@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 49
+- **Total Sessions**: 50
 - **Last Active**: 2026-07-24
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~1755 | Active |
+| `journal-1.md` | ~1789 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 50 | 2026-07-24 | 调身页 Banner 优化 — 标题字号统一/体重趋势/身体档案/今日方案 | `4549b7be`, `935d45ab` | `master` |
 | 49 | 2026-07-24 | AssessmentModal 修复 — 底部空白/顶部对齐 | `43e470d5`, `b0dd3e2b` | `master` |
 | 48 | 2026-07-24 | 修行模块优化 — 键盘处理/布施Tab/语法修复 | `a3814e32`, `fd64e2d8`, `9baf56fa`, `fca5c8d5` | `master` |
 | 47 | 2026-07-23 | 身体觉知 Banner 优化 — 布局/字体/字号 | `578d8827`, `2cd2c416`, `954d5d2b` | `master` |

@@ -1753,3 +1753,37 @@ StatsScreen计划任务进度改为countItemDoneDays动态计算；补全planIte
 ### Next Steps
 
 - None - task complete
+
+
+## Session 50: 调身页 Banner 优化 — 标题字号统一/体重趋势/身体档案/今日方案
+
+**Date**: 2026-07-24
+**Task**: 调身页 Banner 优化 — 标题字号统一/体重趋势/身体档案/今日方案
+**Branch**: `master`
+
+### Summary
+
+1. 身体档案 Banner 标题字号改为 FONT_TITLE\n2. 今日方案 Banner 标题字号改为 FONT_TITLE\n3. 所有4个Banner标题统一为18px\n\n注: ShareCard.tsx 有一个未提交的无关更改(expo-file-system/legacy)
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4549b7be` | (see git log) |
+| `935d45ab` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
