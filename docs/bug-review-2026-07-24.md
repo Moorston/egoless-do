@@ -14,8 +14,8 @@
 | H-2 | 🔴 HIGH | Sync | 时钟偏移符号反了 → 本地新编辑被服务器旧数据静默覆盖 | `apps/mobile/src/features/sync/SyncApplyService.ts:280` |
 | H-3 | 🟠 MED↓ | Auth | 过期 access token 在 sync/push 前不自动刷新 → 同步停滞（非强制重登） | `SyncEngine.ts:624,340,275,625-632` |
 | M-1 | 🟠 MED | Sync | WriteBatcher._flush 数据写 + 队列入队非事务（无 BEGIN TRANSACTION）✅ 已修复 | `apps/mobile/src/store/WriteBatcher.ts:94-146` |
-| M-2 | 🟠 MED | Sync | payload 缺 `updatedAt` 时 `serverUpdated` 默认 0 → 本地更新被永久跳过 | `SyncApplyService.ts:279` |
-| M-3 | 🟠 MED | Sync | INSERT 仅用 payload 列，新增 NOT NULL 无默认列抛错被静默丢弃 | `WriteBatcher.ts:118-133` |
+| M-2 | 🟠 MED | Sync | payload 缺 `updatedAt` 时 `serverUpdated` 默认 0 → 本地更新被永久跳过 ✅ 已修复 | `SyncApplyService.ts:279` |
+| M-3 | 🟠 MED | Sync | INSERT 仅用 payload 列，新增 NOT NULL 无默认列抛错被静默丢弃 ✅ 已修复 | `WriteBatcher.ts:118-133` |
 | M-4 | 🟠 MED | Auth | 登出是 best-effort，服务端 refresh token 可能仍有效 | `createAuthSlice.ts:112-118`、`logout.ts:61` |
 | M-5 | 🟠 MED | Auth | 微信登录缺口（缺 email / 不吊销旧 refresh / 绕过 lockout+MFA 一致性） | `wechat.ts:78-87` |
 | L-1 | 🟡 LOW | Auth | RealtimeAgent 把 null token 伪装成 `''` ✅ 已修复 | `RealtimeAgent.ts:46` |
@@ -190,7 +190,13 @@ H-1 / H-2 / H-3 三项均已实现并验证。验证基线：core tsc 通过、c
 - `apps/mobile/src/features/sync/RealtimeAgent.ts`：补回缺失的 `private _token` 字段（原 `_getToken` 调用 `this._tokenProvider?.()` 两次却从不读 `this._token`，`updateToken()` 后 SSE 持续用旧 token）；`_getToken(): string | null` 改为优先返回 `this._token` 再回退 provider，无 token 时返回 `null`（不再伪装成 `''`）；`_open` 本就对空 token bail，现语义更明确，避免登出/重连竞态发出空 `Authorization`。
 - 新增 `RealtimeAgent.test.ts` 4 条：stored token 优先于 provider 闭包 / 无 token 返回 null / 无 token 时 `_open` 不建 EventSource / 有 token 时建 EventSource 并带 `Bearer`。
 
+### M-2 修复（payload 缺 updatedAt 的冲突判定）
+- `apps/mobile/src/features/sync/SyncApplyService.ts`：`serverUpdated` 原 `(pbField(r,'updated_at') ?? pbField(r,'updatedAt') ?? 0)` 在缺字段时取 `0`，导致 `adjustedLocalUpdated > 0` 几乎恒成立、本地（可能已陈旧）永远胜出。改为：缺 `updated_at`/`updatedAt` 时 `serverUpdated = null`，仅当 `serverUpdated != null && adjustedLocalUpdated > serverUpdated` 才判定「服务器更旧、跳过」。缺时间戳时改判为「无法证明本地更新」→ 应用服务器记录（pull 以服务端为准）。新增单测：缺时间戳应用 / 显式旧时间戳仍跳过本地。
+
+### M-3 修复（NOT NULL 插入失败不再拖垮整批）
+- `apps/mobile/src/store/WriteBatcher.ts`：`_flush` 的 per-record 事务中，若 INSERT 抛 `NOT NULL constraint`（payload 不带某 NOT NULL 列），原逻辑 `throw` → 整批中止 → 10 次重试后丢弃**全部** pending 写。现改为：捕获 `NOT NULL constraint`，经 `_onPersistError` 上报该条记录、将其 key 加入 `failedKeys` 并在 flush 后单独移除（不再重试），其余记录继续正常提交。瞬态错误（磁盘 I/O、写入中途崩溃）仍 `throw` 进入既有的 per-item fallback，M-1 的「数据-入队」原子性保证不变。新增单测：单条 NOT NULL 失败被上报并丢弃，同批其他记录仍落库、`onFlushed` 正常触发。
+
 ### 未处理项（建议下一轮）
-- M-2~M-5 仍在原状（L-1、M-1 已于本轮修复）。
+- M-4、M-5 仍在原状（L-1、M-1、M-2、M-3 已于本轮修复）。
 - H-1 的微信客户端：移动端尚未接线微信登录，故仅做了服务端 step-up；未来接线时客户端直接复用 `MFARequiredError` + `verifyMfaLogin` 即可。
 - `/mfa/verify-login` 暴力破解防护（失败计数/锁定）与密码登录的 account-lockout 对等——当前与既有 `/mfa/verify` 一致（均无限流），建议单独加固。
