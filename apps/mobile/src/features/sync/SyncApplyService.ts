@@ -276,13 +276,20 @@ export class SyncApplyService {
       if (!row) continue;
 
       const local = localMeta.get(id);
-      const serverUpdated = (pbField(r, 'updated_at') ?? pbField(r, 'updatedAt') ?? 0) as number;
+      const rawServerUpdated = pbField(r, 'updated_at') ?? pbField(r, 'updatedAt');
+      const serverUpdated = rawServerUpdated != null ? Number(rawServerUpdated) : null;
       // clockOffset = serverTime - Date.now() (see SyncTimestampManager).
       // local.updated_at is in the device's clock frame; convert it to the
       // server's frame before comparing against serverUpdated. Adding clockOffset
       // (NOT subtracting) is correct: serverTime = localTime + clockOffset.
       const adjustedLocalUpdated = local ? local.updated_at + clockOffset : 0;
-      if (local && (local.deleted === 1 || adjustedLocalUpdated > serverUpdated)) continue;
+      // When the server omits updated_at we cannot prove the local copy is newer,
+      // so prefer the server record (server is authoritative on pull) instead of
+      // silently keeping a possibly-stale local row. Previously a missing
+      // timestamp defaulted to 0, making `adjustedLocalUpdated > serverUpdated`
+      // almost always true and discarding the server's data (see M-2).
+      const serverIsOlder = serverUpdated != null && adjustedLocalUpdated > serverUpdated;
+      if (local && (local.deleted === 1 || serverIsOlder)) continue;
 
       const cols = Object.keys(row);
       const vals = Object.values(row) as (string | number | null)[];

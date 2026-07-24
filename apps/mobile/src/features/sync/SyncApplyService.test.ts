@@ -301,6 +301,27 @@ describe('SyncApplyService', () => {
       expect((result.habits as unknown[]).length).toBe(1);
     });
 
+    it('applies server record when payload omits updated_at (server authoritative on missing timestamp)', async () => {
+      // Local row exists and is "newer" by wall-clock, but the server payload has
+      // no updated_at. We must NOT silently keep the stale local row — apply the
+      // server data instead (M-2). Previously the missing timestamp defaulted to 0,
+      // so adjustedLocalUpdated (9999) > 0 always held and the server record was
+      // discarded.
+      mockDb.getAllAsync.mockResolvedValueOnce([
+        { id: 'h1', updated_at: 9999, deleted: 0 },
+      ]);
+      mockDb.runAsync.mockResolvedValue({ changes: 1 });
+
+      const data = {
+        habit: [{ id: 'h1', title: 'Server Title (no timestamp)' }],
+      };
+
+      const result = await svc.applyServerChanges(data);
+
+      expect(result.habits).toBeDefined();
+      expect((result.habits as unknown[]).length).toBe(1);
+    });
+
     it('skips records present in deletedIds (recycle bin)', async () => {
       mockDb.runAsync.mockResolvedValue({ changes: 1 });
 
