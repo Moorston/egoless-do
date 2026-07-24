@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION, createLogger } from '@egoless-do/core';
+import { FONT_TITLE, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION, createLogger, MFARequiredError } from '@egoless-do/core';
 import { Image } from 'expo-image';
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
@@ -23,6 +23,18 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [emailError, setEmailError] = useState('');
+  // MFA step-up state
+  const [mfaToken, setMfaToken] = useState<string | null>(null);
+  const [mfaCode, setMfaCode] = useState('');
+  const [mfaError, setMfaError] = useState('');
+
+  const navigateAfterLogin = () => {
+    nav.reset({ index: 0, routes: [{ name: 'MainTabs' }] });
+    const token = useAppStore.getState().auth.token;
+    if (token) {
+      setTimeout(() => { registerExpoPushToken(token); }, 0);
+    }
+  };
 
   const handleEmailBlur = () => {
     if (email && !EMAIL_REGEX.test(email)) {
@@ -52,20 +64,83 @@ export default function LoginScreen() {
     }
     try {
       await login(email.trim(), password);
-
-      // Navigate immediately — don't wait for push token registration
-      nav.reset({ index: 0, routes: [{ name: 'MainTabs' }] });
-
-      // Register push token in background (non-blocking)
-      const token = useAppStore.getState().auth.token;
-      if (token) {
-        setTimeout(() => { registerExpoPushToken(token); }, 0);
-      }
+      navigateAfterLogin();
     } catch (e: unknown) {
+      // MFA step-up: server requires a second factor. Switch to MFA input view.
+      if (e instanceof MFARequiredError) {
+        setMfaToken(e.mfaToken);
+        setMfaCode('');
+        setMfaError('');
+        return;
+      }
       // Don't reveal whether email exists — show generic error
       setError(T('authLoginFailed'));
     }
   };
+
+  const handleVerifyMfa = async () => {
+    setMfaError('');
+    if (!mfaToken || !mfaCode.trim()) {
+      setMfaError(T('authMfaCodePlaceholder'));
+      return;
+    }
+    try {
+      await useAppStore.getState().verifyMfaLogin(mfaToken, mfaCode.trim());
+      navigateAfterLogin();
+    } catch {
+      setMfaError(T('authMfaInvalid'));
+    }
+  };
+
+  // ── MFA challenge view ──
+  if (mfaToken) {
+    return (
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1, backgroundColor: TH.bg }}
+      >
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={{ paddingHorizontal: 24 }}>
+            <Text style={{ color: TH.primary, fontSize: FONT_TITLE(), textAlign: 'center', marginBottom: 24 }}>
+              {T('authMfaRequired')}
+            </Text>
+            <Card style={{ marginBottom: 16 }}>
+              <ThemedInput
+                value={mfaCode}
+                onChangeText={setMfaCode}
+                placeholder={T('authMfaCodePlaceholder')}
+                keyboardType="number-pad"
+                maxLength={6}
+                style={{ marginBottom: mfaError ? 4 : 0, ...(mfaError ? { borderColor: '#ef4444' } : {}) }}
+              />
+            </Card>
+            {mfaError !== '' && (
+              <Text style={{ color: '#ff6b6b', fontSize: FONT_ERROR(), textAlign: 'center', marginBottom: 12 }}>
+                {mfaError}
+              </Text>
+            )}
+            <PrimaryButton
+              label={isLoading ? T('authMfaVerifying') : T('authMfaVerifyBtn')}
+              onPress={handleVerifyMfa}
+              style={{ marginBottom: 16, opacity: isLoading ? 0.7 : 1 }}
+            />
+            <TouchableOpacity
+              onPress={() => { setMfaToken(null); setMfaCode(''); setMfaError(''); }}
+              activeOpacity={0.7}
+            >
+              <Text style={{ color: TH.sub, fontSize: FONT_SUB(), textAlign: 'center' }}>
+                {T('authForgotPassword')}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    );
+  }
 
   return (
     <KeyboardAvoidingView

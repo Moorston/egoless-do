@@ -6,6 +6,8 @@ import { errMessage, errStatus } from '../errors.js';
 import { getClientIp, wechatRateLimit } from '../rate-limit.js';
 import { sanitizeError } from '../auth-middleware.js';
 import { generateRefreshToken, createRefreshToken } from '../token-refresh-rotation.js';
+import { isMFAEnabled } from '../mfa.js';
+import { createMFAChallenge } from '../mfaChallenge.js';
 
 const TOKEN_EXPIRES_IN = 7 * 24 * 60 * 60 * 1000; // 7 days
 const REFRESH_TOKEN_EXPIRES_IN = 30 * 24 * 60 * 60 * 1000; // 30 days
@@ -73,6 +75,24 @@ app.post('/wechat', async (c) => {
     }
 
     const authData = await pb.collection('users').authWithPassword(user.email, password);
+
+    // ── MFA step-up: 微信登录同样不能绕过 MFA ──
+    const mfaEnabled = await isMFAEnabled(user.id);
+    if (mfaEnabled) {
+      const challengeUser = {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        avatar: user.avatar,
+        createdAt: user.created ? new Date(user.created).getTime() : Date.now(),
+      };
+      const challenge = createMFAChallenge(user.id, authData.token, challengeUser);
+      return c.json({
+        mfaRequired: true,
+        mfaToken: challenge.mfaToken,
+        expiresAt: challenge.expiresAt,
+      });
+    }
 
     // 生成独立的 refresh token
     const refreshToken = generateRefreshToken();

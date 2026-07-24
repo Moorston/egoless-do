@@ -102,6 +102,7 @@ export interface SleepSlice {
 export interface AuthSlice {
   auth: AuthState;
   login: (email: string, password: string) => Promise<void>;
+  verifyMfaLogin: (mfaToken: string, code: string) => Promise<void>;
   register: (email: string, password: string, name: string, code: string) => Promise<void>;
   logout: () => Promise<void>;
   clearDataAndLogout: () => Promise<void>;

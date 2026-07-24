@@ -941,6 +941,11 @@ export const zhHant: I18nKeys = {
   // Auth
   authEmailPlaceholder:'郵箱', authPasswordPlaceholder:'密碼', authLoginBtn:'登入',
   authLoginLoading:'登入中...', authForgotPassword:'忘記密碼？',
+  authMfaRequired:'需要兩步驗證',
+  authMfaCodePlaceholder:'請輸入6位驗證碼',
+  authMfaVerifyBtn:'驗證',
+  authMfaInvalid:'驗證碼無效',
+  authMfaVerifying:'驗證中...',
   authEmailNotRegistered:'該郵箱未註冊，請先註冊', authFillEmailPassword:'請填寫郵箱和密碼',
   authNicknamePlaceholder:'暱稱',
   authVerifyCodePlaceholder:'郵箱驗證碼', authConfirmPasswordPlaceholder:'確認密碼',

@@ -5,6 +5,8 @@ import { getClientIp, loginRateLimit, emailRateLimit } from '../rate-limit.js';
 import { isAccountLocked, recordLoginAttempt, getRemainingLockoutTime } from '../account-lockout.js';
 import { logAuditEvent, AuditEvent, extractClientInfo } from '../audit-log.js';
 import { generateRefreshToken, createRefreshToken } from '../token-refresh-rotation.js';
+import { isMFAEnabled } from '../mfa.js';
+import { createMFAChallenge } from '../mfaChallenge.js';
 
 const TOKEN_EXPIRES_IN = 7 * 24 * 60 * 60 * 1000; // 7 days
 const REFRESH_TOKEN_EXPIRES_IN = 30 * 24 * 60 * 60 * 1000; // 30 days
@@ -81,6 +83,34 @@ app.post('/login', async (c) => {
       user_agent: clientInfo.userAgent,
       success: true,
     });
+
+    // ── MFA step-up: 如果用户启用了 MFA，不直接返回 access token ──
+    // 改为签发短时效挑战令牌，客户端需调用 /api/auth/mfa/verify-login
+    // 完成 TOTP/备用码验证后才能换取 access token。防止密码登录绕过 MFA。
+    const mfaEnabled = await isMFAEnabled(authData.record.id);
+    if (mfaEnabled) {
+      const user = {
+        id: authData.record.id,
+        email: authData.record.email,
+        name: authData.record.name,
+        createdAt: authData.record.created ? new Date(authData.record.created).getTime() : Date.now(),
+      };
+      const challenge = createMFAChallenge(authData.record.id, authData.token, user);
+      await logAuditEvent({
+        event: AuditEvent.LOGIN_SUCCESS,
+        user_id: authData.record.id,
+        email: email.toLowerCase(),
+        ip: clientInfo.ip,
+        user_agent: clientInfo.userAgent,
+        success: true,
+        details: { action: 'mfa_challenge_issued' },
+      });
+      return c.json({
+        mfaRequired: true,
+        mfaToken: challenge.mfaToken,
+        expiresAt: challenge.expiresAt,
+      });
+    }
 
     // 生成独立的 refresh token
     const refreshToken = generateRefreshToken();

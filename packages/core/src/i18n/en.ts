@@ -941,6 +941,11 @@ export const en: I18nKeys = {
   // Auth
   authEmailPlaceholder:'Email', authPasswordPlaceholder:'Password', authLoginBtn:'Log In',
   authLoginLoading:'Logging in...', authForgotPassword:'Forgot password?',
+  authMfaRequired:'Two-factor authentication required',
+  authMfaCodePlaceholder:'Enter 6-digit code',
+  authMfaVerifyBtn:'Verify',
+  authMfaInvalid:'Invalid authentication code',
+  authMfaVerifying:'Verifying...',
   authEmailNotRegistered:'Email not registered, please sign up first',
   authFillEmailPassword:'Please enter email and password',
   authNicknamePlaceholder:'Nickname', authVerifyCodePlaceholder:'Verification code',

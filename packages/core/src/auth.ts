@@ -19,6 +19,33 @@ export interface RefreshResponse {
   expiresAt: number;
 }
 
+/**
+ * Returned by apiLogin/apiWechatLogin when the user has MFA enabled.
+ * The client must NOT treat this as a completed login — it should prompt
+ * for the MFA code and call apiVerifyMFALogin(mfaToken, code) to obtain
+ * the real access token.
+ */
+export interface MFARequiredResponse {
+  mfaRequired: true;
+  mfaToken: string;
+  expiresAt: number;
+}
+
+export type LoginResult = AuthResponse | MFARequiredResponse;
+
+/**
+ * Thrown by AuthSlice.login() when the server responds with mfaRequired.
+ * Carries the mfaToken so the UI can call verifyMfaLogin(mfaToken, code).
+ */
+export class MFARequiredError extends Error {
+  mfaToken: string;
+  constructor(mfaToken: string) {
+    super('MFA required');
+    this.name = 'MFARequiredError';
+    this.mfaToken = mfaToken;
+  }
+}
+
 let apiBase = '';
 let syncBase = '';
 
@@ -90,21 +117,33 @@ export async function apiCheckEmail(email: string): Promise<{ available: boolean
 }
 
 // ── Login ─────────────────────────────────────────────────────────
-export async function apiLogin(email: string, password: string): Promise<AuthResponse> {
+export async function apiLogin(email: string, password: string): Promise<LoginResult> {
   const res = await fetchWithTimeout(`${apiBase}/api/auth/login`, {
     method: 'POST',
     headers: buildHeaders(),
     body: JSON.stringify({ email, password }),
   });
-  return handleJsonResponse<AuthResponse>(res);
+  return handleJsonResponse<LoginResult>(res);
 }
 
 // ── WeChat login ─────────────────────────────────────────────────
-export async function apiWechatLogin(code: string): Promise<AuthResponse> {
+export async function apiWechatLogin(code: string): Promise<LoginResult> {
   const res = await fetchWithTimeout(`${apiBase}/api/auth/wechat`, {
     method: 'POST',
     headers: buildHeaders(),
     body: JSON.stringify({ code }),
+  });
+  return handleJsonResponse<LoginResult>(res);
+}
+
+// ── MFA login verification ───────────────────────────────────────
+// Exchanges the mfaToken (from apiLogin/apiWechatLogin when mfaRequired)
+// plus a TOTP/backup code for the real access token.
+export async function apiVerifyMFALogin(mfaToken: string, code: string): Promise<AuthResponse> {
+  const res = await fetchWithTimeout(`${apiBase}/api/auth/mfa/verify-login`, {
+    method: 'POST',
+    headers: buildHeaders(),
+    body: JSON.stringify({ mfaToken, code }),
   });
   return handleJsonResponse<AuthResponse>(res);
 }

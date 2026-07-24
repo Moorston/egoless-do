@@ -1,7 +1,7 @@
 import type { AuthSlice, StorageAdapter } from './types';
 import type { SliceCreator } from './sliceHelper';
 import { defaultAuthState } from '../types';
-import { apiLogin, apiRegister, apiLogout, apiRefreshToken, apiSyncPull } from '../auth';
+import { apiLogin, apiRegister, apiLogout, apiRefreshToken, apiSyncPull, apiVerifyMFALogin, MFARequiredError } from '../auth';
 import { createLogger } from '../logger';
 import { resetAIService } from '../ai/ai-service';
 import { clearAICaches } from '../ai/trail-recommender';
@@ -31,6 +31,12 @@ export function createAuthSlice(
         set(s => ({ auth: { ...s.auth, isLoading: true } }));
         try {
           const res = await apiLogin(email, password);
+          // MFA step-up: server requires a second factor before issuing the token.
+          // Surface to the UI via MFARequiredError; do NOT set any auth state.
+          if ('mfaRequired' in res) {
+            set(s => ({ auth: { ...s.auth, isLoading: false } }));
+            throw new MFARequiredError(res.mfaToken);
+          }
           log.debug('login response', { hasToken: !!res.token, hasRefreshToken: !!res.refreshToken, expiresAt: res.expiresAt });
           // Set token and user immediately (for API calls), but keep isLoading true
           // until pullServerData completes — prevents UI from rendering empty data
@@ -47,6 +53,8 @@ export function createAuthSlice(
           onSync();
           adapter.persistSettings('auth', { isSignedIn: true, user: res.user, isGuest: false }).catch(e => log.error(e));
         } catch (e) {
+          // MFARequiredError must propagate to the UI — don't swallow it.
+          if (e instanceof MFARequiredError) throw e;
           // If we already have a token (login succeeded but pull failed), keep auth state
           // The token is valid — user can retry data pull later
           const currentAuth = get().auth;
@@ -64,6 +72,26 @@ export function createAuthSlice(
         await _loginInFlight;
       } finally {
         _loginInFlight = null;
+      }
+    },
+
+    async verifyMfaLogin(mfaToken: string, code: string) {
+      set(s => ({ auth: { ...s.auth, isLoading: true } }));
+      try {
+        const res = await apiVerifyMFALogin(mfaToken, code);
+        set({
+          auth: {
+            user: res.user, token: res.token, refreshToken: res.refreshToken,
+            isSignedIn: true, isLoading: true, expiresAt: res.expiresAt,
+          },
+        });
+        await get().pullServerData(res.token);
+        set(s => ({ auth: { ...s.auth, isLoading: false } }));
+        onSync();
+        adapter.persistSettings('auth', { isSignedIn: true, user: res.user, isGuest: false }).catch(e => log.error(e));
+      } catch (e) {
+        set(s => ({ auth: { ...s.auth, isLoading: false } }));
+        throw e;
       }
     },
 

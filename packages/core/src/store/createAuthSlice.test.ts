@@ -53,13 +53,25 @@ const mockOnPullServerData = vi.fn().mockResolvedValue(undefined);
 const mockOnClearData = vi.fn().mockResolvedValue(undefined);
 
 // Mock auth API
-vi.mock('../auth', () => ({
-  apiLogin: vi.fn(),
-  apiRegister: vi.fn(),
-  apiLogout: vi.fn().mockResolvedValue(undefined),
-  apiRefreshToken: vi.fn(),
-  apiSyncPull: vi.fn(),
-}));
+vi.mock('../auth', () => {
+  class MFARequiredError extends Error {
+    mfaToken: string;
+    constructor(mfaToken: string) {
+      super('MFA required');
+      this.name = 'MFARequiredError';
+      this.mfaToken = mfaToken;
+    }
+  }
+  return {
+    apiLogin: vi.fn(),
+    apiRegister: vi.fn(),
+    apiLogout: vi.fn().mockResolvedValue(undefined),
+    apiRefreshToken: vi.fn(),
+    apiSyncPull: vi.fn(),
+    apiVerifyMFALogin: vi.fn(),
+    MFARequiredError,
+  };
+});
 
 vi.mock('../ai/ai-service', () => ({
   resetAIService: vi.fn(),
@@ -69,7 +81,7 @@ vi.mock('../ai/trail-recommender', () => ({
   clearAICaches: vi.fn(),
 }));
 
-import { apiLogin, apiRegister, apiLogout, apiRefreshToken } from '../auth';
+import { apiLogin, apiRegister, apiLogout, apiRefreshToken, apiVerifyMFALogin, MFARequiredError } from '../auth';
 
 describe('createAuthSlice', () => {
   beforeEach(() => {
@@ -135,6 +147,56 @@ describe('createAuthSlice', () => {
       await expect(slice.login('test@test.com', 'wrong')).rejects.toThrow('Invalid credentials');
       expect(store.state().auth.isLoading).toBe(false);
       expect(store.state().auth.isSignedIn).toBe(false);
+    });
+  });
+
+  describe('MFA step-up', () => {
+    it('login() throws MFARequiredError and does not set auth when server requires MFA', async () => {
+      vi.mocked(apiLogin).mockResolvedValue({
+        mfaRequired: true,
+        mfaToken: 'challenge-token',
+        expiresAt: Date.now() + 5 * 60 * 1000,
+      } as any);
+
+      const store = makeTestStore();
+      const slice = createAuthSlice(
+        mockAdapter as any, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
+      )(store.set, store.get, store.api);
+      Object.assign(store.api.getState(), slice);
+
+      await expect(slice.login('test@test.com', 'password')).rejects.toBeInstanceOf(MFARequiredError);
+
+      // Auth must NOT be set — no token, not signed in
+      expect(store.state().auth.isSignedIn).toBe(false);
+      expect(store.state().auth.token).toBeNull();
+      expect(store.state().auth.isLoading).toBe(false);
+      // Must not have pulled server data or triggered sync
+      expect(mockOnPullServerData).not.toHaveBeenCalled();
+      expect(mockOnSync).not.toHaveBeenCalled();
+    });
+
+    it('verifyMfaLogin() completes login with the real token', async () => {
+      const mockUser = { id: 'u1', email: 'test@test.com', name: 'Test' };
+      vi.mocked(apiVerifyMFALogin).mockResolvedValue({
+        user: mockUser,
+        token: 'real-token',
+        refreshToken: 'real-refresh',
+        expiresAt: Date.now() + 3600000,
+      } as any);
+
+      const store = makeTestStore();
+      const slice = createAuthSlice(
+        mockAdapter as any, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
+      )(store.set, store.get, store.api);
+      Object.assign(store.api.getState(), slice);
+
+      await slice.verifyMfaLogin('challenge-token', '123456');
+
+      expect(store.state().auth.isSignedIn).toBe(true);
+      expect(store.state().auth.token).toBe('real-token');
+      expect(store.state().auth.isLoading).toBe(false);
+      expect(mockOnPullServerData).toHaveBeenCalledWith('real-token', 'u1');
+      expect(mockOnSync).toHaveBeenCalled();
     });
   });
 

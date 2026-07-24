@@ -4,7 +4,12 @@
 import { Hono } from 'hono';
 import { verifyAuth } from '../auth-middleware.js';
 import { isMFAEnabled, enableMFA, disableMFA, verifyMFACode, getMFAConfig } from '../mfa.js';
+import { getMFAChallenge, consumeMFAChallenge } from '../mfaChallenge.js';
+import { generateRefreshToken, createRefreshToken } from '../token-refresh-rotation.js';
 import { logAuditEvent, AuditEvent, extractClientInfo } from '../audit-log.js';
+
+const TOKEN_EXPIRES_IN = 7 * 24 * 60 * 60 * 1000; // 7 days
+const REFRESH_TOKEN_EXPIRES_IN = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 const app = new Hono();
 
@@ -97,6 +102,58 @@ app.post('/verify', async (c) => {
 
   const isValid = await verifyMFACode(auth.userId, code);
   return c.json({ valid: isValid });
+});
+
+// ── 登录二次验证：用 login/wechat 返回的 mfaToken + TOTP/备用码换取 access token ──
+// 不要求 verifyAuth（调用方尚未登录）。挑战令牌单次消费，验证码错误时不消费
+// （允许在 TTL 内重试）。
+app.post('/verify-login', async (c) => {
+  const clientInfo = extractClientInfo(c);
+  const { mfaToken, code } = await c.req.json();
+
+  if (!mfaToken || typeof mfaToken !== 'string' || !code || typeof code !== 'string') {
+    return c.json({ error: '请提供 mfaToken 和 MFA 代码' }, 400);
+  }
+
+  const challenge = getMFAChallenge(mfaToken);
+  if (!challenge) {
+    return c.json({ error: 'MFA 会话已过期，请重新登录' }, 401);
+  }
+
+  const isValid = await verifyMFACode(challenge.userId, code);
+  if (!isValid) {
+    await logAuditEvent({
+      event: AuditEvent.LOGIN_SUCCESS, // 复用事件，details 标记
+      user_id: challenge.userId,
+      ip: clientInfo.ip,
+      user_agent: clientInfo.userAgent,
+      success: false,
+      details: { action: 'mfa_verify_failed' },
+    });
+    return c.json({ error: 'MFA 代码无效' }, 400);
+  }
+
+  // 验证通过 —— 消费挑战令牌（单次使用），签发 refresh token，返回 access token
+  consumeMFAChallenge(mfaToken);
+  const refreshToken = generateRefreshToken();
+  const refreshTokenExpiresAt = Date.now() + REFRESH_TOKEN_EXPIRES_IN;
+  await createRefreshToken(challenge.userId, refreshToken, refreshTokenExpiresAt);
+
+  await logAuditEvent({
+    event: AuditEvent.LOGIN_SUCCESS,
+    user_id: challenge.userId,
+    ip: clientInfo.ip,
+    user_agent: clientInfo.userAgent,
+    success: true,
+    details: { action: 'mfa_verify_success' },
+  });
+
+  return c.json({
+    user: challenge.user,
+    token: challenge.pbToken,
+    refreshToken,
+    expiresAt: Date.now() + TOKEN_EXPIRES_IN,
+  });
 });
 
 // 获取 MFA 配置（不包含密钥）

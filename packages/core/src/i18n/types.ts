@@ -806,6 +806,8 @@ export interface I18nKeys {
   // Auth
   authEmailPlaceholder: string; authPasswordPlaceholder: string; authLoginBtn: string;
   authLoginLoading: string; authForgotPassword: string;
+  authMfaRequired: string; authMfaCodePlaceholder: string; authMfaVerifyBtn: string;
+  authMfaInvalid: string; authMfaVerifying: string;
   authEmailNotRegistered: string; authFillEmailPassword: string;
   authNicknamePlaceholder: string; authVerifyCodePlaceholder: string;
   authConfirmPasswordPlaceholder: string; authRegisterBtn: string; authRegisterLoading: string;
