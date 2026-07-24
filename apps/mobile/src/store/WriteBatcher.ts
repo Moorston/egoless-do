@@ -109,11 +109,14 @@ export class WriteBatcher {
             const setClause = columns.map(c => `${c}=?`).join(',');
             const placeholders = columns.map(() => '?').join(',');
 
+            log.debug(`[Flush] UPDATE ${config.table} SET ${setClause},synced=0 WHERE ${config.pk}=${w.id}`);
             const result = await db.runAsync(
               `UPDATE ${config.table} SET ${setClause},synced=0 WHERE ${config.pk}=?`,
               [...values, w.id],
             );
+            log.debug(`[Flush] UPDATE result: changes=${result.changes}`);
             if (result.changes === 0) {
+              log.debug(`[Flush] INSERT ${config.table} (${columns.join(',')},deleted,synced) VALUES (${placeholders},0,0)`);
               try {
                 await db.runAsync(
                   `INSERT INTO ${config.table} (${columns.join(',')},deleted,synced) VALUES (${placeholders},0,0)`,

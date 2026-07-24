@@ -35,14 +35,6 @@ export default function HomePage(props: HomePageProps) {
   const currentPeriod = getCurrentPeriod();
   const nextSleep = getNextSleepPeriod();
 
-  // ── Recent records ──
-  const recentRecords = useMemo(() => {
-    return (props.sleepHistory ?? [])
-      .filter(s => !s.deleted)
-      .sort((a, b) => b.date.localeCompare(a.date))
-      .slice(0, 3);
-  }, [props.sleepHistory]);
-
   // ── Trend chart data ──
   const trendData = useMemo(() => {
     const days: { date: string; durationMin: number; quality: number }[] = [];
