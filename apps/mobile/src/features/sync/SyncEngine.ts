@@ -34,6 +34,10 @@ const log = createLogger('SyncEngine');
 const PUSH_PULL_SEPARATE_THRESHOLD = 20;
 const SYNC_TIMEOUT_MS = 120_000;
 const MAX_RETRY_ATTEMPTS = 5;
+// Proactively refresh the access token if it expires within this skew window.
+// Matches the 5-min window used in useSync.ts so all sync triggers (debounced
+// writes, foreground, realtime) benefit, not just the useSync foreground path.
+const TOKEN_REFRESH_SKEW_MS = 5 * 60 * 1000;
 
 // ALL_ENTITY_TABLES is now imported from @egoless-do/core (derived from SCHEMAS)
 
@@ -144,6 +148,7 @@ export class SyncEngine {
   private static MAX_METRICS = 20;
   private _tokenProvider: (() => string | null) | null = null;
   private _userIdProvider: (() => string | null) | null = null;
+  private _tokenExpiryProvider: (() => number | null | undefined) | null = null;
   private _onChanges: ((patch: Record<string, unknown>) => void) | null = null;
   private _deletedIdsProvider: (() => Set<string>) | null = null;
   private _onKickedOut: (() => void) | null = null;
@@ -161,6 +166,8 @@ export class SyncEngine {
   // ── Configuration ────────────────────────────────────────────────
   setTokenProvider(fn: () => string | null) { this._tokenProvider = fn; }
   setUserIdProvider(fn: () => string | null) { this._userIdProvider = fn; }
+  /** Provides the token's absolute expiry (ms epoch) so runSync can refresh proactively. */
+  setTokenExpiryProvider(fn: () => number | null | undefined) { this._tokenExpiryProvider = fn; }
   setChangeHandler(fn: (patch: Record<string, unknown>) => void) { this._onChanges = fn; }
   setDeletedIdsProvider(fn: () => Set<string>) { this._deletedIdsProvider = fn; }
   setKickedOutHandler(fn: () => void) { this._onKickedOut = fn; }
@@ -622,6 +629,29 @@ export class SyncEngine {
 
     // ── Token check ────────────────────────────────────────────────────
     let token = this._tokenProvider?.();
+
+    // Proactive token refresh: if the token is present but near expiry, refresh
+    // BEFORE attempting push/pull. Centralizes the pre-sync refresh so all sync
+    // triggers (debounced writes, foreground, realtime) benefit — previously only
+    // the useSync foreground path refreshed, leaving write-triggered syncs to
+    // fail with 401 and stall until the next foreground.
+    if (token) {
+      const expiresAt = this._tokenExpiryProvider?.();
+      if (expiresAt && expiresAt < Date.now() + TOKEN_REFRESH_SKEW_MS) {
+        try {
+          const refreshed = await this._tokenRecoveryFn?.() ?? null;
+          if (refreshed) {
+            token = refreshed;
+            log.info('runSync: token near expiry, refreshed proactively');
+          }
+        } catch (e) {
+          // Best-effort: proceed with the current token; if it's truly expired
+          // the server will return 401 and items will be retried next sync.
+          log.warn('runSync: proactive token refresh failed', e);
+        }
+      }
+    }
+
     if (!token) {
       log.warn('runSync: no token, attempting recovery...');
       try {

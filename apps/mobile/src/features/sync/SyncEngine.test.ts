@@ -134,7 +134,7 @@ const {
     mockShouldRunOrphanRecovery: vi.fn().mockReturnValue(false),
     mockRecoverOrphans: vi.fn().mockResolvedValue({ total: 0, byEntity: {} }),
     mockAppStore: {
-      _auth: { token: null as string | null, refreshToken: null as string | null, user: null as { id: string } | null },
+      _auth: { token: null, refreshToken: null, user: null } as { token: string | null; refreshToken: string | null; user: { id: string } | null; expiresAt?: number },
       getState: vi.fn(() => mockAppStore),
       setState: vi.fn(),
       refreshAuth: vi.fn().mockResolvedValue(undefined),
@@ -451,6 +451,56 @@ describe('SyncEngine', () => {
 
       expect(mockAppStore.logout).not.toHaveBeenCalled();
       expect(mockDrainQueue).not.toHaveBeenCalled();
+    });
+
+    it('proactively refreshes a near-expiry token before syncing', async () => {
+      // Token is present but expires in 1 min (within 5-min skew) → runSync
+      // should call the recovery fn to refresh before proceeding.
+      mockAppStore._auth = {
+        token: 'stale-token',
+        refreshToken: 'refresh-123',
+        user: { id: 'u1' },
+        expiresAt: Date.now() + 60 * 1000,
+      };
+      mockAppStore.refreshAuth.mockImplementation(async () => {
+        mockAppStore._auth.token = 'refreshed-token';
+        mockAppStore._auth.expiresAt = Date.now() + 60 * 60 * 1000;
+      });
+      mockDrainQueue.mockResolvedValue([]);
+      mockAppStore.getState.mockReturnValue(mockAppStore);
+      engine.setTokenProvider(() => mockAppStore._auth?.token ?? null);
+      engine.setTokenExpiryProvider(() => mockAppStore._auth?.expiresAt);
+      const recoveryFn = vi.fn(async () => {
+        await mockAppStore.refreshAuth();
+        return mockAppStore._auth.token ?? null;
+      });
+      engine.setTokenRecoveryFn(recoveryFn);
+
+      await engine.runSync();
+
+      expect(recoveryFn).toHaveBeenCalled();
+      expect(mockAppStore.refreshAuth).toHaveBeenCalled();
+      expect(mockDrainQueue).toHaveBeenCalled();
+    });
+
+    it('does NOT refresh a far-future-expiry token', async () => {
+      mockAppStore._auth = {
+        token: 'fresh-token',
+        refreshToken: 'refresh-123',
+        user: { id: 'u1' },
+        expiresAt: Date.now() + 60 * 60 * 1000, // 1h — well outside skew
+      };
+      mockDrainQueue.mockResolvedValue([]);
+      mockAppStore.getState.mockReturnValue(mockAppStore);
+      engine.setTokenProvider(() => mockAppStore._auth?.token ?? null);
+      engine.setTokenExpiryProvider(() => mockAppStore._auth?.expiresAt);
+      const recoveryFn = vi.fn(async () => 'should-not-be-called');
+      engine.setTokenRecoveryFn(recoveryFn);
+
+      await engine.runSync();
+
+      expect(recoveryFn).not.toHaveBeenCalled();
+      expect(mockDrainQueue).toHaveBeenCalled();
     });
   });
 

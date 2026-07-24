@@ -17,6 +17,7 @@ const _engine = new SyncEngine();
 
 export function setSyncTokenProvider(fn: () => string | null) { _engine.setTokenProvider(fn); }
 export function setSyncUserIdProvider(fn: () => string | null) { _engine.setUserIdProvider(fn); }
+export function setSyncTokenExpiryProvider(fn: () => number | null | undefined) { _engine.setTokenExpiryProvider(fn); }
 export function setSyncChangeHandler(fn: (patch: Record<string, unknown>) => void) { _engine.setChangeHandler(fn); }
 export function setDeletedIdsProvider(fn: () => Set<string>) { _engine.setDeletedIdsProvider(fn); }
 export function setKickedOutHandler(fn: () => void) { _engine.setKickedOutHandler(fn); }

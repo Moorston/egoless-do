@@ -12,6 +12,7 @@ import {
   rehydrateFromDb,
   runSync,
   setTokenRecoveryFn,
+  setSyncTokenExpiryProvider,
   setRealtimeLogoutHandler,
   setRealtimeUserIdProvider,
 } from '../features/sync/SyncService';
@@ -319,6 +320,11 @@ export async function initApp(): Promise<void> {
       }
       return null;
     });
+
+    // Wire token expiry provider so runSync can proactively refresh an
+    // expiring token before push/pull (covers all sync triggers, not just
+    // the useSync foreground path).
+    setSyncTokenExpiryProvider(() => store().auth.expiresAt);
 
     // ── Step 6c: Wire realtime controller callbacks ──────────
     // Avoids circular import: SyncRealtimeController → useAppStore
