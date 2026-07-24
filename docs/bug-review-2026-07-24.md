@@ -13,12 +13,12 @@
 | H-1 | 🔴 HIGH | Auth | MFA 在登录流程被完全绕过 | `infra/docker/api/src/auth/login.ts:68-100`、`wechat.ts:75-87` |
 | H-2 | 🔴 HIGH | Sync | 时钟偏移符号反了 → 本地新编辑被服务器旧数据静默覆盖 | `apps/mobile/src/features/sync/SyncApplyService.ts:280` |
 | H-3 | 🟠 MED↓ | Auth | 过期 access token 在 sync/push 前不自动刷新 → 同步停滞（非强制重登） | `SyncEngine.ts:624,340,275,625-632` |
-| M-1 | 🟠 MED | Sync | WriteBatcher._flush 数据写 + 队列入队非事务（无 BEGIN TRANSACTION） | `apps/mobile/src/store/WriteBatcher.ts:94-146` |
+| M-1 | 🟠 MED | Sync | WriteBatcher._flush 数据写 + 队列入队非事务（无 BEGIN TRANSACTION）✅ 已修复 | `apps/mobile/src/store/WriteBatcher.ts:94-146` |
 | M-2 | 🟠 MED | Sync | payload 缺 `updatedAt` 时 `serverUpdated` 默认 0 → 本地更新被永久跳过 | `SyncApplyService.ts:279` |
 | M-3 | 🟠 MED | Sync | INSERT 仅用 payload 列，新增 NOT NULL 无默认列抛错被静默丢弃 | `WriteBatcher.ts:118-133` |
 | M-4 | 🟠 MED | Auth | 登出是 best-effort，服务端 refresh token 可能仍有效 | `createAuthSlice.ts:112-118`、`logout.ts:61` |
 | M-5 | 🟠 MED | Auth | 微信登录缺口（缺 email / 不吊销旧 refresh / 绕过 lockout+MFA 一致性） | `wechat.ts:78-87` |
-| L-1 | 🟡 LOW | Auth | RealtimeAgent 把 null token 伪装成 `''` | `RealtimeAgent.ts:46` |
+| L-1 | 🟡 LOW | Auth | RealtimeAgent 把 null token 伪装成 `''` ✅ 已修复 | `RealtimeAgent.ts:46` |
 | C-1 | ⚪ 降级 | Sync | 原"后台数据丢失/咒语永不写入"经核验**已缓解** | 见 §四 |
 
 ---
@@ -183,7 +183,14 @@ H-1 / H-2 / H-3 三项均已实现并验证。验证基线：core tsc 通过、c
 
 **测试**：`createAuthSlice.test.ts` 新增 2 条（mfaRequired 抛错且不设 auth / verifyMfaLogin 完成登录）。
 
+### M-1 修复（WriteBatcher 事务化）
+- `apps/mobile/src/store/WriteBatcher.ts`：`_flush` 主路径对每个 record 的「数据表写（UPDATE/INSERT）+ `SYNC_QUEUE_UPSERT_SQL` 入队」包进 `BEGIN TRANSACTION` … `COMMIT`，失败则 `ROLLBACK` 并重抛 → 走既有的 per-item fallback 重试。彻底消除"数据已写但未入队"的崩溃窗口（之前靠 orphanRecovery 缓解，非强一致）。
+
+### L-1 修复（RealtimeAgent token 硬化）
+- `apps/mobile/src/features/sync/RealtimeAgent.ts`：补回缺失的 `private _token` 字段（原 `_getToken` 调用 `this._tokenProvider?.()` 两次却从不读 `this._token`，`updateToken()` 后 SSE 持续用旧 token）；`_getToken(): string | null` 改为优先返回 `this._token` 再回退 provider，无 token 时返回 `null`（不再伪装成 `''`）；`_open` 本就对空 token bail，现语义更明确，避免登出/重连竞态发出空 `Authorization`。
+- 新增 `RealtimeAgent.test.ts` 4 条：stored token 优先于 provider 闭包 / 无 token 返回 null / 无 token 时 `_open` 不建 EventSource / 有 token 时建 EventSource 并带 `Bearer`。
+
 ### 未处理项（建议下一轮）
-- M-1~M-5、L-1 仍在原状。
+- M-2~M-5 仍在原状（L-1、M-1 已于本轮修复）。
 - H-1 的微信客户端：移动端尚未接线微信登录，故仅做了服务端 step-up；未来接线时客户端直接复用 `MFARequiredError` + `verifyMfaLogin` 即可。
 - `/mfa/verify-login` 暴力破解防护（失败计数/锁定）与密码登录的 account-lockout 对等——当前与既有 `/mfa/verify` 一致（均无限流），建议单独加固。
