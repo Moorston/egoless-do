@@ -1,7 +1,7 @@
 // ─── HomePage — Sleep home page (extracted from SleepEngine) ─────
 // Displays: body clock, sleep goal, diary, ritual entry, trend, streak
 
-import { getCurrentPeriod, getNextSleepPeriod, BODY_CLOCK, type BodyClockPeriod, FONT_TITLE } from '@egoless-do/core';
+import { getCurrentPeriod, getNextSleepPeriod, BODY_CLOCK, type BodyClockPeriod, FONT_TITLE, type SleepGoal, type WorkState } from '@egoless-do/core';
 import type { SleepEntry } from '@egoless-do/core';
 import { Moon, Sun, Clock, Heart, ChevronRight, BarChart3, Star } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
@@ -9,6 +9,7 @@ import { View, Text, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useRootNavigation } from '../../navigation/hooks';
+import SimpleHeader from '../../navigation/SimpleHeader';
 import { styles } from './sleepStyles';
 import DiaryModal from './DiaryModal';
 
@@ -79,7 +80,8 @@ export default function HomePage(props: HomePageProps) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#0a0a1a' }}>
+    <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: '#0a0a1a' }}>
+      <SimpleHeader routeName="Sleep" />
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
         {/* ── SleepSummaryCard ── */}
         <View style={{ borderRadius: 20, backgroundColor: 'rgba(139,92,246,0.08)', borderWidth: 1, borderColor: 'rgba(139,92,246,0.2)', padding: 20, marginBottom: 16 }}>
@@ -318,6 +320,6 @@ export default function HomePage(props: HomePageProps) {
       )}
 
       <DiaryModal visible={showDiary} onClose={() => onSetShowDiary(false)} />
-    </View>
+    </SafeAreaView>
   );
 }

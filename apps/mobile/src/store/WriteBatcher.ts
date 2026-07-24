@@ -94,7 +94,7 @@ export class WriteBatcher {
       await withDbLock(async () => {
         for (const w of writes) {
           const config = ENTITY_TABLE_MAP[w.entity];
-          if (!config) continue;
+          if (!config) { log.warn(`[Flush] No config for entity=${w.entity} id=${w.id}`); continue; }
 
           if (w.operation === 'delete') {
             const nowVal = typeof w.data.updatedAt === 'number' ? w.data.updatedAt : Date.now();
@@ -157,7 +157,7 @@ export class WriteBatcher {
       await withDbLock(async () => {
         for (const w of writes) {
           const config = ENTITY_TABLE_MAP[w.entity];
-          if (!config) continue;
+          if (!config) { log.warn(`[Flush] No config for entity=${w.entity} id=${w.id}`); continue; }
           try {
             // Fallback: write to both data table AND sync_queue individually
             if (w.operation === 'delete') {
