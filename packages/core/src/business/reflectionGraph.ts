@@ -26,7 +26,6 @@ const DEFAULT_COLORS: Record<NodeType, string> = {
   habit: '#F59E0B',
   trail: '#06B6D4',
   planItem: '#8B5CF6',
-  vision: '#F59E0B',
 };
 
 // ── 辅助：安全取数组 ───────────────────────────────────────────────
@@ -459,6 +458,19 @@ export function buildRelationGraph(input: GraphBuildInput): GraphBuildResult {
     case 'planItem':
       contextNode = buildPlanItemGraph(input, nodes, nodeMap, edges);
       break;
+    case 'vision': {
+      const vision = safe(input.visions).find(v => v.id === input.context.id && !v.deleted);
+      if (vision) {
+        const vNode = makeNode(vision.id, 'vision', vision.text, vision, VB_W / 2, VB_H / 2);
+        nodes.push(vNode);
+        nodeMap.set(vision.id, vNode);
+        contextNode = vNode;
+        // Link plans & habits that reference this vision (reuses existing helpers)
+        linkPlansToVisions(input, nodes, nodeMap, edges);
+        linkHabitsToVisions(input, nodes, nodeMap, edges);
+      }
+      break;
+    }
     default: {
       // Exhaustive check — if a new context type is added to RelationContextType,
       // TypeScript will error here until a case is added above.

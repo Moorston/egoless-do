@@ -883,12 +883,12 @@ export interface I18nKeys {
   bodyPlanNotSet: string; bodyPlanEdit: string; bodyPlanDetail: string; bodyPlanDetailTitle: string; bodyPlanTitle: string; bodyPlanSave: string;
   bodyPlanNote: string; bodyPlanRestDay: string;
   bodyPlanCreate: string; bodyPlanName: string; bodyPlanNamePlaceholder: string; bodyPlanNameRequired: string;
-  bodyPlanDateRange: string; bodyPlanStart: string; bodyPlanEnd: string; bodyPlanStatus: string; bodyPlanExercisesCount: string; bodyPlanNoExercises: string; bodyPlanTrainingDays: string; bodyPlanClose: string;
+  bodyPlanDateRange: string; bodyPlanStart: string; bodyPlanEnd: string; bodyPlanStatus: string; bodyPlanExercisesCount: string; bodyPlanNoExercises: string; bodyPlanTrainingDays: string; bodyPlanClose: string; bodyClose: string;
   bodyPlanGoalNote: string; bodyGoalNotePlaceholder: string;
   bodyWeeklyPlan: string; bodySelectExercise: string;
   bodyPlanTemplateChoose: string; bodyPlanUseTemplate: string; bodyPlanCustom: string;
   bodyPlanTemplate: string; bodyTemplateHint: string;
-  bodyPlanAddExercise: string; bodyPlanNoExercises: string; bodyPlanChange: string; bodyPlanAddCustom: string;
+  bodyPlanAddExercise: string; bodyPlanChange: string; bodyPlanAddCustom: string;
   bodyPlanExercisePool: string; bodyPlanAddedTo: string; bodyPlanSkipped: string;
   bodyPlanAlreadyExists: string; bodyPlanAddToDays: string; bodyPlanSelectAll: string;
   bodyPlanDeselectAll: string; bodyPlanDays: string; bodyPlanSelected: string;

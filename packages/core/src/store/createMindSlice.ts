@@ -44,7 +44,7 @@ export function createMindSlice(
     // ── 恐惧 CRUD ──
 
     addFearEntry(entry) {
-      const e: FearEntry = { ...entry, id: uid(), timestamp: Date.now(), updatedAt: Date.now(), deleted: false };
+      const e: FearEntry = { ...entry, id: uid(), timestamp: Date.now(), updatedAt: Date.now(), deleted: false, occurrenceCount: 0 };
       // 计算同类恐惧出现次数
       const sameContent = get().fearEntries.filter(
         f => !f.deleted && f.content === e.content

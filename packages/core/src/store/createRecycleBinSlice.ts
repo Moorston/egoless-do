@@ -8,7 +8,7 @@ const log = createLogger('Store');
 
 const EXPIRY_MS = MS_PER_WEEK;
 
-const ENTITY_TYPE_MAP: Record<RecycleBinEntityType, SyncEntity> = {
+const ENTITY_TYPE_MAP: Partial<Record<RecycleBinEntityType, SyncEntity>> = {
   habit: 'habit',
   reflection: 'reflection',
   food: 'food',
@@ -34,7 +34,7 @@ export function createRecycleBinSlice(adapter: StorageAdapter): SliceCreator<Rec
       if (!item) return;
 
       // Restore to the appropriate array based on entity type
-      const restoreMap: Record<RecycleBinEntityType, keyof typeof state> = {
+      const restoreMap: Partial<Record<RecycleBinEntityType, keyof typeof state>> = {
         habit: 'habits',
         reflection: 'reflections',
         food: 'foodLog',
