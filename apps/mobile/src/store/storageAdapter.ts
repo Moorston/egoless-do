@@ -38,6 +38,10 @@ export function flushWrites(): Promise<boolean> {
 }
 
 export const mobileStorageAdapter: StorageAdapter = {
+  async flushNow(): Promise<void> {
+    await _batcher.flushNow();
+  },
+
   /**
    * Persist a single entity change to SQLite via WriteBatcher.
    * ⚠️ The returned Promise resolves IMMEDIATELY (before the actual DB write).
