@@ -3,8 +3,9 @@
 // Loads all persisted data from SQLite, restores auth tokens,
 // and sets up daily reset management.
 
-import { DailyResetManager , createLogger, setSentryBridge, apiGetMe, configureFontScale } from '@egoless-do/core';
+import { DailyResetManager , createLogger, setSentryBridge, apiGetMe, configureFontScale, setPocketbaseToken, setPocketbaseUrl } from '@egoless-do/core';
 import { AppState, PixelRatio } from 'react-native';
+import { PB_URL } from '../config';
 
 import { openDatabase, setState as setAppState } from '../db/schema';
 import {
@@ -253,6 +254,11 @@ export async function initApp(): Promise<void> {
               auth: { ...currentAuth, ...authPatch },
             } as PartialMobileStore);
           }
+
+          // Bridge the restored PB token into the PocketBase SDK authStore (defensive;
+          // see docs/auth-token-bridge.md §6-4). No-op if SDK singleton is unused.
+          setPocketbaseUrl(PB_URL);
+          setPocketbaseToken(secureTokens.token ?? null);
         }
       }
     } catch (err) {
@@ -280,6 +286,10 @@ export async function initApp(): Promise<void> {
         saveSecureTokens(newToken, newRefresh, state.auth.expiresAt).catch(e => log.error(e, { phase: 'saveSecureTokens' }));
       } else if (!newToken && oldToken) {
         clearSecureTokens().catch(e => log.error(e, { phase: 'clearSecureTokens' }));
+      }
+      // Keep the PocketBase SDK authStore in sync with the current token (defensive bridge).
+      if (newToken !== oldToken) {
+        setPocketbaseToken(newToken ?? null);
       }
       // Sync Sentry user context on auth state changes
       if (state.auth.isSignedIn && state.auth.user && (!prevState.auth.isSignedIn || state.auth.user.id !== prevState.auth.user?.id)) {

@@ -79,11 +79,16 @@ egoless-do/
 │   │   ├── constants/             #    常量
 │   │   └── utils/                 #    工具函数
 │   └── config/                    # ESLint + TypeScript 基线
-├── backend/                       # 【后端】PocketBase 唯一数据源
+├── backend/                       # 【后端】PocketBase —— 唯一数据存储（数据 + 同步 + 实时）
 │   ├── pb_hooks/                  #    JS hooks (sync/auth/sync_push_pull)
 │   ├── pb_migrations/             #    数据库迁移脚本
 │   └── pb_schema.json             #    Schema 定义（事实来源）
-├── infra/                         # 【运维】部署 & 配置
+├── infra/                         # 【运维】部署 & 配置 & 网关
+│   ├── docker/
+│   │   ├── api/                   #    【认证网关】Hono 服务 (infra/docker/api)，见 §2.3
+│   │   └── docker-compose.yml     #    编排 pocketbase + auth-api
+│   └── nginx/
+│       └── nginx.conf             #    单入口按路径分流：/api/auth→网关，其余 /api→PB
 ├── .trellis/                      # 【DevOps】Trellis 工作流 & 规格
 ├── __tests__/                     # 集成测试 & 回归测试
 └── openspec/                      # 架构决策记录
@@ -138,6 +143,23 @@ egoless-do/
 | `mobile` → `web` | App A 直接调用 App B（已不适用——web 已归档）
 | `feature-A` → `feature-B` 组件 | Feature 间紧耦合 | 提取共享组件到 `components/` |
 | `navigation` → `features/*/screens` 直引 | 路由直接 import 页面 | 保持集中路由表，按需 lazy load |
+
+### 2.3 认证网关层（infra/docker/api + infra/nginx）
+
+> 详见 `docs/f1-backend-boundary-analysis.md` 与 `docs/auth-token-bridge.md`。
+
+本项目后端并非「只有 PocketBase」。在 PocketBase 之前还有一层 **Hono 认证网关**（`infra/docker/api`）和 **nginx 路由**（`infra/nginx`）。关键点：
+
+- **PocketBase 仍是唯一数据存储**（业务数据、同步记录、实时事件，以及网关自建的 7 个安全集合：token-blacklist / verification-code / refresh-token / account-lockout / audit-log / mfa / rbac 也都落在 PB 上）。因此「PocketBase 唯一数据源」成立。
+- **网关是 BFF，不持有业务数据**：负责登录/注册/微信登录/MFA/刷新/登出，以及 RBAC / 审计 / 限流 / 验证码 / 账号锁定等 PB 原生难做的能力。
+- **单入口分流**（移动端只认一个域名）：`infra/nginx/nginx.conf` 把 `/api/auth/*`、`/api/push`、`/api/plan/*`、`/api/monitoring`、`/api/setup` 引向 `auth-api:3000`；其余 `/api/*`、`/api/realtime`、`/_/` 引向 `pocketbase:8090`。**同步走 PB 原生 `/api/collections` + `pb_hooks`，不经网关。**
+- **鉴权桥接约定（重要）**：网关 `/api/auth/login` 调用 PB 的 `authWithPassword` 并返回 **PB 原生 token**（非自建 JWT）。移动端把该 token 作为 `Bearer` 注入所有请求（`offlineAwareFetch`、realtime 的 `EventSource`/POST、`SyncEngine` 的 `tokenProvider`）。**切勿假设 PB 集合是公开可读写的**——鉴权依赖这个 PB token。
+
+| 组件 | 持有数据？ | 职责 |
+|------|-----------|------|
+| `backend/`（PocketBase） | ✅ 唯一 | 业务数据、同步协议、realtime |
+| `infra/docker/api`（Hono 网关） | ❌ | 认证 BFF + 安全增强（MFA/RBAC/限流/审计） |
+| `infra/nginx` | ❌ | 单入口 + 路径分流 + 安全响应头 |
 
 ---
 
