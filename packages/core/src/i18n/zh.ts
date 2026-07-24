@@ -813,7 +813,7 @@ export const zh: I18nKeys = {
   sleepGratitudePlaceholder:'感谢...',
   sleepMorningThought:'此刻你的第一念是什么？',
   sleepMorningPlaceholder:'记录你的清晨感悟...',
-  sleepReport:'睡眠报告', sleepDuration:'睡眠时长', sleepQuality:'睡眠质量',
+  sleepReport:'睡眠报告', sleepDuration:'睡眠时长', sleepQuality:'睡眠质量', sleepTrendNoRating:'未评分', sleepTrendNoRecord:'当日无记录',
   sleepAwayTime:'离开手机', sleepCompleted:'完成',
   sleepBodyClock:'子午阴阳钟', sleepCurrentPeriod:'当前时辰',
   sleepAdvice:'建议', sleepTarget:'睡眠目标',

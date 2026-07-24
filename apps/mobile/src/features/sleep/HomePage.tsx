@@ -1,7 +1,7 @@
 // ─── HomePage — Sleep home page (extracted from SleepEngine) ─────
 // Displays: body clock, sleep goal, diary, ritual entry, trend, streak
 
-import { getCurrentPeriod, getNextSleepPeriod, BODY_CLOCK, type BodyClockPeriod, FONT_TITLE, type SleepGoal, type WorkState, t } from '@egoless-do/core';
+import { getCurrentPeriod, getNextSleepPeriod, BODY_CLOCK, type BodyClockPeriod, FONT_TITLE, type SleepGoal, type WorkState } from '@egoless-do/core';
 import type { SleepEntry } from '@egoless-do/core';
 import { Moon, Sun, Clock, Heart, ChevronRight, BarChart3, Star } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
@@ -10,7 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useRootNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
-import { useTheme } from '../../components/UI';
+import { useTheme, useT } from '../../components/UI';
 import { styles } from './sleepStyles';
 import DiaryModal from './DiaryModal';
 
@@ -35,6 +35,7 @@ export default function HomePage(props: HomePageProps) {
     onStartBarrier, onQuickGratitude, onSetShowDiary, onDismissBedtimeModal, onStartBarrierFromModal, onSaveQuickDiary, onSetSleepGoal } = props;
   const nav = useRootNavigation();
   const TH = useTheme();
+  const T = useT();
 
   const currentPeriod = getCurrentPeriod();
   const nextSleep = getNextSleepPeriod();
@@ -52,14 +53,21 @@ export default function HomePage(props: HomePageProps) {
     setShowGoalModal(true);
   };
 
+  // Validate HH:MM time format
+  const isValidTime = (v: string) => /^\d{1,2}:\d{2}$/.test(v);
+
   const saveGoal = () => {
     if (onSetSleepGoal) {
       const hours = parseInt(editHours, 10);
+      if (!isValidTime(editBedtime) || !isValidTime(editWake)) {
+        return;
+      }
+      const validHours = isNaN(hours) ? sleepGoal.targetHours : Math.max(1, Math.min(24, hours));
       onSetSleepGoal({
         ...sleepGoal,
         targetBedtime: editBedtime,
         targetWake: editWake,
-        targetHours: isNaN(hours) ? sleepGoal.targetHours : hours,
+        targetHours: validHours,
       });
     }
     setShowGoalModal(false);
@@ -114,10 +122,10 @@ export default function HomePage(props: HomePageProps) {
 
   // Work state options
   const WORK_STATE_OPTIONS: { key: WorkState; label: string }[] = [
-    { key: 'energetic', label: t('sleepWorkEnergetic') },
-    { key: 'normal', label: t('sleepWorkNormal') },
-    { key: 'tired', label: t('sleepWorkTired') },
-    { key: 'exhausted', label: t('sleepWorkExhausted') },
+    { key: 'energetic', label: T('sleepWorkEnergetic') },
+    { key: 'normal', label: T('sleepWorkNormal') },
+    { key: 'tired', label: T('sleepWorkTired') },
+    { key: 'exhausted', label: T('sleepWorkExhausted') },
   ];
 
   return (
@@ -377,19 +385,19 @@ export default function HomePage(props: HomePageProps) {
         <Modal visible transparent animationType="fade" onRequestClose={() => setShowGoalModal(false)}>
           <TouchableOpacity style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center', alignItems: 'center', padding: 32 }} activeOpacity={1} onPress={() => setShowGoalModal(false)}>
             <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 28, width: '100%', maxWidth: 320, borderWidth: 1, borderColor: TH.border }}>
-              <Text style={{ fontSize: 20, fontWeight: '800', color: TH.primary, textAlign: 'center', marginBottom: 20 }}>编辑睡眠目标</Text>
-              <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 8 }}>目标入睡时间</Text>
+              <Text style={{ fontSize: 20, fontWeight: '800', color: TH.primary, textAlign: 'center', marginBottom: 20 }}>{T('sleepGoalEditTitle')}</Text>
+              <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 8 }}>{T('sleepGoalBedtime')}</Text>
               <TextInput value={editBedtime} onChangeText={setEditBedtime} placeholder="23:00" placeholderTextColor={TH.sub} style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: 16, marginBottom: 16 }} />
-              <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 8 }}>目标起床时间</Text>
+              <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 8 }}>{T('sleepGoalWake')}</Text>
               <TextInput value={editWake} onChangeText={setEditWake} placeholder="07:00" placeholderTextColor={TH.sub} style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: 16, marginBottom: 16 }} />
-              <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 8 }}>目标时长（小时）</Text>
+              <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 8 }}>{T('sleepGoalHours')}</Text>
               <TextInput value={editHours} onChangeText={setEditHours} placeholder="8" placeholderTextColor={TH.sub} keyboardType="numeric" style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: 16, marginBottom: 20 }} />
               <View style={{ flexDirection: 'row', gap: 12 }}>
                 <TouchableOpacity onPress={() => setShowGoalModal(false)} style={{ flex: 1, alignItems: 'center', padding: 12, borderRadius: 12, borderWidth: 1, borderColor: TH.border }}>
-                  <Text style={{ fontSize: 15, fontWeight: '600', color: TH.sub }}>取消</Text>
+                  <Text style={{ fontSize: 15, fontWeight: '600', color: TH.sub }}>{T('commonCancel')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={saveGoal} style={{ flex: 1, alignItems: 'center', padding: 12, borderRadius: 12, backgroundColor: TH.primary }}>
-                  <Text style={{ fontSize: 15, fontWeight: '600', color: '#fff' }}>保存</Text>
+                  <Text style={{ fontSize: 15, fontWeight: '600', color: '#fff' }}>{T('commonSave')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -405,16 +413,16 @@ export default function HomePage(props: HomePageProps) {
               <Text style={{ fontSize: 18, fontWeight: '800', color: TH.primary, textAlign: 'center', marginBottom: 16 }}>{trendDetail.date}</Text>
               {trendDetail.durationMin > 0 ? (
                 <View>
-                  <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 4 }}>睡眠时长</Text>
+                  <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 4 }}>{T('sleepDuration')}</Text>
                   <Text style={{ fontSize: 24, fontWeight: '800', color: TH.text, marginBottom: 16 }}>{Math.floor(trendDetail.durationMin / 60)}h{trendDetail.durationMin % 60}m</Text>
-                  <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 4 }}>质量评分</Text>
-                  <Text style={{ fontSize: 20, color: '#F59E0B' }}>{trendDetail.quality > 0 ? `${'★'.repeat(trendDetail.quality)}${'☆'.repeat(5 - trendDetail.quality)}` : '未评分'}</Text>
+                  <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 4 }}>{T('sleepQuality')}</Text>
+                  <Text style={{ fontSize: 20, color: '#F59E0B' }}>{trendDetail.quality > 0 ? `${'★'.repeat(trendDetail.quality)}${'☆'.repeat(5 - trendDetail.quality)}` : T('sleepTrendNoRating')}</Text>
                 </View>
               ) : (
-                <Text style={{ fontSize: 15, color: TH.sub, textAlign: 'center' }}>当日无记录</Text>
+                <Text style={{ fontSize: 15, color: TH.sub, textAlign: 'center' }}>{T('sleepTrendNoRecord')}</Text>
               )}
               <TouchableOpacity onPress={() => setTrendDetail(null)} style={{ marginTop: 20, alignItems: 'center', padding: 12, borderRadius: 12, backgroundColor: TH.card }}>
-                <Text style={{ fontSize: 15, fontWeight: '600', color: TH.primary }}>关闭</Text>
+                <Text style={{ fontSize: 15, fontWeight: '600', color: TH.primary }}>{T('commonClose')}</Text>
               </TouchableOpacity>
             </View>
           </TouchableOpacity>

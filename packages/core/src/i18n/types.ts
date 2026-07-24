@@ -655,7 +655,7 @@ export interface I18nKeys {
   sleepChooseBreath: string; sleepChooseMeditate: string;
   sleepGratitude: string; sleepGratitudePlaceholder: string;
   sleepMorningThought: string; sleepMorningPlaceholder: string;
-  sleepReport: string; sleepDuration: string; sleepQuality: string;
+  sleepReport: string; sleepDuration: string; sleepQuality: string; sleepTrendNoRating: string; sleepTrendNoRecord: string;
   sleepAwayTime: string; sleepCompleted: string;
   sleepBodyClock: string; sleepCurrentPeriod: string;
   sleepAdvice: string; sleepTarget: string;
@@ -663,7 +663,7 @@ export interface I18nKeys {
   sleepWeekAvg: string; sleepDebt: string;
   sleepReminder: string; sleepBarrierUsage: string;
   sleepMinutes: string;
-  sleepGoal: string; sleepGoalBedtime: string; sleepGoalWake: string; sleepGoalHours: string;
+  sleepGoal: string; sleepGoalEditTitle: string; sleepGoalBedtime: string; sleepGoalWake: string; sleepGoalHours: string;
   sleepGoalReminder: string; sleepGoalEnabled: string;
   sleepDiary: string; sleepDiaryTitle: string; sleepDiaryBedtime: string; sleepDiaryWake: string; sleepDiaryDuration: string;
   sleepWorkState: string; sleepWorkEnergetic: string; sleepWorkNormal: string; sleepWorkTired: string; sleepWorkExhausted: string;
