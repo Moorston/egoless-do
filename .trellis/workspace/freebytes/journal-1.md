@@ -1719,3 +1719,37 @@ StatsScreen计划任务进度改为countItemDoneDays动态计算；补全planIte
 ### Next Steps
 
 - None - task complete
+
+
+## Session 49: AssessmentModal 修复 — 底部空白/顶部对齐
+
+**Date**: 2026-07-24
+**Task**: AssessmentModal 修复 — 底部空白/顶部对齐
+**Branch**: `master`
+
+### Summary
+
+1. 移除 KeyboardAvoidingView 修复底部空白\n2. 调整结构修复弹窗顶部对齐问题（ScrollView 移到 card 内部）
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `43e470d5` | (see git log) |
+| `b0dd3e2b` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
