@@ -121,9 +121,14 @@ function SutraScreenInner() {
     setStartTime(0); startTimeRef.current = 0;
     setElapsed(0); elapsedRef.current = 0;
     pausedElapsedRef.current = 0; setIsPaused(false);
-    const cached = await isCached(sutra.id);
-    if (seq !== startSessionSeq.current) return; // stale, discard
-    setAudioCached(cached);
+    try {
+      const cached = await isCached(sutra.id);
+      if (seq !== startSessionSeq.current) return;
+      setAudioCached(cached);
+    } catch {
+      if (seq !== startSessionSeq.current) return;
+      setAudioCached(false);
+    }
     setPage('start');
   }, [isCached]);
 

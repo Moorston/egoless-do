@@ -1,6 +1,6 @@
 import { BUILTIN_TRACKS, createLogger } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import { create } from 'zustand';
 
 const log = createLogger('Music');

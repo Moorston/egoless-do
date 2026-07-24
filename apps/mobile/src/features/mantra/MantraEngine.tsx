@@ -75,9 +75,14 @@ export default function MantraEngine() {
   const startSession = useCallback(async (mantra: MantraDef) => {
     const seq = ++startSessionSeq.current;
     setSelectedMantra(mantra);
-    const cached = await isCached(mantra.id);
-    if (seq !== startSessionSeq.current) return;
-    setAudioCached(cached);
+    try {
+      const cached = await isCached(mantra.id);
+      if (seq !== startSessionSeq.current) return;
+      setAudioCached(cached);
+    } catch {
+      if (seq !== startSessionSeq.current) return;
+      setAudioCached(false);
+    }
     setPage('start');
   }, [isCached]);
 

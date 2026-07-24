@@ -1,8 +1,9 @@
 import { useState, useCallback, useRef } from 'react';
 
-// Lazy-loaded expo-file-system — deferred until first audio cache access
-let _FS: typeof import('expo-file-system') | null = null;
-function getFS() { return _FS ??= require('expo-file-system'); }
+// Lazy-loaded expo-file-system (legacy API) — deferred until first audio cache access
+// Using legacy import to maintain compatibility with getInfoAsync/deleteAsync/makeDirectoryAsync
+let _FS: typeof import('expo-file-system/legacy') | null = null;
+function getFS() { return _FS ??= require('expo-file-system/legacy'); }
 
 let _audioDir: string | null = null;
 function getAudioDir(): string {

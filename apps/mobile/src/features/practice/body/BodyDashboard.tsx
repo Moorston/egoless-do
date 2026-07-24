@@ -370,7 +370,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
             <View style={styles.bannerHeader}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                 <Text style={{ fontSize: 20 }}>📋</Text>
-                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyTodayPlan')}</Text>
+                <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: '#fff' }}>{T('bodyTodayPlan')}</Text>
               </View>
               <TouchableOpacity
                 onPress={() => nav.navigate('ExerciseHistory' as never)}
