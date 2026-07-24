@@ -18,7 +18,7 @@ type Page = 'home' | 'barrier' | 'gratitude' | 'report';
 
 export default function SleepEngine() {
   const nav = useRootNavigation();
-  const { getTodaySleep, completeBarrier, sleepGoal, sleepHistory, saveSleepDiary, addReflection, autoSyncHabits } = useShallowStore(s => ({ getTodaySleep: s.getTodaySleep, completeBarrier: s.completeBarrier, sleepGoal: s.sleepGoal, sleepHistory: s.sleepHistory, saveSleepDiary: s.saveSleepDiary, addReflection: s.addReflection, autoSyncHabits: s.autoSyncHabits }));
+  const { getTodaySleep, completeBarrier, sleepGoal, sleepHistory, saveSleepDiary, addReflection, autoSyncHabits, setSleepGoal } = useShallowStore(s => ({ getTodaySleep: s.getTodaySleep, completeBarrier: s.completeBarrier, sleepGoal: s.sleepGoal, sleepHistory: s.sleepHistory, saveSleepDiary: s.saveSleepDiary, addReflection: s.addReflection, autoSyncHabits: s.autoSyncHabits, setSleepGoal: s.setSleepGoal }));
   const { showBedtimeModal, dismissBedtimeModal } = useSleepNotifications();
 
   const [page, setPage] = useState<Page>('home');
@@ -166,7 +166,8 @@ export default function SleepEngine() {
       onSetShowDiary={setShowDiary}
       onDismissBedtimeModal={dismissBedtimeModal}
       onStartBarrierFromModal={() => handleStartBarrier(30)}
-      onSaveQuickDiary={(quality) => saveSleepDiary({ quality: quality as 1 | 2 | 3 | 4 | 5 })}
+      onSaveQuickDiary={(quality, workState) => saveSleepDiary({ quality: quality as 1 | 2 | 3 | 4 | 5, workState })}
+      onSetSleepGoal={setSleepGoal}
     />
   );
 }

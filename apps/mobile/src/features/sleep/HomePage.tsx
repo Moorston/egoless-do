@@ -1,11 +1,11 @@
 // ─── HomePage — Sleep home page (extracted from SleepEngine) ─────
 // Displays: body clock, sleep goal, diary, ritual entry, trend, streak
 
-import { getCurrentPeriod, getNextSleepPeriod, BODY_CLOCK, type BodyClockPeriod, FONT_TITLE, type SleepGoal, type WorkState } from '@egoless-do/core';
+import { getCurrentPeriod, getNextSleepPeriod, BODY_CLOCK, type BodyClockPeriod, FONT_TITLE, type SleepGoal, type WorkState, t } from '@egoless-do/core';
 import type { SleepEntry } from '@egoless-do/core';
 import { Moon, Sun, Clock, Heart, ChevronRight, BarChart3, Star } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useRootNavigation } from '../../navigation/hooks';
@@ -25,16 +25,43 @@ interface HomePageProps {
   onSetShowDiary: (v: boolean) => void;
   onDismissBedtimeModal: () => void;
   onStartBarrierFromModal: () => void;
-  onSaveQuickDiary?: (quality: number) => void;
+  onSaveQuickDiary?: (quality: number, workState?: WorkState) => void;
+  onSetSleepGoal?: (goal: SleepGoal) => void;
 }
 
 export default function HomePage(props: HomePageProps) {
   const { todaySleep, sleepGoal, sleepStreak, showBedtimeModal, showDiary,
-    onStartBarrier, onQuickGratitude, onSetShowDiary, onDismissBedtimeModal, onStartBarrierFromModal, onSaveQuickDiary } = props;
+    onStartBarrier, onQuickGratitude, onSetShowDiary, onDismissBedtimeModal, onStartBarrierFromModal, onSaveQuickDiary, onSetSleepGoal } = props;
   const nav = useRootNavigation();
 
   const currentPeriod = getCurrentPeriod();
   const nextSleep = getNextSleepPeriod();
+
+  // ── Sleep Goal Edit Modal ──
+  const [showGoalModal, setShowGoalModal] = useState(false);
+  const [editBedtime, setEditBedtime] = useState('');
+  const [editWake, setEditWake] = useState('');
+  const [editHours, setEditHours] = useState('');
+
+  const openGoalModal = () => {
+    setEditBedtime(sleepGoal.targetBedtime);
+    setEditWake(sleepGoal.targetWake);
+    setEditHours(String(sleepGoal.targetHours));
+    setShowGoalModal(true);
+  };
+
+  const saveGoal = () => {
+    if (onSetSleepGoal) {
+      const hours = parseInt(editHours, 10);
+      onSetSleepGoal({
+        ...sleepGoal,
+        targetBedtime: editBedtime,
+        targetWake: editWake,
+        targetHours: isNaN(hours) ? sleepGoal.targetHours : hours,
+      });
+    }
+    setShowGoalModal(false);
+  };
 
   // ── Trend chart data ──
   const trendData = useMemo(() => {
@@ -70,14 +97,26 @@ export default function HomePage(props: HomePageProps) {
   // ── Body clock detail modal ──
   const [clockDetail, setClockDetail] = useState<BodyClockPeriod | null>(null);
 
+  // ── Trend detail modal ──
+  const [trendDetail, setTrendDetail] = useState<{ date: string; durationMin: number; quality: number } | null>(null);
+
   // ── Quick diary state ──
   const [quickQuality, setQuickQuality] = useState(0);
+  const [quickWorkState, setQuickWorkState] = useState<WorkState | null>(null);
 
   const handleQuickSave = () => {
     if (quickQuality > 0 && onSaveQuickDiary) {
-      onSaveQuickDiary(quickQuality);
+      onSaveQuickDiary(quickQuality, quickWorkState ?? undefined);
     }
   };
+
+  // Work state options
+  const WORK_STATE_OPTIONS: { key: WorkState; label: string }[] = [
+    { key: 'energetic', label: t('sleepWorkEnergetic') },
+    { key: 'normal', label: t('sleepWorkNormal') },
+    { key: 'tired', label: t('sleepWorkTired') },
+    { key: 'exhausted', label: t('sleepWorkExhausted') },
+  ];
 
   return (
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: '#0a0a1a' }}>
@@ -171,7 +210,7 @@ export default function HomePage(props: HomePageProps) {
         <View style={{ borderRadius: 20, backgroundColor: 'rgba(139,92,246,0.08)', borderWidth: 1, borderColor: 'rgba(139,92,246,0.2)', padding: 20, marginBottom: 16 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
             <Text style={{ fontSize: 14, fontWeight: '700', color: 'rgba(255,255,255,0.8)' }}>睡眠目标</Text>
-            <TouchableOpacity onPress={() => nav.navigate('Settings' as never)}>
+            <TouchableOpacity onPress={openGoalModal}>
               <Text style={{ fontSize: 14, color: '#8B5CF6', fontWeight: '600' }}>编辑</Text>
             </TouchableOpacity>
           </View>
@@ -204,6 +243,18 @@ export default function HomePage(props: HomePageProps) {
                 <Star size={28} color={i <= quickQuality ? '#F59E0B' : 'rgba(255,255,255,0.15)'} fill={i <= quickQuality ? '#F59E0B' : 'transparent'} />
               </TouchableOpacity>
             ))}
+          </View>
+          <Text style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', marginBottom: 8 }}>{t('sleepWorkState')}</Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
+            {WORK_STATE_OPTIONS.map(({ key, label }) => {
+              const selected = quickWorkState === key;
+              return (
+                <TouchableOpacity key={key} onPress={() => setQuickWorkState(selected ? null : key)}
+                  style={{ paddingHorizontal: 12, paddingVertical: 8, borderRadius: 10, borderWidth: 1, borderColor: selected ? '#8B5CF6' : 'rgba(139,92,246,0.2)', backgroundColor: selected ? 'rgba(139,92,246,0.2)' : 'transparent' }}>
+                  <Text style={{ fontSize: 13, color: selected ? '#8B5CF6' : 'rgba(255,255,255,0.6)' }}>{label}</Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
           {quickQuality > 0 && (
             <TouchableOpacity onPress={handleQuickSave}
@@ -245,10 +296,10 @@ export default function HomePage(props: HomePageProps) {
               const barH = d.durationMin > 0 ? (d.durationMin / maxDuration) * 70 : 4;
               const color = barColor(d.durationMin, d.quality);
               return (
-                <View key={d.date} style={{ flex: 1, alignItems: 'center', gap: 4 }}>
+                <TouchableOpacity key={d.date} onPress={() => setTrendDetail(d)} style={{ flex: 1, alignItems: 'center', gap: 4 }}>
                   <View style={{ width: '100%', height: barH, borderRadius: 4, backgroundColor: color, minHeight: 4 }} />
                   <Text style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)' }}>{['日', '一', '二', '三', '四', '五', '六'][i]}</Text>
-                </View>
+                </TouchableOpacity>
               );
             })}
           </View>
@@ -312,6 +363,55 @@ export default function HomePage(props: HomePageProps) {
               <View style={{ height: 1, backgroundColor: 'rgba(139,92,246,0.2)', marginVertical: 16 }} />
               <Text style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)', textAlign: 'center' }}>{clockDetail.startHour}:00 - {(clockDetail.startHour + 1) % 24}:00</Text>
               <TouchableOpacity onPress={() => setClockDetail(null)} style={{ marginTop: 20, alignItems: 'center', padding: 12, borderRadius: 12, backgroundColor: 'rgba(139,92,246,0.15)' }}>
+                <Text style={{ fontSize: 15, fontWeight: '600', color: '#8B5CF6' }}>关闭</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </Modal>
+      )}
+
+      {/* ── Sleep Goal Edit Modal ── */}
+      {showGoalModal && (
+        <Modal visible transparent animationType="fade" onRequestClose={() => setShowGoalModal(false)}>
+          <TouchableOpacity style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center', alignItems: 'center', padding: 32 }} activeOpacity={1} onPress={() => setShowGoalModal(false)}>
+            <View style={{ backgroundColor: '#1a1a2e', borderRadius: 20, padding: 28, width: '100%', maxWidth: 320, borderWidth: 1, borderColor: 'rgba(139,92,246,0.3)' }}>
+              <Text style={{ fontSize: 20, fontWeight: '800', color: '#8B5CF6', textAlign: 'center', marginBottom: 20 }}>编辑睡眠目标</Text>
+              <Text style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', marginBottom: 8 }}>目标入睡时间</Text>
+              <TextInput value={editBedtime} onChangeText={setEditBedtime} placeholder="23:00" placeholderTextColor="rgba(255,255,255,0.3)" style={{ backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 12, padding: 12, color: '#fff', fontSize: 16, marginBottom: 16 }} />
+              <Text style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', marginBottom: 8 }}>目标起床时间</Text>
+              <TextInput value={editWake} onChangeText={setEditWake} placeholder="07:00" placeholderTextColor="rgba(255,255,255,0.3)" style={{ backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 12, padding: 12, color: '#fff', fontSize: 16, marginBottom: 16 }} />
+              <Text style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', marginBottom: 8 }}>目标时长（小时）</Text>
+              <TextInput value={editHours} onChangeText={setEditHours} placeholder="8" placeholderTextColor="rgba(255,255,255,0.3)" keyboardType="numeric" style={{ backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 12, padding: 12, color: '#fff', fontSize: 16, marginBottom: 20 }} />
+              <View style={{ flexDirection: 'row', gap: 12 }}>
+                <TouchableOpacity onPress={() => setShowGoalModal(false)} style={{ flex: 1, alignItems: 'center', padding: 12, borderRadius: 12, borderWidth: 1, borderColor: 'rgba(139,92,246,0.3)' }}>
+                  <Text style={{ fontSize: 15, fontWeight: '600', color: 'rgba(255,255,255,0.6)' }}>取消</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={saveGoal} style={{ flex: 1, alignItems: 'center', padding: 12, borderRadius: 12, backgroundColor: '#8B5CF6' }}>
+                  <Text style={{ fontSize: 15, fontWeight: '600', color: '#fff' }}>保存</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </Modal>
+      )}
+
+      {/* ── Trend Detail Modal ── */}
+      {trendDetail && (
+        <Modal visible transparent animationType="fade" onRequestClose={() => setTrendDetail(null)}>
+          <TouchableOpacity style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center', alignItems: 'center', padding: 32 }} activeOpacity={1} onPress={() => setTrendDetail(null)}>
+            <View style={{ backgroundColor: '#1a1a2e', borderRadius: 20, padding: 28, width: '100%', maxWidth: 320, borderWidth: 1, borderColor: 'rgba(139,92,246,0.3)' }}>
+              <Text style={{ fontSize: 18, fontWeight: '800', color: '#8B5CF6', textAlign: 'center', marginBottom: 16 }}>{trendDetail.date}</Text>
+              {trendDetail.durationMin > 0 ? (
+                <View>
+                  <Text style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', marginBottom: 4 }}>睡眠时长</Text>
+                  <Text style={{ fontSize: 24, fontWeight: '800', color: '#fff', marginBottom: 16 }}>{Math.floor(trendDetail.durationMin / 60)}h{trendDetail.durationMin % 60}m</Text>
+                  <Text style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', marginBottom: 4 }}>质量评分</Text>
+                  <Text style={{ fontSize: 20, color: '#F59E0B' }}>{trendDetail.quality > 0 ? `${'★'.repeat(trendDetail.quality)}${'☆'.repeat(5 - trendDetail.quality)}` : '未评分'}</Text>
+                </View>
+              ) : (
+                <Text style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', textAlign: 'center' }}>当日无记录</Text>
+              )}
+              <TouchableOpacity onPress={() => setTrendDetail(null)} style={{ marginTop: 20, alignItems: 'center', padding: 12, borderRadius: 12, backgroundColor: 'rgba(139,92,246,0.15)' }}>
                 <Text style={{ fontSize: 15, fontWeight: '600', color: '#8B5CF6' }}>关闭</Text>
               </TouchableOpacity>
             </View>
