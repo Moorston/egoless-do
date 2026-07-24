@@ -90,9 +90,14 @@ export class WriteBatcher {
       for (const w of writes) { log.debug(`  flush entity=${w.entity} id=${w.id} op=${w.operation}`); }
 
     const db = await openDatabase();
+    // Records that fail deterministically (e.g. NOT NULL on a column the payload
+    // doesn't carry) can't be fixed by retrying — drop them individually instead
+    // of discarding the whole batch.
+    const failedKeys = new Set<string>();
     try {
       await withDbLock(async () => {
         for (const w of writes) {
+          const key = `${w.entity}:${w.id}`;
           const config = ENTITY_TABLE_MAP[w.entity];
           if (!config) { log.warn(`[Flush] No config for entity=${w.entity} id=${w.id}`); continue; }
 
@@ -152,13 +157,36 @@ export class WriteBatcher {
             await db.runAsync('COMMIT');
           } catch (txErr) {
             await db.runAsync('ROLLBACK');
-            throw txErr; // abort batch → outer fallback path retries per-item
+            const msg = txErr instanceof Error ? txErr.message : String(txErr);
+            // Deterministic schema constraint failure (e.g. a NOT NULL column the
+            // payload doesn't carry) will fail on every retry and can't be fixed
+            // here. Report the single record and drop it, rather than aborting the
+            // whole batch — previously this rethrew, retried 10x, and discarded all
+            // pending writes (M-3). Transient errors (disk I/O, mid-write crash)
+            // still propagate to the per-item fallback so the M-1 no-data-without-
+            // queue guarantee holds.
+            if (msg.includes('NOT NULL constraint')) {
+              log.error(txErr, { entity: w.entity, id: w.id, phase: 'flush-notnull' });
+              if (this._onPersistError) {
+                this._onPersistError(
+                  txErr instanceof Error ? txErr : new Error(msg),
+                  w.entity,
+                  w.id,
+                );
+              }
+              failedKeys.add(key);
+              continue;
+            }
+            throw txErr; // transient → outer per-item fallback path
           }
         }
       });
-      // Only remove entries that weren't merged with new data during flush
+      // Only remove entries that weren't merged with new data during flush,
+      // plus records that failed deterministically (reported and dropped above).
       for (const k of keys) {
-        if (this._pendingWrites.get(k) === snapRefs.get(k)) this._pendingWrites.delete(k);
+        if (this._pendingWrites.get(k) === snapRefs.get(k) || failedKeys.has(k)) {
+          this._pendingWrites.delete(k);
+        }
       }
       this._retryCount = 0;
       this._onFlushed?.();

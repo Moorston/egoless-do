@@ -329,4 +329,41 @@ describe('WriteBatcher', () => {
     expect(payload.emoji).toBe('🧘');
     expect(payload._changedFields).toEqual(expect.arrayContaining(['name', 'streak']));
   });
+
+  it('drops a single record on NOT NULL constraint instead of aborting the whole batch (M-3)', async () => {
+    const onPersistError = vi.fn();
+    const onFlushed = vi.fn();
+    const b = new WriteBatcher(100, onFlushed, onPersistError as unknown as (error: Error, entity: string, id: string) => void);
+
+    // h1's INSERT fails with a NOT NULL constraint; every other write succeeds.
+    mockRunAsync.mockImplementation(async (sql: string, params?: unknown[]) => {
+      const isH1 = Array.isArray(params) && params.includes('bad');
+      if (sql === 'BEGIN TRANSACTION' || sql === 'COMMIT' || sql === 'ROLLBACK') return { changes: 1 };
+      if (typeof sql === 'string' && sql.includes('INSERT OR REPLACE INTO sync_queue')) return { changes: 1 };
+      if (isH1 && typeof sql === 'string' && sql.startsWith('UPDATE')) return { changes: 0 }; // → INSERT path
+      if (isH1 && typeof sql === 'string' && sql.startsWith('INSERT')) {
+        throw new Error('NOT NULL constraint failed: some_required_col');
+      }
+      return { changes: 1 };
+    });
+
+    b.write('habit', 'h1', { name: 'bad' }); // will hit NOT NULL
+    b.write('habit', 'h2', { name: 'ok' });  // normal
+    await b.flushNow();
+
+    // h1 is reported and dropped; h2 is flushed normally. The batch as a whole
+    // still completes (onFlushed fires) instead of being discarded.
+    expect(onPersistError).toHaveBeenCalledTimes(1);
+    expect(onPersistError).toHaveBeenCalledWith(
+      expect.objectContaining({ message: expect.stringContaining('NOT NULL constraint') }),
+      'habit',
+      'h1',
+    );
+    expect(mockRunAsync).toHaveBeenCalledWith(
+      expect.stringContaining('INSERT OR REPLACE INTO sync_queue'),
+      expect.arrayContaining(['habit', 'h2', 'upsert']),
+    );
+    expect(b.pendingCount).toBe(0);
+    expect(onFlushed).toHaveBeenCalled();
+  });
 });
