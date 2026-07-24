@@ -1,5 +1,5 @@
 import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_SMALL, formatDate , FONT_HERO } from '@egoless-do/core';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 import { X, Download, Share2, MessageSquare } from 'lucide-react-native';
 import React, { useRef, useState, useMemo } from 'react';
