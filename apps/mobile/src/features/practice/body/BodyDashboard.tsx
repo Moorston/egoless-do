@@ -583,7 +583,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
             <View style={styles.bannerHeader}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                 <Text style={{ fontSize: 20 }}>📋</Text>
-                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyProfile')}</Text>
+                <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: '#fff' }}>{T('bodyProfile')}</Text>
               </View>
             </View>
             <View style={styles.bannerContent}>
