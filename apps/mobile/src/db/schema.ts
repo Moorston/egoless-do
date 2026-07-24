@@ -1192,7 +1192,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   ];
   try {
     const existingPresets = await db.getAllAsync<{ id: string; name: string }>(
-      `SELECT id, name FROM mantra_defs WHERE name IN (${PRESET_NAMES.map(() => '?').join(',')}) AND deleted = 0`,
+      `SELECT id, name FROM mantra_defs WHERE name IN (${PRESET_NAMES.map(() => '?').join(',')}) AND deleted = 0 AND preset = 1`,
       [...PRESET_NAMES]
     );
     for (const preset of existingPresets) {
