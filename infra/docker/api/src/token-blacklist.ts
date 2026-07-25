@@ -1,7 +1,7 @@
 // ─── Token 黑名单服务 (PocketBase 持久化) ───────────────────────
 // 将 Token 黑名单从本地 SQLite 迁移到 PocketBase 集合，确保服务重启后数据不丢失。
 
-import { getPb, getAdminPb, escapeFilter } from './pb.js';
+import { getAdminPb, escapeFilter } from './pb.js';
 import { errMessage, errStatus } from './errors.js';
 
 const COLLECTION_NAME = 'token_blacklist';

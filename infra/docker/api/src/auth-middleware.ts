@@ -56,7 +56,7 @@ export async function verifyAuth(authHeader: string | null): Promise<{ userId: s
     let verifiedUserId: string;
     try {
       await pb.collection('users').authRefresh();
-      const recordId = pb.authStore.record?.id;
+      const recordId = (pb.authStore as unknown as { record: { id: string } | null }).record?.id;
       if (!recordId) { console.warn('[verifyAuth] authRefresh returned no recordId'); return null; }
       verifiedUserId = recordId;
     } catch (refreshErr: unknown) {
@@ -80,7 +80,7 @@ export async function verifyAuth(authHeader: string | null): Promise<{ userId: s
       if (iat > 0) {
         try {
           const user = await adminPb.collection('users').getOne(verifiedUserId, { fields: 'password_changed_at' });
-          const pwdChangedAt = (user as Record<string, unknown>).password_changed_at;
+          const pwdChangedAt = (user as Record<string, unknown>).password_changed_at as number | undefined;
           if (pwdChangedAt && iat < pwdChangedAt) return null;
         } catch (pwdErr) {
           // Token already verified by authRefresh(); admin query failure shouldn't reject valid requests.
@@ -101,7 +101,7 @@ export async function verifyAuth(authHeader: string | null): Promise<{ userId: s
           const profileData = (userProfile as Record<string, unknown>).data;
           if (profileData) {
             const data = typeof profileData === 'string' ? JSON.parse(profileData) : profileData;
-            const expectedEpoch = (data as Record<string, unknown>).login_epoch || 0;
+            const expectedEpoch = ((data as Record<string, unknown>).login_epoch as number) || 0;
             if (tokenEpoch < expectedEpoch) return null;
           }
         } catch (epochErr: unknown) {

@@ -138,12 +138,7 @@ export function getClientIp(c: { req: { header: (name: string) => string | undef
 
 // ─── PocketBase-backed rate limiter (multi-instance safe) ────────────
 
-interface PBRLRecord {
-  key: string;
-  count: number;
-  window_start: number;
-  expires_at: number;
-}
+// (removed PBRLRecord — unused)
 
 const RATE_LIMIT_COLLECTION = 'rate_limits';
 
