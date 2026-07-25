@@ -24,6 +24,12 @@ apps/mobile/ios/build/
 .env.production
 .envrc
 
+# Analysis / intermediate files
+.ua/
+
+# Generated docs
+docs/technical-improvement-plan.html
+
 # PocketBase
 pocketbase/
 backend/pb_data/

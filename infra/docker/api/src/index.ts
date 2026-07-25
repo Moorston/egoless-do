@@ -38,6 +38,9 @@ import planApp from './plan.js';
 import monitoringApp from './monitoring.js';
 import setupApp from './setup.js';
 
+// PocketBase 反向代理（将未匹配的 /api/* 请求转发到内部 PocketBase）
+import { proxyToPocketBase } from './pb-proxy.js';
+
 // ── 所有 body code 在 import 之后 ────────────────────────────────
 
 const app = new Hono();
@@ -99,7 +102,14 @@ app.route('/api/plan', planApp);
 app.route('/api', monitoringApp);
 app.route('/api', setupApp);
 
-// 404 兜底
+// 404 兜底 — 未匹配的 /api/* 请求转发到 PocketBase（内部代理）
+app.all('/api/*', async (c) => {
+  // 如果请求已经匹配到前面的路由，不会到达这里
+  // 只有未匹配的 /api/* 路径才会进入此代理
+  const url = new URL(c.req.url);
+  return proxyToPocketBase(c.req.raw, url.pathname, url.search);
+});
+
 app.notFound((c) => c.json({ error: 'Not Found' }, 404));
 
 // 全局错误处理

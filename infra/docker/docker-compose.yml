@@ -1,11 +1,12 @@
 services:
-  # ─── PocketBase 数据库 ──────────────────────────────────────────
+  # ─── PocketBase 数据库（仅内网访问，不暴露端口）────────────────
   pocketbase:
     image: ghcr.io/muchobien/pocketbase:0.38.2
     container_name: egoless-do-pb
     restart: unless-stopped
-    ports:
-      - "8090:8090"
+    # 不暴露端口到外网 — 仅通过 Auth API 代理访问
+    # ports:
+    #   - "8090:8090"
     volumes:
       - ../backend/pb_data:/pb/pb_data
       - ../backend/pb_migrations:/pb/pb_migrations
