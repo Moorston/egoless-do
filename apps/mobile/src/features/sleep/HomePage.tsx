@@ -254,7 +254,7 @@ export default function HomePage(props: HomePageProps) {
               </TouchableOpacity>
             ))}
           </View>
-          <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 8 }}>{t('sleepWorkState')}</Text>
+          <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 8 }}>{T('sleepWorkState')}</Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
             {WORK_STATE_OPTIONS.map(({ key, label }) => {
               const selected = quickWorkState === key;
