@@ -40,10 +40,10 @@ app.post('/wechat', async (c) => {
     const wxRes = await fetch(
       `https://api.weixin.qq.com/sns/jscode2session?appid=${appid}&secret=${secret}&js_code=${encodeURIComponent(code)}&grant_type=authorization_code`
     );
-    const wxData = await wxRes.json();
+    const wxData = await wxRes.json() as Record<string, unknown>;
     if (wxData.errcode) return c.json({ error: '微信登录失败' }, 401);
 
-    const { openid } = wxData;
+    const { openid } = wxData as { openid?: string };
     if (!openid) return c.json({ error: '微信登录失败：无效响应' }, 401);
     const pb = getPb();
     const password = wechatPassword(openid);

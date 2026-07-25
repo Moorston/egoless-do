@@ -41,7 +41,7 @@ export async function proxyToPocketBase(
   }
 
   // 获取请求体（非 GET/HEAD 请求）
-  let body: BodyInit | null = null;
+  let body: string | null = null;
   if (request.method !== 'GET' && request.method !== 'HEAD') {
     body = await request.text();
   }
@@ -50,7 +50,7 @@ export async function proxyToPocketBase(
     const response = await fetch(targetUrl, {
       method: request.method,
       headers: forwardHeaders,
-      body,
+      body: body ?? undefined,
     });
 
     // 构建响应 headers

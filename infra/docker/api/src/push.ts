@@ -253,7 +253,7 @@ async function sendExpoPush(
       continue;
     }
 
-    const result: ExpoPushResponse = await response.json();
+    const result: ExpoPushResponse = await response.json() as ExpoPushResponse;
 
     for (let j = 0; j < result.data.length; j++) {
       const item = result.data[j];
