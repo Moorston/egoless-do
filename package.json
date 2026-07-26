@@ -43,7 +43,9 @@
       "@react-native/babel-preset": "0.81.5",
       "postcss": ">=8.5.10"
     },
-    "patchedDependencies": {}
+    "patchedDependencies": {
+      "react-native-amap3d@3.2.4": "patches/react-native-amap3d@3.2.4.patch"
+    }
   },
   "dependencies": {
     "react-native-sse": "^1.2.1",
