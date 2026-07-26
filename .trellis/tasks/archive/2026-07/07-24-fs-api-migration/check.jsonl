@@ -1,0 +1,2 @@
+{"file": "node_modules/expo-file-system/src/ExpoFileSystem.types.ts", "reason": "核对新 API 与 legacy 的字段差异，确认迁移映射正确（exists 为属性、write/create/delete 为同步）"}
+{"file": "apps/mobile/src/features/shared/hooks/useAudioCache.ts", "reason": "验证 XHR arraybuffer + onprogress 进度上报，下载后 File.write(bytes) 落盘，写失败清理"}

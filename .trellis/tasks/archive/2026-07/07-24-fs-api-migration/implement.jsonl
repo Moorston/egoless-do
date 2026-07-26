@@ -1,0 +1,5 @@
+{"file": "node_modules/expo-file-system/src/ExpoFileSystem.types.ts", "reason": "新 API 权威类型：File/Directory 的 exists/create/write/text/base64/delete/copy 及 DownloadOptions；确认无 StorageAccessFramework、无续传进度回调"}
+{"file": "node_modules/expo-file-system/src/FileSystem.ts", "reason": "Paths.document 替代 documentDirectory；Directory.pickDirectoryAsync / File.downloadFileAsync 静态方法签名"}
+{"file": "apps/mobile/src/features/music/useMusicStore.ts", "reason": "迁移 JSON 读写与用户音乐 copy/delete 到新 API"}
+{"file": "apps/mobile/src/features/shared/hooks/useAudioCache.ts", "reason": "移除 legacy 懒加载，XHR+onprogress 保进度替代 createDownloadResumable"}
+{"file": "apps/mobile/src/features/reflections/core/ShareCard.tsx", "reason": "SAF 保存流程改为 Directory.pickDirectoryAsync + createFile + write(base64)"}

@@ -1,0 +1,30 @@
+{
+  "id": "fs-api-migration",
+  "name": "fs-api-migration",
+  "title": "expo-file-system 迁移到新 API",
+  "description": "把移动端 3 处 expo-file-system/legacy 使用迁移到新模块化 API（File/Directory/Paths）。",
+  "status": "completed",
+  "dev_type": null,
+  "scope": "apps/mobile",
+  "package": "mobile",
+  "priority": "P2",
+  "creator": "freebytes",
+  "assignee": "freebytes",
+  "createdAt": "2026-07-24",
+  "completedAt": "2026-07-26",
+  "branch": null,
+  "base_branch": "master",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [],
+  "parent": null,
+  "relatedFiles": [
+    "apps/mobile/src/features/music/useMusicStore.ts",
+    "apps/mobile/src/features/shared/hooks/useAudioCache.ts",
+    "apps/mobile/src/features/reflections/core/ShareCard.tsx"
+  ],
+  "notes": "实现完成并通过 tsc/lint（仅改动文件无错）。三处 legacy 导入已全部移除。\n- useMusicStore: JSON 读写/用户音乐导入删除/校验。\n- useAudioCache: 移除 legacy 懒加载，下载改用 XMLHttpRequest+onprogress 保进度（新 API 无续传/进度），下载后 File.write(bytes)。\n- ShareCard: 保存本地由 StorageAccessFramework 改为 Directory.pickDirectoryAsync + createFile + write(base64)。\n遗留：真机验证未做（环境无法运行 App）。另新 API 暂无断点续传能力。",
+  "meta": {}
+}
