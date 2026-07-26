@@ -43,11 +43,7 @@
       "@react-native/babel-preset": "0.81.5",
       "postcss": ">=8.5.10"
     },
-    "patchedDependencies": {
-      "expo-audio@57.0.0": "patches/expo-audio@57.0.0.patch",
-      "expo-image-picker@57.0.2": "patches/expo-image-picker@57.0.2.patch",
-      "expo-location@57.0.2": "patches/expo-location@57.0.2.patch"
-    }
+    "patchedDependencies": {}
   },
   "dependencies": {
     "react-native-sse": "^1.2.1",

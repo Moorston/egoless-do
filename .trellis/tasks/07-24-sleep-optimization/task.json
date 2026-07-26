@@ -3,7 +3,7 @@
   "name": "sleep-optimization",
   "title": "调眠页功能与设计优化",
   "description": "",
-  "status": "in_progress",
+  "status": "completed",
   "dev_type": null,
   "scope": null,
   "package": null,
@@ -11,7 +11,7 @@
   "creator": "freebytes",
   "assignee": "freebytes",
   "createdAt": "2026-07-24",
-  "completedAt": null,
+  "completedAt": "2026-07-25",
   "branch": null,
   "base_branch": "master",
   "worktree_path": null,
@@ -21,6 +21,6 @@
   "children": [],
   "parent": null,
   "relatedFiles": [],
-  "notes": "",
+  "notes": "v1 已实现并提交。收尾收敛：R1 夜间沉浸感降级为全局主题色（commit d12171b4），其余 R2-R5 全部落地。prd/design/implement 已更新为代码真实状态。\n\n[2026-07-25] 关闭后发现一处运行时崩溃：HomePage.tsx:257 用了未定义的 `t`（应为 `T`）。已修复并提交 36006ed7，用户确认 App 正常启动，任务正式完成。",
   "meta": {}
 }
