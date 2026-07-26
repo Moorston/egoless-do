@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules>
+  <cloud-backup>
+    <!-- Exclude SQLite database from cloud backup to protect user data -->
+    <exclude domain="database" path="." />
+  </cloud-backup>
+  <device-transfer>
+    <!-- Exclude SQLite database from device-to-device transfer -->
+    <exclude domain="database" path="." />
+  </device-transfer>
+</data-extraction-rules>

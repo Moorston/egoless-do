@@ -7,7 +7,7 @@ import {
   Text,
   ActivityIndicator,
 } from 'react-native';
-import MapView, { UrlTile, Marker } from 'react-native-maps';
+import { MapView, Marker } from 'react-native-amap3d';
 
 import { useTheme, useT } from '../../../components/UI';
 import { useActiveSessions } from '../hooks/useActiveSessions';
@@ -23,13 +23,9 @@ import { OfflineBanner } from './OfflineBanner';
 import { PulseMarker } from './PulseMarker';
 
 
-const OSM_TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
-
 const DEFAULT_REGION = {
   latitude: 35,
   longitude: 110,
-  latitudeDelta: 30,
-  longitudeDelta: 30,
 };
 
 interface GlobalPulseMapProps {
@@ -47,7 +43,7 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
 }) => {
   const theme = useTheme();
   const t = useT();
-  const mapRef = useRef<MapView>(null);
+  const mapRef = useRef<any>(null);
 
   const {
     checkins,
@@ -81,8 +77,7 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
     return checkins.find(c => c.user_hash === myHash) ?? null;
   }, [checkins, myHash]);
 
-  const handleRegionChange = useCallback((region: { latitude: number; longitude: number; latitudeDelta: number; longitudeDelta: number }) => {
-    const zoom = Math.round(Math.log2(360 / region.latitudeDelta));
+  const handleRegionChange = useCallback((zoom: number) => {
     setCurrentZoom(Math.max(1, Math.min(20, zoom)));
   }, []);
 
@@ -106,11 +101,9 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
 
   const handleUserPress = useCallback((entry: LeaderboardEntry) => {
     setSelectedUserId(entry.user_hash);
-    mapRef.current?.animateToRegion({
-      latitude: entry.lat,
-      longitude: entry.lng,
-      latitudeDelta: 5,
-      longitudeDelta: 5,
+    mapRef.current?.moveCamera({
+      target: { latitude: entry.lat, longitude: entry.lng },
+      zoom: 6,
     }, 500);
   }, []);
 
@@ -148,15 +141,12 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
         return (
           <Marker
             key={checkin.checkin_id}
-            coordinate={{
+            position={{
               latitude: checkin.lat,
               longitude: checkin.lng
             }}
-            title={markerTitle}
-            description={`🔥${String(checkin.streak)}天 📅${String(checkin.total_days)}天`}
             onPress={() => handleMarkerPress(checkin)}
             opacity={isSelected ? 1 : 0.9}
-            tracksViewChanges={true}
           >
             <View style={styles.markerWrapper}>
               <PulseMarker type={checkin.type} rank={rank} />
@@ -169,16 +159,14 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
       return (
         <Marker
           key={cluster.id}
-          coordinate={{
+          position={{
             latitude: cluster.lat,
             longitude: cluster.lng
           }}
           onPress={() => {
-            mapRef.current?.animateToRegion({
-              latitude: cluster.lat,
-              longitude: cluster.lng,
-              latitudeDelta: 10,
-              longitudeDelta: 10,
+            mapRef.current?.moveCamera({
+              target: { latitude: cluster.lat, longitude: cluster.lng },
+              zoom: 5,
             }, 300);
           }}
         >
@@ -246,19 +234,13 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
           <MapView
             ref={mapRef}
             style={showInlineLeaderboard ? styles.inlineMap : styles.map}
-            initialRegion={DEFAULT_REGION}
-            onRegionChangeComplete={handleRegionChange}
-            mapType="none"
-            showsUserLocation={false}
-            showsMyLocationButton={false}
-            showsCompass={true}
-            showsScale={true}
+            initialCameraPosition={{ target: DEFAULT_REGION, zoom: 4 }}
+            onCameraIdle={(e: any) => handleRegionChange(Math.round(e.nativeEvent.cameraPosition.zoom ?? 4))}
+            myLocationEnabled={false}
+            myLocationButtonEnabled={false}
+            compassEnabled={true}
+            scaleControlsEnabled={true}
           >
-            <UrlTile
-              urlTemplate={OSM_TILE_URL}
-              maximumZ={19}
-              tileSize={256}
-            />
             {markers}
 
             {/* 实时活跃标记 */}
@@ -267,12 +249,11 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
               return (
                 <Marker
                   key={`active-${session.session_id}`}
-                  coordinate={{
+                  position={{
                     latitude: session.lat,
                     longitude: session.lng,
                   }}
                   onPress={() => handleActiveMarkerPress(session)}
-                  tracksViewChanges={true}
                 >
                   <ActiveMarker session={session} city={session.city} />
                 </Marker>
@@ -283,11 +264,8 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
             {myCheckin && (
               <Marker
                 key="my-marker"
-                coordinate={{ latitude: myCheckin.lat, longitude: myCheckin.lng }}
-                title={t('globalPulse.me')}
-                description={`🔥${String(myCheckin.streak)}${t('globalPulse.days')} 📅${String(myCheckin.total_days)}${t('globalPulse.days')}`}
+                position={{ latitude: myCheckin.lat, longitude: myCheckin.lng }}
                 onPress={() => handleMarkerPress(myCheckin)}
-                tracksViewChanges={false}
               >
                 <View style={styles.myMarkerWrapper}>
                   <View style={[styles.myMarkerDot, { backgroundColor: theme.primary }]}>
@@ -312,7 +290,7 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
 
           <View style={styles.attribution}>
             <Text style={styles.attributionText}>
-              © OpenStreetMap contributors
+              © Amap
             </Text>
           </View>
 
