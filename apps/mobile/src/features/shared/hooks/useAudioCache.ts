@@ -1,27 +1,18 @@
+import { File, Directory, Paths } from 'expo-file-system';
 import { useState, useCallback, useRef } from 'react';
 
-// Lazy-loaded expo-file-system (legacy API) — deferred until first audio cache access
-// Using legacy import to maintain compatibility with getInfoAsync/deleteAsync/makeDirectoryAsync
-let _FS: typeof import('expo-file-system/legacy') | null = null;
-function getFS() { return _FS ??= require('expo-file-system/legacy'); }
+// New expo-file-system API: File / Directory / Paths (replaces expo-file-system/legacy).
+// Remaining gap vs legacy: no resumable download. We preserve progress via XMLHttpRequest
+// (RN's fetch().body does not reliably support streaming/getReader), buffering the payload
+// then writing it with the new File API.
+const audioDir = new Directory(Paths.document, 'audio');
 
-let _audioDir: string | null = null;
-function getAudioDir(): string {
-  if (!_audioDir) _audioDir = `${getFS().documentDirectory ?? ''}audio/`;
-  return _audioDir;
+function localFile(id: string): File {
+  return new File(audioDir, `${id}.mp3`);
 }
 
 async function ensureAudioDir(): Promise<void> {
-  const FS = getFS();
-  const dir = getAudioDir();
-  const info = await FS.getInfoAsync(dir);
-  if (!info.exists) {
-    await FS.makeDirectoryAsync(dir, { intermediates: true });
-  }
-}
-
-function localPath(id: string): string {
-  return `${getAudioDir()}${id}.mp3`;
+  if (!audioDir.exists) audioDir.create({ intermediates: true });
 }
 
 export function useAudioCache() {
@@ -31,13 +22,11 @@ export function useAudioCache() {
 
   /** Returns local file URI if cached, otherwise null */
   const getCachedPath = useCallback(async (id: string): Promise<string | null> => {
-    const FS = getFS();
-    const path = localPath(id);
-    const info = await FS.getInfoAsync(path);
-    return info.exists ? path : null;
+    const file = localFile(id);
+    return file.exists ? file.uri : null;
   }, []);
 
-  /** Download audio from remote URL and cache locally */
+  /** Download audio from remote URL and cache locally (preserves progress via XHR) */
   const downloadAudio = useCallback(async (
     id: string,
     remoteUrl: string,
@@ -48,61 +37,61 @@ export function useAudioCache() {
     if (existing) return existing;
 
     const promise = (async () => {
-      const FS = getFS();
       await ensureAudioDir();
-      const dest = localPath(id);
+      const dest = localFile(id);
       setDownloading(id);
       setProgress(0);
 
-      const downloadResumable = FS.createDownloadResumable(
-        remoteUrl,
-        dest,
-        {},
-        (p: { totalBytesWritten: number; totalBytesExpectedToWrite: number }) => {
-          const fraction = p.totalBytesExpectedToWrite > 0
-            ? p.totalBytesWritten / p.totalBytesExpectedToWrite
-            : 0;
-          setProgress(fraction);
-          onProgress?.(fraction);
-        },
-      );
+      const data: ArrayBuffer = await new Promise<ArrayBuffer>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', remoteUrl);
+        xhr.responseType = 'arraybuffer';
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) resolve(xhr.response as ArrayBuffer);
+          else reject(new Error(`Download failed: HTTP ${xhr.status}`));
+        };
+        xhr.onerror = () => reject(new Error('Network error during audio download'));
+        xhr.ontimeout = () => reject(new Error('Audio download timed out'));
+        xhr.onprogress = (e: ProgressEvent) => {
+          if (e.lengthComputable && e.total > 0) {
+            const fraction = e.loaded / e.total;
+            setProgress(fraction);
+            onProgress?.(fraction);
+          }
+        };
+        xhr.send();
+      });
 
+      // Write to disk (new API, synchronous). Clean up on write failure.
       try {
-        const result = await downloadResumable.downloadAsync();
-        if (!result?.uri) throw new Error('Download returned no URI');
-        return result.uri;
-      } catch (err) {
-        // Clean up partial file
-        try {
-          const info = await FS.getInfoAsync(dest);
-          if (info.exists) await FS.deleteAsync(dest, { idempotent: true });
-        } catch {}
-        throw err;
-      } finally {
-        setDownloading(null);
-        setProgress(0);
-        activeDownloads.current.delete(id);
+        dest.write(new Uint8Array(data));
+      } catch (writeErr) {
+        if (dest.exists) dest.delete();
+        throw writeErr;
       }
+      return dest.uri;
     })();
 
-    activeDownloads.current.set(id, promise);
-    return promise;
+    // Cleanup after settle; error propagates to caller.
+    const wrapped = promise.finally(() => {
+      setDownloading(null);
+      setProgress(0);
+      activeDownloads.current.delete(id);
+    });
+
+    activeDownloads.current.set(id, wrapped);
+    return wrapped;
   }, []);
 
   /** Check if audio is cached for given id */
   const isCached = useCallback(async (id: string): Promise<boolean> => {
-    const FS = getFS();
-    const path = localPath(id);
-    const info = await FS.getInfoAsync(path);
-    return info.exists;
+    return localFile(id).exists;
   }, []);
 
   /** Remove cached audio file for given id */
   const removeCached = useCallback(async (id: string): Promise<void> => {
-    const FS = getFS();
-    const path = localPath(id);
-    const info = await FS.getInfoAsync(path);
-    if (info.exists) await FS.deleteAsync(path, { idempotent: true });
+    const file = localFile(id);
+    if (file.exists) file.delete();
   }, []);
 
   return { getCachedPath, downloadAudio, isCached, removeCached, downloading, progress };

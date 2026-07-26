@@ -1,5 +1,5 @@
 import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_SMALL, formatDate , FONT_HERO } from '@egoless-do/core';
-import * as FileSystem from 'expo-file-system/legacy';
+import { File as FSFile, Directory as FSDirectory } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { X, Download, Share2, MessageSquare } from 'lucide-react-native';
 import React, { useRef, useState, useMemo } from 'react';
@@ -72,17 +72,19 @@ export default function ShareCard({ visible, onClose, reflection, onTextShare }:
     try {
       setCapturing(true);
       const uri = await doCapture();
-      const result = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
-      if (result.granted) {
-        const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
-        const fileUri = await FileSystem.StorageAccessFramework.createFileAsync(
-          result.uri,
-          `reflection-${Date.now()}`,
-          'image/png',
-        );
-        await FileSystem.writeAsStringAsync(fileUri, base64, { encoding: FileSystem.EncodingType.Base64 });
-        Alert.alert(T('shareCardSaved'), T('shareCardSavedMsg'));
+      // New API: StorageAccessFramework is unavailable; use directory picker instead.
+      // (pickDirectoryAsync returns the base Directory type; infer rather than annotate.)
+      let dir: Awaited<ReturnType<typeof FSDirectory.pickDirectoryAsync>>;
+      try {
+        dir = await FSDirectory.pickDirectoryAsync();
+      } catch {
+        // User cancelled the picker — silently abort (legacy returned granted:false).
+        return;
       }
+      const base64 = await new FSFile(uri).base64();
+      const file = dir.createFile(`reflection-${Date.now()}.png`, 'image/png');
+      file.write(base64, { encoding: 'base64' });
+      Alert.alert(T('shareCardSaved'), T('shareCardSavedMsg'));
     } catch (e) {
       Alert.alert(T('shareCardError'), T('shareCardSaveErrorMsg'));
     } finally {

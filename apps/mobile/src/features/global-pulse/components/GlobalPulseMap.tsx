@@ -7,7 +7,8 @@ import {
   Text,
   ActivityIndicator,
 } from 'react-native';
-import { MapView, Marker } from 'react-native-amap3d';
+import { MapView, Marker, type CameraPosition, type LatLngBounds } from 'react-native-amap3d';
+import type { NativeSyntheticEvent } from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';
 import { useActiveSessions } from '../hooks/useActiveSessions';
@@ -35,6 +36,8 @@ interface GlobalPulseMapProps {
   showInlineLeaderboard?: boolean;
 }
 
+type MapViewHandle = React.ElementRef<typeof MapView>;
+
 export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
   onClose,
   type,
@@ -43,7 +46,7 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
 }) => {
   const theme = useTheme();
   const t = useT();
-  const mapRef = useRef<any>(null);
+  const mapRef = useRef<MapViewHandle>(null);
 
   const {
     checkins,
@@ -235,7 +238,7 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
             ref={mapRef}
             style={showInlineLeaderboard ? styles.inlineMap : styles.map}
             initialCameraPosition={{ target: DEFAULT_REGION, zoom: 4 }}
-            onCameraIdle={(e: any) => handleRegionChange(Math.round(e.nativeEvent.cameraPosition.zoom ?? 4))}
+            onCameraIdle={(e: NativeSyntheticEvent<{ cameraPosition: CameraPosition; latLngBounds: LatLngBounds }>) => handleRegionChange(Math.round(e.nativeEvent.cameraPosition.zoom ?? 4))}
             myLocationEnabled={false}
             myLocationButtonEnabled={false}
             compassEnabled={true}

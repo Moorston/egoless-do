@@ -1,26 +1,28 @@
 import { BUILTIN_TRACKS, createLogger } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
-import * as FileSystem from 'expo-file-system/legacy';
+import { File, Directory, Paths } from 'expo-file-system';
 import { create } from 'zustand';
 
 const log = createLogger('Music');
 
 // ── File-based JSON storage (replaces AsyncStorage) ─────────────────
-const MUSIC_DATA_DIR = `${FileSystem.documentDirectory}music-data/`;
+const musicDataDir = new Directory(Paths.document, 'music-data');
 async function ensureMusicDataDir() {
-  const dirInfo = await FileSystem.getInfoAsync(MUSIC_DATA_DIR);
-  if (!dirInfo.exists) await FileSystem.makeDirectoryAsync(MUSIC_DATA_DIR, { intermediates: true });
+  if (!musicDataDir.exists) musicDataDir.create({ intermediates: true });
 }
 async function writeJsonFile(filename: string, data: unknown): Promise<void> {
   try {
-    await ensureMusicDataDir();
-    await FileSystem.writeAsStringAsync(`${MUSIC_DATA_DIR}${filename}`, JSON.stringify(data), { encoding: FileSystem.EncodingType.UTF8 });
+    ensureMusicDataDir();
+    const file = new File(musicDataDir, filename);
+    file.write(JSON.stringify(data), { encoding: 'utf8' });
   } catch (e) { log.warn(`Failed to write ${filename}:`, (e as Error)?.message); }
 }
 async function readJsonFile<T>(filename: string): Promise<T | null> {
   try {
-    await ensureMusicDataDir();
-    const raw = await FileSystem.readAsStringAsync(`${MUSIC_DATA_DIR}${filename}`, { encoding: FileSystem.EncodingType.UTF8 });
+    ensureMusicDataDir();
+    const file = new File(musicDataDir, filename);
+    if (!file.exists) return null;
+    const raw = await file.text();
     return JSON.parse(raw) as T;
   } catch { return null; }
 }
@@ -42,7 +44,7 @@ const LIBRARY: MusicTrack[] = BUILTIN_TRACKS.map(t => ({
   file: BUILTIN_FILES[t.id] ?? 0,
 }));
 
-const USER_MUSIC_DIR = `${FileSystem.documentDirectory}user-music/`;
+const userMusicDir = new Directory(Paths.document, 'user-music');
 
 // Module-level timer ref (non-serializable, not in store)
 let sleepTimerRef: ReturnType<typeof setInterval> | null = null;
@@ -176,23 +178,20 @@ export const useMusicStore = create<MusicState>((set, get) => ({
   addUserTrack: async (name, uri) => {
     try {
       // 确保目录存在
-      const dirInfo = await FileSystem.getInfoAsync(USER_MUSIC_DIR);
-      if (!dirInfo.exists) {
-        await FileSystem.makeDirectoryAsync(USER_MUSIC_DIR, { intermediates: true });
-      }
+      if (!userMusicDir.exists) userMusicDir.create({ intermediates: true });
       // 生成唯一文件名
       const parts = name.split('.');
       const ext = parts.length > 1 ? parts[parts.length - 1] : 'mp3';
       const id = `user_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-      const destUri = `${USER_MUSIC_DIR}${id}.${ext}`;
-      await FileSystem.copyAsync({ from: uri, to: destUri });
+      const destFile = new File(userMusicDir, `${id}.${ext}`);
+      new File(uri).copy(destFile);
 
       const track: MusicTrack = {
         id,
         name: name.replace(/\.[^.]+$/, ''),
         nameEn: name.replace(/\.[^.]+$/, ''),
         category: 'user',
-        uri: destUri,
+        uri: destFile.uri,
       };
 
       const updated = [...get().userTracks, track];
@@ -209,8 +208,8 @@ export const useMusicStore = create<MusicState>((set, get) => ({
       const currentTracks = get().userTracks;
       const track = currentTracks.find(t => t.id === id);
       if (track?.uri) {
-        const info = await FileSystem.getInfoAsync(track.uri);
-        if (info.exists) await FileSystem.deleteAsync(track.uri);
+        const file = new File(track.uri);
+        if (file.exists) file.delete();
       }
       const updated = currentTracks.filter(t => t.id !== id);
       set({ userTracks: updated });
@@ -235,8 +234,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
         for (const t of tracks) {
           try {
             if (t.uri) {
-              const info = await FileSystem.getInfoAsync(t.uri);
-              if (info.exists) valid.push(t);
+              if (new File(t.uri).exists) valid.push(t);
             } else {
               valid.push(t);
             }
