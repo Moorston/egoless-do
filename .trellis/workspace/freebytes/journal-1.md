@@ -1787,3 +1787,36 @@ StatsScreen计划任务进度改为countItemDoneDays动态计算；补全planIte
 ### Next Steps
 
 - None - task complete
+
+
+## Session 51: Android 构建稳定性 + 地图库迁移 (amap3d)
+
+**Date**: 2026-07-26
+**Task**: Android 构建稳定性 + 地图库迁移 (amap3d)
+**Branch**: `master`
+
+### Summary
+
+系统性分析 Android 构建问题的根因（SDK 57 模块错配，非 Fabric 问题），确认 newArchEnabled=true 安全。整合地图库，移除 react-native-maps，将 GlobalPulseMap 迁移到 react-native-amap3d。修复 Android 12+ 备份规则（创建 secure_store_backup_rules.xml），添加 .kotlin/ 到 .gitignore。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `9075cbc5` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
