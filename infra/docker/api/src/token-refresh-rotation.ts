@@ -247,7 +247,7 @@ export async function initRefreshTokenCollection(): Promise<void> {
             { name: 'expires_at', type: 'number', required: true },
             { name: 'created_at', type: 'number', required: true },
             { name: 'used_at', type: 'number' },
-            { name: 'is_revoked', type: 'bool', required: true },
+            { name: 'is_revoked', type: 'bool' },
           ],
           listRule: null,  // 禁止公开列出
           viewRule: '@request.auth.id != "" && user_id = @request.auth.id',  // 仅本人可读

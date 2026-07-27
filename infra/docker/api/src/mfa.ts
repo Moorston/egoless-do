@@ -262,7 +262,7 @@ export async function initMFACollection(): Promise<void> {
           fields: [
             { name: 'user_id', type: 'text', required: true },
             { name: 'secret', type: 'text', required: true },
-            { name: 'enabled', type: 'bool', required: true },
+            { name: 'enabled', type: 'bool' },
             { name: 'backup_codes', type: 'json' },
             { name: 'created_at', type: 'number', required: true },
             { name: 'updated_at', type: 'number', required: true },

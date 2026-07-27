@@ -179,7 +179,7 @@ export async function initAuditLogCollection(): Promise<void> {
             { name: 'user_agent', type: 'text', required: true },
             { name: 'timestamp', type: 'number', required: true },
             { name: 'details', type: 'text' },
-            { name: 'success', type: 'bool', required: true },
+            { name: 'success', type: 'bool' },
           ],
           listRule: null,  // 禁止公开列出（仅管理员可通过API查询）
           viewRule: null,  // 禁止公开查看
