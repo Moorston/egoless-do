@@ -3,7 +3,9 @@ FROM node:22-alpine AS base
 FROM base AS deps
 WORKDIR /app
 COPY package.json ./
-RUN npm install
+RUN apk add --no-cache python3 build-base && \
+    npm install && \
+    apk del python3 build-base
 
 FROM base AS runner
 WORKDIR /app
