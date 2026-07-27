@@ -8,7 +8,7 @@
     "preview": {
       "distribution": "internal",
       "ios":     { "simulator": false },
-      "android": { "buildType": "apk" },
+      "android": { "buildType": "apk", "gradleCommand": ":app:assembleRelease --no-configuration-cache" },
       "cache": {
         "key": "sdk54-rn81-v2",
         "paths": ["node_modules/**"]
@@ -16,8 +16,7 @@
       "env": {
         "SENTRY_DISABLE_AUTO_UPLOAD": "true",
         "EXPO_NO_METRO_WORKSPACE_ROOT": "true"
-      },
-      "gradleCommand": ":app:assembleRelease --no-configuration-cache"
+      }
     },
     "production": {
       "ios":     { "autoIncrement": true },
