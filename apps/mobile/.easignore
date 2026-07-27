@@ -1,0 +1,19 @@
+# Android local SDK path (platform-specific, breaks EAS Linux builds)
+android/local.properties
+
+# Build artifacts
+android/.gradle/
+android/app/build/
+android/build/
+node_modules/.cache/
+
+# IDE
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Archive
+_archive/
