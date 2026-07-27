@@ -73,17 +73,14 @@ if [ -z "$PB_ADMIN_PASSWORD" ]; then
 fi
 
 # ─── 导入流程 ────────────────────────────────────────────────────
-# 注意：PocketBase 容器未暴露端口到宿主机，需要通过 docker exec 访问
+# PocketBase 端口已暴露到宿主机（8090），直接通过 curl 访问
 
 echo ""
 info "1/3 登录 PocketBase 获取 token..."
 
-# 在容器内用 curl 登录
-LOGIN_CMD="curl -s -X POST http://localhost:8090/api/collections/_superusers/auth-with-password \
-  -H 'Content-Type: application/json' \
-  -d '{\"identity\":\"${PB_ADMIN_EMAIL}\",\"password\":\"${PB_ADMIN_PASSWORD}\"}'"
-
-LOGIN_RESPONSE=$(docker exec "${PB_CONTAINER}" sh -c "$LOGIN_CMD" 2>&1)
+LOGIN_RESPONSE=$(curl -s -X POST "http://localhost:8090/api/collections/_superusers/auth-with-password" \
+  -H "Content-Type: application/json" \
+  -d "{\"identity\":\"${PB_ADMIN_EMAIL}\",\"password\":\"${PB_ADMIN_PASSWORD}\"}")
 EXIT_CODE=$?
 
 if [ $EXIT_CODE -ne 0 ]; then
@@ -120,19 +117,57 @@ info "   ✓ 登录成功"
 
 # ─── 导入集合 ────────────────────────────────────────────────────
 echo ""
-info "2/3 导入 schema..."
+info "2/3 逐个创建集合（${SCHEMA_FILE}）..."
 
-# 把 schema 文件复制到容器内
-docker cp "$SCHEMA_FILE" "${PB_CONTAINER}:/tmp/schema.json" 2>/dev/null || {
-  # 如果 docker cp 失败，用 cat 管道
-  cat "$SCHEMA_FILE" | docker exec -i "${PB_CONTAINER}" sh -c "cat > /tmp/schema.json"
+# 用 node 逐个 POST 创建（PocketBase 0.38.x 不支持批量 PUT）
+IMPORT_RESULT=$(node -e "
+const fs = require('fs');
+const http = require('http');
+const collections = JSON.parse(fs.readFileSync('${SCHEMA_FILE}', 'utf8'));
+const token = '${TOKEN}';
+let i = 0, ok = 0, fail = 0, skip = 0, errors = [];
+
+function next() {
+  if (i >= collections.length) {
+    let msg = 'OK:' + ok + ' created, ' + skip + ' exists, ' + fail + ' failed';
+    if (errors.length > 0) msg += ' | Errors: ' + errors.join('; ');
+    console.log(msg);
+    return;
+  }
+  const c = collections[i++];
+  const body = JSON.stringify(c);
+  const req = http.request({
+    hostname: 'localhost', port: 8090, path: '/api/collections', method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(body)
+    }
+  }, res => {
+    let d = '';
+    res.on('data', chunk => d += chunk);
+    res.on('end', () => {
+      if (res.statusCode === 200 || res.statusCode === 201) {
+        console.log('  ✓ ' + c.name);
+        ok++;
+      } else if (d.includes('already exists')) {
+        console.log('  - ' + c.name + ' (已存在)');
+        skip++;
+      } else {
+        let err = d.substring(0, 100);
+        console.log('  ✗ ' + c.name + ': ' + err);
+        fail++;
+        errors.push(c.name + '=' + err);
+      }
+      next();
+    });
+  });
+  req.on('error', e => { console.log('  ✗ ' + c.name + ': ' + e.message); fail++; errors.push(c.name + '=' + e.message); next(); });
+  req.write(body);
+  req.end();
 }
-
-IMPORT_RESPONSE=$(docker exec "${PB_CONTAINER}" sh -c "
-  curl -s -X PUT http://localhost:8090/api/collections \
-    -H 'Authorization: Bearer ${TOKEN}' \
-    -H 'Content-Type: application/json' \
-    -d @/tmp/schema.json
+console.log('创建 ' + collections.length + ' 个集合...');
+next();
 " 2>&1)
 
 # 解析导入结果
@@ -159,53 +194,25 @@ IMPORT_RESULT=$(echo "$IMPORT_RESPONSE" | node -e "
 " 2>&1)
 
 if echo "$IMPORT_RESULT" | grep -q "^OK:"; then
-  COUNT=$(echo "$IMPORT_RESULT" | head -1 | cut -d: -f2)
+  echo ""
   echo "$IMPORT_RESULT" | grep '  ✓'
-  info "✅ 导入成功！共 ${COUNT} 个集合"
-else
+  echo ""
+  info "✅ 导入完成！"
+elif echo "$IMPORT_RESULT" | grep -q "^ERR:"; then
   ERR_MSG=$(echo "$IMPORT_RESULT" | sed 's/^ERR://')
-  error "批量导入失败: ${ERR_MSG}"
-
-  echo ""
-  info "尝试逐个创建集合（跳过已存在的）..."
-
-  # 逐个创建
-  COLLECTION_COUNT=$(node -e "console.log(JSON.parse(require('fs').readFileSync('${SCHEMA_FILE}','utf8')).length)")
-  SUCCESS=0
-  FAIL=0
-
-  for i in $(seq 0 $((COLLECTION_COUNT - 1))); do
-    COLLECTION_JSON=$(node -e "console.log(JSON.stringify(JSON.parse(require('fs').readFileSync('${SCHEMA_FILE}','utf8'))[${i}]))")
-
-    CREATE_RESPONSE=$(docker exec "${PB_CONTAINER}" sh -c "
-      curl -s -X POST http://localhost:8090/api/collections \
-        -H 'Authorization: Bearer ${TOKEN}' \
-        -H 'Content-Type: application/json' \
-        -d '${COLLECTION_JSON}'
-    " 2>&1)
-
-    COLLECTION_NAME=$(echo "$COLLECTION_JSON" | node -e "process.stdin.on('data',d=>console.log(JSON.parse(d).name))")
-
-    if echo "$CREATE_RESPONSE" | node -e "process.stdin.on('data',d=>{try{const r=JSON.parse(d);process.exit(r.id?0:1)}catch{process.exit(1)}})" 2>/dev/null; then
-      echo "  ✓ ${COLLECTION_NAME}"
-      SUCCESS=$((SUCCESS + 1))
-    else
-      echo "  ✗ ${COLLECTION_NAME}: $(echo "$CREATE_RESPONSE" | node -e "process.stdin.on('data',d=>{try{const r=JSON.parse(d);console.log(r.message)}catch(e){console.log(d.toString().substring(0,80))}})" 2>/dev/null)"
-      FAIL=$((FAIL + 1))
-    fi
-  done
-
-  echo ""
-  info "逐个创建完成: ${SUCCESS} 成功, ${FAIL} 失败"
+  error "导入失败: ${ERR_MSG}"
+else
+  echo "$IMPORT_RESULT"
+  info "✅ 导入完成"
 fi
 
 # ─── 验证 ─────────────────────────────────────────────────────────
 echo ""
 info "3/3 验证集合..."
 
-VERIFY_RESPONSE=$(docker exec "${PB_CONTAINER}" sh -c "
-  curl -s http://localhost:8090/api/collections \
-    -H 'Authorization: Bearer ${TOKEN}' | node -e \"process.stdin.on('data',d=>{try{const r=JSON.parse(d);console.log('总数: ' + (r.totalItems||r.items.length))}catch{console.log('解析失败')}})\"
+VERIFY_RESPONSE=$(curl -s "http://localhost:8090/api/collections" \
+  -H "Authorization: Bearer ${TOKEN}" | node -e "
+process.stdin.on('data',d=>{try{const r=JSON.parse(d);console.log('集合总数: ' + (r.totalItems||r.items.length))}catch{console.log('解析失败')}})
 " 2>&1)
 
 info "$VERIFY_RESPONSE"
