@@ -56,19 +56,11 @@ if [ ! -f "$SCHEMA_FILE" ]; then
 fi
 info "✓ Schema 文件已就绪"
 
-# 3. 从 .env 读取管理员账号密码
-ENV_FILE=".env"
-[ -f "infra/docker/.env" ] && ENV_FILE="infra/docker/.env"
+# 3. 管理员账号密码（写死）
+PB_ADMIN_EMAIL="admin@egoless.do"
+PB_ADMIN_PASSWORD="QaihX1gzWoKvj8PqEPbFUtXx"
 
-PB_ADMIN_EMAIL=$(grep -oE 'PB_ADMIN_EMAIL=\S+' "$ENV_FILE" 2>/dev/null | cut -d= -f2)
-PB_ADMIN_PASSWORD=$(grep -oE 'PB_ADMIN_PASSWORD=\S+' "$ENV_FILE" 2>/dev/null | cut -d= -f2)
-
-if [ -z "$PB_ADMIN_EMAIL" ] || [ -z "$PB_ADMIN_PASSWORD" ]; then
-  error "在 ${ENV_FILE} 中未找到 PB_ADMIN_EMAIL 或 PB_ADMIN_PASSWORD"
-  exit 1
-fi
-
-info "使用 ${ENV_FILE} 中的管理员账号: ${PB_ADMIN_EMAIL}"
+info "管理员账号: ${PB_ADMIN_EMAIL}"
 
 # ─── 导入流程 ────────────────────────────────────────────────────
 # PocketBase 端口已暴露到宿主机（8090），直接通过 curl 访问
