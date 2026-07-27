@@ -16,7 +16,8 @@
       "env": {
         "SENTRY_DISABLE_AUTO_UPLOAD": "true",
         "EXPO_NO_METRO_WORKSPACE_ROOT": "true",
-        "EAS_SKIP_AUTO_FINGERPRINT": "1"
+        "EAS_SKIP_AUTO_FINGERPRINT": "1",
+        "EXPO_USE_COMMUNITY_AUTOLINKING": "1"
       }
     },
     "production": {
