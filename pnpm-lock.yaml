@@ -14,7 +14,7 @@ overrides:
 
 patchedDependencies:
   react-native-amap3d@3.2.4:
-    hash: 5qhp5r3zvh3lxgfqd6q5yb25ca
+    hash: prq6yp45tven53x6fiwlzn5bom
     path: patches/react-native-amap3d@3.2.4.patch
 
 importers:
@@ -183,7 +183,7 @@ importers:
         version: 0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0)
       react-native-amap3d:
         specifier: ^3.2.4
-        version: 3.2.4(patch_hash=5qhp5r3zvh3lxgfqd6q5yb25ca)
+        version: 3.2.4(patch_hash=prq6yp45tven53x6fiwlzn5bom)
       react-native-gesture-handler:
         specifier: ~2.28.0
         version: 2.28.0(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -9694,7 +9694,7 @@ snapshots:
 
   react-is@19.2.7: {}
 
-  react-native-amap3d@3.2.4(patch_hash=5qhp5r3zvh3lxgfqd6q5yb25ca):
+  react-native-amap3d@3.2.4(patch_hash=prq6yp45tven53x6fiwlzn5bom):
     dependencies:
       supercluster: 7.1.5
 

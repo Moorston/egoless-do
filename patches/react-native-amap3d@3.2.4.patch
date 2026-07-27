@@ -1,5 +1,5 @@
 diff --git a/lib/android/build.gradle b/lib/android/build.gradle
-index a6e84de6f0d80babd7d512ddb54b163dec45a82f..a509e92af6cc3eb1ce7e0edebf7e9eeda3aa9c32 100644
+index a6e84de6f0d80babd7d512ddb54b163dec45a82f..4a8f8de272f14f43599498d633ba551c75df6e6b 100644
 --- a/lib/android/build.gradle
 +++ b/lib/android/build.gradle
 @@ -5,30 +5,20 @@ def getExt(prop, fallback) {
@@ -17,19 +17,19 @@ index a6e84de6f0d80babd7d512ddb54b163dec45a82f..a509e92af6cc3eb1ce7e0edebf7e9eed
 -        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 -    }
 -}
-+def kotlin_version = getExt('kotlinVersion', '2.0.21')
++def kotlin_version = getExt('kotlin', '2.1.20')
  
  android {
 -    compileSdkVersion getExt('compileSdkVersion', 33)
 -    buildToolsVersion getExt('buildToolsVersion', '33.0.0')
-+    compileSdkVersion getExt('compileSdkVersion', 35)
-+    buildToolsVersion getExt('buildToolsVersion', '35.0.0')
++    compileSdkVersion getExt('compileSdk', 36)
++    buildToolsVersion getExt('buildTools', '36.0.0')
  
      defaultConfig {
 -        minSdkVersion getExt('minSdkVersion', 21)
 -        targetSdkVersion getExt('targetSdkVersion', 33)
-+        minSdkVersion getExt('minSdkVersion', 24)
-+        targetSdkVersion getExt('targetSdkVersion', 35)
++        minSdkVersion getExt('minSdk', 24)
++        targetSdkVersion getExt('targetSdk', 36)
      }
  }
  
