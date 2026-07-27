@@ -48,6 +48,22 @@ services:
     networks:
       - egoless-net
 
+  # ─── Nginx 反向代理 ─────────────────────────────────────────
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: egoless-do-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ../nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - auth-api
+    networks:
+      - egoless-net
+
   # ─── 数据库自动备份 ──────────────────────────────────────────
   backup:
     image: alpine:3.19
