@@ -2,6 +2,17 @@ apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
+/**
+ * Helper to run a node command with providers.exec (configuration-cache compatible).
+ * Unlike .execute(), providers.exec is tracked by the configuration cache.
+ */
+def nodeExec(List<String> args) {
+    return providers.exec {
+        commandLine(args)
+        workingDir(rootDir)
+    }.standardOutput.asText.get().trim()
+}
+
 def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
 
 /**
@@ -9,15 +20,15 @@ def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
  * By default you don't need to apply any configuration, just uncomment the lines you need.
  */
 react {
-    entryFile = file(["node", "-e", "require('expo/scripts/resolveAppEntry')", projectRoot, "android", "absolute"].execute(null, rootDir).text.trim())
-    reactNativeDir = new File(["node", "--print", "require.resolve('react-native/package.json')"].execute(null, rootDir).text.trim()).getParentFile().getAbsoluteFile()
-    hermesCommand = new File(["node", "--print", "require.resolve('react-native/package.json')"].execute(null, rootDir).text.trim()).getParentFile().getAbsolutePath() + "/sdks/hermesc/%OS-BIN%/hermesc"
-    codegenDir = new File(["node", "--print", "require.resolve('@react-native/codegen/package.json', { paths: [require.resolve('react-native/package.json')] })"].execute(null, rootDir).text.trim()).getParentFile().getAbsoluteFile()
+    entryFile = file(nodeExec(["node", "-e", "require('expo/scripts/resolveAppEntry')", projectRoot, "android", "absolute"]))
+    reactNativeDir = new File(nodeExec(["node", "--print", "require.resolve('react-native/package.json')"])).getParentFile().getAbsoluteFile()
+    hermesCommand = new File(nodeExec(["node", "--print", "require.resolve('react-native/package.json')"])).getParentFile().getAbsolutePath() + "/sdks/hermesc/%OS-BIN%/hermesc"
+    codegenDir = new File(nodeExec(["node", "--print", "require.resolve('@react-native/codegen/package.json', { paths: [require.resolve('react-native/package.json')] })"])).getParentFile().getAbsoluteFile()
 
     enableBundleCompression = (findProperty('android.enableBundleCompression') ?: false).toBoolean()
     // Use Expo CLI to bundle the app, this ensures the Metro config
     // works correctly with Expo projects.
-    cliFile = new File(["node", "--print", "require.resolve('@expo/cli', { paths: [require.resolve('expo/package.json')] })"].execute(null, rootDir).text.trim())
+    cliFile = new File(nodeExec(["node", "--print", "require.resolve('@expo/cli', { paths: [require.resolve('expo/package.json')] })"]))
     bundleCommand = "export:embed"
 
     /* Folders */
@@ -81,7 +92,7 @@ def enableMinifyInReleaseBuilds = (findProperty('android.enableMinifyInReleaseBu
  */
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
-apply from: new File(["node", "--print", "require('path').dirname(require.resolve('@sentry/react-native/package.json'))"].execute().text.trim(), "sentry.gradle.kts")
+apply from: new File(nodeExec(["node", "--print", "require('path').dirname(require.resolve('@sentry/react-native/package.json'))"]), "sentry.gradle.kts")
 
 android {
     ndkVersion rootProject.ext.ndkVersion
