@@ -5,6 +5,7 @@ import { openDatabase, withDbLock, getState, setState } from '../db/schema';
 
 import { WriteBatcher } from './WriteBatcher';
 import { ENTITY_TABLE_MAP } from './entityTableMap';
+import { saveDataToFile, markDeleteInFile } from './fileStorage';
 
 const log = createLogger('StorageAdapter');
 
@@ -53,16 +54,20 @@ export const mobileStorageAdapter: StorageAdapter = {
   async persistChange<K extends SyncEntity>(entity: K, id: string, data: SyncDataMap[K]): Promise<void> {
     _batcher.write(entity, id, data as Record<string, unknown>);
     // Flush immediately to prevent data loss on app kill
-    // The 100ms debounce in WriteBatcher can lose data if the app is
-    // force-killed before the timer fires. Immediate flush ensures
-    // every write lands in SQLite before the Promise resolves.
-    await _batcher.flushNow();
+    try {
+      await _batcher.flushNow();
+    } catch (e) {
+      log.warn(`SQLite flush failed for ${entity}/${id}, falling back to file storage`);
+    }
+    // 同时写入文件作为备份（不依赖 SQLite 是否成功）
+    await saveDataToFile(entity, id, data as Record<string, unknown>);
   },
 
   async markDeleted(entity: SyncEntity, id: string) {
     _registerLocalDelete?.(entity, id);
     _batcher.markDeleted(entity, id);
-    await _batcher.flushNow();
+    await _batcher.flushNow().catch(() => {});
+    await markDeleteInFile(entity, id);
   },
 
   async batchDelete(operations: Array<{ entity: SyncEntity; id: string }>) {

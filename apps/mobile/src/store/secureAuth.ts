@@ -1,11 +1,11 @@
 // ─── Secure Auth Token Storage ────────────────────────────────────
-// 三层持久化：SecureStore → SQLite → 文件系统
+// 四层持久化：SecureStore → SQLite → 文件系统(JSON) → 内存
 // 确保任何一层失败都不会导致 token 丢失
 import { createLogger } from '@egoless-do/core';
 import * as SecureStore from 'expo-secure-store';
-import * as FileSystem from 'expo-file-system';
 
 import { openDatabase, setState, getState } from '../db/schema';
+import { saveTokenToFile, loadTokenFromFile, clearTokenFile } from './fileStorage';
 
 const log = createLogger('SecureAuth');
 
@@ -18,52 +18,13 @@ const SQLITE_TOKEN_KEY = 'auth_token_backup';
 const SQLITE_REFRESH_KEY = 'auth_refresh_backup';
 const SQLITE_EXPIRES_KEY = 'auth_expires_backup';
 
-/** 文件系统回退路径 */
-const FILE_TOKEN_PATH = FileSystem.documentDirectory + 'auth_token.txt';
-const FILE_REFRESH_PATH = FileSystem.documentDirectory + 'auth_refresh.txt';
-const FILE_EXPIRES_PATH = FileSystem.documentDirectory + 'auth_expires.txt';
-
 /** 判断是否为 iOS "User interaction is not allowed" 错误 */
 function isUserInteractionError(err: unknown): boolean {
   const msg = err instanceof Error ? err.message : String(err);
   return msg.includes('User interaction is not allowed') || msg.includes('user interaction');
 }
 
-/** 写入文件系统回退 */
-async function writeFileFallback(key: string, value: string): Promise<void> {
-  try {
-    await FileSystem.writeAsStringAsync(key, value, { encoding: FileSystem.EncodingType.UTF8 });
-  } catch (e) {
-    log.warn('File fallback write failed:', e instanceof Error ? e.message : String(e));
-  }
-}
-
-/** 读取文件系统回退 */
-async function readFileFallback(key: string): Promise<string | null> {
-  try {
-    const info = await FileSystem.getInfoAsync(key);
-    if (info.exists) {
-      return await FileSystem.readAsStringAsync(key, { encoding: FileSystem.EncodingType.UTF8 });
-    }
-  } catch (e) {
-    log.warn('File fallback read failed:', e instanceof Error ? e.message : String(e));
-  }
-  return null;
-}
-
-/** 删除文件系统回退 */
-async function deleteFileFallback(key: string): Promise<void> {
-  try {
-    const info = await FileSystem.getInfoAsync(key);
-    if (info.exists) {
-      await FileSystem.deleteAsync(key, { idempotent: true });
-    }
-  } catch (e) {
-    // 忽略删除错误
-  }
-}
-
-/** Save auth tokens to SecureStore + SQLite + 文件系统回退 */
+/** Save auth tokens to all available storage layers */
 export async function saveSecureTokens(token: string, refreshToken: string, expiresAt?: number): Promise<void> {
   const expiresStr = expiresAt ? String(expiresAt) : '';
   const errors: string[] = [];
@@ -91,12 +52,8 @@ export async function saveSecureTokens(token: string, refreshToken: string, expi
     errors.push('SQLite: ' + (e instanceof Error ? e.message : String(e)));
   }
 
-  // 3. 文件系统回退（最后防线）
-  await Promise.all([
-    writeFileFallback(FILE_TOKEN_PATH, token),
-    writeFileFallback(FILE_REFRESH_PATH, refreshToken),
-    ...(expiresAt ? [writeFileFallback(FILE_EXPIRES_PATH, expiresStr)] : []),
-  ]);
+  // 3. 文件系统 JSON 回退（最后防线）- 使用 fileStorage 模块
+  await saveTokenToFile(token, refreshToken, expiresAt);
 
   if (errors.length > 0) {
     log.warn('saveSecureTokens partial failure: ' + errors.join(' | '));
@@ -141,25 +98,12 @@ export async function loadSecureTokens(): Promise<{ token: string; refreshToken:
     log.warn('SQLite fallback failed:', e instanceof Error ? e.message : String(e));
   }
 
-  // 3. 文件系统回退（最后防线）
-  try {
-    const [token, refreshToken, expiresAtStr] = await Promise.all([
-      readFileFallback(FILE_TOKEN_PATH),
-      readFileFallback(FILE_REFRESH_PATH),
-      readFileFallback(FILE_EXPIRES_PATH),
-    ]);
-    if (token && refreshToken) {
-      const result: { token: string; refreshToken: string; expiresAt?: number } = { token, refreshToken };
-      const expiresAt = expiresAtStr ? parseInt(expiresAtStr, 10) : 0;
-      if (expiresAt > 0) result.expiresAt = expiresAt;
-      log.info('Auth tokens restored from file system fallback');
-      return result;
-    }
-  } catch (e) {
-    log.warn('File system fallback failed:', e instanceof Error ? e.message : String(e));
+  // 3. 文件系统 JSON 回退（最后防线）
+  const fileResult = await loadTokenFromFile();
+  if (fileResult) {
+    log.info('Auth tokens restored from file system fallback');
   }
-
-  return null;
+  return fileResult;
 }
 
 /** 带重试的 loadSecureTokens：所有错误都返回 null 而非抛出 */
@@ -204,9 +148,5 @@ export async function clearSecureTokens(): Promise<void> {
   }
 
   // 清除文件系统
-  await Promise.all([
-    deleteFileFallback(FILE_TOKEN_PATH),
-    deleteFileFallback(FILE_REFRESH_PATH),
-    deleteFileFallback(FILE_EXPIRES_PATH),
-  ]);
+  await clearTokenFile();
 }
