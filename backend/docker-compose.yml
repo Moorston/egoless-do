@@ -15,6 +15,7 @@ services:
       - ./pb_hooks:/pb/pb_hooks
     environment:
       - PB_ENCRYPTION_KEY=${PB_ENCRYPTION_KEY:?PB_ENCRYPTION_KEY must be set}
+      - TZ=Asia/Shanghai
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8090/api/health"]
       interval: 30s
