@@ -3,7 +3,9 @@ import { createLogger } from '@egoless-do/core';
 
 import { openDatabase, withDbLock } from '../db/schema';
 import { SYNC_QUEUE_UPSERT_SQL } from '../db/sqlHelper';
+
 import { ENTITY_TABLE_MAP } from './entityTableMap';
+import { isNotNullConstraintError, decideNotNullRetry } from './flushPolicy';
 
 const log = createLogger('Sync');
 
@@ -22,6 +24,9 @@ export class WriteBatcher {
   private _onFlushed: (() => void) | null = null;
   private _onPersistError: ((error: Error, entity: string, id: string) => void) | null = null;
   private _retryCount = 0;
+  // Counts consecutive NOT NULL failures per key so we surface the error once
+  // and then stop retrying (instead of dropping the record silently on the 1st try).
+  private _notNullAttempts = new Map<string, number>();
 
   constructor(flushDelayMs = 250, onFlushed?: () => void, onPersistError?: (error: Error, entity: string, id: string) => void) {
     this._flushDelayMs = flushDelayMs;
@@ -94,6 +99,9 @@ export class WriteBatcher {
     // doesn't carry) can't be fixed by retrying — drop them individually instead
     // of discarding the whole batch.
     const failedKeys = new Set<string>();
+    // Keys that failed with NOT NULL — kept in the pending queue for retry
+    // (see the NOT NULL branch above) and therefore must NOT be deleted.
+    const notNullKeys = new Set<string>();
     try {
       await withDbLock(async () => {
         for (const w of writes) {
@@ -165,27 +173,49 @@ export class WriteBatcher {
             // pending writes (M-3). Transient errors (disk I/O, mid-write crash)
             // still propagate to the per-item fallback so the M-1 no-data-without-
             // queue guarantee holds.
-            if (msg.includes('NOT NULL constraint')) {
-              log.error(txErr, { entity: w.entity, id: w.id, phase: 'flush-notnull' });
-              if (this._onPersistError) {
-                this._onPersistError(
-                  txErr instanceof Error ? txErr : new Error(msg),
-                  w.entity,
-                  w.id,
-                );
+            if (isNotNullConstraintError(msg)) {
+              // A NOT NULL failure means an entity's toRow() omits a required column.
+              // Previously this record was dropped from the batch on the 1st failure,
+              // so the data existed only in memory and was lost when the app was killed
+              // (and was never queued for sync). Now we KEEP it in the pending queue so
+              // it is retried and surfaced, rather than silently discarded.
+              const prev = this._notNullAttempts.get(key) ?? 0;
+              const decision = decideNotNullRetry(prev);
+              this._notNullAttempts.set(key, decision.nextAttempts);
+              if (decision.action === 'report') {
+                // Surface only on the first failure to avoid log spam; the dev must fix
+                // the missing column in the entity's toRow().
+                log.error(txErr, { entity: w.entity, id: w.id, phase: 'flush-notnull' });
+                if (this._onPersistError) {
+                  this._onPersistError(
+                    txErr instanceof Error ? txErr : new Error(msg),
+                    w.entity,
+                    w.id,
+                  );
+                }
+              } else if (decision.action === 'giveup') {
+                // Give up after NOT_NULL_MAX_ATTEMPTS to avoid an endless retry loop, but log it.
+                log.error(txErr, { entity: w.entity, id: w.id, phase: 'flush-notnull-giveup' });
+                failedKeys.add(key);
+                this._notNullAttempts.delete(key);
+                continue;
               }
-              failedKeys.add(key);
+              notNullKeys.add(key); // keep pending for retry; not dropped
               continue;
             }
             throw txErr; // transient → outer per-item fallback path
           }
         }
+        // Force WAL pages back into the main DB file so a process kill (common on
+        // MIUI) cannot drop un-checkpointed commits.
+        try { await db.execAsync('PRAGMA wal_checkpoint(TRUNCATE)'); } catch { /* best-effort */ }
       });
       // Only remove entries that weren't merged with new data during flush,
       // plus records that failed deterministically (reported and dropped above).
+      // NOT NULL keys are intentionally retained so they are retried next flush.
       for (const k of keys) {
         if (this._pendingWrites.get(k) === snapRefs.get(k) || failedKeys.has(k)) {
-          this._pendingWrites.delete(k);
+          if (!notNullKeys.has(k)) this._pendingWrites.delete(k);
         }
       }
       this._retryCount = 0;
@@ -237,6 +267,7 @@ export class WriteBatcher {
             }
           }
         }
+        try { await db.execAsync('PRAGMA wal_checkpoint(TRUNCATE)'); } catch { /* best-effort */ }
       });
       if (allFallbacksOk) {
         // All fallback writes succeeded — remove entries not merged with new data

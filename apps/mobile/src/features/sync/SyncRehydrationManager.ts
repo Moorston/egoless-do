@@ -123,25 +123,32 @@ export class SyncRehydrationManager {
     log.debug('[rehydrateFromDb] mantraDefs rows: ' + (patch.mantraDefs ? (patch.mantraDefs as unknown[]).length : 0));
     for (const result of results) {
       if (!result) continue;
-      if ('data' in result && result.data) {
-        // food entity (pre-sorted)
-        patch[result.storeKey] = result.data;
-        continue;
-      }
-      const { rows, config } = result as { entity: string; rows: Record<string, unknown>[]; config: NonNullable<typeof REHYDRATE_MAP[string]> };
-      if (!rows || !config) continue;
-      if (config.storeKey === '_aiConfig') {
-        if (rows.length) {
-          const mapped = rows.map(config.mapper);
-          const ai = mapped[0] as { mode: string; models: unknown[] };
-          if (ai) { patch.aiMode = ai.mode; patch.aiModels = ai.models; }
+      // A failing mapper for one entity must not abort the whole rehydration —
+      // otherwise a single bad row blanks the entire store on cold start and the
+      // user sees ALL local data as "lost" even though it's still in SQLite.
+      try {
+        if ('data' in result && result.data) {
+          // food entity (pre-sorted)
+          if (result.storeKey) patch[result.storeKey] = result.data;
+          continue;
         }
-      } else if (config.storeKey === 'userProfile') {
-        if (rows.length) {
-          patch.userProfile = rows.map(config.mapper)[0];
+        const { rows, config } = result as { entity: string; rows: Record<string, unknown>[]; config: NonNullable<typeof REHYDRATE_MAP[string]> };
+        if (!rows || !config) continue;
+        if (config.storeKey === '_aiConfig') {
+          if (rows.length) {
+            const mapped = rows.map(config.mapper);
+            const ai = mapped[0] as { mode: string; models: unknown[] };
+            if (ai) { patch.aiMode = ai.mode; patch.aiModels = ai.models; }
+          }
+        } else if (config.storeKey === 'userProfile') {
+          if (rows.length) {
+            patch.userProfile = rows.map(config.mapper)[0];
+          }
+        } else {
+          patch[config.storeKey] = rows.length ? rows.map(config.mapper) : [];
         }
-      } else {
-        patch[config.storeKey] = rows.length ? rows.map(config.mapper) : [];
+      } catch (mapErr) {
+        log.error(mapErr, { phase: 'rehydrateFromDb/map', entity: (result as { entity?: string }).entity });
       }
     }
 
