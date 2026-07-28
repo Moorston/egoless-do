@@ -26,15 +26,12 @@ import StarfieldBackground from '../components/StarfieldBackground';
 import { SyncBanner } from '../components/SyncBanner';
 import { SyncProgressOverlay } from '../components/SyncProgressOverlay';
 import { useTheme } from '../components/UI';
+import { isDeviceSyncedBefore } from '../features/sync/SyncService';
 import { useSync }       from '../features/sync/useSync';
 import { useAppStore, useShallowStore } from '../store/useAppStore';
 
 import { withLazy, LoadingFallback } from './LazyScreen';
 import SimpleHeaderComponent from './SimpleHeader';
-
-import { isDeviceSyncedBefore } from '../features/sync/SyncService';
-
-
 import {
   _HomeScreen, _FastingScreen, _ExerciseScreen, _SettingsScreen, _PlanScreen,
   ReflectionsScreen, ReflectionStatsScreen, MindTrailScreen,
@@ -63,6 +60,7 @@ import type { RootStackParamList, MainTabParamList } from './types';
 
 export type { RootStackParamList, MainTabParamList } from './types';
 import { useRootNavigation } from './hooks';
+
 export { useRootNavigation, useTabNavigation } from './hooks';
 
 const log = createLogger('App');
@@ -241,10 +239,14 @@ export default function AppNavigator() {
     }
   }, [isSignedIn]);
 
-  // Navigate to Login when signed out (token expired, kicked out, or manual logout)
+  // Navigate to Login when signed out, or to MainTabs when auth restored from SecureStore
   const prevIsSignedIn = useRef(isSignedIn);
   useEffect(() => {
-    if (prevIsSignedIn.current && !isSignedIn && navRef.current) {
+    if (!prevIsSignedIn.current && isSignedIn && navRef.current) {
+      // Auth restored from SecureStore — navigate to main app
+      navRef.current.reset({ index: 0, routes: [{ name: 'MainTabs' }] });
+    } else if (prevIsSignedIn.current && !isSignedIn && navRef.current) {
+      // Signed out — navigate to login
       navRef.current.reset({ index: 0, routes: [{ name: 'Login' }] });
     }
     prevIsSignedIn.current = isSignedIn;

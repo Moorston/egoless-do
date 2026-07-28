@@ -8,7 +8,7 @@ import { getMFAChallenge, consumeMFAChallenge } from '../mfaChallenge.js';
 import { generateRefreshToken, createRefreshToken } from '../token-refresh-rotation.js';
 import { logAuditEvent, AuditEvent, extractClientInfo } from '../audit-log.js';
 
-const TOKEN_EXPIRES_IN = 7 * 24 * 60 * 60 * 1000; // 7 days
+const TOKEN_EXPIRES_IN = 15 * 24 * 60 * 60 * 1000; // 15 days
 const REFRESH_TOKEN_EXPIRES_IN = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 const app = new Hono();
