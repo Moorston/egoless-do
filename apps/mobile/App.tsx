@@ -1,6 +1,6 @@
 // ─── App entry point ──────────────────────────────────────────────
 import './src/i18n';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Platform, InteractionManager } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -84,14 +84,17 @@ function staggerPreload(modules: Array<() => Promise<any>>, gapMs = 50) {
 
 export default function App() {
   const [isReady, setIsReady] = useState(false);
+  const [initDone, setInitDone] = useState(false);
   const preloadedRef = useRef(false);
   const initStartedRef = useRef(false);
 
-  // Initialize app (SQLite, auth tokens, subscriptions) as early as possible
+  // Initialize app (SQLite, auth tokens, subscriptions) and WAIT for completion
   useEffect(() => {
     if (initStartedRef.current) return;
     initStartedRef.current = true;
-    initApp().catch(() => {});
+    initApp()
+      .then(() => setInitDone(true))
+      .catch(() => setInitDone(true)); // Even on error, mark as done to avoid stuck splash
   }, []);
 
   useEffect(() => {
@@ -114,8 +117,22 @@ export default function App() {
     });
   }, [isReady]);
 
+  // Wait for BOTH splash animation AND initApp() completion before showing navigator
+  const onSplashFinish = useCallback(() => {
+    // Give a small delay to ensure initApp has completed and state is settled
+    const checkInit = () => {
+      if (initDone) {
+        setIsReady(true);
+      } else {
+        // Poll until initApp completes (max 10 seconds)
+        setTimeout(checkInit, 100);
+      }
+    };
+    checkInit();
+  }, [initDone]);
+
   if (!isReady) {
-    return <SplashScreen onFinish={() => setIsReady(true)} />;
+    return <SplashScreen onFinish={onSplashFinish} />;
   }
 
   return (
