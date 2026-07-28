@@ -7,7 +7,7 @@ import { DailyResetManager , createLogger, setSentryBridge, apiGetMe, configureF
 import { AppState, PixelRatio } from 'react-native';
 
 import { PB_URL } from '../config';
-import { openDatabase, setState as setAppState } from '../db/schema';
+import { openDatabase, setState as setAppState, checkpointDatabase } from '../db/schema';
 import {
   rehydrateFromDb,
   runSync,
@@ -318,6 +318,26 @@ export async function initApp(): Promise<void> {
     });
     // Suppress unused variable warning — _unsubscribeAuth is stored for testability
     void _unsubscribeAuth;
+
+    // ── Step 5b: Durable flush + checkpoint on app background ──
+    // MIUI kills backgrounded apps extremely aggressively. When we transition to
+    // the background we (1) re-persist the token to all 3 layers — giving the OS
+    // time to finish the async SecureStore/SQLite/file writes started at login;
+    // (2) flush any pending WriteBatcher writes so recent local data is committed;
+    // (3) checkpoint the WAL so a subsequent kill can't drop the un-flushed WAL
+    // tail (which would otherwise lose both local data and the session on cold
+    // start). All best-effort and fire-and-forget.
+    const _bgSub = AppState.addEventListener('change', (state) => {
+      if (state === 'background' || state === 'inactive') {
+        const a = store().auth;
+        if (a.token) {
+          saveSecureTokens(a.token, a.refreshToken ?? '', a.expiresAt).catch(e => log.error(e, { phase: 'bg-saveSecureTokens' }));
+        }
+        flushWrites().catch(e => log.error(e, { phase: 'bg-flushWrites' }));
+        checkpointDatabase().catch(e => log.error(e, { phase: 'bg-checkpoint' }));
+      }
+    });
+    void _bgSub;
 
     // ── Step 6: Set up auto-sync callback ─────────────────────
     // Connect the store's triggerAutoSync → SyncEngine so data mutations trigger sync

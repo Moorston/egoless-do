@@ -1222,3 +1222,21 @@ export async function setState(db: SQLite.SQLiteDatabase, key: string, value: st
   );
 }
 
+/**
+ * Force WAL pages back into the main database file.
+ *
+ * On Android (esp. MIUI) a process kill between a SQLite COMMIT and the OS's
+ * own checkpoint can discard the un-checkpointed WAL tail, silently losing
+ * recently-written rows. Call this when the app transitions to the background
+ * so the next cold start reads a consistent DB. Best-effort: failures are
+ * non-fatal (e.g. DB not yet opened, or mid-transaction contention).
+ */
+export async function checkpointDatabase(): Promise<void> {
+  try {
+    const db = await openDatabase();
+    await db.execAsync('PRAGMA wal_checkpoint(TRUNCATE)');
+  } catch (err) {
+    log.warn('checkpointDatabase failed (non-fatal)', err instanceof Error ? err.message : String(err));
+  }
+}
+

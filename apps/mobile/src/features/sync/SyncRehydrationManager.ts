@@ -7,6 +7,7 @@ import type { SyncEntity } from '@egoless-do/core';
 
 import { dbGetAllFoodEntries } from '../../db/queries';
 import { openDatabase, getState, setState } from '../../db/schema';
+import { loadDataFromFile } from '../../store/fileStorage';
 import { getSyncProgress, updateSyncProgress } from '../../db/syncQueue';
 import {
   rowToHabit, rowToReflection, rowToFasting, rowToFood, rowToCheckin,
@@ -121,8 +122,9 @@ export class SyncRehydrationManager {
 
     // Merge results into patch
     log.debug('[rehydrateFromDb] mantraDefs rows: ' + (patch.mantraDefs ? (patch.mantraDefs as unknown[]).length : 0));
+    let sqliteHadError = false;
     for (const result of results) {
-      if (!result) continue;
+      if (!result) { sqliteHadError = true; continue; }
       // A failing mapper for one entity must not abort the whole rehydration —
       // otherwise a single bad row blanks the entire store on cold start and the
       // user sees ALL local data as "lost" even though it's still in SQLite.
@@ -149,6 +151,34 @@ export class SyncRehydrationManager {
         }
       } catch (mapErr) {
         log.error(mapErr, { phase: 'rehydrateFromDb/map', entity: (result as { entity?: string }).entity });
+      }
+    }
+
+    // ── R3: File backup fallback ──
+    // If any entity's SQLite query errored (sqliteHadError), try to recover the
+    // per-entity JSON file backup so a WAL/corruption loss on MIUI doesn't blank
+    // that entity on cold start. Gated on sqliteHadError so healthy launches pay
+    // no extra per-entity file I/O. File records are already store-shaped (they
+    // are exactly what features pass to persistChange), so they go straight into
+    // the patch without re-mapping. userProfile/_aiConfig are skipped because
+    // their file shape differs from the rehydrate mapper output.
+    if (sqliteHadError) {
+      log.warn('[rehydrateFromDb] SQLite had errors — attempting file backup recovery');
+      for (const entity of targets) {
+        const config = REHYDRATE_MAP[entity];
+        if (!config) continue;
+        const key = config.storeKey;
+        if (key === 'userProfile' || key === '_aiConfig') continue;
+        const existing = patch[key];
+        if (Array.isArray(existing) && existing.length > 0) continue;
+        const fileData = await loadDataFromFile(entity);
+        if (fileData) {
+          const arr = Object.values(fileData).filter((r) => !(r as Record<string, unknown>).deleted);
+          if (arr.length) {
+            if (key === 'foodLog') patch.foodLog = arr;
+            else patch[key] = arr;
+          }
+        }
       }
     }
 
