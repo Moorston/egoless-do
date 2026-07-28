@@ -108,6 +108,7 @@ export interface AuthSlice {
   clearDataAndLogout: () => Promise<void>;
   refreshAuth: () => Promise<void>;
   pullServerData: (token?: string) => Promise<void>;
+  persistTokenNow: () => Promise<void>;
 }
 
 export interface HabitSlice {

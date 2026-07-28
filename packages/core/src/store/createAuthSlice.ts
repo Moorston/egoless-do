@@ -16,6 +16,7 @@ export function createAuthSlice(
   onPullServerData?: (token: string, userId?: string) => Promise<void>,
   onClearData?: () => void | Promise<void>,
   onAuthFailure?: () => void,
+  onPersistToken?: (token: string, refreshToken: string, expiresAt?: number) => void | Promise<void>,
 ): SliceCreator<AuthSlice> {
   // Guard against concurrent refresh calls (shared across the slice lifetime)
   let _refreshInFlight: Promise<void> | null = null;
@@ -24,6 +25,19 @@ export function createAuthSlice(
 
   return (set, get) => ({
     auth: defaultAuthState,
+
+    // Persist the current token to all storage layers (SecureStore + SQLite + file).
+    // Injected from the app layer (initApp) because core must not import app code.
+    // Best-effort: a persistence failure must never break login/refresh.
+    async persistTokenNow() {
+      const a = get().auth;
+      if (!a.token) return;
+      try {
+        await onPersistToken?.(a.token, a.refreshToken ?? '', a.expiresAt);
+      } catch {
+        /* non-fatal — the initApp subscription also persists on token change */
+      }
+    },
 
     async login(email: string, password: string) {
       if (_loginInFlight) return _loginInFlight;
@@ -46,6 +60,7 @@ export function createAuthSlice(
               isSignedIn: true, isLoading: true, expiresAt: res.expiresAt,
             },
           });
+          await get().persistTokenNow();
           await get().pullServerData(res.token);
           log.debug('after pull', { signedIn: get().auth.isSignedIn });
           // Now data is loaded — mark as fully ready
@@ -108,6 +123,7 @@ export function createAuthSlice(
               isSignedIn: true, isLoading: true, expiresAt: res.expiresAt,
             },
           });
+          await get().persistTokenNow();
           await get().pullServerData(res.token);
           // Now data is loaded — mark as fully ready
           set(s => ({ auth: { ...s.auth, isLoading: false } }));
@@ -189,6 +205,7 @@ export function createAuthSlice(
             // Only apply if user is still logged in (not logged out during refresh)
             if (get().auth.isSignedIn && get().auth.refreshToken) {
               set(s => ({ auth: { ...s.auth, token: res.token, refreshToken: res.refreshToken, expiresAt: res.expiresAt } }));
+              await get().persistTokenNow();
             }
             return; // Success — exit retry loop
           } catch (e) {

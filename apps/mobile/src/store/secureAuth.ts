@@ -48,6 +48,10 @@ export async function saveSecureTokens(token: string, refreshToken: string, expi
       setState(db, SQLITE_REFRESH_KEY, refreshToken),
       ...(expiresAt ? [setState(db, SQLITE_EXPIRES_KEY, expiresStr)] : []),
     ]);
+    // Fold the token write into the main DB file immediately so a process kill
+    // on MIUI (which happens very fast) can't drop the un-checkpointed WAL tail
+    // and lose the session. Best-effort.
+    await db.execAsync('PRAGMA wal_checkpoint(TRUNCATE)').catch(() => {});
   } catch (e) {
     errors.push('SQLite: ' + (e instanceof Error ? e.message : String(e)));
   }

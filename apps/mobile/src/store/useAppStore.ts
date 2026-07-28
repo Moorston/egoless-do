@@ -25,13 +25,14 @@ import { create } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
 
 
+import { API_URL, PB_URL } from '../config';
 import { useMusicStore, setMusicSyncCallback } from '../features/music/useMusicStore';
 import { runSync, resetSyncState, softResetSyncState, resetMigrationFlag, rehydrateFromDb, initialSync } from '../features/sync/SyncService';
 
 import { createMobileUiSlice, type MobileUiSlice } from './createMobileUiSlice';
-import { useUiStore } from './uiStore';
 import { mobileStorageAdapter, flushWrites, setPersistErrorHandler } from './storageAdapter';
-import { API_URL, PB_URL } from '../config';
+import { saveSecureTokens } from './secureAuth';
+import { useUiStore } from './uiStore';
 
 const log = createLogger('App');
 
@@ -195,6 +196,10 @@ export const useAppStore = create<MobileStore>()(
       await resetSyncState();
     }, () => {
       useUiStore.getState().showToast('登录已过期，请重新登录', 'error');
+    }, (token, refreshToken, expiresAt) => {
+      // Persist the token to all layers (SecureStore + SQLite + file) right after
+      // login/refresh, awaited by the slice so it lands before the action resolves.
+      void saveSecureTokens(token, refreshToken ?? '', expiresAt);
     })(...a);
     // StateCreator factories (needed by createMobileUiSlice before resolution)
     const foodCreator = createFoodSlice(adapter, persistProfileSettings, triggerAutoSync);
