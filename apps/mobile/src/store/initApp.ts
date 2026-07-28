@@ -5,8 +5,8 @@
 
 import { DailyResetManager , createLogger, setSentryBridge, apiGetMe, configureFontScale, setPocketbaseToken, setPocketbaseUrl } from '@egoless-do/core';
 import { AppState, PixelRatio } from 'react-native';
-import { PB_URL } from '../config';
 
+import { PB_URL } from '../config';
 import { openDatabase, setState as setAppState } from '../db/schema';
 import {
   rehydrateFromDb,
@@ -81,6 +81,15 @@ export async function initApp(): Promise<void> {
   try {
     // ── Step 1: Open SQLite DB ─────────────────────────────────
     const db = await openDatabase();
+    // Declared in the OUTER try scope so Step 8 (derived-state recalc) can read it
+    // even if the DB init steps below threw and were caught by the inner guard.
+    let entityPatch: Record<string, unknown> = {};
+    // Inner guard: a failure in opening/migrating/loading SQLite must NOT prevent
+    // the auth-token restore (Step 4) and the token-save subscription (Step 5)
+    // from running. Otherwise the token is never restored into memory and the
+    // user is forced to re-login on every cold start (esp. on MIUI, where the
+    // process is killed aggressively and SQLite open/migrate is more fragile).
+    try {
 
     // ── Step 2: Run migrations (one-time, idempotent) ──────────
     try {
@@ -102,7 +111,6 @@ export async function initApp(): Promise<void> {
     try { await flushWrites(); } catch (err) { log.error(err, { message: 'Flush failed (non-fatal)' }); }
 
     let settingsPatch: PartialMobileStore = {};
-    let entityPatch: Record<string, unknown> = {};
     try {
       [settingsPatch, entityPatch] = await Promise.all([
         loadSettingsPatch(),
@@ -207,6 +215,9 @@ export async function initApp(): Promise<void> {
     } catch (err) {
       log.error(err, { message: 'Ghost cleanup failed (non-fatal)' });
     }
+    } catch (dbErr) {
+      log.error(dbErr, { message: 'Core data init (DB open/migrate/load) failed (non-fatal) — auth/session restore will still run' });
+    }
 
     // ── Step 4: Restore auth tokens from SecureStore ──────────
     try {
@@ -215,7 +226,7 @@ export async function initApp(): Promise<void> {
         const currentAuth = store().auth;
         // Always restore tokens from SecureStore if available (regardless of isSignedIn state)
         // This handles cases where the in-memory/sqlite auth state was lost (crash, migration)
-        if (secureTokens.token && secureTokens.refreshToken) {
+        if (secureTokens.token) {
           // Try to verify the token is still valid by calling getMe
           // If it fails, keep the token anyway — refreshAuth() will handle it later
           const authPatch: Record<string, unknown> = {
@@ -283,8 +294,14 @@ export async function initApp(): Promise<void> {
       const newRefresh = state.auth.refreshToken;
       const oldToken = prevState.auth.token;
       const oldRefresh = prevState.auth.refreshToken;
-      if (newToken && newRefresh && (newToken !== oldToken || newRefresh !== oldRefresh)) {
-        saveSecureTokens(newToken, newRefresh, state.auth.expiresAt).catch(e => log.error(e, { phase: 'saveSecureTokens' }));
+      if (newToken !== oldToken || newRefresh !== oldRefresh) {
+        // Persist whenever the token changes. A partial write (token present but
+        // refreshToken missing) must still be saved so a later restore can recover
+        // the session instead of forcing a re-login. refreshAuth() will mint a new
+        // refresh token when needed.
+        if (newToken) {
+          saveSecureTokens(newToken, newRefresh ?? '', state.auth.expiresAt).catch(e => log.error(e, { phase: 'saveSecureTokens' }));
+        }
       } else if (!newToken && oldToken) {
         clearSecureTokens().catch(e => log.error(e, { phase: 'clearSecureTokens' }));
       }

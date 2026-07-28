@@ -69,8 +69,8 @@ export async function loadSecureTokens(): Promise<{ token: string; refreshToken:
       SecureStore.getItemAsync(REFRESH_KEY),
       SecureStore.getItemAsync(EXPIRES_KEY),
     ]);
-    if (token && refreshToken) {
-      const result: { token: string; refreshToken: string; expiresAt?: number } = { token, refreshToken };
+    if (token) {
+      const result: { token: string; refreshToken: string; expiresAt?: number } = { token, refreshToken: refreshToken ?? '' };
       const expiresAt = expiresAtStr ? parseInt(expiresAtStr, 10) : 0;
       if (expiresAt > 0) result.expiresAt = expiresAt;
       return result;
@@ -87,8 +87,8 @@ export async function loadSecureTokens(): Promise<{ token: string; refreshToken:
       getState(db, SQLITE_REFRESH_KEY),
       getState(db, SQLITE_EXPIRES_KEY),
     ]);
-    if (token && refreshToken) {
-      const result: { token: string; refreshToken: string; expiresAt?: number } = { token, refreshToken };
+    if (token) {
+      const result: { token: string; refreshToken: string; expiresAt?: number } = { token, refreshToken: refreshToken ?? '' };
       const expiresAt = expiresAtStr ? parseInt(expiresAtStr, 10) : 0;
       if (expiresAt > 0) result.expiresAt = expiresAt;
       log.info('Auth tokens restored from SQLite fallback');
