@@ -14,7 +14,7 @@ import { useAppStore, useShallowStore } from '../store/useAppStore';
 import { useTheme } from './UI';
 
 
-const TAB_ICONS_MAP: Record<string, React.ComponentType<any>> = {
+const TAB_ICONS_MAP: Record<string, React.ComponentType<{size?: number; color?: string}>> = {
   home: Home, plan: ClipboardList, fasting: Timer, meditation: Binary,
   reflections: Sparkles, exercise: Dumbbell, habits: Target,
   stats: BarChart3, settings: Settings,
@@ -65,11 +65,14 @@ export default function AppHeader({ activeTab, onTabChange }: AppHeaderProps) {
           contentFit="contain"
         />
         <View style={styles.streakBox}>
-          <Text style={[styles.streakLabel, { color: TH.sub }]}>{T('streak')}</Text>
-          <Text style={styles.streakValue}>
-            {`${String(streak)} ${T('days')} `}<Flame size={20} color="#EA6060" />
-          </Text>
-        </View>
+            <Text style={[styles.streakLabel, { color: TH.sub }]}>{T('streak')}</Text>
+            <View style={styles.streakValue}>
+              <Text style={styles.streakValueText}>
+                {`${String(streak)} ${T('days')} `}
+              </Text>
+              <Flame size={20} color="#EA6060" />
+            </View>
+          </View>
       </View>
 
       {/* Header Tabs */}
@@ -152,9 +155,12 @@ const styles = StyleSheet.create({
     fontSize: FONT_SUB(),
   },
   streakValue: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  streakValueText: {
     fontWeight: '800',
     fontSize: FONT_STAT_SECTION(),
-    lineHeight: 42,
     color: '#EA6060',
   },
   streakUnit: {

@@ -14,8 +14,8 @@ interface Props {
 export default function FabButton({ primaryColor, onPress }: Props) {
   const { width: vw, height: vh } = useWindowDimensions();
   const posRef = useRef({ x: vw - FAB_SIZE - 20, y: vh - 85 - FAB_SIZE - 20 });
-  const transX = useRef(new Animated.Value(posRef.current.x)).current;
-  const transY = useRef(new Animated.Value(posRef.current.y)).current;
+  const posX = useRef(new Animated.Value(posRef.current.x)).current;
+  const posY = useRef(new Animated.Value(posRef.current.y)).current;
   const isDragging = useRef(false);
   const isHidden = useRef(false);
 
@@ -29,8 +29,8 @@ export default function FabButton({ primaryColor, onPress }: Props) {
       if (Math.abs(gs.dx) > DRAG_THRESHOLD || Math.abs(gs.dy) > DRAG_THRESHOLD) {
         isDragging.current = true;
       }
-      transX.setValue(posRef.current.x + gs.dx);
-      transY.setValue(posRef.current.y + gs.dy);
+      posX.setValue(posRef.current.x + gs.dx);
+      posY.setValue(posRef.current.y + gs.dy);
     },
     onPanResponderRelease: (_, gs) => {
       if (!isDragging.current) {
@@ -38,8 +38,8 @@ export default function FabButton({ primaryColor, onPress }: Props) {
           isHidden.current = false;
           const targetX = vw - FAB_SIZE - 20;
           posRef.current = { x: targetX, y: posRef.current.y };
-          Animated.spring(transX, { toValue: targetX, useNativeDriver: false, bounciness: 8 }).start();
-          Animated.spring(transY, { toValue: posRef.current.y, useNativeDriver: false, bounciness: 8 }).start();
+          Animated.spring(posX, { toValue: targetX, useNativeDriver: false, bounciness: 8 }).start();
+          Animated.spring(posY, { toValue: posRef.current.y, useNativeDriver: false, bounciness: 8 }).start();
         } else {
           onPress();
         }
@@ -55,18 +55,19 @@ export default function FabButton({ primaryColor, onPress }: Props) {
       const maxY = vh - 85 - FAB_SIZE - 10;
       const targetY = Math.max(minY, Math.min(maxY, posRef.current.y + gs.dy));
       posRef.current = { x: targetX, y: targetY };
-      Animated.spring(transX, { toValue: targetX, useNativeDriver: false, bounciness: 8 }).start();
-      Animated.spring(transY, { toValue: targetY, useNativeDriver: false, bounciness: 8 }).start();
+      Animated.spring(posX, { toValue: targetX, useNativeDriver: false, bounciness: 8 }).start();
+      Animated.spring(posY, { toValue: targetY, useNativeDriver: false, bounciness: 8 }).start();
     },
-  }), [onPress, vw, vh, transX, transY]);
+  }), [onPress, vw, vh, posX, posY]);
 
   return (
     <Animated.View
       {...panResponder.panHandlers}
       style={[styles.fab, {
+        left: posX,
+        top: posY,
         backgroundColor: primaryColor,
         shadowColor: primaryColor,
-        transform: [{ translateX: transX }, { translateY: transY }],
       }]}
     >
       <Sparkles size={24} color="#ffffff" strokeWidth={2.5} />
