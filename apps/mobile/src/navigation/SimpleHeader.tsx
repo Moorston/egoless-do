@@ -16,7 +16,7 @@ const HEADER_TAB_KEYS = ['home', 'plan', 'habits', 'reflections'];
 const HEADER_TAB_ROUTES: Record<string, string> = {
   home: 'Home', plan: 'Plan', habits: 'Habits', reflections: 'Reflections',
 };
-const HEADER_TAB_ICONS: Record<string, React.ComponentType<any>> = {
+const HEADER_TAB_ICONS: Record<string, React.ComponentType<{size?: number; color?: string; strokeWidth?: number}>> = {
   home: Home, plan: ClipboardList, habits: Target, reflections: Sparkles,
 };
 
@@ -39,11 +39,14 @@ export default function SimpleHeader({ routeName }: { routeName?: string }) {
           style={{ width: 108, height: 54 }}
           contentFit="contain"
         />
-        <View style={{ alignItems: 'flex-end' }}>
+        <View style={{ alignItems: 'flex-end', flexShrink: 0 }}>
           <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{t('streak', language)}</Text>
-          <Text style={{ fontWeight: '800', fontSize: FONT_STAT_SECTION(), lineHeight: 42, color: '#EA6060' }}>
-            {`${String(streak)} ${t('days', language)} `}<Flame size={20} color="#EA6060" />
-          </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text numberOfLines={1} style={{ fontWeight: '800', fontSize: FONT_STAT_SECTION(), lineHeight: 42, color: '#EA6060' }}>
+              {`${String(streak)} ${t('days', language)} `}
+            </Text>
+            <Flame size={20} color="#EA6060" />
+          </View>
         </View>
       </View>
       {showTabs && (

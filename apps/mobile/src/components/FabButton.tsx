@@ -2,9 +2,10 @@ import { Sparkles } from 'lucide-react-native';
 import React, { useRef, useMemo } from 'react';
 import { Animated, StyleSheet, useWindowDimensions, PanResponder } from 'react-native';
 
+import { DRAG_THRESHOLD, isTap } from './fabButtonLogic';
+
 const FAB_SIZE = 52;
 const FAB_HIDE_OFFSET = 30;
-const DRAG_THRESHOLD = 5;
 
 interface Props {
   primaryColor: string;
@@ -16,33 +17,28 @@ export default function FabButton({ primaryColor, onPress }: Props) {
   const posRef = useRef({ x: vw - FAB_SIZE - 20, y: vh - 85 - FAB_SIZE - 20 });
   const posX = useRef(new Animated.Value(posRef.current.x)).current;
   const posY = useRef(new Animated.Value(posRef.current.y)).current;
-  const isDragging = useRef(false);
   const isHidden = useRef(false);
 
   const panResponder = useMemo(() => PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onMoveShouldSetPanResponder: () => true,
-    onPanResponderGrant: () => {
-      isDragging.current = false;
-    },
     onPanResponderMove: (_, gs) => {
-      if (Math.abs(gs.dx) > DRAG_THRESHOLD || Math.abs(gs.dy) > DRAG_THRESHOLD) {
-        isDragging.current = true;
-      }
       posX.setValue(posRef.current.x + gs.dx);
       posY.setValue(posRef.current.y + gs.dy);
     },
     onPanResponderRelease: (_, gs) => {
-      if (!isDragging.current) {
+      // Decide tap vs drag from the FINAL displacement, not from mid-move jitter.
+      const moved = !isTap(gs.dx, gs.dy);
+      if (!moved) {
         if (isHidden.current) {
+          // A tap on the (partially hidden) FAB brings it back AND fires the action.
           isHidden.current = false;
           const targetX = vw - FAB_SIZE - 20;
           posRef.current = { x: targetX, y: posRef.current.y };
           Animated.spring(posX, { toValue: targetX, useNativeDriver: false, bounciness: 8 }).start();
           Animated.spring(posY, { toValue: posRef.current.y, useNativeDriver: false, bounciness: 8 }).start();
-        } else {
-          onPress();
         }
+        onPress();
         return;
       }
 
