@@ -213,7 +213,7 @@ export async function initAccountLockoutCollection(): Promise<void> {
           type: 'base',
           fields: [
             { name: 'email', type: 'text', required: true },
-            { name: 'login_attempts', type: 'number', required: true },
+            { name: 'login_attempts', type: 'number' },
             { name: 'last_attempt_at', type: 'number', required: true },
             { name: 'lockout_until', type: 'number' },
             { name: 'created_at', type: 'number', required: true },
