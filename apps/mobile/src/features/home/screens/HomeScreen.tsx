@@ -14,12 +14,13 @@ import {
   KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useShallow } from 'zustand/react/shallow';
 
 import { useTheme, useT, ProgressBar, Checkbox, ThemedInput } from '../../../components/UI';
 import SimpleHeader from '../../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useNavigateToTab } from '../../../navigation/useAppNavigation';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore, type MobileStore } from '../../../store/useAppStore';
 import { useDateNavigation } from '../hooks/useDateNavigation';
 
 const log = createLogger('Home');
@@ -88,7 +89,7 @@ export default function HomeScreen() {
   }));
   const nav   = useRootNavigation();
   const navigateToTab = useNavigateToTab();
-  const language = useAppStore(s => s.language);
+  const language = useAppStore(useShallow((s: MobileStore) => s.language));
 
   // ── Date state ──
   const { viewDate, isToday, goToDate, onTouchStart, onTouchEnd, viewDateRef } = useDateNavigation();
