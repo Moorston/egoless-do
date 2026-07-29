@@ -1,4 +1,6 @@
 // ─── useHabitForm: habit add/edit form state ─────────────────────
+import { track } from '../../../analytics/track';
+import { Events } from '../../../analytics/events';
 import { activeOnly } from '@egoless-do/core';
 import type { Habit, HabitLink } from '@egoless-do/core';
 import { useState, useCallback } from 'react';
@@ -76,15 +78,11 @@ export function useHabitForm(defaultStartDate: string) {
     } else {
       addHabit({ ...form, targetDays: +form.targetDays });
       // PostHog: 习惯创建
-      import('../../analytics/track').then(({ track }) => {
-        import('../../analytics/events').then(({ Events }) => {
-          track(Events.HABIT_CREATED, {
-            habit_category: form.category || 'custom',
-            target_days: +form.targetDays,
-            has_alarm: form.alarmEnabled || false,
-          });
-        });
-      }).catch(() => {});
+      track(Events.HABIT_CREATED, {
+        habit_category: 'custom',
+        target_days: +form.targetDays,
+        has_alarm: form.alarmEnabled || false,
+      });
     }
     setShowAdd(false);
     if (form.alarmEnabled) {
