@@ -40,7 +40,7 @@ export class SyncTimestampManager {
     if (!serverTime || serverTime <= 0) return;
     const offset = serverTime - Date.now();
     if (Math.abs(offset) < MS_PER_DAY) {
-      this.saveClockOffset(offset);
+      void this.saveClockOffset(offset);
     }
   }
 

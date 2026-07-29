@@ -1,4 +1,4 @@
-import {COLORS, isPlanActive, dateStr, validatePlanForm, createNewItem, canEditPlanItem, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_ERROR, FONT_BADGE, FONT_LABEL , LINK_OPTIONS, PRIORITY_OPTIONS, FREQUENCY_OPTIONS, createDefaultFrequency , FONT_SMALL, scaleFontSize} from '@egoless-do/core';
+import {COLORS, isPlanActive, dateStr, validatePlanForm, createNewItem, canEditPlanItem, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_ERROR, FONT_BADGE, FONT_LABEL , LINK_OPTIONS, PRIORITY_OPTIONS, FREQUENCY_OPTIONS, createDefaultFrequency , FONT_SMALL, scaleFontSize, createLogger} from '@egoless-do/core';
 import type { ItemForm, Vision } from '@egoless-do/core';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { ChevronLeft, ChevronDown, ChevronRight, Calendar, X } from 'lucide-react-native';
@@ -15,6 +15,8 @@ import { Card, useTheme, useT, PrimaryButton } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
 import type { RootStackParamList } from '../../navigation/types';
 import { useAppStore, useShallowStore, type MobileStore } from '../../store/useAppStore';
+
+const log = createLogger('Plan');
 
 
 
@@ -156,7 +158,7 @@ export default function PlanCreateScreen() {
       const currentIds = new Set(items.map(i => i.id));
       // Delete removed existing items
       existingIds.forEach(id => {
-        if (!currentIds.has(id)) deletePlanItem(id);
+        if (!currentIds.has(id)) deletePlanItem(id).catch(err => log.error(err, { message: 'deletePlanItem' }));
       });
       items.forEach((item, idx) => {
         if (existingIds.has(item.id)) {

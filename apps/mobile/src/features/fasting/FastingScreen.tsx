@@ -76,7 +76,7 @@ export default function FastingScreen() {
   useEffect(() => {
     if (pct >= 1 && !bellPlayedRef.current) {
       bellPlayedRef.current = true;
-      try { bellPlayer.seekTo(0); bellPlayer.play(); } catch {}
+      try { void bellPlayer.seekTo(0); bellPlayer.play(); } catch {}
     }
   }, [pct, bellPlayer]);
 
@@ -152,9 +152,9 @@ export default function FastingScreen() {
       // Flush final insight before deleting session
       const finalInsight = insightRef.current;
       if (finalInsight) {
-        updateSession(sessionIdRef.current, { insight: finalInsight }).catch(() => {});
+        void updateSession(sessionIdRef.current, { insight: finalInsight }).catch(() => {});
       }
-      deleteSession(sessionIdRef.current);
+      void deleteSession(sessionIdRef.current);
       sessionIdRef.current = null;
     }
   }, [isActive]);
@@ -165,7 +165,7 @@ export default function FastingScreen() {
     if (sessionIdRef.current) {
       if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
       debounceTimerRef.current = setTimeout(() => {
-        updateSession(sessionIdRef.current!, { insight: text });
+        void updateSession(sessionIdRef.current!, { insight: text });
       }, 1000);
     }
   };
@@ -174,7 +174,7 @@ export default function FastingScreen() {
   useEffect(() => () => {
     if (debounceTimerRef.current) { clearTimeout(debounceTimerRef.current); debounceTimerRef.current = null; }
     if (sessionIdRef.current) {
-      deleteSession(sessionIdRef.current);
+      void deleteSession(sessionIdRef.current);
       sessionIdRef.current = null;
     }
   }, []);

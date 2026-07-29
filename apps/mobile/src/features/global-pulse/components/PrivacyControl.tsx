@@ -44,10 +44,10 @@ export const PrivacyControl: React.FC<PrivacyControlProps> = ({
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    getUserHash().then(hash => {
+    void getUserHash().then(hash => {
       userHashRef.current = hash;
     });
-    AsyncStorage.getItem(PREFERENCES_KEY).then(stored => {
+    void AsyncStorage.getItem(PREFERENCES_KEY).then(stored => {
       if (stored) {
         const parsed = JSON.parse(stored);
         if (parsed.show_on_global_map !== undefined) {

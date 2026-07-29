@@ -34,7 +34,7 @@ export function useMantraAudio() {
       player.pause();
     } catch {}
     setSource(undefined);
-    if (_Speech) _Speech.stop();
+    if (_Speech) void _Speech.stop();
   }, [player]);
 
   /** Play mantra audio. Tries MP3 first, falls back to TTS. */
@@ -82,7 +82,7 @@ export function useMantraAudio() {
   useEffect(() => {
     return () => {
       try { player.pause(); } catch {}
-      if (_Speech) _Speech.stop();
+      if (_Speech) void _Speech.stop();
     };
   }, []);
 

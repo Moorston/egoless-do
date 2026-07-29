@@ -242,7 +242,7 @@ export default function QuickCreateTrailScreen() {
               onAnswer={handleSmartAnswer}
               onSkip={() => {
                 setSmartResult(prev => prev ? { ...prev, question: null } : null);
-                handleSmartQuery();
+                void handleSmartQuery();
               }}
             />
           )}

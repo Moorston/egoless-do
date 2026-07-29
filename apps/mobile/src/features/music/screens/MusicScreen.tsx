@@ -33,9 +33,9 @@ export default function MusicScreen() {
   const loadVolume = useMusicStore(s => s.loadVolume);
 
   useEffect(() => {
-    loadFavorites();
-    loadUserTracks();
-    loadVolume();
+    void loadFavorites();
+    void loadUserTracks();
+    void loadVolume();
   }, [loadFavorites, loadUserTracks, loadVolume]);
 
   const categories = useMemo(() => computeCategoryMeta(library, userTracks, favorites), [library, userTracks, favorites]);

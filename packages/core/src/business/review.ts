@@ -1,9 +1,9 @@
 // ─── Review business logic (pure functions) ─────────────────────
 import type {
   CheckinReview, IncompleteReasonStat, IncompleteItemStat,
-  HabitProgressStat, PlanProgressStat, ReviewMetrics, ReviewComparison
+  HabitProgressStat, PlanProgressStat, ReviewMetrics, ReviewComparison,
+  CheckinEntry, Habit, Plan, PlanItem, FoodEntry, ExerciseEntry, FastingSession, MedHistoryEntry, GraceHistoryEntry
 } from '../types';
-import type { CheckinEntry, Habit, Plan, PlanItem, FoodEntry, ExerciseEntry, FastingSession, MedHistoryEntry, GraceHistoryEntry } from '../types';
 import { INCOMPLETE_REASONS, parseCheckinNote } from './checkin';
 import { uid, dateStr } from '../utils';
 

@@ -4,9 +4,9 @@ import type {
   FiveHindranceRadar,
   FiveHindranceKey,
   ZhiguanRecommendation,
+  ZhiguanMethod,
 } from '../types';
 import { ZHIGUAN_METHOD_DEFS } from '../types';
-import type { ZhiguanMethod } from '../types';
 
 // ─── 规则表（优先级由高到低）───────────────────────────────────
 

@@ -61,7 +61,7 @@ export function useExerciseAudio() {
   }, [selectedSound]);
 
   const playBell = useCallback(() => {
-    bellPlayer.seekTo(0);
+    void bellPlayer.seekTo(0);
     bellPlayer.play();
   }, [bellPlayer]);
 

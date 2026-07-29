@@ -69,7 +69,7 @@ export default function MindTrailScreen() {
   const ignoredPatternsRef = useRef<string[]>([]);
   const [ignoredVersion, setIgnoredVersion] = useState(0);
   useEffect(() => {
-    safeGetItem(TRAIL_IGNORED_KEY).then(raw => {
+    void safeGetItem(TRAIL_IGNORED_KEY).then(raw => {
       if (raw) {
         try { ignoredPatternsRef.current = JSON.parse(raw); } catch { /* corrupted cache — ignore */ }
       }
@@ -208,7 +208,7 @@ export default function MindTrailScreen() {
       }
     };
 
-    loadRecs();
+    void loadRecs();
   }, [recommendationCandidates, aiAvailable, refreshKey]);
 
   const visibleRecs = recommendations;
@@ -351,7 +351,7 @@ export default function MindTrailScreen() {
       return next;
     });
     if (smartAnswerTimerRef.current) clearTimeout(smartAnswerTimerRef.current);
-    smartAnswerTimerRef.current = setTimeout(() => { handleSmartQuery(answer); }, 100);
+    smartAnswerTimerRef.current = setTimeout(() => { void handleSmartQuery(answer); }, 100);
   }, [handleSmartQuery]);
 
   const handleCloseQueryPanel = useCallback(() => {
@@ -373,7 +373,7 @@ export default function MindTrailScreen() {
       setInputText('');
       nav.navigate('QuickCreateTrail', { initialText: text });
     } else {
-      handleSmartQuery(text);
+      void handleSmartQuery(text);
     }
   }, [inputText, nav, handleSmartQuery]);
 

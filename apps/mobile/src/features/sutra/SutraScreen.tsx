@@ -167,19 +167,19 @@ function SutraScreenInner() {
 
   const handleTap = useCallback(() => {
     if (isPaused) return;
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setCount(prev => {
       const next = prev + 1;
       countRef.current = next;
       if (next % BEAD_COUNT === 0 && next > 0) {
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       }
       return next;
     });
   }, [isPaused]);
 
   const handleUndo = useCallback(() => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setCount(prev => {
       const v = Math.max(0, prev - 1);
       countRef.current = v;

@@ -55,7 +55,7 @@ export default function PlayerBar({ primaryColor, category }: Props) {
   ];
 
   const handleSeek = useCallback((ratio: number) => {
-    try { audioPlayerRef.current?.seekTo(ratio * duration); } catch {}
+    try { void audioPlayerRef.current?.seekTo(ratio * duration); } catch {}
   }, [duration]);
 
   const handleTogglePlay = useCallback(() => {

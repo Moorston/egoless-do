@@ -173,7 +173,7 @@ export default function ReflectionsScreen() {
   const handleToggleHiddenTag = useCallback((tag: string) => {
     setHiddenTags(prev => {
       const next = prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag];
-      safeSetItem('hiddenTags', JSON.stringify(next));
+      void safeSetItem('hiddenTags', JSON.stringify(next));
       return next;
     });
   }, []);
@@ -181,7 +181,7 @@ export default function ReflectionsScreen() {
   const handleToggleHiddenMood = useCallback((mood: string) => {
     setHiddenMoods(prev => {
       const next = prev.includes(mood) ? prev.filter(m => m !== mood) : [...prev, mood];
-      safeSetItem('hiddenMoods', JSON.stringify(next));
+      void safeSetItem('hiddenMoods', JSON.stringify(next));
       return next;
     });
   }, []);
@@ -644,10 +644,10 @@ export default function ReflectionsScreen() {
                       { text: '确定', style: 'destructive', onPress: () => {
                         // 先删除关联的计划任务
                         if (r.linkedPlanItemId) {
-                          deletePlanItem(r.linkedPlanItemId);
+                          void deletePlanItem(r.linkedPlanItemId);
                         }
                         // 再解除关联
-                        unlinkReflectionFromPlanItem(r.id);
+                        void unlinkReflectionFromPlanItem(r.id);
                       }},
                     ]);
                   }
@@ -679,7 +679,7 @@ export default function ReflectionsScreen() {
             </TouchableOpacity>
             <TouchableOpacity onPress={() => {
               const r = (reflections ?? []).find(x => !x.deleted && x.id === actionMenuId);
-              if (r) onShare(r);
+              if (r) void onShare(r);
               else setActionMenuId(null);
             }} style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:'rgba(59,130,246,.15)', alignItems:'center' }}>
               <Text style={{ color:'#3B82F6', fontSize:FONT_BUTTON(), fontWeight:'600' }}>{T('reflShare')}</Text>
@@ -729,7 +729,7 @@ export default function ReflectionsScreen() {
         onClose={() => setShareReflection(null)}
         reflection={shareReflection}
         onTextShare={shareReflection ? () => {
-          handleShare(shareReflection, undefined, language);
+          void handleShare(shareReflection, undefined, language);
         } : undefined}
       />
 

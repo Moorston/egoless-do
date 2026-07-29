@@ -411,7 +411,7 @@ export function useQuickTrailSearch(
       return next;
     });
     if (analyzingTimerRef.current) clearTimeout(analyzingTimerRef.current);
-    analyzingTimerRef.current = setTimeout(() => { handleSmartQuery(); }, 100);
+    analyzingTimerRef.current = setTimeout(() => { handleSmartQuery().catch(err => log.error(err, { message: 'handleSmartQuery' })); }, 100);
   }, [handleSmartQuery]);
 
   const handleClear = useCallback(() => {

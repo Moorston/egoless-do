@@ -34,7 +34,7 @@ export default function LoginScreen() {
     nav.reset({ index: 0, routes: [{ name: 'MainTabs' }] });
     const token = useAppStore.getState().auth.token;
     if (token) {
-      setTimeout(() => { registerExpoPushToken(token); }, 0);
+      setTimeout(() => { void registerExpoPushToken(token); }, 0);
     }
   };
 

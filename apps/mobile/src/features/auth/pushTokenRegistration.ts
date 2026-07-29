@@ -36,7 +36,9 @@ export async function registerExpoPushToken(token: string): Promise<void> {
       log.warn('No push token data returned');
       return;
     }
-    registerPushToken(token, Platform.OS as 'ios' | 'android', async () => tokenData.data);
+    registerPushToken(token, Platform.OS as 'ios' | 'android', async () => tokenData.data).catch(err => {
+      log.error(err, { message: 'Failed to register push token with backend' });
+    });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     if (msg.includes('未登录') || msg.includes('401') || msg.includes('auth')) {

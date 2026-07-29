@@ -4,7 +4,7 @@ import type { ThemeName } from './shared';
 import type { Habit } from './habit';
 import type { MindReflection } from './reflection';
 import type { FastingSession } from './fasting';
-import type { FoodEntry } from './food';
+import type { FoodEntry, CustomFoodPreset } from './food';
 import type { ExerciseEntry } from './exercise';
 import type { CheckinEntry, MedHistoryEntry, GraceHistoryEntry } from './checkin';
 import type { Plan, PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory } from './plan';

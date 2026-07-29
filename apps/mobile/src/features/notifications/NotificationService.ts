@@ -37,7 +37,7 @@ export async function requestNotificationPermission(): Promise<boolean> {
 
 export async function scheduleDailyReminder(hour: number, minute: number): Promise<void> {
   const Notifications = await getNotifications();
-  ensureHandler();
+  void ensureHandler();
   await Notifications.scheduleNotificationAsync({
     content: {
       title: '心流纪 · 今日打卡',
@@ -65,7 +65,7 @@ interface HabitForReminder {
 
 export async function scheduleHabitReminder(habit: HabitForReminder): Promise<void> {
   const Notifications = await getNotifications();
-  ensureHandler();
+  void ensureHandler();
   await Notifications.scheduleNotificationAsync({
     content: {
       title: habit.name,
@@ -87,7 +87,7 @@ export async function rescheduleAllHabitReminders(
   globalMinute?: number,
 ): Promise<void> {
   const Notifications = await getNotifications();
-  ensureHandler();
+  void ensureHandler();
   await Notifications.cancelAllScheduledNotificationsAsync();
 
   // Re-schedule enabled habits
@@ -117,6 +117,6 @@ export async function rescheduleAllHabitReminders(
 
 export async function cancelAllReminders(): Promise<void> {
   const Notifications = await getNotifications();
-  ensureHandler();
+  void ensureHandler();
   await Notifications.cancelAllScheduledNotificationsAsync();
 }

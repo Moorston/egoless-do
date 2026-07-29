@@ -3,7 +3,7 @@ import type { Habit } from './habit';
 import type { MindReflection } from './reflection';
 import type { FoodEntry } from './food';
 import type { ExerciseEntry } from './exercise';
-import type { Plan } from './plan';
+import type { Plan, PlanItem } from './plan';
 import type { BreathingRecord } from './breath';
 import type { PlanItem } from './plan';
 

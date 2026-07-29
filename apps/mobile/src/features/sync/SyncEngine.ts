@@ -238,7 +238,7 @@ export class SyncEngine {
       (serverTime) => {
         if (serverTime > 0) {
           this._timestampManager.setLastSyncAt(Math.max(this._timestampManager.getLastSyncAt(), serverTime));
-          this._timestampManager.saveLastSyncAt(this._timestampManager.getLastSyncAt());
+          void this._timestampManager.saveLastSyncAt(this._timestampManager.getLastSyncAt());
           this._timestampManager.updateClockOffset(serverTime);
         }
       },
@@ -604,7 +604,7 @@ export class SyncEngine {
   private updateTimestamps(serverTime: number, generation: number): void {
     if (this._syncGeneration === generation && serverTime > 0) {
       this._timestampManager.setLastSyncAt(Math.max(this._timestampManager.getLastSyncAt(), serverTime));
-      this._timestampManager.saveLastSyncAt(this._timestampManager.getLastSyncAt());
+      void this._timestampManager.saveLastSyncAt(this._timestampManager.getLastSyncAt());
       this._timestampManager.updateClockOffset(serverTime);
     }
   }

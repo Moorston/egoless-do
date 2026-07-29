@@ -250,11 +250,11 @@ export function useSync() {
     }
 
     // Initial sync on mount
-    sync();
+    void sync();
 
     // Sync when app returns to foreground
     const sub = AppState.addEventListener('change', (state: AppStateStatus) => {
-      if (state === 'active') sync();
+      if (state === 'active') void sync();
     });
 
     return () => sub.remove();

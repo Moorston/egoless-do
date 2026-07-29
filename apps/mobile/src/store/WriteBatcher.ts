@@ -68,7 +68,7 @@ export class WriteBatcher {
     if (this._flushTimer) return;
     this._flushTimer = setTimeout(() => {
       this._flushTimer = null;
-      this._flush();
+      void this._flush();
     }, this._flushDelayMs);
   }
 
@@ -294,7 +294,7 @@ export class WriteBatcher {
           }
           this._flushTimer = setTimeout(() => {
             this._flushTimer = null;
-            if (this._pendingWrites.size > 0) this._flush();
+            if (this._pendingWrites.size > 0) void this._flush();
           }, 5000);
         }
       }

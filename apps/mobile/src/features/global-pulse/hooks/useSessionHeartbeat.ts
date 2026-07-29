@@ -4,11 +4,13 @@
  * 禁食类型不启动心跳
  */
 
-import { CheckinType } from '@egoless-do/core';
+import { CheckinType, createLogger } from '@egoless-do/core';
 import { useEffect, useRef, useCallback } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 
 import { updateSession } from '../services/activeSessionApi';
+
+const log = createLogger('GlobalPulse');
 
 const HEARTBEAT_INTERVAL = 15000; // 15s
 
@@ -30,7 +32,7 @@ export function useSessionHeartbeat(
   const startHeartbeat = useCallback(() => {
     if (isActiveRef.current) return;
     isActiveRef.current = true;
-    sendHeartbeat();
+    sendHeartbeat().catch(err => log.error(err, { message: 'sendHeartbeat' }));
     timerRef.current = setInterval(sendHeartbeat, HEARTBEAT_INTERVAL);
   }, [sendHeartbeat]);
 

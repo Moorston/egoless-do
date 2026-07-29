@@ -6,14 +6,13 @@ import { View, Animated, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../components/UI';
-import { useRootNavigation, type MainTabParamList } from '../../navigation/hooks';
+import { useRootNavigation, type MainTabParamList, type RootStackParamList } from '../../navigation/hooks';
 
 
 
 
 
 const log = createLogger('Exercise');
-import type { RootStackParamList } from '../../navigation/hooks';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
 
 // 组合标题计算：从 ExerciseDef 提取去重分类名

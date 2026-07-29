@@ -140,8 +140,8 @@ export function useGlobalPulse(options: UseGlobalPulseOptions = {}): UseGlobalPu
 
   // 初始加载
   useEffect(() => {
-    loadCheckins();
-    loadStats();
+    void loadCheckins();
+    void loadStats();
   }, [loadCheckins, loadStats]);
 
   // 恢复连接时自动同步
@@ -151,7 +151,7 @@ export function useGlobalPulse(options: UseGlobalPulseOptions = {}): UseGlobalPu
   useEffect(() => {
     if (isConnected && wasOfflineRef.current) {
       wasOfflineRef.current = false;
-      refresh();
+      void refresh();
     }
     if (!isConnected) {
       wasOfflineRef.current = true;
@@ -162,7 +162,7 @@ export function useGlobalPulse(options: UseGlobalPulseOptions = {}): UseGlobalPu
   useEffect(() => {
     if (autoRefresh) {
       refreshTimerRef.current = setInterval(() => {
-        refresh();
+        void refresh();
       }, REFRESH_INTERVAL);
     }
 
@@ -182,7 +182,7 @@ export function useGlobalPulse(options: UseGlobalPulseOptions = {}): UseGlobalPu
       }
     };
 
-    restoreSyncStatus();
+    void restoreSyncStatus();
   }, []);
 
   return {

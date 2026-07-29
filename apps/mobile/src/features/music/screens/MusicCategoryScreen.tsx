@@ -37,8 +37,8 @@ export default function MusicCategoryScreen() {
   const loadUserTracks = useMusicStore(s => s.loadUserTracks);
 
   useEffect(() => {
-    loadFavorites();
-    loadUserTracks();
+    void loadFavorites();
+    void loadUserTracks();
   }, [loadFavorites, loadUserTracks]);
 
   const meta = MUSIC_CATEGORY_META.find(m => m.key === category);

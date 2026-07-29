@@ -176,9 +176,9 @@ export function useSleepNotifications() {
   // Schedule/cancel when goal changes
   useEffect(() => {
     if (sleepGoal.enabled) {
-      scheduleReminders();
+      void scheduleReminders();
     } else {
-      cancelReminders();
+      void cancelReminders();
     }
   }, [sleepGoal.enabled, sleepGoal.targetBedtime, sleepGoal.reminderBeforeMin]);
 

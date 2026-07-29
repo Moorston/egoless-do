@@ -62,7 +62,7 @@ export function useBreathAudio(opts: BreathAudioOptions) {
   const playPhaseSound = useCallback(() => {
     if (!opts.cueEnabled || !cuePlayer) return;
     try {
-      cuePlayer.seekTo(0);
+      void cuePlayer.seekTo(0);
       cuePlayer.play();
     } catch (e) {
       log.warn('Phase sound failed', e);
@@ -74,7 +74,7 @@ export function useBreathAudio(opts: BreathAudioOptions) {
     if (num === lastCountRef.current) return;
     lastCountRef.current = num;
     const Speech = getSpeech()!;
-    Speech.stop();
+    void Speech.stop();
     Speech.speak(String(num), { language: opts.speechLanguage ?? 'zh-CN', rate: 0.9 });
   }, [opts.speechLanguage]);
 
@@ -83,7 +83,7 @@ export function useBreathAudio(opts: BreathAudioOptions) {
     const label = opts.phaseLabels?.[phaseType];
     if (label) {
       const Speech = getSpeech()!;
-      Speech.stop();
+      void Speech.stop();
       Speech.speak(label, { language: opts.speechLanguage ?? 'zh-CN', rate: 0.7 });
     }
   }, [opts.phaseLabels, opts.speechLanguage]);
@@ -94,7 +94,7 @@ export function useBreathAudio(opts: BreathAudioOptions) {
 
   // Stop speech on unmount (lazy load only if speech was ever used)
   useEffect(() => {
-    return () => { if (_Speech) _Speech.stop(); };
+    return () => { if (_Speech) void _Speech.stop(); };
   }, []);
 
   return { playPhaseSound, speakCount, speakPhase, resetCount };

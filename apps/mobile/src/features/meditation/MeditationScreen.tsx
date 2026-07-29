@@ -96,7 +96,7 @@ export default function MeditationScreen() {
   // 删除会话
   const cleanupSession = useCallback(() => {
     if (sessionIdRef.current) {
-      deleteSession(sessionIdRef.current);
+      void deleteSession(sessionIdRef.current);
       sessionIdRef.current = null;
     }
   }, []);
@@ -107,7 +107,7 @@ export default function MeditationScreen() {
     if (sessionIdRef.current) {
       if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
       debounceTimerRef.current = setTimeout(() => {
-        updateSession(sessionIdRef.current!, { insight: text });
+        void updateSession(sessionIdRef.current!, { insight: text });
       }, 1000);
     }
   }, []);
@@ -138,7 +138,7 @@ export default function MeditationScreen() {
 
   const playBell = useCallback(() => {
     try {
-      bellPlayer.seekTo(0);
+      void bellPlayer.seekTo(0);
       bellPlayer.play();
     } catch { /* bell audio unavailable — ignore */ }
   }, [bellPlayer]);
@@ -224,7 +224,7 @@ export default function MeditationScreen() {
   const handleStart = () => {
     setSec(0);
     setActive(true);
-    createMeditationSession();
+    void createMeditationSession();
   };
 
   const handleMusicPickerClose = useCallback(() => {

@@ -3,11 +3,13 @@
  * 封装反向地理编码服务为 React Hook
  */
 
-import { getCityInfo, CityInfo } from '@egoless-do/core';
+import { getCityInfo, CityInfo, createLogger } from '@egoless-do/core';
 import { useState, useEffect, useRef, useMemo } from 'react';
 
 // 全局缓存，避免重复请求
 const cityCache = new Map<string, CityInfo | null>();
+
+const log = createLogger('GlobalPulse');
 
 interface UseCityNameResult {
   city: string | null;
@@ -179,7 +181,7 @@ export function useCityNameBatch(
       }
     };
 
-    loadCities();
+    loadCities().catch(err => log.error(err, { message: 'loadCities' }));
   }, [coordKey]);
 
   return results;

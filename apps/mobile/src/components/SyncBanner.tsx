@@ -40,7 +40,7 @@ export function SyncBanner({ onDismiss }: SyncBannerProps) {
       }
     };
 
-    check();
+    void check();
     const timer = setInterval(check, 3000);
     return () => clearInterval(timer);
   }, []);

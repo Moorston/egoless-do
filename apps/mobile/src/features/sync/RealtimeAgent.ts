@@ -172,7 +172,7 @@ export class RealtimeAgent {
         this._reconnectAttempt = 0;
         this._consecutiveHeartbeatFailures = 0;
         this._onStatus?.(true);
-        this._subscribe();
+        void this._subscribe();
         return;
       }
 

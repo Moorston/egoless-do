@@ -37,6 +37,9 @@ module.exports = {
         ],
       },
     ],
+    // ─── Floating Promises ─────────────────────────────────────────
+    // 未处理的 Promise 必须显式标记（void/.catch/await），防止静默失败
+    '@typescript-eslint/no-floating-promises': ['error', { ignoreIIFE: true }],
   },
   overrides: [
     ...(baseConfig.overrides || []),
@@ -44,6 +47,7 @@ module.exports = {
       files: ['**/*.test.ts', '**/*.test.tsx', '**/__tests__/**'],
       rules: {
         'local/no-raw-number-in-text': 'warn',
+        '@typescript-eslint/no-floating-promises': 'off',
       },
     },
   ],

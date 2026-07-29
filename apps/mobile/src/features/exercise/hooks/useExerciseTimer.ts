@@ -35,7 +35,7 @@ export function useExerciseTimer() {
       setActive(true);
       return;
     }
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     const t = setTimeout(() => setCountdown(c => c - 1), 1000);
     return () => clearTimeout(t);
   }, [page, countdown]);
@@ -76,7 +76,7 @@ export function useExerciseTimer() {
     holdAnim.addListener(({ value }) => {
       if (value >= 1) {
         holdAnim.removeAllListeners();
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         // Pulse wave
         pulseAnim.setValue(0);
         Animated.timing(pulseAnim, { toValue: 1, duration: 400, easing: Easing.out(Easing.ease), useNativeDriver: true }).start();

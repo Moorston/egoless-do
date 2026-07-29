@@ -36,7 +36,7 @@ export function usePrivacy(): UsePrivacyReturn {
         log.warn('getUserHash error:', err);
       }
     })();
-    loadPreferences();
+    void loadPreferences();
   }, []);
 
   const loadPreferences = async () => {

@@ -51,6 +51,13 @@ module.exports = {
       },
     },
     {
+      // Mobile app: enforce floating promises handling (fire-and-forget must be explicit)
+      files: ['apps/mobile/src/**/*.ts', 'apps/mobile/src/**/*.tsx'],
+      rules: {
+        '@typescript-eslint/no-floating-promises': ['error', { ignoreIIFE: true }],
+      },
+    },
+    {
       // Test files may use any for mocks, and fire-and-forget promises are allowed
       files: ['**/*.test.ts', '**/*.test.tsx', '**/__tests__/**'],
       rules: {

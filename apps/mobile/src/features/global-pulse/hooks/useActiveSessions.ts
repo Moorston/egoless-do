@@ -3,7 +3,7 @@
  * 初始加载 + PocketBase SSE 订阅 + 客户端超时过滤
  */
 
-import { ActiveSession, CheckinType } from '@egoless-do/core';
+import { ActiveSession, CheckinType, createLogger } from '@egoless-do/core';
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -15,6 +15,8 @@ import {
   onConnectionStateChange,
   type ConnectionState,
 } from '../services/activeSessionApi';
+
+const log = createLogger('GlobalPulse');
 
 const HEARTBEAT_TIMEOUT_MS = 60000; // 60s 超时
 
@@ -54,7 +56,7 @@ export function useActiveSessions(type?: CheckinType): UseActiveSessionsResult {
   useEffect(() => {
     mountedRef.current = true;
     setIsLoading(true);
-    refresh();
+    refresh().catch(err => log.error(err, { message: 'refresh active sessions' }));
 
     const unsubscribe = subscribeSessions({
       onCreate: (session) => {

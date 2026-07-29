@@ -12,14 +12,14 @@ async function ensureMusicDataDir() {
 }
 async function writeJsonFile(filename: string, data: unknown): Promise<void> {
   try {
-    ensureMusicDataDir();
+    void ensureMusicDataDir();
     const file = new File(musicDataDir, filename);
     file.write(JSON.stringify(data), { encoding: 'utf8' });
   } catch (e) { log.warn(`Failed to write ${filename}:`, (e as Error)?.message); }
 }
 async function readJsonFile<T>(filename: string): Promise<T | null> {
   try {
-    ensureMusicDataDir();
+    void ensureMusicDataDir();
     const file = new File(musicDataDir, filename);
     if (!file.exists) return null;
     const raw = await file.text();
@@ -164,7 +164,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
   stop: () => set({ currentTrack: null, isPlaying: false, currentTime: 0, duration: 0 }),
   setVolume: (v) => {
     set({ volume: v });
-    writeJsonFile('volume.json', v);
+    void writeJsonFile('volume.json', v);
     _onMusicChange?.();
   },
   toggleLoop: () => set(s => {
@@ -349,7 +349,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
 
   setPlayMode: (mode) => {
     set({ playMode: mode, loop: mode === 'repeat-one' });
-    writeJsonFile('play_mode.json', mode);
+    void writeJsonFile('play_mode.json', mode);
     _onMusicChange?.();
   },
 

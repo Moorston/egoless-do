@@ -1,4 +1,4 @@
-import { activeOnly } from '../utils';
+import { activeOnly, uid } from '../utils';
 import type { MindReflection, ReflectionFilters, ThoughtTrail, PlanItem, ReflectionLink, LinkType } from '../types';
 import { DEFAULT_REFLECTION_FILTERS } from '../types';
 import {
@@ -9,7 +9,6 @@ import {
 import { createReflection } from '../defaults';
 import { addCustomItem, removeCustomItem, updateCustomItem, reorderItem } from '../business';
 import { TAGS_PRESET, MOODS } from '../constants';
-import { uid } from '../utils';
 import type { StorageAdapter, ReflectionSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 import { createLogger } from '../logger';

@@ -61,8 +61,6 @@ import type { RootStackParamList, MainTabParamList } from './types';
 export type { RootStackParamList, MainTabParamList } from './types';
 import { useRootNavigation } from './hooks';
 
-export { useRootNavigation, useTabNavigation } from './hooks';
-
 const log = createLogger('App');
 
 // ─── Wrap eager tab screens with ErrorBoundary ─────────────────────────────
@@ -202,10 +200,10 @@ export default function AppNavigator() {
   // Check initial sync state on mount — only show overlay on first device login
   useEffect(() => {
     if (!isSignedIn) return;
-    isDeviceSyncedBefore().then(synced => {
+    void isDeviceSyncedBefore().then(synced => {
       if (synced) return; // Device already synced before — no overlay needed
-      import('../db/schema').then(({ openDatabase, getState }) => {
-        openDatabase().then(async (db) => {
+      void import('../db/schema').then(({ openDatabase, getState }) => {
+        void openDatabase().then(async (db) => {
           const done = await getState(db, 'initialSyncDone');
           if (done !== 'true') {
             setSyncOverlayVisible(true);
@@ -245,7 +243,7 @@ export default function AppNavigator() {
   useEffect(() => {
     let sub: { remove?: () => void } | undefined;
     let mounted = true;
-    import('expo-notifications').then(Notifications => {
+    void import('expo-notifications').then(Notifications => {
       if (!mounted) return;
       sub = Notifications.addNotificationResponseReceivedListener(response => {
         const habitId = response.notification.request.content.data?.habitId as string;

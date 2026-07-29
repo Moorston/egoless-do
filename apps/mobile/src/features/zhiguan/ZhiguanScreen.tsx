@@ -89,7 +89,7 @@ export default function ZhiguanScreen() {
   // Initialize draft + load settings
   useEffect(() => {
     initDraft();
-    AsyncStorage.getItem(SETTINGS_KEY).then(v => {
+    void AsyncStorage.getItem(SETTINGS_KEY).then(v => {
       if (v) {
         const loaded = { ...DEFAULT_SETTINGS, ...JSON.parse(v) };
         setSettings(loaded);
@@ -127,7 +127,7 @@ export default function ZhiguanScreen() {
     if (mode !== 'practicing') { targetFiredRef.current = false; return; }
     if (settings.targetMinutes && timer.elapsedSecs >= settings.targetMinutes * 60 && !targetFiredRef.current) {
       targetFiredRef.current = true;
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     }
   }, [timer.elapsedSecs, settings.targetMinutes, mode]);
 
@@ -172,7 +172,7 @@ export default function ZhiguanScreen() {
       timer.stop();
       setMode('complete');
       setIsLongPressing(false);
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
       musicStore.stop();
     }, 2000);
   }, [timer, musicStore]);
@@ -212,7 +212,7 @@ export default function ZhiguanScreen() {
 
   const handleSaveSettings = useCallback((newSettings: ZhiguanSettings) => {
     setSettings(newSettings);
-    AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify(newSettings));
+    void AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify(newSettings));
     updateDraft({
       sankalpa: newSettings.sankalpa,
       chosenMethod: newSettings.chosenMethod,

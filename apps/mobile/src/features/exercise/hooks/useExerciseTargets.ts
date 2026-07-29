@@ -75,7 +75,7 @@ export function useExerciseTargets(params: UseExerciseTargetsParams) {
     if (targetType === 'reps' && totalReps >= targetValue) reached = true;
     if (reached && !targetReachedRef.current) {
       targetReachedRef.current = true;
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       triggerCelebration();
       playBell();
     }
@@ -89,7 +89,7 @@ export function useExerciseTargets(params: UseExerciseTargetsParams) {
       if (currentValue >= m.value && !reachedMilestonesRef.current.has(m.value)) {
         reachedMilestonesRef.current.add(m.value);
         setMilestoneText(m.label);
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         playBell();
         milestoneAnim.setValue(0);
         Animated.sequence([
@@ -106,7 +106,7 @@ export function useExerciseTargets(params: UseExerciseTargetsParams) {
   const checkSoftTargetBell = useCallback(() => {
     if (softTargetReached && !softTargetBellPlayedRef.current) {
       softTargetBellPlayedRef.current = true;
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       playBell();
     }
     if (!softTargetReached) {

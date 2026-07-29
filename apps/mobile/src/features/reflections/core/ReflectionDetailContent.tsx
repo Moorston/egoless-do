@@ -62,7 +62,7 @@ export default function ReflectionDetailContent({
     Alert.alert(T('reflUnlinkConfirmTitle'), T('reflUnlinkConfirmMessage'), [
       { text: T('cancel'), style: 'cancel' },
       { text: T('confirm'), style: 'destructive', onPress: () => {
-        if (r.linkedPlanItemId) deletePlanItem(r.linkedPlanItemId);
+        if (r.linkedPlanItemId) deletePlanItem(r.linkedPlanItemId).catch(err => log.error(err, { message: 'deletePlanItem' }));
         unlinkReflectionFromPlanItem(r.id);
         onClose();
       }},

@@ -107,7 +107,7 @@ export class SyncRealtimeController {
     if (this._realtimeFallbackTimer) return;
     this._realtimeFallbackTimer = setInterval(() => {
       const currentToken = getToken();
-      if (currentToken) this.pollForChanges(currentToken, onChange, getLastSyncAt(), deletedIdsProvider);
+      if (currentToken) void this.pollForChanges(currentToken, onChange, getLastSyncAt(), deletedIdsProvider);
     }, 120_000);
   }
 
@@ -220,7 +220,7 @@ export class SyncRealtimeController {
 
     const delay = this.getAdaptiveDebounce(entity);
     if (delay === 0) {
-      this.processRealtimeEntity(entity, payload, onChange, getLastSyncAt, deletedIdsProvider, getToken);
+      void this.processRealtimeEntity(entity, payload, onChange, getLastSyncAt, deletedIdsProvider, getToken);
       return;
     }
 
@@ -233,7 +233,7 @@ export class SyncRealtimeController {
     if (existing) clearTimeout(existing);
     this._realtimeDebounce.set(entity, setTimeout(() => {
       this._realtimeDebounce.delete(entity);
-      this.processRealtimeEntity(entity, null, onChange, getLastSyncAt, deletedIdsProvider, getToken);
+      void this.processRealtimeEntity(entity, null, onChange, getLastSyncAt, deletedIdsProvider, getToken);
     }, delay));
   }
 

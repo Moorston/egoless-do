@@ -78,7 +78,7 @@ export function AudioEngineProvider({ children }: { children: React.ReactNode })
     prevTrackRef.current = currentTrack;
     try {
       if (trackChanged) {
-        player.seekTo(0);
+        void player.seekTo(0);
       }
       if (isPlaying && !player.playing) {
         player.play();
