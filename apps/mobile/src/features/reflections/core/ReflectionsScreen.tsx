@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView, Platform, Linking, Alert, StyleSheet,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useShallow } from 'zustand/react/shallow';
 
 import ItemManagerPanel from '../../../components/ItemManagerPanel';
 import {
@@ -20,7 +21,7 @@ import {
 import SimpleHeader from '../../../navigation/SimpleHeader';
 import { useTabNavigation, useRootNavigation, type MainTabParamList } from '../../../navigation/hooks';
 import { safeGetItem, safeSetItem } from '../../../store/safeAsyncStorage';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore, type MobileStore } from '../../../store/useAppStore';
 import { useReflections } from '../hooks/useReflections';
 import MindTrailEntryCard from '../trails/MindTrailEntryCard';
 import TrailSuggestionBanner from '../trails/TrailSuggestionBanner';
@@ -123,7 +124,7 @@ export default function ReflectionsScreen() {
     unlinkReflectionFromPlanItem: s.unlinkReflectionFromPlanItem,
   }));
   const T     = useT();
-  const language = useAppStore(s => s.language);
+  const language = useAppStore(useShallow((s: MobileStore) => s.language));
   const route = useRoute<RouteProp<MainTabParamList, 'Reflections'>>();
   const nav   = useTabNavigation();
   const rootNav = useRootNavigation();
