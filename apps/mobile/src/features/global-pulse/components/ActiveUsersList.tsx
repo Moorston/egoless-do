@@ -6,9 +6,10 @@
 import {ActiveSession, CheckinType , FONT_SUB, FONT_TITLE, FONT_BODY, FONT_SMALL} from '@egoless-do/core';
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, SectionList } from 'react-native';
+import { useShallow } from 'zustand/react/shallow';
 
 import { useTheme, useT } from '../../../components/UI';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore, type MobileStore } from '../../../store/useAppStore';
 import { getCheckinTypeIcon, getCheckinTypeColor } from '../services/globalPulseApi';
 
 import { ActiveUserItem } from './ActiveUserItem';
@@ -38,7 +39,7 @@ export const ActiveUsersList: React.FC<ActiveUsersListProps> = ({
 }) => {
   const theme = useTheme();
   const t = useT();
-  const currentUserHash = useAppStore(s => s.auth.user?.id || '');
+  const currentUserHash = useAppStore(useShallow((s: MobileStore) => s.auth.user?.id || ''));
 
   const sections = useMemo<Section[]>(() => {
     const grouped = new Map<CheckinType, ActiveSession[]>();
