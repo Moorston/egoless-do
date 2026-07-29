@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-2.md`
-- **Total Sessions**: 60
+- **Total Sessions**: 61
 - **Last Active**: 2026-07-29
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~196 | Active |
+| `journal-2.md` | ~229 | Active |
 | `journal-1.md` | ~1971 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 61 | 2026-07-29 | 积压改动提交（46 文件 void promise）+ 全 session 最终收尾 | `3d7a94f8` | `master` |
 | 60 | 2026-07-29 | 性能优化：i18next 双系统重构 + expo-av 移除 | `354c7aee`, `c2082c51` | `master` |
 | 59 | 2026-07-29 | 依赖清理 expo-av 移除 + 全 session 最终收尾 | `354c7aee` | `master` |
 | 58 | 2026-07-29 | P0-4 历史回填 + 全 session 收尾 | `6097ddfe` | `master` |
