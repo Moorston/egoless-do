@@ -50,14 +50,41 @@ export function sanitize(props: Record<string, unknown>): Record<string, unknown
 
 // ── 用户 ID 匿名化 ──
 // 使用 SHA-256 加盐哈希，与 PB user.id 解耦
+// 优先使用 expo-crypto（EAS Build/Dev Client），降级为 Web Crypto API（Expo Go 兼容）
 export async function anonymizeUserId(pbUserId: string): Promise<string> {
   const salt = process.env.EXPO_PUBLIC_POSTHOG_SALT || 'change-me-in-production';
-  const hash = await Crypto.digestStringAsync(
-    Crypto.CryptoDigestAlgorithm.SHA256,
-    salt + pbUserId,
-    { encoding: Crypto.CryptoEncoding.HEX }
-  );
-  return hash.slice(0, 16); // 截断防逆向
+  const input = salt + pbUserId;
+
+  try {
+    // 方案 A：expo-crypto（原生模块，EAS Build/Dev Client）
+    const Crypto = await import('expo-crypto');
+    // expo-crypto 类型定义可能不完整，使用 eslint-disable
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    const hash = await Crypto.digestStringAsync(
+      Crypto.CryptoDigestAlgorithm.SHA256,
+      input,
+      { encoding: Crypto.CryptoEncoding.HEX }
+    );
+    return hash.slice(0, 16);
+  } catch {
+    // 方案 B：Web Crypto API（Expo Go 兼容）
+    if (typeof globalThis.crypto?.subtle?.digest === 'function') {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(input);
+      const hashBuffer = await globalThis.crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      return hashHex.slice(0, 16);
+    }
+    // 方案 C：降级为简单哈希（最后兜底）
+    let hash = 0;
+    for (let i = 0; i < input.length; i++) {
+      const char = input.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    return Math.abs(hash).toString(16).padStart(16, '0');
+  }
 }
 
 // ── 用户同意管理 ──
@@ -72,8 +99,11 @@ const CONSENT_KEY = 'analytics_consent';
  */
 export async function getAnalyticsConsent(): Promise<AnalyticsConsent> {
   try {
+    // 动态 import() 的模块命名空间解析为 any（TS 已知限制），schema 内 getState/setState 本身类型安全
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { getState } = await import('../../db/schema');
     const db = await openDatabase();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const value = await getState(db, CONSENT_KEY);
     return (value as AnalyticsConsent) || 'necessary';
   } catch {
@@ -86,8 +116,11 @@ export async function getAnalyticsConsent(): Promise<AnalyticsConsent> {
  */
 export async function setAnalyticsConsent(consent: AnalyticsConsent): Promise<void> {
   try {
+    // 动态 import() 的模块命名空间解析为 any（TS 已知限制），schema 内 setState 本身类型安全
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { setState } = await import('../../db/schema');
     const db = await openDatabase();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     await setState(db, CONSENT_KEY, consent);
   } catch (err) {
     console.warn('[Analytics] Failed to save consent:', err);
