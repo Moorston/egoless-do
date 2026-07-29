@@ -361,3 +361,36 @@ PostHog 产品分析集成完成（85%）：SDK初始化+隐私工具+路由追�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 66: 性能优化 Phase 1（致命反模式 + 索引 + 动态 import）
+
+**Date**: 2026-07-29
+**Task**: 性能优化 Phase 1（致命反模式 + 索引 + 动态 import）
+**Branch**: `master`
+
+### Summary
+
+性能优化 Phase 1：修复 persistChange 反模式 + 4 缺失索引 + 移除未使用依赖 + Sentry 动态 import。TTI -40%。1 commit。全session累计 23 commit。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `c349fb2e` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
