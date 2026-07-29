@@ -94,3 +94,36 @@ Batch 3 数据迁移级遗留修复：P0-4 bodyPlan 命名空间（schema+SQLite
 ### Next Steps
 
 - None - task complete
+
+
+## Session 58: P0-4 历史回填 + 全 session 收尾
+
+**Date**: 2026-07-29
+**Task**: P0-4 历史回填 + 全 session 收尾
+**Branch**: `master`
+
+### Summary
+
+P0-4 bodyPlan 命名空间完整收尾：历史数据回填迁移脚本（init.pb.js，一次性幂等）。全 session（52-60）累计 18 commit，覆盖 P0/P1/P2 + 构建清理 + 路由类型。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `6097ddfe` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
