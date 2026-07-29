@@ -289,6 +289,8 @@ export async function initApp(): Promise<void> {
 
     // ── Step 5: Wire auth token changes → SecureStore + Sentry user ─
     // Store unsubscribe handle for testability (subscription is permanent in production).
+    // TODO[P1]: 模块级永久订阅 — 需 cleanupApp() 机制在测试 teardown / app 退出时清理。
+    // 详见独立 task p1-memory-leak-cleanup。
     const _unsubscribeAuth = useAppStore.subscribe((state: MobileStore, prevState: MobileStore) => {
       const newToken = state.auth.token;
       const newRefresh = state.auth.refreshToken;
@@ -404,6 +406,8 @@ export async function initApp(): Promise<void> {
       },
       addVisibilityListener: (callback) => {
         // Store subscription for cleanup on teardown
+        // TODO[P1]: 模块级 AppState listener — 需 cleanupApp() 机制清理。
+        // 详见独立 task p1-memory-leak-cleanup。
         _visibilitySubscription = AppState.addEventListener('change', (s) => {
           if (s === 'active') callback();
         });

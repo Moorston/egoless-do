@@ -233,7 +233,9 @@ export default function SportPage() {
       return;
     }
     const PHASE_DURATION = 4000;
+    const mountedRef = { current: true };
     const runPhase = () => {
+      if (!mountedRef.current) return;
       const cycle = breathCycleRef.current;
       if (cycle === 0) {
         setBreathPhase('inhale');
@@ -253,7 +255,10 @@ export default function SportPage() {
       }, PHASE_DURATION);
     };
     runPhase();
-    return () => { if (breathTimerRef.current) { clearTimeout(breathTimerRef.current); breathTimerRef.current = null; } };
+    return () => {
+      mountedRef.current = false;
+      if (breathTimerRef.current) { clearTimeout(breathTimerRef.current); breathTimerRef.current = null; }
+    };
   }, [breathGuideEnabled, timer.page, timer.active]);
 
   // ── GPS tracking ──

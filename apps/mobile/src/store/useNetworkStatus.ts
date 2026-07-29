@@ -18,6 +18,8 @@ export const useNetworkStatus = create<NetworkStatus>()((set) => {
   }).catch(() => {});
 
   // Listen for changes
+  // TODO[P1]: 模块级永久 listener — 需 cleanupApp() 机制在测试 teardown 清理。
+  // 详见独立 task p1-memory-leak-cleanup。
   NetInfo.addEventListener(state => {
     set({
       isConnected: state.isConnected ?? false,

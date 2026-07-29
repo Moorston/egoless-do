@@ -281,5 +281,7 @@ async function handleAppStateChange(state: string) {
  * remain as inline module-level calls since they don't reference useAppStore.
  */
 export function initMobileStore() {
+  // TODO[P1]: 模块级 AppState listener — 永久订阅，需 cleanupApp() 机制在测试 teardown 清理。
+  // 详见独立 task p1-memory-leak-cleanup。
   AppState.addEventListener('change', handleAppStateChange);
 }

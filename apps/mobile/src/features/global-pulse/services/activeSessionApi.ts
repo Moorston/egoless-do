@@ -320,8 +320,10 @@ export function subscribeSessions(
       previousSessions = current;
       consecutiveNoChange = hasChanges ? 0 : consecutiveNoChange + 1;
       setConnectionState('connected');
-    } catch {
-      // Ignore poll errors silently
+    } catch (err) {
+      // Poll failure — log for observability but keep polling
+      log.warn('poll failed', { err: String(err) });
+      setConnectionState('error');
     } finally {
       _polling = false;
     }
