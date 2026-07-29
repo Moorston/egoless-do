@@ -5,10 +5,11 @@ import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import {
   View, Text, TouchableOpacity, Modal, ScrollView, KeyboardAvoidingView, Platform,
 } from 'react-native';
+import { useShallow } from 'zustand/react/shallow';
 
 import DatePickerModal from '../../../components/DatePickerModal';
 import { useTheme, useT, PrimaryButton, OutlineButton } from '../../../components/UI';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, type MobileStore } from '../../../store/useAppStore';
 import { PlanItemForm, validatePlanItemForm } from '../../plan/components/PlanItemForm';
 
 interface CreatePlanFromTrailModalProps {
@@ -27,7 +28,7 @@ export function CreatePlanFromTrailModal({
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const getActivePlan = useAppStore(s => s.getActivePlan);
+  const getActivePlan = useAppStore(useShallow((s: MobileStore) => s.getActivePlan));
   const activePlan = useMemo(() => getActivePlan(), [getActivePlan]);
 
   const [selectedSuggestions, setSelectedSuggestions] = useState<number[]>([]);
