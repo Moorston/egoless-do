@@ -1,7 +1,7 @@
 import {COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, computePlanProgress, countItemDoneDays, computeItemProgress, createLogger, dateStr , FONT_LABEL, FONT_STAT_SECTION} from '@egoless-do/core';
 import type { CheckinReview } from '@egoless-do/core';
-import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, RefreshControl, FlatList, StyleSheet } from 'react-native';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, RefreshControl, SectionList, StyleSheet } from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';
 import { useAppStore, useShallowStore } from '../../../store/useAppStore';
@@ -93,77 +93,6 @@ export default function ReviewView({ period }: ReviewViewProps) {
     }
   };
 
-  const renderIncompleteReasonItem = useCallback(({ item: r }: { item: { icon: string; code: string; count: number; percentage: number } }) => (
-    <View style={styles.reasonRow}>
-      <Text style={styles.bodyText}>
-        {r.icon} {T(`incompleteReason${r.code.charAt(0).toUpperCase() + r.code.slice(1)}`)}
-      </Text>
-      <Text style={styles.reasonCount}>
-        {String(r.count)} {T('reviewTimes')} ({String(r.percentage)}%)
-      </Text>
-    </View>
-  ), [styles, TH, T]);
-
-  const renderIncompleteItem = useCallback(({ item }: { item: { name: string; count: number } }) => (
-    <View style={styles.reasonRow}>
-      <Text style={styles.bodyText}>
-        {item.name}
-      </Text>
-      <Text style={styles.incompleteItemCount}>
-        {String(item.count)} {T('reviewTimes')}
-      </Text>
-    </View>
-  ), [styles, TH, T]);
-
-  const renderHabitItem = useCallback(({ item: habit }: { item: { name: string; progress: number; streak: number } }) => (
-    <View style={styles.habitContainer}>
-      <View style={styles.habitHeaderRow}>
-        <Text style={styles.bodyText}>{habit.name}</Text>
-        <Text style={styles.habitProgressPercent}>
-          {habit.progress}%
-        </Text>
-      </View>
-
-      <View style={styles.progressBarTrack}>
-        <View style={[styles.progressBarFill, {
-          width: `${habit.progress}%`,
-          backgroundColor: habit.progress >= 80 ? COLORS.GREEN : habit.progress >= 60 ? '#F59E0B' : COLORS.RED,
-        }]} />
-      </View>
-
-      <View style={styles.habitMetaRow}>
-        <Text style={styles.subText}>
-          {String(habit.doneDays)}/{String(habit.targetDays)} {T('days')}
-        </Text>
-        <Text style={styles.subText}>
-          {T('reviewStreak')}: {String(habit.streak)} {T('days')}
-        </Text>
-      </View>
-    </View>
-  ), [styles, TH, T]);
-
-  const renderHistoryReviewItem = useCallback(({ item: r }: { item: { id: string; startDate: string; endDate: string; createdAt: number } }) => (
-    <TouchableOpacity
-      onPress={() => nav.navigate('ReviewDetail', { reviewId: r.id })}
-      style={styles.historyRow}
-    >
-      <View>
-        <Text style={styles.bodyText}>
-          {r.startDate} - {r.endDate}
-        </Text>
-        <Text style={styles.historySub}>
-          {T('reviewCompletionRate')}: {r.completionRate}%
-        </Text>
-      </View>
-      <View style={styles.historyRight}>
-        <Text style={styles.habitProgressPercent}>
-          {String(r.streakDays)} {T('days')}
-        </Text>
-        <Text style={styles.subText}>{T('reviewStreak')}</Text>
-      </View>
-    </TouchableOpacity>
-  ), [styles, TH, T, nav]);
-
   const renderCoreMetrics = () => {
     if (!review) return null;
 
@@ -234,26 +163,32 @@ export default function ReviewView({ period }: ReviewViewProps) {
         <Text style={styles.sectionSubtitle}>
           {T('reviewReasonDistribution')}
         </Text>
-        <FlatList
-          data={review.incompleteReasons}
-          renderItem={renderIncompleteReasonItem}
-          keyExtractor={(item, index) => item.code ?? String(index)}
-          removeClippedSubviews={true}
-          scrollEnabled={false}
-        />
+        {review.incompleteReasons.map((r, index) => (
+          <View key={r.code ?? String(index)} style={styles.reasonRow}>
+            <Text style={styles.bodyText}>
+              {r.icon} {T(`incompleteReason${r.code.charAt(0).toUpperCase() + r.code.slice(1)}`)}
+            </Text>
+            <Text style={styles.reasonCount}>
+              {String(r.count)} {T('reviewTimes')} ({String(r.percentage)}%)
+            </Text>
+          </View>
+        ))}
 
         {review.incompleteItems.length > 0 && (
           <>
             <Text style={styles.incompleteItemsHeader}>
               {T('reviewIncompleteItems')}
             </Text>
-            <FlatList
-              data={review.incompleteItems}
-              renderItem={renderIncompleteItem}
-              keyExtractor={(item, index) => item.id ?? String(index)}
-              removeClippedSubviews={true}
-              scrollEnabled={false}
-            />
+            {review.incompleteItems.map((item, index) => (
+              <View key={item.id ?? String(index)} style={styles.reasonRow}>
+                <Text style={styles.bodyText}>
+                  {item.name}
+                </Text>
+                <Text style={styles.incompleteItemCount}>
+                  {String(item.count)} {T('reviewTimes')}
+                </Text>
+              </View>
+            ))}
           </>
         )}
       </View>
@@ -272,13 +207,32 @@ export default function ReviewView({ period }: ReviewViewProps) {
           </Text>
         </View>
 
-        <FlatList
-          data={review.habitProgress}
-          renderItem={renderHabitItem}
-          keyExtractor={(habit) => habit.id}
-          removeClippedSubviews={true}
-          scrollEnabled={false}
-        />
+        {review.habitProgress.map((habit) => (
+          <View key={habit.id} style={styles.habitContainer}>
+            <View style={styles.habitHeaderRow}>
+              <Text style={styles.bodyText}>{habit.name}</Text>
+              <Text style={styles.habitProgressPercent}>
+                {habit.progress}%
+              </Text>
+            </View>
+
+            <View style={styles.progressBarTrack}>
+              <View style={[styles.progressBarFill, {
+                width: `${habit.progress}%`,
+                backgroundColor: habit.progress >= 80 ? COLORS.GREEN : habit.progress >= 60 ? '#F59E0B' : COLORS.RED,
+              }]} />
+            </View>
+
+            <View style={styles.habitMetaRow}>
+              <Text style={styles.subText}>
+                {String(habit.doneDays)}/{String(habit.targetDays)} {T('days')}
+              </Text>
+              <Text style={styles.subText}>
+                {T('reviewStreak')}: {String(habit.streak)} {T('days')}
+              </Text>
+            </View>
+          </View>
+        ))}
       </View>
     );
   };
@@ -533,15 +487,89 @@ export default function ReviewView({ period }: ReviewViewProps) {
           </TouchableOpacity>
         </View>
 
-        <FlatList
-          data={historyReviews}
-          renderItem={renderHistoryReviewItem}
-          keyExtractor={(r) => r.id}
-          removeClippedSubviews={true}
-          scrollEnabled={false}
-        />
+        {historyReviews.map((r) => (
+          <TouchableOpacity
+            key={r.id}
+            onPress={() => nav.navigate('ReviewDetail', { reviewId: r.id })}
+            style={styles.historyRow}
+          >
+            <View>
+              <Text style={styles.bodyText}>
+                {r.startDate} - {r.endDate}
+              </Text>
+              <Text style={styles.historySub}>
+                {T('reviewCompletionRate')}: {r.completionRate}%
+              </Text>
+            </View>
+            <View style={styles.historyRight}>
+              <Text style={styles.habitProgressPercent}>
+                {String(r.streakDays)} {T('days')}
+              </Text>
+              <Text style={styles.subText}>{T('reviewStreak')}</Text>
+            </View>
+          </TouchableOpacity>
+        ))}
       </View>
     );
+  };
+
+  const historyReviews = checkinReviews
+    ?.filter(r => r.period === period && r.deleted !== true)
+    .sort((a, b) => b.generatedAt - a.generatedAt)
+    .slice(0, 3) ?? [];
+
+  const allPlans = (plans ?? []).filter(p => !p.deleted);
+
+  type ReviewSectionKey = 'header' | 'incomplete' | 'habit' | 'plan' | 'health' | 'ai' | 'history';
+
+  const sections = useMemo(() => {
+    const historyReviews = checkinReviews
+      ?.filter(r => r.period === period && r.deleted !== true)
+      .sort((a, b) => b.generatedAt - a.generatedAt)
+      .slice(0, 3) ?? [];
+
+    const result: { key: ReviewSectionKey; data: ['block'] }[] = [];
+    result.push({ key: 'header', data: ['block'] });
+    if (review && review.incompleteReasons.length > 0) result.push({ key: 'incomplete', data: ['block'] });
+    if (review && review.habitProgress.length > 0) result.push({ key: 'habit', data: ['block'] });
+    if (review && allPlans.length > 0) result.push({ key: 'plan', data: ['block'] });
+    if (review && (
+      review.metrics.avgWeight !== undefined ||
+      review.metrics.avgWater !== undefined ||
+      review.metrics.avgCalories !== undefined ||
+      review.metrics.totalExerciseMin !== undefined ||
+      review.metrics.totalMeditationMin !== undefined ||
+      review.metrics.fastingCount !== undefined
+    )) result.push({ key: 'health', data: ['block'] });
+    if (review && review.aiSummary) result.push({ key: 'ai', data: ['block'] });
+    if (historyReviews.length > 0) result.push({ key: 'history', data: ['block'] });
+    return result;
+  }, [review, allPlans, checkinReviews, period]);
+
+  const renderItem = ({ section }: { section: { key: ReviewSectionKey } }) => {
+    switch (section.key) {
+      case 'header':
+        return (
+          <View>
+            <View style={styles.reviewTitleSection}>
+              <Text style={styles.reviewTitle}>
+                {period === 'week' ? T('reviewWeekTitle') : T('reviewMonthTitle')}
+              </Text>
+              <Text style={styles.reviewDateRange}>
+                {review?.startDate} - {review?.endDate}
+              </Text>
+            </View>
+            {renderCoreMetrics()}
+          </View>
+        );
+      case 'incomplete': return renderIncompleteAnalysis();
+      case 'habit': return renderHabitProgress();
+      case 'plan': return renderPlanProgress();
+      case 'health': return renderHealthMetrics();
+      case 'ai': return renderAIAnalysis();
+      case 'history': return renderHistoryEntry();
+      default: return null;
+    }
   };
 
   if (loading) {
@@ -566,29 +594,17 @@ export default function ReviewView({ period }: ReviewViewProps) {
   }
 
   return (
-    <ScrollView
+    <SectionList
+      sections={sections}
+      renderItem={renderItem}
+      keyExtractor={(item, index) => `${item}-${index}`}
       contentContainerStyle={staticStyles.scrollContent}
+      showsVerticalScrollIndicator={false}
+      stickySectionHeadersEnabled={false}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
       }
-    >
-      <View style={styles.reviewTitleSection}>
-        <Text style={styles.reviewTitle}>
-          {period === 'week' ? T('reviewWeekTitle') : T('reviewMonthTitle')}
-        </Text>
-        <Text style={styles.reviewDateRange}>
-          {review.startDate} - {review.endDate}
-        </Text>
-      </View>
-
-      {renderCoreMetrics()}
-      {renderIncompleteAnalysis()}
-      {renderHabitProgress()}
-      {renderPlanProgress()}
-      {renderHealthMetrics()}
-      {renderAIAnalysis()}
-      {renderHistoryEntry()}
-    </ScrollView>
+    />
   );
 }
 

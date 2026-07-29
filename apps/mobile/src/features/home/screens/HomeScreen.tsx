@@ -9,7 +9,7 @@ import {
 } from 'lucide-react-native';
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import {
-  View, Text, ScrollView, FlatList, TouchableOpacity,
+  View, Text, ScrollView, TouchableOpacity,
   StatusBar, Modal, TextInput,
   KeyboardAvoidingView, Platform,
 } from 'react-native';
@@ -34,6 +34,43 @@ import HomeFoodSection from '../components/HomeFoodSection';
 import HomePlanSection from '../components/HomePlanSection';
 
 type CheckinStatus = 'draft' | 'done' | 'editing';
+
+/** Habit row — extracted from the former scrollEnabled={false} FlatList so the
+ *  check-in card renders all its rows with a single inline .map() instead of a
+ *  nested virtualised list. */
+function HabitItem({ habit, viewDate, TH, P, T, isReadOnly, onToggle }: {
+  habit: Habit;
+  viewDate: string;
+  TH: ReturnType<typeof useTheme>;
+  P: string;
+  T: (key: string) => string;
+  isReadOnly: boolean;
+  onToggle: (id: string) => void;
+}) {
+  const habitDone = habit.checkedDates?.includes(viewDate) ?? false;
+  return (
+    <View style={{
+      flexDirection: 'row', alignItems: 'center',
+      justifyContent: 'space-between', paddingVertical: 12,
+      borderBottomWidth: 1, borderBottomColor: TH.border,
+    }}>
+      <View style={styles.flexRowGap10}>
+        <Star size={16} color={P} />
+        <View>
+          <Text style={{ color: isReadOnly && !habitDone ? TH.sub : TH.text, fontSize: FONT_BODY(), opacity: isReadOnly && !habitDone ? 0.5 : 1 }}>{habit.name}</Text>
+          <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>{String(habit.streak)} {T('checkinStreak')}</Text>
+        </View>
+      </View>
+      {isReadOnly ? (
+        habitDone
+          ? <Check size={18} color={COLORS.GREEN} />
+          : <X size={18} color={TH.sub} />
+      ) : (
+        <Checkbox on={habitDone} onChange={() => onToggle(habit.id)} accessibilityLabel={`${habit.name} ${habitDone ? T('done') : T('notDone')}`} />
+      )}
+    </View>
+  );
+}
 
 /** Parse weight string, return undefined if invalid or out of range (1-500 kg) */
 function parseWeight(raw: string | undefined): number | undefined {
@@ -318,7 +355,7 @@ export default function HomeScreen() {
     setShowReasonModal(false);
     setLocalDone(true);
     const noteStr = buildNote();
-    const noteData: Record<string, unknown> = JSON.parse(noteStr);
+    const noteData: Record<string, unknown> = JSON.parse(noteStr) as Record<string, unknown>;
     noteData.incompleteReason = selectedReason;
     noteData.incompleteNote = reasonNote.trim();
     submitCheckin(true, JSON.stringify(noteData), undefined, parseWeight(weight));
@@ -356,32 +393,6 @@ export default function HomeScreen() {
     setShowWG(false);
   }, [wgi, setWaterGoal]);
   const handleSaveWeight = useCallback(() => saveWeight(weight), [saveWeight, weight]);
-
-  const renderHabitItem = useCallback(({ item: h }: { item: Habit }) => {
-    const habitDone = h.checkedDates?.includes(viewDate) ?? false;
-    return (
-      <View style={{
-        flexDirection: 'row', alignItems: 'center',
-        justifyContent: 'space-between', paddingVertical: 12,
-        borderBottomWidth: 1, borderBottomColor: TH.border,
-      }}>
-        <View style={styles.flexRowGap10}>
-          <Star size={16} color={P} />
-          <View>
-            <Text style={{ color: isReadOnly && !habitDone ? TH.sub : TH.text, fontSize: FONT_BODY(), opacity: isReadOnly && !habitDone ? 0.5 : 1 }}>{h.name}</Text>
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>{String(h.streak)} {T('checkinStreak')}</Text>
-          </View>
-        </View>
-        {isReadOnly ? (
-          habitDone
-            ? <Check size={18} color={COLORS.GREEN} />
-            : <X size={18} color={TH.sub} />
-        ) : (
-          <Checkbox on={habitDone} onChange={() => toggleHabit(h.id)} accessibilityLabel={`${h.name} ${habitDone ? T('done') : T('notDone')}`} />
-        )}
-      </View>
-    );
-  }, [viewDate, TH, P, T, COLORS, isReadOnly, toggleHabit]);
 
   // ── Auto-sync plan items and health data on mount ──
   useEffect(() => {
@@ -518,13 +529,18 @@ export default function HomeScreen() {
                 {activeHabits.length > 0 && (
                   <>
                     <Text style={{ color: TH.sub, fontSize: FONT_LABEL(), marginTop: 16, marginBottom: 8 }}>{T('checkinHabitCheck')}</Text>
-                    <FlatList
-                      data={activeHabits}
-                      keyExtractor={(item) => item.id}
-                      renderItem={renderHabitItem}
-                      scrollEnabled={false}
-                      removeClippedSubviews={true}
-                    />
+                    {activeHabits.map((h) => (
+                      <HabitItem
+                        key={h.id}
+                        habit={h}
+                        viewDate={viewDate}
+                        TH={TH}
+                        P={P}
+                        T={T}
+                        isReadOnly={isReadOnly}
+                        onToggle={toggleHabit}
+                      />
+                    ))}
                   </>
                 )}
 

@@ -8,7 +8,7 @@ import {
 } from 'lucide-react-native';
 import React, { useState, useMemo, useCallback } from 'react';
 import {
-  View, Text, ScrollView, FlatList, TouchableOpacity, TextInput,
+  View, Text, ScrollView, SectionList, TouchableOpacity, TextInput,
   KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -75,6 +75,27 @@ export default function DayCheckinScreen() {
     if (!activePlan) return [];
     return getTodayCustomTodos(store.dailyCustomTodos ?? [], activePlan.id, date);
   }, [store.dailyCustomTodos, activePlan, date]);
+  const activeHabits = useMemo(() =>
+    (store.habits ?? []).filter(h => !h.deleted && h.status === 'inProgress'),
+    [store.habits],
+  );
+
+  // ── Section list discriminator ──
+  type CheckinSectionKind = 'plan' | 'todo' | 'habit';
+  interface CheckinSection {
+    kind: CheckinSectionKind;
+    title: string;
+    data: ReadonlyArray<PlanItem | DailyCustomTodo | Habit>;
+  }
+
+  // ── Merge the 3 nested FlatLists into a single SectionList ──
+  const sections = useMemo<CheckinSection[]>(() => {
+    const out: CheckinSection[] = [];
+    if (todayPlanItems.length > 0) out.push({ kind: 'plan', title: T('planTodoList'), data: todayPlanItems });
+    if (dailyCustomTodos.length > 0) out.push({ kind: 'todo', title: T('planDailyCustomTodos'), data: dailyCustomTodos });
+    if (activeHabits.length > 0) out.push({ kind: 'habit', title: T('checkinHabitCheck'), data: activeHabits });
+    return out;
+  }, [todayPlanItems, dailyCustomTodos, activeHabits, T]);
   const [planToggles, setPlanToggles] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
     if (!activePlan) return initial;
@@ -215,6 +236,22 @@ export default function DayCheckinScreen() {
     </View>
   ), [habitCheckins, setHabitCheckins, TH, T]);
 
+  // ── SectionList renderers (unified for plan/todo/habit) ──
+  const renderSectionItem = useCallback(({ item, section }: { item: PlanItem | DailyCustomTodo | Habit; section: CheckinSection }) => {
+    switch (section.kind) {
+      case 'plan':
+        return renderPlanItem({ item: item as PlanItem });
+      case 'todo':
+        return renderTodoItem({ item: item as DailyCustomTodo });
+      case 'habit':
+        return renderHabitItem({ item: item as Habit });
+    }
+  }, [renderPlanItem, renderTodoItem, renderHabitItem]);
+
+  const renderSectionHeader = useCallback(({ section }: { section: CheckinSection }) => (
+    <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>{section.title}</Text>
+  ), [TH]);
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: TH.bg }}>
       <KeyboardAvoidingView
@@ -262,46 +299,17 @@ export default function DayCheckinScreen() {
               </Text>
             </View>
 
-            {/* Plan items */}
-            {todayPlanItems.length > 0 && (
-              <View style={{ marginBottom:12 }}>
-                <Text style={{ fontSize:FONT_SUB(), color:TH.sub, marginBottom:8 }}>{T('planTodoList')}</Text>
-                <FlatList
-                  data={todayPlanItems}
-                  keyExtractor={(item) => item.id}
-                  renderItem={renderPlanItem}
-                  scrollEnabled={false}
-                  removeClippedSubviews={true}
-                />
-              </View>
-            )}
-
-            {/* Custom todos */}
-            {dailyCustomTodos.length > 0 && (
-              <View style={{ marginBottom:12 }}>
-                <Text style={{ fontSize:FONT_SUB(), color:TH.sub, marginBottom:8 }}>{T('planDailyCustomTodos')}</Text>
-                <FlatList
-                  data={dailyCustomTodos}
-                  keyExtractor={(item) => item.id}
-                  renderItem={renderTodoItem}
-                  scrollEnabled={false}
-                  removeClippedSubviews={true}
-                />
-              </View>
-            )}
-
-            {/* Habits */}
-            {(store.habits ?? []).filter(h => !h.deleted && h.status==='inProgress').length > 0 && (
-              <View>
-                <Text style={{ fontSize:FONT_SUB(), color:TH.sub, marginBottom:8 }}>{T('checkinHabitCheck')}</Text>
-                <FlatList
-                  data={(store.habits ?? []).filter(h => !h.deleted && h.status==='inProgress')}
-                  keyExtractor={(item) => item.id}
-                  renderItem={renderHabitItem}
-                  scrollEnabled={false}
-                  removeClippedSubviews={true}
-                />
-              </View>
+            {/* Merged plan / todos / habits into one SectionList */}
+            {sections.length > 0 && (
+              <SectionList
+                sections={sections}
+                keyExtractor={(item) => item.id}
+                renderItem={renderSectionItem}
+                renderSectionHeader={renderSectionHeader}
+                scrollEnabled={false}
+                removeClippedSubviews={true}
+                stickySectionHeadersEnabled={false}
+              />
             )}
           </View>
 
