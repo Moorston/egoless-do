@@ -190,6 +190,15 @@ export default function MeditationScreen() {
         setPendingDurMin(durMin);
         setNoteText('');
         setShowNoteModal(true);
+        // PostHog: 冥想完成
+        import('../../analytics/track').then(({ track }) => {
+          import('../../analytics/events').then(({ Events }) => {
+            track(Events.MEDITATION_COMPLETED, {
+              dur_min_actual: durMin,
+              completion_type: 'natural',
+            });
+          });
+        }).catch(() => {});
       }
       if (musicStartedRef.current) {
         musicStop();

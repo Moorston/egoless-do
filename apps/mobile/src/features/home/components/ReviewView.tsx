@@ -46,7 +46,19 @@ export default function ReviewView({ period }: ReviewViewProps) {
     let cancelled = false;
     setLoading(true);
     generateReview(period).then(result => {
-      if (!cancelled) setReview(result);
+      if (!cancelled) {
+        setReview(result);
+        // PostHog: AI 功能使用
+        import('../../analytics/track').then(({ track }) => {
+          import('../../analytics/events').then(({ Events }) => {
+            track(Events.AI_FEATURE_USED, {
+              feature: 'review',
+              period,
+              model: result?.model || 'unknown',
+            });
+          });
+        }).catch(() => {});
+      }
     }).catch(error => {
       if (!cancelled) log.error(error, { message: 'Failed to generate review' });
     }).finally(() => {

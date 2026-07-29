@@ -1,13 +1,15 @@
 import { THEMES, LANG_LIST, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_CLOSE, createLogger, formatDate , FONT_STAT_CARD } from '@egoless-do/core';
 import type { ThemeName } from '@egoless-do/core';
 import NetInfo from '@react-native-community/netinfo';
+import { getAnalyticsConsent, setAnalyticsConsent } from '../../analytics/privacy';
+import { optIn, optOut } from '../../analytics/posthog';
 import { Image } from 'expo-image';
 import {
   BarChart3, CalendarDays, Utensils, Shield, HeartCrack,
   Heart, RefreshCw, Hand, PersonStanding, Trash2,
   Check, X, ChevronRight, Bell, Clock, Globe, Palette,
   Cloud, CloudUpload, History, Info, Lock, ClipboardList,
-  Music, Binary, Brain, Dumbbell, Timer,
+  Music, Binary, Brain, Dumbbell, Timer, BarChart2,
 } from 'lucide-react-native';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
@@ -70,6 +72,11 @@ export default function SettingsScreen() {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [timeEdit, setTimeEdit]           = useState(remindTime);
   const [clearing, setClearing]           = useState(false);
+  const [analyticsConsent, setAnalyticsConsentState] = useState<'anonymous' | 'necessary' | 'denied'>('necessary');
+
+  useEffect(() => {
+    getAnalyticsConsent().then(setAnalyticsConsentState).catch(() => {});
+  }, []);
 
   // Schedule reminder on mount if enabled
   useEffect(() => {
@@ -252,6 +259,21 @@ export default function SettingsScreen() {
           icon: <Brain size={20} color={P} />,
           right: <ChevronRight size={18} color={TH.sub} />,
           onPress: () => nav.navigate('AISettings'),
+        },
+        {
+          label: T('analyticsDataSharing', { default: '分析数据共享' }),
+          sub: T('analyticsDataSharingDesc', { default: '发送匿名使用数据帮助改进产品' }),
+          icon: <BarChart2 size={20} color={P} />,
+          right: <Toggle on={analyticsConsent === 'anonymous'} onChange={async (enabled) => {
+            const newConsent = enabled ? 'anonymous' : 'necessary';
+            try {
+              await setAnalyticsConsent(newConsent);
+              setAnalyticsConsentState(newConsent);
+              if (enabled) await optIn(); else await optOut();
+            } catch {
+              // 静默失败
+            }
+          }} />,
           last: true,
         },
       ],

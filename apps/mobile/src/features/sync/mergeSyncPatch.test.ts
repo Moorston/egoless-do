@@ -4,6 +4,18 @@ import type { MobileStore } from '../../store/useAppStore';
 
 import { mergeSyncPatch, STORE_KEY_TO_ENTITY } from './mergeSyncPatch';
 
+/** Minimal record shape used in mergeSyncPatch tests. */
+interface TestRecord {
+  id: string;
+  name?: string;
+  text?: string;
+  updatedAt?: number;
+  deleted?: boolean;
+  reflectionIds?: string[];
+  thoughtTrailIds?: string[];
+  [key: string]: unknown;
+}
+
 /**
  * Build a minimal MobileStore mock with only the fields mergeSyncPatch touches.
  * Cast through `unknown` so we don't need every slice property.
@@ -37,13 +49,13 @@ describe('mergeSyncPatch', () => {
     const merged = (result.storePatch as Record<string, unknown[]>).habits!;
     expect(merged).toHaveLength(2);
     // h2 should be replaced with the delta version
-    expect(merged.find((h: any) => h.id === 'h2')).toEqual({
+    expect(merged.find((h: TestRecord) => h.id === 'h2')).toEqual({
       id: 'h2',
       name: 'Exercise (updated)',
       updatedAt: 200,
     });
     // h1 should remain untouched
-    expect(merged.find((h: any) => h.id === 'h1')).toEqual({
+    expect(merged.find((h: TestRecord) => h.id === 'h1')).toEqual({
       id: 'h1',
       name: 'Meditate',
       updatedAt: 100,
@@ -128,12 +140,12 @@ describe('mergeSyncPatch', () => {
     expect(result.changedEntities).toContain('thoughtTrail');
     const reflections = result.storePatch.reflections as unknown as Record<string, unknown>[];
     expect(reflections).toBeDefined();
-    const r1 = reflections.find((r: any) => r.id === 'r1');
-    const r2 = reflections.find((r: any) => r.id === 'r2');
-    expect((r1 as any).thoughtTrailIds).toEqual(
+    const r1 = reflections.find((r: TestRecord) => r.id === 'r1');
+    const r2 = reflections.find((r: TestRecord) => r.id === 'r2');
+    expect(r1?.thoughtTrailIds).toEqual(
       expect.arrayContaining(['trail1', 'trail2']),
     );
-    expect((r2 as any).thoughtTrailIds).toEqual(['trail1']);
+    expect(r2?.thoughtTrailIds).toEqual(['trail1']);
   });
 
   it('skips deleted trails in reconciliation', () => {
@@ -157,8 +169,8 @@ describe('mergeSyncPatch', () => {
     // thoughtTrailIds should be reconciled to [] (was ['trail1'])
     const reflections = result.storePatch.reflections as unknown as Record<string, unknown>[];
     expect(reflections).toBeDefined();
-    const r1 = reflections.find((r: any) => r.id === 'r1');
-    expect((r1 as any).thoughtTrailIds).toEqual([]);
+    const r1 = reflections.find((r: TestRecord) => r.id === 'r1');
+    expect(r1?.thoughtTrailIds).toEqual([]);
   });
 
   it('does not include reflections in patch when nothing changed', () => {

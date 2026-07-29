@@ -75,6 +75,16 @@ export function useHabitForm(defaultStartDate: string) {
       updateHabit(editingId, { ...form, targetDays: +form.targetDays });
     } else {
       addHabit({ ...form, targetDays: +form.targetDays });
+      // PostHog: 习惯创建
+      import('../../analytics/track').then(({ track }) => {
+        import('../../analytics/events').then(({ Events }) => {
+          track(Events.HABIT_CREATED, {
+            habit_category: form.category || 'custom',
+            target_days: +form.targetDays,
+            has_alarm: form.alarmEnabled || false,
+          });
+        });
+      }).catch(() => {});
     }
     setShowAdd(false);
     if (form.alarmEnabled) {
