@@ -1,4 +1,6 @@
 import {COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, computePlanProgress, countItemDoneDays, computeItemProgress, createLogger, dateStr , FONT_LABEL, FONT_STAT_SECTION} from '@egoless-do/core';
+import { track } from '../../../analytics/track';
+import { Events } from '../../../analytics/events';
 import type { CheckinReview } from '@egoless-do/core';
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, RefreshControl, SectionList, StyleSheet } from 'react-native';
@@ -49,15 +51,11 @@ export default function ReviewView({ period }: ReviewViewProps) {
       if (!cancelled) {
         setReview(result);
         // PostHog: AI 功能使用
-        import('../../analytics/track').then(({ track }) => {
-          import('../../analytics/events').then(({ Events }) => {
-            track(Events.AI_FEATURE_USED, {
-              feature: 'review',
-              period,
-              model: result?.model || 'unknown',
-            });
-          });
-        }).catch(() => {});
+        track(Events.AI_FEATURE_USED, {
+          feature: 'review',
+          period,
+          model: result?.model || 'unknown',
+        });
       }
     }).catch(error => {
       if (!cancelled) log.error(error, { message: 'Failed to generate review' });
