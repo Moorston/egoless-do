@@ -5,10 +5,11 @@ import React, { useState, useCallback, useMemo } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, Modal, ScrollView, KeyboardAvoidingView, Platform,
 } from 'react-native';
+import { useShallow } from 'zustand/react/shallow';
 
 import DatePickerModal from '../../../components/DatePickerModal';
 import { useTheme, PrimaryButton, OutlineButton } from '../../../components/UI';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, type MobileStore } from '../../../store/useAppStore';
 import { PlanItemForm, validatePlanItemForm } from '../../plan/components/PlanItemForm';
 
 interface CreatePlanFromReflectionModalProps {
@@ -25,7 +26,7 @@ export function CreatePlanFromReflectionModal({
   onCreate,
 }: CreatePlanFromReflectionModalProps) {
   const TH = useTheme();
-  const getActivePlan = useAppStore(s => s.getActivePlan);
+  const getActivePlan = useAppStore(useShallow((s: MobileStore) => s.getActivePlan));
   const activePlan = useMemo(() => getActivePlan(), [getActivePlan]);
 
   const [showStartPicker, setShowStartPicker] = useState(false);
