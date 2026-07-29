@@ -2,10 +2,11 @@ import { apiSendCode, validatePassword, FONT_SUB, FONT_BUTTON, FONT_ERROR } from
 import { Image } from 'expo-image';
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { useShallow } from 'zustand/react/shallow';
 
 import { useTheme, useT, PrimaryButton, ThemedInput, Card } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, type MobileStore } from '../../store/useAppStore';
 
 
 const COOLDOWN = 60;
@@ -14,8 +15,8 @@ export default function RegisterScreen() {
   const TH = useTheme();
   const T = useT();
   const nav = useRootNavigation();
-  const register = useAppStore(s => s.register);
-  const isLoading = useAppStore(s => s.auth.isLoading);
+  const register = useAppStore(useShallow((s: MobileStore) => s.register));
+  const isLoading = useAppStore(useShallow((s: MobileStore) => s.auth.isLoading));
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
