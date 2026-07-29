@@ -765,6 +765,9 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
     ],
   },
 
+  // TODO[P0-4]: bodyTrainingPlan 与 bodyPlan 共享 PB collection 'body_plans' + serverIdField
+  // 'plan_id'，存在 ID 命名空间冲突风险。需数据迁移：schema 加 type discriminator、客户端
+  // 双写 type 字段、历史数据回填、同步过滤按 type 区分。详见独立 task p0-body-plan-namespace。
   bodyTrainingPlan: {
     sqlite: { table: 'body_training_plans', pk: 'id' },
     pocketbase: { collection: 'body_plans', serverIdField: 'plan_id' },

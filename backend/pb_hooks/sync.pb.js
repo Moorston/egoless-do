@@ -2,6 +2,12 @@
 
 // PB v0.38.2: callbacks run in isolated scopes — ALL helpers must be defined INSIDE each callback.
 
+// TODO[P0-5]: 当前 filter 用顶层 updated_at 字段过滤，但多数 collection 的 updatedAt 存在
+// JSON data 列内，无顶层 updated_at 字段，导致 sinceDate 过滤失效。修复需二选一：
+//   (A) 给所有 collection 加 updated_at 字段 + 客户端/服务端双写；
+//   (B) 改为 client-side 过滤（pull 全量后由客户端按 updatedAt 筛选）。
+// 当前为已知限制，不影响正确性（仅影响增量同步效率，会多传全量数据）。
+
 // ═══════════════════════════════════════════════════════════════
 // POST /api/sync — Combined push + pull
 // ═══════════════════════════════════════════════════════════════
