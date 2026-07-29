@@ -58,3 +58,39 @@ P2 useShallow 全覆盖（session 52 深度审查 22 处标记）：
 ### Next Steps
 
 - None - task complete
+
+
+## Session 57: Batch 3: P0-4 bodyPlan + P0-5 updated_at + 路由重构
+
+**Date**: 2026-07-29
+**Task**: Batch 3: P0-4 bodyPlan + P0-5 updated_at + 路由重构
+**Branch**: `master`
+
+### Summary
+
+Batch 3 数据迁移级遗留修复：P0-4 bodyPlan 命名空间（schema+SQLite+服务端pull type过滤）、P0-5 updated_at 过滤（client-side）、路由 as never 重构（18处移除+类型扩展）。4 commit。全 session（52-59）累计 17 commit。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `3b141a88` | (see git log) |
+| `b84564a5` | (see git log) |
+| `df3fdd2d` | (see git log) |
+| `4b6ac6c0` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
