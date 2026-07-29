@@ -1,0 +1,32 @@
+{
+  "id": "tech-debt-batch-1",
+  "name": "tech-debt-batch-1",
+  "title": "Tech Debt Cleanup Batch 1",
+  "description": "技术债务清理第一批：工具链降级 + 测试修复 + Hook 修复 + ESLint 落地 + 类型修复。关联 openspec change: tech-debt-cleanup-batch-1",
+  "status": "completed",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P1",
+  "creator": "freebytes",
+  "assignee": "freebytes",
+  "createdAt": "2026-07-29",
+  "completedAt": "2026-07-29",
+  "branch": null,
+  "base_branch": "master",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [
+    "07-29-batch-0-toolchain",
+    "07-29-batch-3-eslint",
+    "07-29-batch-5-types",
+    "07-29-batch-4-eslint-rules",
+    "07-29-batch-2-hooks"
+  ],
+  "parent": null,
+  "relatedFiles": [],
+  "notes": "",
+  "meta": {}
+}
