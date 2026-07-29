@@ -34,14 +34,56 @@ const SPORT_TO_HC_EXERCISE: Record<string, string> = {
   '游泳': 'Swimming',
 };
 
-// any: dynamically required modules with no TS declarations
-let healthKit: any = null; // eslint-disable-line @typescript-eslint/no-explicit-any
-let healthConnect: any = null; // eslint-disable-line @typescript-eslint/no-explicit-any
+// ── Minimal typed surfaces for the dynamically required health modules ──
+// Both react-native-health and react-native-health-connect ship no TypeScript
+// declarations, so we declare the exact subset of methods this file uses.
 
-function getHealthKit() {
+interface HealthKitPermissionSet { read: string[]; write: string[]; }
+interface HealthKitModule {
+  PermissionKind: { StepCount: string; Weight: string; Workout: string };
+  initHealthKit(
+    options: { permissions: HealthKitPermissionSet },
+    callback: (err: string) => void,
+  ): void;
+  getStepCount(
+    options: { startDate: string; endDate: string },
+    callback: (err: string, result: { value: number }) => void,
+  ): void;
+  getLatestWeight(
+    options: { unit: string; startDate: string; endDate: string },
+    callback: (err: string, result: { value: number; startDate: string }) => void,
+  ): void;
+  saveWorkout(
+    options: Record<string, unknown>,
+    callback: (err: string) => void,
+  ): void;
+}
+
+interface HealthConnectRecord {
+  count?: number;
+  weight?: { inKilograms: number } | number;
+  time?: string;
+}
+interface HealthConnectModule {
+  initialize(): Promise<unknown>;
+  requestPermissions(
+    permissions: Array<{ accessType: string; recordType: string }>,
+  ): Promise<Array<unknown>>;
+  readRecords(
+    recordType: string,
+    options: Record<string, unknown>,
+  ): Promise<{ records: HealthConnectRecord[] }>;
+  insertRecords(records: Array<Record<string, unknown>>): Promise<unknown>;
+}
+
+// Modules are dynamically required (they may not be installed in all build targets).
+let healthKit: HealthKitModule | null = null;
+let healthConnect: HealthConnectModule | null = null;
+
+function getHealthKit(): HealthKitModule | null {
   if (!healthKit) {
     try {
-      healthKit = require('react-native-health').default;
+      healthKit = (require('react-native-health') as { default: HealthKitModule } | null)?.default ?? null;
     } catch {
       return null;
     }
@@ -49,10 +91,10 @@ function getHealthKit() {
   return healthKit;
 }
 
-function getHealthConnect() {
+function getHealthConnect(): HealthConnectModule | null {
   if (!healthConnect) {
     try {
-      healthConnect = require('react-native-health-connect');
+      healthConnect = require('react-native-health-connect') as HealthConnectModule | null;
     } catch {
       return null;
     }
@@ -153,8 +195,9 @@ export async function readTodaySteps(): Promise<number> {
           endTime: now.toISOString(),
         },
       });
-      const records = result.records ?? result;
-      return (Array.isArray(records) ? records : []).reduce((sum: number, r: { count?: number }) => sum + (r.count ?? 0), 0);
+      // readRecords 返回 { records: HealthConnectRecord[] }（类型定义见上）
+      const records = result.records;
+      return records.reduce((sum: number, r: { count?: number }) => sum + (r.count ?? 0), 0);
     }
 
     return 0;
@@ -204,8 +247,9 @@ export async function readLatestWeight(): Promise<{ value: number; date: string 
       const records = result.records ?? result;
       if (!Array.isArray(records) || records.length === 0) return null;
       const r = records[0];
-      const kg = r.weight?.inKilograms ?? r.weight;
-      if (kg == null || isNaN(kg)) return null;
+      const weightVal = r.weight;
+      const kg = typeof weightVal === 'object' && weightVal != null ? weightVal.inKilograms : weightVal;
+      if (kg === null || kg === undefined || isNaN(kg)) return null;
       return {
         value: Math.round(kg * 10) / 10,
         date: r.time?.slice(0, 10) ?? dateStr(),
