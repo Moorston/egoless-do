@@ -31,6 +31,7 @@ config.resolver.blockList = [
   /packages\/core\/node_modules\/.*/,
   /packages\/core\/dist\/.*/,
   /packages\/core\/\.turbo\/.*/,
+  /packages\/core\/__tests__\/.*/,
 ];
 
 // Force Metro to resolve @egoless-do/core from source (not dist)
