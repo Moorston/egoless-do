@@ -1,5 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
+import { createLogger } from '@egoless-do/core';
+
+const log = createLogger('UserHash');
 
 const USER_HASH_KEY = 'global_pulse_user_hash';
 const FUZZ_SECRET_KEY = 'global_pulse_fuzz_secret';
@@ -37,8 +40,10 @@ export async function getUserHash(): Promise<string> {
     // Also store in AsyncStorage as fallback
     await AsyncStorage.setItem(USER_HASH_KEY, hash).catch(() => {});
     return hash;
-  } catch {
-    // Last resort: generate ephemeral hash
+  } catch (err) {
+    // Last resort: generate ephemeral hash (non-persistent). Log so repeated
+    // failures are visible in diagnostics instead of being silently swallowed.
+    log.warn('getUserHash failed, using ephemeral hash', { err: String(err) });
     return generateSecureRandomHex(32);
   }
 }
@@ -55,7 +60,8 @@ export async function getFuzzSecret(): Promise<string> {
     const secret = generateSecureRandomHex(32);
     await SecureStore.setItemAsync(FUZZ_SECRET_KEY, secret);
     return secret;
-  } catch {
+  } catch (err) {
+    log.warn('getFuzzSecret failed, using ephemeral secret', { err: String(err) });
     return generateSecureRandomHex(32);
   }
 }
