@@ -38,7 +38,7 @@ vi.mock('@egoless-do/core', () => {
     apiSyncPullPost: vi.fn().mockResolvedValue({ data: {}, serverTime: Date.now() }),
     apiSyncCheck: vi.fn().mockResolvedValue({ hasChanges: false, count: 0, changed: {} }),
     apiSyncPullEntity: vi.fn().mockResolvedValue({ data: [], total: 0 }),
-    createLogger: vi.fn().mockReturnValue({ log: vi.fn(), warn: vi.fn(), error: vi.fn(), info: vi.fn() }),
+    createLogger: vi.fn().mockReturnValue({ log: vi.fn(), warn: vi.fn(), error: vi.fn(), info: vi.fn(), debug: vi.fn() }),
     SCHEMAS: new Proxy({}, { get: () => ({ sqlite: { table: 'test', pk: 'id' }, pocketbase: { collection: 'test', serverIdField: 'id' }, fields: [] }) }),
     buildServerPayloadToRow: vi.fn().mockReturnValue(() => null),
     buildRowToEntity: vi.fn().mockReturnValue(() => null),
@@ -84,6 +84,7 @@ describe('SyncService', () => {
   beforeEach(() => {
     vi.mocked(drainQueue).mockReset().mockResolvedValue([]);
     setSyncTokenProvider(() => 'test-token');
+    resetSyncState();
   });
 
   describe('runSync', () => {

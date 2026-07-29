@@ -5,14 +5,14 @@ import {FONT_TITLE, FONT_TINY, FONT_BODY, FONT_SMALL, FONT_LABEL, createLogger, 
   recommendTrailsViaAI } from '@egoless-do/core';
 import type { TrailRecommendation, SmartQueryResult, TrailFilters, MindReflection, ThoughtTrail } from '@egoless-do/core';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { ArrowLeft, Plus, Zap, Send, RefreshCw, X, Trash2 } from 'lucide-react-native';
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, StyleSheet, Alert, ListRenderItemInfo } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { StackNavigationProp } from '@react-navigation/stack';
 
 import { useTheme, useT } from '../../../components/UI';
 import type { RootStackParamList } from '../../../navigation/types';
-import { ArrowLeft, Plus, Zap, Send, RefreshCw, X, Trash2 } from 'lucide-react-native';
 import { safeGetItem, safeSetItem } from '../../../store/safeAsyncStorage';
 import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 

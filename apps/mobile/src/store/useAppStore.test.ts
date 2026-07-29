@@ -128,19 +128,20 @@ vi.mock('./createMobileUiSlice', () => {
 });
 
 // ── Imports (after all mocks) ─────────────────────────────────────
-import {
-  useAppStore,
-  useShallowStore,
-  initMobileStore,
-  type MobileStore,
-} from './useAppStore';
 import { setMusicSyncCallback } from '../features/music/useMusicStore';
 import {
   runSync, softResetSyncState,
   resetMigrationFlag, rehydrateFromDb, initialSync,
   resetSyncState,
 } from '../features/sync/SyncService';
+
 import { setPersistErrorHandler } from './storageAdapter';
+import {
+  useAppStore,
+  useShallowStore,
+  initMobileStore,
+  type MobileStore,
+} from './useAppStore';
 
 // ── Helpers ───────────────────────────────────────────────────────
 

@@ -11,10 +11,10 @@
  * ```
  */
 
+import { FONT_SMALL, scaleFontSize } from '@egoless-do/core';
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
-import { FONT_SMALL, scaleFontSize } from '@egoless-do/core';
 
 const DEFAULT_BEAD_COUNT = 108;
 const DEFAULT_SIZE = 280;

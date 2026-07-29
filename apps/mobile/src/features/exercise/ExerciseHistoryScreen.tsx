@@ -8,8 +8,8 @@ import { Card, useTheme, ScreenHeader, useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
 
-import { useAmapComponents } from './hooks/useAmapComponents';
 import TrainingCalendar from './TrainingCalendar';
+import { useAmapComponents } from './hooks/useAmapComponents';
 
 
 function DetailCard({ e, TH, P, T, MapView, Polyline }: { e: ExerciseEntry; TH: Theme; P: string; T: (k: string) => string; MapView: React.ComponentType<Record<string, unknown>>; Polyline: React.ComponentType<Record<string, unknown>> }) {

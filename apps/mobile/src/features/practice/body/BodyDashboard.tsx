@@ -7,20 +7,20 @@ import { useT, useTheme } from '../../../components/UI';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useShallowStore } from '../../../store/useAppStore';
 
-import CelebrationOverlay from './screens/CelebrationOverlay';
-import { useTodayPlan } from './hooks/useTodayPlan';
-import { useBodyFlowState } from './hooks/useBodyFlowState';
-import AssessmentModal from './modals/AssessmentModal';
-import BodyCheckinModal from './modals/BodyCheckinModal';
-import GoalEditModal from './modals/GoalEditModal';
-import WeightRecordModal from './modals/WeightRecordModal';
-import WeightTrendModal from './modals/WeightTrendModal';
-import QuickSwapModal from './modals/QuickSwapModal';
-import AdjustExerciseModal from './modals/AdjustExerciseModal';
-import DayActionSheet from './modals/DayActionSheet';
-import GoalEditLightModal from './modals/GoalEditLightModal';
 import { styles } from './BodyDashboardStyles';
 import ExerciseProgressBanner from './components/ExerciseProgressBanner';
+import { useBodyFlowState } from './hooks/useBodyFlowState';
+import { useTodayPlan } from './hooks/useTodayPlan';
+import AdjustExerciseModal from './modals/AdjustExerciseModal';
+import AssessmentModal from './modals/AssessmentModal';
+import BodyCheckinModal from './modals/BodyCheckinModal';
+import DayActionSheet from './modals/DayActionSheet';
+import GoalEditLightModal from './modals/GoalEditLightModal';
+import GoalEditModal from './modals/GoalEditModal';
+import QuickSwapModal from './modals/QuickSwapModal';
+import WeightRecordModal from './modals/WeightRecordModal';
+import WeightTrendModal from './modals/WeightTrendModal';
+import CelebrationOverlay from './screens/CelebrationOverlay';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export const BANNER_WIDTH = SCREEN_WIDTH - 32; // 16px padding on each side

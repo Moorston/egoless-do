@@ -8,15 +8,15 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Modal } from 'react-native';
 
 import { styles } from './BodyDashboardStyles';
+import AdjustExerciseModal from './modals/AdjustExerciseModal';
 import AssessmentModal from './modals/AssessmentModal';
 import BodyCheckinModal from './modals/BodyCheckinModal';
-import GoalEditModal from './modals/GoalEditModal';
-import WeightRecordModal from './modals/WeightRecordModal';
-import WeightTrendModal from './modals/WeightTrendModal';
-import QuickSwapModal from './modals/QuickSwapModal';
-import AdjustExerciseModal from './modals/AdjustExerciseModal';
 import DayActionSheet from './modals/DayActionSheet';
 import GoalEditLightModal from './modals/GoalEditLightModal';
+import GoalEditModal from './modals/GoalEditModal';
+import QuickSwapModal from './modals/QuickSwapModal';
+import WeightRecordModal from './modals/WeightRecordModal';
+import WeightTrendModal from './modals/WeightTrendModal';
 import CelebrationOverlay from './screens/CelebrationOverlay';
 
 interface BodyDashboardModalsProps {

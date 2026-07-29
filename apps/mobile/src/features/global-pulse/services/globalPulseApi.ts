@@ -12,8 +12,8 @@ import {
   LeaderboardSort
 } from '@egoless-do/core';
 
-import { offlineAwareFetch } from '../../../net/offlineAware';
 import { API_URL as API_BASE_URL } from '../../../config';
+import { offlineAwareFetch } from '../../../net/offlineAware';
 
 import { escapeFilter } from './pbFilterEscape';
 

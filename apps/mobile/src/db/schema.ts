@@ -511,6 +511,149 @@ CREATE TABLE IF NOT EXISTS custom_food_presets (
   deleted    INTEGER NOT NULL DEFAULT 0,
   synced     INTEGER NOT NULL DEFAULT 0
 );
+
+CREATE TABLE IF NOT EXISTS visions (
+  id              TEXT PRIMARY KEY,
+  type            TEXT    NOT NULL,
+  text            TEXT    NOT NULL,
+  time_frame      TEXT,
+  start_date      TEXT,
+  deadline        TEXT,
+  status          TEXT    NOT NULL DEFAULT 'active',
+  achieved_at     INTEGER,
+  sort_order      INTEGER NOT NULL DEFAULT 0,
+  updated_at      INTEGER,
+  deleted         INTEGER NOT NULL DEFAULT 0,
+  synced          INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS vision_practices (
+  id         TEXT PRIMARY KEY,
+  vision_id  TEXT NOT NULL,
+  ref_type   TEXT NOT NULL,
+  ref_id     TEXT NOT NULL,
+  updated_at INTEGER,
+  deleted    INTEGER NOT NULL DEFAULT 0,
+  synced     INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS dedications (
+  id             TEXT PRIMARY KEY,
+  date           TEXT    NOT NULL,
+  period_label   TEXT    NOT NULL,
+  type           TEXT    NOT NULL,
+  practice_days  INTEGER NOT NULL,
+  total_days     INTEGER NOT NULL,
+  habit_stats    TEXT,
+  plan_progress  TEXT,
+  vision_progress TEXT,
+  insight        TEXT,
+  adjustment     TEXT,
+  updated_at     INTEGER,
+  deleted        INTEGER NOT NULL DEFAULT 0,
+  synced         INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS mantra_defs (
+  id               TEXT PRIMARY KEY,
+  name             TEXT    NOT NULL,
+  subtitle         TEXT,
+  category         TEXT    NOT NULL DEFAULT 'custom',
+  sort_order       INTEGER NOT NULL DEFAULT 0,
+  target_count     INTEGER,
+  audio_url        TEXT,
+  audio_attribution TEXT,
+  preset           INTEGER,
+  pronunciation    TEXT,
+  meaning          TEXT,
+  full_text        TEXT,
+  page_count       INTEGER,
+  updated_at       INTEGER,
+  deleted          INTEGER NOT NULL DEFAULT 0,
+  synced           INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS mantra_sessions (
+  id             TEXT PRIMARY KEY,
+  mantra_id      TEXT NOT NULL,
+  date           TEXT NOT NULL,
+  count          INTEGER NOT NULL,
+  rounds         INTEGER NOT NULL,
+  duration_sec   INTEGER NOT NULL,
+  started_at     INTEGER NOT NULL,
+  completed_at   INTEGER NOT NULL,
+  target_rounds  INTEGER,
+  dedication     TEXT,
+  updated_at     INTEGER,
+  deleted        INTEGER NOT NULL DEFAULT 0,
+  synced         INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS body_goals (
+  id              TEXT PRIMARY KEY,
+  target_weight   REAL,
+  target_body_fat REAL,
+  target_date     TEXT,
+  strategy        TEXT,
+  note            TEXT,
+  updated_at      INTEGER,
+  deleted         INTEGER NOT NULL DEFAULT 0,
+  synced          INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS body_plans (
+  id         TEXT PRIMARY KEY,
+  goal_id    TEXT,
+  weekday    INTEGER NOT NULL,
+  part       TEXT    NOT NULL,
+  sport_key  TEXT,
+  note       TEXT,
+  updated_at INTEGER,
+  deleted    INTEGER NOT NULL DEFAULT 0,
+  synced     INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_body_plans_weekday ON body_plans(weekday);
+
+CREATE TABLE IF NOT EXISTS body_training_plans (
+  id              TEXT PRIMARY KEY,
+  name            TEXT    NOT NULL,
+  start_date      TEXT    NOT NULL,
+  end_date        TEXT    NOT NULL,
+  strategy        TEXT,
+  target_weight   REAL,
+  target_body_fat REAL,
+  goal_note       TEXT,
+  tasks           TEXT    NOT NULL DEFAULT '[]',
+  overrides       TEXT,
+  status          TEXT    NOT NULL DEFAULT 'active',
+  updated_at      INTEGER,
+  deleted         INTEGER NOT NULL DEFAULT 0,
+  synced          INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS zhiguan_sessions (
+  id                      TEXT PRIMARY KEY,
+  user_id                 TEXT,
+  status                  TEXT NOT NULL DEFAULT 'completed',
+  start_ts                INTEGER NOT NULL,
+  end_ts                  INTEGER,
+  sankalpa                TEXT,
+  preliminary_level       TEXT,
+  chosen_method           TEXT,
+  samatha_ratio_avg       REAL,
+  vipassana_ratio_avg     REAL,
+  total_breaths           INTEGER,
+  closing_notes           TEXT,
+  self_reported_stage     TEXT,
+  self_reported_stage_text TEXT,
+  dedication_id           TEXT,
+  five_hindrances         TEXT,
+  eight_tactile           TEXT,
+  meta                    TEXT,
+  updated_at              INTEGER,
+  deleted                 INTEGER NOT NULL DEFAULT 0,
+  synced                  INTEGER NOT NULL DEFAULT 0
+);
 `;
 
 export async function initDatabase(db: SQLite.SQLiteDatabase): Promise<void> {
@@ -518,6 +661,11 @@ export async function initDatabase(db: SQLite.SQLiteDatabase): Promise<void> {
 }
 
 export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> {
+  // Outer guard: a failure in any single migration block must NOT abort the
+  // entire openDatabase() chain — otherwise one bad migration bricks the app
+  // on next cold start. Each block also has its own inner try-catch; this is
+  // a last-resort safety net so the DB still opens and the app remains usable.
+  try {
   const tryAddCol = async (table: string, column: string, type: string) => {
     // Check if column already exists using PRAGMA (robust across SQLite versions)
     const existing = await db.getFirstAsync<{ name: string }>(
@@ -1206,6 +1354,11 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
     }
   } catch (e) {
     log.warn('[DB] Preset cleanup migration failed:', e);
+  }
+  } catch (e) {
+    // Migration failed — log and continue. The DB is still usable; missing
+    // columns/tables are handled by rehydrateFromDb's per-entity try-catch.
+    log.error(e, { message: 'migrateDatabase failed (non-fatal) — some migrations may be incomplete' });
   }
 }
 // ── Generic helpers ───────────────────────────────────────────────

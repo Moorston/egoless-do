@@ -6,8 +6,8 @@ import {
 import type { MindReflection, SmartQueryResult, SmartQueryFilters, TrailFilters } from '@egoless-do/core';
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 
-import { useSearchHistory } from './useSearchHistory';
 import { runAIPhase2, runAIPhase3, mergeResults } from './searchPipeline';
+import { useSearchHistory } from './useSearchHistory';
 
 const log = createLogger('Reflections');
 

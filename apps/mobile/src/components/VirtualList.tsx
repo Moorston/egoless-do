@@ -1,7 +1,7 @@
+import { FONT_SUB } from '@egoless-do/core';
 import { FlashList, FlashListProps } from '@shopify/flash-list';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { FONT_SUB } from '@egoless-do/core';
 
 interface VirtualListProps<T> extends Omit<FlashListProps<T>, 'renderItem' | 'data'> {
   items: T[];

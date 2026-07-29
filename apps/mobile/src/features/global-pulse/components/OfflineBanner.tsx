@@ -3,11 +3,11 @@
  * 显示离线模式提示
  */
 
+import { FONT_LABEL, FONT_SUB } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 import { useT } from '../../../components/UI';
-import { FONT_LABEL, FONT_SUB } from '@egoless-do/core';
 
 export const OfflineBanner: React.FC = () => {
   const t = useT();

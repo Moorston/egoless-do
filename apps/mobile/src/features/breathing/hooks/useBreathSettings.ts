@@ -3,8 +3,9 @@
 
 import { createLogger } from '@egoless-do/core';
 import type { GuideStyle } from '@egoless-do/core';
-import { safeGetItem, safeSetItem, safeMultiGet } from '../../../store/safeAsyncStorage';
 import { useState, useEffect, useCallback } from 'react';
+
+import { safeGetItem, safeSetItem, safeMultiGet } from '../../../store/safeAsyncStorage';
 
 const log = createLogger('Breathing');
 const GUIDE_STYLE_KEY = 'breathing_guide_style';

@@ -4,10 +4,10 @@ import { Trash2 } from 'lucide-react-native';
 import React, { useCallback } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 
+import AnimatedMusicIcon from '../../../components/AnimatedMusicIcon';
 import { useTheme, useT } from '../../../components/UI';
 import { useMusicStore } from '../useMusicStore';
 
-import AnimatedMusicIcon from '../../../components/AnimatedMusicIcon';
 import FavoriteButton from './FavoriteButton';
 import WaveformBar from './WaveformBar';
 

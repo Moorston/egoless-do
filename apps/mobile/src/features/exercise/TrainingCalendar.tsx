@@ -171,7 +171,7 @@ export default function TrainingCalendar({ TH, T, exerciseLog, plans }: Props) {
 
           let bgColor = 'transparent';
           let textColor = day.isCurrentMonth ? TH.text : `${TH.sub}60`;
-          let borderColor = 'transparent';
+          const borderColor = 'transparent';
 
           if (isToday) {
             bgColor = '#f59e0b';

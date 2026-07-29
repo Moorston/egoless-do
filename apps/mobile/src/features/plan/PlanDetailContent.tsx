@@ -1,18 +1,22 @@
+import { COLORS, getPlanItems, PRIORITY_OPTIONS, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, getFrequencySummary, MS_PER_DAY, createDateChangeDetector, countItemDoneDays, computeItemProgress, computePlanProgress , FONT_SMALL } from '@egoless-do/core';
+import type { PlanItem, PlanItemCheckin, PlanItemStatus, Vision } from '@egoless-do/core';
+import { ChevronDown, ChevronRight, Check, Trash2, Pencil, CircleCheck, Play, Pause, XCircle, ClipboardList, Plus, Link, Repeat, MessageCircle, Route, Target, ListChecks, Link2, BarChart2 } from 'lucide-react-native';
 import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, FlatList, Alert, TextInput, KeyboardAvoidingView, Platform, AppState, StyleSheet } from 'react-native';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { useRootNavigation } from '../../navigation/hooks';
-import { COLORS, getPlanItems, PRIORITY_OPTIONS, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, getFrequencySummary, MS_PER_DAY, createDateChangeDetector, countItemDoneDays, computeItemProgress, computePlanProgress , FONT_SMALL } from '@egoless-do/core';
-import type { PlanItem, PlanItemCheckin, PlanItemStatus } from '@egoless-do/core';
-import { useDailyTodo } from './useDailyTodo';
-import { Card, useTheme, useT } from '../../components/UI';
+
 import PlanCountdown from '../../components/PlanCountdown';
-import { StatusLabel } from './components/StatusBadge';
-import { LinkBadge } from './components/LinkBadge';
-import { ProgressRing } from './components/ProgressRing';
+import { Card, useTheme, useT } from '../../components/UI';
+import { useRootNavigation } from '../../navigation/hooks';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
+
 import { Heatmap } from './components/Heatmap';
 import { ItemHeatmap } from './components/ItemHeatmap';
-import { ChevronDown, ChevronRight, Check, Trash2, Pencil, CircleCheck, Play, Pause, XCircle, ClipboardList, Plus, Link, Repeat, MessageCircle, Route, Target, ListChecks, Link2, BarChart2 } from 'lucide-react-native';
+import { LinkBadge } from './components/LinkBadge';
+import { ProgressRing } from './components/ProgressRing';
+import { StatusLabel } from './components/StatusBadge';
+import { useDailyTodo } from './useDailyTodo';
+
+
 
 const EMPTY_CHECKINS: PlanItemCheckin[] = [];
 
@@ -407,7 +411,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
             <Text style={[styles.textGoal, { color: TH.text }]}>{plan.goal}</Text>
 
             {plan.visionId && (() => {
-              const linkedVision = (visions ?? []).find((v: any) => v.id === plan.visionId && !v.deleted);
+              const linkedVision = (visions ?? []).find((v: Vision) => v.id === plan.visionId && !v.deleted);
               if (!linkedVision) return null;
               return (
                 <View style={{ marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: TH.border }}>
@@ -484,7 +488,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                       </View>
                     )}
                     {plan?.visionId && (() => {
-                      const v = (visions ?? []).find((x: any) => x.id === plan.visionId && !x.deleted);
+                      const v = (visions ?? []).find((x: Vision) => x.id === plan.visionId && !x.deleted);
                       if (!v) return null;
                       return (
                         <View style={styles.inlineRowGap4}>
@@ -536,7 +540,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                   ))}
                   {/* Linked Vision */}
                   {plan?.visionId && (() => {
-                    const v = (visions ?? []).find((x: any) => x.id === plan.visionId && !x.deleted);
+                    const v = (visions ?? []).find((x: Vision) => x.id === plan.visionId && !x.deleted);
                     if (!v) return null;
                     return (
                       <TouchableOpacity

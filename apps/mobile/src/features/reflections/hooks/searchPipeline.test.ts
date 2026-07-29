@@ -1,10 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { mergeResults, runAIPhase2, runAIPhase3 } from './searchPipeline';
 import type { MindReflection } from '@egoless-do/core';
 import {
   parseSmartQuery, computeCandidatePool, buildIndex,
   retrieveTopK, semanticSearchReflections,
 } from '@egoless-do/core';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+import { mergeResults, runAIPhase2, runAIPhase3 } from './searchPipeline';
 
 // @ts-expect-error — React Native global not available in test env
 globalThis.__DEV__ = false;

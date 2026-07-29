@@ -16,7 +16,7 @@ import { useAppStore, useShallowStore } from '../store/useAppStore';
 import { useTheme, useT, ThemedInput } from './UI';
 
 /** Map FOOD_PRESETS icon name strings to Lucide components */
-const FOOD_ICON_MAP: Record<string, React.ComponentType<any>> = {
+const FOOD_ICON_MAP: Record<string, React.ComponentType<{size?: number; color?: string}>> = {
   Wheat, Beef, Leaf, Apple, CupSoda, Cookie, Utensils,
 };
 
@@ -65,8 +65,8 @@ export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
   };
 
   const allTabs = useMemo(() => [
-    { key: 'my', label: T('foodMyPresets'), iconComp: Star as React.ComponentType<any>, items: [] as { name: string; nameEn: string; cal: number; unit: string; unitEn: string }[] },
-    ...FOOD_PRESETS.map(c => ({ key: c.key, label: language === 'en' ? c.labelEn : c.label, iconComp: (FOOD_ICON_MAP[c.icon] ?? Utensils) as React.ComponentType<any>, items: c.items })),
+    { key: 'my', label: T('foodMyPresets'), iconComp: Star as React.ComponentType<{size?: number; color?: string}>, items: [] as { name: string; nameEn: string; cal: number; unit: string; unitEn: string }[] },
+    ...FOOD_PRESETS.map(c => ({ key: c.key, label: language === 'en' ? c.labelEn : c.label, iconComp: (FOOD_ICON_MAP[c.icon] ?? Utensils) as React.ComponentType<{size?: number; color?: string}>, items: c.items })),
   ], [T, language]);
 
   const getFilteredItems = useCallback(() => {

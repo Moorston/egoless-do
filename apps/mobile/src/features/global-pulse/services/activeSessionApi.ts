@@ -4,6 +4,7 @@
  */
 
 import { ActiveSession, ApiResponse, CheckinType , createLogger } from '@egoless-do/core';
+
 import { API_URL as API_BASE_URL } from '../../../config';
 
 import { escapeFilter } from './pbFilterEscape';
@@ -193,7 +194,7 @@ export async function deleteSessionsByUserHash(userHash: string): Promise<void> 
   const MAX_PAGES = 100;
   // eslint-disable-next-line no-constant-condition -- intentional infinite loop with break
   while (page <= MAX_PAGES) {
-    const result = await pbRequest<any>(
+    const result = await pbRequest<unknown>(
       `/api/collections/${COLLECTION}/records?filter=${filter}&perPage=50&page=${page}`
     );
     if (!result.success || !result.data?.items?.length) break;

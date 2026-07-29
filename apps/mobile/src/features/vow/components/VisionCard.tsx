@@ -37,7 +37,7 @@ interface Props {
   onNavigateToPlan?: (planId: string) => void;
 }
 
-const TYPE_ICON: Record<string, any> = { lifetime: Star, long: Flag, short: Target };
+const TYPE_ICON: Record<string, React.ComponentType<{size?: number; color?: string}>> = { lifetime: Star, long: Flag, short: Target };
 
 const STATUS_ICON: Record<PlanItemStatus, { icon: React.ComponentType<{ size?: number; color?: string }>; color: string }> = {
   completed: { icon: CheckCircle, color: '#10B981' },

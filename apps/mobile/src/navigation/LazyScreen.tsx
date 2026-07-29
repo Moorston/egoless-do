@@ -1,10 +1,10 @@
 // ─── LoadingFallback + LazyScreen helpers ────────────────────────────
 // Extracted from navigation/index.tsx (AR-04 refactoring)
+import { FONT_STAT_SECTION, FONT_SUB } from '@egoless-do/core';
 import React, { Suspense } from 'react';
 import { View, Text } from 'react-native';
 
 import { useTheme } from '../components/UI';
-import { FONT_STAT_SECTION, FONT_SUB } from '@egoless-do/core';
 
 export function LoadingFallback() {
   const TH = useTheme();

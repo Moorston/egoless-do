@@ -158,7 +158,7 @@ export default function StatsScreen() {
   const exerciseTrendData = useMemo(() => aggregateWeeklyKm(exerciseLog, 8), [exerciseLog]);
 
   // ── Render helpers ──
-  const renderStatGrid = (items: { value: string; unit: string; label: string; icon?: React.ComponentType<any> }[], columns = 2) => (
+  const renderStatGrid = (items: { value: string; unit: string; label: string; icon?: React.ComponentType<{size?: number; color?: string}> }[], columns = 2) => (
     <View style={styles.statGridRow}>
       {items.map((s, i) => (
         <View key={i} style={{ width: columns === 2 ? '48%' : '31%', borderRadius: 14, padding: 16, alignItems: 'center', gap: 6, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border }}>

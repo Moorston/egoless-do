@@ -1,15 +1,16 @@
+import type { FearEntry, FearClassification, FearCategory, BodyRegion, BodyShape, BodyTemp, FeelingTag, AchievementType, CourageEntry, FearAchievement } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, COLORS, dateStr, FONT_SMALL, FONT_TINY, FONT_BACK , FEAR_CATEGORY_DEFS, BODY_REGION_DEFS, ACHIEVEMENT_DEFS , scaleFontSize } from '@egoless-do/core';
+import { Shield, Zap, Lightbulb, Plus, ChevronRight, X, Check } from 'lucide-react-native';
 import React, {useState, useMemo, useCallback} from 'react';
 import { View, Text, ScrollView, FlatList, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useShallow } from 'zustand/react/shallow';
-import { useAppStore, type MobileStore } from '../../store/useAppStore';
+
 import { useTheme, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, COLORS, dateStr, FONT_SMALL, FONT_TINY, FONT_BACK } from '@egoless-do/core';
-import type { FearEntry, FearClassification, FearCategory, BodyRegion, BodyShape, BodyTemp, FeelingTag, AchievementType, CourageEntry, FearAchievement } from '@egoless-do/core';
-import { FEAR_CATEGORY_DEFS, BODY_REGION_DEFS, ACHIEVEMENT_DEFS , scaleFontSize } from '@egoless-do/core';
-import { useTabNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
-import { Shield, Zap, Lightbulb, Plus, ChevronRight, X, Check } from 'lucide-react-native';
+import { useTabNavigation } from '../../navigation/hooks';
+import { useAppStore, type MobileStore } from '../../store/useAppStore';
+
 
 type MindTab = 'fear' | 'courage' | 'insight';
 

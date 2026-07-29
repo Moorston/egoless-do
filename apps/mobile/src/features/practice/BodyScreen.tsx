@@ -10,8 +10,8 @@ import { useAppStore, useShallowStore } from '../../store/useAppStore';
 
 import BodyDashboard from './body/BodyDashboard';
 import BodyFlow from './body/BodyFlow';
-import { useTodayPlan } from './body/hooks/useTodayPlan';
 import { useBodyFlowState } from './body/hooks/useBodyFlowState';
+import { useTodayPlan } from './body/hooks/useTodayPlan';
 
 // ── Page state machine ──
 type BodyPage = 'dashboard' | 'flow';

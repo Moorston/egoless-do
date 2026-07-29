@@ -5,6 +5,7 @@
 import type { AIMode, ModelConfig } from '@egoless-do/core';
 
 import type { MobileStore } from '../../store/useAppStore';
+
 import { ENTITY_STORE_KEY } from './SyncApplyService';
 
 /** Maps Zustand store keys to entity names — derived from SyncApplyService.ENTITY_STORE_KEY (reverse). */

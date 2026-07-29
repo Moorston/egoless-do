@@ -1,4 +1,4 @@
-import { FONT_BODY, FONT_SMALL , FONT_TITLE } from '@egoless-do/core';
+import { FONT_BODY, FONT_SMALL , FONT_TITLE, type Vision } from '@egoless-do/core';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ArrowLeft, ZoomIn, ZoomOut } from 'lucide-react-native';
@@ -8,8 +8,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { G, Circle, Line, Rect, Text as SvgText } from 'react-native-svg';
 
 import { useTheme } from '../../../components/UI';
-import { useShallowStore } from '../../../store/useAppStore';
 import type { RootStackParamList } from '../../../navigation/types';
+import { useShallowStore } from '../../../store/useAppStore';
 
 
 import InsightsPanel from './InsightsPanel';
@@ -91,7 +91,7 @@ export default function RelationMapView() {
     if (node?.type === 'plan') {
       const planData = node.data as Record<string, unknown> | undefined;
       const visionId = planData?.visionId as string | undefined;
-      if (visionId) return (visions ?? []).find((v: any) => v.id === visionId && !v.deleted) ?? null;
+      if (visionId) return (visions ?? []).find((v: Vision) => v.id === visionId && !v.deleted) ?? null;
     }
     return null;
   }, [selectedNode, nodes, visions]);

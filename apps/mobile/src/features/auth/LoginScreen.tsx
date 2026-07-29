@@ -6,6 +6,7 @@ import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollVie
 import { useTheme, useT, PrimaryButton, ThemedInput, Card } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
+
 import { registerExpoPushToken } from './pushTokenRegistration';
 
 const log = createLogger('Auth');

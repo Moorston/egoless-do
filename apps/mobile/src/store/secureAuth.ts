@@ -5,6 +5,7 @@ import { createLogger } from '@egoless-do/core';
 import * as SecureStore from 'expo-secure-store';
 
 import { openDatabase, setState, getState } from '../db/schema';
+
 import { saveTokenToFile, loadTokenFromFile, clearTokenFile } from './fileStorage';
 
 const log = createLogger('SecureAuth');

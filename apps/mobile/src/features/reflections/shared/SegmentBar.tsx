@@ -1,8 +1,8 @@
+import { FONT_SUB } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 import { useTheme } from '../../../components/UI';
-import { FONT_SUB } from '@egoless-do/core';
 
 interface SegmentBarProps {
   segments: string[];

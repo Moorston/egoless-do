@@ -4,8 +4,8 @@
 import { dateStr, getCurrentPeriod } from '@egoless-do/core';
 import React, { useState, useCallback, useMemo } from 'react';
 
-import { useShallowStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
+import { useShallowStore } from '../../store/useAppStore';
 
 import HomePage from './HomePage';
 import { useBarrierTimer } from './hooks/useBarrierTimer';

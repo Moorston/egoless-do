@@ -9,10 +9,10 @@ import { AppState, Platform, type AppStateStatus } from 'react-native';
 import { getState, openDatabase } from '../../db/schema';
 import { getQueueCount, setOnEnqueuedCallback } from '../../db/syncQueue';
 import { mobileStorageAdapter, flushWrites, setStorageAdapterTrigger, setRegisterLocalDelete } from '../../store/storageAdapter';
+import { useSyncStore } from '../../store/syncStore';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import type { MobileStore } from '../../store/useAppStore';
 import { useMusicStore } from '../music/useMusicStore';
-import { useSyncStore } from '../../store/syncStore';
 
 import { runSync, setSyncTokenProvider, setSyncUserIdProvider, setSyncChangeHandler, setDeletedIdsProvider, connectRealtime, disconnectRealtime, isMigrationDone, setMigrationDone, resetMigrationFlag, rehydrateFromDb, setKickedOutHandler, resumeInitialSync, setSyncTriggerCallback, triggerSyncDebounced, clearSyncTrigger, registerLocalDelete, setSyncErrorHandler } from './SyncService';
 import { mergeSyncPatch } from './mergeSyncPatch';

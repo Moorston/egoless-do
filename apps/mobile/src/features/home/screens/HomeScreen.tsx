@@ -87,6 +87,7 @@ export default function HomeScreen() {
     deleteFood: s.deleteFood,
   }));
   const nav   = useRootNavigation();
+  const navigateToTab = useNavigateToTab();
   const language = useAppStore(s => s.language);
 
   // ── Date state ──
@@ -337,7 +338,7 @@ export default function HomeScreen() {
   const closeWaterGoalModal = useCallback(() => setShowWG(false), []);
   const closeReasonModal = useCallback(() => setShowReasonModal(false), []);
   const goToGrace = useCallback(() => nav.navigate('Grace'), [nav]);
-  const goToPlan = useCallback(() => useNavigateToTab()('Plan'), []);
+  const goToPlan = useCallback(() => navigateToTab('Plan'), [navigateToTab]);
   const dismissDelayedReminder = useCallback(() => setShowDelayedReminder(false), []);
   const toggleWeightUnit = useCallback(() => setWeightUnit(weightUnit === 'kg' ? 'lb' : 'kg'), [weightUnit, setWeightUnit]);
   const openWaterGoal = useCallback(() => { setWgi(String(waterGoal)); setShowWG(true); }, [waterGoal]);

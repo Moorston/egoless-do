@@ -1,7 +1,8 @@
 // ─── File-based JSON Storage ──────────────────────────────────────
 // 纯文件存储，不依赖 expo-sqlite，作为最后防线
-import * as FileSystem from 'expo-file-system';
+// 使用 legacy 导入以保持 EncodingType / writeAsStringAsync / getInfoAsync 兼容
 import { createLogger } from '@egoless-do/core';
+import * as FileSystem from 'expo-file-system/legacy';
 
 const log = createLogger('FileStorage');
 

@@ -1,4 +1,4 @@
-import {FONT_BODY, FONT_SMALL, FONT_TINY, MOOD_DISPLAY, HABIT_LINK_COLORS, activeOnly , FONT_TITLE, FONT_STAT_CARD} from '@egoless-do/core';
+import {FONT_BODY, FONT_SMALL, FONT_TINY, MOOD_DISPLAY, HABIT_LINK_COLORS, activeOnly , FONT_TITLE, FONT_STAT_CARD, type Vision} from '@egoless-do/core';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
@@ -96,7 +96,7 @@ export default function HabitDetailScreen() {
 
         {/* Linked Vision */}
         {habit.visionId && (() => {
-          const linkedVision = (visions ?? []).find((v: any) => v.id === habit.visionId && !v.deleted);
+          const linkedVision = (visions ?? []).find((v: Vision) => v.id === habit.visionId && !v.deleted);
           if (!linkedVision) return null;
           return (
             <View style={[styles.infoCard, { backgroundColor: TH.card, borderColor: TH.border }]}>

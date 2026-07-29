@@ -7,8 +7,8 @@ import {
   Text,
   ActivityIndicator,
 } from 'react-native';
-import { MapView, Marker, type CameraPosition, type LatLngBounds } from 'react-native-amap3d';
 import type { NativeSyntheticEvent } from 'react-native';
+import { MapView, Marker, type CameraPosition, type LatLngBounds } from 'react-native-amap3d';
 
 import { useTheme, useT } from '../../../components/UI';
 import { useActiveSessions } from '../hooks/useActiveSessions';

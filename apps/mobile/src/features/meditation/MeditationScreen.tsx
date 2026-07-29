@@ -22,7 +22,6 @@ import { createSession, deleteSession, updateSession } from '../global-pulse/ser
 import MusicPickerModal from '../music/components/MusicPickerModal';
 import { audioSessionManager } from '../../services/AudioSessionManager';
 import { useMusicStore } from '../music/useMusicStore';
-
 import MeditationMusicBar from '../../components/MeditationMusicBar';
 
 // 实时会话

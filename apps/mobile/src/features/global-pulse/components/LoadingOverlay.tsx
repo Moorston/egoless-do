@@ -3,6 +3,7 @@
  * 显示加载动画和骨架屏
  */
 
+import { FONT_LABEL } from '@egoless-do/core';
 import React from 'react';
 import {
   View,
@@ -13,7 +14,6 @@ import {
 } from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_LABEL } from '@egoless-do/core';
 
 interface LoadingOverlayProps {
   isLoading: boolean;

@@ -4,7 +4,7 @@ import { Waves, Bell, Dumbbell, Music, Heart } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 
-const ICON_MAP: Record<string, React.ComponentType<any>> = {
+const ICON_MAP: Record<string, React.ComponentType<{size?: number; color?: string}>> = {
   Waves, Bell, Dumbbell, Music, Heart,
 };
 

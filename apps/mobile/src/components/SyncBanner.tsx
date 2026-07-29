@@ -1,8 +1,8 @@
 // ─── Sync Banner ──────────────────────────────────────────────────
 // Lightweight banner shown during Phase 2/3 background sync.
+import { FONT_SUB, FONT_SMALL } from '@egoless-do/core';
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { FONT_SUB, FONT_SMALL } from '@egoless-do/core';
 
 import { getState, openDatabase } from '../db/schema';
 import { getAllSyncProgress } from '../db/syncQueue';

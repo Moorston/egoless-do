@@ -3,6 +3,7 @@
  * 首次进入全球地图时显示
  */
 
+import { FONT_BACK, FONT_BODY, FONT_CARD_TITLE, FONT_LABEL, FONT_STAT_CARD, FONT_SUB, scaleFontSize } from '@egoless-do/core';
 import React from 'react';
 import {View,
   Text,
@@ -11,7 +12,6 @@ import {View,
   TouchableOpacity} from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_BACK, FONT_BODY, FONT_CARD_TITLE, FONT_LABEL, FONT_STAT_CARD, FONT_SUB, scaleFontSize } from '@egoless-do/core';
 
 interface PrivacyIntroModalProps {
   isVisible: boolean;

@@ -4,8 +4,8 @@
 // failure (surfaced via onPersistError, never silently dropped), (b) retried
 // on subsequent flushes, and (c) dropped only after NOT_NULL_MAX_ATTEMPTS.
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { SyncEntity } from '@egoless-do/core';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const { mockRunAsync, mockExecAsync } = vi.hoisted(() => ({
   mockRunAsync: vi.fn(),

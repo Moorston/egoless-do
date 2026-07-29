@@ -3,6 +3,7 @@
  * 提供全球地图隐私设置
  */
 
+import { FONT_BACK, FONT_LABEL, FONT_SUB } from '@egoless-do/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState, useEffect, useRef } from 'react';
 import {
@@ -16,7 +17,6 @@ import {
 } from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_BACK, FONT_LABEL, FONT_SUB } from '@egoless-do/core';
 import { optOut, optIn, deleteGlobalData } from '../services/globalPulseApi';
 import { getUserHash } from '../services/userHash';
 

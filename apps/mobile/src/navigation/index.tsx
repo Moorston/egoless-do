@@ -103,9 +103,6 @@ const TAB_ROUTES: Record<string, string> = {
   habits: 'Habits', stats: 'Stats',
 };
 
-// Ref to hold the Tab navigator's navigate function — set by MainTabBar, read by FabButton
-const tabNavRef: { navigate: ((screen: string, params?: Record<string, unknown>) => void) | null } = { navigate: null };
-
 function MainTabBar({ state, navigation, descriptors, insets }: BottomTabBarProps) {
   const TH = useTheme();
   const language = useShallowStore(s => s.language);
@@ -127,14 +124,6 @@ function MainTabBar({ state, navigation, descriptors, insets }: BottomTabBarProp
     Practice: t('navTabPractice', language),
     Settings: t('navTabSettings', language),
   };
-
-  // Expose Tab navigator's navigate to FabButton via module-level ref
-  React.useEffect(() => {
-    tabNavRef.navigate = (screen: string, params?: Record<string, unknown>) => {
-      navigation.navigate(screen as never, params as never);
-    };
-    return () => { tabNavRef.navigate = null; };
-  }, [navigation]);
 
   return (
     <View style={{
@@ -293,9 +282,9 @@ export default function AppNavigator() {
       }}
     >
       <Stack.Navigator id="root-stack" screenOptions={{ headerShown: false }} initialRouteName={isSignedIn ? 'MainTabs' : 'Login'}>
-        <Stack.Screen name="Login"        component={withErrorBoundary(LoginScreen)} />
-        <Stack.Screen name="Register"     component={withErrorBoundary(RegisterScreen)} />
-        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+        <Stack.Screen name="Login" component={withErrorBoundary(withLazy(LoginScreen))} />
+        <Stack.Screen name="Register" component={withErrorBoundary(withLazy(RegisterScreen))} />
+        <Stack.Screen name="ForgotPassword" component={withLazy(ForgotPasswordScreen)} />
         <Stack.Screen name="MainTabs"     component={MainTabs} />
         <Stack.Screen name="GlobalMap"    component={GlobalPulseScreen} />
         <Stack.Screen name="Sport"        component={withErrorBoundary(SportPage)} />
@@ -356,7 +345,7 @@ export default function AppNavigator() {
     {isSignedIn && (
       <FabButton
         primaryColor={TH.primary}
-        onPress={() => tabNavRef.navigate?.('Reflections', { showNew: true })}
+        onPress={() => navRef.current?.navigate('MainTabs', { screen: 'Reflections', params: { showNew: true } })}
       />
     )}
     </View>

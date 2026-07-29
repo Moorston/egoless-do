@@ -1,6 +1,5 @@
 import { MIND_COLORS_EXTENDED, TAGS_PRESET, MOODS, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_TINY, FONT_EMPTY, dateStr, REFLECTION_CATEGORIES, createLogger , highlightSearchMatch , getTrailsByReflection, formatTime } from '@egoless-do/core';
 import type { Habit, MindReflection } from '@egoless-do/core';
-import { safeGetItem, safeSetItem } from '../../../store/safeAsyncStorage';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
@@ -20,6 +19,7 @@ import {
 } from '../../../components/UI';
 import SimpleHeader from '../../../navigation/SimpleHeader';
 import { useTabNavigation, useRootNavigation, type MainTabParamList } from '../../../navigation/hooks';
+import { safeGetItem, safeSetItem } from '../../../store/safeAsyncStorage';
 import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { useReflections } from '../hooks/useReflections';
 import MindTrailEntryCard from '../trails/MindTrailEntryCard';
@@ -37,9 +37,10 @@ import ShareCard from './ShareCard';
 
 
 const log = createLogger('Reflections');
-import ReflectionDetailContent from './ReflectionDetailContent';
 
 import TrailPickerModal from '../trails/TrailPickerModal';
+
+import ReflectionDetailContent from './ReflectionDetailContent';
 
 // ═══════════════════════════════════════════════════════════════
 // Section 0: Helper Functions

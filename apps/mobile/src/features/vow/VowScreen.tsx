@@ -1,5 +1,5 @@
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, dateStr, FONT_HERO } from '@egoless-do/core';
-import type { Vision, VisionType, VisionStatus, VisionTimeFrame, Plan, PlanItem } from '@egoless-do/core';
+import type { Vision, VisionType, VisionStatus, VisionTimeFrame, Plan, PlanItem, Habit } from '@egoless-do/core';
 import { Flag, Target, Plus, Star } from 'lucide-react-native';
 import React, { useState, useMemo, useCallback } from 'react';
 import {
@@ -87,8 +87,8 @@ export default function VowScreen() {
       }
       // Sync linked habits: add new, remove unlinked
       const currentLinkedHabitIds = (habits ?? []).filter(
-        (h: any) => h.visionId === editingVision.id
-      ).map((h: any) => h.id);
+        (h: Habit) => h.visionId === editingVision.id
+      ).map((h: Habit) => h.id);
       for (const hId of currentLinkedHabitIds) {
         if (!data.linkedHabitIds.includes(hId)) updateHabit(hId, { visionId: undefined });
       }

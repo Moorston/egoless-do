@@ -1,10 +1,10 @@
+import type { BodyPlan, BodyTrainingPlan, DayOverride, ExerciseDef } from '@egoless-do/core';
 import { describe, it, expect } from 'vitest';
 
 // ─── useTodayPlan override logic tests ──────────────────────
 // These test the pure logic of applying DayOverride to today's plan.
 // The actual hook uses Zustand store, so we test the derivation logic directly.
 
-import type { BodyPlan, BodyTrainingPlan, DayOverride, ExerciseDef } from '@egoless-do/core';
 
 // Helper: simulate the override resolution logic from useTodayPlan
 function resolveTodayWithOverride(

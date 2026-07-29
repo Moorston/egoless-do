@@ -8,10 +8,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme, useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
 
-import ComboProgressHeader from './components/ComboProgressHeader';
-import ComboReportPage from './components/ComboReportPage';
-import TransitionScreen from './components/TransitionScreen';
-import type { ExerciseResult } from './components/ComboProgressHeader';
 
 
 
@@ -41,9 +37,13 @@ import { createSession, deleteSession, updateSession } from '../global-pulse/ser
 
 // Hooks
 import MusicPickerModal from '../music/components/MusicPickerModal';
-import { useMusicStore } from '../music/useMusicStore';
 import { audioPlayerRef } from '../music/services/audioPlayerRef';
+import { useMusicStore } from '../music/useMusicStore';
 
+import type { ExerciseResult } from './components/ComboProgressHeader';
+import ComboProgressHeader from './components/ComboProgressHeader';
+import ComboReportPage from './components/ComboReportPage';
+import TransitionScreen from './components/TransitionScreen';
 import { useAmapComponents } from './hooks/useAmapComponents';
 import { useExerciseAudio } from './hooks/useExerciseAudio';
 import { reqLocPerm, getCurPos, watchPos, computeDistance } from './hooks/useExerciseGps';
@@ -210,8 +210,8 @@ export default function SportPage() {
   const [segmentPaces, setSegmentPaces] = useState<number[]>([]);
   const lastKmMarkRef = useRef(0);
   const lastKmTsRef = useRef(0);
-  const locationSub = useRef<any>(null);
-  const mapRef = useRef<any>(null);
+  const locationSub = useRef<object | null>(null);
+  const mapRef = useRef<object | null>(null);
   const pauseHoldAnim = useRef(new Animated.Value(1)).current;
 
   // ── Computed ──

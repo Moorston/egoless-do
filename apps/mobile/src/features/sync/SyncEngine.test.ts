@@ -749,7 +749,7 @@ describe('SyncEngine', () => {
 
   describe('recordMetric', () => {
     it('records metrics with correct fields', () => {
-      (engine as unknown as Record<string, Function>).recordMetric(1500, 5, 3, true);
+      (engine as unknown as Record<string, (...args: unknown[]) => unknown>).recordMetric(1500, 5, 3, true);
       const metrics = engine.getSyncMetrics();
       expect(metrics).toHaveLength(1);
       expect(metrics[0]).toMatchObject({
@@ -762,7 +762,7 @@ describe('SyncEngine', () => {
 
     it('caps at 20 entries (MAX_METRICS)', () => {
       for (let i = 0; i < 25; i++) {
-        (engine as unknown as Record<string, Function>).recordMetric(i, 0, 0, true);
+        (engine as unknown as Record<string, (...args: unknown[]) => unknown>).recordMetric(i, 0, 0, true);
       }
       expect(engine.getSyncMetrics()).toHaveLength(20);
       // Oldest entries should be dropped — first entry is now from i=5

@@ -26,25 +26,7 @@ export default function WeightTrendChart({ TH, T, checkins }: Props) {
     .filter(r => !r.deleted && r.weight != null && r.weight > 0)
     .sort((a, b) => a.date.localeCompare(b.date));
 
-  if (validRecords.length === 0) {
-    return (
-      <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16 }}>
-        <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 12 }}>{T('bodyWeightTrend')}</Text>
-        <View style={{ paddingVertical: 24, alignItems: 'center' }}>
-          <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>{T('bodyWeightNoData')}</Text>
-        </View>
-      </View>
-    );
-  }
-
-  // Trend direction (global)
-  const first = validRecords[0].weight;
-  const last = validRecords[validRecords.length - 1].weight;
-  const diff = last - first;
-  const TrendIcon = diff > 0.1 ? TrendingUp : diff < -0.1 ? TrendingDown : Minus;
-  const trendColor = diff > 0.1 ? '#ef4444' : diff < -0.1 ? '#10b981' : TH.sub;
-
-  // Group by month
+  // Group by month — must be called before early return (hooks rule)
   const months = useMemo(() => {
     const map = new Map<string, CheckinEntry[]>();
     for (const r of validRecords) {
@@ -67,8 +49,26 @@ export default function WeightTrendChart({ TH, T, checkins }: Props) {
     return result;
   }, [validRecords]);
 
-  const [currentIndex, setCurrentIndex] = useState(months.length - 1);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
+
+  if (validRecords.length === 0) {
+    return (
+      <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16 }}>
+        <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 12 }}>{T('bodyWeightTrend')}</Text>
+        <View style={{ paddingVertical: 24, alignItems: 'center' }}>
+          <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>{T('bodyWeightNoData')}</Text>
+        </View>
+      </View>
+    );
+  }
+
+  // Trend direction (global)
+  const first = validRecords[0].weight;
+  const last = validRecords[validRecords.length - 1].weight;
+  const diff = last - first;
+  const TrendIcon = diff > 0.1 ? TrendingUp : diff < -0.1 ? TrendingDown : Minus;
+  const trendColor = diff > 0.1 ? '#ef4444' : diff < -0.1 ? '#10b981' : TH.sub;
 
   const currentMonth = months[currentIndex];
 

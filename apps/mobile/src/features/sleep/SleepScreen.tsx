@@ -1,11 +1,11 @@
 // ─── SleepScreen — Lightweight entry point ──────────────────────
 // Lazy-loads SleepEngine to defer expo-notifications, DiaryModal,
 // lucide-react-native (13 icons), and other heavy dependencies.
+import { FONT_STAT_SECTION, FONT_SUB } from '@egoless-do/core';
 import React, { lazy, Suspense } from 'react';
 import { View, Text } from 'react-native';
 
 import { useTheme } from '../../components/UI';
-import { FONT_STAT_SECTION, FONT_SUB } from '@egoless-do/core';
 
 const SleepEngine = lazy(() => import('./SleepEngine'));
 

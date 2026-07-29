@@ -1,8 +1,8 @@
+import { FONT_BODY, FONT_SMALL, FONT_SUB } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 
 import { useSyncStore } from '../store/syncStore';
-import { FONT_BODY, FONT_SMALL, FONT_SUB } from '@egoless-do/core';
 
 import { useTheme } from './UI';
 

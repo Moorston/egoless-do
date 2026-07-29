@@ -1,8 +1,9 @@
-import React from 'react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { act, create } from 'react-test-renderer';
-import { useDateNavigation } from './useDateNavigation';
 import { dateStr } from '@egoless-do/core';
+import React from 'react';
+import { act, create } from 'react-test-renderer';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+import { useDateNavigation } from './useDateNavigation';
 
 // @ts-expect-error — React Native global not available in test env
 globalThis.__DEV__ = false;

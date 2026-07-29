@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import React, { type MutableRefObject } from 'react';
 import TestRenderer, { act } from 'react-test-renderer';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // @ts-expect-error — React Native global not available in test env
 globalThis.__DEV__ = false;

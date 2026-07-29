@@ -2,8 +2,9 @@ import { COLORS, FONT_TITLE, FONT_SUB, FONT_BODY, FONT_CLOSE, FONT_BACK, FONT_ST
 import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 
-import type { ExercisePageProps } from './types';
 import { useAppStore } from '../../../store/useAppStore';
+
+import type { ExercisePageProps } from './types';
 
 
 export default function ReportPage(props: ExercisePageProps) {

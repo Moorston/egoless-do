@@ -273,6 +273,7 @@ interface FlatItem {
 
 export default function MedHistoryPage() {
   const nav = useRootNavigation();
+  const navigateToTab = useNavigateToTab();
   const TH = useTheme();
   const T = useT();
   const { medHistory } = useShallowStore(s => ({ medHistory: s.medHistory }));
@@ -386,7 +387,7 @@ export default function MedHistoryPage() {
             <Text style={[styles.emptyTitle, { color: TH.text }]}>还没有冥想记录</Text>
             <Text style={[styles.emptyDesc, { color: TH.sub }]}>每一次静坐都是送给自己的礼物</Text>
             <Text style={[styles.emptySubDesc, { color: TH.sub }]}>从今天开始，给自己几分钟安静的时光</Text>
-            <TouchableOpacity onPress={() => useNavigateToTab()('Meditation')} style={[styles.emptyCtaBtn, { backgroundColor: TH.primary }]}>
+            <TouchableOpacity onPress={() => navigateToTab('Meditation')} style={[styles.emptyCtaBtn, { backgroundColor: TH.primary }]}>
               <Text style={styles.whiteBodyBold}>✦ 开始第一次冥想</Text>
             </TouchableOpacity>
           </View>

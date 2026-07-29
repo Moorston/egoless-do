@@ -2,8 +2,7 @@
 // Shows the preset selection page immediately (zero native module deps).
 // Lazy-loads BreathingEngine when user starts a session.
 import { FONT_TITLE, FONT_BODY, FONT_SUB, createLogger, fmtMS , BREATHING_PRESETS, cycleDuration, getDescKey , FONT_STAT_SECTION } from '@egoless-do/core';
-import type { BreathingPreset, GuideStyle } from '@egoless-do/core';
-import { safeGetItem, safeSetItem } from '../../store/safeAsyncStorage';
+import type { BreathingPreset, GuideStyle , Theme } from '@egoless-do/core';
 import { ChevronRight } from 'lucide-react-native';
 import React, { useState, useCallback, useEffect, lazy, Suspense } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
@@ -11,6 +10,7 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-nati
 import { useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../navigation/hooks';
+import { safeGetItem, safeSetItem } from '../../store/safeAsyncStorage';
 import { useShallowStore } from '../../store/useAppStore';
 
 
@@ -18,7 +18,7 @@ const log = createLogger('Breathing');
 
 const GUIDE_STYLE_KEY = 'breathing_guide_style';
 
-import type { Theme } from '@egoless-do/core';
+
 
 // Lazy-load the heavy engine (contains expo-audio, expo-speech, rAF loop)
 const BreathingEngine = lazy(() => import('./BreathingEngine'));

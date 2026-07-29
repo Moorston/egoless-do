@@ -7,8 +7,8 @@ import type { SyncEntity } from '@egoless-do/core';
 
 import { dbGetAllFoodEntries } from '../../db/queries';
 import { openDatabase, getState, setState } from '../../db/schema';
-import { loadDataFromFile } from '../../store/fileStorage';
 import { getSyncProgress, updateSyncProgress } from '../../db/syncQueue';
+import { loadDataFromFile } from '../../store/fileStorage';
 import {
   rowToHabit, rowToReflection, rowToFasting, rowToFood, rowToCheckin,
   rowToExercise, rowToMeditation, rowToProfile, rowToPlan, rowToPlanItem,

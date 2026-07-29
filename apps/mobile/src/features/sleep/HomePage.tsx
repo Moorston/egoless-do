@@ -1,18 +1,18 @@
 // ─── HomePage — Sleep home page (extracted from SleepEngine) ─────
 // Displays: body clock, sleep goal, diary, ritual entry, trend, streak
 
-import { getCurrentPeriod, getNextSleepPeriod, BODY_CLOCK, type BodyClockPeriod, FONT_TITLE, type SleepGoal, type WorkState } from '@egoless-do/core';
-import type { SleepEntry } from '@egoless-do/core';
+import { getCurrentPeriod, getNextSleepPeriod, BODY_CLOCK, type BodyClockPeriod, FONT_TITLE, type SleepGoal, type WorkState , SleepEntry } from '@egoless-do/core';
 import { Moon, Sun, Clock, Heart, ChevronRight, BarChart3, Star } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useRootNavigation } from '../../navigation/hooks';
-import SimpleHeader from '../../navigation/SimpleHeader';
 import { useTheme, useT } from '../../components/UI';
-import { styles } from './sleepStyles';
+import SimpleHeader from '../../navigation/SimpleHeader';
+import { useRootNavigation } from '../../navigation/hooks';
+
 import DiaryModal from './DiaryModal';
+import { styles } from './sleepStyles';
 
 interface HomePageProps {
   todaySleep: SleepEntry | null | undefined;
