@@ -267,6 +267,7 @@ export class SyncEngine {
   }
 
   async hardReset(confirmToken?: string): Promise<void> {
+    this._syncing = false;
     return this._resetService.hardReset(
       confirmToken,
       () => this.disconnectRealtime(),
@@ -326,13 +327,13 @@ export class SyncEngine {
       pushedAnything = true;
       pushedItemCount += items.length;
 
-      const changes: Array<{ entity: SyncEntity; entityId: string; payload: Record<string, unknown>; op: 'upsert' | 'delete'; changedFields?: string[] }> = [];
+      const changes: Array<{ entity: SyncEntity; entityId: string; payload: Record<string, unknown>; operation: 'upsert' | 'delete'; changedFields?: string[] }> = [];
       for (const item of items) {
         try {
           const parsed = JSON.parse(item.payload);
           const changedFields = parsed._changedFields;
           if (changedFields) delete parsed._changedFields;
-          changes.push({ entity: item.entity as SyncEntity, entityId: item.entity_id, payload: parsed, op: item.operation === 'delete' ? 'delete' : 'upsert', changedFields });
+          changes.push({ entity: item.entity as SyncEntity, entityId: item.entity_id, payload: parsed, operation: item.operation === 'delete' ? 'delete' : 'upsert', changedFields });
         } catch {
           await this._markQueueItemFailed(item.id, 'Corrupt payload');
         }
