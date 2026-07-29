@@ -140,7 +140,16 @@ routerAdd("POST", "/api/sync", function(e) {
                 if (recType !== expectedType) continue;
               }
               var hasId = exported.id || exported[ENTITY_ID_FIELD_MAP[ent]] || exported.date || exported.name;
-              if (hasId) payloads.push(exported);
+              if (hasId) {
+                // P0-5: client-side updatedAt filter.
+                // Most collections store updatedAt inside JSON data (no top-level updated_at
+                // field), so server-side `updated_at > sinceDate` filter is ineffective.
+                // Filter here using the exported updatedAt (ms epoch) vs lastSyncAt.
+                if (lastSyncAt > 0 && exported.updatedAt && exported.updatedAt <= lastSyncAt) {
+                  continue; // skip records not modified since last sync
+                }
+                payloads.push(exported);
+              }
             } catch (recErr) { console.warn("[sync] pull record error for " + ent + ": " + (recErr.message || String(recErr))); }
           }
           if (payloads.length > 0) serverData[ent] = payloads;
@@ -228,6 +237,10 @@ routerAdd("GET", "/api/sync", function(e) {
               if (recType !== expectedType) continue;
             }
             var idF = ENTITY_ID_FIELD_MAP[ent];
+            // P0-5: client-side updatedAt filter (sync-get uses `since` query param).
+            if (since > 0 && exported.updatedAt && exported.updatedAt <= since) {
+              continue;
+            }
             if (exported.id || exported[idF] || exported.date || exported.name) payloads.push(exported);
           } catch (recErr) { console.warn("[sync-get] record error for " + ent + ": " + (recErr.message || String(recErr))); }
         }
