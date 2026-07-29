@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 52
+- **Total Sessions**: 53
 - **Last Active**: 2026-07-29
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~1855 | Active |
+| `journal-1.md` | ~1892 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 53 | 2026-07-29 | P0/P1 修复：sync 字段不匹配 + 内存泄漏 + 标记延后项 | `499dae1a`, `55283942`, `46505eca`, `f5d1c112`, `f3951e34` | `master` |
 | 52 | 2026-07-29 | 深度代码审查（四维度）+ batch-3 收尾 | `2d131bd7` | `master` |
 | 51 | 2026-07-26 | Android 构建稳定性 + 地图库迁移 (amap3d) | `9075cbc5` | `master` |
 | 50 | 2026-07-24 | 调身页 Banner 优化 — 标题字号统一/体重趋势/身体档案/今日方案 | `4549b7be`, `935d45ab` | `master` |

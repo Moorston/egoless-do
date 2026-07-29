@@ -1853,3 +1853,40 @@ Explore 模式深度审查 packages/core + apps/mobile + backend + infra 四维�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 53: P0/P1 修复：sync 字段不匹配 + 内存泄漏 + 标记延后项
+
+**Date**: 2026-07-29
+**Task**: P0/P1 修复：sync 字段不匹配 + 内存泄漏 + 标记延后项
+**Branch**: `master`
+
+### Summary
+
+继续 session 52 深度审查的修复阶段。5 个 commit：(1) P0-1 sync op/operation 字段对齐【最关键】(2) P0-2 fasting 脆弱时间断言消除 (3) P0-3 user_token 密钥回退移除 (4) P0-4/5 标记已知限制 (5) P1 修复 2 处内存泄漏(activeSessionApi 静默 catch + SportPage timer) + 标记 4 处需 cleanupApp 的模块级订阅。剩余 6 项标记为独立 task（p0-body-plan-namespace、p0-updated-at-filter、p1-memory-leak-cleanup）。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `499dae1a` | (see git log) |
+| `55283942` | (see git log) |
+| `46505eca` | (see git log) |
+| `f5d1c112` | (see git log) |
+| `f3951e34` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
