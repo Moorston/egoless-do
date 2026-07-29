@@ -6,8 +6,9 @@
 import { createLogger , CheckinType , fuzzCoordinate } from '@egoless-do/core';
 import * as Location from 'expo-location';
 import { useCallback } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore, type MobileStore } from '../../../store/useAppStore';
 import { submitCheckin } from '../services/globalPulseApi';
 import { getUserHash, getFuzzSecret } from '../services/userHash';
 
@@ -24,7 +25,7 @@ interface UseCheckinSyncReturn {
 export function useCheckinSync(): UseCheckinSyncReturn {
   const { preferences } = usePrivacy();
   const { isOnline } = useNetworkStatus();
-  const nickname = useAppStore(s => s.auth.user?.name || '');
+  const nickname = useAppStore(useShallow((s: MobileStore) => s.auth.user?.name || ''));
 
   const syncCheckin = useCallback(async (
     type: CheckinType,
