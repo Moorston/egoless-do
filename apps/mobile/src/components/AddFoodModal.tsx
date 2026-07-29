@@ -262,6 +262,9 @@ export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
                 </View>
               )}
               {/* Preset food items */}
+              {/* TODO(perf): list is bounded (FOOD_PRESETS is 49 items, wuxing capped at 20) and
+                  sits inside a ScrollView alongside the wuxing section, so it does not meet
+                  the above-50-item fixed-row-height threshold for FlashList. Leave as .map(). */}
               {filteredItems.map((f, i) => (
                 <TouchableOpacity key={`${f.name}-${i}`}
                   onPress={() => handleSelectPreset(f.name, f.cal)}

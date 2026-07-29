@@ -508,6 +508,10 @@ export default function ExerciseHistoryScreen() {
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
+      {/* TODO(perf): this FlatList is intentionally left without getItemLayout. Its rows are
+          heterogeneous (statCards, prCards, heatmap, calendar, monthHeader, entry) with
+          variable heights, and entry rows expand to show a DetailCard, so a single fixed
+          ROW_HEIGHT would mis-layout and overlap rows. Virtualization is sufficient here. */}
       <FlatList<FlatItem>
         data={flatData}
         renderItem={renderItem}

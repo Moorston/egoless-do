@@ -127,7 +127,9 @@ export function Checkbox({ on, onChange, ...rest }: { on: boolean; onChange: () 
 }
 
 // ── RowItem ───────────────────────────────────────────────────────
-export function RowItem({
+// Memoized: a stable settings/list row that re-renders frequently when
+// parent screens (SettingsScreen) refresh, but whose props rarely change.
+export const RowItem = React.memo(function RowItem({
   label, sub, icon, right, last, onPress,
 }: {
   label: string; sub?: string; icon?: React.ReactNode;
@@ -158,7 +160,7 @@ export function RowItem({
       </View>
     </Wrap>
   );
-}
+});
 
 // ── ScreenHeader ─────────────────────────────────────────────────
 export function ScreenHeader({

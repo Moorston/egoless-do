@@ -337,6 +337,9 @@ export default function MeditationScreen() {
               <MeditationMusicBar track={selectedTrack} isActive={false} isPlaying={false} primaryColor={P} onPress={() => setShowMusicPicker(true)} />
 
               {/* Duration selector */}
+              {/* TODO(perf): duration selector is a short wrap-row of chips
+                  (MEDITATION_DURATIONS_MIN = 11 items) inside a Card/ScrollView — below the
+                  >50-item fixed-height threshold. Leave as .map(). */}
               <View style={styles.durationSelector}>
                 {MEDITATION_DURATIONS_MIN.map(d => (
                   <TagPill key={d} label={`${d}${T('medMinutes')}`} active={durMin===d}

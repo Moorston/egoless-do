@@ -70,6 +70,9 @@ export default function HabitDetailScreen() {
         <View style={{ width: 40 }} />
       </View>
 
+      {/* TODO(perf): this screen is a ScrollView (not a FlatList), so getItemLayout does not apply.
+          The related-reflections list is a small .map nested inside the ScrollView and is
+          collapsed by default, well below the above-50-item standalone threshold. Leave as is. */}
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 32 }} showsVerticalScrollIndicator={false}>
         {/* Stats */}
         <View style={[styles.statsContainer, { backgroundColor: TH.card, borderColor: TH.border }]}>

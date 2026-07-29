@@ -84,6 +84,9 @@ export default function ZhiguanHistoryScreen() {
       <HeatmapBlock sessions={sessions} year={today.getFullYear()} month={today.getMonth() + 1} />
 
       {/* 历史列表 */}
+      {/* TODO(perf): history list is capped at 50 (.slice(0, 50)) and is a direct child of the
+          page ScrollView together with the stats card and heatmap, so it does not meet the
+          above-50-item fixed-height threshold for a standalone FlashList. Keep as .map(). */}
       {sessions.length === 0 ? (
         <View style={styles.empty}>
           <Text style={styles.emptyIcon}>🪷</Text>

@@ -54,6 +54,9 @@ export default function ZhiguanSettingsSheet({ settings, onSave, onClose }: Prop
           <View style={styles.handle} />
 
           <ScrollView style={styles.content}>
+            {/* TODO(perf): each option group is tiny (BREATH_OPTIONS is 3, TARGET_OPTIONS is 4,
+                SOUND_OPTIONS is 4, methods at most 6) — far below the above-50-item threshold for
+                FlashList. Rendered inside a ScrollView, so leave as .map(). */}
             <Text style={styles.sectionTitle}>{T('zhiguanBreathRhythm')}</Text>
             <View style={styles.optionGroup}>
               {BREATH_OPTIONS.map(opt => (
