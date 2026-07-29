@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-2.md`
-- **Total Sessions**: 58
+- **Total Sessions**: 59
 - **Last Active**: 2026-07-29
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~129 | Active |
+| `journal-2.md` | ~162 | Active |
 | `journal-1.md` | ~1971 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 59 | 2026-07-29 | 依赖清理 expo-av 移除 + 全 session 最终收尾 | `354c7aee` | `master` |
 | 58 | 2026-07-29 | P0-4 历史回填 + 全 session 收尾 | `6097ddfe` | `master` |
 | 57 | 2026-07-29 | Batch 3: P0-4 bodyPlan + P0-5 updated_at + 路由重构 | `3b141a88`, `b84564a5`, `df3fdd2d`, `4b6ac6c0` | `master` |
 | 56 | 2026-07-29 | P2 useShallow 全覆盖（16 文件 22 处） | `eb0fc9a7`, `d19047fc`, `74bdce76`, `e99d7183`, `56bf9caf`, `5fb61031`, `ac4bf057`, `091609c9`, `5a8f8eaa`, `2aca5a4c`, `44ac63a1`, `62f7d95d`, `a00efe30`, `03584d59`, `a64b483a`, `5bef702f` | `master` |

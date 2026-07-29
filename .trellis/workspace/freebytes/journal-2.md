@@ -127,3 +127,36 @@ P0-4 bodyPlan 命名空间完整收尾：历史数据回填迁移脚本（init.p
 ### Next Steps
 
 - None - task complete
+
+
+## Session 59: 依赖清理 expo-av 移除 + 全 session 最终收尾
+
+**Date**: 2026-07-29
+**Task**: 依赖清理 expo-av 移除 + 全 session 最终收尾
+**Branch**: `master`
+
+### Summary
+
+移除未使用依赖 expo-av（已被 expo-audio 替代）。全 session（52-61）累计 19 commit。遗留：i18next 双系统重构、2 处 tab 路由（低优先级）。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `354c7aee` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
