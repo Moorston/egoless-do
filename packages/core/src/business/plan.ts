@@ -298,10 +298,9 @@ export function addPlan(plans: Plan[], form: {
   name: string; goal: string; slogan?: string;
   startDate: string; endDate: string;
   visionId?: string;
-}, today?: string): { plans: Plan[]; planId: string } | null {
+}, today?: string, now: number = Date.now()): { plans: Plan[]; planId: string } | null {
   const id = uid();
-  const now = today ?? dateStr();
-  const willBeActive = form.startDate <= now;
+  const willBeActive = form.startDate <= (today ?? dateStr());
   // Check if there's already an active plan when creating an active plan
   if (willBeActive) {
     const hasActive = plans.some(p => !p.deleted && isPlanActive(p.status));
@@ -318,13 +317,13 @@ export function addPlan(plans: Plan[], form: {
     status,
     progress: 0,
     visionId: form.visionId,
-    updatedAt: Date.now(),
+    updatedAt: now,
     deleted: false,
   };
   return { plans: [...plans, p], planId: id };
 }
 
-export function updatePlan(plans: Plan[], id: string, patch: Partial<Plan>): Plan[] {
+export function updatePlan(plans: Plan[], id: string, patch: Partial<Plan>, now: number = Date.now()): Plan[] {
   const plan = plans.find(p => p.id === id && !p.deleted);
   if (!plan) return plans;
   // Don't allow editing completed or cancelled plans
@@ -332,17 +331,16 @@ export function updatePlan(plans: Plan[], id: string, patch: Partial<Plan>): Pla
   // Don't allow changing status directly via updatePlan (use dedicated status functions)
   const { status, ...rest } = patch;
   if (status && status !== plan.status) return plans; // Block status change entirely
-  return plans.map(p => p.id === id ? { ...p, ...rest, updatedAt: Date.now() } : p);
+  return plans.map(p => p.id === id ? { ...p, ...rest, updatedAt: now } : p);
 }
 
-export function deletePlan(plans: Plan[], id: string): Plan[] {
-  return plans.map(p => p.id === id && !p.deleted ? { ...p, deleted: true, updatedAt: Date.now() } : p);
+export function deletePlan(plans: Plan[], id: string, now: number = Date.now()): Plan[] {
+  return plans.map(p => p.id === id && !p.deleted ? { ...p, deleted: true, updatedAt: now } : p);
 }
 
 // ── Plan status operations ────────────────────────────────────
 
-export function startPlan(plans: Plan[], planItems: PlanItem[], id: string): { plans: Plan[]; planItems: PlanItem[] } {
-  const now = Date.now();
+export function startPlan(plans: Plan[], planItems: PlanItem[], id: string, now: number = Date.now()): { plans: Plan[]; planItems: PlanItem[] } {
   const today = dateStr();
   const plan = plans.find(p => p.id === id && !p.deleted);
   if (!plan || plan.status !== 'not_started') return { plans, planItems };
@@ -356,8 +354,7 @@ export function startPlan(plans: Plan[], planItems: PlanItem[], id: string): { p
   };
 }
 
-export function pausePlan(plans: Plan[], planItems: PlanItem[], id: string): { plans: Plan[]; planItems: PlanItem[] } {
-  const now = Date.now();
+export function pausePlan(plans: Plan[], planItems: PlanItem[], id: string, now: number = Date.now()): { plans: Plan[]; planItems: PlanItem[] } {
   const plan = plans.find(p => p.id === id && !p.deleted);
   if (!plan || plan.status !== 'in_progress') return { plans, planItems };
   return {
@@ -367,8 +364,7 @@ export function pausePlan(plans: Plan[], planItems: PlanItem[], id: string): { p
   };
 }
 
-export function resumePlan(plans: Plan[], planItems: PlanItem[], id: string): { plans: Plan[]; planItems: PlanItem[] } {
-  const now = Date.now();
+export function resumePlan(plans: Plan[], planItems: PlanItem[], id: string, now: number = Date.now()): { plans: Plan[]; planItems: PlanItem[] } {
   const plan = plans.find(p => p.id === id && !p.deleted);
   if (!plan || plan.status !== 'paused') return { plans, planItems };
   // Check if there's already another active plan
@@ -381,8 +377,7 @@ export function resumePlan(plans: Plan[], planItems: PlanItem[], id: string): { 
   };
 }
 
-export function completePlan(plans: Plan[], planItems: PlanItem[], id: string, reason?: string): { plans: Plan[]; planItems: PlanItem[] } {
-  const now = Date.now();
+export function completePlan(plans: Plan[], planItems: PlanItem[], id: string, reason?: string, now: number = Date.now()): { plans: Plan[]; planItems: PlanItem[] } {
   const plan = plans.find(p => p.id === id && !p.deleted);
   if (!plan || plan.status === 'completed' || plan.status === 'cancelled') return { plans, planItems };
   const progress = computePlanProgress(plan);
@@ -393,8 +388,7 @@ export function completePlan(plans: Plan[], planItems: PlanItem[], id: string, r
   };
 }
 
-export function cancelPlan(plans: Plan[], planItems: PlanItem[], id: string): { plans: Plan[]; planItems: PlanItem[] } {
-  const now = Date.now();
+export function cancelPlan(plans: Plan[], planItems: PlanItem[], id: string, now: number = Date.now()): { plans: Plan[]; planItems: PlanItem[] } {
   const plan = plans.find(p => p.id === id && !p.deleted);
   if (!plan || plan.status === 'completed' || plan.status === 'cancelled') return { plans, planItems };
   return {
@@ -405,11 +399,10 @@ export function cancelPlan(plans: Plan[], planItems: PlanItem[], id: string): { 
 }
 
 /** Auto-detect status changes: not_started→in_progress when startDate arrives, mark overdue items */
-export function checkAutoStatus(plans: Plan[], planItems: PlanItem[], today: string): { plans: Plan[]; planItems: PlanItem[]; delayedPlans: Plan[] } {
+export function checkAutoStatus(plans: Plan[], planItems: PlanItem[], today: string, now: number = Date.now()): { plans: Plan[]; planItems: PlanItem[]; delayedPlans: Plan[] } {
   let plansChanged = false;
   let itemsChanged = false;
   const delayedPlans: Plan[] = [];
-  const now = Date.now();
 
   // Pre-build: does any non-deleted active plan already exist?
   let hasActivePlan = plans.some(p => !p.deleted && isPlanActive(p.status));
@@ -476,6 +469,7 @@ export function performDailyReset(
   dailyTodoHistory: DailyTodoHistory[],
   previousDate: string,
   today: string,
+  now: number = Date.now(),
 ): {
   plans: Plan[];
   planItems: PlanItem[];
@@ -485,7 +479,7 @@ export function performDailyReset(
   delayedPlans: Plan[];
 } {
   // 1. Auto-start tasks
-  const { plans: updatedPlans, planItems: updatedPlanItems, delayedPlans } = checkAutoStatus(plans, planItems, today);
+  const { plans: updatedPlans, planItems: updatedPlanItems, delayedPlans } = checkAutoStatus(plans, planItems, today, now);
 
   // 2. Save previous day's history for all active plans
   let updatedHistory = [...dailyTodoHistory];
@@ -497,7 +491,7 @@ export function performDailyReset(
   );
   for (const plan of activePlans) {
     if (!historyKeySet.has(plan.id)) {
-      updatedHistory = saveDailyTodoHistory(updatedHistory, plan.id, previousDate, updatedPlanItems, planItemCheckins, dailyCustomTodos);
+      updatedHistory = saveDailyTodoHistory(updatedHistory, plan.id, previousDate, updatedPlanItems, planItemCheckins, dailyCustomTodos, now);
     }
   }
 
@@ -533,7 +527,7 @@ export function performDailyReset(
         todayNameSet.add(key);
         newTodos.push({
           id: uid(), planId: plan.id, date: today, name: todo.name,
-          done: false, order: order++, recurring: true, updatedAt: Date.now(), deleted: false,
+          done: false, order: order++, recurring: true, updatedAt: now, deleted: false,
         });
       }
     }
@@ -562,14 +556,12 @@ export function addPlanItem(planItems: PlanItem[], form: {
   planId: string; name: string; description?: string;
   startDate: string; endDate: string; contentUrl?: string;
   link?: PlanItemLink; priority?: PlanItemPriority; targetMetric?: string; linkConfig?: PlanItem['linkConfig']; order?: number; frequency?: PlanItem['frequency']; tags?: string[]; reflectionId?: string;
-}, plans?: Plan[], today?: string): PlanItem[] {
+}, plans?: Plan[], today?: string, now: number = Date.now()): PlanItem[] {
   // Check if the plan is active (not completed or cancelled)
   if (plans) {
     const plan = plans.find(p => p.id === form.planId && !p.deleted);
     if (!plan || plan.status === 'completed' || plan.status === 'cancelled') return planItems;
   }
-  const now = today ?? dateStr();
-  const status: PlanItemStatus = form.startDate <= now ? 'in_progress' : 'not_started';
   const item: PlanItem = {
     id: uid(),
     planId: form.planId,
@@ -580,7 +572,7 @@ export function addPlanItem(planItems: PlanItem[], form: {
     contentUrl: form.contentUrl ?? '',
     reflectionId: form.reflectionId,
     totalCheckinDays: 0,
-    status,
+    status: form.startDate <= (today ?? dateStr()) ? 'in_progress' : 'not_started',
     progress: 0,
     link: form.link ?? 'manual',
     priority: form.priority ?? 'medium',
@@ -589,18 +581,18 @@ export function addPlanItem(planItems: PlanItem[], form: {
     order: form.order ?? 0,
     frequency: form.frequency,
     tags: form.tags,
-    updatedAt: Date.now(),
+    updatedAt: now,
     deleted: false,
   };
   return [...planItems, item];
 }
 
-export function updatePlanItem(planItems: PlanItem[], id: string, patch: Partial<PlanItem>): PlanItem[] {
-  return planItems.map(i => i.id === id && !i.deleted ? { ...i, ...patch, updatedAt: Date.now() } : i);
+export function updatePlanItem(planItems: PlanItem[], id: string, patch: Partial<PlanItem>, now: number = Date.now()): PlanItem[] {
+  return planItems.map(i => i.id === id && !i.deleted ? { ...i, ...patch, updatedAt: now } : i);
 }
 
-export function deletePlanItem(planItems: PlanItem[], id: string): PlanItem[] {
-  return planItems.map(i => i.id === id && !i.deleted ? { ...i, deleted: true, updatedAt: Date.now() } : i);
+export function deletePlanItem(planItems: PlanItem[], id: string, now: number = Date.now()): PlanItem[] {
+  return planItems.map(i => i.id === id && !i.deleted ? { ...i, deleted: true, updatedAt: now } : i);
 }
 
 /** Create a plan item from a reflection */
@@ -703,8 +695,8 @@ export function canArchivePlan(
 export function unlinkAllReflectionsFromPlan(
   planItems: PlanItem[],
   planId: string,
+  now: number = Date.now(),
 ): PlanItem[] {
-  const now = Date.now();
   return planItems.map(i =>
     i.planId === planId && !i.deleted && i.reflectionId
       ? { ...i, reflectionId: undefined, updatedAt: now }
@@ -714,24 +706,24 @@ export function unlinkAllReflectionsFromPlan(
 
 // ── PlanItemCheckin ───────────────────────────────────────────
 
-export function checkinItem(checkins: PlanItemCheckin[], planItemId: string, date: string, linkedModule?: string): PlanItemCheckin[] {
+export function checkinItem(checkins: PlanItemCheckin[], planItemId: string, date: string, linkedModule?: string, now: number = Date.now()): PlanItemCheckin[] {
   const existing = checkins.find(c => c.planItemId === planItemId && c.date === date && !c.deleted);
   if (existing) {
     return checkins.map(c =>
       c.planItemId === planItemId && c.date === date && !c.deleted
-        ? { ...c, done: true, linkedModule, updatedAt: Date.now() }
+        ? { ...c, done: true, linkedModule, updatedAt: now }
         : c
     );
   }
-  return [...checkins, { id: uid(), planItemId, date, done: true, linkedModule, updatedAt: Date.now(), deleted: false }];
+  return [...checkins, { id: uid(), planItemId, date, done: true, linkedModule, updatedAt: now, deleted: false }];
 }
 
-export function uncheckinItem(checkins: PlanItemCheckin[], planItemId: string, date: string): PlanItemCheckin[] {
+export function uncheckinItem(checkins: PlanItemCheckin[], planItemId: string, date: string, now: number = Date.now()): PlanItemCheckin[] {
   const existing = checkins.find(c => c.planItemId === planItemId && c.date === date && !c.deleted);
   if (existing) {
     return checkins.map(c =>
       c.planItemId === planItemId && c.date === date && !c.deleted
-        ? { ...c, done: false, updatedAt: Date.now() }
+        ? { ...c, done: false, updatedAt: now }
         : c
     );
   }
@@ -932,7 +924,7 @@ export function getHistoryPlans(plans: Plan[]): Plan[] {
 }
 
 /** Update totalCheckinDays and progress for plan items based on checkins. Uses pre-built index. */
-export function refreshPlanItemStats(planItems: PlanItem[], checkins: PlanItemCheckin[], today: string): PlanItem[] {
+export function refreshPlanItemStats(planItems: PlanItem[], checkins: PlanItemCheckin[], today: string, now: number = Date.now()): PlanItem[] {
   const index = buildCheckinByItem(checkins);
   return planItems.map(item => {
     if (item.deleted) return item;
@@ -941,7 +933,7 @@ export function refreshPlanItemStats(planItems: PlanItem[], checkins: PlanItemCh
     const expectedDays = computeExpectedDays(item.frequency, item.startDate, item.endDate, clampedToday);
     const progress = expectedDays > 0 ? Math.min(Math.round((doneCount / expectedDays) * 100), 100) : 0;
     if (item.totalCheckinDays !== doneCount || item.progress !== progress) {
-      return { ...item, totalCheckinDays: doneCount, progress, updatedAt: Date.now() };
+      return { ...item, totalCheckinDays: doneCount, progress, updatedAt: now };
     }
     return item;
   });
@@ -949,7 +941,7 @@ export function refreshPlanItemStats(planItems: PlanItem[], checkins: PlanItemCh
 
 // ── DailyCustomTodo ─────────────────────────────────────────
 
-export function addDailyCustomTodo(todos: DailyCustomTodo[], planId: string, name: string, date: string, recurring?: boolean): DailyCustomTodo[] {
+export function addDailyCustomTodo(todos: DailyCustomTodo[], planId: string, name: string, date: string, recurring?: boolean, now: number = Date.now()): DailyCustomTodo[] {
   const existingTodos = todos.filter(t => t.planId === planId && t.date === date && !t.deleted);
   const maxOrder = existingTodos.reduce((max, t) => Math.max(max, t.order), -1);
   const todo: DailyCustomTodo = {
@@ -960,21 +952,21 @@ export function addDailyCustomTodo(todos: DailyCustomTodo[], planId: string, nam
     done: false,
     order: maxOrder + 1,
     recurring: recurring ?? false,
-    updatedAt: Date.now(),
+    updatedAt: now,
     deleted: false,
   };
   return [...todos, todo];
 }
 
-export function toggleDailyCustomTodo(todos: DailyCustomTodo[], id: string, date: string): DailyCustomTodo[] {
+export function toggleDailyCustomTodo(todos: DailyCustomTodo[], id: string, date: string, now: number = Date.now()): DailyCustomTodo[] {
   return todos.map(t => {
     if (t.id !== id || t.date !== date || t.deleted) return t;
-    return { ...t, done: !t.done, updatedAt: Date.now() };
+    return { ...t, done: !t.done, updatedAt: now };
   });
 }
 
-export function deleteDailyCustomTodo(todos: DailyCustomTodo[], id: string): DailyCustomTodo[] {
-  return todos.map(t => t.id === id && !t.deleted ? { ...t, deleted: true, updatedAt: Date.now() } : t);
+export function deleteDailyCustomTodo(todos: DailyCustomTodo[], id: string, now: number = Date.now()): DailyCustomTodo[] {
+  return todos.map(t => t.id === id && !t.deleted ? { ...t, deleted: true, updatedAt: now } : t);
 }
 
 export function getTodayCustomTodos(todos: DailyCustomTodo[], planId: string, date: string): DailyCustomTodo[] {
@@ -992,6 +984,7 @@ export function saveDailyTodoHistory(
   planItems: PlanItem[],
   planItemCheckins: PlanItemCheckin[],
   dailyCustomTodos: DailyCustomTodo[],
+  now: number = Date.now(),
 ): DailyTodoHistory[] {
   // 检查是否已经存在该日期的历史记录
   const existingIndex = history.findIndex(h => h.planId === planId && h.date === date && !h.deleted);
@@ -1027,7 +1020,7 @@ export function saveDailyTodoHistory(
     date,
     planItems: todayPlanItems,
     customTodos: todayCustomTodos,
-    updatedAt: Date.now(),
+    updatedAt: now,
     deleted: false,
   };
 
