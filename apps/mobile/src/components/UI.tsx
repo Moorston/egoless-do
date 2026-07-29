@@ -8,19 +8,20 @@ import {
   View, Text, TouchableOpacity, TextInput, ScrollView,
   StyleSheet, ViewStyle, TextStyle,
 } from 'react-native';
+import { useShallow } from 'zustand/react/shallow';
 
 import { useAppStore, type MobileStore } from '../store/useAppStore';
 
 
 // ── useTheme ──────────────────────────────────────────────────────
 export function useTheme() {
-  const theme = useAppStore((s: MobileStore) => s.theme);
+  const theme = useAppStore(useShallow((s: MobileStore) => s.theme));
   return THEMES[theme];
 }
 
 // ── useT ──────────────────────────────────────────────────────────
 export function useT() {
-  const language = useAppStore((s: MobileStore) => s.language);
+  const language = useAppStore(useShallow((s: MobileStore) => s.language));
   return (key: I18nKey, params?: Record<string, string | number>) => t(key, language, params);
 }
 
