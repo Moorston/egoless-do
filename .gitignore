@@ -78,3 +78,6 @@ openspec/
 icon-compare.html
 question.md
 test_response.json
+
+# Build artifacts
+*.zip
