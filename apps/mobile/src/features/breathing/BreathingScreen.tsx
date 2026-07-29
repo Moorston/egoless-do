@@ -1,10 +1,12 @@
 // ─── BreathingScreen — Lightweight entry point ──────────────────
+import { track } from '../../../analytics/track';
+import { Events } from '../../../analytics/events';
 // Shows the preset selection page immediately (zero native module deps).
 // Lazy-loads BreathingEngine when user starts a session.
 import { FONT_TITLE, FONT_BODY, FONT_SUB, createLogger, fmtMS , BREATHING_PRESETS, cycleDuration, getDescKey , FONT_STAT_SECTION } from '@egoless-do/core';
 import type { BreathingPreset, GuideStyle , Theme } from '@egoless-do/core';
 import { ChevronRight } from 'lucide-react-native';
-import React, { useState, useCallback, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useCallback, useEffect, lazy, Suspense, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 
 import { useTheme, useT } from '../../components/UI';
@@ -41,6 +43,9 @@ export default function BreathingScreen() {
   const [started, setStarted] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState<BreathingPreset | null>(null);
 
+  // Mirror of completed cycles for analytics (engine owns the live count)
+  const cycleCountRef = useRef(0);
+
   // Load saved guide style preference
   useEffect(() => {
     safeGetItem(GUIDE_STYLE_KEY).then(v => {
@@ -67,14 +72,10 @@ export default function BreathingScreen() {
     if (completed) {
       nav.navigate('Body', { breathingResult: { completed: true, durationMs: durationMs ?? 0 } });
       // PostHog: 呼吸练习完成
-      import('../../analytics/track').then(({ track }) => {
-        import('../../analytics/events').then(({ Events }) => {
-          track(Events.BREATH_COMPLETED, {
-            preset_key: selectedPreset?.key || 'custom',
-            cycles: cycleCountRef.current || 0,
-          });
-        });
-      }).catch(() => {});
+      track(Events.BREATH_COMPLETED, {
+        preset_key: selectedPreset?.key || 'custom',
+        cycles: cycleCountRef.current || 0,
+      });
     }
     setStarted(false);
     setSelectedPreset(null);
