@@ -1890,3 +1890,49 @@ Explore 模式深度审查 packages/core + apps/mobile + backend + infra 四维�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 54: Batch 2: P1 列表渲染 + P2 ESLint/Date.now + dirty 积压清理
+
+**Date**: 2026-07-29
+**Task**: Batch 2: P1 列表渲染 + P2 ESLint/Date.now + dirty 积压清理
+**Branch**: `master`
+
+### Summary
+
+4 条线并行修复（session 52 深度审查后续）：
+Line 1 P1 列表渲染：RowItem memo + 6 处文档化（列表 <50/行高异构/ScrollView）
+Line 2 P2 ESLint：补全 no-restricted-imports（expo path + @egoless-do/mobile/web pattern）+ logger.ts 精确 disable
+Line 3 P2 Date.now 试点：body.ts(5)/habits.ts(6)/plan.ts(22) 参数化，741 测试全绿
+Line 4 dirty 积压：reflectionGraph 类型改进、android 构建配置、gitignore 清理（zip/assets/raw/drawable/sentry）、恢复 android 安全 XML
+9 个 commit。归档 batch-2-review-fixes 及 3 子 task。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `86d2ebc3` | (see git log) |
+| `55dd1115` | (see git log) |
+| `517471ed` | (see git log) |
+| `c59410c3` | (see git log) |
+| `0821e430` | (see git log) |
+| `5639b5fa` | (see git log) |
+| `b407326d` | (see git log) |
+| `373b1b09` | (see git log) |
+| `a328a3e0` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
