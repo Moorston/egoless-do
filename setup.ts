@@ -80,3 +80,12 @@ vi.mock('@react-native-community/netinfo', () => ({
     fetch: vi.fn().mockResolvedValue({ isConnected: true, isInternetReachable: true }),
   },
 }));
+
+// ─── cleanupApp: reset module-level subscriptions between tests ──
+// Ensures permanent subscriptions registered via subscriptionRegistry
+// (initApp auth, AppState listeners, NetInfo) don't accumulate across tests.
+import { afterEach } from 'vitest';
+import { cleanupApp } from './apps/mobile/src/store/subscriptionRegistry';
+afterEach(() => {
+  cleanupApp();
+});
