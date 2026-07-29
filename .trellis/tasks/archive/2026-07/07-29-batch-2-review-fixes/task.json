@@ -1,0 +1,30 @@
+{
+  "id": "batch-2-review-fixes",
+  "name": "batch-2-review-fixes",
+  "title": "Batch 2: 深度审查修复（P0 独立 task + P1 + P2 + dirty 积压）",
+  "description": "Session 52 深度审查的后续修复工作。4 条线并行：(1) 建 3 个独立 P0 task (2) P1 列表渲染+依赖+错误处理 (3) P2 ESLint+Date.now+useShallow (4) 处理 35 个 dirty 文件积压。",
+  "status": "completed",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P2",
+  "creator": "freebytes",
+  "assignee": "freebytes",
+  "createdAt": "2026-07-29",
+  "completedAt": "2026-07-29",
+  "branch": null,
+  "base_branch": "master",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [
+    "07-29-p0-body-plan-namespace",
+    "07-29-p0-updated-at-filter",
+    "07-29-p1-memory-leak-cleanup"
+  ],
+  "parent": null,
+  "relatedFiles": [],
+  "notes": "",
+  "meta": {}
+}
