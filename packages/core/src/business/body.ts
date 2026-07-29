@@ -44,7 +44,7 @@ export function createBodyGoal(partial: {
   targetDate?: string;
   strategy?: BodyStrategy;
   note?: string;
-}) {
+}, now: number = Date.now()) {
   return {
     id: uid(),
     targetWeight: partial.targetWeight,
@@ -54,7 +54,7 @@ export function createBodyGoal(partial: {
     targetDate: partial.targetDate ?? '',
     strategy: partial.strategy,
     note: partial.note ?? '',
-    updatedAt: Date.now(),
+    updatedAt: now,
     deleted: false,
   };
 }
@@ -65,7 +65,7 @@ export function createBodyPlan(partial: {
   part: string;
   sportKey?: string;
   note?: string;
-}) {
+}, now: number = Date.now()) {
   return {
     id: uid(),
     goalId: partial.goalId ?? '',
@@ -73,7 +73,7 @@ export function createBodyPlan(partial: {
     part: partial.part,
     sportKey: partial.sportKey ?? '',
     note: partial.note ?? '',
-    updatedAt: Date.now(),
+    updatedAt: now,
     deleted: false,
   };
 }
@@ -82,13 +82,13 @@ export function createWeightRecord(partial: {
   date: string;
   weight: number;
   bodyFat?: number;
-}) {
+}, now: number = Date.now()) {
   return {
     id: uid(),
     date: partial.date,
     weight: partial.weight,
     bodyFat: partial.bodyFat,
-    updatedAt: Date.now(),
+    updatedAt: now,
     deleted: false,
   };
 }
@@ -101,7 +101,7 @@ export function createBodyCheckin(partial: {
   sleep: number;
   tags: string[];
   note?: string;
-}) {
+}, now: number = Date.now()) {
   return {
     id: uid(),
     date: partial.date,
@@ -111,7 +111,7 @@ export function createBodyCheckin(partial: {
     sleep: partial.sleep,
     tags: partial.tags,
     note: partial.note ?? '',
-    updatedAt: Date.now(),
+    updatedAt: now,
     deleted: false,
   };
 }
@@ -257,9 +257,9 @@ export function generateSuggestions(
   exerciseLog: ExerciseEntry[],
   bodyCheckins: { date: string; energy: number; pain: number; deleted?: boolean }[],
   activePlan?: { endDate: string; tasks: { weekday: number; sportKey: string }[] } | null,
+  now: number = Date.now(),
 ): TrainingSuggestion[] {
   const suggestions: TrainingSuggestion[] = [];
-  const now = Date.now();
   const DAY = 86400000;
   const today = new Date(now).toISOString().slice(0, 10);
 
