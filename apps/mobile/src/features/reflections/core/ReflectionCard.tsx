@@ -4,9 +4,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { ExternalLink, Link } from 'lucide-react-native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { View, Text, TouchableOpacity, Linking, StyleSheet } from 'react-native';
+import { useShallow } from 'zustand/react/shallow';
 
 import { useTheme, useT } from '../../../components/UI';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, type MobileStore } from '../../../store/useAppStore';
 
 
 const log = createLogger('Reflections');
@@ -40,7 +41,7 @@ function ReflectionCardComponent({
 }: Props) {
   const TH = useTheme();
   const P = TH.primary;
-  const language = useAppStore(s => s.language);
+  const language = useAppStore(useShallow((s: MobileStore) => s.language));
   const [expanded, setExpanded] = useState(false);
 
   const displayContent = useMemo(() => {
