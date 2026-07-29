@@ -2,10 +2,11 @@ import { FONT_TITLE, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION, creat
 import { Image } from 'expo-image';
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { useShallow } from 'zustand/react/shallow';
 
 import { useTheme, useT, PrimaryButton, ThemedInput, Card } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, type MobileStore } from '../../store/useAppStore';
 
 import { registerExpoPushToken } from './pushTokenRegistration';
 
@@ -17,8 +18,8 @@ export default function LoginScreen() {
   const TH = useTheme();
   const T = useT();
   const nav = useRootNavigation();
-  const login = useAppStore(s => s.login);
-  const isLoading = useAppStore(s => s.auth.isLoading);
+  const login = useAppStore(useShallow((s: MobileStore) => s.login));
+  const isLoading = useAppStore(useShallow((s: MobileStore) => s.auth.isLoading));
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
