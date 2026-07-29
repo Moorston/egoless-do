@@ -32,28 +32,30 @@ describe('startFastingSession', () => {
 });
 
 describe('stopFastingSession', () => {
+  let NOW: number;
   beforeEach(() => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-06-01T12:00:00Z'));
+    NOW = Date.now();
   });
   afterEach(() => {
     vi.useRealTimers();
   });
 
   it('sets endedAt and computes estimatedKcal', () => {
-    const session = makeFasting({ startedAt: Date.now() - 3600000 * 16 });
+    const session = makeFasting({ startedAt: NOW - 3600000 * 16 });
     const result = stopFastingSession(session);
-    expect(result.endedAt).toBe(Date.now());
+    expect(result.endedAt).toBe(NOW);
     expect(result.estimatedKcal).toBeGreaterThan(0);
   });
   it('uses default body params when opts not provided', () => {
-    const session = makeFasting({ startedAt: Date.now() - 3600000 * 10 });
+    const session = makeFasting({ startedAt: NOW - 3600000 * 10 });
     const result = stopFastingSession(session);
     expect(result.estimatedKcal).toBeDefined();
-    expect(result.updatedAt).toBe(Date.now());
+    expect(result.updatedAt).toBe(NOW);
   });
   it('uses custom body params when provided', () => {
-    const session = makeFasting({ startedAt: Date.now() - 3600000 * 12 });
+    const session = makeFasting({ startedAt: NOW - 3600000 * 12 });
     const result = stopFastingSession(session, { weight: 80, gender: 'female', age: 25, height: 165 });
     expect(result.estimatedKcal).toBeGreaterThan(0);
   });
@@ -64,7 +66,7 @@ describe('stopFastingSession', () => {
     expect(result.targetHours).toBe(20);
   });
   it('handles very short fasting duration', () => {
-    const session = makeFasting({ startedAt: Date.now() - 1000 });
+    const session = makeFasting({ startedAt: NOW - 1000 });
     const result = stopFastingSession(session);
     expect(result.estimatedKcal).toBeGreaterThanOrEqual(0);
   });
