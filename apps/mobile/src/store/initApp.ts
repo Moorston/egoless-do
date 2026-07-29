@@ -21,6 +21,7 @@ import { captureException, captureMessage, addBreadcrumb, setSentryUser, clearSe
 import { migrateAsyncStorageToSQLite, migrateSettingsToSQLite } from './migrateAsyncStorage';
 import { loadSecureTokensWithRetry, saveSecureTokens, clearSecureTokens } from './secureAuth';
 import { mobileStorageAdapter as adapter, flushWrites } from './storageAdapter';
+import { registerCleanup } from './subscriptionRegistry';
 import { useAppStore, setAutoSyncCallback, type PartialMobileStore, type MobileStore } from './useAppStore';
 
 const log = createLogger('App');
@@ -78,6 +79,9 @@ export async function initApp(): Promise<void> {
   const store = useAppStore.getState;
   const setState = useAppStore.setState;
 
+  // ── 关键实体列表（首屏必需，≤ 5 个）──
+  const CRITICAL_ENTITIES = ['profile', 'habit', 'checkin'];
+
   try {
     // ── Step 1: Open SQLite DB ─────────────────────────────────
     const db = await openDatabase();
@@ -92,29 +96,35 @@ export async function initApp(): Promise<void> {
     try {
 
     // ── Step 2: Run migrations (one-time, idempotent) ──────────
-    try {
-      const didMigrate = await migrateAsyncStorageToSQLite(db, adapter);
-      if (didMigrate) {
-        await setAppState(db, 'needs_initial_sync', '1');
-      }
-    } catch (err) {
-      log.error(err, { message: 'Entity migration failed (non-fatal)' });
-    }
+    // 并行化：迁移 + Token 加载同时进行
+    const [, tokens] = await Promise.all([
+      (async () => {
+        try {
+          const didMigrate = await migrateAsyncStorageToSQLite(db, adapter);
+          if (didMigrate) {
+            await setAppState(db, 'needs_initial_sync', '1');
+          }
+        } catch (err) {
+          log.error(err, { message: 'Entity migration failed (non-fatal)' });
+        }
+        try {
+          await migrateSettingsToSQLite(db, adapter);
+        } catch (err) {
+          log.error(err, { message: 'Settings migration failed (non-fatal)' });
+        }
+      })(),
+      loadSecureTokensWithRetry().catch(() => null),
+    ]);
 
-    try {
-      await migrateSettingsToSQLite(db, adapter);
-    } catch (err) {
-      log.error(err, { message: 'Settings migration failed (non-fatal)' });
-    }
-
-    // ── Step 3: Flush pending writes, then load from SQLite ────
+    // ── Step 3: Flush pending writes, then load ────────────────
     try { await flushWrites(); } catch (err) { log.error(err, { message: 'Flush failed (non-fatal)' }); }
 
     let settingsPatch: PartialMobileStore = {};
+    let entityPatch: Record<string, unknown> = {};
     try {
       [settingsPatch, entityPatch] = await Promise.all([
         loadSettingsPatch(),
-        rehydrateFromDb(),
+        rehydrateFromDb(CRITICAL_ENTITIES),  // ← 仅加载关键实体
       ]);
     } catch (err) {
       log.error(err, { message: 'Data loading failed (non-fatal)' });
@@ -144,6 +154,32 @@ export async function initApp(): Promise<void> {
     if (Object.keys(fullPatch).length > 0) {
       setState(fullPatch);
     }
+
+    // ── 性能优化：延迟加载非关键实体（首屏后）──
+    const __perf_critical = performance.now();
+    log.info(`[Perf] Critical path: ${__perf_critical - __perf_t0}ms`);
+
+    // 延迟加载剩余 36 实体（不阻塞首屏）
+    const DEFERRABLE_ENTITIES = [
+      'reflection', 'food', 'fasting', 'exercise', 'meditation', 'plan', 'planItem',
+      'planItemCheckin', 'sleep', 'breath', 'mantra', 'mantraSession', 'mantraDef',
+      'zhiguanSession', 'give', 'grace', 'sutra', 'fear', 'courage', 'vision',
+      'dedication', 'bodyGoal', 'bodyPlan', 'bodyTrainingPlan', 'weightRecord',
+      'bodyCheckin', 'foodPreset', 'customWuxing', 'motivationEntry', 'checkinReview',
+      'aiConfig', 'thoughtTrail', 'trailNote', 'reflectionLink', 'dailyCustomTodo',
+      'dailyTodoHistory', 'recycleBin',
+    ];
+    setTimeout(async () => {
+      try {
+        const deferredPatch = await rehydrateFromDb(DEFERRABLE_ENTITIES);
+        if (Object.keys(deferredPatch).length > 0) {
+          setState(deferredPatch);
+        }
+        log.info(`[Perf] Deferred load: ${performance.now() - __perf_t0}ms`);
+      } catch (err) {
+        log.error(err, { message: 'Deferred entity load failed (non-fatal)' });
+      }
+    }, 100);  // 延迟 100ms，让首屏渲染优先
 
     // ── Step 3a: Deduplicate bodyTrainingPlans (cleanup legacy duplicates from pre-fix data) ──
     try {
@@ -425,12 +461,8 @@ export async function initApp(): Promise<void> {
     });
 
     // ── Step 8: Recalculate derived state ──────────────────────
-    try {
-      if (entityPatch.medHistory) store().calculateTotalMedMin();
-      if (entityPatch.checkinHistory) store().calculateStreak();
-    } catch (err) {
-      log.error(err, { message: 'Derived state recalculation failed (non-fatal)' });
-    }
+    // 性能优化：派生状态懒加载（各 Screen mount 时计算）
+    // 不再在 initApp 中同步计算 calculateStreak / calculateTotalMedMin
 
     // ── Step 9: Clean up expired recycle bin items ─────────────
     try { store().cleanupRecycleBin(); } catch (err) { log.error(err, { message: 'Recycle bin cleanup failed (non-fatal)' }); }

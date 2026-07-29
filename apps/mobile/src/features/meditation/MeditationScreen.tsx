@@ -59,6 +59,14 @@ export default function MeditationScreen() {
   const remaining = targetSec - sec;
   const pct = sec / targetSec * 100;
   const todayMedMin = useMemo(() => getTodayMedMinutes((medHistory ?? []).filter(m => !m.deleted)), [medHistory]);
+
+  // ── 性能优化：totalMedMinutes 懒加载 ──
+  useEffect(() => {
+    const state = useAppStore.getState();
+    if (state.totalMedMinutes === undefined || state.totalMedMinutes === null) {
+      state.calculateTotalMedMin();
+    }
+  }, []);
   const todayMedCount = useMemo(() => (medHistory ?? []).filter(m => !m.deleted && m.date === dateStr()).length, [medHistory]);
   const totalMedCount = useMemo(() => (medHistory ?? []).filter(m => !m.deleted).length, [medHistory]);
 

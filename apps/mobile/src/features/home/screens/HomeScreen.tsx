@@ -96,6 +96,14 @@ export default function HomeScreen() {
 
   const weightUnit = useShallowStore(s => s.weightUnit);
 
+  // ── 性能优化：streak 懒加载 ──
+  useEffect(() => {
+    const state = useAppStore.getState();
+    if (state.streak === undefined || state.streak === null) {
+      state.calculateStreak();
+    }
+  }, []);
+
   // ═══════════════════════════════════════════════════════════════
   // Section 2: Derived Data & Status
   // ═══════════════════════════════════════════════════════════════
@@ -310,7 +318,7 @@ export default function HomeScreen() {
     setShowReasonModal(false);
     setLocalDone(true);
     const noteStr = buildNote();
-    const noteData = JSON.parse(noteStr);
+    const noteData: Record<string, unknown> = JSON.parse(noteStr);
     noteData.incompleteReason = selectedReason;
     noteData.incompleteNote = reasonNote.trim();
     submitCheckin(true, JSON.stringify(noteData), undefined, parseWeight(weight));
