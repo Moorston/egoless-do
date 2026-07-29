@@ -160,3 +160,37 @@ P0-4 bodyPlan 命名空间完整收尾：历史数据回填迁移脚本（init.p
 ### Next Steps
 
 - None - task complete
+
+
+## Session 60: 性能优化：i18next 双系统重构 + expo-av 移除
+
+**Date**: 2026-07-29
+**Task**: 性能优化：i18next 双系统重构 + expo-av 移除
+**Branch**: `master`
+
+### Summary
+
+性能优化 session：移除 expo-av（未使用）+ i18next 双系统重构（统一 core i18n，~50KB 包体积节省）。2 commit。全 session（52-62）累计 21 commit。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `354c7aee` | (see git log) |
+| `c2082c51` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
