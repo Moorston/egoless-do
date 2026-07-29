@@ -23,13 +23,39 @@ module.exports = {
     // ── Architecture rules (docs/architecture-rules.md) ──
     'max-lines-per-function': ['warn', { max: 300, skipBlankLines: true, skipComments: true }],
     'max-depth': ['warn', 4],
+    // ── P0 rules from architecture constraints ──
+    'no-console': ['error', { allow: ['warn', 'error'] }],
   },
   overrides: [
     {
-      // Test files may use any for mocks
+      // packages/core must stay platform-agnostic and handle promises properly
+      files: ['packages/core/src/**/*.ts'],
+      rules: {
+        'no-restricted-imports': ['error', {
+          paths: [{
+            name: 'react',
+            message: 'packages/core 必须保持平台无关，禁止直接导入 react',
+          }, {
+            name: 'react-native',
+            message: 'packages/core 必须保持平台无关，禁止直接导入 react-native',
+          }, {
+            name: 'expo',
+            message: 'packages/core 必须保持平台无关，禁止直接导入 expo-*',
+          }],
+          patterns: [{
+            group: ['@egoless-do/mobile', '@egoless-do/web'],
+            message: 'packages/core 禁止导入 apps 中的代码',
+          }],
+        }],
+        '@typescript-eslint/no-floating-promises': ['error', { ignoreIIFE: true }],
+      },
+    },
+    {
+      // Test files may use any for mocks, and fire-and-forget promises are allowed
       files: ['**/*.test.ts', '**/*.test.tsx', '**/__tests__/**'],
       rules: {
         '@typescript-eslint/no-explicit-any': 'warn',
+        '@typescript-eslint/no-floating-promises': 'off',
       },
     },
   ],

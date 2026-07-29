@@ -23,10 +23,12 @@ function logToConsole(level: LogLevel, tag: string, args: unknown[]) {
   const prefix = `[${tag}]`;
   switch (level) {
     case 'debug':
-      if (__DEV__) console.log(prefix, ...args);
+      if (__DEV__) // eslint-disable-next-line no-console
+        console.log(prefix, ...args);
       break;
     case 'info':
-      if (__DEV__) console.log(prefix, ...args);
+      if (__DEV__) // eslint-disable-next-line no-console
+        console.log(prefix, ...args);
       break;
     case 'warn':
       console.warn(prefix, ...args);
