@@ -1200,7 +1200,6 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
     // Add type column if missing (P0-4 migration)
     await tryAddCol('body_training_plans', 'type', 'TEXT NOT NULL DEFAULT \'training\'');
   }
-  }
 
   // Ensure body_weight_records table exists
   const bodyWeightCheck = await db.getFirstAsync<{ name: string }>(

@@ -1,5 +1,4 @@
 // ─── App entry point ──────────────────────────────────────────────
-import './src/i18n';
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Platform, InteractionManager } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
