@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 54
+- **Total Sessions**: 55
 - **Last Active**: 2026-07-29
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~1938 | Active |
+| `journal-1.md` | ~1971 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 55 | 2026-07-29 | P1: cleanupApp 机制实现 | `d67ecfb6` | `master` |
 | 54 | 2026-07-29 | Batch 2: P1 列表渲染 + P2 ESLint/Date.now + dirty 积压清理 | `86d2ebc3`, `55dd1115`, `517471ed`, `c59410c3`, `0821e430`, `5639b5fa`, `b407326d`, `373b1b09`, `a328a3e0` | `master` |
 | 53 | 2026-07-29 | P0/P1 修复：sync 字段不匹配 + 内存泄漏 + 标记延后项 | `499dae1a`, `55283942`, `46505eca`, `f5d1c112`, `f3951e34` | `master` |
 | 52 | 2026-07-29 | 深度代码审查（四维度）+ batch-3 收尾 | `2d131bd7` | `master` |

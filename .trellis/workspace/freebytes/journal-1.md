@@ -1936,3 +1936,36 @@ Line 4 dirty 积压：reflectionGraph 类型改进、android 构建配置、giti
 ### Next Steps
 
 - None - task complete
+
+
+## Session 55: P1: cleanupApp 机制实现
+
+**Date**: 2026-07-29
+**Task**: P1: cleanupApp 机制实现
+**Branch**: `master`
+
+### Summary
+
+cleanupApp 机制：新建 subscriptionRegistry.ts + 4 处标记接入（initApp 2/useAppStore 1/useNetworkStatus 1）+ setup.ts afterEach。全量测试 1827/1827 通过。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `d67ecfb6` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
