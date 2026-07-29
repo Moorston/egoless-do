@@ -108,14 +108,14 @@ export default function SettingsScreen() {
   useEffect(() => { onlineRef.current = online; }, [online]);
   useEffect(() => {
     syncTimerRef.current = setInterval(() => {
-      if (onlineRef.current) runSync();
+      if (onlineRef.current) void runSync();
     }, SYNC_FALLBACK_INTERVAL);
     return () => { if (syncTimerRef.current) clearInterval(syncTimerRef.current); };
   }, [runSync]);
 
   const triggerSync = () => {
     if (!online) return;
-    runSync();
+    void runSync();
   };
 
   const sections = [
@@ -242,7 +242,7 @@ export default function SettingsScreen() {
           sub: T('settingsAIModelDesc'),
           icon: <Brain size={20} color={P} />,
           right: <ChevronRight size={18} color={TH.sub} />,
-          onPress: () => nav.navigate('AISettings' as never),
+          onPress: () => nav.navigate('AISettings'),
           last: true,
         },
       ],
@@ -342,7 +342,7 @@ export default function SettingsScreen() {
         {
           label: T('settingsPrivacy'), icon: <Lock size={20} color={P} />,
           right: <ChevronRight size={18} color={TH.sub} />,
-          onPress: () => nav.navigate('PrivacyPolicy' as never),
+          onPress: () => nav.navigate('PrivacyPolicy'),
           last: true,
         },
       ],

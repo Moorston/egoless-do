@@ -206,7 +206,7 @@ function DetailModal({ entry, TH, onClose, onDelete }: { entry: MedHistoryEntry 
     const newHist = (useAppStore.getState().medHistory ?? []).map((e: MedHistoryEntry) => e.date === entry.date ? updated : e);
     const newTotal = newHist.filter((e: MedHistoryEntry) => !e.deleted).reduce((s, e) => s + (e.durMin || 0), 0);
     useAppStore.setState({ medHistory: newHist, totalMedMinutes: newTotal });
-    import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites());
+    import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites()).catch(err => console.error('meditation saveNote flush', err));
     setEditingNote(false);
   };
 
@@ -315,12 +315,12 @@ export default function MedHistoryPage() {
     const s = useAppStore.getState();
     const newHist = (s.medHistory ?? []).map((e: MedHistoryEntry) => e.date === date ? { ...e, deleted: true, updatedAt: Date.now() } : e);
     useAppStore.setState({ medHistory: newHist, totalMedMinutes: newHist.filter((e: MedHistoryEntry) => !e.deleted).reduce((sum, e) => sum + (e.durMin || 0), 0) });
-    import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites());
+    import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites()).catch(err => console.error('meditation delete flush', err));
   }, []);
 
   const renderItem = useCallback(({ item }: { item: FlatItem }) => {
     if (item.type === 'statCard') return <StatsCard entries={activeEntries} />;
-    if (item.type === 'heatmap') return <Heatmap entries={activeEntries} TH={TH} onPress={() => nav.navigate('MedCalendar' as never)} />;
+    if (item.type === 'heatmap') return <Heatmap entries={activeEntries} TH={TH} onPress={() => nav.navigate('MedCalendar')} />;
     if (item.type === 'monthHeader') {
       return (
         <View style={styles.monthHeaderRow}>
@@ -371,7 +371,7 @@ export default function MedHistoryPage() {
   const ListHeader = useMemo(() => (
     <View style={styles.headerRow}>
       <ScreenHeader title={T('meditationHistory')} onBack={() => nav.goBack()} />
-      <TouchableOpacity onPress={() => nav.navigate('MedCalendar' as never)} style={styles.calendarBtnPadding}>
+      <TouchableOpacity onPress={() => nav.navigate('MedCalendar')} style={styles.calendarBtnPadding}>
         <Calendar size={22} color={TH.primary} />
       </TouchableOpacity>
     </View>

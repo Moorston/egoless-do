@@ -47,9 +47,9 @@ export default function SleepEngine() {
   }, [barrier]);
 
   const handleChoosePractice = useCallback((type: string) => {
-    if (type === 'breathing') nav.navigate('Breathing' as never);
-    else if (type === 'meditation') nav.navigate('Meditation' as never);
-    else if (type === 'mantra') nav.navigate('Mantra' as never);
+    if (type === 'breathing') nav.navigate('Breathing' as never); // TODO: 路由未在 RootStackParamList 定义
+    else if (type === 'meditation') nav.navigate('Meditation' as never); // TODO: 路由未在 RootStackParamList 定义
+    else if (type === 'mantra') nav.navigate('Mantra');
     barrier.addPractice(type);
   }, [nav, barrier]);
 
@@ -147,7 +147,7 @@ export default function SleepEngine() {
         completedPractice={barrier.completedPractice}
         sleepStreak={sleepStreak}
         onFinish={handleFinish}
-        onViewHistory={() => { handleFinish(); nav.navigate('SleepHistory' as never); }}
+        onViewHistory={() => { handleFinish(); nav.navigate('SleepHistory'); }}
       />
     );
   }

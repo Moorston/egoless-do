@@ -6,7 +6,7 @@ import { View, Animated, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../components/UI';
-import { useRootNavigation } from '../../navigation/hooks';
+import { useRootNavigation, type MainTabParamList } from '../../navigation/hooks';
 
 
 
@@ -144,7 +144,7 @@ export default function SportPage() {
       const userHash = auth.user?.id || '';
       if (!userHash) return;
       const goal = resolveGoal('exercise');
-      createSession({
+      void createSession({
         user_hash: userHash,
         nickname: userProfile?.nickname || '',
         type: 'exercise',
@@ -167,7 +167,7 @@ export default function SportPage() {
       // debounce: 只在停止输入 1s 后更新
       if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
       debounceTimerRef.current = setTimeout(() => {
-        updateSession(sessionIdRef.current!, { insight: text });
+        void updateSession(sessionIdRef.current!, { insight: text });
       }, 1000);
     }
   }, []);
@@ -176,7 +176,7 @@ export default function SportPage() {
   const cleanupSession = useCallback(() => {
     if (debounceTimerRef.current) { clearTimeout(debounceTimerRef.current); debounceTimerRef.current = null; }
     if (sessionIdRef.current) {
-      deleteSession(sessionIdRef.current);
+      void deleteSession(sessionIdRef.current);
       sessionIdRef.current = null;
     }
   }, []);
@@ -281,7 +281,7 @@ export default function SportPage() {
   // Start GPS when active begins
   useEffect(() => {
     if (timer.page === 'active' && timer.active && isGpsSport) {
-      startGpsTracking();
+      void startGpsTracking();
     }
     return () => { stopGpsTracking(); };
   }, [timer.page, timer.active, isGpsSport, startGpsTracking, stopGpsTracking]);
@@ -342,7 +342,7 @@ export default function SportPage() {
 
   const handleContinue = useCallback(() => {
     timer.handleContinue();
-    if (isGpsSport) startGpsTracking();
+    if (isGpsSport) void startGpsTracking();
   }, [timer, isGpsSport, startGpsTracking]);
 
   // ── Combo session cleanup ──
@@ -492,7 +492,7 @@ export default function SportPage() {
       // 延迟导航，确保 store 写入完成
       setTimeout(() => {
         try {
-          nav.navigate('MainTabs' as never, { screen: 'Body' } as never);
+          nav.navigate('MainTabs', { screen: 'Body' as keyof MainTabParamList });
         } catch (navErr) {
           log.error(navErr, { message: 'Combo navigation failed' });
           setBodyFlowState({ exerciseCompleted: false, isCombo: false });
@@ -576,7 +576,7 @@ export default function SportPage() {
       savingRef.current = false;
       return;
     }
-    try { nav.navigate('MainTabs' as never, { screen: 'Body' } as never); } catch { savingRef.current = false; }
+    try { nav.navigate('MainTabs', { screen: 'Body' as keyof MainTabParamList }); } catch { savingRef.current = false; }
   }, [isComboMode, goToNextExercise, timer.sec, sets, sportName, icon, sportType, isGpsSport, distKm, calories, coords, segmentPaces, mode, targetType, targetValue, addExercise, userProfile, auth, nav, musicStop, audio.stopAll, cleanupSession, stopGpsTracking, planId, planTaskWeekday, setBodyFlowState]);
 
   // Stop music and ambient audio when entering report page (exercise ended)

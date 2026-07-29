@@ -7,7 +7,7 @@ import { View, Text, FlatList, ScrollView, TouchableOpacity, Modal, TextInput, A
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, ScreenHeader, useT } from '../../components/UI';
-import { useRootNavigation } from '../../navigation/hooks';
+import { useRootNavigation, type MainTabParamList } from '../../navigation/hooks';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
 
 
@@ -199,7 +199,7 @@ function DetailModal({ entry, TH, T: _T, onClose, onDelete }: { entry: SleepEntr
     const updated = { ...entry, note: noteText, updatedAt: Date.now() };
     const newHist = (useAppStore.getState().sleepHistory ?? []).map(e => e.id === entry.id ? updated : e);
     useAppStore.setState({ sleepHistory: newHist });
-    import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites());
+    void import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites());
     setEditingNote(false);
   };
 
@@ -389,7 +389,7 @@ export default function SleepHistoryPage() {
     const s = useAppStore.getState();
     const newHist = (s.sleepHistory ?? []).map(e => e.id === id ? { ...e, deleted: true, updatedAt: Date.now() } : e);
     useAppStore.setState({ sleepHistory: newHist });
-    import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites());
+    void import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites());
   }, []);
 
   const renderItem = useCallback(({ item }: { item: FlatItem }) => {
@@ -471,7 +471,7 @@ export default function SleepHistoryPage() {
             <Text style={styles.emptyTitle}>还没有睡眠记录</Text>
             <Text style={styles.emptySubtitle}>每晚的安睡都是送给身体的礼物</Text>
             <Text style={styles.emptySubtitle2}>从今天开始，记录你的睡眠</Text>
-            <TouchableOpacity onPress={() => nav.navigate('MainTabs' as never, { screen: 'Sleep' } as never)} style={styles.emptyBtn}>
+            <TouchableOpacity onPress={() => nav.navigate('MainTabs', { screen: 'Sleep' as keyof MainTabParamList })} style={styles.emptyBtn}>
               <Text style={styles.emptyBtnText}>✦ 开始记录睡眠</Text>
             </TouchableOpacity>
           </View>

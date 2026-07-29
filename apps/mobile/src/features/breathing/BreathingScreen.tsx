@@ -65,7 +65,7 @@ export default function BreathingScreen() {
     }
     // 完成呼吸后先导航回 Body，再重置状态（避免卸载后 setState 警告）
     if (completed) {
-      nav.navigate('Body' as never, { breathingResult: { completed: true, durationMs: durationMs ?? 0 } } as never);
+      nav.navigate('Body', { breathingResult: { completed: true, durationMs: durationMs ?? 0 } });
     }
     setStarted(false);
     setSelectedPreset(null);
@@ -86,7 +86,7 @@ export default function BreathingScreen() {
       <SimpleHeader routeName="Breathing" />
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 4 }}>
         <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: TH.text }}>{T('breathingSubtitle')}</Text>
-        <TouchableOpacity onPress={() => nav.navigate('BreathHistory' as never)} style={{ flexDirection: 'row', alignItems: 'center', gap: 4, padding: 4 }}>
+        <TouchableOpacity onPress={() => nav.navigate('BreathHistory')} style={{ flexDirection: 'row', alignItems: 'center', gap: 4, padding: 4 }}>
           <Text style={{ fontSize: FONT_SUB(), color: TH.primary }}>{T('breathingHistory')}</Text>
           <ChevronRight size={14} color={TH.primary} />
         </TouchableOpacity>

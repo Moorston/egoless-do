@@ -6,7 +6,7 @@ import { View, Text, FlatList, ScrollView, TouchableOpacity, Modal, TextInput, A
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, ScreenHeader, useT } from '../../components/UI';
-import { useRootNavigation } from '../../navigation/hooks';
+import { useRootNavigation, type MainTabParamList } from '../../navigation/hooks';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
 
 
@@ -199,7 +199,7 @@ function DetailModal({ entry, TH, onClose, onDelete }: { entry: FastingSession |
     const updated = { ...entry, note: noteText, updatedAt: Date.now() };
     const newHist = (useAppStore.getState().fastingHistory ?? []).map((e: FastingSession) => e.id === entry.id ? updated : e);
     useAppStore.setState({ fastingHistory: newHist });
-    import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites());
+    import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites()).catch(err => console.error('fasting saveNote flush', err));
     setEditingNote(false);
   };
 
@@ -301,12 +301,12 @@ export default function FastHistoryPage() {
   const handleDelete = useCallback((id: string) => {
     const newHist = (useAppStore.getState().fastingHistory ?? []).map((f: FastingSession) => f.id === id ? { ...f, deleted: true, updatedAt: Date.now() } : f);
     useAppStore.setState({ fastingHistory: newHist });
-    import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites());
+    import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites()).catch(err => console.error('fasting delete flush', err));
   }, []);
 
   const renderItem = useCallback(({ item }: { item: FlatItem }) => {
     if (item.type === 'statCard') return <StatsCard entries={activeEntries} TH={TH} />;
-    if (item.type === 'heatmap') return <Heatmap entries={activeEntries} TH={TH} onPress={() => nav.navigate('FastCalendar' as never)} />;
+    if (item.type === 'heatmap') return <Heatmap entries={activeEntries} TH={TH} onPress={() => nav.navigate('FastCalendar')} />;
     if (item.type === 'monthHeader') {
       return (
         <View style={styles.monthHeaderRow}>
@@ -356,7 +356,7 @@ export default function FastHistoryPage() {
   const ListHeader = useMemo(() => (
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
       <ScreenHeader title={T('fastingHistory')} onBack={() => nav.goBack()} />
-      <TouchableOpacity onPress={() => nav.navigate('FastCalendar' as never)} style={{ padding: 8 }}>
+      <TouchableOpacity onPress={() => nav.navigate('FastCalendar')} style={{ padding: 8 }}>
         <Calendar size={22} color="#8446FF" />
       </TouchableOpacity>
     </View>
@@ -372,7 +372,7 @@ export default function FastHistoryPage() {
             <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginBottom: 8 }}>还没有禁食记录</Text>
             <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center', marginBottom: 8 }}>每一次禁食都是对身体的善待</Text>
             <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center', marginBottom: 24 }}>从今天开始，尝试一次轻断食</Text>
-            <TouchableOpacity onPress={() => nav.navigate('MainTabs' as never, { screen: 'Fasting' } as never)} style={{ backgroundColor: '#8446FF', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}>
+            <TouchableOpacity onPress={() => nav.navigate('MainTabs', { screen: 'Fasting' as keyof MainTabParamList })} style={{ backgroundColor: '#8446FF', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}>
               <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY() }}>✦ 开始第一次禁食</Text>
             </TouchableOpacity>
           </View>

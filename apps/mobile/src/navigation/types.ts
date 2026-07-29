@@ -49,6 +49,10 @@ export type RootStackParamList = {
   SutraHistory: { sutraId?: string };
   Zhiguan: undefined;
   ZhiguanHistory: undefined;
+  // P0-5: 补充 as never 调用缺失的路由类型
+  MedCalendar: undefined;
+  Body: { breathingResult?: { completed: boolean; durationMs: number } } | undefined;
+  Mantra: undefined;
 };
 
 export type MainTabParamList = {

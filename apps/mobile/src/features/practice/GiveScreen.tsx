@@ -140,7 +140,7 @@ export default function GiveScreen() {
     recentRecords.length > 0 ? (
       <TouchableOpacity
         style={[styles.historyBtn, { borderColor: `${TH.primary}30` }]}
-        onPress={() => nav.navigate('GiveHistory' as never)}
+        onPress={() => nav.navigate('GiveHistory')}
       >
         <BarChart3 size={18} color={TH.primary} />
         <Text style={[styles.historyBtnText, { color: TH.primary }]}>{T('giveHistory')}</Text>
@@ -148,7 +148,7 @@ export default function GiveScreen() {
     ) : (
       <TouchableOpacity
         style={[styles.historyBtn, { borderColor: `${TH.primary}30` }]}
-        onPress={() => nav.navigate('GiveHistory' as never)}
+        onPress={() => nav.navigate('GiveHistory')}
       >
         <BarChart3 size={18} color={TH.primary} />
         <Text style={[styles.historyBtnText, { color: TH.primary }]}>{T('giveHistory')}</Text>
