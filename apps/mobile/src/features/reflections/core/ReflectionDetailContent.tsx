@@ -4,10 +4,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, ExternalLink, Link, Pin, Network, MoreHorizontal } from 'lucide-react-native';
 import React, { useMemo, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Linking, Alert, Pressable } from 'react-native';
+import { useShallow } from 'zustand/react/shallow';
 
 import { useT } from '../../../components/UI';
 import { useRootNavigation } from '../../../navigation/hooks';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore, type MobileStore } from '../../../store/useAppStore';
 import { TrailPickerModal } from '../trails';
 
 const log = createLogger('Reflections');
@@ -38,7 +39,7 @@ export default function ReflectionDetailContent({
   }));
   const nav = useRootNavigation();
   const T = useT();
-  const language = useAppStore(s => s.language);
+  const language = useAppStore(useShallow((s: MobileStore) => s.language));
   const [showMore, setShowMore] = useState(false);
   const [showTrailPicker, setShowTrailPicker] = useState(false);
 
