@@ -11,8 +11,12 @@ routerAdd("POST", "/api/auth/user-token", function(e) {
   try {
     // 1. Verify internal secret (constant-time comparison to prevent timing attacks)
     var secret = e.request.header.get("X-Internal-Secret");
-    var expected = $os.getenv("INTERNAL_SECRET") || $os.getenv("PB_ENCRYPTION_KEY") || "";
-    if (!secret || !expected || secret.length !== expected.length) {
+    var expected = $os.getenv("INTERNAL_SECRET");
+    if (!expected || expected.length === 0) {
+      console.error("[user-token] INTERNAL_SECRET not configured — rejecting all requests");
+      return e.json(500, { "error": "internal secret not configured" });
+    }
+    if (!secret || secret.length !== expected.length) {
       return e.json(403, { "error": "forbidden" });
     }
     var diff = 0;
