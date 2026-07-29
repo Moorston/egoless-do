@@ -1,7 +1,8 @@
 import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_BACK, parseCheckinNote , FONT_SMALL } from '@egoless-do/core';
 import { Shield } from 'lucide-react-native';
 import React, { useMemo, useState, useCallback } from 'react';
-import { View, Text, TouchableOpacity, Alert, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, ActivityIndicator, StyleSheet } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../../components/UI';
@@ -62,7 +63,7 @@ const styles = StyleSheet.create({
   tabButton: { flex: 1, paddingVertical: 10, borderRadius: 10 },
   tabText: { textAlign: 'center' },
 
-  // --- FlatList ---
+  // --- FlashList ---
   listContent: { paddingHorizontal: 16, paddingBottom: 40 },
   footerLoader: { padding: 16 },
 });
@@ -279,11 +280,10 @@ export default function CheckinHistoryScreen() {
       ) : activeTab === 'monthReview' ? (
         <ReviewView period="month" />
       ) : (
-        <FlatList
+        <FlashList
           data={paginatedSorted.length === 0 ? [] : grouped}
           renderItem={renderItem}
           keyExtractor={keyExtractor}
-          removeClippedSubviews={true}
           ListEmptyComponent={ListEmptyComponent}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}

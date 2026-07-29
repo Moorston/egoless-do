@@ -2,7 +2,8 @@ import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, BUILTIN_
 import { LinearGradient } from 'expo-linear-gradient';
 import { Calendar, ChevronLeft, ChevronRight, Music, Trash2, X } from 'lucide-react-native';
 import React, { useMemo, useState, useCallback } from 'react';
-import { View, Text, FlatList, ScrollView, TouchableOpacity, Modal, TextInput, Alert, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert, StyleSheet } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, ScreenHeader, useT } from '../../components/UI';
@@ -398,13 +399,13 @@ export default function MedHistoryPage() {
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
-      <FlatList<FlatItem>
+      <FlashList<FlatItem>
         data={flatData}
         renderItem={renderItem}
         keyExtractor={(item) => item.key}
+        getItemType={(item) => item.type}
         ListHeaderComponent={ListHeader}
         contentContainerStyle={styles.listContentContainer}
-        removeClippedSubviews={true}
         showsVerticalScrollIndicator={false}
       />
       <DetailModal entry={selectedEntry} TH={TH} onClose={() => setSelectedEntry(null)} onDelete={handleDelete} />

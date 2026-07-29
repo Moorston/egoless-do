@@ -1,7 +1,8 @@
 import { FONT_SMALL, FONT_SUB, EXERCISE_CATEGORIES, type ExerciseDef, type Theme } from '@egoless-do/core';
 import { Search, X } from 'lucide-react-native';
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
 
 const P = '#f59e0b';
 
@@ -162,7 +163,7 @@ export default function UnifiedExercisePool({
         )}
         {(item.defaultDurationSec ?? 0) > 0 && (
           <Text style={[styles.exMetaText, { color: isSelected ? P : TH.sub }]}>
-            {String(Math.round(item.defaultDurationSec / 60))}min
+            {String(Math.round((item.defaultDurationSec ?? 0) / 60))}min
           </Text>
         )}
       </TouchableOpacity>
@@ -234,26 +235,21 @@ export default function UnifiedExercisePool({
       )}
 
       {/* Exercise grid */}
-      <ScrollView
-        style={{ maxHeight: 280 }}
-        nestedScrollEnabled
+      <FlashList
+        data={filteredExercises}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        numColumns={3}
         showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.grid}>
-          {filteredExercises.map(item => (
-            <View key={item.id} style={styles.gridCell}>
-              {renderItem({ item })}
-            </View>
-          ))}
-          {filteredExercises.length === 0 && (
-            <View style={styles.emptyContainer}>
-              <Text style={[styles.emptyText, { color: TH.sub }]}>
-                {T('bodyPlanNoExercises')}
-              </Text>
-            </View>
-          )}
-        </View>
-      </ScrollView>
+        style={{ maxHeight: 280 }}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Text style={[styles.emptyText, { color: TH.sub }]}>
+              {T('bodyPlanNoExercises')}
+            </Text>
+          </View>
+        }
+      />
 
       {/* Selection count badge */}
       {selectedExIds.size > 0 && (
@@ -398,15 +394,6 @@ const styles = StyleSheet.create({
     fontSize: FONT_SMALL(),
     fontWeight: '500',
   },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-  },
-  gridCell: {
-    width: '32%',
-    marginBottom: 6,
-  },
   exCard: {
     flex: 1,
     borderRadius: 10,
@@ -416,6 +403,8 @@ const styles = StyleSheet.create({
     position: 'relative',
     minHeight: 72,
     justifyContent: 'center',
+    marginBottom: 6,
+    marginHorizontal: 3,
   },
   exIconText: {
     fontSize: 20,

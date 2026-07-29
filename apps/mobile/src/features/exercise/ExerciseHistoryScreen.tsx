@@ -1,7 +1,8 @@
 import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_SMALL, FONT_TINY, getSportType, formatPace, computePRs, computeMuscleGroupStats, buildExerciseLibrary, computeMonthFrequency, EXERCISE_CATEGORIES, COMBO_WORKOUT_SPORT_KEY } from '@egoless-do/core';
 import type { ExerciseEntry, Theme, PRRecord, MuscleGroupStat, DayFrequency } from '@egoless-do/core';
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, FlatList, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Card, useTheme, ScreenHeader, useT } from '../../components/UI';
@@ -508,17 +509,17 @@ export default function ExerciseHistoryScreen() {
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
-      {/* TODO(perf): this FlatList is intentionally left without getItemLayout. Its rows are
-          heterogeneous (statCards, prCards, heatmap, calendar, monthHeader, entry) with
-          variable heights, and entry rows expand to show a DetailCard, so a single fixed
-          ROW_HEIGHT would mis-layout and overlap rows. Virtualization is sufficient here. */}
-      <FlatList<FlatItem>
+      {/* TODO(perf): rows are heterogeneous (statCards, prCards, heatmap, calendar, monthHeader, entry)
+          with variable heights, and entry rows expand to show a DetailCard, so a single fixed
+          ROW_HEIGHT / getItemLayout would mis-layout and overlap rows. FlashList provides
+          virtualization + recycling without getItemLayout. */}
+      <FlashList<FlatItem>
         data={flatData}
         renderItem={renderItem}
         keyExtractor={(item) => item.key}
+        getItemType={(item) => item.type}
         ListHeaderComponent={ListHeader}
         contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}
-        removeClippedSubviews={true}
         showsVerticalScrollIndicator={false}
       />
     </SafeAreaView>

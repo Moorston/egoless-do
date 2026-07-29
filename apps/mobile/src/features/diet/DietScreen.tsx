@@ -1,8 +1,9 @@
 import { FONT_TITLE, FONT_BODY, FONT_SUB, COLORS, dateStr, WUXING_MAP, WUXING_ELEMENT_CONFIG, FLAVOR_CONFIG, EATING_MOTIVATIONS, FONT_SMALL, FONT_STAT_CARD, FONT_BACK } from '@egoless-do/core';
-import type { WuxingElement, FlavorType } from '@egoless-do/core';
+import type { WuxingElement, FlavorType, FoodEntry, FoodWuxingItem, EatingMotivationEntry, FastingSession } from '@egoless-do/core';
 import { Utensils, Compass, TrendingUp, Timer, Plus, Search } from 'lucide-react-native';
 import React, {useState, useMemo, useCallback} from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, FlatList } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
 
 import AddFoodModal from '../../components/AddFoodModal';
 import { useTheme, useT } from '../../components/UI';
@@ -33,6 +34,39 @@ const FLAVOR_LABELS: Record<FlavorType, string> = {
 const FLAVOR_TO_ELEMENT: Record<FlavorType, WuxingElement> = {
   sour: 'wood', bitter: 'fire', sweet: 'earth', pungent: 'metal', salty: 'water',
 };
+
+function FoodItem({ item, lookupWuxing, motivationLog }: { item: FoodEntry; lookupWuxing: (name: string) => FoodWuxingItem | null; motivationLog: EatingMotivationEntry[] }) {
+  const TH = useTheme();
+  const T = useT();
+  const wuxing = lookupWuxing(item.name);
+  const motivation = motivationLog.find(m => m.foodId === item.id && !m.deleted);
+  const motivationDef = motivation ? EATING_MOTIVATIONS.find(m => m.key === motivation.motivation) : null;
+  return (
+    <View style={{ paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
+      <View style={[dietStyles.flexRowBetween, { alignItems: 'center' }]}>
+        <View style={dietStyles.flex1}>
+          <Text style={[dietStyles.subText, { color: TH.text }]}>{item.name}</Text>
+          {wuxing && (
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 }}>
+              <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6, backgroundColor: `${ELEMENT_COLORS[wuxing.primaryElement]}20` }}>
+                <Text style={{ fontSize: FONT_SMALL(), color: ELEMENT_COLORS[wuxing.primaryElement], fontWeight: '600' }}>
+                  {FLAVOR_LABELS[wuxing.primaryFlavor]}·{WUXING_ELEMENT_CONFIG[wuxing.primaryElement]?.label}
+                </Text>
+              </View>
+              <Text style={[dietStyles.tinyText, { color: TH.sub }]}>{wuxing.nature === 'hot' ? '热' : wuxing.nature === 'warm' ? '温' : wuxing.nature === 'cool' ? '凉' : wuxing.nature === 'cold' ? '寒' : '平'}</Text>
+            </View>
+          )}
+        </View>
+        <Text style={{ color: TH.primary, fontSize: FONT_SUB(), fontWeight: '600' }}>{item.calories} kcal</Text>
+      </View>
+      {motivationDef && (
+        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 4, marginLeft: 2 }}>
+          {motivationDef.emoji} {T(`dietMotivation${motivationDef.key.charAt(0).toUpperCase() + motivationDef.key.slice(1)}`) || motivationDef.label}
+        </Text>
+      )}
+    </View>
+  );
+}
 
 export default function DietScreen() {
   const TH = useTheme();
@@ -89,36 +123,6 @@ export default function DietScreen() {
     const total = flavorStats.total || 1;
     const totalCal = todayFoods.reduce((s, f) => s + f.calories, 0);
     const calPct = calGoal > 0 ? Math.min(100, Math.round(totalCal / calGoal * 100)) : 0;
-    const renderFoodItem = ({ item: f }: { item: (typeof todayFoods)[number] }) => {
-      const wuxing = lookupWuxing(f.name);
-      const motivation = motivationLog.find(m => m.foodId === f.id && !m.deleted);
-      const motivationDef = motivation ? EATING_MOTIVATIONS.find(m => m.key === motivation.motivation) : null;
-      return (
-        <View style={{ paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-          <View style={[dietStyles.flexRowBetween, { alignItems: 'center' }]}>
-            <View style={dietStyles.flex1}>
-              <Text style={[dietStyles.subText, { color: TH.text }]}>{f.name}</Text>
-              {wuxing && (
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 }}>
-                  <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6, backgroundColor: `${ELEMENT_COLORS[wuxing.primaryElement]}20` }}>
-                    <Text style={{ fontSize: FONT_SMALL(), color: ELEMENT_COLORS[wuxing.primaryElement], fontWeight: '600' }}>
-                      {FLAVOR_LABELS[wuxing.primaryFlavor]}·{WUXING_ELEMENT_CONFIG[wuxing.primaryElement]?.label}
-                    </Text>
-                  </View>
-                  <Text style={[dietStyles.tinyText, { color: TH.sub }]}>{wuxing.nature === 'hot' ? '热' : wuxing.nature === 'warm' ? '温' : wuxing.nature === 'cool' ? '凉' : wuxing.nature === 'cold' ? '寒' : '平'}</Text>
-                </View>
-              )}
-            </View>
-            <Text style={{ color: TH.primary, fontSize: FONT_SUB(), fontWeight: '600' }}>{f.calories} kcal</Text>
-          </View>
-          {motivationDef && (
-            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 4, marginLeft: 2 }}>
-              {motivationDef.emoji} {T(`dietMotivation${motivationDef.key.charAt(0).toUpperCase() + motivationDef.key.slice(1)}`) || motivationDef.label}
-            </Text>
-          )}
-        </View>
-      );
-    };
 
     return (
       <View>
@@ -188,7 +192,14 @@ export default function DietScreen() {
           {todayFoods.length === 0 ? (
             <Text style={{ color: TH.sub, fontSize: FONT_SUB(), textAlign: 'center', paddingVertical: 20 }}>{T('dietNoFoodToday')}</Text>
           ) : (
-            todayFoods.map(f => renderFoodItem({ item: f }))
+            <FlashList
+              data={todayFoods}
+              renderItem={({ item }) => <FoodItem item={item} lookupWuxing={lookupWuxing} motivationLog={motivationLog} />}
+              keyExtractor={(item) => item.id}
+              removeClippedSubviews
+              nestedScrollEnabled
+              style={{ height: Math.min(todayFoods.length, 8) * 72 }}
+            />
           )}
         </View>
 
@@ -237,22 +248,29 @@ export default function DietScreen() {
           />
           {foodSearch.trim() && wuxingSearchResults.length > 0 && (
             <View style={{ marginTop: 12 }}>
-              {wuxingSearchResults.map(item => (
-                <View key={item.foodKey} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-                  <View style={dietStyles.flex1}>
-                    <Text style={[dietStyles.subText, { color: TH.text }]}>{item.name}</Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2 }}>
-                      <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6, backgroundColor: `${ELEMENT_COLORS[item.primaryElement]}20` }}>
-                        <Text style={{ fontSize: FONT_SMALL(), color: ELEMENT_COLORS[item.primaryElement], fontWeight: '600' }}>
-                          {FLAVOR_LABELS[item.primaryFlavor]}·{WUXING_ELEMENT_CONFIG[item.primaryElement]?.label}
-                        </Text>
+              <FlashList
+                data={wuxingSearchResults}
+                renderItem={({ item }) => (
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
+                    <View style={dietStyles.flex1}>
+                      <Text style={[dietStyles.subText, { color: TH.text }]}>{item.name}</Text>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2 }}>
+                        <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6, backgroundColor: `${ELEMENT_COLORS[item.primaryElement]}20` }}>
+                          <Text style={{ fontSize: FONT_SMALL(), color: ELEMENT_COLORS[item.primaryElement], fontWeight: '600' }}>
+                            {FLAVOR_LABELS[item.primaryFlavor]}·{WUXING_ELEMENT_CONFIG[item.primaryElement]?.label}
+                          </Text>
+                        </View>
+                        <Text style={[dietStyles.tinyText, { color: TH.sub }]}>{item.nature === 'hot' ? '热' : item.nature === 'warm' ? '温' : item.nature === 'cool' ? '凉' : item.nature === 'cold' ? '寒' : '平'}</Text>
                       </View>
-                      <Text style={[dietStyles.tinyText, { color: TH.sub }]}>{item.nature === 'hot' ? '热' : item.nature === 'warm' ? '温' : item.nature === 'cool' ? '凉' : item.nature === 'cold' ? '寒' : '平'}</Text>
                     </View>
+                    <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{item.effect}</Text>
                   </View>
-                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{item.effect}</Text>
-                </View>
-              ))}
+                )}
+                keyExtractor={(item) => item.foodKey}
+                removeClippedSubviews
+                nestedScrollEnabled
+                style={{ height: Math.min(wuxingSearchResults.length, 6) * 64 }}
+              />
             </View>
           )}
         </View>
@@ -453,37 +471,44 @@ export default function DietScreen() {
           {history.length === 0 ? (
             <Text style={[dietStyles.emptyText, { color: TH.sub }]}>暂无禁食记录</Text>
           ) : (
-            history.map(f => {
-              const startTime = f.startedAt ? new Date(f.startedAt) : null;
-              const endTime = f.endedAt ? new Date(f.endedAt) : null;
-              const durationH = startTime && endTime ? Math.round((endTime.getTime() - startTime.getTime()) / 3600000) : 0;
-              const dateLabel = startTime ? dateStr(startTime) : '';
-              // 查禁食结束后首餐
-              const afterMeal = endTime ? foodLog.filter(fd => !fd.deleted && fd.timestamp > f.endedAt!).slice(0, 2) : [];
-              return (
-                <View key={f.id} style={dietStyles.row}>
-                  <View style={[dietStyles.flexRowBetween, { alignItems: 'center' }]}>
-                    <Text style={{ fontSize: FONT_SUB(), color: TH.text, fontWeight: '600' }}>{dateLabel}</Text>
-                    <Text style={{ fontSize: FONT_SUB(), color: durationH >= f.targetHours ? '#10B981' : COLORS.YELLOW, fontWeight: '600' }}>
-                      ✓ {durationH}h
-                    </Text>
-                  </View>
-                  {afterMeal.length > 0 && (
-                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginTop: 4 }}>
-                      <Text style={[dietStyles.tinyText, { color: TH.sub }]}>首餐: </Text>
-                      {afterMeal.map(m => {
-                        const w = lookupWuxing(m.name);
-                        return (
-                          <Text key={m.id} style={{ fontSize: FONT_SMALL(), color: w ? ELEMENT_COLORS[w.primaryElement] : TH.sub }}>
-                            {m.name}{w ? `(${FLAVOR_LABELS[w.primaryFlavor]}·${WUXING_ELEMENT_CONFIG[w.primaryElement]?.label})` : ''}
-                          </Text>
-                        );
-                      })}
+            <FlashList
+              data={history}
+              renderItem={({ item: f }) => {
+                const startTime = f.startedAt ? new Date(f.startedAt) : null;
+                const endTime = f.endedAt ? new Date(f.endedAt) : null;
+                const durationH = startTime && endTime ? Math.round((endTime.getTime() - startTime.getTime()) / 3600000) : 0;
+                const dateLabel = startTime ? dateStr(startTime) : '';
+                // 查禁食结束后首餐
+                const afterMeal = endTime ? foodLog.filter(fd => !fd.deleted && fd.timestamp > f.endedAt!).slice(0, 2) : [];
+                return (
+                  <View style={dietStyles.row}>
+                    <View style={[dietStyles.flexRowBetween, { alignItems: 'center' }]}>
+                      <Text style={{ fontSize: FONT_SUB(), color: TH.text, fontWeight: '600' }}>{dateLabel}</Text>
+                      <Text style={{ fontSize: FONT_SUB(), color: durationH >= f.targetHours ? '#10B981' : COLORS.YELLOW, fontWeight: '600' }}>
+                        ✓ {durationH}h
+                      </Text>
                     </View>
-                  )}
-                </View>
-              );
-            })
+                    {afterMeal.length > 0 && (
+                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginTop: 4 }}>
+                        <Text style={[dietStyles.tinyText, { color: TH.sub }]}>首餐: </Text>
+                        {afterMeal.map(m => {
+                          const w = lookupWuxing(m.name);
+                          return (
+                            <Text key={m.id} style={{ fontSize: FONT_SMALL(), color: w ? ELEMENT_COLORS[w.primaryElement] : TH.sub }}>
+                              {m.name}{w ? `(${FLAVOR_LABELS[w.primaryFlavor]}·${WUXING_ELEMENT_CONFIG[w.primaryElement]?.label})` : ''}
+                            </Text>
+                          );
+                        })}
+                      </View>
+                    )}
+                  </View>
+                );
+              }}
+              keyExtractor={(item) => item.id}
+              removeClippedSubviews
+              nestedScrollEnabled
+              style={{ height: Math.min(history.length, 5) * 64 }}
+            />
           )}
         </View>
       </View>
