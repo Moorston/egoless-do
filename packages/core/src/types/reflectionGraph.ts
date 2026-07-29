@@ -45,7 +45,7 @@ export interface RelationContext {
 // ── 图构建输入 ────────────────────────────────────────────────────
 export interface GraphBuildInput {
   context: RelationContext;
-  plans: Array<{ id: string; name: string; deleted?: boolean }>;
+  plans: Array<{ id: string; name: string; deleted?: boolean; visionId?: string }>;
   planItems: Array<{
     id: string;
     name: string;
@@ -69,7 +69,7 @@ export interface GraphBuildInput {
     reflectionIds?: string[];
     linkedPlanItemIds?: string[];
   }>;
-  habits: Array<{ id: string; name: string; deleted?: boolean }>;
+  habits: Array<{ id: string; name: string; deleted?: boolean; visionId?: string }>;
   visions: Array<{ id: string; text: string; deleted?: boolean }>;
   reflectionLinks: Array<{
     fromId: string;

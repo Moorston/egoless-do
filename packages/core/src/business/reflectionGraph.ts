@@ -493,8 +493,8 @@ function linkPlansToVisions(
   edges: RelationEdge[],
 ) {
   for (const plan of safe(input.plans)) {
-    if (!plan.deleted && (plan as any).visionId) {
-      const visionId = (plan as any).visionId as string;
+    if (!plan.deleted && plan.visionId) {
+      const visionId = plan.visionId;
       const vision = safe(input.visions).find(v => v.id === visionId && !v.deleted);
       if (vision && !nodeMap.has(vision.id)) {
         const vNode = makeNode(vision.id, 'vision', vision.text, vision, VB_W / 2, VB_H / 2);
@@ -514,8 +514,8 @@ function linkHabitsToVisions(
   edges: RelationEdge[],
 ) {
   for (const habit of safe(input.habits)) {
-    if (!habit.deleted && (habit as any).visionId) {
-      const visionId = (habit as any).visionId as string;
+    if (!habit.deleted && habit.visionId) {
+      const visionId = habit.visionId;
       const vision = safe(input.visions).find(v => v.id === visionId && !v.deleted);
       if (vision && !nodeMap.has(vision.id)) {
         const vNode = makeNode(vision.id, 'vision', vision.text, vision, VB_W / 2, VB_H / 2);
