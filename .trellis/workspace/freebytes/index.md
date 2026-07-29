@@ -7,8 +7,8 @@
 ## Current Status
 
 <!-- @@@auto:current-status -->
-- **Active File**: `journal-1.md`
-- **Total Sessions**: 55
+- **Active File**: `journal-2.md`
+- **Total Sessions**: 56
 - **Last Active**: 2026-07-29
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,8 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~1971 | Active |
+| `journal-2.md` | ~60 | Active |
+| `journal-1.md` | ~1971 | Archived |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 56 | 2026-07-29 | P2 useShallow 全覆盖（16 文件 22 处） | `eb0fc9a7`, `d19047fc`, `74bdce76`, `e99d7183`, `56bf9caf`, `5fb61031`, `ac4bf057`, `091609c9`, `5a8f8eaa`, `2aca5a4c`, `44ac63a1`, `62f7d95d`, `a00efe30`, `03584d59`, `a64b483a`, `5bef702f` | `master` |
 | 55 | 2026-07-29 | P1: cleanupApp 机制实现 | `d67ecfb6` | `master` |
 | 54 | 2026-07-29 | Batch 2: P1 列表渲染 + P2 ESLint/Date.now + dirty 积压清理 | `86d2ebc3`, `55dd1115`, `517471ed`, `c59410c3`, `0821e430`, `5639b5fa`, `b407326d`, `373b1b09`, `a328a3e0` | `master` |
 | 53 | 2026-07-29 | P0/P1 修复：sync 字段不匹配 + 内存泄漏 + 标记延后项 | `499dae1a`, `55283942`, `46505eca`, `f5d1c112`, `f3951e34` | `master` |
