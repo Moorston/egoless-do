@@ -5,8 +5,9 @@
 
 import { ActiveSession, CheckinType } from '@egoless-do/core';
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore, type MobileStore } from '../../../store/useAppStore';
 import {
   getActiveSessions,
   subscribeSessions,
@@ -36,7 +37,7 @@ export function useActiveSessions(type?: CheckinType): UseActiveSessionsResult {
   const [sessions, setSessions] = useState<ActiveSession[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [connectionState, setConnectionState] = useState<ConnectionState>(getConnectionState());
-  const currentUserHash = useAppStore(s => s.auth.user?.id || '');
+  const currentUserHash = useAppStore(useShallow((s: MobileStore) => s.auth.user?.id || ''));
   const mountedRef = useRef(true);
 
   const refresh = useCallback(async () => {
