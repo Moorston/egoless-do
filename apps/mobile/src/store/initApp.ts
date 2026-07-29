@@ -384,6 +384,10 @@ export async function initApp(): Promise<void> {
         }
         flushWrites().catch(e => log.error(e, { phase: 'bg-flushWrites' }));
         checkpointDatabase().catch(e => log.error(e, { phase: 'bg-checkpoint' }));
+        // 性能优化：background 批量文件备份（替代 per-op 同步写）
+        import('./fileStorage').then(({ backupAllEntitiesToFile }) => {
+          backupAllEntitiesToFile().catch(e => log.error(e, { phase: 'bg-backupAll' }));
+        }).catch(() => {});
       }
     });
     void _bgSub;

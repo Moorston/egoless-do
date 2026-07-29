@@ -1,25 +1,32 @@
 // ─── Sentry configuration ────────────────────────────────────────
-// Initializes Sentry for crash reporting, breadcrumbs, and performance monitoring.
-// All logger.error/logger.warn calls in the app automatically flow through here.
-
-import * as Sentry from '@sentry/react-native';
+// 性能优化：动态 import @sentry/react-native（~350KB 移出首屏）
 import Constants from 'expo-constants';
 
 // Expo 环境变量：EXPO_PUBLIC_ 前缀在 .env 中设置，对 JS bundle 可见。
 // SENTRY_DSN 是非 Expo 环境（如 EAS 后构建脚本）的 fallback。
-const SENTRY_DSN = process.env.EXPO_PUBLIC_SENTRY_DSN ?? process.env.SENTRY_DSN;
+const SENTRY_DSN = process.env.EXPO_PUBLIC_SENTRY_DSN ?? process.env.SENTRY_SENTRY_DSN;
+
+let sentryModule: typeof import('@sentry/react-native') | null = null;
 
 /**
- * Initialize Sentry. Call once at app startup.
+ * 动态加载 Sentry 模块。
+ * 首屏后调用，避免阻塞首屏 JS 解析。
+ */
+async function getSentry() {
+  if (!sentryModule) {
+    sentryModule = await import('@sentry/react-native');
+  }
+  return sentryModule;
+}
+
+/**
+ * Initialize Sentry. Call once at app startup（首屏后）。
  * No-op if SENTRY_DSN is not configured (staging/development).
  */
-export function initSentry(): void {
-  if (!SENTRY_DSN) {
-    // No DSN configured — Sentry stays inactive.
-    // This is expected in development and local builds.
-    return;
-  }
+export async function initSentry(): Promise<void> {
+  if (!SENTRY_DSN) return;
 
+  const Sentry = await getSentry();
   const release = Constants.expoConfig?.version ?? 'unknown';
   const environment = __DEV__ ? 'development' : 'production';
 
@@ -27,41 +34,23 @@ export function initSentry(): void {
     dsn: SENTRY_DSN,
     environment,
     release,
-    // Use the server-side tunnel to bypass ad blockers.
-    // The tunnel is already configured in infra/nginx.conf → /api/monitoring
     tunnel: '/api/monitoring',
-    // Enable performance monitoring (tracing)
     tracesSampleRate: __DEV__ ? 1.0 : 0.2,
-    // Enable session tracking for crash-free rate
     enableAutoSessionTracking: true,
     sessionTrackingIntervalMillis: 30_000,
-    // Attach useful context
     attachStacktrace: true,
-    // Max breadcrumbs to keep
     maxBreadcrumbs: 50,
-    // Ignore known noisy errors
-    ignoreErrors: [
-      'Network request failed',
-      'Load failed',
-      'cancelled',
-    ],
-    // beforeSend: drop sensitive data
+    ignoreErrors: ['Network request failed', 'Load failed', 'cancelled'],
     beforeSend(event) {
-      // Strip PII from user context — keep only id for crash grouping
       if (event.user) {
-        event.user = {
-          id: event.user.id ?? event.user.email ?? 'unknown',
-        };
+        event.user = { id: event.user.id ?? event.user.email ?? 'unknown' };
       }
-      // Strip auth tokens from breadcrumbs if any leaked
       if (event.breadcrumbs) {
         event.breadcrumbs = event.breadcrumbs.map(b => {
           if (b.data && typeof b.data === 'object') {
             const data = { ...b.data };
             for (const key of Object.keys(data)) {
-              if (/token|password|secret/i.test(key)) {
-                data[key] = '[Redacted]';
-              }
+              if (/token|password|secret/i.test(key)) data[key] = '[Redacted]';
             }
             return { ...b, data };
           }
@@ -73,59 +62,34 @@ export function initSentry(): void {
   });
 }
 
-/**
- * Capture an exception with optional context.
- * Used by createLogger when level === 'error'.
- */
-export function captureException(error: Error, context?: Record<string, unknown>): void {
+export async function captureException(error: Error, context?: Record<string, unknown>): Promise<void> {
   if (!SENTRY_DSN) return;
-  if (context) {
-    Sentry.setContext('extra', context);
-  }
+  const Sentry = await getSentry();
+  if (context) Sentry.setContext('extra', context);
   Sentry.captureException(error);
 }
 
-/**
- * Capture a warning message with optional context.
- * Used by createLogger when level === 'warn'.
- */
-export function captureMessage(message: string, context?: Record<string, unknown>): void {
+export async function captureMessage(message: string, context?: Record<string, unknown>): Promise<void> {
   if (!SENTRY_DSN) return;
-  if (context) {
-    Sentry.setContext('extra', context);
-  }
+  const Sentry = await getSentry();
+  if (context) Sentry.setContext('extra', context);
   Sentry.captureMessage(message, 'warning');
 }
 
-/**
- * Add a breadcrumb (info/debug level).
- * Used by createLogger when level === 'info' or 'debug'.
- */
-export function addBreadcrumb(category: string, message: string, data?: Record<string, unknown>): void {
+export async function addBreadcrumb(category: string, message: string, data?: Record<string, unknown>): Promise<void> {
   if (!SENTRY_DSN) return;
-  Sentry.addBreadcrumb({
-    category,
-    message,
-    data,
-    level: 'info',
-  });
+  const Sentry = await getSentry();
+  Sentry.addBreadcrumb({ category, message, data, level: 'info' });
 }
 
-/**
- * Set the current user context for Sentry.
- * Call after login with userId and optional email.
- * Only the user id is sent to Sentry — email and name are stripped for privacy.
- */
-export function setSentryUser(user: { id: string; email?: string; name?: string }): void {
+export async function setSentryUser(user: { id: string; email?: string; name?: string }): Promise<void> {
   if (!SENTRY_DSN) return;
+  const Sentry = await getSentry();
   Sentry.setUser({ id: user.id });
 }
 
-/**
- * Clear the user context.
- * Call on logout.
- */
-export function clearSentryUser(): void {
+export async function clearSentryUser(): Promise<void> {
   if (!SENTRY_DSN) return;
+  const Sentry = await getSentry();
   Sentry.setUser(null);
 }

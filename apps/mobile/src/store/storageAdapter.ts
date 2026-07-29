@@ -52,22 +52,15 @@ export const mobileStorageAdapter: StorageAdapter = {
    * (e.g., during migration or before a sync pull), call `flushWrites()` explicitly.
    */
   async persistChange<K extends SyncEntity>(entity: K, id: string, data: SyncDataMap[K]): Promise<void> {
+    // 性能优化：移除立即 flushNow + saveDataToFile
+    // 文件备份改为 AppState background 时批量（见 initApp.ts）
     _batcher.write(entity, id, data as Record<string, unknown>);
-    // Flush immediately to prevent data loss on app kill
-    try {
-      await _batcher.flushNow();
-    } catch (e) {
-      log.warn(`SQLite flush failed for ${entity}/${id}, falling back to file storage`);
-    }
-    // 同时写入文件作为备份（不依赖 SQLite 是否成功）
-    await saveDataToFile(entity, id, data as Record<string, unknown>);
   },
 
   async markDeleted(entity: SyncEntity, id: string) {
     _registerLocalDelete?.(entity, id);
     _batcher.markDeleted(entity, id);
-    await _batcher.flushNow().catch(() => {});
-    await markDeleteInFile(entity, id);
+    // 性能优化：移除立即 flushNow + markDeleteInFile（改为 background 批量）
   },
 
   async batchDelete(operations: Array<{ entity: SyncEntity; id: string }>) {
