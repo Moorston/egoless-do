@@ -1,4 +1,6 @@
 import { MEDITATION_DURATIONS_MIN, COLORS, getTodayMedMinutes, dateStr, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_HERO, FONT_BADGE, FONT_STAT_SECTION, createLogger } from '@egoless-do/core';
+import { track } from '../../../analytics/track';
+import { Events } from '../../../analytics/events';
 import type { MusicTrack } from '@egoless-do/core';
 import { useAudioPlayer, setAudioModeAsync, type AudioSource } from 'expo-audio';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -199,14 +201,10 @@ export default function MeditationScreen() {
         setNoteText('');
         setShowNoteModal(true);
         // PostHog: 冥想完成
-        import('../../analytics/track').then(({ track }) => {
-          import('../../analytics/events').then(({ Events }) => {
-            track(Events.MEDITATION_COMPLETED, {
-              dur_min_actual: durMin,
-              completion_type: 'natural',
-            });
-          });
-        }).catch(() => {});
+        track(Events.MEDITATION_COMPLETED, {
+          dur_min_actual: durMin,
+          completion_type: 'natural',
+        });
       }
       if (musicStartedRef.current) {
         musicStop();
