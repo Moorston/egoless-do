@@ -63,6 +63,18 @@ export function CreateReflectionModal({ visible, trailId, onClose }: CreateRefle
       mood: selectedMood ?? '',
     });
 
+    // PostHog: 感念创建（不含 content/mood 原文）
+    import('../../analytics/track').then(({ track }) => {
+      import('../../analytics/events').then(({ Events }) => {
+        track(Events.REFLECTION_CREATED, {
+          word_count_bucket: content.length < 50 ? 'short' : content.length < 200 ? 'medium' : 'long',
+          has_tags: tags.length > 0,
+          has_mood: !!selectedMood,
+          has_link: !!trailId,
+        });
+      });
+    }).catch(() => {});
+
     // 关联到思维脉络
     if (newR && trailId) {
       addReflectionToTrail(trailId, newR.id);

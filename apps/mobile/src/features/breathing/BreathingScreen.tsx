@@ -66,6 +66,15 @@ export default function BreathingScreen() {
     // 完成呼吸后先导航回 Body，再重置状态（避免卸载后 setState 警告）
     if (completed) {
       nav.navigate('Body', { breathingResult: { completed: true, durationMs: durationMs ?? 0 } });
+      // PostHog: 呼吸练习完成
+      import('../../analytics/track').then(({ track }) => {
+        import('../../analytics/events').then(({ Events }) => {
+          track(Events.BREATH_COMPLETED, {
+            preset_key: selectedPreset?.key || 'custom',
+            cycles: cycleCountRef.current || 0,
+          });
+        });
+      }).catch(() => {});
     }
     setStarted(false);
     setSelectedPreset(null);
