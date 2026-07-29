@@ -75,7 +75,7 @@ export function useBreathSettings() {
   const toggleCue = useCallback(() => {
     setCueEnabled(v => {
       const next = !v;
-      AsyncStorage.setItem(CUE_KEY, next ? '1' : '0').catch((e: unknown) => log.warn('AsyncStorage error', e));
+      safeSetItem(CUE_KEY, next ? '1' : '0').catch((e: unknown) => log.warn('AsyncStorage error', e));
       return next;
     });
   }, []);

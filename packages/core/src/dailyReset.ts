@@ -90,7 +90,7 @@ export class DailyResetManager {
     let todayWater = 0;
     if (todayCheckin?.note) {
       try {
-        const noteData = JSON.parse(todayCheckin.note);
+        const noteData = JSON.parse(todayCheckin.note) as { water?: number };
         if (typeof noteData.water === 'number') todayWater = noteData.water;
       } catch (e) { log.warn('Failed to parse checkin note:', e); }
     }

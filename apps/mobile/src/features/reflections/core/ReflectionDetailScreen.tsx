@@ -4,11 +4,10 @@ import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback, useState } from 'react';
 import { Alert, Share } from 'react-native';
-import { useShallow } from 'zustand/react/shallow';
 
 import { useT } from '../../../components/UI';
 import type { RootStackParamList } from '../../../navigation/types';
-import { useAppStore, useShallowStore, type MobileStore } from '../../../store/useAppStore';
+import { useShallowStore, type MobileStore } from '../../../store/useAppStore';
 
 import ReflectionDetailContent from './ReflectionDetailContent';
 import ShareCard from './ShareCard';
@@ -20,7 +19,7 @@ export default function ReflectionDetailScreen() {
   const { reflectionId } = route.params;
   const { reflections, getActivePlan, deleteReflection } = useShallowStore(s => ({ reflections: s.reflections, getActivePlan: s.getActivePlan, deleteReflection: s.deleteReflection }));
   const T = useT();
-  const language = useAppStore(useShallow((s: MobileStore) => s.language));
+  const language = useShallowStore((s: MobileStore) => s.language);
   const [shareReflection, setShareReflection] = useState<MindReflection | null>(null);
 
   const handleEdit = useCallback((r: MindReflection) => {

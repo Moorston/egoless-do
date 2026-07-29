@@ -31,7 +31,14 @@ export default function ShareCard({ visible, onClose, reflection, onTextShare }:
 
   const parsedColors = useMemo(() => {
     if (!reflection) return null;
-    return typeof reflection.colors === 'string' ? (() => { try { return JSON.parse(reflection.colors); } catch { return null; } })() : reflection.colors;
+    if (typeof reflection.colors === 'string') {
+      try {
+        return JSON.parse(reflection.colors) as readonly [string, string];
+      } catch {
+        return null;
+      }
+    }
+    return reflection.colors;
   }, [reflection?.colors]);
 
   const { bgColor, timeStr } = useMemo(() => {

@@ -26,6 +26,15 @@ import { useAppStore, useShallowStore } from '../../store/useAppStore';
 
 const log = createLogger('Settings');
 
+interface SettingRow {
+  label: string;
+  sub?: string;
+  icon?: React.ReactNode;
+  right?: React.ReactNode;
+  onPress?: () => void;
+  last?: boolean;
+}
+
 import { useRootNavigation } from '../../navigation/hooks';
 import {
   requestNotificationPermission, scheduleDailyReminder, cancelAllReminders,
@@ -118,7 +127,7 @@ export default function SettingsScreen() {
     void runSync();
   };
 
-  const sections = [
+  const sections: Array<{ title: string; rows: SettingRow[] }> = [
     {
       title: T('settingsRemind'),
       rows: [

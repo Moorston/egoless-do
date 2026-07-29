@@ -200,7 +200,7 @@ function SutraScreenInner() {
   const endSession = useCallback(() => {
     const completedAt = Date.now();
     if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
-    stopSutra().catch(() => {});
+    stopSutra();
     const c = countRef.current;
     const durationSec = Math.floor((completedAt - startTimeRef.current - pausedElapsedRef.current) / 1000);
     const rounds = Math.floor(c / BEAD_COUNT);
@@ -212,7 +212,7 @@ function SutraScreenInner() {
   // Reset all session state
   const resetSession = useCallback(() => {
     if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
-    stopSutra().catch(() => {});
+    stopSutra();
     setCount(0); countRef.current = 0;
     setStartTime(0); startTimeRef.current = 0;
     setElapsed(0); elapsedRef.current = 0;

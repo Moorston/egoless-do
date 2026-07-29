@@ -13,6 +13,33 @@ const log = createLogger('GlobalPulse');
 const COLLECTION = 'active_sessions';
 const REQUEST_TIMEOUT = 10000;
 
+/** Raw shape of a PocketBase JSON response body (success or error). */
+interface PocketBaseJson {
+  code?: string;
+  message?: string;
+  items?: PocketBaseRecord[];
+  page?: number;
+  perPage?: number;
+  totalItems?: number;
+  totalPages?: number;
+  [key: string]: unknown;
+}
+
+/** A single PocketBase record in a list response (only id needed here). */
+interface PocketBaseRecord {
+  id: string;
+  [key: string]: unknown;
+}
+
+/** Typed PocketBase paginated list response. */
+interface PocketBaseList {
+  items: PocketBaseRecord[];
+  page?: number;
+  perPage?: number;
+  totalItems?: number;
+  totalPages?: number;
+}
+
 // ── Connection state ──────────────────────────────────────────────
 export type ConnectionState = 'idle' | 'connecting' | 'connected' | 'disconnected';
 
@@ -65,7 +92,7 @@ async function pbRequest<T>(
       return { success: true } as ApiResponse<T>;
     }
 
-    const data = await response.json();
+    const data = (await response.json()) as PocketBaseJson;
 
     if (!response.ok) {
       return {
@@ -77,7 +104,7 @@ async function pbRequest<T>(
       };
     }
 
-    return { success: true, data };
+    return { success: true, data: data as T };
   } catch (error: unknown) {
     clearTimeout(timeoutId);
     if (error instanceof Error && error.name === 'AbortError') {
@@ -194,7 +221,7 @@ export async function deleteSessionsByUserHash(userHash: string): Promise<void> 
   const MAX_PAGES = 100;
   // eslint-disable-next-line no-constant-condition -- intentional infinite loop with break
   while (page <= MAX_PAGES) {
-    const result = await pbRequest<unknown>(
+    const result = await pbRequest<PocketBaseList>(
       `/api/collections/${COLLECTION}/records?filter=${filter}&perPage=50&page=${page}`
     );
     if (!result.success || !result.data?.items?.length) break;
@@ -336,7 +363,7 @@ export function subscribeSessions(
   // Visibility listener for adaptive interval
   // Clean up any previous subscription before creating a new one (prevents listener leaks on rapid calls)
   try {
-    const { AppState } = require('react-native');
+    const AppState = (require('react-native') as typeof import('react-native')).AppState;
     // Move cleanup after require so that if require fails, the old listener survives
     if (_currentAppStateSub) {
       _currentAppStateSub.remove();

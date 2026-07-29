@@ -30,4 +30,5 @@ export interface Theme {
   accent: string;
   navBg: string;
   starfield: boolean;
+  warning?: string;
 }

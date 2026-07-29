@@ -289,7 +289,10 @@ describe('SyncEngine', () => {
         expect.any(Function), // onServerTime callback
       );
       // Verify the token getter returns our value
+      // vitest mock.calls is any[][] — extract typed callback
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const tokenGetter = mockRealtimeController.connectRealtime.mock.calls[0][1];
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       expect(tokenGetter()).toBe('my-token');
     });
 
@@ -709,10 +712,15 @@ describe('SyncEngine', () => {
         expect.any(Function), // resetLastSyncAt
       );
       // Verify the callbacks work
+      // vitest mock.calls is any[][] — extract typed callbacks
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const disconnectCb = mockResetService.softReset.mock.calls[0][0];
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const resetCb = mockResetService.softReset.mock.calls[0][1];
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       disconnectCb();
       expect(mockRealtimeController.disconnectRealtime).toHaveBeenCalled();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       resetCb();
       expect(mockTimestampManager.resetLastSyncAt).toHaveBeenCalled();
     });

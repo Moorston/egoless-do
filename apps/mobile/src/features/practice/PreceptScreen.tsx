@@ -7,12 +7,11 @@ import {
 import { Shield, Check, X, Plus, BarChart3, AlertTriangle } from 'lucide-react-native';
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, FlatList, TouchableOpacity, TextInput, Modal, StyleSheet } from 'react-native';
-import { useShallow } from 'zustand/react/shallow';
 
 import { useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore, useShallowStore, type MobileStore } from '../../store/useAppStore';
+import { useShallowStore, type MobileStore } from '../../store/useAppStore';
 
 const PRECEPT_TAG = '持戒';
 
@@ -21,7 +20,7 @@ export default function PreceptScreen() {
   const TH = useTheme();
   const T = useT();
   const nav = useRootNavigation();
-  const language = useAppStore(useShallow((s: MobileStore) => s.language));
+  const language = useShallowStore((s: MobileStore) => s.language);
   const { habits, reflections, checkinHabit, addReflection, addHabit } = useShallowStore(s => ({
     habits: s.habits,
     reflections: s.reflections,

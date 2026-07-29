@@ -50,7 +50,7 @@ function ReflectionCardComponent({
   }, [r.content, expanded]);
 
   const colors = useMemo<[string, string]>(() => {
-    const c = typeof r.colors === 'string' ? (() => { try { return JSON.parse(r.colors); } catch { return null; } })() : r.colors;
+    const c = typeof r.colors === 'string' ? (() => { try { return JSON.parse(r.colors) as unknown as [string, string] | null; } catch { return null; } })() : r.colors;
     return [c?.[0] || MIND_COLORS_EXTENDED[0][0], c?.[1] || MIND_COLORS_EXTENDED[0][1]];
   }, [r.colors]);
 

@@ -8,9 +8,9 @@ vi.mock('../../db/schema', () => ({
     runAsync: vi.fn().mockResolvedValue({ changes: 0 }),
     getAllAsync: vi.fn().mockResolvedValue([]),
     getFirstAsync: vi.fn().mockResolvedValue(null),
-    withTransactionAsync: vi.fn().mockImplementation(async (fn) => fn()),
+    withTransactionAsync: vi.fn().mockImplementation(async (fn: () => Promise<unknown>) => fn()),
   }),
-  withDbLock: vi.fn().mockImplementation(async (fn) => fn()),
+  withDbLock: vi.fn().mockImplementation(async (fn: () => Promise<unknown>) => fn()),
   getState: vi.fn().mockResolvedValue(null),
   setState: vi.fn().mockResolvedValue(undefined),
 }));

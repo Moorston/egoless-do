@@ -51,7 +51,7 @@ export default function TrailSuggestionBanner() {
       if (!mounted) return;
       if (raw) {
         try {
-          const ignored: string[] = JSON.parse(raw);
+          const ignored: string[] = JSON.parse(raw) as string[];
           setDismissed(ignored.includes(pattern));
         } catch {
           setDismissed(false);
@@ -69,7 +69,7 @@ export default function TrailSuggestionBanner() {
     const pattern = buildIgnoredPattern(topRec);
     safeGetItem(TRAIL_IGNORED_KEY).then(raw => {
       let ignored: string[] = [];
-      try { if (raw) ignored = JSON.parse(raw); } catch { /* corrupted cache — ignore */ }
+      try { if (raw) ignored = JSON.parse(raw) as string[]; } catch { /* corrupted cache — ignore */ }
       const next = [...new Set([...ignored, pattern])];
       safeSetItem(TRAIL_IGNORED_KEY, JSON.stringify(next)).catch((e) => log.error(e));
     }).catch((e) => log.error(e));

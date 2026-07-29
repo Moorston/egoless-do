@@ -39,7 +39,7 @@ export const ItemHeatmap = React.memo(function ItemHeatmap({ item, checkins, TH,
     }
 
     const weeks: (string | null)[][] = [];
-    let week: (string | null)[] = new Array(startDay).fill(null);
+    let week: (string | null)[] = new Array<string | null>(startDay).fill(null);
 
     for (const ds of dates) {
       week.push(ds);

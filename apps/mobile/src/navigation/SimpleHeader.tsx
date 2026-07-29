@@ -1,6 +1,6 @@
 import { t, formatDate, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL } from '@egoless-do/core';
 import { useNavigation } from '@react-navigation/native';
-import { Image } from 'expo-image';
+import { Image, type ImageSource } from 'expo-image';
 import {
   Home, ClipboardList, Target, Sparkles, Flame,
 } from 'lucide-react-native';
@@ -35,7 +35,7 @@ export default function SimpleHeader({ routeName }: { routeName?: string }) {
     <View style={{ backgroundColor: TH.bg, paddingTop: insets.top }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8 }}>
         <Image
-          source={require('../../assets/header-logo.png')}
+          source={require('../../assets/header-logo.png') as ImageSource}
           style={{ width: 108, height: 54 }}
           contentFit="contain"
         />

@@ -10,6 +10,13 @@ const STORAGE_DIR = FileSystem.documentDirectory + 'egoless_storage/';
 const TOKEN_FILE = STORAGE_DIR + 'auth.json';
 const DATA_FILE = STORAGE_DIR + 'data.json';
 
+/** Shape of the persisted auth token file. */
+interface AuthTokenFile {
+  token?: string;
+  refreshToken?: string;
+  expiresAt?: number;
+}
+
 /** 确保存储目录存在 */
 async function ensureDir(): Promise<void> {
   try {
@@ -40,7 +47,7 @@ export async function loadTokenFromFile(): Promise<{ token: string; refreshToken
     const info = await FileSystem.getInfoAsync(TOKEN_FILE);
     if (!info.exists) return null;
     const raw = await FileSystem.readAsStringAsync(TOKEN_FILE, { encoding: FileSystem.EncodingType.UTF8 });
-    const data = JSON.parse(raw);
+    const data = JSON.parse(raw) as AuthTokenFile;
     if (data.token && data.refreshToken) {
       return { token: data.token, refreshToken: data.refreshToken, expiresAt: data.expiresAt ?? undefined };
     }
@@ -73,7 +80,7 @@ export async function saveDataToFile(entity: string, id: string, data: Record<st
       const info = await FileSystem.getInfoAsync(file);
       if (info.exists) {
         const raw = await FileSystem.readAsStringAsync(file, { encoding: FileSystem.EncodingType.UTF8 });
-        all = JSON.parse(raw);
+        all = JSON.parse(raw) as Record<string, unknown>;
       }
     } catch {
       // 文件不存在或损坏，从头开始
@@ -108,7 +115,7 @@ export async function markDeleteInFile(entity: string, id: string): Promise<void
     const info = await FileSystem.getInfoAsync(file);
     if (!info.exists) return;
     const raw = await FileSystem.readAsStringAsync(file, { encoding: FileSystem.EncodingType.UTF8 });
-    const all: Record<string, unknown> = JSON.parse(raw);
+    const all: Record<string, unknown> = JSON.parse(raw) as Record<string, unknown>;
     if (all[id]) {
       (all[id] as Record<string, unknown>).deleted = true;
       await FileSystem.writeAsStringAsync(file, JSON.stringify(all), { encoding: FileSystem.EncodingType.UTF8 });

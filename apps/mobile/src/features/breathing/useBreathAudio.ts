@@ -13,25 +13,25 @@ let _AudioModeAsync: typeof import('expo-audio').setAudioModeAsync | null = null
 let _useAudioPlayer: typeof import('expo-audio').useAudioPlayer | null = null;
 
 function getSpeech() {
-  if (!_Speech) _Speech = require('expo-speech');
+  if (!_Speech) _Speech = require('expo-speech') as typeof import('expo-speech');
   return _Speech;
 }
 
 function getAudioModeAsync() {
   if (!_AudioModeAsync) {
-    _AudioModeAsync = require('expo-audio').setAudioModeAsync;
+    _AudioModeAsync = (require('expo-audio') as typeof import('expo-audio')).setAudioModeAsync;
   }
   return _AudioModeAsync;
 }
 
 function getUseAudioPlayer() {
   if (!_useAudioPlayer) {
-    _useAudioPlayer = require('expo-audio').useAudioPlayer;
+    _useAudioPlayer = (require('expo-audio') as typeof import('expo-audio')).useAudioPlayer;
   }
   return _useAudioPlayer;
 }
 
-const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3');
+const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3') as number;
 
 export interface BreathAudioOptions {
   cueEnabled: boolean;

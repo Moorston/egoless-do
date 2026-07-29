@@ -5,7 +5,7 @@ import { useAudioCache } from '../shared/hooks/useAudioCache';
 
 // Lazy-loaded native module — deferred until first TTS fallback
 let _Speech: typeof import('expo-speech') | null = null;
-function getSpeech() { return _Speech ??= require('expo-speech'); }
+function getSpeech() { return _Speech ??= require('expo-speech') as typeof import('expo-speech'); }
 
 /**
  * Hook for mantra audio playback.
@@ -75,8 +75,9 @@ export function useMantraAudio() {
     });
   }, [stopAll, getCachedPath]);
 
-  const stopMantra = useCallback(() => {
+  const stopMantra = useCallback((): Promise<void> => {
     stopAll();
+    return Promise.resolve();
   }, [stopAll]);
 
   useEffect(() => {

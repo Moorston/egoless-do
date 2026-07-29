@@ -18,11 +18,11 @@ import { useMantraAudio } from './useMantraAudio';
 
 // Lazy-loaded native modules — deferred until active session
 let _Haptics: typeof import('expo-haptics') | null = null;
-function getHaptics() { return _Haptics ??= require('expo-haptics'); }
+function getHaptics() { return _Haptics ??= require('expo-haptics') as typeof import('expo-haptics'); }
 
 let _KeepAwakeHook: typeof import('expo-keep-awake').useKeepAwake | null = null;
 function useLazyKeepAwake() {
-  if (!_KeepAwakeHook) _KeepAwakeHook = require('expo-keep-awake').useKeepAwake;
+  if (!_KeepAwakeHook) _KeepAwakeHook = (require('expo-keep-awake') as typeof import('expo-keep-awake')).useKeepAwake;
   _KeepAwakeHook!();
 }
 
@@ -61,7 +61,7 @@ export default function MantraEngine() {
   const timer = useMantraTimer({
     targetRounds,
     onEndSession: (data) => { addMantraSession({ ...data, date: dateStr() }); },
-    onStopAudio: () => { stopMantra(); setAudioLoop(false); },
+    onStopAudio: () => { void stopMantra(); setAudioLoop(false); },
   });
 
   const formatTime = useCallback((ms: number) => {
@@ -99,18 +99,18 @@ export default function MantraEngine() {
   const handleTap = useCallback(() => {
     if (timer.isPaused) return;
     const H = getHaptics();
-    H.impactAsync(H.ImpactFeedbackStyle.Light);
+    void H.impactAsync(H.ImpactFeedbackStyle.Light);
     timer.increment();
     // timer.count is pre-increment (stale closure), so count+1 = post-increment value
     if ((timer.count + 1) % timer.BEAD_COUNT === 0 && timer.count > 0) {
-      H.notificationAsync(H.NotificationFeedbackType.Success);
+      void H.notificationAsync(H.NotificationFeedbackType.Success);
     }
   }, [timer]);
 
   /** End session → go to report */
   const endSession = useCallback(() => {
     timer.end();
-    stopMantra();
+    void stopMantra();
     setAudioLoop(false);
     setPage('report');
   }, [timer, stopMantra]);
@@ -204,7 +204,7 @@ export default function MantraEngine() {
           isPlaying={isPlaying}
           downloading={downloading}
           dlProgress={dlProgress}
-          onBack={() => { stopMantra(); setPage('select'); }}
+          onBack={() => { void stopMantra(); setPage('select'); }}
           onBeginChanting={beginChanting}
           onDownloadAudio={handleDownloadAudio}
           onPreviewAudio={handlePreviewAudio}

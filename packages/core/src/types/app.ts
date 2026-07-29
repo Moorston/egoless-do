@@ -11,7 +11,6 @@ import type { Plan, PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory
 import type { RecycleBinItem } from './recycle';
 import type { ThoughtTrail } from './thought-trail';
 import type { ReflectionLink } from './reflection-link';
-import type { CustomFoodPreset } from './food';
 
 // ─── Age bracket & body fat estimation ─────────────────────────
 export type AgeBracket = '18-29' | '30-39' | '40-49' | '50-59' | '60-69' | '70+';

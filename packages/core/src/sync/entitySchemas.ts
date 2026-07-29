@@ -696,7 +696,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
     customServerPayloadToRow: (r) => {
-      const rd = typeof r.data === 'string' ? JSON.parse(r.data) : (r.data ?? {});
+      const rd = typeof r.data === 'string' ? JSON.parse(r.data) as Record<string, unknown> : (r.data ?? {});
       return {
         id: r.id, review_id: r.reviewId ?? r.id,
         user_id: r.userId ?? 'self',

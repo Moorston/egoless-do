@@ -6,14 +6,14 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { audioSessionManager } from '../../../services/AudioSessionManager';
 
 const SOUND_FILES: Record<string, number> = {
-  '海潮': require('../../../../assets/sounds/ocean.mp3'),
-  '雨声': require('../../../../assets/sounds/rain.mp3'),
-  '钵声': require('../../../../assets/sounds/bowl.mp3'),
-  '鸟叫': require('../../../../assets/sounds/birds.mp3'),
-  '流水': require('../../../../assets/sounds/flowing-stream.mp3'),
-  '风铃': require('../../../../assets/sounds/wind-chimes.mp3'),
+  '海潮': require('../../../../assets/sounds/ocean.mp3') as number,
+  '雨声': require('../../../../assets/sounds/rain.mp3') as number,
+  '钵声': require('../../../../assets/sounds/bowl.mp3') as number,
+  '鸟叫': require('../../../../assets/sounds/birds.mp3') as number,
+  '流水': require('../../../../assets/sounds/flowing-stream.mp3') as number,
+  '风铃': require('../../../../assets/sounds/wind-chimes.mp3') as number,
 };
-const BELL_FILE = require('../../../../assets/sounds/temple_bell.mp3');
+const BELL_FILE = require('../../../../assets/sounds/temple_bell.mp3') as number;
 
 export function useExerciseAudio() {
   const [selectedSound, setSelectedSound] = useState<string>('无');

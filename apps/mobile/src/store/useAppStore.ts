@@ -22,6 +22,7 @@ import {
 import Constants from 'expo-constants';
 import { AppState } from 'react-native';
 import { create } from 'zustand';
+import type { StoreApi, UseBoundStore } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
 
 
@@ -159,7 +160,7 @@ let _autoSyncCallback: (() => void) | null = null;
 export function setAutoSyncCallback(cb: () => void) { _autoSyncCallback = cb; }
 const triggerAutoSync = () => _autoSyncCallback?.();
 
-export const useAppStore = create<MobileStore>()(
+export const useAppStore: UseBoundStore<StoreApi<MobileStore>> = create<MobileStore>()(
   (...a) => {
     // Extract slice factories for readability (avoids deeply nested inline calls)
     const authSlice = createAuthSlice(adapter, () => { runSync().catch((e) => log.error(e)); }, async () => {

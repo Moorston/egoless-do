@@ -21,6 +21,29 @@ export interface RealtimeChangeEvent {
   payload?: Record<string, unknown>;
 }
 
+/** Shape of a single batched SSE change item. */
+interface SyncBatchItem {
+  eventType?: string;
+  entity?: string;
+  collection?: string;
+  recordId?: string;
+  payload?: Record<string, unknown>;
+}
+
+/** Loosely-typed shape of a parsed PocketBase SSE event. */
+interface PocketBaseEvent {
+  clientId?: string;
+  items?: unknown;
+  collection?: string;
+  recordId?: string;
+  record?: { collectionName?: string; id?: string };
+  payload?: Record<string, unknown>;
+}
+
+function isSyncBatchItem(value: unknown): value is SyncBatchItem {
+  return typeof value === 'object' && value !== null;
+}
+
 export class RealtimeAgent {
   private _es: EventSource | null = null;
   private _pbUrl = '';
@@ -165,10 +188,10 @@ export class RealtimeAgent {
   private _handleEvent(eventType: string, rawData: string | null) {
     try {
       if (!rawData) return;
-      const data = JSON.parse(rawData);
+      const data: PocketBaseEvent = JSON.parse(rawData) as unknown as PocketBaseEvent;
 
       if (eventType === 'PB_CONNECTED') {
-        this._clientId = data.clientId;
+        this._clientId = data.clientId ?? '';
         this._reconnectAttempt = 0;
         this._consecutiveHeartbeatFailures = 0;
         this._onStatus?.(true);
@@ -177,9 +200,9 @@ export class RealtimeAgent {
       }
 
       // Handle batched SSE events (multiple changes in one notification)
-      if (eventType === 'sync_batch') {
-        const items: Array<{ eventType: string; entity: string; collection: string; recordId: string; payload?: Record<string, unknown> }> = data.items;
-        if (!Array.isArray(items)) return;
+      if (eventType === 'sync_batch' && Array.isArray(data.items)) {
+        const items = data.items.filter(isSyncBatchItem);
+        if (!items.length) return;
         this._reconnectAttempt = 0;
         for (const item of items) {
           if (!item.collection || !item.recordId) continue;

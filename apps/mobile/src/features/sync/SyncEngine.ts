@@ -330,7 +330,7 @@ export class SyncEngine {
       const changes: Array<{ entity: SyncEntity; entityId: string; payload: Record<string, unknown>; operation: 'upsert' | 'delete'; changedFields?: string[] }> = [];
       for (const item of items) {
         try {
-          const parsed = JSON.parse(item.payload);
+          const parsed = JSON.parse(item.payload) as Record<string, unknown> & { _changedFields?: string[] };
           const changedFields = parsed._changedFields;
           if (changedFields) delete parsed._changedFields;
           changes.push({ entity: item.entity as SyncEntity, entityId: item.entity_id, payload: parsed, operation: item.operation === 'delete' ? 'delete' : 'upsert', changedFields });

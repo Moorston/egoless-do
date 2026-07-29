@@ -7,6 +7,7 @@ import AppNavigator from './src/navigation';
 import { AudioEngineProvider } from './src/features/music';
 import SplashScreen from './src/features/splash/SplashScreen';
 import { initApp } from './src/store/initApp';
+import { initPostHog } from './src/analytics/posthog';
 
 const AMAP_KEY = Platform.select({
   android: process.env.EXPO_PUBLIC_AMAP_KEY_ANDROID ?? '',
@@ -92,6 +93,13 @@ export default function App() {
     if (initStartedRef.current) return;
     initStartedRef.current = true;
     initApp()
+      .then(() => {
+        // 初始化 PostHog（在 initApp 之后，确保 SQLite 已就绪）
+        return initPostHog({
+          apiKey: process.env.EXPO_PUBLIC_POSTHOG_API_KEY || '',
+          host: process.env.EXPO_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com',
+        });
+      })
       .then(() => setInitDone(true))
       .catch(() => setInitDone(true)); // Even on error, mark as done to avoid stuck splash
   }, []);

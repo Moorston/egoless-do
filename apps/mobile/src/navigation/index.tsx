@@ -193,6 +193,7 @@ export default function AppNavigator() {
   const theme = useShallowStore(s => s.theme);
   const isSignedIn = useShallowStore(s => s.auth.isSignedIn);
   const navRef = useRef<NavigationContainerRef<RootStackParamList>>(null);
+  const prevScreenRef = useRef<string | undefined>(undefined);
   const { kickOutVisible, hasPendingData, handleSyncAndLogout, handleLogoutDirectly } = useSync();
   const [syncOverlayVisible, setSyncOverlayVisible] = useState(false);
   const [syncPhase, setSyncPhase] = useState(1);
@@ -261,6 +262,20 @@ export default function AppNavigator() {
     {TH.starfield && <StarfieldBackground />}
     <NavigationContainer
       ref={navRef}
+      onStateChange={() => {
+        // PostHog 页面浏览追踪
+        const route = navRef.current?.getCurrentRoute();
+        if (!route) return;
+        const currentScreen = route.name;
+        if (currentScreen !== prevScreenRef.current) {
+          const prev = prevScreenRef.current;
+          prevScreenRef.current = currentScreen;
+          // 动态导入避免循环依赖
+          import('../analytics/track').then(({ screen }) => {
+            screen(currentScreen, { previous_screen: prev });
+          }).catch(() => {});
+        }
+      }}
       theme={{
         dark: theme !== 'light',
         colors: {

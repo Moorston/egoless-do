@@ -6,7 +6,7 @@
 // Supports DayOverride: checks active BodyTrainingPlan for today's
 // date override (skip/swap/adjust/custom).
 import type { BodyPlan, BodyTrainingPlan, DayOverride, ExerciseDef } from '@egoless-do/core';
-import { buildExerciseLibrary } from '@egoless-do/core';
+import { buildExerciseLibrary, PART_STRING_TO_KEY } from '@egoless-do/core';
 import { useMemo } from 'react';
 
 import { useShallowStore } from '../../../../store/useAppStore';

@@ -4,6 +4,15 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// Augment the AsyncStorage type with the legacy batch methods, which are still
+// present at runtime but absent from the v3 typings (replaced by getMany/setMany).
+declare module '@react-native-async-storage/async-storage' {
+  interface AsyncStorage {
+    multiGet(keys: string[]): Promise<Array<[string, string | null]>>;
+    multiSet(keyValuePairs: Array<[string, string]>): Promise<void>;
+  }
+}
+
 const _memoryCache = new Map<string, string>();
 let _nativeAvailable: boolean | null = null;
 

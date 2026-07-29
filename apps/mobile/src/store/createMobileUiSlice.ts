@@ -52,7 +52,7 @@ export function createMobileUiSlice(
     persistErrors: [],
 
     addPersistError(error: Error, entity: string, id: string) {
-      set(s => ({
+      set((s: FullStore & MobileUiSlice) => ({
         persistErrors: [
           { error: error.message, entity, id, timestamp: Date.now() },
           ...(s.persistErrors ?? []).slice(0, 9), // keep max 10

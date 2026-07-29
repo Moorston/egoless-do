@@ -208,8 +208,8 @@ export const aggregateDailyWater = (
   for (const e of history) {
     if (e.deleted || !e.note || !map.has(e.date)) continue;
     try {
-      const data = JSON.parse(e.note);
-      if (typeof data === 'object' && data !== null && typeof data.water === 'number') {
+      const data = JSON.parse(e.note) as { water?: unknown } | undefined;
+      if (data && typeof data.water === 'number') {
         map.set(e.date, (map.get(e.date) ?? 0) + data.water);
       }
     } catch { /* malformed note JSON — skip entry */ }

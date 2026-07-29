@@ -49,7 +49,7 @@ export const PrivacyControl: React.FC<PrivacyControlProps> = ({
     });
     void AsyncStorage.getItem(PREFERENCES_KEY).then(stored => {
       if (stored) {
-        const parsed = JSON.parse(stored);
+        const parsed = JSON.parse(stored) as { show_on_global_map?: boolean };
         if (parsed.show_on_global_map !== undefined) {
           setShowOnMap(parsed.show_on_global_map);
         }

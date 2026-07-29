@@ -5,7 +5,6 @@ import type { FoodEntry } from './food';
 import type { ExerciseEntry } from './exercise';
 import type { Plan, PlanItem } from './plan';
 import type { BreathingRecord } from './breath';
-import type { PlanItem } from './plan';
 
 export type RecycleBinEntityType = 'habit' | 'reflection' | 'food' | 'exercise' | 'plan' | 'breath' | 'planItem';
 

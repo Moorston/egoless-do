@@ -91,7 +91,7 @@ export default function ZhiguanScreen() {
     initDraft();
     void AsyncStorage.getItem(SETTINGS_KEY).then(v => {
       if (v) {
-        const loaded = { ...DEFAULT_SETTINGS, ...JSON.parse(v) };
+        const loaded = { ...DEFAULT_SETTINGS, ...(JSON.parse(v) as Partial<ZhiguanSettings>) };
         setSettings(loaded);
         updateDraft({
           sankalpa: loaded.sankalpa,

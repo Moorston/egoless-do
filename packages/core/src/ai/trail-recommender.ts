@@ -537,7 +537,7 @@ function parseAIMatchResults(raw: string, maxIndex: number): AIMatchResult[] {
 function parseSmartQueryResult(raw: string, input: string): SmartQueryResult {
   try {
     const jsonStr = extractJSON(raw);
-    const obj: Record<string, unknown> = JSON.parse(jsonStr);
+    const obj: Record<string, unknown> = JSON.parse(jsonStr) as Record<string, unknown>;
 
     const validTimeRanges = ['week', 'month', '3months', 'all'];
     const validIntents = ['filter', 'analyze', 'explore'];

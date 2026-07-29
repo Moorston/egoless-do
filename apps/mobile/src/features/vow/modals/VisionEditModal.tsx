@@ -29,7 +29,7 @@ function MonthPicker({ value, onChange, TH, T }: { value: string; onChange: (d: 
 
   const weeks = useMemo(() => {
     const rows: (number | null)[][] = [];
-    let row: (number | null)[] = new Array(firstDay === 0 ? 6 : firstDay - 1).fill(null); // Mon-based
+    let row: (number | null)[] = new Array<number | null>(firstDay === 0 ? 6 : firstDay - 1).fill(null); // Mon-based
     for (let d = 1; d <= daysInMonth; d++) {
       row.push(d);
       if (row.length === 7) { rows.push(row); row = []; }

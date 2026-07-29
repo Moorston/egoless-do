@@ -112,7 +112,7 @@ export default function RegisterScreen() {
       >
         <View style={{ paddingHorizontal: 24 }}>
           <Image
-            source={require('../../../assets/sign-logo.png')}
+            source={require('../../../assets/sign-logo.png') as number}
             style={{
               width: 320,
               height: 128,

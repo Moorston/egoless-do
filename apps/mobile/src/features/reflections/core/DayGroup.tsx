@@ -2,10 +2,9 @@ import { FONT_SUB, FONT_SMALL, FONT_TINY, formatDate , FONT_STAT_SECTION } from 
 import type { MindReflection } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { useShallow } from 'zustand/react/shallow';
 
 import { useTheme } from '../../../components/UI';
-import { useAppStore, type MobileStore } from '../../../store/useAppStore';
+import { useShallowStore, type MobileStore } from '../../../store/useAppStore';
 
 import ReflectionCard from './ReflectionCard';
 
@@ -42,7 +41,7 @@ function DayGroupComponent({
 }: Props) {
   const TH = useTheme();
   const P = TH.primary;
-  const language = useAppStore(useShallow((s: MobileStore) => s.language));
+  const language = useShallowStore((s: MobileStore) => s.language);
 
   const dayNum = date.slice(8, 10);
   const month = date.slice(5, 7);

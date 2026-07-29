@@ -1,11 +1,11 @@
-import type { MindReflection } from '@egoless-do/core';
+import type { MindReflection, TrailFilters } from '@egoless-do/core';
 import {
   parseSmartQuery, computeCandidatePool, buildIndex,
   retrieveTopK, semanticSearchReflections,
 } from '@egoless-do/core';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-import { mergeResults, runAIPhase2, runAIPhase3 } from './searchPipeline';
+import { mergeResults, runAIPhase2, runAIPhase3, type SearchResult } from './searchPipeline';
 
 // @ts-expect-error — React Native global not available in test env
 globalThis.__DEV__ = false;
@@ -147,7 +147,7 @@ describe('searchPipeline', () => {
         { index: { id: 'r2' }, score: 0.7 },
       ]);
 
-      const allResults: any[] = [];
+      const allResults: SearchResult[] = [];
       const existingIds = new Set<string>();
       const result = await runAIPhase2(
         reflections, 'meditation', {}, allResults, existingIds, [],
@@ -173,7 +173,7 @@ describe('searchPipeline', () => {
         { index: { id: 'r1' }, score: 0.8 },
       ]);
 
-      const allResults: any[] = [];
+      const allResults: SearchResult[] = [];
       const result = await runAIPhase2(
         [r1], 'yoga', { tags: ['old'] }, allResults, new Set(), [],
       );
@@ -195,7 +195,7 @@ describe('searchPipeline', () => {
       vi.mocked(buildIndex).mockReturnValue({ id: 'idx' });
       vi.mocked(retrieveTopK).mockReturnValue([]);
 
-      const currentFilters = { tags: ['meditation'], moods: ['calm'], timeRange: 'week' } as any;
+      const currentFilters: TrailFilters = { tags: ['meditation'], moods: ['calm'], timeRange: 'week' };
       await runAIPhase2(
         [r1], 'test', currentFilters, [], new Set(), [],
       );
@@ -223,7 +223,7 @@ describe('searchPipeline', () => {
         { index: { id: 'r2' }, score: 0.7 },
       ]);
 
-      const allResults: any[] = [];
+      const allResults: SearchResult[] = [];
       const existingIds = new Set(['r1']); // r1 already seen
       await runAIPhase2(
         [r1, r2], 'mindfulness', {}, allResults, existingIds, [],
@@ -268,7 +268,7 @@ describe('searchPipeline', () => {
         { reflectionIndex: 0, relevance: 0.9 },
       ] as any);
 
-      const allResults: any[] = [];
+      const allResults: SearchResult[] = [];
       const existingIds = new Set<string>();
       const result = await runAIPhase3([r1, r2], 'peace', allResults, existingIds);
 
@@ -287,7 +287,7 @@ describe('searchPipeline', () => {
     it('returns count=0 when semantic search returns empty', async () => {
       vi.mocked(semanticSearchReflections).mockResolvedValue([]);
 
-      const allResults: any[] = [];
+      const allResults: SearchResult[] = [];
       const result = await runAIPhase3(
         [makeReflection('r1')], 'test', allResults, new Set(),
       );
@@ -316,7 +316,7 @@ describe('searchPipeline', () => {
         { reflectionIndex: 1, relevance: 0.7 },
       ] as any);
 
-      const allResults: any[] = [];
+      const allResults: SearchResult[] = [];
       const existingIds = new Set(['r1']); // r1 already seen
       const result = await runAIPhase3([r1, r2], 'test', allResults, existingIds);
 
@@ -333,7 +333,7 @@ describe('searchPipeline', () => {
         { reflectionIndex: 5, relevance: 0.9 }, // out of bounds
       ] as any);
 
-      const allResults: any[] = [];
+      const allResults: SearchResult[] = [];
       const result = await runAIPhase3([r1], 'test', allResults, new Set());
 
       // only r1 is added; index 5 is undefined → skipped

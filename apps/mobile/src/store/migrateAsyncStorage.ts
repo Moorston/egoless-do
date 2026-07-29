@@ -69,7 +69,7 @@ export async function migrateAsyncStorageToSQLite(
 
   let oldData: Record<string, unknown>;
   try {
-    oldData = JSON.parse(raw);
+    oldData = JSON.parse(raw) as Record<string, unknown>;
   } catch {
     await setState(db, MIGRATION_KEY, '1');
     return false;
@@ -232,7 +232,7 @@ export async function migrateSettingsToSQLite(
 
   let oldData: Record<string, unknown>;
   try {
-    oldData = JSON.parse(raw);
+    oldData = JSON.parse(raw) as Record<string, unknown>;
   } catch {
     await setState(db, SETTINGS_MIGRATION_KEY, '1');
     return false;

@@ -29,13 +29,13 @@ async function readJsonFile<T>(filename: string): Promise<T | null> {
 
 // 内置音乐文件映射（require 必须在模块顶层静态声明）
 const BUILTIN_FILES: Record<string, number> = {
-  'ocean':          require('../../../assets/sounds/ocean.mp3'),
-  'rain':           require('../../../assets/sounds/rain.mp3'),
-  'flowing-stream': require('../../../assets/sounds/flowing-stream.mp3'),
-  'bowl':           require('../../../assets/sounds/bowl.mp3'),
-  'wind-chimes':    require('../../../assets/sounds/wind-chimes.mp3'),
-  'birds':          require('../../../assets/sounds/birds.mp3'),
-  'temple-bell':    require('../../../assets/sounds/temple_bell.mp3'),
+  'ocean':          require('../../../assets/sounds/ocean.mp3') as number,
+  'rain':           require('../../../assets/sounds/rain.mp3') as number,
+  'flowing-stream': require('../../../assets/sounds/flowing-stream.mp3') as number,
+  'bowl':           require('../../../assets/sounds/bowl.mp3') as number,
+  'wind-chimes':    require('../../../assets/sounds/wind-chimes.mp3') as number,
+  'birds':          require('../../../assets/sounds/birds.mp3') as number,
+  'temple-bell':    require('../../../assets/sounds/temple_bell.mp3') as number,
 };
 
 // 填充内置音乐的 file 字段

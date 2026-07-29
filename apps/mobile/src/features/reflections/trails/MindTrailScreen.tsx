@@ -71,7 +71,7 @@ export default function MindTrailScreen() {
   useEffect(() => {
     void safeGetItem(TRAIL_IGNORED_KEY).then(raw => {
       if (raw) {
-        try { ignoredPatternsRef.current = JSON.parse(raw); } catch { /* corrupted cache — ignore */ }
+        try { ignoredPatternsRef.current = JSON.parse(raw) as string[]; } catch { /* corrupted cache — ignore */ }
       }
     });
   }, []);

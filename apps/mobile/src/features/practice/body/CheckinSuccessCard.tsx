@@ -23,8 +23,8 @@ function loadEncouragements(T: (key: string) => string): string[] {
   try {
     const raw = T('bodyEncouragements');
     if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    const parsed = JSON.parse(raw) as unknown;
+    return Array.isArray(parsed) ? (parsed as string[]) : [];
   } catch {
     return [];
   }

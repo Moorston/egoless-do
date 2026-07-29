@@ -1,13 +1,13 @@
 import { MEDITATION_DURATIONS_MIN, COLORS, getTodayMedMinutes, dateStr, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_HERO, FONT_BADGE, FONT_STAT_SECTION, createLogger } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
-import { useAudioPlayer, setAudioModeAsync } from 'expo-audio';
+import { useAudioPlayer, setAudioModeAsync, type AudioSource } from 'expo-audio';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Sharing from 'expo-sharing';
 import { Globe, Binary, ChevronRight } from 'lucide-react-native';
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import ViewShot from 'react-native-view-shot';
+import ViewShot, { type ViewShotRef } from 'react-native-view-shot';
 
 import { Card, useTheme, PrimaryButton, TagPill, ProgressBar, OutlineButton, useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
@@ -26,7 +26,7 @@ import MeditationMusicBar from '../../components/MeditationMusicBar';
 
 // 实时会话
 
-const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3');
+const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3') as unknown as AudioSource;
 
 export default function MeditationScreen() {
   const TH    = useTheme();
@@ -52,7 +52,7 @@ export default function MeditationScreen() {
   const [noteText, setNoteText] = useState('');
   const timerRef        = useRef<ReturnType<typeof setInterval> | null>(null);
   const completedRef    = useRef(false);
-  const shareCardRef    = useRef<ViewShot>(null);
+  const shareCardRef    = useRef<ViewShotRef>(null);
   const musicStartedRef = useRef(false);
 
   const targetSec = durMin * 60;
@@ -247,7 +247,7 @@ export default function MeditationScreen() {
         const uri = await shareCardRef.current.capture();
         await Sharing.shareAsync(uri, { dialogTitle: T('shareMed'), mimeType: 'image/png' });
       }
-    } catch (e) { log.warn('Share failed:', e); }
+    } catch (e) { log.warn('Share failed:', e as unknown); }
     setShowShare(false);
   }, [T]);
 

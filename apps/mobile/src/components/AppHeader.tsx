@@ -1,5 +1,5 @@
-import { t, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL, FONT_BODY } from '@egoless-do/core';
-import { Image } from 'expo-image';
+import { t, formatDate, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL, FONT_BODY } from '@egoless-do/core';
+import { Image, type ImageSource } from 'expo-image';
 import {
   Home, ClipboardList, Timer, Binary, Sparkles, Dumbbell,
   Target, BarChart3, Settings, Flame,
@@ -60,7 +60,7 @@ export default function AppHeader({ activeTab, onTabChange }: AppHeaderProps) {
       {/* Header */}
       <View style={styles.headerRow}>
         <Image
-          source={require('../../assets/header-logo.png')}
+          source={require('../../assets/header-logo.png') as ImageSource}
           style={{ width: 108, height: 54 }}
           contentFit="contain"
         />

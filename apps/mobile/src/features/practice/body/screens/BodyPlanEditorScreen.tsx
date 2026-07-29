@@ -44,7 +44,7 @@ export default function BodyPlanEditorScreen() {
   const [strategy, setStrategy] = useState<BodyStrategy | ''>(existingGoal?.strategy ?? '');
   const [targetWeight, setTargetWeight] = useState(existingGoal?.targetWeight ? String(existingGoal.targetWeight) : '');
   const [targetBodyFat, setTargetBodyFat] = useState(existingGoal?.targetBodyFat ? String(existingGoal.targetBodyFat) : '');
-  const [goalNote, setGoalNote] = useState(existingGoal?.goalNote ?? '');
+  const [goalNote, setGoalNote] = useState(existingGoal?.note ?? '');
   const [tasks, setTasks] = useState<BodyPlanTask[]>(() =>
     Array.from({ length: 7 }, (_, i) => ({ weekday: i + 1, sportKey: '', note: '' }))
   );

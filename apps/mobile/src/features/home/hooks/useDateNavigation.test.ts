@@ -1,9 +1,20 @@
 import { dateStr } from '@egoless-do/core';
-import React from 'react';
-import { act, create } from 'react-test-renderer';
+import React, { act, type ReactElement } from 'react';
+import { create as createTestRenderer } from 'react-test-renderer';
+
+/** Typed wrapper around react-test-renderer create (no installed types for the package). */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const createTestRoot = (element: ReactElement): TestRenderer =>
+  (createTestRenderer as (el: ReactElement) => TestRenderer)(element);
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { useDateNavigation } from './useDateNavigation';
+
+/** Minimal react-test-renderer handle (no installed types for react-test-renderer). */
+interface TestRenderer {
+  update: (element: React.ReactElement) => void;
+  unmount: () => void;
+}
 
 // @ts-expect-error — React Native global not available in test env
 globalThis.__DEV__ = false;
@@ -30,9 +41,9 @@ async function renderHook<T>(hookFn: () => T) {
     return null;
   }
 
-  let root: ReturnType<typeof create>;
+  let root: TestRenderer;
   await act(async () => {
-    root = create(React.createElement(TestComponent));
+    root = createTestRoot(React.createElement(TestComponent));
   });
 
   return {

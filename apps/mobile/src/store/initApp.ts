@@ -312,6 +312,18 @@ export async function initApp(): Promise<void> {
       // Sync Sentry user context on auth state changes
       if (state.auth.isSignedIn && state.auth.user && (!prevState.auth.isSignedIn || state.auth.user.id !== prevState.auth.user?.id)) {
         setSentryUser({ id: state.auth.user.id, email: state.auth.user.email, name: state.auth.user.name });
+        // PostHog 用户识别（匿名化）
+        import('../analytics/privacy').then(({ anonymizeUserId }) => {
+          anonymizeUserId(state.auth.user!.id).then(anonId => {
+            import('../analytics/track').then(({ identify }) => {
+              identify(anonId, {
+                guest: state.auth.user!.isGuest || false,
+                language: state.language,
+                theme: state.theme,
+              });
+            }).catch(() => {});
+          });
+        }).catch(() => {});
       } else if (!state.auth.isSignedIn && prevState.auth.isSignedIn) {
         clearSentryUser();
       }

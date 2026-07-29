@@ -13,17 +13,17 @@ export function mergeById<T extends Record<string, any>>(
   if (!server.length) return local;
   if (!local.length) return server.filter(item => !item.deleted);
   const map = new Map<string, T>();
-  for (const item of local) map.set(item[idKey], item);
+  for (const item of local) map.set(item[idKey] as string, item);
   for (const item of server) {
-    const key = item[idKey];
+    const key = item[idKey] as string;
     const existing = map.get(key);
     if (!existing) {
       // New from server — skip soft-deleted
       if (!item.deleted) map.set(key, item);
     } else {
       const result = resolveConflict({
-        clientUpdated: existing.updatedAt ?? 0,
-        serverUpdated: item.updatedAt ?? 0,
+        clientUpdated: (existing.updatedAt as number) ?? 0,
+        serverUpdated: (item.updatedAt as number) ?? 0,
         clientDeleted: !!existing.deleted,
         serverDeleted: !!item.deleted,
       });

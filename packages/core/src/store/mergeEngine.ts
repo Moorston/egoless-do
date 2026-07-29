@@ -42,14 +42,14 @@ export function buildMergePatch(
   for (const [syncKey, storeKey, mergeKey] of ENTITY_MERGE_MAP) {
     const incoming = data[syncKey];
     if (!incoming) continue;
-    const existing = (s[storeKey] ?? []) as Record<string, any>[];
-    patch[storeKey] = mergeById(incoming as Record<string, any>[], existing, mergeKey)
-      .filter((i: Record<string, any>) => !i.deleted);
+    const existing = (s[storeKey] ?? []) as Record<string, unknown>[];
+    patch[storeKey] = mergeById(incoming as Record<string, unknown>[], existing, mergeKey)
+      .filter((i: Record<string, unknown>) => !i.deleted);
   }
 
   // ── 特殊实体：meditation（需 activeOnly + totalMedMinutes 计算）
   if (data.meditation) {
-    const mergedMed = mergeById(data.meditation as Record<string, any>[], (s.medHistory ?? []) as Record<string, any>[], 'date');
+    const mergedMed = mergeById(data.meditation as Record<string, unknown>[], (s.medHistory ?? []) as Record<string, unknown>[], 'date');
     patch.medHistory = activeOnly(mergedMed);
     patch.totalMedMinutes = (mergedMed as Array<{ durMin?: number; deleted?: boolean }>)
       .filter(m => !m.deleted).reduce((sum, m) => sum + (m.durMin || 0), 0);
@@ -75,7 +75,7 @@ export function buildMergePatch(
     if (latest) {
       let profileData = (latest as Record<string, unknown>).data ?? latest;
       if (typeof profileData === 'string') {
-        try { profileData = JSON.parse(profileData); } catch { profileData = {}; }
+        try { profileData = JSON.parse(profileData) as Record<string, unknown>; } catch { profileData = {}; }
       }
       const p = profileData as Record<string, unknown>;
       const SETTINGS_KEYS = ['calGoal', 'customFoodPresets', 'theme', 'language', 'remindEnabled', 'remindTime', 'customTags', 'customMoods', 'allTagsOrder', 'allMoodsOrder'] as const;

@@ -57,7 +57,7 @@ async function pbRequest<T>(
 
     clearTimeout(timeoutId);
 
-    const data = await response.json();
+    const data = (await response.json()) as T & { code?: string; message?: string };
 
     if (!response.ok) {
       return {

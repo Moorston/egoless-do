@@ -39,7 +39,7 @@ export default function TrainingCalendar({ TH, T, exerciseLog, plans }: Props) {
 
   // Build plan lookup by weekday
   const planByWeekday = useMemo(() => {
-    if (!plans) return new Map();
+    if (!plans) return new Map<number, string>();
     const map = new Map<number, string>();
     for (const p of plans) {
       if (!p.deleted) map.set(p.weekday, p.part);

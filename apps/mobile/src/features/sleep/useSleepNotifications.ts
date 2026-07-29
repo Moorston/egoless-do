@@ -12,7 +12,7 @@ let _handlerConfigured = false;
 
 function getNotifications(): typeof import('expo-notifications') {
   if (!_Notifications) {
-    _Notifications = require('expo-notifications');
+    _Notifications = require('expo-notifications') as typeof import('expo-notifications');
   }
   // Configure handler once on first access
   if (!_handlerConfigured) {

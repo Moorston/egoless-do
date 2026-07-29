@@ -209,8 +209,8 @@ export default function SportPage() {
   const [segmentPaces, setSegmentPaces] = useState<number[]>([]);
   const lastKmMarkRef = useRef(0);
   const lastKmTsRef = useRef(0);
-  const locationSub = useRef<object | null>(null);
-  const mapRef = useRef<object | null>(null);
+  const locationSub = useRef<{ remove: () => void } | null>(null);
+  const mapRef = useRef<{ moveCamera: (camera: { target: { latitude: number; longitude: number }; zoom: number }, duration?: number) => void } | null>(null);
   const pauseHoldAnim = useRef(new Animated.Value(1)).current;
 
   // ── Computed ──
@@ -406,7 +406,7 @@ export default function SportPage() {
 
     const currentEx = comboExercises![comboState.current.currentIndex];
     const finalReps = sportType === 'repetition' ? sets.totalReps : undefined;
-    const exName = currentEx?.nameZh || buildExerciseLibrary().find(lib => lib.category === (currentEx?.category || effectiveSportName))?.nameZh || currentEx?.sportKey || effectiveSportName;
+    const exName = currentEx?.nameZh || buildExerciseLibrary().find(lib => lib.category === (currentEx?.category || effectiveSportName))?.nameZh || effectiveSportName;
     const entry = {
       sportKey: effectiveSportName, sportIcon: effectiveIcon, durationSec: timer.sec,
       timestamp: Date.now(), isGpsSport: false as const,

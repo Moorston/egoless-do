@@ -1,4 +1,5 @@
 import {estimateFastingKcal, dateStr, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_SECTION, MS_PER_DAY, createLogger, FONT_LABEL, FONT_STAT_CARD} from '@egoless-do/core';
+import type { AudioSource } from 'expo-audio';
 import { useAudioPlayer } from 'expo-audio';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
@@ -23,7 +24,7 @@ import { ActiveInsightBar } from '../global-pulse/components/ActiveInsightBar';
 import { useGoalResolver } from '../global-pulse/hooks/useGoalResolver';
 import { createSession, deleteSession, updateSession } from '../global-pulse/services/activeSessionApi';
 
-const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3');
+const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3') as unknown as AudioSource;
 
 export default function FastingScreen() {
   const TH    = useTheme();

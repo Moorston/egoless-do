@@ -256,18 +256,18 @@ export async function migrateToSyncQueue(): Promise<number> {
 
 function safeJson(v: unknown): unknown {
   if (v == null) return [];
-  if (typeof v === 'string') { try { return JSON.parse(v); } catch { return []; } }
+  if (typeof v === 'string') { try { return JSON.parse(v) as unknown; } catch { return []; } }
   return v;
 }
 
 function safeJsonObj(v: unknown): Record<string, unknown> {
   if (v == null) return {};
-  if (typeof v === 'string') { try { const p = JSON.parse(v); return (typeof p === 'object' && p !== null && !Array.isArray(p)) ? p : {}; } catch { return {}; } }
+  if (typeof v === 'string') { try { const p = JSON.parse(v) as unknown; return (typeof p === 'object' && p !== null && !Array.isArray(p)) ? p as Record<string, unknown> : {}; } catch { return {}; } }
   return (typeof v === 'object' && v !== null && !Array.isArray(v)) ? v as Record<string, unknown> : {};
 }
 
 function safeParseColors(v: unknown): unknown {
   if (v == null) return null;
-  if (typeof v === 'string') { try { return JSON.parse(v); } catch { return null; } }
+  if (typeof v === 'string') { try { return JSON.parse(v) as unknown; } catch { return null; } }
   return v;
 }
