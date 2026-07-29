@@ -1,8 +1,9 @@
 import { COLORS, FONT_TITLE, FONT_SUB, FONT_BODY, FONT_CLOSE, FONT_BACK, FONT_STAT_SECTION, FONT_SMALL, FONT_BADGE, FONT_HERO, fmt, formatPace, formatDate, dateStr } from '@egoless-do/core';
 import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { useShallow } from 'zustand/react/shallow';
 
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, type MobileStore } from '../../../store/useAppStore';
 
 import type { ExercisePageProps } from './types';
 
@@ -14,9 +15,9 @@ export default function ReportPage(props: ExercisePageProps) {
     handleSave, TH, T,
   } = props;
 
-  const language = useAppStore(s => s.language);
-  const exerciseLog = useAppStore(s => s.exerciseLog);
-  const waterGoal = useAppStore(s => s.waterGoal); // placeholder for daily cal goal
+  const language = useAppStore(useShallow((s: MobileStore) => s.language));
+  const exerciseLog = useAppStore(useShallow((s: MobileStore) => s.exerciseLog));
+  const waterGoal = useAppStore(useShallow((s: MobileStore) => s.waterGoal)); // placeholder for daily cal goal
   const displayReps = totalReps;
   const bestPace = segmentPaces.length > 0 ? Math.min(...segmentPaces) : 0;
 
