@@ -9,6 +9,7 @@ import SplashScreen from './src/features/splash/SplashScreen';
 import { initApp } from './src/store/initApp';
 import { initSentry } from './src/sentry';
 import { initPostHog } from './src/analytics/posthog';
+import { startFrameMonitor } from './src/performance/monitor';
 
 const AMAP_KEY = Platform.select({
   android: process.env.EXPO_PUBLIC_AMAP_KEY_ANDROID ?? '',
@@ -93,6 +94,7 @@ export default function App() {
   useEffect(() => {
     if (initStartedRef.current) return;
     initStartedRef.current = true;
+    startFrameMonitor();  // 启动性能监控
     initApp()
       .then(() => {
         // 首屏后初始化 Sentry + PostHog（不阻塞首屏）
