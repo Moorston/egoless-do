@@ -603,6 +603,7 @@ CREATE TABLE IF NOT EXISTS body_goals (
 
 CREATE TABLE IF NOT EXISTS body_plans (
   id         TEXT PRIMARY KEY,
+  type       TEXT    NOT NULL DEFAULT 'weekly',
   goal_id    TEXT,
   weekday    INTEGER NOT NULL,
   part       TEXT    NOT NULL,
@@ -616,6 +617,7 @@ CREATE INDEX IF NOT EXISTS idx_body_plans_weekday ON body_plans(weekday);
 
 CREATE TABLE IF NOT EXISTS body_training_plans (
   id              TEXT PRIMARY KEY,
+  type            TEXT    NOT NULL DEFAULT 'training',
   name            TEXT    NOT NULL,
   start_date      TEXT    NOT NULL,
   end_date        TEXT    NOT NULL,
@@ -1167,11 +1169,15 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   );
   if (!bodyPlansCheck) {
     await db.execAsync(`CREATE TABLE IF NOT EXISTS body_plans (
-      id TEXT PRIMARY KEY, goal_id TEXT, weekday INTEGER NOT NULL,
+      id TEXT PRIMARY KEY, type TEXT NOT NULL DEFAULT 'weekly',
+      goal_id TEXT, weekday INTEGER NOT NULL,
       part TEXT NOT NULL, sport_key TEXT, note TEXT,
       updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_body_plans_weekday ON body_plans(weekday)');
+  } else {
+    // Add type column if missing (P0-4 migration)
+    await tryAddCol('body_plans', 'type', 'TEXT NOT NULL DEFAULT \'weekly\'');
   }
 
   // Ensure body_training_plans table exists
@@ -1180,7 +1186,8 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   );
   if (!trainingPlanCheck) {
     await db.execAsync(`CREATE TABLE IF NOT EXISTS body_training_plans (
-      id TEXT PRIMARY KEY, name TEXT NOT NULL, start_date TEXT NOT NULL,
+      id TEXT PRIMARY KEY, type TEXT NOT NULL DEFAULT 'training',
+      name TEXT NOT NULL, start_date TEXT NOT NULL,
       end_date TEXT NOT NULL, strategy TEXT, target_weight REAL,
       target_body_fat REAL, goal_note TEXT, tasks TEXT NOT NULL DEFAULT '[]',
       overrides TEXT,
@@ -1190,6 +1197,9 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   } else {
     // Add overrides column if missing (migration)
     await tryAddCol('body_training_plans', 'overrides', 'TEXT');
+    // Add type column if missing (P0-4 migration)
+    await tryAddCol('body_training_plans', 'type', 'TEXT NOT NULL DEFAULT \'training\'');
+  }
   }
 
   // Ensure body_weight_records table exists

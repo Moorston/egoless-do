@@ -755,6 +755,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
     pocketbase: { collection: 'body_plans', serverIdField: 'plan_id' },
     fields: [
       { entity: 'id',        col: 'id',         server: 'id',        fallback: null },
+      { entity: 'type',      col: 'type',       server: 'type',      fallback: 'weekly' },
       { entity: 'goalId',    col: 'goal_id',    server: 'goalId',    fallback: '', optional: true },
       { entity: 'weekday',   col: 'weekday',    server: 'weekday',   type: 'num' },
       { entity: 'part',      col: 'part',       server: 'part',      fallback: '' },
@@ -765,14 +766,12 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
     ],
   },
 
-  // TODO[P0-4]: bodyTrainingPlan 与 bodyPlan 共享 PB collection 'body_plans' + serverIdField
-  // 'plan_id'，存在 ID 命名空间冲突风险。需数据迁移：schema 加 type discriminator、客户端
-  // 双写 type 字段、历史数据回填、同步过滤按 type 区分。详见独立 task p0-body-plan-namespace。
   bodyTrainingPlan: {
     sqlite: { table: 'body_training_plans', pk: 'id' },
     pocketbase: { collection: 'body_plans', serverIdField: 'plan_id' },
     fields: [
       { entity: 'id',          col: 'id',           server: 'id',           fallback: null },
+      { entity: 'type',        col: 'type',         server: 'type',         fallback: 'training' },
       { entity: 'name',        col: 'name',         server: 'name',         fallback: '' },
       { entity: 'startDate',   col: 'start_date',   server: 'startDate',    fallback: '' },
       { entity: 'endDate',     col: 'end_date',     server: 'endDate',      fallback: '' },
