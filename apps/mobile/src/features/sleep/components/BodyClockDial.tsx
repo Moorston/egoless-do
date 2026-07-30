@@ -12,11 +12,11 @@ interface Props {
   onPeriodPress: (period: BodyClockPeriod) => void;
 }
 
-const SIZE = 200;
+const SIZE = 220;
 const CENTER = SIZE / 2;
-const RADIUS = 72; // period point center radius
-const POINT_DEFAULT = 9;
-const POINT_CURRENT = 14;
+const RADIUS = 78; // period point center radius
+const POINT_DEFAULT = 11;
+const POINT_CURRENT = 16;
 
 // Sleep window: 21:00 (hai/xu boundary) → 05:00 (mao/chen boundary)
 const SLEEP_START_HOUR = 21;
@@ -138,7 +138,7 @@ export default function BodyClockDial({ theme, onPeriodPress }: Props) {
           >
             <Text
               style={{
-                fontSize: isCurrent ? 10 : 8,
+                fontSize: isCurrent ? 13 : 11,
                 fontWeight: isCurrent ? '700' : '500',
                 color: isCurrent ? '#fff' : sub,
               }}
