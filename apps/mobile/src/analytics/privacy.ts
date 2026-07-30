@@ -127,7 +127,7 @@ export async function setAnalyticsConsent(consent: AnalyticsConsent): Promise<vo
 
 // 避免循环导入：动态导入 openDatabase
 async function openDatabase() {
-  const { openDatabaseAsync } = await import('expo-sqlite');
-  // 与 schema.ts 保持一致：使用 egoless_do.db（下划线，避免路径解析问题）
-  return openDatabaseAsync('egoless_do.db');
+  // 使用 schema.ts 的 openDatabase（单一连接，避免冲突）
+  const { openDatabase: openDb } = await import('../../db/schema');
+  return openDb();
 }
