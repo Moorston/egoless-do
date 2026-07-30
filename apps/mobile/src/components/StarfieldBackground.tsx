@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo, useState } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { View, Animated, Dimensions, StyleSheet, Platform, useWindowDimensions } from 'react-native';
 import Svg, { Line } from 'react-native-svg';
 
@@ -108,6 +108,8 @@ function BrightStar({ x, y, size, minOpacity, maxOpacity, twinkleSpeed, color, g
       activeAnimRef.current?.stop();
       loopRef.current?.stop();
     };
+    // Mount-only animation setup — intentionally runs once despite reading instance refs/props.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const rotation = rotateAnim.interpolate({
@@ -178,6 +180,8 @@ function Star({ x, y, size, minOpacity, maxOpacity, twinkleSpeed, color, glowCol
   const mountedRef = useRef(true);
   const activeAnimRef = useRef<Animated.CompositeAnimation | null>(null);
 
+  // Mount-only animation setup — intentionally runs once despite reading instance refs/props.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     mountedRef.current = true;
     const animate = () => {
@@ -211,6 +215,8 @@ function Star({ x, y, size, minOpacity, maxOpacity, twinkleSpeed, color, glowCol
       mountedRef.current = false;
       activeAnimRef.current?.stop();
     };
+    // Mount-only animation setup — intentionally runs once despite reading instance refs/props.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -243,6 +249,8 @@ function ShootingStar({ delay: initialDelay, screenW, screenH }: { delay: number
   const mountedRef = useRef(true);
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
+  // Mount-only animation setup — intentionally runs once despite reading instance refs/props.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     mountedRef.current = true;
     const animate = () => {
@@ -279,6 +287,8 @@ function ShootingStar({ delay: initialDelay, screenW, screenH }: { delay: number
     };
     animate();
     return () => { mountedRef.current = false; if (timerRef.current) clearTimeout(timerRef.current); };
+    // Mount-only animation setup — intentionally runs once despite reading instance refs/props.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -371,7 +381,7 @@ export default function StarfieldBackground() {
   // Scale star positions to current dimensions (star sizes stay constant)
   const scaledStars = useMemo(
     () => allStars.map(s => ({ ...s, x: s.x * scaleX, y: s.y * scaleY })),
-    [scaleX, scaleY]
+    [scaleX, scaleY, allStars]
   );
 
   const brightStars = useMemo(() => scaledStars.filter(s => s.size >= 4), [scaledStars]);

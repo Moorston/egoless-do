@@ -1,14 +1,14 @@
-import { COLORS, calculateCheckinStreak, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BACK, formatTimestamp as formatTime, parseCheckinNote, INCOMPLETE_REASONS } from '@egoless-do/core';
+import { COLORS, calculateCheckinStreak, FONT_TITLE, FONT_BODY, FONT_SUB, formatTimestamp as formatTime, parseCheckinNote, INCOMPLETE_REASONS } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import { ChevronLeft, CheckCircle2, PenLine, Hand, Utensils, Droplets, Star, PersonStanding, Sparkles, Circle, Check, AlertTriangle, Moon, Sunrise, Brain } from 'lucide-react-native';
-import React, { useMemo, useCallback } from 'react';
+import { ChevronLeft, CheckCircle2, PenLine, Hand, Utensils, Droplets, Star, Check, Moon, Sunrise, Brain } from 'lucide-react-native';
+import React, { useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../../components/UI';
 import { useRootNavigation, type RootStackParamList } from '../../../navigation/hooks';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import { useShallowStore } from '../../../store/useAppStore';
 
 
 const styles = StyleSheet.create({
@@ -91,7 +91,7 @@ export default function CheckinDetailScreen() {
               paddingVertical: 13, borderBottomWidth: i === detailRows.length - 1 ? 0 : 1, borderBottomColor: TH.border,
             }}>
               <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{r.label}</Text>
-              <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: r.color ?? TH.text }}>{r.value}</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: r.color ?? TH.text }}>{String(r.value)}</Text>
             </View>
           ))}
         </View>
@@ -160,7 +160,7 @@ export default function CheckinDetailScreen() {
       return (
         <View style={[styles.listItem, item.isLast && { borderBottomWidth: 0 }]}>
           <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{item.label}</Text>
-          <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: item.color ?? TH.text }}>{item.value}</Text>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: item.color ?? TH.text }}>{String(item.value)}</Text>
         </View>
       );
     }

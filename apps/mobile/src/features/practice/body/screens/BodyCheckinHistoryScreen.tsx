@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, FONT_BADGE, dateStr, type BodyCheckin, type Theme, BODY_TAGS_PRESET } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SMALL, FONT_STAT_CARD, FONT_BADGE } from '@egoless-do/core';
 import { ChevronLeft } from 'lucide-react-native';
 import React, { useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';

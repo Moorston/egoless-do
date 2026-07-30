@@ -1,20 +1,20 @@
-import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, FONT_BUTTON, COLORS, dateStr , FONT_BACK, FONT_TINY} from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, FONT_BUTTON, dateStr , FONT_BACK, FONT_TINY} from '@egoless-do/core';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeft, Share2, TrendingUp, Grid3x3, Heart, Tag, ListChecks } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Share } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useTheme, useT } from '../../../components/UI';
+import { useTheme } from '../../../components/UI';
 import CalendarGrid from '../../../components/charts/CalendarGrid';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import { useShallowStore } from '../../../store/useAppStore';
 
 
 type TabKey = 'tags' | 'mood' | 'linkedTask' | 'trend' | 'heatmap';
 
+// eslint-disable-next-line max-lines-per-function -- stats screen keeps tabs/charts/list together
 export default function ReflectionStatsScreen() {
   const TH = useTheme();
-  const T = useT();
   const P = TH.primary;
   const { reflections: rawReflections, planItems: rawPlanItems } = useShallowStore(s => ({
     reflections: s.reflections,
@@ -334,7 +334,7 @@ export default function ReflectionStatsScreen() {
                       { color: idx < 3 ? P : TH.sub },
                     ]}
                   >
-                    {idx + 1}
+                    {String(idx + 1)}
                   </Text>
                   <Text style={[styles.rankingTag, { color: TH.text }]}>
                     {tag}
@@ -386,12 +386,12 @@ export default function ReflectionStatsScreen() {
               const pct = (g.count / maxCount) * 100;
               return (
                 <View key={idx} style={styles.moodItem}>
-                  <Text style={[styles.rankingIndex, { color: idx < 3 ? P : TH.sub }]}>{idx + 1}</Text>
+                  <Text style={[styles.rankingIndex, { color: idx < 3 ? P : TH.sub }]}>{String(idx + 1)}</Text>
                   <Text style={[styles.rankingTag, { color: TH.text }]} numberOfLines={1}>{g.name}</Text>
                   <View style={styles.rankingBarContainer}>
                     <View style={[styles.rankingBar, { width: `${pct}%`, backgroundColor: P }]} />
                   </View>
-                  <Text style={[styles.rankingCount, { color: TH.sub }]}>{g.count}</Text>
+                  <Text style={[styles.rankingCount, { color: TH.sub }]}>{String(g.count)}</Text>
                 </View>
               );
             })}

@@ -1,8 +1,10 @@
 // ─── Personalized Suggestion Engine ─────────────────────────────
 import type { MindReflection, Habit, Plan, CheckinEntry } from '../types';
-import type { ThoughtPattern } from './thought-patterns';
+import { dateStr } from '../utils';
+
 import type { RiskWarning } from './risk-warning';
-import { dateStr, activeOnly } from '../utils';
+import type { ThoughtPattern } from './thought-patterns';
+
 
 export interface PersonalizedSuggestion {
   id: string;

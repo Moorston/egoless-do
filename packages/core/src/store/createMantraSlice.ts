@@ -1,10 +1,12 @@
-import type { MantraDef, MantraSession, SutraReadingSession, PresetSutraEntry, MantraCategory } from '../types';
-import { PRESET_SUTRA_NAMES } from '../types';
-import { dateStr } from '../utils';
-import type { StorageAdapter } from './types';
-import type { SliceCreator } from './sliceHelper';
-import { createLogger } from '../logger';
 import { PRESET_SUTRAS, SUTRA_TEXTS } from '../constants';
+import { createLogger } from '../logger';
+import { PRESET_SUTRA_NAMES } from '../types';
+import type { MantraDef, MantraSession, SutraReadingSession, PresetSutraEntry, MantraCategory } from '../types';
+import { dateStr } from '../utils';
+
+import type { SliceCreator } from './sliceHelper';
+import type { StorageAdapter } from './types';
+
 const log = createLogger('Store');
 
 function genId() {

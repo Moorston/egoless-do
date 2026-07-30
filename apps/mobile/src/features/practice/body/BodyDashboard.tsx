@@ -1,14 +1,13 @@
-import { dateStr, type AgeBracket, type BodyGoal, type BodyTrainingPlan, type ExerciseEntry, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_LABEL, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BADGE, generateSuggestions, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, BODY_TAGS_PRESET, COMBO_WORKOUT_SPORT_KEY, type DayOverride, type ExerciseDef, type BodyCheckin } from '@egoless-do/core';
-import { ChevronRight, Play, Calendar, Target, Dumbbell, TrendingUp, Activity, Scale, History, Settings, ChevronLeft, ChevronDown } from 'lucide-react-native';
+import { dateStr, type BodyGoal, type BodyTrainingPlan, type ExerciseEntry, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_LABEL, FONT_STAT_CARD, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, COMBO_WORKOUT_SPORT_KEY, type DayOverride, type ExerciseDef } from '@egoless-do/core';
+import { ChevronRight, Play, Target, Dumbbell, TrendingUp, Activity } from 'lucide-react-native';
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Dimensions, Animated, Alert, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Dimensions, Modal } from 'react-native';
 
 import { useT, useTheme } from '../../../components/UI';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useShallowStore } from '../../../store/useAppStore';
 
 import { styles } from './BodyDashboardStyles';
-import ExerciseProgressBanner from './components/ExerciseProgressBanner';
 import { useBodyFlowState } from './hooks/useBodyFlowState';
 import { useTodayPlan } from './hooks/useTodayPlan';
 import AdjustExerciseModal from './modals/AdjustExerciseModal';
@@ -32,7 +31,9 @@ interface DashboardProps {
   onGoToBreathing?: () => void;
 }
 
-export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoToSport, onGoToBreathing }: DashboardProps) {
+// BodyDashboard 为多步骤/多弹窗综合体能页，拆分子组件成本较高，暂禁用行数限制
+// eslint-disable-next-line max-lines-per-function
+export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoToSport: _onGoToSport, onGoToBreathing: _onGoToBreathing }: DashboardProps) {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
@@ -54,7 +55,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
     updateBodyTrainingPlan: s.updateBodyTrainingPlan,
   }));
   const profile = (userProfile ?? {}) as Record<string, unknown>;
-  const { todayPlan, weekday: todayWeekday, todayOverride, hasOverride, todayExercises, dateStr: todayDateStr } = useTodayPlan();
+  const { todayPlan, todayOverride, hasOverride, todayExercises, dateStr: todayDateStr } = useTodayPlan();
 
   const [showAssessment, setShowAssessment] = useState(false);
   const [showGoalEdit, setShowGoalEdit] = useState(false);
@@ -66,7 +67,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
   const [showDayAction, setShowDayAction] = useState(false);
   const [showGoalEditLight, setShowGoalEditLight] = useState(false);
   const [showDaySwapPicker, setShowDaySwapPicker] = useState(false);
-  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [selectedDay] = useState<number | null>(null);
 
   // Banner carousel state (no auto-rotate, user manual swipe)
   const [currentBanner, setCurrentBanner] = useState(0);
@@ -74,11 +75,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
 
   const activeGoal = useMemo(() => (bodyGoals ?? []).find((g: BodyGoal) => !g.deleted), [bodyGoals]);
   const activeTrainingPlan = useMemo(() => (bodyTrainingPlans ?? []).find((p: BodyTrainingPlan) => !p.deleted && p.status === 'active'), [bodyTrainingPlans]);
-
-  // Compute training suggestions
-  const suggestions = useMemo(() =>
-    generateSuggestions(exerciseLog ?? [], bodyCheckins ?? [], activeTrainingPlan),
-  [exerciseLog, bodyCheckins, activeTrainingPlan]);
 
   // Auto-mark expired plans as completed
   const expiredPlanIds = useMemo(() => {
@@ -253,10 +249,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
     updateBodyTrainingPlan(activeTrainingPlan.id, { overrides: newOverrides });
   }, [activeTrainingPlan, updateBodyTrainingPlan]);
 
-  const handleSkipToday = useCallback(() => {
-    setOverride(todayDateStr, { type: 'skip', createdAt: Date.now() });
-  }, [setOverride, todayDateStr]);
-
   const handleUndoOverride = useCallback(() => {
     clearOverride(todayDateStr);
   }, [clearOverride, todayDateStr]);
@@ -294,16 +286,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
   const selectedDayDate = getSelectedDayDate();
   const selectedDayOverride = selectedDay ? activeTrainingPlan?.overrides?.[selectedDayDate] : undefined;
 
-  const handleDaySwap = useCallback((sportKey: string, exercises?: ExerciseDef[]) => {
-    if (!selectedDay) return;
-    setOverride(selectedDayDate, {
-      type: exercises ? 'custom' : 'swap',
-      swapSportKey: exercises ? undefined : sportKey,
-      exercises,
-      createdAt: Date.now(),
-    });
-  }, [selectedDay, selectedDayDate, setOverride]);
-
   const handleDaySkip = useCallback(() => {
     if (!selectedDay) return;
     setOverride(selectedDayDate, { type: 'skip', createdAt: Date.now() });
@@ -338,7 +320,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
   const hasActiveFlow = flowState && flowState.startedAt && (Date.now() - flowState.startedAt < 24 * 60 * 60 * 1000);
   const allFlowDone = hasActiveFlow && flowState.exerciseCompleted && flowState.breathingCompleted && flowState.awarenessCompleted;
 
-  // 凌晨重置：flowState 的日期不是今天时重置
+  // 凌晨重置：flowState 的日期不是今天时重置（只在挂载时检查一次）
   useEffect(() => {
     if (flowState?.startedAt) {
       const todayDate = dateStr();
@@ -347,6 +329,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
         setBodyFlowState({ exerciseCompleted: false, breathingCompleted: false, awarenessCompleted: false, practiceCompleted: false, startedAt: Date.now() });
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // 只在挂载时检查
 
 
@@ -445,7 +428,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                         <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: flowState?.exerciseCompleted ? '#fff' : 'rgba(255,255,255,0.5)' }}>{T('bodyFlowBreathing')}</Text>
                         {flowState?.breathingCompleted && (
                           <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>
-                            {Math.floor((flowState?.breathingDurationMs ?? 0) / 60000)}{T('bodyMin')}
+                            {String(Math.floor((flowState?.breathingDurationMs ?? 0) / 60000))}{T('bodyMin')}
                           </Text>
                         )}
                         {!flowState?.breathingCompleted && flowState?.exerciseCompleted && (

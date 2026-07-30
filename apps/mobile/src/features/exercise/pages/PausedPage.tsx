@@ -10,7 +10,7 @@ import type { ExercisePageProps } from './types';
 
 export default function PausedPage(props: ExercisePageProps) {
   const {
-    sportName, sportType, sec, holdAnim, scaleAnim, pulseAnim, isGpsSport, distKm, sets, currentSetReps,
+    sportName, sportType, sec, scaleAnim, pulseAnim, isGpsSport, distKm, sets, currentSetReps,
     musicTrack, musicIsPlaying, musicLoop, onMusicTogglePlay, onMusicToggleLoop, onPressMusic,
     handleContinue, handleHoldEnd,
     setPage, onGoBack, T,
@@ -65,7 +65,7 @@ export default function PausedPage(props: ExercisePageProps) {
       }
     };
     rafRef.current = requestAnimationFrame(tick);
-  }, [scaleAnim, pulseAnim, ringCircumference, sportName, sec, setPage, onGoBack]);
+  }, [scaleAnim, pulseAnim, ringCircumference, sportName, sec, setPage, onGoBack, T]);
 
   const onHoldEnd = useCallback(() => {
     stopAnimation();
@@ -117,17 +117,17 @@ export default function PausedPage(props: ExercisePageProps) {
             </View>
           )}
           <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '700', color: '#fff' }}>{sets.length}</Text>
+            <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '700', color: '#fff' }}>{`${sets.length}`}</Text>
             <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.7)' }}>{T('exerciseSets')}</Text>
           </View>
           <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '700', color: COLORS.ORANGE }}>{props.calories}</Text>
+            <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '700', color: COLORS.ORANGE }}>{`${props.calories}`}</Text>
             <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.7)' }}>kcal</Text>
           </View>
         </View>
 
         <Text style={{ fontSize: FONT_HERO(), fontWeight: '900', color: '#fff' }}>
-          {isGpsSport ? distKm.toFixed(2) : sportType === 'repetition' ? pausedReps : Math.floor(sec / 60)}
+          {`${isGpsSport ? distKm.toFixed(2) : sportType === 'repetition' ? pausedReps : Math.floor(sec / 60)}`}
         </Text>
         <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.5)', marginTop: 4 }}>
           {isGpsSport ? 'km' : sportType === 'repetition' ? T('exerciseReps') : 'min'}

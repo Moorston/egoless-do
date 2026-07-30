@@ -14,16 +14,17 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme, useT } from '../../../components/UI';
 import type { RootStackParamList } from '../../../navigation/types';
 import { safeGetItem, safeSetItem } from '../../../store/safeAsyncStorage';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
-
-const log = createLogger('Reflections');
+import { useShallowStore } from '../../../store/useAppStore';
 import RecommendCard from '../insights/RecommendCard';
 
 import CreateThoughtTrailModal from './CreateThoughtTrailModal';
 import SmartQueryPanel from './SmartQueryPanel';
 
+const log = createLogger('Reflections');
+
 const TRAIL_IGNORED_KEY = 'trailIgnoredPatterns';
 
+// eslint-disable-next-line max-lines-per-function -- trail screen keeps list/create/AI recommend together
 export default function MindTrailScreen() {
   // ═══════════════════════════════════════════════════════════════
   // Section 1: Store Data & Navigation
@@ -67,7 +68,7 @@ export default function MindTrailScreen() {
 
   // AsyncStorage-based ignored patterns (persists across sessions, local only)
   const ignoredPatternsRef = useRef<string[]>([]);
-  const [ignoredVersion, setIgnoredVersion] = useState(0);
+  const [, setIgnoredVersion] = useState(0);
   useEffect(() => {
     void safeGetItem(TRAIL_IGNORED_KEY).then(raw => {
       if (raw) {
@@ -80,7 +81,7 @@ export default function MindTrailScreen() {
   const allIgnoredPatterns = useMemo(() => {
     const storePatterns = ignoredRecPatterns ?? [];
     return [...new Set([...storePatterns, ...ignoredPatternsRef.current])];
-  }, [ignoredRecPatterns, ignoredVersion]);
+  }, [ignoredRecPatterns]);
 
   // ═══════════════════════════════════════════════════════════════
   // Section 3: Data Filtering & AI Availability
@@ -192,6 +193,7 @@ export default function MindTrailScreen() {
               const latestIgnored = ignoredPatternsForRecsRef.current;
               const merged = mergeAndRank(localWithReason, aiRecs).slice(0, 2);
               const mergedWithPrefs = applyUserPreferences(merged, latestIgnored);
+              // eslint-disable-next-line max-depth -- async AI recommend needs nested try/if
               if (mountedRef.current) setRecommendations(mergedWithPrefs);
             }
           } catch (e) {
@@ -437,7 +439,7 @@ export default function MindTrailScreen() {
         return (
           <View style={styles.sectionHeader}>
             <Text style={[styles.sectionTitle, { color: TH.text }]}>
-              {T('thoughtTrail')} ({manualTrails.length})
+              {T('thoughtTrail')} ({String(manualTrails.length)})
             </Text>
           </View>
         );
@@ -479,7 +481,7 @@ export default function MindTrailScreen() {
         return (
           <View style={styles.sectionHeader}>
             <Text style={[styles.sectionTitle, { color: TH.text }]}>
-              AI 创建的脉络 ({aiTrails.length})
+              AI 创建的脉络 ({String(aiTrails.length)})
             </Text>
           </View>
         );

@@ -1,4 +1,4 @@
-import { COLORS, FONT_TITLE, FONT_SUB, FONT_BODY, FONT_CLOSE, FONT_BACK, FONT_STAT_SECTION, FONT_SMALL, FONT_BADGE, FONT_HERO, fmt, formatPace, formatDate, dateStr } from '@egoless-do/core';
+import { COLORS, FONT_TITLE, FONT_SUB, FONT_BODY, FONT_BACK, FONT_STAT_SECTION, FONT_SMALL, fmt, formatPace, formatDate, dateStr } from '@egoless-do/core';
 import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
@@ -17,7 +17,6 @@ export default function ReportPage(props: ExercisePageProps) {
 
   const language = useAppStore(useShallow((s: MobileStore) => s.language));
   const exerciseLog = useAppStore(useShallow((s: MobileStore) => s.exerciseLog));
-  const waterGoal = useAppStore(useShallow((s: MobileStore) => s.waterGoal)); // placeholder for daily cal goal
   const displayReps = totalReps;
   const bestPace = segmentPaces.length > 0 ? Math.min(...segmentPaces) : 0;
 
@@ -68,7 +67,7 @@ export default function ReportPage(props: ExercisePageProps) {
             padding: d.large ? 16 : 12,
           }}>
             <Text style={{ fontSize: d.large ? FONT_BACK() : FONT_STAT_SECTION(), fontWeight: '800', color: TH.text }}>
-              {d.value}
+              {String(d.value)}
             </Text>
             {d.unit ? <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{d.unit}</Text> : null}
             <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 2 }}>{d.label}</Text>
@@ -103,11 +102,11 @@ export default function ReportPage(props: ExercisePageProps) {
                     }} />
                   </View>
                   <Text style={{ fontSize: FONT_SMALL(), color: TH.text, width: 50, textAlign: 'right' }}>
-                    {Math.floor(day.durationSec / 60)}min
+                    {`${Math.floor(day.durationSec / 60)}min`}
                   </Text>
                   {day.calories > 0 && (
                     <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, width: 40, textAlign: 'right' }}>
-                      {day.calories}
+                      {String(day.calories)}
                     </Text>
                   )}
                 </View>
@@ -166,7 +165,7 @@ export default function ReportPage(props: ExercisePageProps) {
             {sets.map((s, i) => (
               <View key={i} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6, borderBottomWidth: i < sets.length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
                 <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{T('exerciseSet').replace('{n}', String(i + 1))}</Text>
-                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{s.reps} {T('exerciseReps')}</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{String(s.reps)} {T('exerciseReps')}</Text>
               </View>
             ))}
           </View>
@@ -183,7 +182,7 @@ export default function ReportPage(props: ExercisePageProps) {
               const paceColor = isBest ? COLORS.GREEN : p < 300 ? COLORS.BLUE : p < 360 ? COLORS.YELLOW : COLORS.RED;
               return (
                 <View key={i} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6, borderBottomWidth: i < segmentPaces.length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
-                  <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{i + 1} km</Text>
+                  <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{`${i + 1} km`}</Text>
                   <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: paceColor }}>{formatPace(p)}</Text>
                 </View>
               );

@@ -1,11 +1,13 @@
 // ─── Review Slice ──────────────────────────────────────────────
-import type { CheckinReview } from '../types';
-import type { StorageAdapter, ReviewSlice } from './types';
-import type { SliceCreator } from './sliceHelper';
-import { calculateReviewData, getWeekRange, getMonthRange } from '../business/review';
 import { getAIService } from '../ai/ai-service';
-import { dateStr, activeOnly } from '../utils';
+import { calculateReviewData, getWeekRange, getMonthRange } from '../business/review';
 import { createLogger } from '../logger';
+import type { CheckinReview } from '../types';
+import { dateStr, activeOnly } from '../utils';
+
+import type { SliceCreator } from './sliceHelper';
+import type { StorageAdapter, ReviewSlice } from './types';
+
 const log = createLogger('Store');
 
 export function createReviewSlice(
@@ -88,7 +90,7 @@ export function createReviewSlice(
       };
 
       // 保存到Store — merge with latest list, not the stale capture
-      set(state => ({
+      set(_state => ({
         checkinReviews: [
           review,
           ...latestReviews.filter(r => r.id !== review.id),

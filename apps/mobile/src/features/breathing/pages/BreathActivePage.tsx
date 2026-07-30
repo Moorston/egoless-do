@@ -2,7 +2,7 @@
 // Shows breathing bubble, cycle counter, pause button with ring progress.
 
 import type { BreathingPreset } from '@egoless-do/core';
-import { FONT_BODY, FONT_SUB, FONT_STAT_SECTION, fmtMS , phaseLabelKey } from '@egoless-do/core';
+import { fmtMS, phaseLabelKey } from '@egoless-do/core';
 import { Play, Pause } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, Animated, TouchableOpacity } from 'react-native';
@@ -90,12 +90,12 @@ export default function BreathActivePage(props: Props) {
           opacity: currentPhase.type === 'hold' ? 0.8 + Math.sin(phaseProgress * Math.PI * 4) * 0.1 : 0.6,
         }]}>
           <Text style={[styles.phaseText, { color: phaseColor }]}>{T(phaseLabelKey(currentPhase.type))}</Text>
-          <Text style={[styles.phaseCountdown, { color: phaseColor }]}>{Math.max(0, currentPhase.durationSec - phaseSec)}</Text>
+          <Text style={[styles.phaseCountdown, { color: phaseColor }]}>{`${Math.max(0, currentPhase.durationSec - phaseSec)}`}</Text>
         </View>
 
         {/* Cycle counter */}
         <Text style={[styles.cycleText, { color: TH.sub }]}>
-          {T('breathCycles')} {currentCycle + 1} / {cycles}
+          {T('breathCycles')} {`${currentCycle + 1}`} / {cycles}
         </Text>
 
         {/* Total time */}

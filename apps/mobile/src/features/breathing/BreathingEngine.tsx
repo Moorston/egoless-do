@@ -2,13 +2,13 @@
 // State machine + rAF loop + hooks; delegates UI to page components.
 
 import type {BreathingPreset} from '@egoless-do/core';
-import { FONT_BODY, createLogger, fmtMS, dateStr , cycleDuration , FONT_TITLE, scaleFontSize } from '@egoless-do/core';
+import { createLogger, dateStr , cycleDuration , FONT_TITLE, scaleFontSize } from '@egoless-do/core';
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { View, Text, Animated, Easing, AppState, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useTheme, useT } from '../../components/UI';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+import { useT } from '../../components/UI';
+import { useShallowStore } from '../../store/useAppStore';
 
 import { styles } from './breathStyles';
 import { useBreathSettings } from './hooks/useBreathSettings';
@@ -46,8 +46,8 @@ interface Props {
  * @param initialPreset - The breathing preset configuration
  * @param onBack - Navigation callback to return to preset selection
  */
+// eslint-disable-next-line max-lines-per-function -- BreathingEngine orchestrates a multi-page session state machine; splitting would fragment the rAF lifecycle
 export default function BreathingEngine({ initialPreset, onBack }: Props) {
-  const TH = useTheme();
   const T = useT();
 
   /** Extract store actions and language for audio cue localization. */
@@ -63,9 +63,11 @@ export default function BreathingEngine({ initialPreset, onBack }: Props) {
 
   /** Current page state — drives conditional rendering below. */
   const [page, setPage] = useState<Page>('prepare');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- selectedPreset value is read across effects; setter kept for state-shape consistency
   const [selectedPreset, setSelectedPreset] = useState<BreathingPreset>(initialPreset);
   /** Ref mirror of selectedPreset — read inside rAF loop without triggering re-renders. */
   const selectedPresetRef = useRef<BreathingPreset>(initialPreset);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- cycles value is read across effects; setter kept for state-shape consistency
   const [cycles, setCycles] = useState(initialPreset.defaultCycles);
   /** Ref mirror of cycles — read inside rAF loop. */
   const cyclesRef = useRef(initialPreset.defaultCycles);
@@ -239,6 +241,7 @@ export default function BreathingEngine({ initialPreset, onBack }: Props) {
       if (holdTimeoutRef.current) { clearTimeout(holdTimeoutRef.current); holdTimeoutRef.current = null; }
       holdAnim.removeAllListeners();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- holdAnim is a stable ref; mount-only cleanup
   }, []);
 
   /**
@@ -385,7 +388,7 @@ export default function BreathingEngine({ initialPreset, onBack }: Props) {
     }
     setSaving(false);
     handleFinish(true);
-  }, [reflection, totalElapsed, cycles, preDistress, postDistress, settings.guideStyle, selectedPreset, handleFinish, addBreathRecord, addMedMinutes, addReflection]);
+  }, [reflection, totalElapsed, cycles, preDistress, postDistress, settings.guideStyle, selectedPreset, handleFinish, addBreathRecord, addMedMinutes, addReflection, T]);
 
   // ── Page routing ──────────────────────────────────────────────
 

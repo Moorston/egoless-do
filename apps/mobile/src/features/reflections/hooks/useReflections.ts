@@ -1,15 +1,15 @@
-import { ensureOrderContains, TAGS_PRESET, MOODS, REFLECTION_CATEGORIES, dateStr, formatDate, formatTime } from '@egoless-do/core';
+import { ensureOrderContains, TAGS_PRESET, MOODS, dateStr, formatDate } from '@egoless-do/core';
 import {
   filterReflections, groupReflectionsByDate, computeDynamicTagCounts, computeDynamicMoodCounts,
   computeMoodTrend, computeWritingHeatmap, computeTagCooccurrence,
   computeSmartCollections, DEFAULT_REFLECTION_FILTERS,
   type MindReflection, type SmartCollection,
-  type ReflectionFilters, type MoodTrendPoint, type HeatmapDay, type TagGraph,
+  type MoodTrendPoint, type HeatmapDay, type TagGraph,
 } from '@egoless-do/core';
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { Share } from 'react-native';
 
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import { useShallowStore } from '../../../store/useAppStore';
 
 
 /** Debounce hook */
@@ -39,6 +39,7 @@ export function useReflections() {
   }));
 
   // ── Filter state (from store, persisted) ────────────────────
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- new object only when reflectionFilters is null; downstream memos depend on individual fields
   const filters = reflectionFilters ?? { ...DEFAULT_REFLECTION_FILTERS };
   const setFilters = setReflectionFilters;
 
@@ -52,6 +53,7 @@ export function useReflections() {
     if (inputSourceRef.current === 'user' && debouncedSearch !== filters.search) {
       setFilters(prev => ({ ...prev, search: debouncedSearch }));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: only re-run when debouncedSearch changes; setFilters is stable
   }, [debouncedSearch]);
 
   // Sync filters.search to local input when filters change externally (not from user typing)
@@ -60,6 +62,7 @@ export function useReflections() {
       setSearchInput(filters.search);
     }
     inputSourceRef.current = 'sync';
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: only re-run when filters.search changes
   }, [filters.search]);
 
   // ── UI state (not persisted) ────────────────────────────────
@@ -139,11 +142,13 @@ export function useReflections() {
   // ── Dynamic counts (based on other active filters) ──────────
   const dynamicTagCounts = useMemo(
     () => computeDynamicTagCounts(reflections ?? [], filters),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- depends on individual filters fields listed below
     [reflections, filters.moods, filters.search, filters.dateRange, filters.hasLink, filters.hasLinkedTask],
   );
 
   const dynamicMoodCounts = useMemo(
     () => computeDynamicMoodCounts(reflections ?? [], filters),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- depends on individual filters fields listed below
     [reflections, filters.tags, filters.search, filters.dateRange, filters.hasLink, filters.hasLinkedTask],
   );
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- test mocks use any for partial API payloads */
 import type { MindReflection, TrailFilters } from '@egoless-do/core';
 import {
   parseSmartQuery, computeCandidatePool, buildIndex,

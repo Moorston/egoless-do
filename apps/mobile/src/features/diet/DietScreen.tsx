@@ -1,9 +1,9 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, COLORS, dateStr, WUXING_MAP, WUXING_ELEMENT_CONFIG, FLAVOR_CONFIG, EATING_MOTIVATIONS, FONT_SMALL, FONT_STAT_CARD, FONT_BACK } from '@egoless-do/core';
-import type { WuxingElement, FlavorType, FoodEntry, FoodWuxingItem, EatingMotivationEntry, FastingSession } from '@egoless-do/core';
-import { Utensils, Compass, TrendingUp, Timer, Plus, Search } from 'lucide-react-native';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, COLORS, dateStr, WUXING_MAP, WUXING_ELEMENT_CONFIG, EATING_MOTIVATIONS, FONT_SMALL, FONT_STAT_CARD, FONT_BACK } from '@egoless-do/core';
+import type { WuxingElement, FlavorType, FoodEntry, FoodWuxingItem, EatingMotivationEntry } from '@egoless-do/core';
+import { FlashList } from '@shopify/flash-list';
+import { Utensils, Compass, TrendingUp, Timer, Plus } from 'lucide-react-native';
 import React, {useState, useMemo, useCallback} from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
 
 import AddFoodModal from '../../components/AddFoodModal';
 import { useTheme, useT } from '../../components/UI';
@@ -57,7 +57,7 @@ function FoodItem({ item, lookupWuxing, motivationLog }: { item: FoodEntry; look
             </View>
           )}
         </View>
-        <Text style={{ color: TH.primary, fontSize: FONT_SUB(), fontWeight: '600' }}>{item.calories} kcal</Text>
+        <Text style={{ color: TH.primary, fontSize: FONT_SUB(), fontWeight: '600' }}>{String(item.calories)} kcal</Text>
       </View>
       {motivationDef && (
         <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 4, marginLeft: 2 }}>
@@ -68,6 +68,7 @@ function FoodItem({ item, lookupWuxing, motivationLog }: { item: FoodEntry; look
   );
 }
 
+// eslint-disable-next-line max-lines-per-function -- DietScreen is a multi-tab view (today/wuxing/trend/fasting); splitting would fragment tab logic
 export default function DietScreen() {
   const TH = useTheme();
   const T = useT();
@@ -188,7 +189,7 @@ export default function DietScreen() {
         </View>
 
         <View style={[dietStyles.card, { backgroundColor: TH.card, borderColor: TH.border }]}>
-          <Text style={[dietStyles.sectionTitle, { color: TH.text }]}>{T('dietFoodList')} ({todayFoods.length})</Text>
+          <Text style={[dietStyles.sectionTitle, { color: TH.text }]}>{T('dietFoodList')} ({String(todayFoods.length)})</Text>
           {todayFoods.length === 0 ? (
             <Text style={{ color: TH.sub, fontSize: FONT_SUB(), textAlign: 'center', paddingVertical: 20 }}>{T('dietNoFoodToday')}</Text>
           ) : (
@@ -214,7 +215,7 @@ export default function DietScreen() {
         )}
       </View>
     );
-  }, [flavorStats, wuxingStats, todayFoods, lookupWuxing, motivationLog, TH, T]);
+  }, [flavorStats, wuxingStats, todayFoods, calGoal, lookupWuxing, motivationLog, TH, T]);
 
   // ── 五行图谱 Tab ──
   const renderWuxingTab = useCallback(() => {
@@ -278,7 +279,7 @@ export default function DietScreen() {
         {/* 食材五味速查 */}
         <View style={[dietStyles.card, { backgroundColor: TH.card, borderColor: TH.border }]}>
           <Text style={[dietStyles.sectionTitle, { color: TH.text }]}>{T('dietWuxingLookup')}</Text>
-          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>{T('dietCommonFoods')} ({commonFoods.length})</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>{T('dietCommonFoods')} ({String(commonFoods.length)})</Text>
           {categories.map(cat => {
             const items = commonFoods.filter(m => m.category === cat);
             if (items.length === 0) return null;
@@ -289,7 +290,7 @@ export default function DietScreen() {
                   accessibilityLabel={`${isExpanded ? '收起' : '展开'}${T(`dietCategory${cat.charAt(0).toUpperCase() + cat.slice(1)}`)}分类`}
                   style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8 }}>
                   <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text }}>
-                    {isExpanded ? '▼' : '▶'} {T(`dietCategory${cat.charAt(0).toUpperCase() + cat.slice(1)}`)} ({items.length})
+                    {isExpanded ? '▼' : '▶'} {T(`dietCategory${cat.charAt(0).toUpperCase() + cat.slice(1)}`)} ({String(items.length)})
                   </Text>
                 </TouchableOpacity>
                 {isExpanded && (
@@ -309,7 +310,7 @@ export default function DietScreen() {
         </View>
       </View>
     );
-  }, [wuxingStats, TH, T]);
+  }, [wuxingStats, expandedCategories, foodSearch, toggleCategory, wuxingSearchResults, TH, T]);
 
   // ── 趋势分析 Tab ──
   const renderTrendTab = useCallback(() => {
@@ -418,7 +419,7 @@ export default function DietScreen() {
         </View>
       </View>
     );
-  }, [getMotivationStats, getEmotionSensitiveDays, TH, T]);
+  }, [getMotivationStats, getEmotionSensitiveDays, getDailyWuxingStats, timeRange, TH, T]);
 
   // ── 禁食 Tab ──
   const renderFastingTab = useCallback(() => {
@@ -513,7 +514,7 @@ export default function DietScreen() {
         </View>
       </View>
     );
-  }, [activeFasting, fastingHistory, foodLog, lookupWuxing, TH, T]);
+  }, [activeFasting, fastingHistory, foodLog, lookupWuxing, startFasting, stopFasting, TH, T]);
 
   return (
     <View style={{ flex: 1, backgroundColor: TH.bg }}>

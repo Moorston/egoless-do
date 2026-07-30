@@ -1,11 +1,13 @@
-import type { ThoughtTrail, TrailInsightCache, TrailReviewCache } from '../types/thought-trail';
-import type { MindReflection } from '../types/reflection';
-import type { PlanItem, PlanItemPriority } from '../types/plan';
-import type { TrailNote } from '../types/trail-note';
-import type { ThoughtTrailSlice, StorageAdapter } from './types';
-import type { SliceCreator } from './sliceHelper';
-import { uid, activeOnly } from '../utils';
 import { createLogger } from '../logger';
+import type { PlanItem } from '../types/plan';
+import type { MindReflection } from '../types/reflection';
+import type { ThoughtTrail } from '../types/thought-trail';
+import type { TrailNote } from '../types/trail-note';
+import { uid } from '../utils';
+
+import type { SliceCreator } from './sliceHelper';
+import type { ThoughtTrailSlice, StorageAdapter } from './types';
+
 const log = createLogger('Store');
 
 export function createThoughtTrailSlice(adapter: StorageAdapter, onSettingsPersist?: () => void): SliceCreator<ThoughtTrailSlice> {
@@ -74,9 +76,6 @@ export function createThoughtTrailSlice(adapter: StorageAdapter, onSettingsPersi
       // Capture affected IDs and notes BEFORE set()
       const affectedReflectionIds = trail.reflectionIds ?? [];
       const notesToDelete = (get().trailNotes ?? []).filter(n => n.trailId === id && !n.deleted);
-      const affectedPlanItemIds = (get().planItems ?? [])
-        .filter(i => !i.deleted && i.trailId === id)
-        .map(i => i.id);
 
       // Capture updated entities INSIDE set() for reliable persist
       const updatedReflections: MindReflection[] = [];

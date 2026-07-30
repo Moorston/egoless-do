@@ -1,9 +1,11 @@
+import { addMedMinutesToList } from '../business/meditation';
+import { createLogger } from '../logger';
 import type { MedHistoryEntry } from '../types';
 import { activeOnly, dateStr } from '../utils';
-import { addMedMinutesToList } from '../business/meditation';
-import type { StorageAdapter } from './types';
+
 import type { SliceCreator } from './sliceHelper';
-import { createLogger } from '../logger';
+import type { StorageAdapter } from './types';
+
 const log = createLogger('Store');
 
 export interface MeditationSlice {

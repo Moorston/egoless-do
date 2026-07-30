@@ -1,16 +1,15 @@
 // ─── PreceptHistoryPage ─────────────────────────────────────────
 // 持戒历史记录页
 
-import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr, computeStreak , isPreceptHabit, getPreceptDisplayName, getPreceptType, PRECEPT_PREFIX_AVOID , FONT_LABEL, FONT_SMALL} from '@egoless-do/core';
-import type { Habit } from '@egoless-do/core';
-import { ChevronLeft, ChevronRight, Shield, X, Trash2 } from 'lucide-react-native';
-import React, { useMemo, useState, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr, computeStreak , isPreceptHabit, getPreceptDisplayName, getPreceptType, FONT_LABEL, FONT_SMALL} from '@egoless-do/core';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react-native';
+import React, { useMemo, useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+import { useShallowStore } from '../../store/useAppStore';
 
 const PRECEPT_TAG = '持戒';
 const WEEKDAY_KEYS = ['bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'bodyWeekThu', 'bodyWeekFri', 'bodyWeekSat', 'bodyWeekSun'];
@@ -141,7 +140,7 @@ export default function PreceptHistoryPage() {
                     backgroundColor: day.hasRecord ? '#F59E0B' : day.isToday ? `${TH.primary}30` : 'transparent',
                   }}>
                     <Text style={{ fontSize: FONT_SMALL(), color: day.hasRecord ? '#fff' : TH.text, fontWeight: day.isToday ? '700' : '400' }}>
-                      {parseInt(day.date.split('-')[2])}
+                      {String(parseInt(day.date.split('-')[2]))}
                     </Text>
                   </View>
                 ) : <View style={{ width: 28, height: 28 }} />}
@@ -158,7 +157,6 @@ export default function PreceptHistoryPage() {
               const name = getPreceptDisplayName(h.name);
               const type = getPreceptType(h.name);
               const isAvoid = type === 'avoid';
-              const color = isAvoid ? '#EF4444' : '#10B981';
               const violations = violationReflections.filter(r => r.content.startsWith(name));
               return (
                 <View key={h.id} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: `${TH.border}20` }}>
@@ -166,7 +164,7 @@ export default function PreceptHistoryPage() {
                   <Text style={{ flex: 1, fontSize: FONT_BODY(), color: TH.text, fontWeight: '600' }}>{name}</Text>
                   <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginRight: 8 }}>{String(h.doneDays)}{T('preceptDays')} 🔥{String(h.streak)}</Text>
                   {violations.length > 0 && (
-                    <Text style={{ fontSize: FONT_SMALL(), color: '#EF4444' }}>{T('preceptViolation')}{violations.length}</Text>
+                    <Text style={{ fontSize: FONT_SMALL(), color: '#EF4444' }}>{T('preceptViolation')}{String(violations.length)}</Text>
                   )}
                 </View>
               );

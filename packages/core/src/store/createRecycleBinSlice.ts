@@ -1,9 +1,12 @@
-import type { RecycleBinItem, RecycleBinEntityType, PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory } from '../types';
-import type { RecycleBinSlice, StorageAdapter, FullStore } from './types';
-import type { SyncEntity } from '../sync/entities';
-import type { SliceCreator } from './sliceHelper';
-import { MS_PER_WEEK } from '../utils';
 import { createLogger } from '../logger';
+import type { SyncEntity } from '../sync/entities';
+import type { RecycleBinItem, RecycleBinEntityType, PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory } from '../types';
+import { MS_PER_WEEK } from '../utils';
+
+import type { SliceCreator } from './sliceHelper';
+import type { RecycleBinSlice, StorageAdapter, FullStore } from './types';
+
+
 const log = createLogger('Store');
 
 const EXPIRY_MS = MS_PER_WEEK;

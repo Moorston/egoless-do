@@ -2,12 +2,12 @@ import { COLORS, getPlanItems, PRIORITY_OPTIONS, canDeletePlan, canEditPlan, sta
 import type { PlanItem, PlanItemCheckin, PlanItemStatus, Vision } from '@egoless-do/core';
 import { ChevronDown, ChevronRight, Check, Trash2, Pencil, CircleCheck, Play, Pause, XCircle, ClipboardList, Plus, Link, Repeat, MessageCircle, Route, Target, ListChecks, Link2, BarChart2 } from 'lucide-react-native';
 import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, FlatList, Alert, TextInput, KeyboardAvoidingView, Platform, AppState, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, KeyboardAvoidingView, Platform, AppState, StyleSheet } from 'react-native';
 
 import PlanCountdown from '../../components/PlanCountdown';
 import { Card, useTheme, useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+import { useShallowStore } from '../../store/useAppStore';
 
 import { Heatmap } from './components/Heatmap';
 import { ItemHeatmap } from './components/ItemHeatmap';
@@ -21,7 +21,9 @@ import { useDailyTodo } from './useDailyTodo';
 const EMPTY_CHECKINS: PlanItemCheckin[] = [];
 
 
-export default function PlanDetailContent({ planId, onClose, addReflectionId }: { planId: string; onClose: () => void; addReflectionId?: string }) {
+// PlanDetailContent 为计划详情综合屏幕（任务/热力图/关联感念/历史），拆分子组件成本较高，暂禁用行数限制
+// eslint-disable-next-line max-lines-per-function
+export default function PlanDetailContent({ planId, onClose, addReflectionId: _addReflectionId }: { planId: string; onClose: () => void; addReflectionId?: string }) {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
@@ -60,6 +62,8 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
     detector.check();
     setToday(detector.getCurrent());
     return () => { subscription.remove(); clearInterval(interval); };
+    // detector 为 useRef 稳定引用，无需加入依赖数组
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const plan = useMemo(() => (plans ?? []).find(p => !p.deleted && p.id === planId), [plans, planId]);
@@ -169,12 +173,12 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
   }, [items, reflections, thoughtTrails, plan, planItemIds]);
 
   // getItemEffectiveStatus must be defined before sortedItems/renderItemRow hooks
-  const getItemEffectiveStatus = (item: PlanItem): PlanItemStatus => {
+  const getItemEffectiveStatus = useCallback((item: PlanItem): PlanItemStatus => {
     if (item.status === 'completed') return 'completed';
     if ((itemProgressMap.get(item.id)?.progress ?? 0) >= 100) return 'completed';
     if (item.status === 'in_progress' && item.endDate < today) return 'delayed';
     return item.status;
-  };
+  }, [itemProgressMap, today]);
 
   const sortedItems = useMemo(() => {
     const order: Record<string, number> = { delayed: 0, in_progress: 1, not_started: 2, completed: 3 };
@@ -185,7 +189,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
       if (a.startDate !== b.startDate) return a.startDate.localeCompare(b.startDate);
       return a.endDate.localeCompare(b.endDate);
     });
-  }, [items, today, itemProgressMap]);
+  }, [items, getItemEffectiveStatus]);
 
   const renderItemRow = useCallback(({ item, index }: { item: PlanItem; index: number }) => {
     const prog = itemProgressMap.get(item.id) ?? { doneCount: 0, expectedDays: 0, progress: 0 };
@@ -218,7 +222,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
             <View style={[styles.progressFillItem, { width: `${prog.progress}%`, backgroundColor: P }]} />
           </View>
           <Text style={[styles.textBadgeDim, { color: TH.sub }]}>{prog.doneCount}/{prog.expectedDays}</Text>
-          <Text style={[styles.textBadgeDim, { color: TH.sub }]}>{prog.progress}%</Text>
+          <Text style={[styles.textBadgeDim, { color: TH.sub }]}>{String(prog.progress)}%</Text>
         </View>
         {/* Frequency summary */}
         <Text style={[styles.textFrequency, { color: P }]}>
@@ -442,7 +446,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                 <ListChecks size={18} color={P} />
                 <Text style={[styles.textBodyBold, { color: TH.text }]}>{T('planItems')}</Text>
               </View>
-              <Text style={[styles.textSubDim, { color: TH.sub }]}>{items.length}</Text>
+              <Text style={[styles.textSubDim, { color: TH.sub }]}>{String(items.length)}</Text>
             </View>
             {items.length === 0 ? (
               <Text style={[styles.textNoItems, { color: TH.sub }]}>{T('planNoItems')}</Text>
@@ -483,7 +487,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                       <View style={styles.inlineRowGap4}>
                         <Route size={14} color={P} />
                         <Text style={[styles.textSubDim, { color: TH.sub }]}>
-                          {relatedTrails.length} {T('planRelatedTrails')}
+                          {String(relatedTrails.length)} {T('planRelatedTrails')}
                         </Text>
                       </View>
                     )}
@@ -534,7 +538,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                     >
                       <Text style={[styles.textBodySemiBold, { color: TH.text }]}>{trail.name}</Text>
                       <Text style={[styles.textSubDimMt4, { color: TH.sub }]}>
-                        {(trail.reflectionIds ?? []).length} {T('planTrailReflectionCount')}
+                        {String((trail.reflectionIds ?? []).length)} {T('planTrailReflectionCount')}
                       </Text>
                     </TouchableOpacity>
                   ))}
@@ -631,7 +635,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                     {todayItems.length > 0 && (
                       <View style={styles.groupHeaderRow}>
                         <ClipboardList size={14} color={P} />
-                        <Text style={[styles.textSubSemiBold, { color: TH.text }]}>{T('planTodoList')} ({todayItems.length})</Text>
+                        <Text style={[styles.textSubSemiBold, { color: TH.text }]}>{T('planTodoList')} ({String(todayItems.length)})</Text>
                       </View>
                     )}
                     {todayItems.map((item, i, arr) => {
@@ -676,7 +680,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                     {dailyCustomTodos.length > 0 && (
                       <View style={[styles.customTodoHeaderRow, { borderTopColor: TH.border, borderTopWidth: todayItems.length > 0 ? 1 : 0 }]}>
                         <Pencil size={14} color={P} />
-                        <Text style={[styles.textSubSemiBold, { color: TH.text }]}>{T('planDailyCustomTodos')} ({dailyCustomTodos.length})</Text>
+                        <Text style={[styles.textSubSemiBold, { color: TH.text }]}>{T('planDailyCustomTodos')} ({String(dailyCustomTodos.length)})</Text>
                       </View>
                     )}
                     {/* Custom todos */}
@@ -756,7 +760,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                 <Text style={[styles.textHistoryTitle, { color: TH.text }]}>{T('planTodoHistory')}</Text>
                 {showHistory ? <ChevronDown size={18} color={TH.text} /> : <ChevronRight size={18} color={TH.text} />}
               </View>
-              <Text style={[styles.textSubDim, { color: TH.sub }]}>{historyGroups.length} {T('planDays')}</Text>
+              <Text style={[styles.textSubDim, { color: TH.sub }]}>{String(historyGroups.length)} {T('planDays')}</Text>
             </TouchableOpacity>
 
             {showHistory && (
@@ -768,7 +772,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                       { value: String(historySummary.totalDoneItems), label: T('planTodoDone') },
                     ].map(s => (
                       <View key={s.label} style={styles.historyStatItem}>
-                        <Text style={[styles.textHistoryStatValue, { color: P }]}>{s.value}</Text>
+                        <Text style={[styles.textHistoryStatValue, { color: P }]}>{String(s.value)}</Text>
                         <Text style={[styles.textHistoryStatLabel, { color: TH.sub }]}>{s.label}</Text>
                       </View>
                     ))}

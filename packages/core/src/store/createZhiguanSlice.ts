@@ -1,15 +1,15 @@
 // ─── Zhiguan 止观持久化 slice ──────────────────────────────────
+import { computeZhiguanStats, sortSessionsByDateDesc } from '../business/zhiguanHistory';
+import { createLogger } from '../logger';
 import type {
   ZhiguanSession,
   ZhiguanDraft,
   ZhiguanStats,
-  ZhiguanMethod,
 } from '../types';
 import type { BreathingRecord } from '../types/breath';
-import type { ZhiguanSlice, FullStore } from './types';
+
 import type { SliceCreator } from './sliceHelper';
-import { createLogger } from '../logger';
-import { computeZhiguanStats, sortSessionsByDateDesc } from '../business/zhiguanHistory';
+import type { ZhiguanSlice, FullStore } from './types';
 
 const log = createLogger('Store');
 

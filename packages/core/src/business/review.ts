@@ -4,8 +4,9 @@ import type {
   HabitProgressStat, PlanProgressStat, ReviewMetrics, ReviewComparison,
   CheckinEntry, Habit, Plan, PlanItem, FoodEntry, ExerciseEntry, FastingSession, MedHistoryEntry, GraceHistoryEntry
 } from '../types';
+import { dateStr } from '../utils';
+
 import { INCOMPLETE_REASONS, parseCheckinNote } from './checkin';
-import { uid, dateStr } from '../utils';
 
 /** 输入参数对象 — 替代 calculateReviewData 的 12 个位置参数 */
 export interface ReviewDataInput {
@@ -63,15 +64,6 @@ export function getMonthRange(date: Date): { start: string; end: string } {
     start: formatDate(firstDay),
     end: formatDate(lastDay),
   };
-}
-
-/** 获取日期范围内的天数 */
-function getDaysInRange(start: string, end: string): number {
-  const startDate = parseLocalDate(start);
-  const endDate = parseLocalDate(end);
-  const diffTime = endDate.getTime() - startDate.getTime();
-  if (diffTime < 0) return 0; // Guard: inverted date range
-  return Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1;
 }
 
 /** 获取日期范围内的所有日期 */
@@ -229,40 +221,41 @@ function calculateIncompleteReasons(checkins: CheckinEntry[]): IncompleteReasonS
     .sort((a, b) => b.count - a.count);
 }
 
+type IncompleteCount = { type: 'practice' | 'habit' | 'planItem'; name: string; count: number };
+
+/** Increment counter for a given key, initializing on first sight */
+function bumpCount(map: Record<string, IncompleteCount>, key: string, type: IncompleteCount['type'], name: string) {
+  if (!map[key]) {
+    map[key] = { type, name, count: 0 };
+  }
+  map[key].count++;
+}
+
 /** 计算未完成项统计 */
 function calculateIncompleteItems(
-  checkins: CheckinEntry[], 
+  checkins: CheckinEntry[],
   habits: Habit[], 
   planItems: PlanItem[]
 ): IncompleteItemStat[] {
-  const items: IncompleteItemStat[] = [];
-  const itemCounts: Record<string, { type: 'practice' | 'habit' | 'planItem'; name: string; count: number }> = {};
-  
+  const itemCounts: Record<string, IncompleteCount> = {};
+
   for (const checkin of checkins) {
     if (!checkin.done && checkin.note) {
       const parsed = parseCheckinNote(checkin.note);
-      
+
       // 统计未完成的practices
       const allPractices = ['sit', 'stand', 'chant'];
       const incompletePractices = allPractices.filter(p => !parsed.practices.includes(p));
       for (const practice of incompletePractices) {
         const practiceNames: Record<string, string> = { sit: '早睡', stand: '早起', chant: '冥想' };
-        const key = `practice:${practice}`;
-        if (!itemCounts[key]) {
-          itemCounts[key] = { type: 'practice', name: practiceNames[practice] || practice, count: 0 };
-        }
-        itemCounts[key].count++;
+        bumpCount(itemCounts, `practice:${practice}`, 'practice', practiceNames[practice] || practice);
       }
-      
+
       // 统计未完成的habits
       const activeHabits = habits.filter(h => !h.deleted && h.status === 'inProgress');
       for (const habit of activeHabits) {
         if (!parsed.habits.includes(habit.name)) {
-          const key = `habit:${habit.id}`;
-          if (!itemCounts[key]) {
-            itemCounts[key] = { type: 'habit', name: habit.name, count: 0 };
-          }
-          itemCounts[key].count++;
+          bumpCount(itemCounts, `habit:${habit.id}`, 'habit', habit.name);
         }
       }
 
@@ -271,11 +264,7 @@ function calculateIncompleteItems(
       for (const item of activePlanItems) {
         const completedIds = parsed.planItems.map((p) => typeof p === 'string' ? p : p.id);
         if (!completedIds.includes(item.id)) {
-          const key = `planItem:${item.id}`;
-          if (!itemCounts[key]) {
-            itemCounts[key] = { type: 'planItem', name: item.name, count: 0 };
-          }
-          itemCounts[key].count++;
+          bumpCount(itemCounts, `planItem:${item.id}`, 'planItem', item.name);
         }
       }
     }

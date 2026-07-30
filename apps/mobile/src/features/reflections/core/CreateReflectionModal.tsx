@@ -6,6 +6,8 @@ import {
   View, Text, TextInput, TouchableOpacity, Modal, ScrollView, StyleSheet, Alert, KeyboardAvoidingView, Platform,
 } from 'react-native';
 
+import { Events } from '../../../analytics/events';
+import { track } from '../../../analytics/track';
 import { useTheme, useT } from '../../../components/UI';
 import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 
@@ -64,16 +66,12 @@ export function CreateReflectionModal({ visible, trailId, onClose }: CreateRefle
     });
 
     // PostHog: 感念创建（不含 content/mood 原文）
-    import('../../analytics/track').then(({ track }) => {
-      import('../../analytics/events').then(({ Events }) => {
-        track(Events.REFLECTION_CREATED, {
-          word_count_bucket: content.length < 50 ? 'short' : content.length < 200 ? 'medium' : 'long',
-          has_tags: tags.length > 0,
-          has_mood: !!selectedMood,
-          has_link: !!trailId,
-        });
-      });
-    }).catch(() => {});
+    track(Events.REFLECTION_CREATED, {
+      word_count_bucket: content.length < 50 ? 'short' : content.length < 200 ? 'medium' : 'long',
+      has_tags: tags.length > 0,
+      has_mood: !!selectedMood,
+      has_link: !!trailId,
+    });
 
     // 关联到思维脉络
     if (newR && trailId) {

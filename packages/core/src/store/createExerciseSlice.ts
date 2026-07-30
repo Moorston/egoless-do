@@ -1,9 +1,11 @@
-import type { ExerciseEntry } from '../types';
 import { deleteExerciseFromList } from '../business';
-import { uid } from '../utils';
-import type { StorageAdapter } from './types';
-import type { SliceCreator } from './sliceHelper';
 import { createLogger } from '../logger';
+import type { ExerciseEntry } from '../types';
+import { uid } from '../utils';
+
+import type { SliceCreator } from './sliceHelper';
+import type { StorageAdapter } from './types';
+
 const log = createLogger('Store');
 
 export interface ExerciseSlice {

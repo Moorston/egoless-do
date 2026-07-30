@@ -1,8 +1,8 @@
 import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_BACK, parseCheckinNote , FONT_SMALL } from '@egoless-do/core';
+import { FlashList } from '@shopify/flash-list';
 import { Shield } from 'lucide-react-native';
 import React, { useMemo, useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Alert, ActivityIndicator, StyleSheet } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../../components/UI';

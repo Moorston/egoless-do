@@ -1,18 +1,16 @@
+import { createLogger } from '../logger';
 import type {
-  FearEntry, CourageEntry, FearAchievement, FearClassification, FearCategory,
-  BodyRegion, BodyHeatmap, FearStats, CourageStats, DominantFearType,
-  FearInsight, FearTimeSlot, AchievementType, BodyFearMark,
+  FearEntry, CourageEntry, FearAchievement, FearCategory,
+  BodyHeatmap, FearStats, DominantFearType,
+  FearInsight, FearTimeSlot,
 } from '../types';
-import { ACHIEVEMENT_DEFS } from '../types';
 import { uid, dateStr } from '../utils';
-import type { StorageAdapter } from './types';
-import type { FullStore } from './types';
+
 import type { MindSlice } from './mindSliceTypes';
 import type { SliceCreator } from './sliceHelper';
-import { createLogger } from '../logger';
-const log = createLogger('Store');
+import type { StorageAdapter, FullStore } from './types';
 
-const EMOTIONAL_MOTIVATIONS = new Set(['stress', 'boredom', 'reward', 'comfort', 'craving']);
+const log = createLogger('Store');
 
 function calcStreak(courageEntries: CourageEntry[]): number {
   const active = courageEntries.filter(c => !c.deleted);

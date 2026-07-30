@@ -1,12 +1,13 @@
-import React, { type MutableRefObject } from 'react';
-import TestRenderer, { act } from 'react-test-renderer';
+import React, { type MutableRefObject, act } from 'react';
+import type { ReactTestRenderer } from 'react-test-renderer';
+import TestRenderer from 'react-test-renderer';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // @ts-expect-error — React Native global not available in test env
 globalThis.__DEV__ = false;
 
-const mockGetItem = vi.fn().mockResolvedValue(null);
-const mockSetItem = vi.fn().mockResolvedValue(undefined);
+const mockGetItem = vi.fn<(key: string) => Promise<string | null>>().mockResolvedValue(null);
+const mockSetItem = vi.fn<(key: string, value: string) => Promise<void>>().mockResolvedValue(undefined);
 
 vi.mock('@react-native-async-storage/async-storage', () => ({
   default: { getItem: mockGetItem, setItem: mockSetItem },
@@ -26,7 +27,7 @@ function renderHook<T>(hookFn: () => T): { result: MutableRefObject<T>; unmount:
     return null;
   }
 
-  let renderer: TestRenderer.ReactTestRenderer;
+  let renderer: ReactTestRenderer;
   act(() => {
     renderer = TestRenderer.create(React.createElement(TestComponent));
   });
@@ -51,7 +52,7 @@ describe('useSearchHistory logic', () => {
   it('loads history from AsyncStorage', async () => {
     mockGetItem.mockResolvedValue(JSON.stringify(['q1', 'q2']));
     const raw = await mockGetItem('quickTrailSearchHistory');
-    const history = JSON.parse(raw);
+    const history = JSON.parse(raw as string) as string[];
     expect(history).toEqual(['q1', 'q2']);
   });
 
@@ -87,7 +88,7 @@ describe('useSearchHistory logic', () => {
   it('handles corrupted AsyncStorage data gracefully', async () => {
     mockGetItem.mockResolvedValue('not valid json');
     const raw = await mockGetItem('quickTrailSearchHistory');
-    expect(() => JSON.parse(raw)).toThrow();
+    expect(() => JSON.parse(raw as string)).toThrow();
     // In the real hook, this is caught by try/catch
   });
 
@@ -100,8 +101,7 @@ describe('useSearchHistory logic', () => {
 
 // ─── Hook-level tests via renderHook ─────────────────────────────────────────
 describe('useSearchHistory hook', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let useSearchHistory: any;
+  let useSearchHistory: () => { searchHistory: string[]; addToHistory: (query: string) => void };
 
   beforeEach(async () => {
     vi.clearAllMocks();

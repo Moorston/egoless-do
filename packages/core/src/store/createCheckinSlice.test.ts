@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createCheckinSlice } from './createCheckinSlice';
+import { calculateStreakFromCheckins } from './selectors';
 import { dateStr } from '../utils';
 import type { CheckinEntry } from '../types';
 
@@ -81,29 +82,35 @@ describe('createCheckinSlice', () => {
     it('updates streak', () => {
       const today = dateStr();
       const store = makeTestStore({
-        checkinHistory: [makeCheckin({ date: today, streak: 1 })],
+        checkinHistory: [makeCheckin({ date: today, done: true })],
       });
       const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       slice.submitCheckin(true, '', today);
 
-      expect(store.state().streak).toBeGreaterThanOrEqual(1);
+      // streak 已改为派生状态，通过 selector 计算
+      
+      const streak = calculateStreakFromCheckins(slice.checkinHistory);
+      expect(streak).toBeGreaterThanOrEqual(1);
     });
   });
 
   describe('calculateStreak', () => {
     it('calculates streak from history', () => {
       const today = dateStr();
+      const yesterday = dateStr(new Date(Date.now() - 86400000));
       const store = makeTestStore({
         checkinHistory: [
-          makeCheckin({ date: today, done: true, streak: 1 }),
+          makeCheckin({ date: today, done: true }),
+          makeCheckin({ date: yesterday, done: true }),
         ],
       });
       const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
-      slice.calculateStreak();
-
-      expect(store.state().streak).toBeGreaterThanOrEqual(1);
+      // streak 已改为派生状态
+      
+      const streak = calculateStreakFromCheckins(slice.checkinHistory);
+      expect(streak).toBe(2);
     });
 
     it('ignores deleted entries', () => {
@@ -114,9 +121,9 @@ describe('createCheckinSlice', () => {
       });
       const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
-      slice.calculateStreak();
-
-      expect(store.state().streak).toBe(0);
+      
+      const streak = calculateStreakFromCheckins(slice.checkinHistory);
+      expect(streak).toBe(0);
     });
   });
 

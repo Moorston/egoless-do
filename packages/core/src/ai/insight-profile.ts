@@ -1,13 +1,14 @@
 // ─── Insight Profile: local stats + AI-powered analysis ───
-import type { MindReflection } from '../types/reflection';
 import { getMoodIcon } from '../business/thought-trail';
 import { buildReflectionSummary } from '../business/trail-creation';
-import type { AIResult } from './types';
+import { createLogger } from '../logger';
+import type { MindReflection } from '../types/reflection';
+import { dateStr, activeOnly } from '../utils';
+
 import { getAIService } from './ai-service';
 import { extractJSON, repairJSON } from './json-utils';
 import { isAIRecommendAvailable } from './trail-recommender';
-import { dateStr, activeOnly } from '../utils';
-import { createLogger } from '../logger';
+import type { AIResult } from './types';
 
 const log = createLogger('AI');
 

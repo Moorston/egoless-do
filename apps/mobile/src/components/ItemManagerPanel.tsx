@@ -10,8 +10,6 @@ import {
 } from 'react-native';
 import { FlatList, Swipeable } from 'react-native-gesture-handler';
 
-import { useAppStore } from '../store/useAppStore';
-
 import { useTheme, useT } from './UI';
 
 const ROW_HEIGHT = 56;
@@ -63,12 +61,6 @@ export default function ItemManagerPanel(props: ItemManagerPanelProps) {
   const [editing, setEditing] = useState<{ old: string; new: string } | null>(null);
   const [sortByFreq, setSortByFreq] = useState(false);
 
-  const allOrderedItems = useMemo(() => {
-    const set = new Set<string>();
-    props.sections.forEach(s => s.items.forEach(i => set.add(i)));
-    return Array.from(set);
-  }, [props.sections]);
-
   const inputWords = input.trim().split(/\s+/).filter(Boolean);
   const isTooManyWords = inputWords.length > 4;
   const isMaxItems = props.customItems.length >= 10;
@@ -81,7 +73,7 @@ export default function ItemManagerPanel(props: ItemManagerPanelProps) {
     if (err) { Alert.alert(err); return; }
     props.addItem(fmt);
     setInput('');
-  }, [input, props.formatInput, props.validateInput, props.addItem]);
+  }, [input, props]);
 
   const handleUpdate = useCallback(() => {
     if (editing && editing.new.trim()) {
@@ -113,7 +105,7 @@ export default function ItemManagerPanel(props: ItemManagerPanelProps) {
       ...s,
       items: [...s.items].sort((a, b) => props.getReflectionsContainingItem(b) - props.getReflectionsContainingItem(a)),
     }));
-  }, [props.sections, sortByFreq, props.getReflectionsContainingItem]);
+  }, [props, sortByFreq]);
 
   // Flatten all items for FlatList
   const flatData = useMemo(() => {
@@ -141,7 +133,7 @@ export default function ItemManagerPanel(props: ItemManagerPanelProps) {
     );
   }, [handleDelete, props]);
 
-  const renderItem = useCallback(({ item: itemName, section }: { item: string; section: ManagerSection }) => {
+  const renderItem = useCallback(({ item: itemName, section: _section }: { item: string; section: ManagerSection }) => {
     const isHidden = props.hiddenItems?.includes(itemName) ?? false;
 
     if (editing?.old === itemName) {

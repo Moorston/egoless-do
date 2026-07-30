@@ -10,7 +10,7 @@ import { isValidSqlName } from '../../db/sqlHelper';
 import {
   drainQueue, removeQueueItems, getQueueCount, pruneStaleQueueItems,
   markQueueItemFailed, markQueueItemConflict, markQueueItemRetry, resetAllPendingForRetry,
-  getLastSyncTimestamp, setLastSyncTimestamp,
+  setLastSyncTimestamp,
   type SyncQueueItem,
 } from '../../db/syncQueue';
 import { flushWrites } from '../../store/storageAdapter';
@@ -20,7 +20,10 @@ import { SyncRealtimeController } from './SyncRealtimeController';
 import { SyncRehydrationManager } from './SyncRehydrationManager';
 import { SyncResetService } from './SyncResetService';
 import { SyncTimestampManager } from './SyncTimestampManager';
-import { recoverOrphans, shouldRunOrphanRecovery, type EntityConfig, type GetRowMapperFn } from './orphanRecovery';
+import { recoverOrphans, shouldRunOrphanRecovery, type EntityConfig } from './orphanRecovery';
+
+// 同步引擎含多层重试/冲突/回滚分支，嵌套深度由业务逻辑决定，暂禁用深度限制
+/* eslint-disable max-depth */
 
 const DOMException = (globalThis as Record<string, unknown>).DOMException as typeof Error | undefined
   ?? class DOMException extends Error {

@@ -1,5 +1,5 @@
 // ─── useAppStore tests ───────────────────────────────────────────
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // ── Mock references (hoisted so vi.mock factories can use them) ───
 
@@ -238,7 +238,7 @@ describe('Profile persistence', () => {
   it('persistProfileSettings debounces with 500ms delay', () => {
     // The music sync callback is wired to persistProfileSettings
     expect(mockSetMusicSyncCallback).toHaveBeenCalled();
-    const profilePersistFn = mockSetMusicSyncCallback.mock.calls[0][0];
+    const profilePersistFn = mockSetMusicSyncCallback.mock.calls[0][0] as () => void;
 
     // Set non-default state so flushProfileSettings doesn't early-return
     useAppStore.setState({ waterGoal: 2500 } as Partial<MobileStore>);
@@ -301,6 +301,8 @@ describe('Profile persistence', () => {
         musicFavorites: ['fav1'],
         musicVolume: 0.7,
         musicPlayMode: 'sequential',
+        // expect.any() returns any by vitest design — type-checked at runtime instead
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         updatedAt: expect.any(Number),
       }),
     );
@@ -348,6 +350,8 @@ describe('AI Config persistence', () => {
         config_id: 'self',
         mode: 'advanced',
         models: { gpt: 'gpt-4' },
+        // expect.any() returns any by vitest design — type-checked at runtime instead
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         updatedAt: expect.any(Number),
         deleted: false,
       }),

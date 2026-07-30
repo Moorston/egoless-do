@@ -4,17 +4,16 @@ import React, { useMemo, useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useTheme, useT } from '../../components/UI';
+import { useTheme } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
 import type { RootStackParamList } from '../../navigation/types';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+import { useShallowStore } from '../../store/useAppStore';
 
 export default function MantraHistoryScreen() {
   const route = useRoute<RouteProp<RootStackParamList, 'MantraHistory'>>();
   const { mantraId } = route.params ?? {};
   const nav = useRootNavigation();
   const TH = useTheme();
-  const _T = useT();
   const { mantraDefs, mantraSessions } = useShallowStore(s => ({ mantraDefs: s.mantraDefs, mantraSessions: s.mantraSessions }));
   const [monthOffset, setMonthOffset] = useState(0);
 
@@ -147,15 +146,13 @@ export default function MantraHistoryScreen() {
     return `${d.getMonth() + 1}/${d.getDate()}`;
   }, []);
 
-  const weekdayLabels = ['一', '二', '三', '四', '五', '六', '日'];
-
   const renderItem = useCallback(({ item: group }: { item: [string, typeof sessions] }) => {
     const [monthKey, groupSessions] = group;
     return (
       <View style={styles.groupContainer}>
         <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 8 }}>
-          {parseInt(monthKey.split('-')[0])}年{parseInt(monthKey.split('-')[1])}月
-          <Text style={{ fontSize: FONT_SMALL(), fontWeight: '400', color: TH.sub }}> · {groupSessions.length}次</Text>
+          {String(parseInt(monthKey.split('-')[0]))}年{String(parseInt(monthKey.split('-')[1]))}月
+          <Text style={{ fontSize: FONT_SMALL(), fontWeight: '400', color: TH.sub }}> · {String(groupSessions.length)}次</Text>
         </Text>
         {groupSessions.map(s => (
           <View key={s.id} style={{
@@ -195,10 +192,12 @@ export default function MantraHistoryScreen() {
 
   const keyExtractor = useCallback((item: [string, typeof sessions]) => item[0], []);
 
-  const ListHeaderComponent = useMemo(() => (
-    <>
-      {/* ── StatsCard ── */}
-      <View style={{ borderRadius: 16, borderWidth: 1, borderColor: `${TH.primary}30`, padding: 16, marginBottom: 16 }}>
+  const ListHeaderComponent = useMemo(() => {
+    const weekdayLabels = ['一', '二', '三', '四', '五', '六', '日'];
+    return (
+      <>
+        {/* ── StatsCard ── */}
+        <View style={{ borderRadius: 16, borderWidth: 1, borderColor: `${TH.primary}30`, padding: 16, marginBottom: 16 }}>
         <View style={styles.statsRow}>
           <View style={styles.statItemCenter}>
             <Text style={styles.totalCountNumber}>
@@ -234,7 +233,7 @@ export default function MantraHistoryScreen() {
             <Text style={{ fontSize: FONT_TITLE(), color: TH.sub }}>‹</Text>
           </TouchableOpacity>
           <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
-            {monthYear}年{monthIdx + 1}月
+            {monthYear}年{String(monthIdx + 1)}月
           </Text>
           <TouchableOpacity onPress={() => setMonthOffset(o => Math.min(o + 1, 0))} style={styles.monthNavButton}>
             <Text style={{ fontSize: FONT_TITLE(), color: TH.sub }}>›</Text>
@@ -266,7 +265,7 @@ export default function MantraHistoryScreen() {
                   opacity: day.isFuture ? 0.3 : 1,
                 }}>
                   <Text style={{ fontSize: FONT_SMALL(), color: day.isFuture ? `${TH.sub}60` : TH.text, fontWeight: day.isToday ? '700' : '400' }}>
-                    {parseInt(day.date.split('-')[2])}
+                    {String(parseInt(day.date.split('-')[2]))}
                   </Text>
                 </View>
               ) : <View style={styles.emptyCalendarCell} />}
@@ -275,13 +274,16 @@ export default function MantraHistoryScreen() {
         </View>
       </View>
     </>
-  ), [stats.totalCount, stats.totalSec, stats.avgSec, stats.streak, formatTime, formatShortTime, FONT_BODY(), FONT_SMALL(), TH.primary, TH.text, TH.sub, monthYear, monthIdx, heatmapData, weekdayLabels]);
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- FONT_BODY()/FONT_SMALL() are stable theme functions
+  }, [stats.totalCount, stats.totalSec, stats.avgSec, stats.streak, formatTime, formatShortTime, FONT_BODY(), FONT_SMALL(), TH.primary, TH.text, TH.sub, monthYear, monthIdx, heatmapData]);
 
   const ListEmptyComponent = useMemo(() => (
     <View style={styles.emptyStateContainer}>
       <Text style={styles.emptyStateEmoji}>📿</Text>
       <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>暂无持咒记录</Text>
     </View>
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- FONT_BODY() is a stable theme function
   ), [FONT_BODY(), TH.sub]);
 
   return (

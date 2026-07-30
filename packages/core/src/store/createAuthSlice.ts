@@ -1,12 +1,14 @@
-import type { AuthSlice, StorageAdapter } from './types';
-import type { SliceCreator } from './sliceHelper';
-import { defaultAuthState } from '../types';
-import { apiLogin, apiRegister, apiLogout, apiRefreshToken, apiSyncPull, apiVerifyMFALogin, MFARequiredError } from '../auth';
-import { createLogger } from '../logger';
 import { resetAIService } from '../ai/ai-service';
 import { clearAICaches } from '../ai/trail-recommender';
+import { apiLogin, apiRegister, apiLogout, apiRefreshToken, apiSyncPull, apiVerifyMFALogin, MFARequiredError } from '../auth';
 import { NetworkError } from '../fetch';
+import { createLogger } from '../logger';
+import { defaultAuthState } from '../types';
+
 import { buildMergePatch } from './mergeEngine';
+import type { SliceCreator } from './sliceHelper';
+import type { AuthSlice, StorageAdapter } from './types';
+
 const log = createLogger('Store');
 
 export function createAuthSlice(

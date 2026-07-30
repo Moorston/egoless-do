@@ -1,9 +1,8 @@
 // ─── Trail creation: recommendation algorithms + keyword matching ───
+import { createLogger } from '../logger';
 import type { MindReflection } from '../types/reflection';
 import type { ThoughtTrail } from '../types/thought-trail';
-import { createLogger } from '../logger';
 import { formatDate } from '../utils';
-import { getMoodIcon } from './thought-trail';
 
 const log = createLogger('TrailCreation');
 
@@ -127,7 +126,7 @@ export function computeCandidatePool(
 
 export function computeRecommendations(
   candidates: MindReflection[],
-  allTrails: ThoughtTrail[],
+  _allTrails: ThoughtTrail[],
 ): TrailRecommendation[] {
   if (candidates.length < 3) return [];
   const recs: TrailRecommendation[] = [];
@@ -375,7 +374,6 @@ export function generateNarrativeName(refs: MindReflection[]): string {
 }
 
 function generateTagNarrative(tag: string, refs: MindReflection[]): string {
-  const uniqueMoods = new Set(refs.map(r => r.mood)).size;
   const trend = computeMoodTrendSimple(refs);
   const trendText = trend === 'up' ? '逐渐好转' : trend === 'down' ? '有所波动' : '保持平稳';
   return `${tag}相关的情绪起伏和成长，整体${trendText}`;

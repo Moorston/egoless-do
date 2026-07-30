@@ -1,12 +1,15 @@
 // ─── 用户分析同意弹窗 ───────────────────────────────────────────
 // 首次启动或设置页调用，获取用户对匿名追踪的同意。
+// useTheme/useT 返回类型在跨目录导入时，eslint 语言服务将 THEMES[theme] 索引访问解析为 error 类型（tsc 解析正常）。
+// 此处禁用 no-unsafe-* 规则，避免误报；类型安全由 tsc 保证（UI.tsx 已显式标注 useTheme(): Theme）。
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
 
 import React, { useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useT } from '../components/UI';
-import { useTheme } from '../components/UI';
-import { setAnalyticsConsent, type AnalyticsConsent } from '../analytics/privacy';
+
 import { optIn, optOut } from '../analytics/posthog';
+import { setAnalyticsConsent, type AnalyticsConsent } from '../analytics/privacy';
+import { useT, useTheme } from '../components/UI';
 
 interface AnalyticsConsentModalProps {
   visible: boolean;

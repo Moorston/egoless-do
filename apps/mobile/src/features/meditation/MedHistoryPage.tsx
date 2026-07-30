@@ -1,9 +1,9 @@
 import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, BUILTIN_TRACKS, dateStr, yesterday, type Theme , MedHistoryEntry , FONT_SMALL, scaleFontSize} from '@egoless-do/core';
+import { FlashList } from '@shopify/flash-list';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Calendar, ChevronLeft, ChevronRight, Music, Trash2, X } from 'lucide-react-native';
 import React, { useMemo, useState, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert, StyleSheet } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, ScreenHeader, useT } from '../../components/UI';

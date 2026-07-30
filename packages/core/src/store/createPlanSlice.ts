@@ -1,6 +1,3 @@
-import type { Plan, PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory, PlanItemSource, UnifiedPlanItemForm, RecycleBinItem, ThoughtTrail } from '../types';
-import type { MindReflection } from '../types/reflection';
-import type { SyncEntity } from '../sync/entities';
 import {
   addPlan, updatePlan, deletePlan, canDeletePlan,
   startPlan, pausePlan, resumePlan, completePlan, cancelPlan,
@@ -14,18 +11,23 @@ import {
   saveDailyTodoHistory as saveDailyTodoHistoryBiz,
   getActivePlan as getActivePlanBiz,
   createPlanItem as createPlanItemBiz,
-  createPlanItemFromReflection as createPlanItemFromReflectionBiz,
   canArchivePlan as canArchivePlanBiz,
   unlinkAllReflectionsFromPlan as unlinkAllReflectionsFromPlanBiz,
 } from '../business/plan';
 import {
   linkReflectionToPlanItem,
 } from '../business/reflections';
-import { uid, dateStr, activeOnly, parseDateParts } from '../utils';
-import type { StorageAdapter, PlanSlice, FullStore } from './types';
-import type { SliceCreator } from './sliceHelper';
 import { createLogger } from '../logger';
 import { notifyDelayedPlan } from '../services/notification';
+import type { SyncEntity } from '../sync/entities';
+import type { Plan, PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory, PlanItemSource, UnifiedPlanItemForm, RecycleBinItem, ThoughtTrail } from '../types';
+import type { MindReflection } from '../types/reflection';
+import { uid, dateStr, activeOnly, parseDateParts } from '../utils';
+
+import type { SliceCreator } from './sliceHelper';
+import type { StorageAdapter, PlanSlice, FullStore } from './types';
+
+
 const log = createLogger('Store');
 
 // ═══════════════════════════════════════════════════════════════════
@@ -117,9 +119,11 @@ async function persistCascade(adapter: StorageAdapter, batchOps: Array<{ entity:
   for (const t of trails) adapter.persistChange('thoughtTrail', t.id, t).catch((e: unknown) => log.error(e));
 }
 
+// eslint-disable-next-line max-lines-per-function -- plan slice groups cohesive CRUD; splitting would fragment logic
 export function createPlanSlice(
   adapter: StorageAdapter,
 ): SliceCreator<PlanSlice> {
+  // eslint-disable-next-line max-lines-per-function -- arrow body groups cohesive CRUD state
   return (set, get) => ({
     plans: [],
     planItems: [],
@@ -159,7 +163,7 @@ export function createPlanSlice(
     async deletePlan(id) {
       const cascade = computeCascadeDelete(get, 'plan', id);
       if (!cascade) return;
-      const { plan, deletedItemIds, deletedCheckinIds, updatedReflections, updatedTrails, now, recycleEntry } = cascade;
+      const { deletedItemIds, deletedCheckinIds, updatedReflections, updatedTrails, now, recycleEntry } = cascade;
       const updatedReflectionIds = new Set(updatedReflections.map(r => r.id));
       const updatedTrailIds = new Set(updatedTrails.map(t => t.id));
 

@@ -1,4 +1,4 @@
-import { COLORS, FOOD_PRESETS, WUXING_MAP, WUXING_ELEMENT_CONFIG, FLAVOR_CONFIG, EATING_MOTIVATIONS, FONT_TITLE, FONT_BUTTON, FONT_LABEL, FONT_BADGE, FONT_BODY, FONT_SUB, FONT_EMPTY, FONT_STAT_SECTION, FONT_BACK, dateStr , FONT_SMALL } from '@egoless-do/core';
+import { COLORS, FOOD_PRESETS, WUXING_MAP, WUXING_ELEMENT_CONFIG, EATING_MOTIVATIONS, FONT_TITLE, FONT_BUTTON, FONT_LABEL, FONT_BADGE, FONT_BODY, FONT_SUB, FONT_EMPTY, FONT_STAT_SECTION, FONT_BACK, dateStr, FONT_SMALL } from '@egoless-do/core';
 import type { WuxingElement, FlavorType, FoodWuxingItem } from '@egoless-do/core';
 import {
   Star, ChevronLeft, X, Search,
@@ -7,7 +7,7 @@ import {
 import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Animated,
-  KeyboardAvoidingView, Keyboard, Platform, StyleSheet,
+  KeyboardAvoidingView, Platform, StyleSheet,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -26,6 +26,7 @@ interface Props {
   onFoodAdded?: () => void;
 }
 
+// eslint-disable-next-line max-lines-per-function -- large modal component; splitting into sub-components is a separate refactor
 export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
   const TH = useTheme();
   const T  = useT();
@@ -236,7 +237,7 @@ export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
               {search.trim() && wuxingResults.length > 0 && (
                 <View style={styles.wuxingSection}>
                   <Text style={[styles.wuxingSectionTitle, { color: TH.text }]}>
-                    {T('dietWuxingLookup') || '五行食材'} ({wuxingResults.length})
+                    {`${T('dietWuxingLookup') || '五行食材'} (${wuxingResults.length})`}
                   </Text>
                   {wuxingResults.map(item => (
                     <TouchableOpacity key={item.foodKey}
@@ -337,7 +338,7 @@ export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
                   <View style={styles.totalCalRow}>
                     <Text style={[styles.totalCalLabel, { color: TH.sub }]}>{T('foodTotalCal')}</Text>
                     <Text style={styles.totalCalValue}>
-                      {Math.round(editing.cal * portion)} <Text style={[styles.totalCalUnit, { color: TH.sub }]}>kcal</Text>
+                      {`${Math.round(editing.cal * portion)}`} <Text style={[styles.totalCalUnit, { color: TH.sub }]}>kcal</Text>
                     </Text>
                   </View>
                 </>

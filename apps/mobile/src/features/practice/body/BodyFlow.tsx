@@ -71,15 +71,13 @@ function ExercisePicker({ TH, T, onSelect }: { TH: Theme; T: (key: string) => st
   );
 }
 
+// eslint-disable-next-line max-lines-per-function -- body flow keeps practice/breathing/success steps together
 export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, todayOverride, todayExercises, store, onGoToSport, onGoToBreathing }: FlowProps) {
   const {
     flowState,
     setStep,
-    markPracticeDone,
-    markBreathingDone,
     saveAwareness,
     setSelectedSport,
-    resetFlow,
   } = useBodyFlowState();
 
   // 单一状态源：优先使用 store，否则本地
@@ -215,7 +213,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
       };
     }
     return null;
-  }, [trainingPlanTask, todayPlan]);
+  }, [trainingPlanTask, todayPlan, todayOverride, T]);
 
   const handleSaveCheckin = useCallback((data: Omit<BodyCheckin, 'id' | 'updatedAt' | 'deleted' | 'synced'>) => {
     store.upsertBodyCheckin(data);
@@ -282,13 +280,13 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
                     {flowState?.totalDurationSec ? (
                       <View style={{ flex: 1, alignItems: 'center' }}>
                         <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.text }}>
-                          {Math.floor(flowState.totalDurationSec / 60)}:{String(flowState.totalDurationSec % 60).padStart(2, '0')}
+                          {`${Math.floor(flowState.totalDurationSec / 60)}:${String(flowState.totalDurationSec % 60).padStart(2, '0')}`}
                         </Text>
                         <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyFlowTotalTime')}</Text>
                       </View>
                     ) : null}
                     <View style={{ flex: 1, alignItems: 'center' }}>
-                      <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.text }}>{flowState?.comboExercises?.length ?? flowState?.practiceExercises?.length ?? planExercises.length}</Text>
+                      <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.text }}>{String(flowState?.comboExercises?.length ?? flowState?.practiceExercises?.length ?? planExercises.length)}</Text>
                       <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyPlanUnitExercise')}</Text>
                     </View>
                     {flowState?.totalCalories ? (
@@ -307,7 +305,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
                         <Text style={{ fontSize: 20 }}>{ex.icon}</Text>
                         <Text style={{ fontSize: FONT_BODY(), color: TH.text, flex: 1 }} numberOfLines={1}>{ex.nameZh || ex.sportKey}</Text>
                         <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
-                          {Math.floor(ex.durationSec / 60)}:{(ex.durationSec % 60).toString().padStart(2, '0')}
+                          {`${Math.floor(ex.durationSec / 60)}:${(ex.durationSec % 60).toString().padStart(2, '0')}`}
                         </Text>
                         <Text style={{ fontSize: FONT_SMALL(), color: '#10b981' }}>✓ {T('bodyCompleted')}</Text>
                       </View>
@@ -319,7 +317,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, t
                       <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4, borderBottomWidth: i < flowState.practiceExercises!.length - 1 ? 1 : 0, borderBottomColor: `${TH.border}50` }}>
                         <Text style={{ fontSize: 20 }}>{ex.icon}</Text>
                         <Text style={{ fontSize: FONT_BODY(), color: TH.text, flex: 1 }} numberOfLines={1}>{ex.nameZh || ex.sportKey}</Text>
-                        {ex.reps > 0 && <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{ex.reps} reps</Text>}
+                        {ex.reps > 0 && <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{String(ex.reps)} reps</Text>}
                         <Text style={{ fontSize: FONT_SMALL(), color: '#10b981' }}>✓ {T('bodyCompleted')}</Text>
                       </View>
                     ))}

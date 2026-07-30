@@ -1,4 +1,4 @@
-import { COLORS, FONT_HERO, FONT_SUB, FONT_STAT_CARD, FONT_BODY, FONT_STAT_SECTION, FONT_CLOSE, fmt } from '@egoless-do/core';
+import { COLORS, FONT_HERO, FONT_SUB, FONT_STAT_CARD, FONT_BODY, FONT_STAT_SECTION } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Pause } from 'lucide-react-native';
 import React from 'react';
@@ -13,8 +13,8 @@ import type { ExerciseLayoutProps } from './types';
 
 export default function MeditativeActive(props: ExerciseLayoutProps) {
   const {
-    icon, sportName, sec, mode, targetType, targetValue, targetProgress, targetInfo,
-    isResting, restSec, skipRest, sets, currentSet,
+    icon, sportName, sec, mode, targetProgress, targetInfo,
+    isResting, restSec, skipRest, sets,
     selectedSound, showSoundPicker, onToggleSoundPicker, onSelectSound,
     breathGuideEnabled, breathPhase, breathAnim,
     handlePause, onPressInPauseLong, onPressOutPauseLong, pauseHoldAnim,
@@ -73,7 +73,7 @@ export default function MeditativeActive(props: ExerciseLayoutProps) {
           </View>
         ) : (
           <>
-            <Text style={{ fontSize: FONT_HERO(), fontWeight: '900', color: '#fff' }}>{Math.floor(sec / 60)}:{String(sec % 60).padStart(2, '0')}</Text>
+            <Text style={{ fontSize: FONT_HERO(), fontWeight: '900', color: '#fff' }}>{`${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`}</Text>
             <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.65)', marginTop: 6 }}>min</Text>
           </>
         )}
@@ -85,7 +85,7 @@ export default function MeditativeActive(props: ExerciseLayoutProps) {
               <View style={{ height: 6, width: `${Math.min(targetProgress * 100, 100)}%`, backgroundColor: COLORS.GREEN, borderRadius: 3 }} />
             </View>
             <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.7)', marginTop: 4, textAlign: 'center' }}>
-              {Math.round(targetProgress * 100)}%
+              {`${Math.round(targetProgress * 100)}%`}
             </Text>
           </View>
         )}
@@ -95,7 +95,7 @@ export default function MeditativeActive(props: ExerciseLayoutProps) {
       <View style={{ paddingBottom: 48, paddingHorizontal: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <View style={{ alignItems: 'center', flex: 1 }}>
           <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color: '#fff', fontVariant: ['tabular-nums'] }}>
-            {Math.floor(sec / 60)}:{String(sec % 60).padStart(2, '0')}
+            {`${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`}
           </Text>
           <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('exerciseDuration')}</Text>
         </View>

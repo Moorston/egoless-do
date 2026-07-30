@@ -10,7 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+import { useShallowStore } from '../../store/useAppStore';
 
 import VisionCard from './components/VisionCard';
 import VisionEditModal from './modals/VisionEditModal';
@@ -40,9 +40,9 @@ export default function VowScreen() {
   const [editingVision, setEditingVision] = useState<Vision | null>(null);
   const [filterStatus, setFilterStatus] = useState<VisionStatus | 'all'>('active');
 
-  const plans = plansRaw ?? [];
-  const planItems = planItemsRaw ?? [];
-  const habits = habitsRaw ?? [];
+  const plans = useMemo(() => plansRaw ?? [], [plansRaw]);
+  const planItems = useMemo(() => planItemsRaw ?? [], [planItemsRaw]);
+  const habits = useMemo(() => habitsRaw ?? [], [habitsRaw]);
 
   const visions = useMemo(() =>
     (visionsRaw ?? []).filter(v => !v.deleted && (filterStatus === 'all' || v.status === filterStatus)),
@@ -237,7 +237,7 @@ export default function VowScreen() {
                 <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>
                   {T(type === 'lifetime' ? 'vowLifetime' : type === 'long' ? 'vowLong' : 'vowShort')}
                 </Text>
-                <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{items.length}</Text>
+                <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{`${items.length}`}</Text>
               </View>
               {items.map(v => {
                 const linked = plans.filter((p: Plan) => !p.deleted && p.visionId === v.id);

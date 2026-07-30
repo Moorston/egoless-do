@@ -16,7 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../../components/UI';
 import type { RootStackParamList } from '../../../navigation/types';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import { useShallowStore } from '../../../store/useAppStore';
 import { FilterTags } from '../core/FilterTags';
 import { useQuickTrailSearch, type TimeRange } from '../hooks/useQuickTrailSearch';
 import { AIAnalysisStream, createAnalysisMessages } from '../insights/AIAnalysisStream';
@@ -33,6 +33,9 @@ const TIME_RANGE_OPTIONS: { key: TimeRange; labelKey: string }[] = [
   { key: 'all', labelKey: 'allTime' },
 ];
 
+// QuickCreateTrailScreen is a large stateful screen (selection/preview/AI flows).
+// Splitting it would fragment related state and handlers. Allowed to exceed limit.
+// eslint-disable-next-line max-lines-per-function
 export default function QuickCreateTrailScreen() {
   const TH = useTheme();
   const T = useT();
@@ -103,7 +106,7 @@ export default function QuickCreateTrailScreen() {
     } else if (selectedIds.size === 0) {
       setTrailName('');
     }
-  }, [selectedIds.size, selectedReflections, trailName, T]);
+  }, [selectedIds.size, selectedReflections, trailName, T, setTrailName]);
 
   // ── Component-level handlers ──────────────────────────────────
   const toggleSelect = useCallback((id: string) => {
@@ -573,7 +576,7 @@ export default function QuickCreateTrailScreen() {
             <View style={styles.previewSection}>
               <View style={[styles.rowBetween, { marginBottom: 12 }]}>
                 <Text style={[styles.bodyBold, { color: TH.text }]}>
-                  已选感念 · {selectedIds.size}{T('quickTrailReflections')}
+                  已选感念 · {`${selectedIds.size}`}{T('quickTrailReflections')}
                 </Text>
                 <TouchableOpacity
                   onPress={() => { setShowPreview(false); }}
@@ -663,7 +666,7 @@ export default function QuickCreateTrailScreen() {
 
               <View style={[styles.rowBetween, { marginBottom: 12 }]}>
                 <Text style={[styles.bodyBold, { color: TH.text }]}>
-                  {T('quickTrailMatch')} · {matchResults.length}{T('quickTrailReflections')}
+                  {T('quickTrailMatch')} · {`${matchResults.length}`}{T('quickTrailReflections')}
                 </Text>
               </View>
 

@@ -1,10 +1,10 @@
 // ─── Migration tests ────────────────────────────────────────────
+/* eslint-disable @typescript-eslint/no-explicit-any -- test mocks use any for in-memory DB/shim types */
+import * as SQLite from 'expo-sqlite';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // @ts-expect-error — React Native global not available in test env
 globalThis.__DEV__ = false;
-
-import * as SQLite from 'expo-sqlite';
 
 // In-memory DB store
 const memoryDb = new Map<string, string>();

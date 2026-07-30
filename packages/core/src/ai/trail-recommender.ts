@@ -1,16 +1,17 @@
+import { createLogger } from '../logger';
+import type { MindReflection } from '../types/reflection';
 import { activeOnly } from '../utils';
+
 // ─── AI Trail Recommender: RAG + 分批并发 ──────────────────────────
-import type { AIResult, ModelConfig, AIMode } from './types';
 import { getAIService } from './ai-service';
 import { extractJSON } from './json-utils';
-import { buildReflectionSummary } from '../business/trail-creation';
-import type { MindReflection } from '../types/reflection';
+import { AICache, generateCacheKey } from './rag/cache';
 import type { ReflectionIndex } from './rag/indexer';
 import { buildIndex } from './rag/indexer';
-import { retrieveTopK } from './rag/retriever';
 import { buildRecommendPrompt, buildQueryParsePrompt } from './rag/prompt-builder';
-import { AICache, generateCacheKey } from './rag/cache';
-import { createLogger } from '../logger';
+import { retrieveTopK } from './rag/retriever';
+import type { AIResult } from './types';
+
 
 const log = createLogger('AI');
 
@@ -119,12 +120,6 @@ async function withAbortTimeout<T>(
 }
 
 // ─── 通用分批 AI 调用 ────────────────────────────────────────────────
-
-interface BatchResult<T> {
-  data: T;
-  batchIdx: number;
-}
-
 /**
  * 通用分批 AI 调用。
  * 如果 prompt <= threshold，单次调用；否则按 batchSize 分批并发。
@@ -367,7 +362,7 @@ export async function semanticSearchReflections(
   try {
     const outputs = await batchedAIGenerate(
       targetReflections,
-      (batch, batchIdx) => {
+      (batch, _batchIdx) => {
         const reflLines = batch
           .map((r, i) => {
             const content = r.content.length > 60 ? r.content.slice(0, 60) + '...' : r.content;

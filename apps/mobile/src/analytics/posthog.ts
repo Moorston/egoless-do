@@ -2,6 +2,7 @@
 // 单例模式：initPostHog() 一次，getPostHog() 全局获取。
 
 import PostHog, { type PostHogOptions } from 'posthog-react-native';
+
 import { getAnalyticsConsent, setAnalyticsConsent } from './privacy';
 
 let posthogInstance: PostHog | null = null;

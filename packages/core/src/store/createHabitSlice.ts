@@ -1,15 +1,17 @@
-import type { Habit } from '../types';
 import {
-  addHabitToList, updateHabitInList, deleteHabitFromList,
+  updateHabitInList, deleteHabitFromList,
   checkinHabitInList, changeHabitStatusInList, checkAutoStatus,
   syncHabitsFromModules,
   createHabitFromForm,
   type CreateHabitForm,
 } from '../business/habits';
-import { dateStr } from '../utils';
-import type { StorageAdapter, HabitSlice } from './types';
-import type { SliceCreator } from './sliceHelper';
 import { createLogger } from '../logger';
+import type { Habit } from '../types';
+import { dateStr } from '../utils';
+
+import type { SliceCreator } from './sliceHelper';
+import type { StorageAdapter, HabitSlice } from './types';
+
 const log = createLogger('Store');
 
 export function createHabitSlice(

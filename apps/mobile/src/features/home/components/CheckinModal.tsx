@@ -1,19 +1,18 @@
-import { COLORS, dateStr, getTodayFoodLog, getActivePlan, getTodayItems, getTodayCustomTodos, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_BADGE, getIncompleteItems, INCOMPLETE_REASONS, parseCheckinNote } from '@egoless-do/core';
+import { COLORS, dateStr, getTodayFoodLog, getActivePlan, getTodayItems, getTodayCustomTodos, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, getIncompleteItems, INCOMPLETE_REASONS, parseCheckinNote } from '@egoless-do/core';
 import type { CheckinEntry, PlanItem, DailyCustomTodo, Habit } from '@egoless-do/core';
-import { LinearGradient } from 'expo-linear-gradient';
 import {
-  Utensils, Droplets, Scale, Star, PersonStanding, Sparkles,
-  ClipboardList, CheckCircle2, Circle, X, Check, Shield,
+  Utensils, Droplets, Scale, Sparkles,
+  ClipboardList, CheckCircle2, X, Check, Shield,
   Moon, Sunrise, Brain,
 } from 'lucide-react-native';
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
   View, Text, Modal, ScrollView, FlatList, TouchableOpacity, TextInput,
   KeyboardAvoidingView, Platform, StyleSheet,
 } from 'react-native';
 
-import { useTheme, useT, Checkbox, ThemedInput, PrimaryButton, OutlineButton } from '../../../components/UI';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import { useTheme, useT, Checkbox, ThemedInput } from '../../../components/UI';
+import { useShallowStore } from '../../../store/useAppStore';
 
 
 import CheckinReflection from './CheckinReflection';
@@ -25,6 +24,7 @@ function parseWeight(raw: string | undefined): number | undefined {
   return Number.isFinite(n) && n > 0 && n <= 500 ? n : undefined;
 }
 
+// eslint-disable-next-line max-lines-per-function -- CheckinModal is a single-scroll multi-section dialog; splitting would fragment the checkin flow
 export default function CheckinModal({ onClose, graceDate }: { onClose: () => void; graceDate?: string }) {
   const TH    = useTheme();
   const T     = useT();
@@ -202,7 +202,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
     }
     setLocalDone(true);
     submit(undefined, undefined, true);
-  }, [isGraceMode, practices, store, todayPlanItems, planCheckins, targetDate, submit]);
+  }, [isGraceMode, store, todayPlanItems, planCheckins, targetDate, submit]);
 
   const confirmDoneWithReason = useCallback(() => {
     if (!selectedReason || !reasonNote.trim()) return;
@@ -743,20 +743,3 @@ const styles = StyleSheet.create({
   },
   reasonOptionBtn: { paddingHorizontal: 14, paddingVertical: 10, borderRadius: 12, borderWidth: 1.5 },
 });
-
-function RowItem({ label, icon, right, last }: { label:string; icon:React.ReactNode; right:React.ReactNode; last?:boolean }) {
-  const TH = useTheme();
-  return (
-    <View style={{
-      flexDirection:'row', alignItems:'center', justifyContent:'space-between',
-      paddingVertical:13,
-      borderBottomWidth: last ? 0 : 1, borderBottomColor: TH.border,
-    }}>
-      <View style={{ flexDirection:'row', alignItems:'center', gap:10 }}>
-        {typeof icon === 'string' ? <Text style={{ fontSize:FONT_TITLE() }}>{icon}</Text> : icon}
-        <Text style={{ color:TH.text, fontSize:FONT_BODY() }}>{label}</Text>
-      </View>
-      {right}
-    </View>
-  );
-}

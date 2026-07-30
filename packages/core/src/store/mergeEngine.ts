@@ -3,7 +3,6 @@
 
 import { mergeById } from '../sync/merge';
 import { activeOnly } from '../utils';
-import type { SyncEntity } from '../sync/entities';
 
 // ── Entity merge map: [syncKey, storeKey, mergeKey]
 export const ENTITY_MERGE_MAP: Array<[string, string, string]> = [
@@ -79,6 +78,7 @@ export function buildMergePatch(
       }
       const p = profileData as Record<string, unknown>;
       const SETTINGS_KEYS = ['calGoal', 'customFoodPresets', 'theme', 'language', 'remindEnabled', 'remindTime', 'customTags', 'customMoods', 'allTagsOrder', 'allMoodsOrder'] as const;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars -- destructured to omit settings keys from the rest spread
       const { calGoal: _cg, customFoodPresets: _cfp, theme: _th, language: _lg, remindEnabled: _re, remindTime: _rt, customTags: _ct, customMoods: _cm, allTagsOrder: _ato, allMoodsOrder: _amo, ...profileDataWithoutSettings } = p;
       patch.userProfile = { ...((s.userProfile as Record<string, unknown>) ?? {}), ...profileDataWithoutSettings };
       if (p.waterMl !== undefined) patch.waterMl = p.waterMl;
@@ -88,6 +88,7 @@ export function buildMergePatch(
       const serverUpdated = ((latest as Record<string, unknown>).updatedAt as number) ?? 0;
       if (serverUpdated >= localUpdated) {
         for (const sk of SETTINGS_KEYS) {
+          // eslint-disable-next-line max-depth -- shallow conditional inside loop body
           if (p[sk] !== undefined) (patch as Record<string, unknown>)[sk] = p[sk];
         }
       }

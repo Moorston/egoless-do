@@ -1,15 +1,16 @@
 // ─── AI Service ────────────────────────────────────────────────
+import { buildReviewPrompt, parseReviewAIResponse } from '../business/review';
+import { createLogger } from '../logger';
+import type { CheckinReview } from '../types';
+
+import { createProvider, testConnection } from './cloud-providers';
+import type { CloudProvider } from './cloud-providers';
+import { LocalAIEngine } from './local-engine';
 import type {
   AIConfig, AIResult, ModelConfig, AIMode,
   TagSuggestion, MoodDetection, TrailInsight,
   ReviewGuide, GenerateOptions
 } from './types';
-import type { CheckinReview } from '../types';
-import { buildReviewPrompt, parseReviewAIResponse } from '../business/review';
-import { LocalAIEngine } from './local-engine';
-import { createProvider, testConnection } from './cloud-providers';
-import type { CloudProvider } from './cloud-providers';
-import { createLogger } from '../logger';
 
 const log = createLogger('AI');
 

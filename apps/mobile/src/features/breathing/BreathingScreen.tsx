@@ -1,14 +1,14 @@
 // ─── BreathingScreen — Lightweight entry point ──────────────────
-import { track } from '../../../analytics/track';
-import { Events } from '../../../analytics/events';
 // Shows the preset selection page immediately (zero native module deps).
 // Lazy-loads BreathingEngine when user starts a session.
-import { FONT_TITLE, FONT_BODY, FONT_SUB, createLogger, fmtMS , BREATHING_PRESETS, cycleDuration, getDescKey , FONT_STAT_SECTION } from '@egoless-do/core';
-import type { BreathingPreset, GuideStyle , Theme } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, createLogger, fmtMS, BREATHING_PRESETS, cycleDuration, getDescKey, FONT_STAT_SECTION } from '@egoless-do/core';
+import type { BreathingPreset, GuideStyle, Theme } from '@egoless-do/core';
 import { ChevronRight } from 'lucide-react-native';
 import React, { useState, useCallback, useEffect, lazy, Suspense, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 
+import { Events } from '../../../analytics/events';
+import { track } from '../../../analytics/track';
 import { useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../navigation/hooks';
@@ -72,6 +72,7 @@ export default function BreathingScreen() {
     if (completed) {
       nav.navigate('Body', { breathingResult: { completed: true, durationMs: durationMs ?? 0 } });
       // PostHog: 呼吸练习完成
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- analytics module graph has a circular import; TS resolves track/Events to the error type
       track(Events.BREATH_COMPLETED, {
         preset_key: selectedPreset?.key || 'custom',
         cycles: cycleCountRef.current || 0,
@@ -79,7 +80,7 @@ export default function BreathingScreen() {
     }
     setStarted(false);
     setSelectedPreset(null);
-  }, [nav, setBodyFlowState]);
+  }, [nav, selectedPreset?.key, setBodyFlowState]);
 
   // Engine mode — lazy-loaded
   if (started && selectedPreset) {

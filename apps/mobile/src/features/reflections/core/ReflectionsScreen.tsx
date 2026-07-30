@@ -24,10 +24,12 @@ import { safeGetItem, safeSetItem } from '../../../store/safeAsyncStorage';
 import { useAppStore, useShallowStore, type MobileStore } from '../../../store/useAppStore';
 import { useReflections } from '../hooks/useReflections';
 import MindTrailEntryCard from '../trails/MindTrailEntryCard';
+import TrailPickerModal from '../trails/TrailPickerModal';
 import TrailSuggestionBanner from '../trails/TrailSuggestionBanner';
 
 import { CreatePlanFromReflectionModal } from './CreatePlanFromReflectionModal';
 import FilterDrawer from './FilterDrawer';
+import ReflectionDetailContent from './ReflectionDetailContent';
 import ReflectionForm from './ReflectionForm';
 import SearchFilterBar from './SearchFilterBar';
 import ShareCard from './ShareCard';
@@ -38,10 +40,6 @@ import ShareCard from './ShareCard';
 
 
 const log = createLogger('Reflections');
-
-import TrailPickerModal from '../trails/TrailPickerModal';
-
-import ReflectionDetailContent from './ReflectionDetailContent';
 
 // ═══════════════════════════════════════════════════════════════
 // Section 0: Helper Functions
@@ -104,6 +102,7 @@ function getManagerProps(
 }
 
 // ── ReflectionsScreen ────────────────────────────────────────────
+// eslint-disable-next-line max-lines-per-function -- large screen component; splitting into sub-components is a separate refactor
 export default function ReflectionsScreen() {
   // ═══════════════════════════════════════════════════════════════
   // Section 1: Store Data & Navigation
@@ -216,7 +215,7 @@ export default function ReflectionsScreen() {
       setShowNew(true);
       nav.setParams({ showNew: false });
     }
-  }, [route.params?.showNew]);
+  }, [nav, route.params?.showNew]);
 
   // Handle trailId param — set as pending trail for new reflection
   useEffect(() => {
@@ -225,7 +224,7 @@ export default function ReflectionsScreen() {
       setShowNew(true);
       nav.setParams({ trailId: undefined });
     }
-  }, [route.params?.trailId]);
+  }, [nav, route.params, route.params?.trailId]);
   const [content, setContent]     = useState('');
   const [tags, setTags]           = useState<string[]>([]);
   const [mood, setMood]           = useState('');
@@ -371,7 +370,8 @@ export default function ReflectionsScreen() {
   // ═══════════════════════════════════════════════════════════════
 
   const parseReflectionColors = (r: { colors?: unknown }): [string, string] => {
-    const c = typeof r.colors === 'string' ? (() => { try { return JSON.parse(r.colors); } catch { return null; } })() : r.colors;
+    const parsed: unknown = typeof r.colors === 'string' ? (() => { try { return JSON.parse(r.colors as string); } catch { return null; } })() : r.colors;
+    const c: string[] | null = Array.isArray(parsed) ? parsed : null;
     return [c?.[0] || MIND_COLORS_EXTENDED[0][0], c?.[1] || MIND_COLORS_EXTENDED[0][1]];
   };
 
@@ -430,7 +430,7 @@ export default function ReflectionsScreen() {
                 <View style={{ flex:1 }}>
                   <Text style={{ color:TH.text, fontSize:FONT_SUB(), fontWeight:'600' }}>{day}</Text>
                   <View style={{ flexDirection:'row', alignItems:'center', gap:8, marginTop:4, flexWrap:'wrap' }}>
-                    <Text style={{ color:TH.sub, fontSize:FONT_SMALL() }}>{items.length} 条感念</Text>
+                    <Text style={{ color:TH.sub, fontSize:FONT_SMALL() }}>{`${items.length} 条感念`}</Text>
                     {topTags.map(tag => (
                       <Text key={tag} style={{ color:P, fontSize:FONT_SMALL() }}>{tag}</Text>
                     ))}

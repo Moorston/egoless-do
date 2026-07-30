@@ -414,7 +414,7 @@ export function checkAutoStatus(plans: Plan[], planItems: PlanItem[], today: str
       if (hasActivePlan) return p;
       hasActivePlan = true; // Prevent multiple auto-starts
       plansChanged = true;
-      let started = { ...p, status: 'in_progress' as PlanStatus, updatedAt: now };
+      const started = { ...p, status: 'in_progress' as PlanStatus, updatedAt: now };
       // Check delayed in same pass — plan may already be past endDate
       if (started.endDate < today && !started.lastDelayedNotifyAt) {
         delayedPlans.push(started);

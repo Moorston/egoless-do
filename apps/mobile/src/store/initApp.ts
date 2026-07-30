@@ -68,6 +68,7 @@ async function loadSettingsPatch(): Promise<PartialMobileStore> {
  * 6. Recalculate derived state (streak, medMinutes)
  * 7. Clean up expired recycle bin items
  */
+// eslint-disable-next-line max-lines-per-function -- initApp is a sequential startup sequence; splitting would fragment the step ordering
 export async function initApp(): Promise<void> {
   // Wire up Sentry bridge for all logger.error/warn calls
   setSentryBridge({ captureException, captureMessage, addBreadcrumb });
@@ -85,9 +86,6 @@ export async function initApp(): Promise<void> {
   try {
     // ── Step 1: Open SQLite DB ─────────────────────────────────
     const db = await openDatabase();
-    // Declared in the OUTER try scope so Step 8 (derived-state recalc) can read it
-    // even if the DB init steps below threw and were caught by the inner guard.
-    let entityPatch: Record<string, unknown> = {};
     // Inner guard: a failure in opening/migrating/loading SQLite must NOT prevent
     // the auth-token restore (Step 4) and the token-save subscription (Step 5)
     // from running. Otherwise the token is never restored into memory and the
@@ -97,7 +95,7 @@ export async function initApp(): Promise<void> {
 
     // ── Step 2: Run migrations (one-time, idempotent) ──────────
     // 并行化：迁移 + Token 加载同时进行
-    const [, tokens] = await Promise.all([
+    await Promise.all([
       (async () => {
         try {
           const didMigrate = await migrateAsyncStorageToSQLite(db, adapter);
@@ -145,6 +143,7 @@ export async function initApp(): Promise<void> {
         'reflectionFilters', 'ignoredRecPatterns',
       ] as const;
       for (const key of PROFILE_UNPACK_KEYS) {
+        // eslint-disable-next-line max-depth -- if-block nested in for/if/try/try; simple key-unpack, extraction would add indirection
         if (profile[key] !== undefined) {
           (fullPatch as Record<string, unknown>)[key] = profile[key];
         }
@@ -186,8 +185,10 @@ export async function initApp(): Promise<void> {
       const plans = (store().bodyTrainingPlans ?? []) as Array<Record<string, unknown>>;
       const seen = new Set<string>();
       const duplicates: string[] = [];
+      // eslint-disable-next-line max-depth -- for-loop nested in try/try; simple dedup scan, extraction would add indirection
       for (const p of plans) {
         const sig = `${String(p.name ?? '').trim()}|${p.startDate}|${p.endDate}|${p.status}`;
+        // eslint-disable-next-line max-depth -- if-block nested in for/try/try; simple dedup scan, extraction would add indirection
         if (seen.has(sig)) {
           duplicates.push(p.id as string);
         } else {
@@ -200,6 +201,7 @@ export async function initApp(): Promise<void> {
         setState({
           bodyTrainingPlans: plans.filter((p: Record<string, unknown>) => !dupSet.has(p.id)),
         } as PartialMobileStore);
+        // eslint-disable-next-line max-depth -- for-loop nested in if/try/try; simple deletion loop, extraction would add indirection
         for (const id of duplicates) {
           adapter.markDeleted('bodyTrainingPlan' as Parameters<typeof adapter.markDeleted>[0], id).catch(e => log.error(e));
         }
@@ -235,9 +237,11 @@ export async function initApp(): Promise<void> {
       for (const [storeKey, entity, isGhost] of GHOST_CHECKS) {
         const items = (s[storeKey as keyof typeof s] ?? []) as Array<Record<string, unknown>>;
         const ghosts = items.filter(i => !i.deleted && isGhost(i));
+        // eslint-disable-next-line max-depth -- if-block nested in for/try/try; simple ghost cleanup, extraction would add indirection
         if (ghosts.length > 0) {
           log.warn(`cleanupGhosts: ${storeKey} - removing ${ghosts.length} ghost entries`);
           ghostPatch[storeKey] = items.map(i => ghosts.some(g => g.id === i.id) ? { ...i, deleted: true, updatedAt: Date.now() } : i);
+          // eslint-disable-next-line max-depth -- for-loop nested in if/for/try/try; simple deletion loop
           for (const g of ghosts) toDelete.push({ entity, id: g.id as string });
         }
       }
@@ -269,6 +273,7 @@ export async function initApp(): Promise<void> {
             token: secureTokens.token,
             refreshToken: secureTokens.refreshToken,
           };
+          // eslint-disable-next-line max-depth -- if-block nested in if/if/try/try; token restore logic, extraction would add indirection
           if (secureTokens.expiresAt) {
             authPatch.expiresAt = secureTokens.expiresAt;
           }
@@ -286,6 +291,7 @@ export async function initApp(): Promise<void> {
             store().refreshAuth().catch(e => log.error(e, { message: 'Startup token refresh failed' }));
           });
 
+          // eslint-disable-next-line max-depth -- if-block nested in if/if/try/try; token restore logic, extraction would add indirection
           if (!currentAuth.isSignedIn) {
             // Restore full auth state from SecureStore
             setState({
@@ -347,11 +353,11 @@ export async function initApp(): Promise<void> {
       }
       // Sync Sentry user context on auth state changes
       if (state.auth.isSignedIn && state.auth.user && (!prevState.auth.isSignedIn || state.auth.user.id !== prevState.auth.user?.id)) {
-        setSentryUser({ id: state.auth.user.id, email: state.auth.user.email, name: state.auth.user.name });
+        void setSentryUser({ id: state.auth.user.id, email: state.auth.user.email, name: state.auth.user.name });
         // PostHog 用户识别（匿名化）
-        import('../analytics/privacy').then(({ anonymizeUserId }) => {
-          anonymizeUserId(state.auth.user!.id).then(anonId => {
-            import('../analytics/track').then(({ identify }) => {
+        void import('../analytics/privacy').then(({ anonymizeUserId }) => {
+          void anonymizeUserId(state.auth.user!.id).then(anonId => {
+            void import('../analytics/track').then(({ identify }) => {
               identify(anonId, {
                 guest: state.auth.user!.isGuest || false,
                 language: state.language,
@@ -361,7 +367,7 @@ export async function initApp(): Promise<void> {
           });
         }).catch(() => {});
       } else if (!state.auth.isSignedIn && prevState.auth.isSignedIn) {
-        clearSentryUser();
+        void clearSentryUser();
       }
     });
     // Suppress unused variable warning — _unsubscribeAuth is stored for testability
@@ -385,8 +391,13 @@ export async function initApp(): Promise<void> {
         flushWrites().catch(e => log.error(e, { phase: 'bg-flushWrites' }));
         checkpointDatabase().catch(e => log.error(e, { phase: 'bg-checkpoint' }));
         // 性能优化：background 批量文件备份（替代 per-op 同步写）
-        import('./fileStorage').then(({ backupAllEntitiesToFile }) => {
-          backupAllEntitiesToFile().catch(e => log.error(e, { phase: 'bg-backupAll' }));
+        // backupAllEntitiesToFile 尚未在 fileStorage.ts 中实现，动态导入后按可选
+        // 函数访问；保留 catch 兜底，避免静默失败。
+        import('./fileStorage').then((mod) => {
+          const backupAllEntitiesToFile = (mod as { backupAllEntitiesToFile?: () => Promise<void> }).backupAllEntitiesToFile;
+          if (backupAllEntitiesToFile) {
+            backupAllEntitiesToFile().catch((e: unknown) => log.error(e, { phase: 'bg-backupAll' }));
+          }
         }).catch(() => {});
       }
     });

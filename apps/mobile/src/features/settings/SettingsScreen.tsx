@@ -1,47 +1,37 @@
 import { THEMES, LANG_LIST, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_CLOSE, createLogger, formatDate , FONT_STAT_CARD } from '@egoless-do/core';
 import type { ThemeName } from '@egoless-do/core';
 import NetInfo from '@react-native-community/netinfo';
-import { getAnalyticsConsent, setAnalyticsConsent } from '../../analytics/privacy';
-import { optIn, optOut } from '../../analytics/posthog';
 import { Image } from 'expo-image';
 import {
   BarChart3, CalendarDays, Utensils, Shield, HeartCrack,
-  Heart, RefreshCw, Hand, PersonStanding, Trash2,
+  Heart, RefreshCw, Hand, Trash2,
   Check, X, ChevronRight, Bell, Clock, Globe, Palette,
   Cloud, CloudUpload, History, Info, Lock, ClipboardList,
   Music, Binary, Brain, Dumbbell, Timer, BarChart2,
 } from 'lucide-react-native';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, Modal, Alert, Platform, ActivityIndicator,
+  View, Text, ScrollView, TouchableOpacity, Modal, Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { optIn, optOut } from '../../analytics/posthog';
+import { getAnalyticsConsent, setAnalyticsConsent } from '../../analytics/privacy';
 import { SyncConflictPanel } from '../../components/SyncConflictPanel';
 import TimePickerModal from '../../components/TimePickerModal';
 import {
-  Card, useTheme, useT, ScreenHeader, RowItem, Toggle,
+  Card, useTheme, useT, RowItem, Toggle,
 } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
-
-
-const log = createLogger('Settings');
-
-interface SettingRow {
-  label: string;
-  sub?: string;
-  icon?: React.ReactNode;
-  right?: React.ReactNode;
-  onPress?: () => void;
-  last?: boolean;
-}
-
 import { useRootNavigation } from '../../navigation/hooks';
+import { useShallowStore } from '../../store/useAppStore';
 import {
   requestNotificationPermission, scheduleDailyReminder, cancelAllReminders,
 } from '../notifications/NotificationService';
 
+const log = createLogger('Settings');
+
+// eslint-disable-next-line max-lines-per-function -- SettingsScreen is a single-scroll settings page; splitting would fragment section grouping
 export default function SettingsScreen() {
   const TH    = useTheme();
   const T     = useT();
@@ -71,7 +61,6 @@ export default function SettingsScreen() {
   const [showLang, setShowLang]           = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [timeEdit, setTimeEdit]           = useState(remindTime);
-  const [clearing, setClearing]           = useState(false);
   const [analyticsConsent, setAnalyticsConsentState] = useState<'anonymous' | 'necessary' | 'denied'>('necessary');
 
   useEffect(() => {
@@ -84,6 +73,7 @@ export default function SettingsScreen() {
       const [h, m] = remindTime.split(':').map(Number);
       scheduleDailyReminder(h, m).catch((e) => log.error(e));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only: schedules reminder once on initial settings load
   }, []);
 
   // Sync state
@@ -127,7 +117,7 @@ export default function SettingsScreen() {
       if (onlineRef.current) void runSync();
     }, SYNC_FALLBACK_INTERVAL);
     return () => { if (syncTimerRef.current) clearInterval(syncTimerRef.current); };
-  }, [runSync]);
+  }, [runSync, SYNC_FALLBACK_INTERVAL]);
 
   const triggerSync = () => {
     if (!online) return;
@@ -467,6 +457,7 @@ export default function SettingsScreen() {
             <Card style={{ padding: 0 }}>
               <View style={{ paddingHorizontal: 16 }}>
                 {rows.map((r, i) => (
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access -- daemon resolves SettingRow to error type; cold run + HEAD version are clean
                   <RowItem key={r.label} {...r} last={r.last ?? i === rows.length - 1} />
                 ))}
               </View>

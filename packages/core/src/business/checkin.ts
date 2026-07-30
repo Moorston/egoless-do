@@ -109,16 +109,29 @@ export function parseCheckinNote(raw: string): ParsedCheckinNote {
   if (!raw) return { userNote: '', practices: [], customs: [], planItems: [], fasted: false, waterMl: 0, habits: [], food: 0, incompleteReason: '', incompleteNote: '' };
   
   try {
-    const data = JSON.parse(raw);
+    // Raw JSON shape — fields are optional/loose since notes come from untrusted
+    // client input and sync. The defaults below normalize to ParsedCheckinNote.
+    const data = JSON.parse(raw) as {
+      note?: string;
+      practices?: unknown;
+      customs?: unknown;
+      planItems?: unknown;
+      fasted?: unknown;
+      water?: unknown;
+      habits?: unknown;
+      food?: unknown;
+      incompleteReason?: string;
+      incompleteNote?: string;
+    };
     if (typeof data === 'object' && data !== null) {
       return {
         userNote: data.note ?? '',
-        practices: data.practices ?? [],
-        customs: data.customs ?? [],
-        planItems: data.planItems ?? [],
+        practices: (data.practices as string[] | undefined) ?? [],
+        customs: (data.customs as string[] | undefined) ?? [],
+        planItems: (data.planItems as Array<string | { id: string; [key: string]: unknown }> | undefined) ?? [],
         fasted: !!data.fasted,
         waterMl: typeof data.water === 'number' ? data.water : 0,
-        habits: data.habits ?? [],
+        habits: (data.habits as string[] | undefined) ?? [],
         food: typeof data.food === 'number' ? data.food : 0,
         incompleteReason: data.incompleteReason ?? '',
         incompleteNote: data.incompleteNote ?? '',

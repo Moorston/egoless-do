@@ -1,8 +1,10 @@
-import type { FastingSession } from '../types';
 import { startFastingSession, stopFastingSession, type StopFastingOpts } from '../business/fasting';
-import type { StorageAdapter } from './types';
-import type { SliceCreator } from './sliceHelper';
 import { createLogger } from '../logger';
+import type { FastingSession } from '../types';
+
+import type { SliceCreator } from './sliceHelper';
+import type { StorageAdapter } from './types';
+
 const log = createLogger('Store');
 
 export interface FastingSlice {

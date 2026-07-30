@@ -1,8 +1,8 @@
-import { COLORS, FONT_HERO, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_TITLE, FONT_CLOSE, FONT_BODY, fmt } from '@egoless-do/core';
+import { COLORS, FONT_HERO, FONT_SUB, FONT_STAT_CARD, FONT_BODY, fmt } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Play, Pause } from 'lucide-react-native';
+import { Pause } from 'lucide-react-native';
 import React from 'react';
-import { View, Text, TouchableOpacity, Animated, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 
 import MeditationMusicBar from '../../../components/MeditationMusicBar';
 import CelebrationOverlay from '../shared/CelebrationOverlay';

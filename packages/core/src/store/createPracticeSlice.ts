@@ -1,8 +1,10 @@
+import { createLogger } from '../logger';
 import type { Vision, VisionType, VisionPractice, RefType, VisionTimeFrame, Dedication, DedicationSettings, GiveEntry } from '../types';
 import { DEFAULT_DEDICATION_SETTINGS } from '../types';
-import type { StorageAdapter } from './types';
+
 import type { SliceCreator } from './sliceHelper';
-import { createLogger } from '../logger';
+import type { StorageAdapter } from './types';
+
 const log = createLogger('Store');
 
 function genDedId() {

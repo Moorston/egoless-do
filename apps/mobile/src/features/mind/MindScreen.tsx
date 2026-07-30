@@ -1,14 +1,13 @@
-import type { FearEntry, FearClassification, FearCategory, BodyRegion, BodyShape, BodyTemp, FeelingTag, AchievementType, CourageEntry, FearAchievement } from '@egoless-do/core';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, COLORS, dateStr, FONT_SMALL, FONT_TINY, FONT_BACK , FEAR_CATEGORY_DEFS, BODY_REGION_DEFS, ACHIEVEMENT_DEFS , scaleFontSize } from '@egoless-do/core';
-import { Shield, Zap, Lightbulb, Plus, ChevronRight, X, Check } from 'lucide-react-native';
+import type { FearEntry, FearClassification, FearCategory, BodyRegion, FeelingTag, CourageEntry } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr, FONT_SMALL, FONT_TINY, FONT_BACK, FEAR_CATEGORY_DEFS, ACHIEVEMENT_DEFS, scaleFontSize } from '@egoless-do/core';
+import { Shield, Zap, Lightbulb, Plus, X } from 'lucide-react-native';
 import React, {useState, useMemo, useCallback} from 'react';
-import { View, Text, ScrollView, FlatList, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
+import { View, Text, ScrollView, FlatList, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
-import { useTabNavigation } from '../../navigation/hooks';
 import { useAppStore, type MobileStore } from '../../store/useAppStore';
 
 
@@ -33,11 +32,6 @@ const BODY_REGION_POSITIONS: Record<BodyRegion, { x: number; y: number }> = {
   shoulders: { x: 50, y: 22 }, hands: { x: 25, y: 45 }, legs: { x: 50, y: 68 }, feet: { x: 50, y: 88 },
 };
 
-const BODY_SHAPE_LABELS: Record<BodyShape, string> = {
-  tight: 'mindBodyTight', heavy: 'mindBodyHeavy', tremble: 'mindBodyTremble', hollow: 'mindBodyHollow',
-  burning: 'mindBodyBurning', ache: 'mindBodyAche', block: 'mindBodyBlock',
-};
-const BODY_TEMP_LABELS: Record<BodyTemp, string> = { cold: 'mindBodyCold', hot: 'mindBodyHot', neutral: 'mindBodyNeutral' };
 
 const FEELING_TAGS: FeelingTag[] = ['relief', 'pride', 'calm', 'still_scared', 'surprise', 'exhausted'];
 const FEELING_LABELS: Record<FeelingTag, string> = {
@@ -49,10 +43,11 @@ const CATEGORY_LABELS: Record<FearCategory, string> = {
   attachment: 'mindCategoryAttachment', failure: 'mindCategoryFailure', unknown: 'mindCategoryUnknown',
 };
 
+// 调身页为多 Tab 复杂屏幕，整体重构为子组件成本较高，暂禁用行数限制
+// eslint-disable-next-line max-lines-per-function
 export default function MindScreen() {
   const TH = useTheme();
   const T = useT();
-  const nav = useTabNavigation();
   const [activeTab, setActiveTab] = useState<MindTab>('fear');
 
   const { fearEntries, courageEntries, achievements, addFearEntry, updateFearEntry, addCourageEntry,
@@ -90,11 +85,11 @@ export default function MindScreen() {
   const [courageFearBefore, setCourageFearBefore] = useState(5);
   const [courageFeelingTags, setCourageFeelingTags] = useState<FeelingTag[]>([]);
 
-  const stats = useMemo(() => getFearStats(), [fearEntries, courageEntries]);
-  const streak = useMemo(() => getCourageStreak(), [courageEntries]);
-  const heatmap = useMemo(() => getBodyHeatmap(), [fearEntries]);
-  const dominant = useMemo(() => getDominantFearType(), [fearEntries]);
-  const insights = useMemo(() => getCrossModuleInsights(), [fearEntries, courageEntries]);
+  const stats = useMemo(() => getFearStats(), [getFearStats]);
+  const streak = useMemo(() => getCourageStreak(), [getCourageStreak]);
+  const heatmap = useMemo(() => getBodyHeatmap(), [getBodyHeatmap]);
+  const dominant = useMemo(() => getDominantFearType(), [getDominantFearType]);
+  const insights = useMemo(() => getCrossModuleInsights(), [getCrossModuleInsights]);
 
   const resetFearForm = useCallback(() => {
     setFearStep(0); setFearContent(''); setFearTrigger(''); setFearCategory('unknown');
@@ -173,7 +168,7 @@ export default function MindScreen() {
             { label: T('mindCourageRecord'), value: String(stats.totalCourage), color: '#10B981' },
           ].map((s, i) => (
             <View key={i} style={{ flex: 1, backgroundColor: TH.card, borderRadius: 12, padding: 12, alignItems: 'center', borderWidth: 1, borderColor: TH.border }}>
-              <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: s.color }}>{s.value}</Text>
+              <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: s.color }}>{String(s.value)}</Text>
               <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 2 }}>{s.label}</Text>
             </View>
           ))}
@@ -232,7 +227,7 @@ export default function MindScreen() {
         </View>
       </View>
     );
-  }, [stats, heatmap, activeFears, TH, T, resetFearForm]);
+  }, [stats, heatmap, activeFears, TH, T, resetFearForm, renderFearItem]);
 
   const renderCourageItem = useCallback(({ item: c }: { item: CourageEntry }) => (
     <View style={{ paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
@@ -278,7 +273,7 @@ export default function MindScreen() {
             </View>
           </View>
           {streak < 7 && streak > 0 && (
-            <Text style={{ fontSize: FONT_SUB(), color: '#F59E0B', marginBottom: 8 }}>再坚持{7 - streak}天解锁「勇者」称号！</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: '#F59E0B', marginBottom: 8 }}>再坚持{String(7 - streak)}天解锁「勇者」称号！</Text>
           )}
           <TouchableOpacity onPress={() => setShowCourage(true)}
             style={{ backgroundColor: '#10B981', borderRadius: 12, padding: 14, alignItems: 'center' }}>
@@ -338,7 +333,7 @@ export default function MindScreen() {
         </View>
       </View>
     );
-  }, [streak, courageEntries, achievements, TH, T]);
+  }, [streak, courageEntries, achievements, TH, T, getCourageTrend, renderCourageItem]);
 
   // ── 洞察分析 Tab ──
   const renderInsightTab = useCallback(() => {
@@ -363,7 +358,7 @@ export default function MindScreen() {
               {peakHours.map((h) => (
                 <View key={h.hour} style={{ flex: 1, alignItems: 'center', backgroundColor: `${TH.primary}10`, borderRadius: 8, padding: 8 }}>
                   <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.primary }}>{h.hour}:00</Text>
-                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{h.count}次</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{String(h.count)}次</Text>
                 </View>
               ))}
             </View>
@@ -384,7 +379,7 @@ export default function MindScreen() {
         </View>
       </View>
     );
-  }, [dominant, insights, TH, T]);
+  }, [dominant, insights, TH, T, getFearTimeDistribution, renderInsightItem]);
 
   return (
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
@@ -539,7 +534,7 @@ export default function MindScreen() {
               {/* 恐惧实质指数 */}
               <View style={{ backgroundColor: '#8B5CF615', borderRadius: 12, padding: 16, alignItems: 'center', marginBottom: 16, borderWidth: 1, borderColor: '#8B5CF630' }}>
                 <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('mindFearIndex')}</Text>
-                <Text style={{ fontSize: scaleFontSize(32), fontWeight: '900', color: '#8B5CF6' }}>{forgeProbability * (10 - forgeCoping)}</Text>
+                <Text style={{ fontSize: scaleFontSize(32), fontWeight: '900', color: '#8B5CF6' }}>{String(forgeProbability * (10 - forgeCoping))}</Text>
                 <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>概率{forgeProbability} × (10-应对力{forgeCoping})</Text>
               </View>
               <TouchableOpacity onPress={handleSaveForge}

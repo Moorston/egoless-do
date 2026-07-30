@@ -6,7 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+import { useShallowStore } from '../../store/useAppStore';
 
 const WEEKDAY_LABELS = ['一', '二', '三', '四', '五', '六', '日'];
 
@@ -142,7 +142,7 @@ export default function SutraHistoryScreen() {
               <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>累计时长</Text>
             </View>
             <View style={styles.statItem}>
-              <Text style={styles.orangeStatText}>🔥 {stats.streak}</Text>
+              <Text style={styles.orangeStatText}>🔥 {`${stats.streak}`}</Text>
               <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>连续</Text>
             </View>
           </View>
@@ -151,7 +151,7 @@ export default function SutraHistoryScreen() {
         {/* Calendar heatmap this month */}
         <View style={[styles.calendarSection, { borderColor: TH.primary + '20' }]}>
           <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 12 }}>
-            {monthYear}年{monthIdx + 1}月
+            {monthYear}年{`${monthIdx + 1}`}月
           </Text>
           <View style={styles.weekRow}>
             {WEEKDAY_LABELS.map(d => (
@@ -171,7 +171,7 @@ export default function SutraHistoryScreen() {
                     borderColor: day.isToday ? TH.primary : 'transparent',
                   }}>
                     <Text style={[styles.textSize12, { color: TH.text, fontWeight: day.isToday ? '700' : '400' }]}>
-                      {Number(day.date.split('-')[2])}
+                      {`${Number(day.date.split('-')[2])}`}
                     </Text>
                   </View>
                 ) : <View style={styles.emptyDay} />}
@@ -215,7 +215,7 @@ export default function SutraHistoryScreen() {
                   <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{dateStr}</Text>
                 </View>
                 <View style={styles.sessionMeta}>
-                  <Text style={[styles.textSize10, { color: TH.sub }]}>{s.count}颗 · {s.rounds}遍</Text>
+                  <Text style={[styles.textSize10, { color: TH.sub }]}>{`${s.count}`}颗 · {`${s.rounds}`}遍</Text>
                   <Text style={[styles.textSize10, { color: TH.sub }]}>{formatShortTime(s.durationSec)}</Text>
                   {s.dedication ? <Text style={styles.textDedication}>回向</Text> : null}
                 </View>

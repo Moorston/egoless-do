@@ -1,16 +1,15 @@
-import { COLORS, getActivePlan, FONT_BODY, FONT_BUTTON, FONT_HERO } from '@egoless-do/core';
+import { getActivePlan, FONT_BODY, FONT_BUTTON } from '@egoless-do/core';
 import { ClipboardList } from 'lucide-react-native';
 import React, { useMemo, useEffect, useCallback } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity,
+  Text, ScrollView, TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
-
+import { useShallowStore } from '../../store/useAppStore';
 
 import PlanDetailContent from './PlanDetailContent';
 
@@ -24,6 +23,8 @@ export default function PlanScreen() {
   useEffect(() => {
     checkAutoStatus();
     autoSyncPlanItems();
+    // Run once on mount — checkAutoStatus/autoSyncPlanItems are stable store actions.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const activePlan = useMemo(() => getActivePlan(plans ?? []), [plans]);

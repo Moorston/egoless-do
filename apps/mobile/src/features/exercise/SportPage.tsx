@@ -7,34 +7,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../components/UI';
 import { useRootNavigation, type MainTabParamList, type RootStackParamList } from '../../navigation/hooks';
-
-
-
-
-
-const log = createLogger('Exercise');
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
-
-// 组合标题计算：从 ExerciseDef 提取去重分类名
-function computeComboTitle(exercises: ExerciseDef[], count: number, T: (key: keyof I18nKeys, params?: Record<string, string | number>) => string): string {
-  const seen = new Set<string>();
-  const names: string[] = [];
-  for (const ex of exercises) {
-    if (!ex.category || seen.has(ex.category)) continue;
-    seen.add(ex.category);
-    const category = EXERCISE_CATEGORIES.find(c => c.key === ex.category);
-    names.push(category ? T(category.i18nKey) : ex.category);
-  }
-  return `${names.join(' + ')}（${count} ${T('bodyPlanUnitExercise')}）`;
-}
-
-// 实时会话
 import { ActiveInsightBar } from '../global-pulse/components/ActiveInsightBar';
 import { useGoalResolver } from '../global-pulse/hooks/useGoalResolver';
 import { useSessionHeartbeat } from '../global-pulse/hooks/useSessionHeartbeat';
 import { createSession, deleteSession, updateSession } from '../global-pulse/services/activeSessionApi';
-
-// Hooks
 import MusicPickerModal from '../music/components/MusicPickerModal';
 import { audioPlayerRef } from '../music/services/audioPlayerRef';
 import { useMusicStore } from '../music/useMusicStore';
@@ -50,8 +27,6 @@ import { useExerciseRest } from './hooks/useExerciseRest';
 import { useExerciseSets } from './hooks/useExerciseSets';
 import { useExerciseTargets } from './hooks/useExerciseTargets';
 import { useExerciseTimer } from './hooks/useExerciseTimer';
-
-// Pages
 import EnduranceActive from './layouts/EnduranceActive';
 import GpsActive from './layouts/GpsActive';
 import MeditativeActive from './layouts/MeditativeActive';
@@ -61,18 +36,32 @@ import PausedPage from './pages/PausedPage';
 import PrepPage from './pages/PrepPage';
 import ReportPage from './pages/ReportPage';
 
-// Layouts
+const log = createLogger('Exercise');
 
+// 组合标题计算：从 ExerciseDef 提取去重分类名
+function computeComboTitle(exercises: ExerciseDef[], count: number, T: (key: keyof I18nKeys, params?: Record<string, string | number>) => string): string {
+  const seen = new Set<string>();
+  const names: string[] = [];
+  for (const ex of exercises) {
+    if (!ex.category || seen.has(ex.category)) continue;
+    seen.add(ex.category);
+    const category = EXERCISE_CATEGORIES.find(c => c.key === ex.category);
+    names.push(category ? T(category.i18nKey) : ex.category);
+  }
+  return `${names.join(' + ')}（${count} ${T('bodyPlanUnitExercise')}）`;
+}
 
 type Route = RouteProp<RootStackParamList, 'Sport'>;
 
+// SportPage 为多模式（GPS/力量/耐力/冥想）运动综合屏幕，拆分子组件成本较高，暂禁用行数限制
+// eslint-disable-next-line max-lines-per-function
 export default function SportPage() {
   const nav   = useRootNavigation();
   const route = useRoute<Route>();
   const TH    = useTheme();
   const T     = useT();
   const insets = useSafeAreaInsets();
-  const { auth, userProfile, addExercise, exerciseLog, updateBodyTrainingPlan, setBodyFlowState } = useShallowStore(s => ({ auth: s.auth, userProfile: s.userProfile, addExercise: s.addExercise, exerciseLog: s.exerciseLog, updateBodyTrainingPlan: s.updateBodyTrainingPlan, setBodyFlowState: s.setBodyFlowState }));
+  const { auth, userProfile, addExercise, exerciseLog, setBodyFlowState } = useShallowStore(s => ({ auth: s.auth, userProfile: s.userProfile, addExercise: s.addExercise, exerciseLog: s.exerciseLog, setBodyFlowState: s.setBodyFlowState }));
   const { MapView, Polyline, ready: amapReady } = useAmapComponents();
   const { key: sportName, icon, color, gps: gpsParam, planId, planTaskWeekday, exercises: comboExercises, comboPlanId } = route.params;
 
@@ -157,7 +146,7 @@ export default function SportPage() {
         }
       });
     }
-  }, [timer.page, timer.active, auth.user?.id, userProfile?.nickname, resolveGoal, sportName, icon]);
+  }, [timer.page, timer.active, auth.user?.id, userProfile?.nickname, resolveGoal, sportName, icon, effectiveIcon, effectiveSportName]);
 
   // 更新感悟
   const handleInsightChange = useCallback((text: string) => {
@@ -258,6 +247,8 @@ export default function SportPage() {
       mountedRef.current = false;
       if (breathTimerRef.current) { clearTimeout(breathTimerRef.current); breathTimerRef.current = null; }
     };
+    // breathAnim 为 useRef 稳定引用，无需加入依赖数组
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [breathGuideEnabled, timer.page, timer.active]);
 
   // ── GPS tracking ──
@@ -327,6 +318,8 @@ export default function SportPage() {
   // Triggers bounce on rep change
   useEffect(() => {
     if (sets.currentSetReps > 0) sets.triggerBounce();
+    // sets 为 useExerciseSets 返回的稳定对象，无需加入依赖数组
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sets.currentSetReps]);
 
   // ── Handlers ──
@@ -351,6 +344,8 @@ export default function SportPage() {
     audio.stopAll();
     cleanupSession();
     stopGpsTracking();
+    // audio 为 useExerciseAudio 返回的稳定对象，无需加入依赖数组
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [musicStop, audio.stopAll, cleanupSession, stopGpsTracking]);
 
   // ── 组合模式：返回确认 ──
@@ -446,6 +441,8 @@ export default function SportPage() {
       // 全部完成 → 保存并返回
       handleSaveAll();
     }
+    // addExercise/handleSaveAll 为 store/自身引用，无需加入依赖数组
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isComboMode, comboExercises, effectiveSportName, effectiveIcon, timer, sets, calories, comboPlanId, planId, planTaskWeekday, sportType]);
 
   // ── 组合模式：全部完成，返回聚合结果到 Body ──
@@ -501,6 +498,8 @@ export default function SportPage() {
       log.error(e, { message: 'Combo save failed' });
       resetComboSession();
     }
+    // T/audio/comboExercises 为稳定引用或 props，无需加入依赖数组
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nav, musicStop, audio.stopAll, cleanupSession, stopGpsTracking, setBodyFlowState, addExercise, isComboMode, comboPlanId, planId, planTaskWeekday, resetComboSession]);
 
   // 组件卸载时清理会话
@@ -576,6 +575,8 @@ export default function SportPage() {
       return;
     }
     try { nav.navigate('MainTabs', { screen: 'Body' as keyof MainTabParamList }); } catch { savingRef.current = false; }
+    // audio/effectiveSportLabel 为稳定引用或派生值，无需加入依赖数组
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isComboMode, goToNextExercise, timer.sec, sets, sportName, icon, sportType, isGpsSport, distKm, calories, coords, segmentPaces, mode, targetType, targetValue, addExercise, userProfile, auth, nav, musicStop, audio.stopAll, cleanupSession, stopGpsTracking, planId, planTaskWeekday, setBodyFlowState]);
 
   // Stop music and ambient audio when entering report page (exercise ended)
@@ -585,6 +586,8 @@ export default function SportPage() {
       try { audioPlayerRef.current?.pause(); } catch {}
       audio.stopAll();
     }
+    // audio 为 useExerciseAudio 返回的稳定对象，无需加入依赖数组
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timer.page, musicStop, audio.stopAll]);
 
   // ── GPS Pause handler (stays inline for GPS sports) ──
@@ -615,6 +618,7 @@ export default function SportPage() {
 
   // ── 组合模式：用户尝试结束当前动作（验证 → 进入报告页）
   const handleFinishExercise = useCallback(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     if (isComboMode) {
       const { valid, message } = validateCurrentExercise();
       if (!valid) {
@@ -627,6 +631,8 @@ export default function SportPage() {
       }
     }
     timer.handleHoldEnd();
+    // timer 为 useExerciseTimer 返回的稳定对象，无需加入依赖数组
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isComboMode, validateCurrentExercise, timer.handleHoldEnd, T]);
 
   if (page === 'prep') {

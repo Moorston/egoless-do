@@ -1,8 +1,8 @@
 // ─── Daily Reset Service ──────────────────────────────────────────
 // Handles resetting daily data at midnight
-import { dateStr } from './utils';
 import { createLogger } from './logger';
 import type { AppState, CheckinEntry } from './types';
+import { dateStr } from './utils';
 
 const log = createLogger('DailyReset');
 
@@ -79,6 +79,23 @@ export class DailyResetManager {
     }
   }
 
+  private backfillDay(backfillDate: Date): void {
+    const backfillDateStr = dateStr(backfillDate);
+
+    // Trigger plan daily reset for each missed day
+    if (this.deps.onPlanDailyReset) {
+      this.deps.onPlanDailyReset(backfillDateStr);
+    }
+
+    // Generate reviews for missed boundary days
+    if (this.deps.onReviewDailyReset) {
+      const dow = backfillDate.getDay();
+      if (dow === 0) this.deps.onReviewDailyReset('week');
+      const lastDom = new Date(backfillDate.getFullYear(), backfillDate.getMonth() + 1, 0).getDate();
+      if (backfillDate.getDate() === lastDom) this.deps.onReviewDailyReset('month');
+    }
+  }
+
   private async _doCheck(): Promise<void> {
     const lastReset = await this.deps.getLastReset();
     const today = dateStr();
@@ -111,20 +128,7 @@ export class DailyResetManager {
           for (let i = 0; i < Math.min(daysDiff, 7); i++) {
             const backfillDate = new Date(lastDate);
             backfillDate.setDate(backfillDate.getDate() + i);
-            const backfillDateStr = dateStr(backfillDate);
-
-            // Trigger plan daily reset for each missed day
-            if (this.deps.onPlanDailyReset) {
-              this.deps.onPlanDailyReset(backfillDateStr);
-            }
-
-            // Generate reviews for missed boundary days
-            if (this.deps.onReviewDailyReset) {
-              const dow = backfillDate.getDay();
-              if (dow === 0) this.deps.onReviewDailyReset('week');
-              const lastDom = new Date(backfillDate.getFullYear(), backfillDate.getMonth() + 1, 0).getDate();
-              if (backfillDate.getDate() === lastDom) this.deps.onReviewDailyReset('month');
-            }
+            this.backfillDay(backfillDate);
           }
         }
       }

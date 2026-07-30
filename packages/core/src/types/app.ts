@@ -1,16 +1,16 @@
 // ─── App-level types ──────────────────────────────────────────────
 import type { AuthState } from './auth';
-import type { ThemeName } from './shared';
-import type { Habit } from './habit';
-import type { MindReflection } from './reflection';
+import type { CheckinEntry, MedHistoryEntry, GraceHistoryEntry } from './checkin';
+import type { ExerciseEntry } from './exercise';
 import type { FastingSession } from './fasting';
 import type { FoodEntry, CustomFoodPreset } from './food';
-import type { ExerciseEntry } from './exercise';
-import type { CheckinEntry, MedHistoryEntry, GraceHistoryEntry } from './checkin';
+import type { Habit } from './habit';
 import type { Plan, PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory } from './plan';
 import type { RecycleBinItem } from './recycle';
-import type { ThoughtTrail } from './thought-trail';
+import type { MindReflection } from './reflection';
 import type { ReflectionLink } from './reflection-link';
+import type { ThemeName } from './shared';
+import type { ThoughtTrail } from './thought-trail';
 
 // ─── Age bracket & body fat estimation ─────────────────────────
 export type AgeBracket = '18-29' | '30-39' | '40-49' | '50-59' | '60-69' | '70+';

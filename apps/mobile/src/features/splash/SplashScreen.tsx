@@ -57,6 +57,7 @@ function Star({ x, y, size, delay }: StarProps) {
     };
     animate();
     return () => { mountedRef.current = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only animation; refs drive the animation, not reactive deps
   }, []);
 
   return (
@@ -128,6 +129,7 @@ function Meteor({ delay }: { delay: number }) {
     };
     animate();
     return () => { mountedRef.current = false; if (timerRef.current) clearTimeout(timerRef.current); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only animation; refs drive the animation, not reactive deps
   }, []);
 
   return (
@@ -218,6 +220,7 @@ function Nebula() {
     animate1();
     const timer = setTimeout(animate2, 2000);
     return () => { mounted = false; clearTimeout(timer); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only animation; refs drive the animation, not reactive deps
   }, []);
 
   return (
@@ -269,6 +272,7 @@ function GlowText({ text, style, delay: baseDelay = 0 }: { text: string; style: 
       timers.push(t);
     });
     return () => { timers.forEach(clearTimeout); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only animation; refs drive the animation, not reactive deps
   }, []);
 
   return (
@@ -321,6 +325,7 @@ function BreathingText({ text, style, delay: baseDelay = 0 }: { text: string; st
       pulse();
     });
     return () => { mounted = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only animation; refs drive the animation, not reactive deps
   }, []);
 
   return (
@@ -378,6 +383,7 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
       }).start();
     }, 800);
     return () => { seq.stop(); clearTimeout(t); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only animation; intentionally runs once regardless of onFinish identity
   }, []);
 
   const titleShadowRadius = titleGlow.interpolate({

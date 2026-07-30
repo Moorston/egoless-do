@@ -1,13 +1,13 @@
-import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_SMALL, FONT_TINY, getSportType, formatPace, computePRs, computeMuscleGroupStats, buildExerciseLibrary, computeMonthFrequency, EXERCISE_CATEGORIES, COMBO_WORKOUT_SPORT_KEY } from '@egoless-do/core';
-import type { ExerciseEntry, Theme, PRRecord, MuscleGroupStat, DayFrequency } from '@egoless-do/core';
+import { COLORS, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_SMALL, FONT_TINY, getSportType, formatPace, computePRs, computeMuscleGroupStats, buildExerciseLibrary, computeMonthFrequency, EXERCISE_CATEGORIES, COMBO_WORKOUT_SPORT_KEY } from '@egoless-do/core';
+import type { ExerciseEntry, Theme, DayFrequency } from '@egoless-do/core';
+import { FlashList } from '@shopify/flash-list';
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Card, useTheme, ScreenHeader, useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+import { useShallowStore } from '../../store/useAppStore';
 
 import TrainingCalendar from './TrainingCalendar';
 import { useAmapComponents } from './hooks/useAmapComponents';
@@ -38,12 +38,12 @@ function DetailCard({ e, TH, P, T, MapView, Polyline }: { e: ExerciseEntry; TH: 
         {sportType === 'repetition' && e.reps != null ? (
           <View style={[styles.statCardBase, { backgroundColor: `${P}15` }]}>
             <Text style={[styles.subFont, { color: TH.sub }]}>{T('exerciseTotalReps')}</Text>
-            <Text style={[styles.statValue, { color: TH.text }]}>{e.reps}</Text>
+            <Text style={[styles.statValue, { color: TH.text }]}>{String(e.reps)}</Text>
           </View>
         ) : null}
         <View style={[styles.statCardBase, { backgroundColor: `${P}15` }]}>
           <Text style={[styles.subFont, { color: TH.sub }]}>{T('exerciseTime')}</Text>
-          <Text style={[styles.statValue, { color: TH.text }]}>{Math.floor(e.durationSec / 60)}:{String(e.durationSec % 60).padStart(2, '0')}</Text>
+          <Text style={[styles.statValue, { color: TH.text }]}>{String(Math.floor(e.durationSec / 60))}:{String(e.durationSec % 60).padStart(2, '0')}</Text>
         </View>
         {sportType === 'gps' && e.avgPace ? (
           <View style={[styles.statCardBase, { backgroundColor: `${P}15` }]}>
@@ -54,7 +54,7 @@ function DetailCard({ e, TH, P, T, MapView, Polyline }: { e: ExerciseEntry; TH: 
         {e.calories ? (
           <View style={[styles.statCardBase, { backgroundColor: `${P}15` }]}>
             <Text style={[styles.subFont, { color: TH.sub }]}>{T('exerciseTotalCal')}</Text>
-            <Text style={[styles.statValue, { color: TH.text }]}>{e.calories} kcal</Text>
+            <Text style={[styles.statValue, { color: TH.text }]}>{String(e.calories)} kcal</Text>
           </View>
         ) : null}
       </View>
@@ -65,7 +65,7 @@ function DetailCard({ e, TH, P, T, MapView, Polyline }: { e: ExerciseEntry; TH: 
             {(e.sets ?? []).map((s, i) => (
               <View key={i} style={[styles.setRow, { borderBottomWidth: i < (e.sets ?? []).length - 1 ? 1 : 0, borderBottomColor: TH.border }]}>
                 <Text style={[styles.subFont, { color: TH.text }]}>{T('exerciseSet').replace('{n}', String(i + 1))}</Text>
-                <Text style={[styles.subBold, { color: TH.text }]}>{s.reps} {T('exerciseReps')}</Text>
+                <Text style={[styles.subBold, { color: TH.text }]}>{String(s.reps)} {T('exerciseReps')}</Text>
               </View>
             ))}
           </View>
@@ -80,7 +80,7 @@ function DetailCard({ e, TH, P, T, MapView, Polyline }: { e: ExerciseEntry; TH: 
               const c = isBest ? COLORS.GREEN : p < 300 ? COLORS.BLUE : p < 360 ? COLORS.YELLOW : COLORS.RED;
               return (
                 <View key={i} style={[styles.setRow, { borderBottomWidth: i < (e.segmentPaces ?? []).length - 1 ? 1 : 0, borderBottomColor: TH.border }]}>
-                  <Text style={[styles.subFont, { color: TH.text }]}>{i + 1} km</Text>
+                  <Text style={[styles.subFont, { color: TH.text }]}>{String(i + 1)} km</Text>
                   <Text style={[styles.subBold, { color: c }]}>{formatPace(p)}</Text>
                 </View>
               );
@@ -103,6 +103,8 @@ interface FlatItem {
   isLast?: boolean;
 }
 
+// ExerciseHistoryScreen 为多 section 历史复盘页，拆分子组件成本较高，暂禁用行数限制
+// eslint-disable-next-line max-lines-per-function
 export default function ExerciseHistoryScreen() {
   const nav = useRootNavigation();
   const TH = useTheme();
@@ -197,12 +199,12 @@ export default function ExerciseHistoryScreen() {
     return `${y}年${parseInt(m)}月`;
   };
 
-  const formatDuration = (min: number) => {
+  const formatDuration = useCallback((min: number) => {
     if (min < 60) return `${min}${T('exerciseMin')}`;
     const h = Math.floor(min / 60);
     const m = min % 60;
     return m > 0 ? `${h}h ${m}m` : `${h}h`;
-  };
+  }, [T]);
 
   const flatData = useMemo((): FlatItem[] => {
     const items: FlatItem[] = [
@@ -232,7 +234,7 @@ export default function ExerciseHistoryScreen() {
       });
     }
     return items;
-  }, [monthlyStats, filtered, grouped]);
+  }, [monthlyStats, filtered, grouped, monthFrequency, topMuscles, topPRs]);
 
   const renderSportFilter = useCallback(() => {
     if (sportKeys.length <= 1) return null;
@@ -273,7 +275,7 @@ export default function ExerciseHistoryScreen() {
             <Text style={[styles.subFont, { color: TH.sub }]}>{T('exerciseMin')}</Text>
           </Card>
           <Card style={styles.statCardInner}>
-            <Text style={[styles.statCardValue, { color: P }]}>{filtered.length}</Text>
+            <Text style={[styles.statCardValue, { color: P }]}>{String(filtered.length)}</Text>
             <Text style={[styles.subFont, { color: TH.sub }]}>{T('exerciseTotalCount')}</Text>
           </Card>
         </View>
@@ -301,13 +303,13 @@ export default function ExerciseHistoryScreen() {
                 )}
                 {pr.bestReps && !pr.bestDistance && (
                   <View style={{ alignItems: 'center' }}>
-                    <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: P }}>{pr.bestReps.value}</Text>
+                    <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: P }}>{String(pr.bestReps.value)}</Text>
                     <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>{T('exerciseTimes') || '次'} · {pr.bestReps.date.slice(5)}</Text>
                   </View>
                 )}
                 {pr.bestDuration && !pr.bestDistance && !pr.bestReps && (
                   <View style={{ alignItems: 'center' }}>
-                    <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: P }}>{Math.floor(pr.bestDuration.value / 60)}</Text>
+                    <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: P }}>{String(Math.floor(pr.bestDuration.value / 60))}</Text>
                     <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>min · {pr.bestDuration.date.slice(5)}</Text>
                   </View>
                 )}
@@ -330,7 +332,7 @@ export default function ExerciseHistoryScreen() {
             <View key={stat.muscle} style={{ marginBottom: 6 }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 3 }}>
                 <Text style={{ fontSize: FONT_SMALL(), color: TH.text }}>{stat.muscle}</Text>
-                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{stat.count}{T('exerciseTimes')} · {stat.lastTrained.slice(5)}</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{String(stat.count)}{T('exerciseTimes')} · {stat.lastTrained.slice(5)}</Text>
               </View>
               <View style={{ height: 6, backgroundColor: `${P}15`, borderRadius: 3, overflow: 'hidden' }}>
                 <View style={{ height: 6, width: `${(stat.count / maxCount) * 100}%`, backgroundColor: P, borderRadius: 3 }} />
@@ -421,7 +423,7 @@ export default function ExerciseHistoryScreen() {
               <View key={monthKey} style={{ marginBottom: 8 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 3 }}>
                   <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{formatMonth(monthKey)}</Text>
-                  <Text style={{ fontSize: FONT_BADGE(), color: TH.text, fontWeight: '600' }}>{formatDuration(stats.min)} · {stats.count}{T('exerciseWorkouts')}</Text>
+                  <Text style={{ fontSize: FONT_BADGE(), color: TH.text, fontWeight: '600' }}>{formatDuration(stats.min)} · {String(stats.count)}{T('exerciseWorkouts')}</Text>
                 </View>
                 <View style={{ height: 6, backgroundColor: `${P}20`, borderRadius: 3, overflow: 'hidden' }}>
                   <View style={{ height: 6, width: `${pct}%`, backgroundColor: P, borderRadius: 3 }} />
@@ -440,7 +442,7 @@ export default function ExerciseHistoryScreen() {
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12, marginLeft: 4 }}>
           <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: P }} />
           <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>{formatMonth(item.monthKey!)}</Text>
-          <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{item.items!.length} {T('exerciseWorkouts')}</Text>
+          <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{String(item.items!.length)} {T('exerciseWorkouts')}</Text>
         </View>
       );
     }
@@ -476,12 +478,12 @@ export default function ExerciseHistoryScreen() {
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
             {(() => { const cat = EXERCISE_CATEGORIES.find(c => c.key === e.sportKey); return <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{e.sportKey === COMBO_WORKOUT_SPORT_KEY ? T('bodyComboTraining') : (cat ? T(cat.i18nKey) : e.sportKey)}</Text>; })()}
             {e.reps != null ? (
-              <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{e.reps} {T('exerciseReps')}</Text>
+              <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{String(e.reps)} {T('exerciseReps')}</Text>
             ) : e.distanceKm ? (
               <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{e.distanceKm.toFixed(2)} km</Text>
             ) : null}
             {e.calories ? (
-              <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{e.calories} kcal</Text>
+              <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{String(e.calories)} kcal</Text>
             ) : null}
           </View>
           {isExpanded && e.comboExercises && e.comboExercises.length > 0 && (
@@ -491,7 +493,7 @@ export default function ExerciseHistoryScreen() {
                   <Text style={{ fontSize: FONT_SMALL() }}>{ex.icon}</Text>
                   <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }} numberOfLines={1}>{ex.nameZh || ex.sportKey}</Text>
                   <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
-                    {Math.floor(ex.durationSec / 60)}:{(ex.durationSec % 60).toString().padStart(2, '0')}
+                    {String(Math.floor(ex.durationSec / 60))}:{(ex.durationSec % 60).toString().padStart(2, '0')}
                   </Text>
                 </View>
               ))}
@@ -501,7 +503,7 @@ export default function ExerciseHistoryScreen() {
         </TouchableOpacity>
       </View>
     );
-  }, [P, TH, T, totalMin, filtered.length, monthlyStats, expandedId, MapView, Polyline, renderSportFilter, topPRs]);
+  }, [P, TH, T, totalMin, filtered.length, monthlyStats, expandedId, MapView, Polyline, renderSportFilter, topPRs, activeDays, formatDuration, monthFrequency, sorted, streakDays, topMuscles]);
 
   const ListHeader = useMemo(() => (
     <ScreenHeader title={T('exerciseHistory')} onBack={() => nav.goBack()} />

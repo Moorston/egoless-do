@@ -1,8 +1,6 @@
 // ─── 隐私工具：匿名化 + PII 过滤 + 同意管理 ─────────────────────
 // 依据 PRIVACY_POLICY.md "我们不做的事" 制定红线。
 
-import * as Crypto from 'expo-crypto';
-
 // ── PII 敏感 key 黑名单 ──
 // 任何含这些 key 的字段将被 sanitize() 删除，绝不发送至 PostHog
 const PII_KEYS = new Set([
@@ -103,7 +101,7 @@ export async function getAnalyticsConsent(): Promise<AnalyticsConsent> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { getState } = await import('../../db/schema');
     const db = await openDatabase();
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
     const value = await getState(db, CONSENT_KEY);
     return (value as AnalyticsConsent) || 'necessary';
   } catch {

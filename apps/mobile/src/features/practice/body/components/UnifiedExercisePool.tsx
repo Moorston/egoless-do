@@ -1,8 +1,8 @@
 import { FONT_SMALL, FONT_SUB, EXERCISE_CATEGORIES, type ExerciseDef, type Theme } from '@egoless-do/core';
+import { FlashList } from '@shopify/flash-list';
 import { Search, X } from 'lucide-react-native';
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
 
 const P = '#f59e0b';
 

@@ -1,4 +1,4 @@
-import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, MS_PER_WEEK , getMoodIcon , FONT_STAT_CARD, FONT_BACK} from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SMALL, FONT_TINY, MS_PER_WEEK, FONT_STAT_CARD, FONT_BACK} from '@egoless-do/core';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ArrowLeft, Brain, TrendingUp, Calendar, Lightbulb } from 'lucide-react-native';
@@ -6,9 +6,9 @@ import React, { useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useTheme, useT } from '../../../components/UI';
+import { useTheme } from '../../../components/UI';
 import type { RootStackParamList } from '../../../navigation/types';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import { useShallowStore } from '../../../store/useAppStore';
 
 
 const MOOD_EMOJI: Record<string, string> = {
@@ -22,7 +22,6 @@ const MOOD_EMOJI: Record<string, string> = {
 
 export default function InsightScreen() {
   const TH = useTheme();
-  const T = useT();
   const P = TH.primary;
   const { reflections: rawReflections, thoughtTrails: rawThoughtTrails } = useShallowStore(s => ({
     reflections: s.reflections,
@@ -124,7 +123,7 @@ export default function InsightScreen() {
               <Text style={[styles.sectionTitle, { color: TH.text }]}>情绪分布</Text>
             </View>
             <View style={[styles.moodContainer, { backgroundColor: TH.card, borderColor: TH.border }]}>
-              {moodStats.map(({ mood, count, percent }) => (
+              {moodStats.map(({ mood, count: _count, percent }) => (
                 <View key={mood} style={styles.moodItem}>
                   <Text style={styles.moodEmoji}>{MOOD_EMOJI[mood] || '💭'}</Text>
                   <View style={styles.moodInfo}>
@@ -173,7 +172,7 @@ export default function InsightScreen() {
               >
                 <Text style={[styles.trailName, { color: TH.text }]}>{trail.name}</Text>
                 <Text style={[styles.trailInfo, { color: TH.sub }]}>
-                  {(trail.reflectionIds ?? []).length} 条感念 · {new Date(trail.updatedAt).toLocaleDateString()}
+                  {`${(trail.reflectionIds ?? []).length} 条感念 · ${new Date(trail.updatedAt).toLocaleDateString()}`}
                 </Text>
               </TouchableOpacity>
             ))}

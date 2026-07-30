@@ -6,7 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+import { useShallowStore } from '../../store/useAppStore';
 
 const GIVE_TYPE_CONFIG: Record<string, { icon: string; color: string; labelKey: string }> = {
   material: { icon: '💰', color: '#F59E0B', labelKey: 'giveMaterial' },
@@ -96,10 +96,10 @@ export default function GiveHistoryPage() {
     return (
       <View style={{ borderLeftWidth: 3, borderLeftColor: config.color, paddingLeft: 12, paddingVertical: 8, marginBottom: 8 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 }}>
-          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{d.getMonth() + 1}/{d.getDate()}</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{`${d.getMonth() + 1}/${d.getDate()}`}</Text>
           <Text style={{ fontSize: FONT_SUB() }}>{config.icon}</Text>
           {item.anonymous && <Text style={{ fontSize: FONT_SUB() }}>🤐</Text>}
-          {item.amount && <Text style={{ fontSize: FONT_SMALL(), color: '#F59E0B' }}>¥{item.amount}</Text>}
+          {item.amount && <Text style={{ fontSize: FONT_SMALL(), color: '#F59E0B' }}>¥{`${item.amount}`}</Text>}
         </View>
         <Text style={{ fontSize: FONT_BODY(), color: TH.text }} numberOfLines={2}>{item.content}</Text>
         {item.motivation && (
@@ -122,7 +122,7 @@ export default function GiveHistoryPage() {
             { value: String(stats.longest), label: T('giveLongestStreak') },
           ].map((s, i) => (
             <View key={i} style={{ alignItems: 'center', gap: 2 }}>
-              <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.text }}>{s.value}</Text>
+              <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.text }}>{`${s.value}`}</Text>
               <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{s.label}</Text>
             </View>
           ))}
@@ -156,7 +156,7 @@ export default function GiveHistoryPage() {
                   backgroundColor: day.hasRecord ? '#F59E0B' : day.isToday ? `${TH.primary}30` : 'transparent',
                 }}>
                   <Text style={{ fontSize: FONT_SMALL(), color: day.hasRecord ? '#fff' : TH.text, fontWeight: day.isToday ? '700' : '400' }}>
-                    {parseInt(day.date.split('-')[2])}
+                    {`${parseInt(day.date.split('-')[2])}`}
                   </Text>
                 </View>
               ) : <View style={{ width: 28, height: 28 }} />}

@@ -1,6 +1,6 @@
 // ─── Shared UI primitives ─────────────────────────────────────────
 import { THEMES, COLORS, t, FONT_BUTTON, FONT_BACK, FONT_LABEL, FONT_SUB, FONT_STAT_CARD, FONT_BODY, FONT_HERO , FONT_SMALL } from '@egoless-do/core';
-import type { I18nKey } from '@egoless-do/core';
+import type { I18nKey, Theme, ThemeName } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ChevronLeft, Check } from 'lucide-react-native';
 import React from 'react';
@@ -14,9 +14,9 @@ import { useAppStore, type MobileStore } from '../store/useAppStore';
 
 
 // ── useTheme ──────────────────────────────────────────────────────
-export function useTheme() {
-  const theme = useAppStore(useShallow((s: MobileStore) => s.theme));
-  return THEMES[theme];
+export function useTheme(): Theme {
+  const theme: ThemeName = useAppStore(useShallow((s: MobileStore) => s.theme));
+  return THEMES[theme] as Theme;
 }
 
 // ── useT ──────────────────────────────────────────────────────────

@@ -1,14 +1,16 @@
-import type { FoodEntry, CustomFoodPreset, EatingMotivationEntry, CustomWuxingMap, FoodWuxingItem, WuxingStats, FlavorStats, MotivationStats, EmotionSensitiveDay, WuxingElement, FlavorType, EatingMotivation } from '../types';
-import { WUXING_MAP, FLAVOR_CONFIG, WUXING_ELEMENT_CONFIG } from '../constants';
-import { uid, dateStr } from '../utils';
 import { deleteFoodFromList } from '../business';
-import type { StorageAdapter, DietSlice } from './types';
-import type { SliceCreator } from './sliceHelper';
+import { WUXING_MAP, FLAVOR_CONFIG } from '../constants';
 import { createLogger } from '../logger';
+import type { FoodEntry, CustomFoodPreset, EatingMotivationEntry, CustomWuxingMap, FoodWuxingItem, WuxingStats, FlavorStats, MotivationStats, EmotionSensitiveDay, WuxingElement, FlavorType, EatingMotivation } from '../types';
+import { uid, dateStr } from '../utils';
+
+import type { SliceCreator } from './sliceHelper';
+import type { StorageAdapter, DietSlice } from './types';
+
+
 const log = createLogger('Store');
 
 // ── 五行元素常量 ──
-const ELEMENTS: WuxingElement[] = ['wood', 'fire', 'earth', 'metal', 'water'];
 const FLAVORS: FlavorType[] = ['sour', 'bitter', 'sweet', 'pungent', 'salty'];
 const EMOTIONAL_MOTIVATIONS: EatingMotivation[] = ['stress', 'boredom', 'reward', 'comfort', 'craving'];
 

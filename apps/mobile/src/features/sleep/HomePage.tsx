@@ -30,6 +30,7 @@ interface HomePageProps {
   onSetSleepGoal?: (goal: SleepGoal) => void;
 }
 
+// eslint-disable-next-line max-lines-per-function -- large screen component; splitting into sub-components is a separate refactor
 export default function HomePage(props: HomePageProps) {
   const { todaySleep, sleepGoal, sleepStreak, showBedtimeModal, showDiary,
     onStartBarrier, onQuickGratitude, onSetShowDiary, onDismissBedtimeModal, onStartBarrierFromModal, onSaveQuickDiary, onSetSleepGoal } = props;
@@ -165,7 +166,7 @@ export default function HomePage(props: HomePageProps) {
                 )}
               </View>
               {todaySleep.gratitude && todaySleep.gratitude.length > 0 && (
-                <Text style={{ fontSize: 14, color: TH.sub, marginTop: 4 }}>感恩 ×{todaySleep.gratitude.length}</Text>
+                <Text style={{ fontSize: 14, color: TH.sub, marginTop: 4 }}>{`感恩 ×${todaySleep.gratitude.length}`}</Text>
               )}
               <TouchableOpacity onPress={() => onSetShowDiary(true)} style={{ marginTop: 12 }}>
                 <Text style={{ fontSize: 15, color: TH.primary, fontWeight: '600' }}>编辑日记 →</Text>
@@ -212,7 +213,7 @@ export default function HomePage(props: HomePageProps) {
             })}
           </View>
           <Text style={{ fontSize: 15, color: TH.sub, marginTop: 12, textAlign: 'center' }}>
-            ⏰ 距{nextSleep.period.nameZh}还有 {Math.floor(nextSleep.minutesUntil / 60)}小时{nextSleep.minutesUntil % 60}分
+            {`⏰ 距${nextSleep.period.nameZh}还有 ${Math.floor(nextSleep.minutesUntil / 60)}小时${nextSleep.minutesUntil % 60}分`}
           </Text>
         </View>
 
@@ -371,7 +372,7 @@ export default function HomePage(props: HomePageProps) {
               <Text style={{ fontSize: 18, fontWeight: '600', color: TH.text, textAlign: 'center', marginTop: 4 }}>{clockDetail.organ}</Text>
               <Text style={{ fontSize: 15, color: TH.sub, textAlign: 'center', marginTop: 12 }}>{clockDetail.advice}</Text>
               <View style={{ height: 1, backgroundColor: TH.border, marginVertical: 16 }} />
-              <Text style={{ fontSize: 14, color: TH.sub, textAlign: 'center' }}>{clockDetail.startHour}:00 - {(clockDetail.startHour + 1) % 24}:00</Text>
+              <Text style={{ fontSize: 14, color: TH.sub, textAlign: 'center' }}>{`${clockDetail.startHour}:00 - ${(clockDetail.startHour + 1) % 24}:00`}</Text>
               <TouchableOpacity onPress={() => setClockDetail(null)} style={{ marginTop: 20, alignItems: 'center', padding: 12, borderRadius: 12, backgroundColor: TH.card }}>
                 <Text style={{ fontSize: 15, fontWeight: '600', color: TH.primary }}>关闭</Text>
               </TouchableOpacity>
@@ -414,7 +415,7 @@ export default function HomePage(props: HomePageProps) {
               {trendDetail.durationMin > 0 ? (
                 <View>
                   <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 4 }}>{T('sleepDuration')}</Text>
-                  <Text style={{ fontSize: 24, fontWeight: '800', color: TH.text, marginBottom: 16 }}>{Math.floor(trendDetail.durationMin / 60)}h{trendDetail.durationMin % 60}m</Text>
+                  <Text style={{ fontSize: 24, fontWeight: '800', color: TH.text, marginBottom: 16 }}>{`${Math.floor(trendDetail.durationMin / 60)}h${trendDetail.durationMin % 60}m`}</Text>
                   <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 4 }}>{T('sleepQuality')}</Text>
                   <Text style={{ fontSize: 20, color: '#F59E0B' }}>{trendDetail.quality > 0 ? `${'★'.repeat(trendDetail.quality)}${'☆'.repeat(5 - trendDetail.quality)}` : T('sleepTrendNoRating')}</Text>
                 </View>

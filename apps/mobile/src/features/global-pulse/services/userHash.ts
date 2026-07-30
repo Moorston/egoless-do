@@ -1,6 +1,6 @@
+import { createLogger } from '@egoless-do/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
-import { createLogger } from '@egoless-do/core';
 
 const log = createLogger('UserHash');
 

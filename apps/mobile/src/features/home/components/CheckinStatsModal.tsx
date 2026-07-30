@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../../components/UI';
 import CalendarGrid from '../../../components/charts/CalendarGrid';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import { useShallowStore } from '../../../store/useAppStore';
 
 
 interface CheckinStatsModalProps {
@@ -25,7 +25,7 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
   }));
   const insets = useSafeAreaInsets();
 
-  const historyArr = checkinHistory ?? [];
+  const historyArr = useMemo(() => checkinHistory ?? [], [checkinHistory]);
   const totalCompleted = useMemo(() => historyArr.filter((c: CheckinEntry) => c.done && !c.deleted).length, [historyArr]);
 
   const today = new Date();
@@ -128,7 +128,7 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: reasonDistribution.length > 0 ? 16 : 0 }}>
               {stats.map((stat, i) => (
                 <View key={i} style={{ backgroundColor: TH.card, borderRadius: 14, padding: 12, width: '48%', borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
-                  <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '700', color: P }}>{stat.value}</Text>
+                  <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '700', color: P }}>{String(stat.value)}</Text>
                   <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>{stat.label}</Text>
                   <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 2, textAlign: 'center' }}>{stat.sub}</Text>
                 </View>
@@ -147,7 +147,7 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
                     return (
                       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 8 }}>
                         <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{r.icon} {T(labelKey)}</Text>
-                        <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: P }}>{r.count} {T('days')}</Text>
+                        <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: P }}>{String(r.count)} {T('days')}</Text>
                       </View>
                     );
                   }}

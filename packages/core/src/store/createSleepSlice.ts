@@ -1,9 +1,11 @@
-import { dateStr } from '../utils';
-import type { SleepEntry, SleepGoal } from '../types';
-import { DEFAULT_SLEEP_GOAL } from '../types';
-import type { StorageAdapter, SleepSlice } from './types';
-import type { SliceCreator } from './sliceHelper';
 import { createLogger } from '../logger';
+import type { SleepEntry } from '../types';
+import { DEFAULT_SLEEP_GOAL } from '../types';
+import { dateStr } from '../utils';
+
+import type { SliceCreator } from './sliceHelper';
+import type { StorageAdapter, SleepSlice } from './types';
+
 const log = createLogger('Sleep');
 
 function uuid(): string {

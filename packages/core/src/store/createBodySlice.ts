@@ -1,9 +1,11 @@
-import type { BodyGoal, BodyPlan, BodyCheckin, WeightRecord, BodyTrainingPlan, BodyTrainingPlanStatus } from '../types';
-import type { StorageAdapter } from './types';
-import type { SliceCreator } from './sliceHelper';
-import { createLogger } from '../logger';
-import { uid } from '../utils';
 import { createBodyGoal, createBodyPlan, createBodyCheckin, createWeightRecord } from '../business/body';
+import { createLogger } from '../logger';
+import type { BodyGoal, BodyPlan, BodyCheckin, WeightRecord, BodyTrainingPlan } from '../types';
+import { uid } from '../utils';
+
+import type { SliceCreator } from './sliceHelper';
+import type { StorageAdapter } from './types';
+
 const log = createLogger('Store');
 
 // ─── BodyFlow persisted state ─────────────────────────────────

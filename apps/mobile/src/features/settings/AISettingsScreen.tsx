@@ -1,14 +1,15 @@
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY , PROVIDER_TEMPLATES , uid } from '@egoless-do/core';
 import type { ModelConfig, ProviderTemplate, AIMode } from '@egoless-do/core';
 import { useNavigation } from '@react-navigation/native';
-import { ArrowLeft, Check, X, Wifi, WifiOff, ChevronRight, Trash2, Plus, Star, Settings } from 'lucide-react-native';
+import { ArrowLeft, Check, X, Wifi, ChevronRight, Trash2, Plus, Star, Settings } from 'lucide-react-native';
 import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Switch, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../components/UI';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+import { useShallowStore } from '../../store/useAppStore';
 
+// eslint-disable-next-line max-lines-per-function -- large settings screen; splitting into sub-components is a separate refactor
 export default function AISettingsScreen() {
   const TH = useTheme();
   const T = useT();
@@ -114,7 +115,7 @@ export default function AISettingsScreen() {
     }
 
     setShowAddModal(false);
-  }, [formName, formBaseUrl, formModel, formApiKey, formMaxTokens, formTemperature, editingModel, models.length, store]);
+  }, [formName, formBaseUrl, formModel, formApiKey, formMaxTokens, formTemperature, editingModel, models.length, store, T]);
 
   // 切换模型启用状态
   const handleToggleModel = useCallback((modelId: string) => {
@@ -138,7 +139,7 @@ export default function AISettingsScreen() {
         },
       },
     ]);
-  }, [store]);
+  }, [store, T]);
 
   // 测试连接
   const handleTestConnection = useCallback(async (model: ModelConfig) => {
@@ -164,7 +165,7 @@ export default function AISettingsScreen() {
       }
       setTestingModel(null);
     }, 1000);
-  }, []);
+  }, [T]);
 
   // 渲染模型卡片
   const renderModelCard = (model: ModelConfig) => {

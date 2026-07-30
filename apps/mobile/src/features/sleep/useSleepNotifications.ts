@@ -1,8 +1,8 @@
-import { dateStr, createLogger } from '@egoless-do/core';
+import { createLogger } from '@egoless-do/core';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { AppState, Platform } from 'react-native';
 
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+import { useShallowStore } from '../../store/useAppStore';
 
 const log = createLogger('SleepNotify');
 
@@ -37,7 +37,6 @@ export function useSleepNotifications() {
   }));
   const [showBedtimeModal, setShowBedtimeModal] = useState(false);
   const autoRecordTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const appStateRef = useRef(AppState.currentState);
 
   // Request notification permissions
   const requestPermissions = useCallback(async () => {
@@ -107,7 +106,7 @@ export function useSleepNotifications() {
     });
 
     log.info('Sleep reminders scheduled', { bedtime: sleepGoal.targetBedtime, before: sleepGoal.reminderBeforeMin });
-  }, [sleepGoal, requestPermissions]);
+  }, [sleepGoal, requestPermissions, cancelReminders]);
 
   // Cancel sleep notifications
   const cancelReminders = useCallback(async () => {
@@ -129,7 +128,6 @@ export function useSleepNotifications() {
           setShowBedtimeModal(true);
           // Start 1-min auto-record timer
           autoRecordTimerRef.current = setTimeout(() => {
-            const today = dateStr();
             const existing = getTodaySleep();
             if (!existing) {
               saveSleepDiary({ bedtimeAt: Date.now(), barrierDone: false });
@@ -141,7 +139,7 @@ export function useSleepNotifications() {
     });
 
     return () => subscription.remove();
-  }, [sleepGoal.enabled]);
+  }, [sleepGoal.enabled, getTodaySleep, saveSleepDiary]);
 
   // Handle notification tap (when app was in background)
   useEffect(() => {
@@ -180,7 +178,7 @@ export function useSleepNotifications() {
     } else {
       void cancelReminders();
     }
-  }, [sleepGoal.enabled, sleepGoal.targetBedtime, sleepGoal.reminderBeforeMin]);
+  }, [sleepGoal.enabled, sleepGoal.targetBedtime, sleepGoal.reminderBeforeMin, cancelReminders, scheduleReminders]);
 
   return {
     showBedtimeModal,

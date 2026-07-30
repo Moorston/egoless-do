@@ -1,16 +1,14 @@
-import { FONT_TITLE, FONT_SUB, FONT_SMALL, ALL_SPORTS, type BodyPlanTask, type ExerciseDef } from '@egoless-do/core';
-import { useRoute, RouteProp } from '@react-navigation/native';
+import { ALL_SPORTS, type ExerciseDef } from '@egoless-do/core';
 import React, { useState, useCallback, useMemo, useRef } from 'react';
 import { View, ScrollView, Animated } from 'react-native';
 
 import { useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+import { useShallowStore } from '../../store/useAppStore';
 
 import BodyDashboard from './body/BodyDashboard';
 import BodyFlow from './body/BodyFlow';
-import { useBodyFlowState } from './body/hooks/useBodyFlowState';
 import { useTodayPlan } from './body/hooks/useTodayPlan';
 
 // ── Page state machine ──
@@ -22,17 +20,15 @@ export default function BodyScreen() {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const { bodyTrainingPlans, setBodyFlowState, upsertBodyCheckin } = useShallowStore(s => ({
+  const { bodyTrainingPlans, upsertBodyCheckin } = useShallowStore(s => ({
     bodyTrainingPlans: s.bodyTrainingPlans,
-    setBodyFlowState: s.setBodyFlowState,
     upsertBodyCheckin: s.upsertBodyCheckin,
   }));
   const [page, setPage] = useState<BodyPage>('dashboard');
-  const { todayPlan, weekday: todayWeekday, todayOverride, todayExercises, activeTrainingPlan } = useTodayPlan();
+  const { todayPlan, weekday: todayWeekday, todayOverride, todayExercises } = useTodayPlan();
   const [activePlanId, setActivePlanId] = useState<string | null>(null);
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const transitioningRef = useRef(false);
-  const { flowState } = useBodyFlowState();
 
   // Animated page transition
   const transitionTo = useCallback((target: BodyPage, extra?: () => void) => {
@@ -65,9 +61,6 @@ export default function BodyScreen() {
     return { planId: plan.id, planName: plan.name, task };
   }, [activePlanId, bodyTrainingPlans, todayWeekday]);
 
-  // 检测组合模式
-  const isComboMode = !!todayExercises && todayExercises.length > 1;
-
   const handleGoToSport = useCallback((sportKey: string, exercises?: ExerciseDef[]) => {
     const sport = ALL_SPORTS.find(s => s.key === sportKey || s.keyEn === sportKey);
     const navParams: Record<string, unknown> = {
@@ -90,7 +83,7 @@ export default function BodyScreen() {
     }
 
     nav.navigate('Sport' as never, navParams as never);
-  }, [nav, activePlanId, todayExercises, todayWeekday, bodyTrainingPlans, isComboMode]);
+  }, [nav, activePlanId, todayWeekday, bodyTrainingPlans]);
 
   const handleGoToBreathing = useCallback(() => {
     nav.navigate('Breathing' as never);

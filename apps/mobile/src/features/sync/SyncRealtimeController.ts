@@ -3,10 +3,8 @@
 // Manages realtime connection (SSE) and fallback polling.
 
 import { apiSyncPullPost, apiSyncCheck, createLogger, KickedOutError } from '@egoless-do/core';
-import type { SyncEntity } from '@egoless-do/core';
 import NetInfo from '@react-native-community/netinfo';
 
-import { openDatabase, getState, setState } from '../../db/schema';
 import { getQueueCount, resetAllPendingForRetry } from '../../db/syncQueue';
 
 import { RealtimeAgent, type RealtimeChangeEvent } from './RealtimeAgent';
@@ -138,9 +136,11 @@ export class SyncRealtimeController {
           if (result?.data) {
             const deletedIds = deletedIdsProvider();
             const patch = await (this._applyServerChanges?.(result.data, deletedIds) ?? Promise.resolve({}));
+            // eslint-disable-next-line max-depth -- nested guard after server change application
             if (patch && Object.keys(patch).length) onChange(patch);
 
             // Update lastSyncAt via callback
+            // eslint-disable-next-line max-depth -- nested guard for server time update
             if (result?.serverTime) {
               this._onServerTime?.(result.serverTime);
             }
@@ -165,10 +165,10 @@ export class SyncRealtimeController {
   // ── Network Recovery ───────────────────────────────────────────────────
 
   private startNetworkRecoveryListener(
-    onChange: (patch: Record<string, unknown>) => void,
-    getLastSyncAt: () => number,
-    deletedIdsProvider: () => Set<string>,
-    getToken: () => string | null,
+    _onChange: (patch: Record<string, unknown>) => void,
+    _getLastSyncAt: () => number,
+    _deletedIdsProvider: () => Set<string>,
+    _getToken: () => string | null,
   ): void {
     if (this._netInfoUnsubscribe) return;
     this._netInfoUnsubscribe = NetInfo.addEventListener(state => {

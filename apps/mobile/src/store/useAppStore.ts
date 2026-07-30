@@ -33,8 +33,8 @@ import { runSync, resetSyncState, softResetSyncState, resetMigrationFlag, rehydr
 import { createMobileUiSlice, type MobileUiSlice } from './createMobileUiSlice';
 import { saveSecureTokens } from './secureAuth';
 import { mobileStorageAdapter, flushWrites, setPersistErrorHandler } from './storageAdapter';
-import { useUiStore } from './uiStore';
 import { registerCleanup } from './subscriptionRegistry';
+import { useUiStore } from './uiStore';
 
 const log = createLogger('App');
 

@@ -2,6 +2,7 @@
 // Single source of truth for network connectivity across the app.
 import NetInfo from '@react-native-community/netinfo';
 import { create } from 'zustand';
+
 import { registerCleanup } from './subscriptionRegistry';
 
 interface NetworkStatus {

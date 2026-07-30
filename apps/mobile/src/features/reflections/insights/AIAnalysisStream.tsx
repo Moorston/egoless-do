@@ -1,6 +1,6 @@
-import { FONT_SMALL, FONT_TINY, FONT_BODY , FONT_SUB } from '@egoless-do/core';
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { View, Text, Animated, StyleSheet, Easing } from 'react-native';
+import { FONT_SMALL, FONT_TINY, FONT_SUB } from '@egoless-do/core';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, Animated, StyleSheet } from 'react-native';
 
 import { useTheme } from '../../../components/UI';
 
@@ -33,6 +33,7 @@ export function AIAnalysisStream({ messages, isAnalyzing, onComplete }: Props) {
         useNativeDriver: true,
       }).start();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- containerFade is a stable ref; effect tracks analyzing/messages only
   }, [isAnalyzing, messages.length]);
 
   useEffect(() => {
@@ -46,6 +47,7 @@ export function AIAnalysisStream({ messages, isAnalyzing, onComplete }: Props) {
       }, 3000);
       return () => clearTimeout(timer);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- containerFade is a stable ref; onComplete intentionally omitted to avoid re-triggering
   }, [isAnalyzing, messages]);
 
   if (messages.length === 0) return null;
@@ -61,12 +63,10 @@ export function AIAnalysisStream({ messages, isAnalyzing, onComplete }: Props) {
 
         {/* Messages */}
         <View style={[styles.messagesWrapper, { backgroundColor: TH.card, borderColor: TH.border }]}>
-          {messages.map((msg, index) => (
+          {messages.map((msg) => (
             <ChatMessage
               key={msg.id}
               message={msg}
-              isLast={index === messages.length - 1}
-              isAnalyzing={isAnalyzing}
             />
           ))}
 
@@ -84,12 +84,8 @@ export function AIAnalysisStream({ messages, isAnalyzing, onComplete }: Props) {
 
 function ChatMessage({
   message,
-  isLast,
-  isAnalyzing,
 }: {
   message: ThinkingMessage;
-  isLast: boolean;
-  isAnalyzing: boolean;
 }) {
   const TH = useTheme();
   const [displayText, setDisplayText] = useState('');
@@ -111,6 +107,7 @@ function ChatMessage({
         useNativeDriver: true,
       }),
     ]).start();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fadeAnim/slideAnim are stable refs; mount-only animation
   }, []);
 
   // Typewriter effect for thinking messages
@@ -200,6 +197,7 @@ function BlinkingCursor({ color }: { color: string }) {
     );
     animation.start();
     return () => animation.stop();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- opacity is a stable ref; mount-only animation
   }, []);
 
   return (
@@ -241,6 +239,7 @@ function TypingIndicator({ color }: { color: string }) {
 
     animations.start();
     return () => animations.stop();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- dot1/dot2/dot3 are stable refs; mount-only animation
   }, []);
 
   return (

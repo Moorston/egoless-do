@@ -1,6 +1,4 @@
 import { MEDITATION_DURATIONS_MIN, COLORS, getTodayMedMinutes, dateStr, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_HERO, FONT_BADGE, FONT_STAT_SECTION, createLogger } from '@egoless-do/core';
-import { track } from '../../../analytics/track';
-import { Events } from '../../../analytics/events';
 import type { MusicTrack } from '@egoless-do/core';
 import { useAudioPlayer, setAudioModeAsync, type AudioSource } from 'expo-audio';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -11,25 +9,29 @@ import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, StyleSheet 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ViewShot, { type ViewShotRef } from 'react-native-view-shot';
 
+import { Events } from '../../../analytics/events';
+import { track } from '../../../analytics/track';
+import MeditationMusicBar from '../../components/MeditationMusicBar';
 import { Card, useTheme, PrimaryButton, TagPill, ProgressBar, OutlineButton, useT } from '../../components/UI';
-import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
-
-const log = createLogger('Meditation');
 import SimpleHeader from '../../navigation/SimpleHeader';
+import { useRootNavigation } from '../../navigation/hooks';
+import { audioSessionManager } from '../../services/AudioSessionManager';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { ActiveInsightBar } from '../global-pulse/components/ActiveInsightBar';
 import { useGoalResolver } from '../global-pulse/hooks/useGoalResolver';
 import { useSessionHeartbeat } from '../global-pulse/hooks/useSessionHeartbeat';
 import { createSession, deleteSession, updateSession } from '../global-pulse/services/activeSessionApi';
 import MusicPickerModal from '../music/components/MusicPickerModal';
-import { audioSessionManager } from '../../services/AudioSessionManager';
 import { useMusicStore } from '../music/useMusicStore';
-import MeditationMusicBar from '../../components/MeditationMusicBar';
+
+const log = createLogger('Meditation');
 
 // 实时会话
 
 const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3') as unknown as AudioSource;
 
+// MeditationScreen 为多阶段冥想+音频+实时会话综合屏幕，拆分子组件成本较高，暂禁用行数限制
+// eslint-disable-next-line max-lines-per-function
 export default function MeditationScreen() {
   const TH    = useTheme();
   const P     = TH.primary;
@@ -201,6 +203,8 @@ export default function MeditationScreen() {
         setNoteText('');
         setShowNoteModal(true);
         // PostHog: 冥想完成
+        // track/Events 经 analytics 模块导入，eslint 语言服务将类型解析为 error（tsc 正常），禁用误报
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         track(Events.MEDITATION_COMPLETED, {
           dur_min_actual: durMin,
           completion_type: 'natural',
@@ -335,7 +339,7 @@ export default function MeditationScreen() {
               <MeditationMusicBar track={selectedTrack} isActive isPlaying={musicIsPlaying} primaryColor={P} />
               <View style={{ backgroundColor:`${P}18`, borderRadius:20, padding:28, marginBottom:20, width:'100%', alignItems:'center' }}>
                 <Text style={{ fontSize:FONT_HERO(), fontWeight:'800', color:P, letterSpacing:2 }}>
-                  {Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, '0')}
+                  {String(Math.floor(remaining / 60))}:{String(remaining % 60).padStart(2, '0')}
                 </Text>
                 <Text style={{ color:TH.sub, fontSize:FONT_BODY(), marginTop:6 }}>
                   {T('medActive')}

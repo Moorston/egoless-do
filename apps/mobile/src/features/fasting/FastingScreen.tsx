@@ -14,18 +14,17 @@ import { Card, useTheme, PrimaryButton, OutlineButton, useT } from '../../compon
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
-
-
-const log = createLogger('FastingScreen');
-
-
 // 实时会话
 import { ActiveInsightBar } from '../global-pulse/components/ActiveInsightBar';
 import { useGoalResolver } from '../global-pulse/hooks/useGoalResolver';
 import { createSession, deleteSession, updateSession } from '../global-pulse/services/activeSessionApi';
 
+const log = createLogger('FastingScreen');
+
+
 const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3') as unknown as AudioSource;
 
+// eslint-disable-next-line max-lines-per-function -- fasting page keeps timer/session/stats together
 export default function FastingScreen() {
   const TH    = useTheme();
   const P     = TH.primary;
@@ -65,6 +64,7 @@ export default function FastingScreen() {
       setElapsed(0);
     }
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- depends only on id/startedAt
   }, [activeFasting?.id, activeFasting?.startedAt]);
 
   const pct  = useMemo(() => {
@@ -158,6 +158,7 @@ export default function FastingScreen() {
       void deleteSession(sessionIdRef.current);
       sessionIdRef.current = null;
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- runs only on isActive toggle; insight read via ref
   }, [isActive]);
 
   // 更新感悟
@@ -213,7 +214,7 @@ export default function FastingScreen() {
             {/* Stats 3 columns */}
             <View style={styles.heroStatsRow}>
               <View style={styles.heroStatCol}>
-                <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '900', color: '#fff' }}>{(fastingHistory ?? []).filter(f => !f.deleted).length}</Text>
+                <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '900', color: '#fff' }}>{String((fastingHistory ?? []).filter(f => !f.deleted).length)}</Text>
                 <Text style={styles.heroStatLabel}>{T('fastTimes')}</Text>
                 <Text style={styles.heroStatSub}>{T('fastTotal')}</Text>
               </View>
@@ -273,14 +274,14 @@ export default function FastingScreen() {
                 <View style={[styles.ringBase, { borderColor: TH.border }]} />
                 <View style={ringProgressStyle} />
                 <View style={{ alignItems:'center' }}>
-                <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight:'800', color:P }}>{Math.floor(elapsed / 3600)}:{String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0')}:{String(elapsed % 60).padStart(2, '0')}</Text>
+                <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight:'800', color:P }}>{`${Math.floor(elapsed / 3600)}:${String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0')}:${String(elapsed % 60).padStart(2, '0')}`}</Text>
                 <Text style={{ fontSize: FONT_LABEL(), color:TH.sub }}>{T('fastTarget')} <Text style={{ fontSize: FONT_STAT_CARD() }}>{activeFasting?.targetHours}h</Text></Text>
                 </View>
               </View>
               <View style={{ flexDirection:'row', alignItems:'center', gap:4, marginBottom:16 }}>
                 <Text style={{ color:TH.sub, fontSize: FONT_LABEL() }}>{T('fastActive')}</Text>
                 <Flame size={16} color={COLORS.ORANGE} />
-                <Text style={{ color:TH.sub, fontSize: FONT_STAT_CARD() }}>{Math.round(pct * 100)}%</Text>
+                <Text style={{ color:TH.sub, fontSize: FONT_STAT_CARD() }}>{`${Math.round(pct * 100)}%`}</Text>
               </View>
               <PrimaryButton label={T('stopFasting')} onPress={() => { setNoteText(''); setInsight(''); setShowNoteModal(true); }} color={COLORS.RED} style={{ width:'100%' }} icon={<StopCircle size={20} color="#fff" />} />
             </>
@@ -381,7 +382,7 @@ export default function FastingScreen() {
         <View style={{ flex:1, backgroundColor:'rgba(0,0,0,.75)', justifyContent:'center', padding:24 }}>
           <View style={{ backgroundColor:TH.cardSolid, borderRadius:20, padding:24 }}>
             <Text style={{ fontSize:FONT_TITLE(), fontWeight:'700', color:TH.text, textAlign:'center', marginBottom:4 }}>禁食完成 ✨</Text>
-            <Text style={{ fontSize:FONT_BODY(), color:TH.sub, textAlign:'center', marginBottom:20 }}>{Math.floor(elapsed / 3600)}h {Math.floor((elapsed % 3600) / 60)}m</Text>
+            <Text style={{ fontSize:FONT_BODY(), color:TH.sub, textAlign:'center', marginBottom:20 }}>{`${Math.floor(elapsed / 3600)}h ${Math.floor((elapsed % 3600) / 60)}m`}</Text>
             <Text style={{ fontSize:FONT_BODY(), color:TH.text, fontWeight:'600', marginBottom:8 }}>想记录点什么吗？(可选)</Text>
             <TextInput
               style={{ backgroundColor:TH.card, borderRadius:12, padding:12, color:TH.text, fontSize:FONT_BODY(), minHeight:80, maxHeight:120, textAlignVertical:'top', marginBottom:20 }}

@@ -1,9 +1,9 @@
 // ─── 统一埋点 API ───────────────────────────────────────────────
 // 所有埋点调用集中于此，自动做 PII 过滤。
 
+import type { AnalyticsEvent } from './events';
 import { getPostHog } from './posthog';
 import { sanitize } from './privacy';
-import type { AnalyticsEvent } from './events';
 
 /**
  * 追踪自定义事件。
@@ -35,7 +35,7 @@ export function identify(userId: string, properties: Record<string, unknown> = {
 export function screen(screenName: string, props: Record<string, unknown> = {}): void {
   const ph = getPostHog();
   if (!ph) return;
-  ph.screen(screenName, sanitize(props));
+  void ph.screen(screenName, sanitize(props));
 }
 
 /**
@@ -44,7 +44,7 @@ export function screen(screenName: string, props: Record<string, unknown> = {}):
 export function setPersonProperties(properties: Record<string, unknown>): void {
   const ph = getPostHog();
   if (!ph) return;
-  ph.register(sanitize(properties));
+  void ph.register(sanitize(properties));
 }
 
 /**

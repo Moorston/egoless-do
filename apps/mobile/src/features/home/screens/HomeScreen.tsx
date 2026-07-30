@@ -1,18 +1,10 @@
-import { THEMES, COLORS, cardTextColor, dateStr, yesterday, addDays, getFoodLogByDate, getRecentFoods, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_SMALL, FONT_LABEL, FONT_CARD_TITLE, parseCheckinNote, getActivePlan, getTodayItems, getTodayCustomTodos, isPlanDelayed, getIncompleteItems, INCOMPLETE_REASONS, getStatsForDate, isGraceAvailable, createLogger, formatTime } from '@egoless-do/core';
+import { THEMES, COLORS, dateStr, yesterday, getFoodLogByDate, getRecentFoods, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_LABEL, FONT_CARD_TITLE, parseCheckinNote, getActivePlan, getTodayItems, getTodayCustomTodos, isPlanDelayed, getIncompleteItems, INCOMPLETE_REASONS, getStatsForDate, isGraceAvailable, createLogger, formatTime } from '@egoless-do/core';
 import type { CheckinEntry, Habit } from '@egoless-do/core';
-import { LinearGradient } from 'expo-linear-gradient';
 import {
-  Scale, Footprints,
-  Droplets, Pencil, Check, X, Star, Sparkles,
-  ClipboardList, Target, BarChart3,
-  ChevronLeft, ChevronRight, Calendar,
+  Scale, Footprints, Droplets, Pencil, Check, X, Star, Sparkles, ClipboardList, Calendar,
 } from 'lucide-react-native';
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
-import {
-  View, Text, ScrollView, TouchableOpacity,
-  StatusBar, Modal, TextInput,
-  KeyboardAvoidingView, Platform,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StatusBar, Modal, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -21,9 +13,6 @@ import SimpleHeader from '../../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useNavigateToTab } from '../../../navigation/useAppNavigation';
 import { useAppStore, useShallowStore, type MobileStore } from '../../../store/useAppStore';
-import { useDateNavigation } from '../hooks/useDateNavigation';
-
-const log = createLogger('Home');
 import Banner from '../components/Banner';
 import CheckinStatsModal from '../components/CheckinStatsModal';
 import DateBar from '../components/DateBar';
@@ -32,6 +21,9 @@ import GraceReminder from '../components/GraceReminder';
 import HomeBubble from '../components/HomeBubble';
 import HomeFoodSection from '../components/HomeFoodSection';
 import HomePlanSection from '../components/HomePlanSection';
+import { useDateNavigation } from '../hooks/useDateNavigation';
+
+const log = createLogger('Home');
 
 type CheckinStatus = 'draft' | 'done' | 'editing';
 
@@ -79,6 +71,8 @@ function parseWeight(raw: string | undefined): number | undefined {
   return Number.isFinite(n) && n > 0 && n <= 500 ? n : undefined;
 }
 
+// HomeScreen 为首页综合屏幕（签到/习惯/计划/饮食/日期导航），拆分子组件成本较高，暂禁用行数限制
+// eslint-disable-next-line max-lines-per-function
 export default function HomeScreen() {
   // ═══════════════════════════════════════════════════════════════
   // Section 1: Store Data & Navigation
@@ -129,7 +123,7 @@ export default function HomeScreen() {
   const language = useAppStore(useShallow((s: MobileStore) => s.language));
 
   // ── Date state ──
-  const { viewDate, isToday, goToDate, onTouchStart, onTouchEnd, viewDateRef } = useDateNavigation();
+  const { viewDate, isToday, goToDate, onTouchStart, onTouchEnd } = useDateNavigation();
 
   const weightUnit = useShallowStore(s => s.weightUnit);
 
@@ -237,7 +231,7 @@ export default function HomeScreen() {
     setLocalDone(todayRecord.done ?? null);
     setNote(p.userNote);
     setWeight(todayRecord.weight != null ? String(todayRecord.weight) : '');
-  }, [todayRecord?.date, todayRecord?.updatedAt]);
+  }, [todayRecord]);
 
   // ── Build JSON note ──
   const buildNote = useCallback(() => {
