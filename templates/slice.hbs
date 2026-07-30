@@ -1,0 +1,58 @@
+/**
+ * {{properCase name}} Slice
+ * {{description}}
+ */
+
+import type { StorageAdapter, SyncEntity } from './storageAdapter';
+import { createLogger } from '@egoless-do/core';
+
+const log = createLogger('{{properCase name}}Slice');
+
+export interface {{properCase name}} {
+  id: string;
+  // TODO: Define fields
+}
+
+export interface {{properCase name}}Slice {
+  {{camelCase name}}s: {{properCase name}}[];
+  set{{properCase name}}s: (items: {{properCase name}}[]) => void;
+  add{{properCase name}}: (item: Omit<{{properCase name}}, 'id' | 'updatedAt' | 'deleted'>) => void;
+  update{{properCase name}}: (id: string, changes: Partial<{{properCase name}}>) => void;
+  delete{{properCase name}}: (id: string) => void;
+}
+
+export function create{{properCase name}}Slice(
+  adapter: StorageAdapter,
+  onSync?: () => void,
+): {{properCase name}}Slice {
+  return {
+    {{camelCase name}}s: [],
+
+    set{{properCase name}}s: (items) => {
+      // Note: This is a placeholder. In a real implementation,
+      // you would use Zustand's set() to update the store.
+      log.info(`Setting ${items.length} {{camelCase name}}s`);
+    },
+
+    add{{properCase name}}: (item) => {
+      const newItem = {
+        ...item,
+        id: crypto.randomUUID(),
+        updatedAt: Date.now(),
+        deleted: false,
+      } as {{properCase name}};
+      // TODO: Update store + persist
+      onSync?.();
+    },
+
+    update{{properCase name}}: (id, changes) => {
+      // TODO: Update store + persist
+      onSync?.();
+    },
+
+    delete{{properCase name}}: (id) => {
+      // TODO: Mark as deleted + persist
+      onSync?.();
+    },
+  };
+}

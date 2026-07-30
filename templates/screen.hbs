@@ -1,0 +1,25 @@
+// ─── {{properCase name}}Screen ─────────────────────────────────────────
+import React from 'react';
+import { View, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme, useT } from '../../components/UI';
+import { useShallowStore } from '../../store/useAppStore';
+import SimpleHeader from '../../navigation/SimpleHeader';
+
+export default function {{properCase name}}Screen() {
+  const TH = useTheme();
+  const T = useT();
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: TH.bg }} edges={['top']}>
+      <SimpleHeader routeName="{{properCase name}}" />
+      <View style={{ flex: 1, padding: 16 }}>
+        <Text style={{ color: TH.text, fontSize: 18 }}>
+          {{properCase name}} Screen
+        </Text>
+        {/* TODO: Add content */}
+      </View>
+    </SafeAreaView>
+  );
+}
