@@ -72,10 +72,7 @@ CREATE TABLE IF NOT EXISTS mind_reflections (
 );
 CREATE INDEX IF NOT EXISTS idx_mind_ts   ON mind_reflections(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_mind_tags ON mind_reflections(tags);
-// 性能优化：复合索引（deleted + 排序字段）
 CREATE INDEX IF NOT EXISTS idx_mind_del_ts ON mind_reflections(deleted, created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_checkin_del_date ON checkin_records(deleted, date DESC);
-CREATE INDEX IF NOT EXISTS idx_trails_del ON thought_trails(deleted, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_habits_deleted ON habits(deleted, rowid);
 
 CREATE TABLE IF NOT EXISTS fasting_sessions (
