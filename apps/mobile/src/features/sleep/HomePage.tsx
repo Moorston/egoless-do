@@ -1,7 +1,7 @@
 // ─── HomePage — Sleep home page (extracted from SleepEngine) ─────
 // Displays: body clock, sleep goal, diary, ritual entry, trend, streak
 
-import { getCurrentPeriod, getNextSleepPeriod, BODY_CLOCK, type BodyClockPeriod, FONT_TITLE, type SleepGoal, type WorkState, SleepEntry } from '@egoless-do/core';
+import { getCurrentPeriod, getNextSleepPeriod, type BodyClockPeriod, FONT_TITLE, type SleepGoal, type WorkState, SleepEntry } from '@egoless-do/core';
 import { Moon, Sun, Clock, Heart, ChevronRight, BarChart3 } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput } from 'react-native';
@@ -13,6 +13,7 @@ import { useRootNavigation } from '../../navigation/hooks';
 
 import DiaryModal from './DiaryModal';
 import SleepSummaryCard from './SleepSummaryCard';
+import BodyClockDial from './components/BodyClockDial';
 import { styles } from './sleepStyles';
 
 interface HomePageProps {
@@ -128,34 +129,22 @@ export default function HomePage(props: HomePageProps) {
         ) : null}
 
         {/* ── BodyClockCard ── */}
-        <View style={{ borderRadius: 20, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, padding: 20, marginBottom: 16 }}>
-          <Text style={{ fontSize: 14, fontWeight: '700', color: TH.primary, marginBottom: 12 }}>十二时辰</Text>
+        <View style={{ borderRadius: 20, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, padding: 20, marginBottom: 16, alignItems: 'center' }}>
+          <Text style={{ fontSize: 14, fontWeight: '700', color: TH.primary, marginBottom: 12, alignSelf: 'flex-start' }}>十二时辰</Text>
           <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, marginBottom: 4 }}>
             <Text style={{ fontSize: 22, fontWeight: '800', color: TH.text }}>{currentPeriod.nameZh}</Text>
             <Text style={{ fontSize: 15, fontWeight: '600', color: TH.primary }}>{currentPeriod.organ}</Text>
           </View>
           <Text style={{ fontSize: 15, color: TH.text, marginBottom: 12 }}>{currentPeriod.advice}</Text>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap', gap: 6 }}>
-            {BODY_CLOCK.map((p) => {
-              const isCurrent = p.key === currentPeriod.key;
-              const isSleep = p.key === 'zi' || p.key === 'hai';
-              return (
-                <TouchableOpacity key={p.key} onPress={() => setClockDetail(p)} style={{ alignItems: 'center', width: 22 }}>
-                  <View style={{
-                    width: 22, height: 22, borderRadius: 11,
-                    backgroundColor: isCurrent ? TH.primary : isSleep ? '#6366F1' : TH.border,
-                    alignItems: 'center', justifyContent: 'center',
-                  }}>
-                    <Text style={{ fontSize: 10, fontWeight: '700', color: isCurrent ? '#fff' : TH.sub }}>
-                      {p.nameZh.charAt(0)}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              );
-            })}
+          <BodyClockDial theme={TH} onPeriodPress={setClockDetail} />
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 8 }}>
+            <Clock size={16} color={TH.sub} />
+            <Text style={{ fontSize: 14, color: TH.sub }}>
+              {`距${nextSleep.period.nameZh}还有 ${Math.floor(nextSleep.minutesUntil / 60)}小时${nextSleep.minutesUntil % 60}分`}
+            </Text>
           </View>
-          <Text style={{ fontSize: 15, color: TH.sub, marginTop: 12, textAlign: 'center' }}>
-            {`⏰ 距${nextSleep.period.nameZh}还有 ${Math.floor(nextSleep.minutesUntil / 60)}小时${nextSleep.minutesUntil % 60}分`}
+          <Text style={{ fontSize: 12, color: TH.sub, opacity: 0.7, marginTop: 4 }}>
+            💤 睡眠窗口 21:00 → 05:00
           </Text>
         </View>
 
