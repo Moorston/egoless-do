@@ -762,3 +762,37 @@ Task 3 完整完成：4 Week 全部归档。LocalAIEngine + HybridEngine + Model
 ### Next Steps
 
 - None - task complete
+
+
+## Session 78: 调眠页昨晚睡眠卡片与快速记录合并
+
+**Date**: 2026-07-30
+**Task**: 调眠页昨晚睡眠卡片与快速记录合并
+**Branch**: `master`
+
+### Summary
+
+将 HomePage 分离的 SleepSummaryCard（只读）和 QuickDiary（只写）合并为单个内联编辑卡片。新建 SleepSummaryCard.tsx（只读/编辑/空态三态切换），提取 sleepSummaryLogic.ts 纯逻辑模块，修复空态星星点击无响应 bug（星星绑定 enterEditMode）。26 个单元测试通过。记录内联编辑星星/chips 模式到 component-guidelines，记录测试环境 lucide-react-native Flow 源码限制到 quality-guidelines。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `b23d9d23` | (see git log) |
+| `20fb075d` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
