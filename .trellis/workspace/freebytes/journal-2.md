@@ -663,3 +663,36 @@ Task 3 Week 1 完成：LocalAIEngine 接口 + 占位实现 + 8 测试。1844 测
 ### Next Steps
 
 - None - task complete
+
+
+## Session 75: 端侧 AI Week 2（HybridEngine）
+
+**Date**: 2026-07-30
+**Task**: 端侧 AI Week 2（HybridEngine）
+**Branch**: `master`
+
+### Summary
+
+Task 3 Week 2 完成：HybridEngine + 云端降级 + 4 测试。1852 测试通过。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `87fbd414467840b4b5eb1845` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
