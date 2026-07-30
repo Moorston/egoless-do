@@ -671,10 +671,10 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       id: d.id,
       user_id: d.userId ?? 'self',
       review_id: d.id,
-      data: json({
-        period: d.period ?? 'week',
-        startDate: d.startDate ?? '',
-        endDate: d.endDate ?? '',
+      period: d.period ?? 'week',
+      start_date: d.startDate ?? '',
+      end_date: d.endDate ?? '',
+      review_data: json({
         completionRate: d.completionRate,
         doneDays: d.doneDays,
         totalDays: d.totalDays,
@@ -693,25 +693,35 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
         aiModel: d.aiModel,
         lastAutoUpdateAt: d.lastAutoUpdateAt,
       }),
-      updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
+      updated_at: d.updatedAt ?? Date.now(),
     }),
     customServerPayloadToRow: (r) => {
-      const rd = typeof r.data === 'string' ? JSON.parse(r.data) as Record<string, unknown> : (r.data ?? {});
+      // NOTE: PocketBase collection field is `data` (JSON blob), but local SQLite
+      // splits out period/start_date/end_date as top-level NOT NULL columns.
+      // Parse server blob once, then map to the hybrid local layout.
+      const parsed = typeof r.data === 'string' ? JSON.parse(r.data) as Record<string, unknown> : (r.data ?? {});
+      const raw = typeof r.data === 'string' ? r.data : JSON.stringify(r.data ?? {});
       return {
         id: r.id, review_id: r.reviewId ?? r.id,
         user_id: r.userId ?? 'self',
-        data: typeof r.data === 'string' ? r.data : JSON.stringify(r.data ?? {}),
-        updated_at: r.updatedAt ?? Date.now(), deleted: 0,
+        period: (parsed.period as string) ?? 'week',
+        start_date: (parsed.startDate as string) ?? '',
+        end_date: (parsed.endDate as string) ?? '',
+        review_data: raw,
+        updated_at: r.updatedAt ?? Date.now(),
       };
     },
     customRowToEntity: (r) => {
-      const rd = parseJson<Record<string, unknown>>(r.data, {});
+      const rd = parseJson<Record<string, unknown>>(r.review_data, {});
       return {
         id: r.id,
         userId: r.user_id ?? 'self',
-        period: (rd.period as string) ?? 'week',
-        startDate: rd.startDate as string,
-        endDate: rd.endDate as string,
+        // period/start_date/end_date are top-level NOT NULL columns locally;
+        // fall back to review_data JSON for backward compatibility with any
+        // rows written before this split.
+        period: (r.period as string) ?? (rd.period as string) ?? 'week',
+        startDate: (r.start_date as string) ?? (rd.startDate as string) ?? '',
+        endDate: (r.end_date as string) ?? (rd.endDate as string) ?? '',
         completionRate: rd.completionRate as number,
         doneDays: rd.doneDays as number,
         totalDays: rd.totalDays as number,
