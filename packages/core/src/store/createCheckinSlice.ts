@@ -2,6 +2,7 @@ import { submitCheckinEntry } from '../business';
 import { createLogger } from '../logger';
 import type { CheckinEntry, GraceHistoryEntry } from '../types';
 import { calculateCheckinStreak } from '../utils';
+import { calculateStreakFromCheckins } from './selectors';
 
 import type { SliceCreator } from './sliceHelper';
 import type { StorageAdapter, CheckinSlice } from './types';
@@ -21,13 +22,24 @@ export function createCheckinSlice(
     graceHistory: [],
 
     submitCheckin(done: boolean, note: string, dateOverride?: string, weight?: number, grace?: boolean) {
-      let record: CheckinEntry | undefined;
+      let previousHistory: CheckinEntry[] = [];
+      let newRecord: CheckinEntry | undefined;
+      // 乐观更新：立即更新 UI
       set(s => {
-        const result = submitCheckinEntry(s.checkinHistory ?? [], done, note, dateOverride, weight, grace);
-        record = result.record;
+        previousHistory = s.checkinHistory ?? [];
+        const result = submitCheckinEntry(previousHistory, done, note, dateOverride, weight, grace);
+        newRecord = result.record;
         return { checkinHistory: result.history, streak: result.streak };
       });
-      if (record) adapter.persistChange('checkin', record.date, record).catch(e => log.error(e));
+      // 后台持久化，失败时回滚
+      if (newRecord) {
+        adapter.persistChange('checkin', newRecord.date, newRecord)
+          .catch(e => {
+            log.error(e);
+            // 回滚：恢复之前的历史
+            set({ checkinHistory: previousHistory, streak: calculateCheckinStreak(previousHistory.filter(c => !c.deleted)) });
+          });
+      }
       onSync?.();
     },
 
