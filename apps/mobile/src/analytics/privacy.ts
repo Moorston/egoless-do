@@ -128,5 +128,6 @@ export async function setAnalyticsConsent(consent: AnalyticsConsent): Promise<vo
 // 避免循环导入：动态导入 openDatabase
 async function openDatabase() {
   const { openDatabaseAsync } = await import('expo-sqlite');
+  // expo-sqlite v16 默认在 SQLite/ 子目录中创建数据库
   return openDatabaseAsync('egoless-do.db');
 }
