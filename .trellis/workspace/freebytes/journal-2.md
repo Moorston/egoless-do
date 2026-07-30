@@ -829,3 +829,25 @@ Commit：`c7ca6738 feat(sleep): 重构 SleepSummaryCard 为字段级增量编辑
 - 39 个 sleepSummaryLogic 测试全过
 - 150 个 sleep + store 测试无回归
 - 修改文件 lint 零问题
+
+## 2026-07-30 — 修复 AppHeader streak 不一致 (fix-header-streak)
+
+### 任务
+Trellis 任务：`.trellis/tasks/07-30-fix-header-streak`
+Commit：`019c1044 fix(header): AppHeader/SimpleHeader streak 改用 useCheckinStreak selector`
+
+### 根因
+store.streak 是冗余字段，initApp rehydration 后未重算（initApp.ts:481 注释明确）。
+HomeScreen 用 useCheckinStreak() selector 始终正确，AppHeader/SimpleHeader 用 store.streak 滞后。
+
+### 修复
+- AppHeader + SimpleHeader 改用 useCheckinStreak() selector
+- 移除 store.streak 写入点：createCheckinSlice（初始/submit/rollback/calculateStreak）、createMobileUiSlice
+- 清理类型（CheckinSlice 接口）、Zod schema（AppSettingsSchema）
+- per-record CheckinEntry.streak 保留
+
+### 验证
+- 源码 store.streak 读取点清零（仅 _archive/web-legacy 残留，不影响 mobile）
+- 修改文件 lint 零问题
+- 测试：1901 passed（6 个失败为既有模块解析问题，与本次无关）
+- type-check：修复了 2 个 streak 类型错误，零新增错误
