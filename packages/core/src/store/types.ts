@@ -1,9 +1,13 @@
 // ─── Unified Slice interfaces (single source of truth) ─────────
+import type { AIMode, ModelConfig } from '../ai/types';
+import type { CreateHabitForm } from '../business/habits';
+import type { CreateReflectionParams } from '../business/reflections';
+import type { SyncEntity } from '../sync/entities';
 import type {
-  AuthState, ThemeName, Habit, MindReflection, FastingSession,
+  AuthState, Habit, MindReflection, FastingSession,
   MedHistoryEntry, FoodEntry, ExerciseEntry, CheckinEntry,
   UserProfile, CustomFoodPreset, Plan, PlanItem, PlanItemCheckin, PlanItemLink, PlanItemPriority,
-  RecycleBinItem, RecycleBinEntityType, GraceHistoryEntry, DailyCustomTodo, DailyTodoHistory,
+  RecycleBinItem, GraceHistoryEntry, DailyCustomTodo, DailyTodoHistory,
   ReflectionFilters, ThoughtTrail, ReflectionLink, LinkType, CheckinReview,
   TrailNote, TrailInsightCache, TrailReviewCache,
   PlanItemSource, UnifiedPlanItemForm,
@@ -11,31 +15,30 @@ import type {
   GiveEntry,
   EatingMotivationEntry, CustomWuxingMap, FoodWuxingItem, WuxingStats, FlavorStats,
   MotivationStats, EmotionSensitiveDay,
-  FearEntry, CourageEntry, FearAchievement, FearStats, CourageStats, BodyHeatmap, FearInsight, DominantFearType, FearTimeSlot, AchievementType,
+  FearEntry, CourageEntry, FearAchievement,
   SutraReadingSession,
-  ZhiguanSession, ZhiguanDraft, ZhiguanStats,
+  ZhiguanSession,
 } from '../types';
-import type { SyncEntity } from '../sync/entities';
-import type { CreateHabitForm } from '../business/habits';
-import type { AIMode, ModelConfig } from '../ai/types';
-import type { CreateReflectionParams } from '../business/reflections';
-import type { StopFastingOpts } from '../business/fasting';
+
 import type { BodySlice } from './createBodySlice';
-export type { BodySlice } from './createBodySlice';
-import type { PracticeSlice } from './createPracticeSlice';
-export type { PracticeSlice } from './createPracticeSlice';
-import type { MantraSlice } from './createMantraSlice';
-export type { MantraSlice } from './createMantraSlice';
-import type { MindSlice } from './mindSliceTypes';
-export type { MindSlice } from './mindSliceTypes';
-import type { ZhiguanSlice } from './zhiguanSliceTypes';
-export type { ZhiguanSlice } from './zhiguanSliceTypes';
 import type { ExerciseSlice } from './createExerciseSlice';
-export type { ExerciseSlice } from './createExerciseSlice';
-import type { MeditationSlice } from './createMeditationSlice';
-export type { MeditationSlice } from './createMeditationSlice';
 import type { FastingSlice } from './createFastingSlice';
+import type { MantraSlice } from './createMantraSlice';
+import type { MeditationSlice } from './createMeditationSlice';
+import type { PracticeSlice } from './createPracticeSlice';
+import type { SettingsSlice } from './createSettingsSlice';
+import type { MindSlice } from './mindSliceTypes';
+import type { ZhiguanSlice } from './zhiguanSliceTypes';
+
+export type { BodySlice } from './createBodySlice';
+export type { ExerciseSlice } from './createExerciseSlice';
 export type { FastingSlice } from './createFastingSlice';
+export type { MantraSlice } from './createMantraSlice';
+export type { MeditationSlice } from './createMeditationSlice';
+export type { PracticeSlice } from './createPracticeSlice';
+export type { SettingsSlice } from './createSettingsSlice';
+export type { MindSlice } from './mindSliceTypes';
+export type { ZhiguanSlice } from './zhiguanSliceTypes';
 
 /** Error record for slice-level persistence failures */
 export interface SliceError {
@@ -62,10 +65,10 @@ export interface FoodSlice {
 export interface CheckinSlice {
   // Checkin
   checkinHistory: CheckinEntry[];
-  streak: number;
+  // streak 已移除：改为从 checkinHistory 派生（useCheckinStreak selector）
   graceHistory: GraceHistoryEntry[];
   submitCheckin: (done: boolean, note: string, date?: string, weight?: number, grace?: boolean) => void;
-  calculateStreak: () => void;
+  calculateStreak: () => void;  // 保留用于向后兼容，实际由 selector 替代
   addGraceRecord: (date: string) => void;
 }
 
@@ -80,10 +83,6 @@ export interface ProfileSlice {
   setWaterGoal: (ml: number) => void;
   setWeightUnit: (u: 'kg' | 'lb') => void;
 }
-
-import type { SettingsSlice } from './createSettingsSlice';
-export type { SettingsSlice } from './createSettingsSlice';
-
 
 export interface SleepSlice {
   sleepHistory: SleepEntry[];
