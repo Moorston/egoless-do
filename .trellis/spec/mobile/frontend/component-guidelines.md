@@ -141,6 +141,48 @@ const handleToggle = useCallback((exId: string) => {
 - blur 或 Enter 自动保存，无需确认按钮
 - 超过 4 个字段或需要复杂选择 → 仍用 Modal
 
+### Inline Editing (Stars / Chips — Explicit Save)
+
+Star ratings and chip selections that need explicit confirmation (not blur-save):
+
+```tsx
+// SleepSummaryCard: star rating + work-state chips, explicit save
+const [editing, setEditing] = useState(false);
+const [draftQuality, setDraftQuality] = useState(0);
+const [draftWorkState, setDraftWorkState] = useState<WorkState | null>(null);
+
+const enterEditMode = useCallback(() => {
+  setDraftQuality(todaySleep?.quality ?? 0);
+  setDraftWorkState(todaySleep?.workState ?? null);
+  setEditing(true);
+// eslint-disable-next-line react-hooks/exhaustive-deps -- read fields inside setter
+}, []);
+
+const handleSave = useCallback(() => {
+  if (draftQuality === 0) return; // quality required
+  onSaveQuickDiary(draftQuality, draftWorkState ?? undefined);
+  setEditing(false);
+}, [draftQuality, draftWorkState, onSaveQuickDiary]);
+
+// Empty-state stars: clicking enters edit mode (NOT direct rating)
+<TouchableOpacity onPress={enterEditMode}>
+  {renderStars(0, 28, false, enterEditMode)} // onStarPress handled per-star
+</TouchableOpacity>
+
+// Edit-state stars: clicking selects quality
+{draftQuality > 0 ? renderStars(draftQuality, 24) : null} // read-only display
+{renderStars(draftQuality, 32, true)}                     // interactive edit
+```
+
+**Rules:**
+- Empty-state stars are affordances, NOT interactive inputs — clicking enters edit mode
+- Edit-state stars are interactive — clicking sets the draft quality
+- Always pair with an explicit "Save" button (quality=0 disables it)
+- "Cancel" discards the draft — do NOT save on blur
+- Pre-fill drafts from existing data when entering edit mode
+
+**Reference:** `features/sleep/SleepSummaryCard.tsx` (inline editing for quality + work-state)
+
 ### Expand/Collapse Card with LayoutAnimation
 
 卡片折叠/展开动画使用 `LayoutAnimation.configureNext`（不引入额外动画库）：

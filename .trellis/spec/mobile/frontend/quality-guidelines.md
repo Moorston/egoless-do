@@ -82,6 +82,15 @@ Unit testing infrastructure is sparse in this project (see CLAUDE.md — 6 pre-e
 - Prefer testing pure functions from `@egoless-do/core`
 - Test slice actions' state transitions, not React components
 - Mock `StorageAdapter` for entity mutation tests
+- Extract component logic to pure functions (see `features/sleep/sleepSummaryLogic.ts` for pattern)
+
+### Known Test Environment Limitations
+
+- **lucide-react-native**: Flow-typed source fails vitest transform (`Unexpected token 'typeof'`). Must mock with `vi.mock('lucide-react-native', ...)` OR test pure logic without rendering the component.
+- **@testing-library/react-native**: loads lucide-react-native internally — also fails in current env.
+- **Workaround**: Extract logic to `*.ts` modules and unit test those; defer component rendering tests until RN test infra is configured.
+
+**Reference:** `features/sleep/sleepSummaryLogic.test.ts` (pure-logic test pattern)
 
 ---
 
