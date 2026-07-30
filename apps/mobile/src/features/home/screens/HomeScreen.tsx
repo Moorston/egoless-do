@@ -196,10 +196,7 @@ export default function HomeScreen() {
     () => getStatsForDate(checkinHistory ?? [], viewDate),
     [checkinHistory, viewDate],
   );
-  const activeHabits = useMemo(
-    () => (habits ?? []).filter(h => !h.deleted && h.status === 'inProgress'),
-    [habits],
-  );
+  // activeHabits 已通过 useActiveHabits() selector 获取（line ~110）
 
   // ── Status derivation ──
   const status: CheckinStatus = todayRecord
