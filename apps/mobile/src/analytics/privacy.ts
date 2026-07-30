@@ -128,6 +128,6 @@ export async function setAnalyticsConsent(consent: AnalyticsConsent): Promise<vo
 // 避免循环导入：动态导入 openDatabase
 async function openDatabase() {
   // 使用 schema.ts 的 openDatabase（单一连接，避免冲突）
-  const { openDatabase: openDb } = await import('../../db/schema');
+  const { openDatabase: openDb } = await import('../db/schema');
   return openDb();
 }
