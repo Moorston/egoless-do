@@ -13,6 +13,7 @@ import SimpleHeader from '../../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useNavigateToTab } from '../../../navigation/useAppNavigation';
 import { useAppStore, useShallowStore, type MobileStore } from '../../../store/useAppStore';
+import { getHabitStreak } from '@egoless-do/core';
 import { useCheckinStreak, useActiveHabits } from '../../../store/selectors';
 import Banner from '../components/Banner';
 import CheckinStatsModal from '../components/CheckinStatsModal';
@@ -51,7 +52,7 @@ function HabitItem({ habit, viewDate, TH, P, T, isReadOnly, onToggle }: {
         <Star size={16} color={P} />
         <View>
           <Text style={{ color: isReadOnly && !habitDone ? TH.sub : TH.text, fontSize: FONT_BODY(), opacity: isReadOnly && !habitDone ? 0.5 : 1 }}>{habit.name}</Text>
-          <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>{String(habit.streak ?? 0)} {T('checkinStreak')}</Text>
+          <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>{String(getHabitStreak(habit))} {T('checkinStreak')}</Text>
         </View>
       </View>
       {isReadOnly ? (

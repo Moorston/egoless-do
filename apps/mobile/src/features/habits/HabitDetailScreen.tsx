@@ -1,3 +1,4 @@
+import { getHabitStreak } from '@egoless-do/core';
 import {FONT_BODY, FONT_SMALL, FONT_TINY, MOOD_DISPLAY, HABIT_LINK_COLORS, activeOnly , FONT_TITLE, FONT_STAT_CARD, type Vision} from '@egoless-do/core';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
@@ -81,7 +82,7 @@ export default function HabitDetailScreen() {
           </View>
           <View style={styles.statsRow}>
             {[
-              { v: String(habit.streak), l: T('habitStreakDays') },
+              { v: String(getHabitStreak(habit)), l: T('habitStreakDays') },
               { v: String(habit.doneDays), l: T('habitTotalDays') },
               { v: String(habit.targetDays), l: T('habitTargetDays') },
             ].map(({ v, l }) => (

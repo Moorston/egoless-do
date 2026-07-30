@@ -1,3 +1,4 @@
+import { getHabitStreak } from '@egoless-do/core';
 // ─── HabitCard: habit card with original prominent style ─────────
 import {
   COLORS, dateStr, FONT_TITLE, FONT_BODY, FONT_BUTTON, FONT_SUB,
@@ -126,7 +127,7 @@ function HabitCard({
             <View style={{ flexDirection: 'row', gap: 20, marginBottom: 12 }}>
               {[
                 { v: String(h.doneDays), l: T('habitCumDays'), c: P },
-                { v: String(h.streak), l: T('habitStreakDays'), c: COLORS.ORANGE },
+                { v: String(getHabitStreak(h)), l: T('habitStreakDays'), c: COLORS.ORANGE },
                 { v: String(h.interrupted), l: T('habitInterrupted'), c: COLORS.RED },
                 { v: String(Math.max(0, h.targetDays - h.doneDays)), l: T('habitRemainDays'), c: COLORS.GREEN },
               ].map(({ v, l, c }) => (
