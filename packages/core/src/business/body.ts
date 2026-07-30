@@ -268,7 +268,7 @@ export function generateSuggestions(
     .filter(e => !e.deleted && (now - e.timestamp) < 30 * DAY)
     .sort((a, b) => b.timestamp - a.timestamp);
 
-  const consecutiveDays = 0;
+  let consecutiveDays = 0;
   let checkDate = new Date(now);
   for (let i = 0; i < 30; i++) {
     const dateStr = checkDate.toISOString().slice(0, 10);

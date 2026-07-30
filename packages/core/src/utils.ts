@@ -95,9 +95,15 @@ export const computeStreak = (checkedDates: string[]): number => {
 };
 
 /** Parse YYYY-MM-DD into a local Date (avoids UTC midnight shift). */
-function parseLocalDate(s: string): Date {
+export function parseLocalDate(s: string): Date {
   const [y, m, d] = s.split('-').map(Number);
   return new Date(y, m - 1, d);
+}
+
+/** Calculate streak from checkins (dedupes, allows yesterday grace period) */
+export function calculateStreakFromCheckins(checkins: Array<{ date: string; done: boolean; deleted?: boolean }>): number {
+  // 复用 calculateCheckinStreak 逻辑（无 refDate 时使用今天）
+  return calculateCheckinStreak(checkins);
 }
 
 /** Calculate streak from checkin history (allows 1-day gap for reference date) */

@@ -10,6 +10,8 @@ export interface CheckinEntry extends Syncable {
   weight?: number;
   timestamp?: number;
   grace?: boolean;
+  /** 关联的习惯 ID（可选，用于习惯打卡追踪） */
+  habitId?: string;
 }
 
 export interface MedHistoryEntry extends Syncable {

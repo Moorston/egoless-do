@@ -2,7 +2,7 @@ import { submitCheckinEntry } from '../business';
 import { createLogger } from '../logger';
 import type { CheckinEntry, GraceHistoryEntry } from '../types';
 import { calculateCheckinStreak } from '../utils';
-import { calculateStreakFromCheckins } from './selectors';
+import { calculateStreakFromCheckins } from '../utils';
 
 import type { SliceCreator } from './sliceHelper';
 import type { StorageAdapter, CheckinSlice } from './types';
@@ -46,7 +46,8 @@ export function createCheckinSlice(
     calculateStreak() {
       // streak 已改为派生状态（useCheckinStreak selector），此方法保留用于向后兼容
       const { checkinHistory } = get();
-      calculateCheckinStreak((checkinHistory ?? []).filter(c => !c.deleted));
+      const streak = calculateCheckinStreak((checkinHistory ?? []).filter(c => !c.deleted));
+      set({ streak });  // 保留以兼容旧代码
     },
 
     addGraceRecord(date: string) {
