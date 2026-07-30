@@ -47,4 +47,4 @@ export default React.memo(function DateBar({ viewDate, onNavigate }: Props) {
       </TouchableOpacity>
     </View>
   );
-}
+});
