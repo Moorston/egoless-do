@@ -796,3 +796,36 @@ Task 3 完整完成：4 Week 全部归档。LocalAIEngine + HybridEngine + Model
 ### Next Steps
 
 - None - task complete
+
+## 2026-07-30 — 调眠页昨晚睡眠卡片重构 (sleep-card-ui)
+
+### 任务
+Trellis 任务：`.trellis/tasks/07-30-sleep-card-ui`
+Commit：`c7ca6738 feat(sleep): 重构 SleepSummaryCard 为字段级增量编辑`
+
+### 决策摘要
+- 移除 editing 状态机（三段式 → 两段式 Empty/Read）
+- 质量星 / 工作状态 chip 在 Read 模式直接可点 → 增量保存
+- 保存协议：完整对 `(quality, workState)`，组件内处理 `null → undefined`
+- 空态去掉假星星 → CTA 按钮（以默认 quality=3 创建记录）
+- 视觉重排：质量星为主视觉（28px），时长降为 32px，加目标对比
+- 保存反馈：haptic + Toast "已保存"
+- 标题改为"睡眠记录 · {date}"，避开"昨晚"语义错位
+- 无障碍补齐：所有交互元素加 a11y 属性
+
+### 关键发现
+- `saveSleepDiary` 是浅合并（`{ ...existing, ...partial }`），支持增量保存
+- `workState: null` 需转 `undefined`，避免类型不匹配
+- `currentQuality === 0` 时保底传 1，避免保存无效质量
+- `expo-haptics` / `useUiStore.showToast` 是项目标准用法
+
+### 改动文件
+- `SleepSummaryCard.tsx` — 重写（+268/-227）
+- `HomePage.tsx` — 微调传参 + null→undefined 转换
+- `sleepSummaryLogic.ts` — 新增 qualityLabel / formatSleepDate
+- `sleepSummaryLogic.test.ts` — 新增 13 个测试（共 39）
+
+### 验证
+- 39 个 sleepSummaryLogic 测试全过
+- 150 个 sleep + store 测试无回归
+- 修改文件 lint 零问题
