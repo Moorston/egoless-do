@@ -16,16 +16,19 @@ import {
   type I18nKey,
   type SleepEntry,
   type WorkState,
+  type Theme,
 } from '@egoless-do/core';
 import * as Haptics from 'expo-haptics';
-import { Star, Moon, Sun } from 'lucide-react-native';
-import React, { useCallback } from 'react';
+import { Star, Moon, Sun, ArrowRight, Check } from 'lucide-react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
+  Animated,
   StyleSheet,
 } from 'react-native';
+import Svg, { Circle } from 'react-native-svg';
 
 import { useTheme, useT } from '../../components/UI';
 import { useUiStore } from '../../store/uiStore';
@@ -51,7 +54,8 @@ interface Props {
 
 // ─── Constants ────────────────────────────────────────────────────
 
-const STAR_FILL = '#F59E0B';
+// Quality star colors: 1=red → 5=gold (severity gradient)
+const QUALITY_COLORS = ['#EF4444', '#F97316', '#F59E0B', '#EAB308', '#FACC15'];
 
 // ─── Component ────────────────────────────────────────────────────
 
@@ -74,27 +78,72 @@ export default function SleepSummaryCard({
   const gratitudeCount = countGratitude(todaySleep?.gratitude);
   const dateStr = todaySleep?.date;
 
+  // ── Animation: save success indicator ────────────────────────────
+
+  const [showSaved, setShowSaved] = useState(false);
+  const savedOpacity = useRef(new Animated.Value(0)).current;
+
+  const flashSaved = useCallback(() => {
+    setShowSaved(true);
+    savedOpacity.setValue(0);
+    Animated.sequence([
+      Animated.timing(savedOpacity, { toValue: 1, duration: 150, useNativeDriver: true }),
+      Animated.delay(400),
+      Animated.timing(savedOpacity, { toValue: 0, duration: 250, useNativeDriver: true }),
+    ]).start(() => setShowSaved(false));
+  }, [savedOpacity]);
+
+  // ── Animation: per-star press scale ─────────────────────────────
+
+  const starScales = useRef<[Animated.Value, Animated.Value, Animated.Value, Animated.Value, Animated.Value]>([
+    new Animated.Value(1), new Animated.Value(1), new Animated.Value(1), new Animated.Value(1), new Animated.Value(1),
+  ]).current;
+
+  const animateStar = useCallback((index: number) => {
+    const sv = starScales[index];
+    sv.setValue(1);
+    Animated.sequence([
+      Animated.timing(sv, { toValue: 1.25, duration: 120, useNativeDriver: true }),
+      Animated.spring(sv, { toValue: 1, friction: 4, useNativeDriver: true }),
+    ]).start();
+  }, [starScales]);
+
+  // ── Animation: chip row spring on selection ──────────────────────
+
+  const chipScale = useRef(new Animated.Value(1)).current;
+
+  const animateChip = useCallback(() => {
+    chipScale.setValue(1);
+    Animated.sequence([
+      Animated.timing(chipScale, { toValue: 1.04, duration: 100, useNativeDriver: true }),
+      Animated.spring(chipScale, { toValue: 1, friction: 5, useNativeDriver: true }),
+    ]).start();
+  }, [chipScale]);
+
   // ── Feedback ───────────────────────────────────────────────────
 
   const triggerFeedback = useCallback(() => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
     useUiStore.getState().showToast('已保存', 'success');
-  }, []);
+    flashSaved();
+  }, [flashSaved]);
 
   // ── Event handlers ─────────────────────────────────────────────
 
   const handleStarPress = useCallback((i: number) => {
+    animateStar(i - 1);
     const currentWorkState = todaySleep?.workState ?? null;
     onSaveQuickDiary(i, currentWorkState === null ? undefined : currentWorkState);
     triggerFeedback();
-  }, [todaySleep?.workState, onSaveQuickDiary, triggerFeedback]);
+  }, [todaySleep?.workState, onSaveQuickDiary, triggerFeedback, animateStar]);
 
   const handleWorkStatePress = useCallback((key: WorkState) => {
+    animateChip();
     const currentQuality = Math.max(1, todaySleep?.quality ?? 0);
     const next: WorkState | null = todaySleep?.workState === key ? null : key;
     onSaveQuickDiary(currentQuality, next === null ? undefined : next);
     triggerFeedback();
-  }, [todaySleep?.quality, todaySleep?.workState, onSaveQuickDiary, triggerFeedback]);
+  }, [todaySleep?.quality, todaySleep?.workState, onSaveQuickDiary, triggerFeedback, animateChip]);
 
   const handleEmptyCta = useCallback(() => {
     onSaveQuickDiary(3, undefined);
@@ -107,31 +156,34 @@ export default function SleepSummaryCard({
     <View style={s.starRow} testID="sleep-quality-stars">
       {[1, 2, 3, 4, 5].map(i => {
         const filled = i <= value;
+        const color = filled ? QUALITY_COLORS[Math.min(i - 1, 4)] : TH.border;
         return (
-          <TouchableOpacity
-            key={i}
-            testID={`star-${i}`}
-            onPress={() => handleStarPress(i)}
-            disabled={!todaySleep}
-            accessibilityLabel={filled ? `当前 ${i} 星` : `设为 ${i} 星`}
-            accessibilityRole="button"
-            accessibilityState={{ selected: filled }}
-            accessibilityHint="点击直接保存睡眠质量"
-            hitSlop={{ top: 8, bottom: 8, left: 4, right: 4 }}
-          >
-            <Star
-              size={size}
-              color={filled ? STAR_FILL : TH.border}
-              fill={filled ? STAR_FILL : 'transparent'}
-            />
-          </TouchableOpacity>
+          <Animated.View key={i} style={{ transform: [{ scale: starScales[i - 1] }] }}>
+            <TouchableOpacity
+              testID={`star-${i}`}
+              onPress={() => handleStarPress(i)}
+              disabled={!todaySleep}
+              accessibilityLabel={filled ? `当前 ${i} 星` : `设为 ${i} 星`}
+              accessibilityRole="button"
+              accessibilityState={{ selected: filled }}
+              accessibilityHint="点击直接保存睡眠质量"
+              hitSlop={{ top: 8, bottom: 8, left: 4, right: 4 }}
+            >
+              <Star
+                size={size}
+                color={color}
+                fill={filled ? color : 'transparent'}
+              />
+            </TouchableOpacity>
+          </Animated.View>
         );
       })}
     </View>
   );
 
   const renderWorkStateChips = () => (
-    <View style={s.chipRow}>
+    <Animated.View style={[s.chipRowWrap, { transform: [{ scale: chipScale }] }]}>
+      <View style={s.chipRow}>
       {WORK_STATE_OPTIONS.map(({ key, labelKey }) => {
         const selected = todaySleep?.workState === key;
         return (
@@ -158,7 +210,8 @@ export default function SleepSummaryCard({
           </TouchableOpacity>
         );
       })}
-    </View>
+      </View>
+    </Animated.View>
   );
 
   const renderGoalComparison = () => {
@@ -180,28 +233,33 @@ export default function SleepSummaryCard({
   // ── Empty state (no data) ──────────────────────────────────────
 
   if (!todaySleep) {
-    return (
-      <TouchableOpacity
-        testID="sleep-card-empty"
-        activeOpacity={0.8}
-        onPress={handleEmptyCta}
-        style={[s.card, { backgroundColor: TH.card, borderColor: TH.border }]}
-        accessibilityLabel="睡眠记录为空，点击快速记录"
-        accessibilityRole="button"
-      >
-        <Text style={[s.cardTitle, { color: TH.primary }]}>睡眠记录</Text>
-        <View style={s.emptyRow}>
-          <Text style={[s.emptyText, { color: TH.primary }]}>记录昨晚睡眠 →</Text>
-        </View>
-        <Text style={[s.emptyHint, { color: TH.sub }]}>睡得怎么样？开始记录吧</Text>
-      </TouchableOpacity>
-    );
+    return <EmptySleepCard theme={TH} onCta={handleEmptyCta} />;
   }
 
   // ── Read mode (has data) ───────────────────────────────────────
 
+  const isOnTarget = sleepGoalEnabled && durationMin > 0 && Math.abs(durationMin - sleepGoalHours * 60) <= 30;
+
   return (
-    <View style={[s.card, { backgroundColor: TH.card, borderColor: TH.border }]} testID="sleep-card-read">
+    <View
+      style={[
+        s.card,
+        {
+          backgroundColor: TH.card,
+          borderColor: isOnTarget ? '#10B981' : TH.border,
+          borderWidth: isOnTarget ? 2 : 1,
+        },
+      ]}
+      testID="sleep-card-read"
+    >
+      {/* Save success indicator (top-right) */}
+      {showSaved && (
+        <Animated.View style={[s.savedWrap, { opacity: savedOpacity }]}>
+          <View style={s.savedBadge}>
+            <Check size={14} color="#fff" />
+          </View>
+        </Animated.View>
+      )}
       {/* Header */}
       <View style={s.headerRow}>
         <Text style={[s.cardTitle, { color: TH.primary }]} accessibilityRole="header">
@@ -247,7 +305,7 @@ export default function SleepSummaryCard({
           </View>
         )}
         {bedtimeAt && wakeAt && (
-          <Text style={[s.timeDash, { color: TH.border }]}>—</Text>
+          <ArrowRight size={14} color={TH.border} />
         )}
         {wakeAt && (
           <View style={s.timeItem}>
@@ -277,6 +335,73 @@ export default function SleepSummaryCard({
         )}
       </View>
     </View>
+  );
+}
+
+// ─── Empty state (illustration + CTA) ────────────────────────────
+
+function EmptySleepCard({ theme, onCta }: { theme: Theme; onCta: () => void }) {
+  const breathe = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(breathe, { toValue: 1.08, duration: 2000, useNativeDriver: true }),
+        Animated.timing(breathe, { toValue: 1, duration: 2000, useNativeDriver: true }),
+      ]),
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [breathe]);
+
+  return (
+    <TouchableOpacity
+      testID="sleep-card-empty"
+      activeOpacity={0.85}
+      onPress={onCta}
+      style={[s.card, s.emptyCard, { backgroundColor: theme.card, borderColor: theme.border }]}
+      accessibilityLabel="睡眠记录为空，点击快速记录"
+      accessibilityRole="button"
+    >
+      <Animated.View style={[s.emptyIconWrap, { transform: [{ scale: breathe }] }]}>
+        <MoonIcon color={theme.primary} />
+      </Animated.View>
+      <Text style={[s.emptyTitle, { color: theme.text }]}>开始记录你的睡眠</Text>
+      <Text style={[s.emptySubtitle, { color: theme.sub }]}>记录每晚睡眠，关注健康变化</Text>
+      <TouchableOpacity
+        style={[s.emptyCta, { backgroundColor: theme.primary }]}
+        onPress={onCta}
+        activeOpacity={0.8}
+        accessibilityLabel="记录昨晚睡眠"
+      >
+        <Text style={s.emptyCtaText}>记录昨晚睡眠</Text>
+        <ArrowRight size={18} color="#fff" />
+      </TouchableOpacity>
+      <View style={[s.emptyTip, { backgroundColor: `${theme.primary}10` }]}>
+        <Star size={14} color={theme.primary} />
+        <Text style={[s.emptyTipText, { color: theme.primary }]}>点星即可快速记录，不用填写完整日记</Text>
+      </View>
+    </TouchableOpacity>
+  );
+}
+
+// ─── Moon illustration (SVG) ──────────────────────────────────────
+
+function MoonIcon({ color }: { color: string }) {
+  return (
+    <Svg width={96} height={96} viewBox="0 0 96 96" fill="none">
+      {/* Crescent moon body */}
+      <Circle cx={44} cy={48} r={28} fill={`${color}18`} />
+      <Circle cx={54} cy={42} r={24} fill="#F9FAFB" stroke={`${color}40`} strokeWidth={1.5} />
+      {/* Decorative stars */}
+      <Circle cx={68} cy={22} r={2.5} fill={color} opacity={0.7} />
+      <Circle cx={78} cy={34} r={1.8} fill={color} opacity={0.5} />
+      <Circle cx={74} cy={54} r={1.8} fill={color} opacity={0.6} />
+      <Circle cx={20} cy={28} r={1.5} fill={color} opacity={0.4} />
+      {/* Sleeping "Z" hint */}
+      <Circle cx={34} cy={44} r={1.5} fill={color} opacity={0.8} />
+      <Circle cx={40} cy={40} r={1.2} fill={color} opacity={0.6} />
+    </Svg>
   );
 }
 
@@ -357,6 +482,9 @@ const s = StyleSheet.create({
     gap: 8,
     marginBottom: 12,
   },
+  chipRowWrap: {
+    // wrapper for chip row spring animation
+  },
   chip: {
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -383,18 +511,63 @@ const s = StyleSheet.create({
   metaText: {
     fontSize: FONT_LABEL(),
   },
+  // Save success indicator
+  savedWrap: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    zIndex: 2,
+  },
+  savedBadge: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#10B981',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   // Empty state
-  emptyRow: {
+  emptyCard: {
+    alignItems: 'center',
+    paddingVertical: 32,
+  },
+  emptyIconWrap: {
+    marginBottom: 16,
+  },
+  emptyTitle: {
+    fontSize: FONT_TITLE(),
+    fontWeight: '700',
+    marginBottom: 6,
+  },
+  emptySubtitle: {
+    fontSize: FONT_LABEL(),
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  emptyCta: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    marginBottom: 8,
+    gap: 8,
+    paddingHorizontal: 28,
+    paddingVertical: 14,
+    borderRadius: 14,
+    marginBottom: 16,
   },
-  emptyText: {
+  emptyCtaText: {
     fontSize: FONT_BODY(),
     fontWeight: '700',
+    color: '#fff',
   },
-  emptyHint: {
-    fontSize: FONT_LABEL(),
+  emptyTip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 10,
+  },
+  emptyTipText: {
+    fontSize: FONT_SUB(),
+    fontWeight: '500',
   },
 });
