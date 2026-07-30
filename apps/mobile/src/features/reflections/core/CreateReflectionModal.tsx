@@ -6,8 +6,8 @@ import {
   View, Text, TextInput, TouchableOpacity, Modal, ScrollView, StyleSheet, Alert, KeyboardAvoidingView, Platform,
 } from 'react-native';
 
-import { Events } from '../../analytics/events';
-import { track } from '../../analytics/track';
+import { Events } from '../../../analytics/events';
+import { track } from '../../../analytics/track';
 import { useTheme, useT } from '../../../components/UI';
 import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 

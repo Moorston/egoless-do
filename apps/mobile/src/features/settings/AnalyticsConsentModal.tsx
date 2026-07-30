@@ -7,8 +7,8 @@
 import React, { useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-import { optIn, optOut } from '../analytics/posthog';
-import { setAnalyticsConsent, type AnalyticsConsent } from '../analytics/privacy';
+import { optIn, optOut } from '../../analytics/posthog';
+import { setAnalyticsConsent, type AnalyticsConsent } from '../../analytics/privacy';
 import { useT, useTheme } from '../components/UI';
 
 interface AnalyticsConsentModalProps {
