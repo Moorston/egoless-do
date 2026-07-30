@@ -9,8 +9,8 @@ import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, StyleSheet 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ViewShot, { type ViewShotRef } from 'react-native-view-shot';
 
-import { Events } from '../../analytics/events';
-import { track } from '../../analytics/track';
+import { Events } from '../../../analytics/events';
+import { track } from '../../../analytics/track';
 import MeditationMusicBar from '../../components/MeditationMusicBar';
 import { Card, useTheme, PrimaryButton, TagPill, ProgressBar, OutlineButton, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';

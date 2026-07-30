@@ -8,8 +8,8 @@ import {
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, RefreshControl, SectionList, StyleSheet } from 'react-native';
 
-import { Events } from '../../analytics/events';
-import { track } from '../../analytics/track';
+import { Events } from '../../../analytics/events';
+import { track } from '../../../analytics/track';
 import { useTheme, useT } from '../../../components/UI';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useShallowStore } from '../../../store/useAppStore';
