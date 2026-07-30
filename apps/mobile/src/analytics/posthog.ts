@@ -42,8 +42,8 @@ export async function initPostHog(config: PostHogConfig): Promise<PostHog | null
         captureIP: false,
       };
 
-      // PostHog 构造函数（非 async）
-      posthogInstance = PostHog(config.apiKey, options);
+      // PostHog 是类，需用 new 实例化
+      posthogInstance = new PostHog(config.apiKey, options);
       return posthogInstance;
     } catch (err) {
       console.warn('[Analytics] PostHog init failed:', err);
