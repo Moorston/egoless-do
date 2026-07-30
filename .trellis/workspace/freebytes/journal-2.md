@@ -497,3 +497,36 @@ Task 1 完成：ADR 3 篇 + 架构文档 + Plop 生成器 + Husky + PostHog 监�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 70: 状态规范化 Phase 1（Task 2 部分完成）
+
+**Date**: 2026-07-30
+**Task**: 状态规范化 Phase 1（Task 2 部分完成）
+**Branch**: `master`
+
+### Summary
+
+Task 2 Phase 1 完成：移除 streak 冗余 + 添加 selectors + 修复测试。1826 测试通过。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `7d358e49` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
