@@ -1,8 +1,8 @@
 // ─── HomePage — Sleep home page (extracted from SleepEngine) ─────
 // Displays: body clock, sleep goal, diary, ritual entry, trend, streak
 
-import { getCurrentPeriod, getNextSleepPeriod, BODY_CLOCK, type BodyClockPeriod, FONT_TITLE, type SleepGoal, type WorkState , SleepEntry } from '@egoless-do/core';
-import { Moon, Sun, Clock, Heart, ChevronRight, BarChart3, Star } from 'lucide-react-native';
+import { getCurrentPeriod, getNextSleepPeriod, BODY_CLOCK, type BodyClockPeriod, FONT_TITLE, type SleepGoal, type WorkState, SleepEntry } from '@egoless-do/core';
+import { Moon, Sun, Clock, Heart, ChevronRight, BarChart3 } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -12,6 +12,7 @@ import SimpleHeader from '../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../navigation/hooks';
 
 import DiaryModal from './DiaryModal';
+import SleepSummaryCard from './SleepSummaryCard';
 import { styles } from './sleepStyles';
 
 interface HomePageProps {
@@ -111,79 +112,18 @@ export default function HomePage(props: HomePageProps) {
   // ── Trend detail modal ──
   const [trendDetail, setTrendDetail] = useState<{ date: string; durationMin: number; quality: number } | null>(null);
 
-  // ── Quick diary state ──
-  const [quickQuality, setQuickQuality] = useState(0);
-  const [quickWorkState, setQuickWorkState] = useState<WorkState | null>(null);
-
-  const handleQuickSave = () => {
-    if (quickQuality > 0 && onSaveQuickDiary) {
-      onSaveQuickDiary(quickQuality, quickWorkState ?? undefined);
-    }
-  };
-
-  // Work state options
-  const WORK_STATE_OPTIONS: { key: WorkState; label: string }[] = [
-    { key: 'energetic', label: T('sleepWorkEnergetic') },
-    { key: 'normal', label: T('sleepWorkNormal') },
-    { key: 'tired', label: T('sleepWorkTired') },
-    { key: 'exhausted', label: T('sleepWorkExhausted') },
-  ];
-
   return (
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Sleep" />
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
-        {/* ── SleepSummaryCard ── */}
-        <View style={{ borderRadius: 20, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, padding: 20, marginBottom: 16 }}>
-          <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.primary, marginBottom: 12 }}>昨晚睡眠</Text>
-          {todaySleep ? (
-            <View>
-              <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}>
-                <Text style={{ fontSize: 48, fontWeight: '900', color: TH.text }}>
-                  {todaySleep.durationMin ? `${Math.floor(todaySleep.durationMin / 60)}h${todaySleep.durationMin % 60}m` : '--'}
-                </Text>
-                {todaySleep.quality && (
-                  <Text style={{ fontSize: 20, color: '#F59E0B' }}>
-                    {'★'.repeat(todaySleep.quality)}{'☆'.repeat(5 - todaySleep.quality)}
-                  </Text>
-                )}
-              </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 8 }}>
-                {todaySleep.bedtimeAt && (
-                  <Text style={{ fontSize: 14, color: TH.sub }}>
-                    🛌 {new Date(todaySleep.bedtimeAt).getHours().toString().padStart(2, '0')}:{new Date(todaySleep.bedtimeAt).getMinutes().toString().padStart(2, '0')}
-                  </Text>
-                )}
-                {todaySleep.wakeAt && (
-                  <Text style={{ fontSize: 14, color: TH.sub }}>
-                    ☀️ {new Date(todaySleep.wakeAt).getHours().toString().padStart(2, '0')}:{new Date(todaySleep.wakeAt).getMinutes().toString().padStart(2, '0')}
-                  </Text>
-                )}
-                {todaySleep.barrierDone && (
-                  <View style={{ paddingHorizontal: 8, paddingVertical: 2, borderRadius: 8, backgroundColor: 'rgba(16,185,129,0.2)' }}>
-                    <Text style={{ fontSize: 12, color: '#10B981', fontWeight: '600' }}>✅ 仪轨</Text>
-                  </View>
-                )}
-              </View>
-              {todaySleep.gratitude && todaySleep.gratitude.length > 0 && (
-                <Text style={{ fontSize: 14, color: TH.sub, marginTop: 4 }}>{`感恩 ×${todaySleep.gratitude.length}`}</Text>
-              )}
-              <TouchableOpacity onPress={() => onSetShowDiary(true)} style={{ marginTop: 12 }}>
-                <Text style={{ fontSize: 15, color: TH.primary, fontWeight: '600' }}>编辑日记 →</Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <View>
-              <Text style={{ fontSize: 15, color: TH.sub, marginBottom: 12 }}>还没有昨晚的记录</Text>
-              <TouchableOpacity
-                style={{ borderRadius: 14, borderWidth: 1, borderColor: TH.border, padding: 14, alignItems: 'center', backgroundColor: TH.card }}
-                onPress={() => onSetShowDiary(true)}
-              >
-                <Text style={{ fontSize: 15, fontWeight: '700', color: TH.primary }}>📝 填写今日日记</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        </View>
+        {/* ── SleepSummaryCard (merged summary + quick diary) ── */}
+        {onSaveQuickDiary ? (
+          <SleepSummaryCard
+            todaySleep={todaySleep}
+            onSaveQuickDiary={onSaveQuickDiary}
+            onOpenFullDiary={() => onSetShowDiary(true)}
+          />
+        ) : null}
 
         {/* ── BodyClockCard ── */}
         <View style={{ borderRadius: 20, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, padding: 20, marginBottom: 16 }}>
@@ -242,40 +182,6 @@ export default function HomePage(props: HomePageProps) {
               <Text style={{ fontSize: 22, fontWeight: '800', color: TH.text }}>{sleepGoal.targetHours}h</Text>
             </View>
           </View>
-        </View>
-
-        {/* ── QuickDiary ── */}
-        <View style={{ borderRadius: 20, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, padding: 20, marginBottom: 16 }}>
-          <Text style={{ fontSize: 14, fontWeight: '700', color: TH.text, marginBottom: 12 }}>快速记录</Text>
-          <Text style={{ fontSize: 15, color: TH.sub, marginBottom: 12 }}>昨晚睡得怎么样？</Text>
-          <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
-            {[1, 2, 3, 4, 5].map(i => (
-              <TouchableOpacity key={i} onPress={() => setQuickQuality(i)}>
-                <Star size={28} color={i <= quickQuality ? '#F59E0B' : TH.border} fill={i <= quickQuality ? '#F59E0B' : 'transparent'} />
-              </TouchableOpacity>
-            ))}
-          </View>
-          <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 8 }}>{T('sleepWorkState')}</Text>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
-            {WORK_STATE_OPTIONS.map(({ key, label }) => {
-              const selected = quickWorkState === key;
-              return (
-                <TouchableOpacity key={key} onPress={() => setQuickWorkState(selected ? null : key)}
-                  style={{ paddingHorizontal: 12, paddingVertical: 8, borderRadius: 10, borderWidth: 1, borderColor: selected ? TH.primary : TH.border, backgroundColor: selected ? `${TH.primary}20` : 'transparent' }}>
-                  <Text style={{ fontSize: 13, color: selected ? TH.primary : TH.sub }}>{label}</Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-          {quickQuality > 0 && (
-            <TouchableOpacity onPress={handleQuickSave}
-              style={{ paddingVertical: 10, paddingHorizontal: 20, borderRadius: 12, backgroundColor: `${TH.primary}20`, alignItems: 'center', marginBottom: 12 }}>
-              <Text style={{ fontSize: 15, fontWeight: '600', color: TH.primary }}>保存</Text>
-            </TouchableOpacity>
-          )}
-          <TouchableOpacity onPress={() => onSetShowDiary(true)}>
-            <Text style={{ fontSize: 15, color: TH.primary, fontWeight: '600' }}>打开完整日记 →</Text>
-          </TouchableOpacity>
         </View>
 
         {/* ── Ritual Entrance ── */}
