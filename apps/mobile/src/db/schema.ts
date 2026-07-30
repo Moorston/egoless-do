@@ -73,7 +73,6 @@ CREATE TABLE IF NOT EXISTS mind_reflections (
 CREATE INDEX IF NOT EXISTS idx_mind_ts   ON mind_reflections(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_mind_tags ON mind_reflections(tags);
 CREATE INDEX IF NOT EXISTS idx_mind_del_ts ON mind_reflections(deleted, created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_habits_deleted ON habits(deleted, rowid);
 
 CREATE TABLE IF NOT EXISTS fasting_sessions (
   id             TEXT PRIMARY KEY,
@@ -109,6 +108,7 @@ CREATE TABLE IF NOT EXISTS habits (
   vision_id      TEXT    DEFAULT ''
 );
 CREATE INDEX IF NOT EXISTS idx_habits_status ON habits(status, deleted);
+CREATE INDEX IF NOT EXISTS idx_habits_deleted ON habits(deleted, rowid);
 
 CREATE TABLE IF NOT EXISTS food_entries (
   id         TEXT PRIMARY KEY,
