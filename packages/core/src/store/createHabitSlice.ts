@@ -23,18 +23,39 @@ export function createHabitSlice(
 
     addHabit(form: CreateHabitForm) {
       const newHabit = createHabitFromForm(form);
+      // 乐观更新：立即更新 UI
       set(s => ({ habits: [...(s.habits ?? []), newHabit] }));
-      adapter.persistChange('habit', newHabit.id, newHabit).catch(e => log.error(e));
+      // 后台持久化，失败时回滚
+      adapter.persistChange('habit', newHabit.id, newHabit)
+        .catch(e => {
+          log.error(e);
+          // 回滚：移除新增的习惯
+          set(s => ({ habits: s.habits.filter(h => h.id !== newHabit.id) }));
+        });
+      onSync?.();
     },
 
     updateHabit(id: string, patch: Partial<Habit>) {
-      let updated: Habit | undefined;
+      let previous: Habit | undefined;
       set(s => {
+        previous = s.habits.find(h => h.id === id);
         const newList = updateHabitInList(s.habits ?? [], id, patch);
-        updated = newList.find(h => h.id === id && !h.deleted);
         return { habits: newList };
       });
-      if (updated) adapter.persistChange('habit', id, updated).catch(e => log.error(e));
+      // 后台持久化，失败时回滚
+      const updated = get().habits.find(h => h.id === id);
+      if (updated) {
+        adapter.persistChange('habit', id, updated)
+          .catch(e => {
+            log.error(e);
+            // 回滚：恢复之前的状态
+            if (previous) {
+              set(s => ({
+                habits: s.habits.map(h => h.id === id ? previous! : h),
+              }));
+            }
+          });
+      }
     },
 
     deleteHabit(id: string) {
