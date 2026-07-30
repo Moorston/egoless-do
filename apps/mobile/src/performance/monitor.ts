@@ -11,18 +11,21 @@ let monitorStarted = false;
 
 /**
  * 启动 frame rate 监控。
- * 低于 45fps 时输出警告。
+ * 低于 40fps 时输出警告（每 5 秒采样一次，减少开销）。
  */
 export function startFrameMonitor(): void {
   if (monitorStarted || !__DEV__) return;
   monitorStarted = true;
 
+  let sampleCount = 0;
+  const SAMPLE_INTERVAL = 5000; // 5 秒采样一次（减少开销）
+
   requestAnimationFrame(function loop() {
     frameCount++;
     const now = performance.now();
-    if (now - lastTime >= 1000) {
+    if (now - lastTime >= SAMPLE_INTERVAL) {
       const fps = Math.round((frameCount * 1000) / (now - lastTime));
-      if (fps < 45) {
+      if (fps < 40) {
         log.warn(`Low FPS: ${fps}`);
       }
       frameCount = 0;

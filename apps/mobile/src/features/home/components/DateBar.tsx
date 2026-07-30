@@ -11,7 +11,7 @@ interface Props {
   onNavigate: (date: string) => void;
 }
 
-export default function DateBar({ viewDate, onNavigate }: Props) {
+export default React.memo(function DateBar({ viewDate, onNavigate }: Props) {
   const TH = useTheme();
   const T = useT();
   const isToday = viewDate === dateStr();
