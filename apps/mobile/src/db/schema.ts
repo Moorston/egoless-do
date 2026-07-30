@@ -30,14 +30,21 @@ let _dbPromise: Promise<SQLite.SQLiteDatabase> | null = null;
 export function openDatabase(): Promise<SQLite.SQLiteDatabase> {
   if (!_dbPromise) {
     _dbPromise = (async () => {
-      const instance = await SQLite.openDatabaseAsync(DB_NAME);
-      await initDatabase(instance);
-      await migrateDatabase(instance);
-      return instance;
-    })().catch(err => {
-      _dbPromise = null;
-      throw err;
-    });
+      try {
+        console.log('[DB] Opening database:', DB_NAME);
+        const instance = await SQLite.openDatabaseAsync(DB_NAME);
+        console.log('[DB] Database opened successfully');
+        await initDatabase(instance);
+        console.log('[DB] Schema initialized');
+        await migrateDatabase(instance);
+        console.log('[DB] Migrations complete');
+        return instance;
+      } catch (err) {
+        console.error('[DB] Open failed:', err);
+        _dbPromise = null;
+        throw err;
+      }
+    })();
   }
   return _dbPromise;
 }
