@@ -9,6 +9,7 @@ import SplashScreen from './src/features/splash/SplashScreen';
 import { initApp } from './src/store/initApp';
 import { initSentry } from './src/sentry';
 import { initPostHog } from './src/analytics/posthog';
+import { trackAppStart } from './src/analytics/performance';
 import { startFrameMonitor } from './src/performance/monitor';
 
 const AMAP_KEY = Platform.select({
@@ -89,6 +90,7 @@ export default function App() {
   const [initDone, setInitDone] = useState(false);
   const preloadedRef = useRef(false);
   const initStartedRef = useRef(false);
+  const initStartTime = performance.now();
 
   // Initialize app (SQLite, auth tokens, subscriptions) and WAIT for completion
   useEffect(() => {
@@ -97,6 +99,9 @@ export default function App() {
     startFrameMonitor();  // 启动性能监控
     initApp()
       .then(() => {
+        // 性能监控：启动时间
+        const startupDuration = performance.now() - initStartTime;
+        trackAppStart(startupDuration);
         // 首屏后初始化 Sentry + PostHog（不阻塞首屏）
         return Promise.all([
           initSentry().catch(() => {}),

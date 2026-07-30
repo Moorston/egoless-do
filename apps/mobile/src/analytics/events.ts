@@ -31,6 +31,11 @@ export const Events = {
 
   // ── AI ──
   AI_FEATURE_USED: 'ai_feature_used',
+
+  // ── 性能监控 ──
+  APP_START_TIME: 'app_start_time',
+  LIST_FPS: 'list_fps',
+  SYNC_LATENCY: 'sync_latency',
 } as const;
 
 export type AnalyticsEvent = typeof Events[keyof typeof Events];
