@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS habits (
   vision_id      TEXT    DEFAULT ''
 );
 CREATE INDEX IF NOT EXISTS idx_habits_status ON habits(status, deleted);
-CREATE INDEX IF NOT EXISTS idx_habits_deleted ON habits(deleted, rowid);
+CREATE INDEX IF NOT EXISTS idx_habits_deleted ON habits(deleted);
 
 CREATE TABLE IF NOT EXISTS food_entries (
   id         TEXT PRIMARY KEY,
