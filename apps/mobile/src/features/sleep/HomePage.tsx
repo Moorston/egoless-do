@@ -116,12 +116,14 @@ export default function HomePage(props: HomePageProps) {
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Sleep" />
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
-        {/* ── SleepSummaryCard (merged summary + quick diary) ── */}
+        {/* ── SleepSummaryCard (inline-editing summary card) ── */}
         {onSaveQuickDiary ? (
           <SleepSummaryCard
             todaySleep={todaySleep}
-            onSaveQuickDiary={onSaveQuickDiary}
+            onSaveQuickDiary={(quality, workState) => onSaveQuickDiary(quality, workState === null ? undefined : workState)}
             onOpenFullDiary={() => onSetShowDiary(true)}
+            sleepGoalEnabled={sleepGoal.enabled}
+            sleepGoalHours={sleepGoal.targetHours}
           />
         ) : null}
 

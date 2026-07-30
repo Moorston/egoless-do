@@ -1,11 +1,10 @@
-// ─── SleepSummaryCard — merged sleep summary + quick diary card ────
-// Replaces the separate SleepSummaryCard (read-only) and QuickDiary (write-only)
-// regions in HomePage with a single inline-editing card.
+// ─── SleepSummaryCard — inline-editing sleep summary card ────────
+// Replaces the old three-state (Empty/Read/Edit) card with a two-state
+// (Empty/Read) inline-editing card.
 //
-// Three visual states:
-//   · Empty   — no todaySleep data; entire row tappable to start recording
-//   · Read    — displays duration / quality / times / work-state; ✎ edit button
-//   · Edit    — quality stars + work-state chips; save / cancel / full diary link
+// Visual states:
+//   · Empty   — no todaySleep data; CTA button to start recording
+//   · Read    — quality stars + work-state chips are directly editable
 //
 // Reference pattern: ExerciseCard inline editing (features/practice/body/components).
 
@@ -18,8 +17,9 @@ import {
   type SleepEntry,
   type WorkState,
 } from '@egoless-do/core';
-import { Star } from 'lucide-react-native';
-import React, { useState, useCallback } from 'react';
+import * as Haptics from 'expo-haptics';
+import { Star, Moon, Sun } from 'lucide-react-native';
+import React, { useCallback } from 'react';
 import {
   View,
   Text,
@@ -28,247 +28,248 @@ import {
 } from 'react-native';
 
 import { useTheme, useT } from '../../components/UI';
+import { useUiStore } from '../../store/uiStore';
 
 import {
   formatDuration,
   formatTime,
+  formatSleepDate,
   countGratitude,
-  findWorkStateLabelKey,
+  qualityLabel,
+  WORK_STATE_OPTIONS,
 } from './sleepSummaryLogic';
 
 // ─── Props ────────────────────────────────────────────────────────
 
 interface Props {
   todaySleep: SleepEntry | null | undefined;
-  onSaveQuickDiary: (quality: number, workState?: WorkState) => void;
+  onSaveQuickDiary: (quality: number, workState?: WorkState | null) => void;
   onOpenFullDiary: () => void;
+  sleepGoalEnabled?: boolean;
+  sleepGoalHours?: number;
 }
 
 // ─── Constants ────────────────────────────────────────────────────
-
-const WORK_STATE_OPTIONS: { key: WorkState; labelKey: I18nKey }[] = [
-  { key: 'energetic', labelKey: 'sleepWorkEnergetic' },
-  { key: 'normal',    labelKey: 'sleepWorkNormal' },
-  { key: 'tired',     labelKey: 'sleepWorkTired' },
-  { key: 'exhausted', labelKey: 'sleepWorkExhausted' },
-];
 
 const STAR_FILL = '#F59E0B';
 
 // ─── Component ────────────────────────────────────────────────────
 
-export default function SleepSummaryCard({ todaySleep, onSaveQuickDiary, onOpenFullDiary }: Props) {
+export default function SleepSummaryCard({
+  todaySleep,
+  onSaveQuickDiary,
+  onOpenFullDiary,
+  sleepGoalEnabled = false,
+  sleepGoalHours = 8,
+}: Props) {
   const TH = useTheme();
   const T = useT();
 
-  const [editing, setEditing] = useState(false);
-  const [draftQuality, setDraftQuality] = useState(0);
-  const [draftWorkState, setDraftWorkState] = useState<WorkState | null>(null);
-
-  // Display values derived from props — used in both read and edit modes.
+  // Display values derived from props.
   const quality = todaySleep?.quality ?? 0;
-  const workState = todaySleep?.workState ?? null;
   const durationMin = todaySleep?.durationMin ?? 0;
   const bedtimeAt = todaySleep?.bedtimeAt;
   const wakeAt = todaySleep?.wakeAt;
   const barrierDone = todaySleep?.barrierDone ?? false;
   const gratitudeCount = countGratitude(todaySleep?.gratitude);
+  const dateStr = todaySleep?.date;
 
-  // ── State transitions ─────────────────────────────────────────
+  // ── Feedback ───────────────────────────────────────────────────
 
-  const enterEditMode = useCallback(() => {
-    setDraftQuality(todaySleep?.quality ?? 0);
-    setDraftWorkState(todaySleep?.workState ?? null);
-    setEditing(true);
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- read todaySleep fields inside setter
+  const triggerFeedback = useCallback(() => {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+    useUiStore.getState().showToast('已保存', 'success');
   }, []);
 
-  const handleCancel = useCallback(() => {
-    setEditing(false);
-  }, []);
+  // ── Event handlers ─────────────────────────────────────────────
 
-  const handleSave = useCallback(() => {
-    if (draftQuality === 0) return;
-    onSaveQuickDiary(draftQuality, draftWorkState ?? undefined);
-    setEditing(false);
-  }, [draftQuality, draftWorkState, onSaveQuickDiary]);
+  const handleStarPress = useCallback((i: number) => {
+    const currentWorkState = todaySleep?.workState ?? null;
+    onSaveQuickDiary(i, currentWorkState === null ? undefined : currentWorkState);
+    triggerFeedback();
+  }, [todaySleep?.workState, onSaveQuickDiary, triggerFeedback]);
 
-  // ── Render helpers ────────────────────────────────────────────
+  const handleWorkStatePress = useCallback((key: WorkState) => {
+    const currentQuality = Math.max(1, todaySleep?.quality ?? 0);
+    const next: WorkState | null = todaySleep?.workState === key ? null : key;
+    onSaveQuickDiary(currentQuality, next === null ? undefined : next);
+    triggerFeedback();
+  }, [todaySleep?.quality, todaySleep?.workState, onSaveQuickDiary, triggerFeedback]);
 
-  const renderStars = (value: number, size = 28, interactive = false, onStarPress?: () => void) => (
-    <View style={s.starRow} testID={interactive || onStarPress ? 'edit-stars' : 'sleep-quality-stars'}>
-      {[1, 2, 3, 4, 5].map(i => (
-        <TouchableOpacity
-          key={i}
-          testID={onStarPress ? `empty-star-${i}` : `edit-star-${i}`}
-          disabled={!interactive && !onStarPress}
-          onPress={interactive ? () => setDraftQuality(i) : onStarPress}
-          hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
-        >
-          <Star
-            size={size}
-            color={i <= value ? STAR_FILL : TH.border}
-            fill={i <= value ? STAR_FILL : 'transparent'}
-          />
-        </TouchableOpacity>
-      ))}
+  const handleEmptyCta = useCallback(() => {
+    onSaveQuickDiary(3, undefined);
+    triggerFeedback();
+  }, [onSaveQuickDiary, triggerFeedback]);
+
+  // ── Render helpers ─────────────────────────────────────────────
+
+  const renderStars = (value: number, size = 28) => (
+    <View style={s.starRow} testID="sleep-quality-stars">
+      {[1, 2, 3, 4, 5].map(i => {
+        const filled = i <= value;
+        return (
+          <TouchableOpacity
+            key={i}
+            testID={`star-${i}`}
+            onPress={() => handleStarPress(i)}
+            disabled={!todaySleep}
+            accessibilityLabel={filled ? `当前 ${i} 星` : `设为 ${i} 星`}
+            accessibilityRole="button"
+            accessibilityState={{ selected: filled }}
+            accessibilityHint="点击直接保存睡眠质量"
+            hitSlop={{ top: 8, bottom: 8, left: 4, right: 4 }}
+          >
+            <Star
+              size={size}
+              color={filled ? STAR_FILL : TH.border}
+              fill={filled ? STAR_FILL : 'transparent'}
+            />
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
 
-  const renderWorkStateLabel = () => {
-    if (!workState) return null;
-    const labelKey = findWorkStateLabelKey(workState);
+  const renderWorkStateChips = () => (
+    <View style={s.chipRow}>
+      {WORK_STATE_OPTIONS.map(({ key, labelKey }) => {
+        const selected = todaySleep?.workState === key;
+        return (
+          <TouchableOpacity
+            key={key}
+            testID={`workstate-${key}`}
+            onPress={() => handleWorkStatePress(key)}
+            disabled={!todaySleep}
+            accessibilityLabel={`工作状态: ${T(labelKey as I18nKey)}`}
+            accessibilityRole="button"
+            accessibilityState={{ selected }}
+            accessibilityHint="点击直接保存工作状态"
+            style={[
+              s.chip,
+              {
+                borderColor: selected ? TH.primary : TH.border,
+                backgroundColor: selected ? `${TH.primary}20` : 'transparent',
+              },
+            ]}
+          >
+            <Text style={[s.chipText, { color: selected ? TH.primary : TH.text }]}>
+              {T(labelKey as I18nKey)}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+
+  const renderGoalComparison = () => {
+    if (!sleepGoalEnabled || durationMin <= 0) return null;
+    const targetMin = sleepGoalHours * 60;
+    const diff = durationMin - targetMin;
+    const absMin = Math.abs(diff);
+    const h = Math.floor(absMin / 60);
+    const m = absMin % 60;
+    const diffStr = h > 0 ? `${h}h${m}m` : `${m}m`;
+    const isOnTarget = absMin <= 30;
     return (
-      <Text style={[s.workStateLabel, { color: TH.primary }]}>
-        {labelKey ? T(labelKey as I18nKey) : workState}
+      <Text style={[s.goalText, { color: isOnTarget ? '#10B981' : TH.sub }]}>
+        {isOnTarget ? '达成目标' : `${diff > 0 ? '多' : '差'} ${diffStr}`}
       </Text>
     );
   };
 
-  // ── Empty state (no data) ─────────────────────────────────────
+  // ── Empty state (no data) ──────────────────────────────────────
 
   if (!todaySleep) {
     return (
       <TouchableOpacity
         testID="sleep-card-empty"
         activeOpacity={0.8}
-        onPress={enterEditMode}
+        onPress={handleEmptyCta}
         style={[s.card, { backgroundColor: TH.card, borderColor: TH.border }]}
+        accessibilityLabel="睡眠记录为空，点击快速记录"
+        accessibilityRole="button"
       >
-        <Text style={[s.cardTitle, { color: TH.primary }]}>昨晚睡眠</Text>
+        <Text style={[s.cardTitle, { color: TH.primary }]}>睡眠记录</Text>
         <View style={s.emptyRow}>
-          {renderStars(0, 28, false, enterEditMode)}
-          <Text style={[s.emptyText, { color: TH.primary }]}>点星记录昨晚睡眠 →</Text>
+          <Text style={[s.emptyText, { color: TH.primary }]}>记录昨晚睡眠 →</Text>
         </View>
         <Text style={[s.emptyHint, { color: TH.sub }]}>睡得怎么样？开始记录吧</Text>
       </TouchableOpacity>
     );
   }
 
-  // ── Edit mode ─────────────────────────────────────────────────
-
-  if (editing) {
-    return (
-      <View style={[s.card, { backgroundColor: TH.card, borderColor: TH.border }]} testID="sleep-card-edit">
-        {/* Header */}
-        <View style={s.headerRow}>
-          <Text style={[s.cardTitle, { color: TH.primary }]}>昨晚睡眠</Text>
-          <TouchableOpacity testID="sleep-cancel-btn" onPress={handleCancel} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <Text style={[s.cancelText, { color: TH.sub }]}>取消</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Duration + quality (interactive) */}
-        <View style={s.durationRow}>
-          <Text style={[s.durationText, { color: TH.text }]}>
-            {durationMin > 0 ? formatDuration(durationMin) : '--'}
-          </Text>
-          {renderStars(draftQuality, 32, true)}
-        </View>
-
-        {/* Times (read-only in edit mode) */}
-        <View style={s.timeRow}>
-          {bedtimeAt && (
-            <Text style={[s.timeText, { color: TH.sub }]}>
-              🛌 {formatTime(bedtimeAt)}
-            </Text>
-          )}
-          {wakeAt && (
-            <Text style={[s.timeText, { color: TH.sub }]}>
-              ☀️ {formatTime(wakeAt)}
-            </Text>
-          )}
-        </View>
-
-        {/* Work state chips */}
-        <Text style={[s.sectionLabel, { color: TH.sub }]}>
-          {T('sleepWorkState') || '工作状态'}
-        </Text>
-        <View style={s.chipRow}>
-          {WORK_STATE_OPTIONS.map(({ key, labelKey }) => {
-            const selected = draftWorkState === key;
-            return (
-              <TouchableOpacity
-                key={key}
-                testID={`workstate-${key}`}
-                onPress={() => setDraftWorkState(selected ? null : key)}
-                style={[
-                  s.chip,
-                  {
-                    borderColor: selected ? TH.primary : TH.border,
-                    backgroundColor: selected ? `${TH.primary}20` : 'transparent',
-                  },
-                ]}
-              >
-                <Text style={[s.chipText, { color: selected ? TH.primary : TH.text }]}>
-                  {T(labelKey)}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-
-        {/* Save button */}
-        <TouchableOpacity
-          testID="sleep-save-btn"
-          onPress={handleSave}
-          disabled={draftQuality === 0}
-          style={[
-            s.saveBtn,
-            { backgroundColor: draftQuality > 0 ? TH.primary : `${TH.primary}50` },
-          ]}
-        >
-          <Text style={s.saveBtnText}>保存</Text>
-        </TouchableOpacity>
-
-        {/* Full diary link */}
-        <TouchableOpacity testID="sleep-full-diary-btn" onPress={onOpenFullDiary} style={s.fullDiaryLink}>
-          <Text style={[s.fullDiaryText, { color: TH.primary }]}>完整日记 →</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
-  // ── Read mode (has data) ──────────────────────────────────────
+  // ── Read mode (has data) ───────────────────────────────────────
 
   return (
     <View style={[s.card, { backgroundColor: TH.card, borderColor: TH.border }]} testID="sleep-card-read">
       {/* Header */}
       <View style={s.headerRow}>
-        <Text style={[s.cardTitle, { color: TH.primary }]}>昨晚睡眠</Text>
-        <TouchableOpacity testID="sleep-edit-btn" onPress={enterEditMode} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-          <Text style={[s.editText, { color: TH.primary }]}>✎ 编辑</Text>
+        <Text style={[s.cardTitle, { color: TH.primary }]} accessibilityRole="header">
+          {`睡眠记录 · ${formatSleepDate(dateStr)}`}
+        </Text>
+        <TouchableOpacity
+          testID="sleep-diary-link"
+          onPress={onOpenFullDiary}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          accessibilityLabel="打开完整睡眠日记"
+          accessibilityRole="link"
+        >
+          <Text style={[s.diaryLinkText, { color: TH.primary }]}>完整日记 →</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Duration + quality */}
+      {/* Quality stars (primary visual) */}
+      {renderStars(quality, 28)}
+      <Text style={[s.qualityLabel, { color: TH.sub }]}>
+        {quality > 0 ? `质量：${qualityLabel(quality)}` : '点击星星评价'}
+      </Text>
+
+      {/* Duration + goal comparison */}
       <View style={s.durationRow}>
         <Text style={[s.durationText, { color: TH.text }]}>
           {durationMin > 0 ? formatDuration(durationMin) : '--'}
         </Text>
-        {quality > 0 ? renderStars(quality, 24) : null}
+        {sleepGoalEnabled && (
+          <Text style={[s.goalBaseText, { color: TH.sub }]}>
+            目标 {sleepGoalHours}h · {renderGoalComparison()}
+          </Text>
+        )}
       </View>
 
-      {/* Times + work state */}
+      {/* Times */}
       <View style={s.timeRow}>
         {bedtimeAt && (
-          <Text style={[s.timeText, { color: TH.sub }]}>
-            🛌 {formatTime(bedtimeAt)}
-          </Text>
+          <View style={s.timeItem}>
+            <Moon size={14} color={TH.sub} />
+            <Text style={[s.timeText, { color: TH.sub }]}>
+              {formatTime(bedtimeAt)}
+            </Text>
+          </View>
+        )}
+        {bedtimeAt && wakeAt && (
+          <Text style={[s.timeDash, { color: TH.border }]}>—</Text>
         )}
         {wakeAt && (
-          <Text style={[s.timeText, { color: TH.sub }]}>
-            ☀️ {formatTime(wakeAt)}
-          </Text>
+          <View style={s.timeItem}>
+            <Sun size={14} color={TH.sub} />
+            <Text style={[s.timeText, { color: TH.sub }]}>
+              {formatTime(wakeAt)}
+            </Text>
+          </View>
         )}
-        {renderWorkStateLabel()}
       </View>
+
+      {/* Work state chips */}
+      <Text style={[s.sectionLabel, { color: TH.sub }]}>
+        {T('sleepWorkState') || '工作状态'}
+      </Text>
+      {renderWorkStateChips()}
 
       {/* Barrier + gratitude */}
       <View style={s.metaRow}>
         {barrierDone && (
           <View style={[s.badge, { backgroundColor: 'rgba(16,185,129,0.2)' }]}>
-            <Text style={[s.badgeText, { color: '#10B981' }]}>✅ 仪轨</Text>
+            <Text style={[s.badgeText, { color: '#10B981' }]}>仪轨</Text>
           </View>
         )}
         {gratitudeCount > 0 && (
@@ -298,38 +299,77 @@ const s = StyleSheet.create({
     fontSize: FONT_TITLE(),
     fontWeight: '700',
   },
-  durationRow: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    gap: 12,
-    marginBottom: 8,
-  },
-  durationText: {
-    fontSize: 48,
-    fontWeight: '900',
+  diaryLinkText: {
+    fontSize: FONT_BODY(),
+    fontWeight: '600',
   },
   starRow: {
     flexDirection: 'row',
-    gap: 4,
+    gap: 6,
+    marginBottom: 4,
+  },
+  qualityLabel: {
+    fontSize: FONT_LABEL(),
+    marginBottom: 8,
+  },
+  durationRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: 8,
+    flexWrap: 'wrap',
+    marginBottom: 8,
+  },
+  durationText: {
+    fontSize: 32,
+    fontWeight: '800',
+  },
+  goalBaseText: {
+    fontSize: FONT_LABEL(),
+  },
+  goalText: {
+    fontSize: FONT_LABEL(),
+    fontWeight: '600',
   },
   timeRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    flexWrap: 'wrap',
+    gap: 6,
+    marginBottom: 12,
+  },
+  timeItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
   timeText: {
     fontSize: FONT_LABEL(),
   },
-  workStateLabel: {
+  timeDash: {
     fontSize: FONT_LABEL(),
-    fontWeight: '600',
+  },
+  sectionLabel: {
+    fontSize: FONT_LABEL(),
+    marginBottom: 8,
+  },
+  chipRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 12,
+  },
+  chip: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 10,
+    borderWidth: 1,
+  },
+  chipText: {
+    fontSize: FONT_LABEL(),
   },
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    marginTop: 4,
   },
   badge: {
     paddingHorizontal: 8,
@@ -342,13 +382,6 @@ const s = StyleSheet.create({
   },
   metaText: {
     fontSize: FONT_LABEL(),
-  },
-  editText: {
-    fontSize: FONT_BODY(),
-    fontWeight: '600',
-  },
-  cancelText: {
-    fontSize: FONT_BODY(),
   },
   // Empty state
   emptyRow: {
@@ -363,44 +396,5 @@ const s = StyleSheet.create({
   },
   emptyHint: {
     fontSize: FONT_LABEL(),
-  },
-  // Edit state
-  sectionLabel: {
-    fontSize: FONT_LABEL(),
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  chipRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  chip: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 10,
-    borderWidth: 1,
-  },
-  chipText: {
-    fontSize: FONT_LABEL(),
-  },
-  saveBtn: {
-    marginTop: 16,
-    paddingVertical: 12,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  saveBtnText: {
-    fontSize: FONT_BODY(),
-    fontWeight: '700',
-    color: '#fff',
-  },
-  fullDiaryLink: {
-    marginTop: 12,
-    alignItems: 'center',
-  },
-  fullDiaryText: {
-    fontSize: FONT_BODY(),
-    fontWeight: '600',
   },
 });

@@ -31,6 +31,26 @@ export function findWorkStateLabelKey(workState: WorkState | null): string | nul
   return opt ? opt.labelKey : null;
 }
 
+/** Map quality (1-5) to a short Chinese label. */
+export function qualityLabel(quality: number): string {
+  if (quality >= 5) return '很好';
+  if (quality >= 4) return '好';
+  if (quality >= 3) return '一般';
+  if (quality >= 2) return '偏差';
+  if (quality >= 1) return '差';
+  return '';
+}
+
+/** Format "YYYY-MM-DD" to "M月D日" display string. */
+export function formatSleepDate(dateStr?: string): string {
+  if (!dateStr) return '';
+  const parts = dateStr.split('-').map(Number);
+  if (parts.length !== 3 || parts.some(n => !Number.isFinite(n))) return '';
+  const [y, m, d] = parts;
+  if (!y || !m || !d) return '';
+  return `${m}月${d}日`;
+}
+
 /** Work-state options — mirrors SleepSummaryCard WORK_STATE_OPTIONS. */
 export const WORK_STATE_OPTIONS: { key: WorkState; labelKey: string }[] = [
   { key: 'energetic', labelKey: 'sleepWorkEnergetic' },

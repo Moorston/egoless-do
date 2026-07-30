@@ -6,8 +6,10 @@ import { describe, it, expect } from 'vitest';
 import {
   formatDuration,
   formatTime,
+  formatSleepDate,
   countGratitude,
   findWorkStateLabelKey,
+  qualityLabel,
   isStarFilled,
   isValidQuality,
   WORK_STATE_OPTIONS,
@@ -61,6 +63,29 @@ describe('findWorkStateLabelKey', () => {
   it('returns null for invalid workState', () => {
     expect(findWorkStateLabelKey('invalid' as never)).toBeNull();
   });
+});
+
+// ─── qualityLabel ────────────────────────────────────────────────
+
+describe('qualityLabel', () => {
+  it('returns empty for 0', () => expect(qualityLabel(0)).toBe(''));
+  it('maps 1 to 差', () => expect(qualityLabel(1)).toBe('差'));
+  it('maps 2 to 偏差', () => expect(qualityLabel(2)).toBe('偏差'));
+  it('maps 3 to 一般', () => expect(qualityLabel(3)).toBe('一般'));
+  it('maps 4 to 好', () => expect(qualityLabel(4)).toBe('好'));
+  it('maps 5 to 很好', () => expect(qualityLabel(5)).toBe('很好'));
+  it('maps >5 to 很好', () => expect(qualityLabel(6)).toBe('很好'));
+});
+
+// ─── formatSleepDate ─────────────────────────────────────────────
+
+describe('formatSleepDate', () => {
+  it('returns empty for undefined', () => expect(formatSleepDate(undefined)).toBe(''));
+  it('returns empty for empty string', () => expect(formatSleepDate('')).toBe(''));
+  it('returns empty for non-numeric parts', () => expect(formatSleepDate('abc')).toBe(''));
+  it('formats 2026-07-30 as 7月30日', () => expect(formatSleepDate('2026-07-30')).toBe('7月30日'));
+  it('formats 2026-01-05 as 1月5日', () => expect(formatSleepDate('2026-01-05')).toBe('1月5日'));
+  it('formats 2026-12-31 as 12月31日', () => expect(formatSleepDate('2026-12-31')).toBe('12月31日'));
 });
 
 // ─── WORK_STATE_OPTIONS ──────────────────────────────────────────
