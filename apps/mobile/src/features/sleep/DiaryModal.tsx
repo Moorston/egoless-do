@@ -9,8 +9,9 @@ import {
   KeyboardAvoidingView, Platform, StyleSheet,
 } from 'react-native';
 
+import TimePickerModal from '../../components/TimePickerModal';
 import { useTheme, useT } from '../../components/UI';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+import { useShallowStore } from '../../store/useAppStore';
 
 
 interface Props {
@@ -56,6 +57,7 @@ export default function DiaryModal({ visible, onClose }: Props) {
   // ── Form state ──
   const [bedtimeStr, setBedtimeStr] = useState('');
   const [wakeStr, setWakeStr]       = useState('');
+  const [pickerType, setPickerType] = useState<'bedtime' | 'wake' | null>(null);
   const [quality, setQuality]       = useState<number>(0);
   const [workState, setWorkState]   = useState<WorkState | null>(null);
   const [bodyState, setBodyState]   = useState<string[]>([]);
@@ -168,29 +170,33 @@ export default function DiaryModal({ visible, onClose }: Props) {
                   <Text style={[s.timeLabel, { color: TH.sub }]}>
                     <Moon size={12} color={TH.sub} /> 入睡
                   </Text>
-                  <TextInput
-                    value={bedtimeStr}
-                    onChangeText={setBedtimeStr}
-                    placeholder="HH:MM"
-                    placeholderTextColor={TH.sub}
-                    keyboardType="numbers-and-punctuation"
-                    maxLength={5}
-                    style={[s.timeInput, { color: TH.text, borderColor: TH.border, backgroundColor: TH.card }]}
-                  />
+                  <TouchableOpacity
+                    onPress={() => setPickerType('bedtime')}
+                    style={[s.timeTouch, { borderColor: TH.border, backgroundColor: TH.card }]}
+                    accessibilityLabel={`入睡时间${bedtimeStr ? ' ' + bedtimeStr : '未设置'}`}
+                    accessibilityRole="button"
+                    accessibilityHint="点击打开时间选择器"
+                  >
+                    <Text style={[s.timeTouchText, { color: bedtimeStr ? TH.text : TH.sub }]}>
+                      {bedtimeStr || '--:--'}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
                 <View style={s.timeCol}>
                   <Text style={[s.timeLabel, { color: TH.sub }]}>
                     <Sun size={12} color={TH.sub} /> 起床
                   </Text>
-                  <TextInput
-                    value={wakeStr}
-                    onChangeText={setWakeStr}
-                    placeholder="HH:MM"
-                    placeholderTextColor={TH.sub}
-                    keyboardType="numbers-and-punctuation"
-                    maxLength={5}
-                    style={[s.timeInput, { color: TH.text, borderColor: TH.border, backgroundColor: TH.card }]}
-                  />
+                  <TouchableOpacity
+                    onPress={() => setPickerType('wake')}
+                    style={[s.timeTouch, { borderColor: TH.border, backgroundColor: TH.card }]}
+                    accessibilityLabel={`起床时间${wakeStr ? ' ' + wakeStr : '未设置'}`}
+                    accessibilityRole="button"
+                    accessibilityHint="点击打开时间选择器"
+                  >
+                    <Text style={[s.timeTouchText, { color: wakeStr ? TH.text : TH.sub }]}>
+                      {wakeStr || '--:--'}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
               </View>
               {durationMin != null && (
@@ -201,6 +207,18 @@ export default function DiaryModal({ visible, onClose }: Props) {
                 </View>
               )}
             </View>
+
+            {/* Time picker modal */}
+            <TimePickerModal
+              visible={pickerType != null}
+              value={pickerType === 'wake' ? wakeStr : bedtimeStr}
+              onConfirm={(time) => {
+                if (pickerType === 'bedtime') setBedtimeStr(time);
+                else if (pickerType === 'wake') setWakeStr(time);
+                setPickerType(null);
+              }}
+              onClose={() => setPickerType(null)}
+            />
 
             {/* ── 2. Quality Rating ── */}
             <View style={[s.card, { borderColor: `${P}30` }]}>
@@ -447,14 +465,18 @@ const s = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
   },
-  timeInput: {
+  timeTouch: {
     borderRadius: 10,
     borderWidth: 1,
     paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  timeTouchText: {
     fontSize: FONT_BODY(),
     fontWeight: '600',
-    textAlign: 'center',
+    letterSpacing: 1,
   },
   durationBadge: {
     marginTop: 12,
