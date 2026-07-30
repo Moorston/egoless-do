@@ -1,8 +1,6 @@
 import { submitCheckinEntry } from '../business';
 import { createLogger } from '../logger';
 import type { CheckinEntry, GraceHistoryEntry } from '../types';
-import { calculateCheckinStreak } from '../utils';
-import { calculateStreakFromCheckins } from '../utils';
 
 import type { SliceCreator } from './sliceHelper';
 import type { StorageAdapter, CheckinSlice } from './types';
@@ -18,7 +16,6 @@ export function createCheckinSlice(
   return (set, get) => ({
     // ── Checkin ────────────────────────────────────────────────────────
     checkinHistory: [],
-    streak: 0,
     graceHistory: [],
 
     submitCheckin(done: boolean, note: string, dateOverride?: string, weight?: number, grace?: boolean) {
@@ -29,7 +26,7 @@ export function createCheckinSlice(
         previousHistory = s.checkinHistory ?? [];
         const result = submitCheckinEntry(previousHistory, done, note, dateOverride, weight, grace);
         newRecord = result.record;
-        return { checkinHistory: result.history, streak: result.streak };
+        return { checkinHistory: result.history };
       });
       // 后台持久化，失败时回滚
       if (newRecord) {
@@ -37,17 +34,18 @@ export function createCheckinSlice(
           .catch(e => {
             log.error(e);
             // 回滚：恢复之前的历史
-            set({ checkinHistory: previousHistory, streak: calculateCheckinStreak(previousHistory.filter(c => !c.deleted)) });
+            set({ checkinHistory: previousHistory });
           });
       }
       onSync?.();
     },
 
+    /**
+     * @deprecated streak 已改为派生状态（useCheckinStreak selector），此方法保留用于向后兼容。
+     * 调用无实际效果，将在后续版本移除。
+     */
     calculateStreak() {
-      // streak 已改为派生状态（useCheckinStreak selector），此方法保留用于向后兼容
-      const { checkinHistory } = get();
-      const streak = calculateCheckinStreak((checkinHistory ?? []).filter(c => !c.deleted));
-      set({ streak });  // 保留以兼容旧代码
+      // no-op: streak 由 useCheckinStreak selector 从 checkinHistory 派生
     },
 
     addGraceRecord(date: string) {

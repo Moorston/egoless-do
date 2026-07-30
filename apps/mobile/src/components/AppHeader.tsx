@@ -4,12 +4,12 @@ import {
   Home, ClipboardList, Timer, Binary, Sparkles, Dumbbell,
   Target, BarChart3, Settings, Flame,
 } from 'lucide-react-native';
-import React, { useMemo, useRef } from 'react';
+import React, { useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useAppStore, useShallowStore } from '../store/useAppStore';
-
+import { useCheckinStreak } from '../store/selectors';
+import { useShallowStore } from '../store/useAppStore';
 
 import { useTheme } from './UI';
 
@@ -36,8 +36,7 @@ interface AppHeaderProps {
 }
 
 export default function AppHeader({ activeTab, onTabChange }: AppHeaderProps) {
-  const theme = useShallowStore(s => s.theme);
-  const streak = useShallowStore(s => s.streak);
+  const streak = useCheckinStreak();
   const language = useShallowStore(s => s.language);
   const insets = useSafeAreaInsets();
   const scrollRef = useRef<ScrollView>(null);

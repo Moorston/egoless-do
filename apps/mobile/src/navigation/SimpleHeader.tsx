@@ -1,4 +1,4 @@
-import { t, formatDate, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL } from '@egoless-do/core';
+import { t, formatDate, FONT_BODY, FONT_SUB, FONT_STAT_SECTION } from '@egoless-do/core';
 import { useNavigation } from '@react-navigation/native';
 import { Image, type ImageSource } from 'expo-image';
 import {
@@ -9,7 +9,8 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme } from '../components/UI';
-import { useAppStore, useShallowStore } from '../store/useAppStore';
+import { useCheckinStreak } from '../store/selectors';
+import { useShallowStore } from '../store/useAppStore';
 
 
 const HEADER_TAB_KEYS = ['home', 'plan', 'habits', 'reflections'];
@@ -21,8 +22,7 @@ const HEADER_TAB_ICONS: Record<string, React.ComponentType<{size?: number; color
 };
 
 export default function SimpleHeader({ routeName }: { routeName?: string }) {
-  const theme = useShallowStore(s => s.theme);
-  const streak = useShallowStore(s => s.streak);
+  const streak = useCheckinStreak();
   const language = useShallowStore(s => s.language);
   const TH = useTheme();
   const insets = useSafeAreaInsets();

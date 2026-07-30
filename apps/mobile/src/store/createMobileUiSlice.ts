@@ -73,7 +73,6 @@ export function createMobileUiSlice(
       const updatedProfile = { ...(s.userProfile ?? {}), weight, updatedAt: Date.now() };
       set({
         checkinHistory: result.history,
-        streak: result.streak,
         userProfile: updatedProfile,
       } as Partial<FullStore>);
       const entry = result.history[0];

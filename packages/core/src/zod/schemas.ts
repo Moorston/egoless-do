@@ -132,7 +132,6 @@ export const AuthSettingsSchema = z.object({
 export const AppSettingsSchema = z.object({
   theme: z.string().optional(),
   language: z.string().optional(),
-  streak: z.number().optional(),
   waterMl: z.number().optional(),
   waterGoal: z.number().optional(),
   calGoal: z.number().optional(),
