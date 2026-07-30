@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-2.md`
-- **Total Sessions**: 70
+- **Total Sessions**: 71
 - **Last Active**: 2026-07-30
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~532 | Active |
+| `journal-2.md` | ~565 | Active |
 | `journal-1.md` | ~1971 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 71 | 2026-07-30 | 状态规范化 Phase 2（memoized selectors） | `3d7069df` | `master` |
 | 70 | 2026-07-30 | 状态规范化 Phase 1（Task 2 部分完成） | `7d358e49` | `master` |
 | 69 | 2026-07-30 | DX + 测试增强（Task 1 完成） | `2bf4362e`, `e6ed7fd4`, docs:* | `master` |
 | 68 | 2026-07-29 | 小优化 A（lucide 审计 + WriteBatcher 评估）+ 全 session 收尾 | `aa917a0c` | `master` |
