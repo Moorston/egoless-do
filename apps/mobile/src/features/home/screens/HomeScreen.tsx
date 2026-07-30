@@ -1,4 +1,4 @@
-import { THEMES, COLORS, dateStr, yesterday, getFoodLogByDate, getRecentFoods, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_LABEL, FONT_CARD_TITLE, parseCheckinNote, getActivePlan, getTodayItems, getTodayCustomTodos, isPlanDelayed, getIncompleteItems, INCOMPLETE_REASONS, getStatsForDate, isGraceAvailable, createLogger, formatTime } from '@egoless-do/core';
+import { THEMES, COLORS, dateStr, yesterday, getFoodLogByDate, getRecentFoods, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_LABEL, FONT_CARD_TITLE, parseCheckinNote, getActivePlan, getTodayItems, getTodayCustomTodos, isPlanDelayed, getIncompleteItems, INCOMPLETE_REASONS, getStatsForDate, isGraceAvailable, createLogger, formatTime, getHabitStreak } from '@egoless-do/core';
 import type { CheckinEntry, Habit } from '@egoless-do/core';
 import {
   Scale, Footprints, Droplets, Pencil, Check, X, Star, Sparkles, ClipboardList, Calendar,
@@ -13,7 +13,6 @@ import SimpleHeader from '../../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useNavigateToTab } from '../../../navigation/useAppNavigation';
 import { useAppStore, useShallowStore, type MobileStore } from '../../../store/useAppStore';
-import { getHabitStreak } from '@egoless-do/core';
 import { useCheckinStreak, useActiveHabits } from '../../../store/selectors';
 import Banner from '../components/Banner';
 import CheckinStatsModal from '../components/CheckinStatsModal';
