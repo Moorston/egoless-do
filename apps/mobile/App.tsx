@@ -137,9 +137,11 @@ export default function App() {
 
   // Wait for BOTH splash animation AND initApp() completion before showing navigator
   const onSplashFinish = useCallback(() => {
+    console.log('[App] Splash finished, initDone:', initDone);
     // Give a small delay to ensure initApp has completed and state is settled
     const checkInit = () => {
       if (initDone) {
+        console.log('[App] Setting isReady = true');
         setIsReady(true);
       } else {
         // Poll until initApp completes (max 10 seconds)
@@ -148,6 +150,8 @@ export default function App() {
     };
     checkInit();
   }, [initDone]);
+
+  console.log('[App] Render: isReady =', isReady, 'initDone =', initDone);
 
   if (!isReady) {
     return <SplashScreen onFinish={onSplashFinish} />;
