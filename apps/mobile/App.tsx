@@ -90,6 +90,7 @@ export default function App() {
   const [initDone, setInitDone] = useState(false);
   const preloadedRef = useRef(false);
   const initStartedRef = useRef(false);
+  const initDoneRef = useRef(false);  // ← 新增：避免闭包陷阱
   const initStartTime = performance.now();
 
   // Initialize app (SQLite, auth tokens, subscriptions) and WAIT for completion
@@ -111,8 +112,15 @@ export default function App() {
           }),
         ]);
       })
-      .then(() => setInitDone(true))
-      .catch(() => setInitDone(true)); // Even on error, mark as done to avoid stuck splash
+      .then(() => {
+        console.log('[App] initApp complete, setting initDone = true');
+        initDoneRef.current = true;  // ← 同步更新 ref
+        setInitDone(true);
+      })
+      .catch(() => {
+        initDoneRef.current = true;  // ← 同步更新 ref
+        setInitDone(true);
+      });
   }, []);
 
   useEffect(() => {
@@ -137,19 +145,20 @@ export default function App() {
 
   // Wait for BOTH splash animation AND initApp() completion before showing navigator
   const onSplashFinish = useCallback(() => {
-    console.log('[App] Splash finished, initDone:', initDone);
-    // Give a small delay to ensure initApp has completed and state is settled
+    console.log('[App] Splash finished, initDone (state):', initDone, 'initDoneRef:', initDoneRef.current);
+    // 使用 ref 检查最新值，避免闭包陷阱
     const checkInit = () => {
-      if (initDone) {
+      if (initDoneRef.current) {
         console.log('[App] Setting isReady = true');
         setIsReady(true);
       } else {
         // Poll until initApp completes (max 10 seconds)
+        console.log('[App] Waiting for initDone...');
         setTimeout(checkInit, 100);
       }
     };
     checkInit();
-  }, [initDone]);
+  }, []);  // ← 空依赖，使用 ref 读取最新值
 
   console.log('[App] Render: isReady =', isReady, 'initDone =', initDone);
 
