@@ -38,6 +38,41 @@ export function useHabitStreak(habitId: string): number {
   );
 }
 
+/**
+ * 计算习惯完成进度（0-100）。
+ */
+export function useHabitProgress(habitId: string): number {
+  const checkinHistory = useAppStore(useShallow((s: MobileStore) => s.checkinHistory));
+  const habits = useAppStore(useShallow((s: MobileStore) => s.habits));
+  return useMemo(() => {
+    const habit = habits.find(h => h.id === habitId);
+    if (!habit) return 0;
+    const habitCheckins = checkinHistory.filter(c => c.habitId === habitId && !c.deleted && c.done);
+    if (!habit.targetDays || habit.targetDays === 0) return 0;
+    return Math.min(100, Math.round((habitCheckins.length / habit.targetDays) * 100));
+  }, [checkinHistory, habits, habitId]);
+}
+
+/**
+ * 获取活跃习惯列表（未删除）。
+ */
+export function useActiveHabits() {
+  const habits = useAppStore(useShallow((s: MobileStore) => s.habits));
+  return useMemo(() => habits.filter(h => !h.deleted), [habits]);
+}
+
+/**
+ * 获取今日打卡记录。
+ */
+export function useTodayCheckins() {
+  const checkinHistory = useAppStore(useShallow((s: MobileStore) => s.checkinHistory));
+  const today = new Date().toISOString().slice(0, 10);
+  return useMemo(
+    () => checkinHistory.filter(c => c.date === today && !c.deleted),
+    [checkinHistory, today]
+  );
+}
+
 // ── Pure Functions ──
 
 export function calculateStreakFromCheckins(checkins: Array<{ date: string; done: boolean; deleted?: boolean }>): number {

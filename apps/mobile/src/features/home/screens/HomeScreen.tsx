@@ -13,6 +13,7 @@ import SimpleHeader from '../../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useNavigateToTab } from '../../../navigation/useAppNavigation';
 import { useAppStore, useShallowStore, type MobileStore } from '../../../store/useAppStore';
+import { useCheckinStreak, useActiveHabits } from '../../../store/selectors';
 import Banner from '../components/Banner';
 import CheckinStatsModal from '../components/CheckinStatsModal';
 import DateBar from '../components/DateBar';
@@ -50,7 +51,7 @@ function HabitItem({ habit, viewDate, TH, P, T, isReadOnly, onToggle }: {
         <Star size={16} color={P} />
         <View>
           <Text style={{ color: isReadOnly && !habitDone ? TH.sub : TH.text, fontSize: FONT_BODY(), opacity: isReadOnly && !habitDone ? 0.5 : 1 }}>{habit.name}</Text>
-          <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>{String(habit.streak)} {T('checkinStreak')}</Text>
+          <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>{String(habit.streak ?? 0)} {T('checkinStreak')}</Text>
         </View>
       </View>
       {isReadOnly ? (
@@ -96,7 +97,7 @@ export default function HomeScreen() {
     dailyCustomTodos: s.dailyCustomTodos,
     foodLog: s.foodLog,
     habits: s.habits,
-    streak: s.streak,
+    // streak 已移除：改用 useCheckinStreak selector
     waterMl: s.waterMl,
     waterGoal: s.waterGoal,
     calGoal: s.calGoal,
@@ -118,6 +119,10 @@ export default function HomeScreen() {
     addFood: s.addFood,
     deleteFood: s.deleteFood,
   }));
+
+  // 派生状态：连续打卡天数（从 checkinHistory 计算）
+  const checkinStreak = useCheckinStreak();
+  const activeHabits = useActiveHabits();
   const nav   = useRootNavigation();
   const navigateToTab = useNavigateToTab();
   const language = useAppStore(useShallow((s: MobileStore) => s.language));
