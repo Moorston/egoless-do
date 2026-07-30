@@ -104,12 +104,17 @@ export default function App() {
         const startupDuration = performance.now() - initStartTime;
         trackAppStart(startupDuration);
         // 首屏后初始化 Sentry + PostHog（不阻塞首屏）
+        // PostHog 未配置时跳过初始化，避免 SDK 报错
+        const pgKey = process.env.EXPO_PUBLIC_POSTHOG_API_KEY;
+        const pgInit = pgKey
+          ? initPostHog({
+              apiKey: pgKey,
+              host: process.env.EXPO_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com',
+            })
+          : Promise.resolve(null);
         return Promise.all([
           initSentry().catch(() => {}),
-          initPostHog({
-            apiKey: process.env.EXPO_PUBLIC_POSTHOG_API_KEY || '',
-            host: process.env.EXPO_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com',
-          }),
+          pgInit,
         ]);
       })
       .then(() => {
