@@ -83,7 +83,7 @@ export default function HomeScreen() {
   const P     = TH.primary;
   const {
     checkinHistory, plans, planItemCheckins, planItems, dailyCustomTodos,
-    foodLog, habits, streak, waterMl, waterGoal, calGoal,
+    foodLog, habits, waterMl, waterGoal, calGoal,
     healthSyncEnabled, todaySteps, userProfile, graceHistory,
     setWeightUnit, submitCheckin, checkinHabit, addWater,
     setWaterGoal, setCalGoal, checkAutoStatus, autoSyncPlanItems,
@@ -489,7 +489,7 @@ export default function HomeScreen() {
                 isToday={isToday}
                 totalCompleted={totalCompleted}
                 viewDateStats={viewDateStats}
-                streak={streak}
+                streak={checkinStreak}
                 showGrace={showGrace}
                 graceAvailable={graceAvailable}
                 onStatsPress={openStatsModal}
