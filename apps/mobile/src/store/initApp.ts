@@ -70,6 +70,7 @@ async function loadSettingsPatch(): Promise<PartialMobileStore> {
  */
 // eslint-disable-next-line max-lines-per-function -- initApp is a sequential startup sequence; splitting would fragment the step ordering
 export async function initApp(): Promise<void> {
+  const __perf_t0 = performance.now();  // 性能标记：启动开始
   // Wire up Sentry bridge for all logger.error/warn calls
   setSentryBridge({ captureException, captureMessage, addBreadcrumb });
 
