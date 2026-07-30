@@ -129,23 +129,24 @@ export default function HomePage(props: HomePageProps) {
         ) : null}
 
         {/* ── BodyClockCard ── */}
-        <View style={{ borderRadius: 20, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, padding: 20, marginBottom: 16, alignItems: 'center' }}>
-          <Text style={{ fontSize: 14, fontWeight: '700', color: TH.primary, marginBottom: 12, alignSelf: 'flex-start' }}>十二时辰</Text>
-          <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, marginBottom: 4 }}>
-            <Text style={{ fontSize: 22, fontWeight: '800', color: TH.text }}>{currentPeriod.nameZh}</Text>
-            <Text style={{ fontSize: 15, fontWeight: '600', color: TH.primary }}>{currentPeriod.organ}</Text>
+        <View style={{ borderRadius: 20, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, padding: 20, marginBottom: 16, alignItems: 'center', overflow: 'hidden' }}>
+          {/* Top accent bar */}
+          <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, backgroundColor: TH.primary, opacity: 0.6 }} />
+          <Text style={{ fontSize: 13, fontWeight: '600', color: TH.primary, marginBottom: 10, alignSelf: 'flex-start', letterSpacing: 1 }}>十 二 时 辰</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 10, marginBottom: 6 }}>
+            <Text style={{ fontSize: 26, fontWeight: '900', color: TH.text }}>{currentPeriod.nameZh}</Text>
+            <View style={{ paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6, backgroundColor: `${TH.primary}15` }}>
+              <Text style={{ fontSize: 13, fontWeight: '600', color: TH.primary }}>{currentPeriod.organ}</Text>
+            </View>
           </View>
-          <Text style={{ fontSize: 15, color: TH.text, marginBottom: 12 }}>{currentPeriod.advice}</Text>
+          <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 14, lineHeight: 20 }}>{currentPeriod.advice}</Text>
           <BodyClockDial theme={TH} onPeriodPress={setClockDetail} />
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 8 }}>
-            <Clock size={16} color={TH.sub} />
-            <Text style={{ fontSize: 14, color: TH.sub }}>
-              {`距${nextSleep.period.nameZh}还有 ${Math.floor(nextSleep.minutesUntil / 60)}小时${nextSleep.minutesUntil % 60}分`}
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 10 }}>
+            <Moon size={15} color={TH.sub} />
+            <Text style={{ fontSize: 13, color: TH.sub }}>
+              {`距${nextSleep.period.nameZh}还有 ${Math.floor(nextSleep.minutesUntil / 60)}h${nextSleep.minutesUntil % 60}m`}
             </Text>
           </View>
-          <Text style={{ fontSize: 12, color: TH.sub, opacity: 0.7, marginTop: 4 }}>
-            💤 睡眠窗口 21:00 → 05:00
-          </Text>
         </View>
 
         {/* ── SleepGoalCard ── */}

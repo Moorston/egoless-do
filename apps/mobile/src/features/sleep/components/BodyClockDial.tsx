@@ -14,17 +14,17 @@ interface Props {
 
 const SIZE = 220;
 const CENTER = SIZE / 2;
-const RADIUS = 78; // period point center radius
+const RADIUS = 78;
 const POINT_DEFAULT = 11;
-const POINT_CURRENT = 16;
+const POINT_CURRENT = 17;
+const POINT_SLEEP = 13;
 
-// Sleep window: 21:00 (hai/xu boundary) → 05:00 (mao/chen boundary)
+// Sleep window: 21:00 → 05:00
 const SLEEP_START_HOUR = 21;
 const SLEEP_END_HOUR = 5;
+const SLEEP_KEYS = new Set(['hai', 'zi', 'chou', 'yin', 'mao']);
 
 function hourToAngle(hour: number): number {
-  // 0° at top (12 o'clock), clockwise
-  // 0h → top ( -90° in math), 6h → right, 12h → bottom, 18h → left
   return ((hour / 24) * 360) - 90;
 }
 
@@ -35,7 +35,6 @@ function polarToXY(angleDeg: number, radius: number): [number, number] {
 
 /** Build an annular sector path (ring segment) for the sleep window. */
 function sleepSectorPath(innerR: number, outerR: number, startHour: number, endHour: number): string {
-  // Draw sector from startHour → endHour (clockwise, may wrap midnight)
   const startAngle = hourToAngle(startHour);
   const endAngle = hourToAngle(endHour);
 
@@ -44,7 +43,6 @@ function sleepSectorPath(innerR: number, outerR: number, startHour: number, endH
   const [x3, y3] = polarToXY(endAngle, innerR);
   const [x4, y4] = polarToXY(startAngle, innerR);
 
-  // Determine large-arc: if span > 180°, use 1
   let span = endHour - startHour;
   if (span < 0) span += 24;
   const largeArc = span > 12 ? 1 : 0;
@@ -64,38 +62,59 @@ export default function BodyClockDial({ theme, onPeriodPress }: Props) {
   const border = theme.border;
   const sub = theme.sub;
 
-  const innerR = RADIUS - 12;
-  const outerR = RADIUS + 12;
+  const innerR = RADIUS - 14;
+  const outerR = RADIUS + 14;
   const sleepPath = sleepSectorPath(innerR, outerR, SLEEP_START_HOUR, SLEEP_END_HOUR);
 
   return (
     <View style={{ alignItems: 'center', width: SIZE, height: SIZE, position: 'relative' }}>
       <Svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`}>
-        {/* Background ring */}
+        {/* Soft outer glow ring */}
+        <Circle
+          cx={CENTER}
+          cy={CENTER}
+          r={RADIUS + 22}
+          fill="none"
+          stroke={border}
+          strokeWidth={1}
+          opacity={0.15}
+        />
+
+        {/* Background ring track */}
         <Circle
           cx={CENTER}
           cy={CENTER}
           r={RADIUS}
           fill="none"
-          stroke={border}
-          strokeWidth={1}
-          opacity={0.3}
+          stroke={`${primary}20`}
+          strokeWidth={2}
         />
 
-        {/* Sleep window sector */}
+        {/* Sleep window sector (filled) */}
         <Path
           d={sleepPath}
-          fill={`${primary}20`}
-          stroke={`${primary}40`}
-          strokeWidth={1}
+          fill={`${primary}18`}
+          stroke={`${primary}50`}
+          strokeWidth={1.5}
         />
 
         {/* Period points */}
         {BODY_CLOCK.map((p) => {
           const isCurrent = p.key === current.key;
+          const isSleep = SLEEP_KEYS.has(p.key);
           const angle = hourToAngle(p.startHour);
           const [cx, cy] = polarToXY(angle, RADIUS);
-          const size = isCurrent ? POINT_CURRENT : POINT_DEFAULT;
+
+          let size = POINT_DEFAULT;
+          if (isCurrent) size = POINT_CURRENT;
+          else if (isSleep) size = POINT_SLEEP;
+
+          const fill = isCurrent ? primary
+            : isSleep ? `${primary}60`
+            : `${primary}25`;
+          const stroke = isCurrent ? '#fff'
+            : isSleep ? `${primary}80`
+            : `${primary}40`;
 
           return (
             <Circle
@@ -103,9 +122,9 @@ export default function BodyClockDial({ theme, onPeriodPress }: Props) {
               cx={cx}
               cy={cy}
               r={size}
-              fill={isCurrent ? primary : `${primary}25`}
-              stroke={isCurrent ? primary : `${primary}50`}
-              strokeWidth={isCurrent ? 2 : 1}
+              fill={fill}
+              stroke={stroke}
+              strokeWidth={isCurrent ? 2.5 : 1}
             />
           );
         })}
@@ -114,15 +133,19 @@ export default function BodyClockDial({ theme, onPeriodPress }: Props) {
       {/* Period labels (touchable) — overlaid on ring */}
       {BODY_CLOCK.map((p) => {
         const isCurrent = p.key === current.key;
+        const isSleep = SLEEP_KEYS.has(p.key);
         const angle = hourToAngle(p.startHour);
         const [cx, cy] = polarToXY(angle, RADIUS);
-        const size = isCurrent ? POINT_CURRENT : POINT_DEFAULT;
+
+        let size = POINT_DEFAULT;
+        if (isCurrent) size = POINT_CURRENT;
+        else if (isSleep) size = POINT_SLEEP;
 
         return (
           <TouchableOpacity
             key={p.key}
             onPress={() => onPeriodPress(p)}
-            hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             style={{
               position: 'absolute',
               left: cx - size,
@@ -138,9 +161,9 @@ export default function BodyClockDial({ theme, onPeriodPress }: Props) {
           >
             <Text
               style={{
-                fontSize: isCurrent ? 13 : 11,
-                fontWeight: isCurrent ? '700' : '500',
-                color: isCurrent ? '#fff' : sub,
+                fontSize: isCurrent ? 14 : isSleep ? 12 : 11,
+                fontWeight: isCurrent ? '700' : isSleep ? '600' : '500',
+                color: isCurrent ? '#fff' : isSleep ? primary : sub,
               }}
             >
               {p.nameZh.charAt(0)}
