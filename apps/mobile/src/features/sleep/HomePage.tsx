@@ -14,6 +14,7 @@ import { useRootNavigation } from '../../navigation/hooks';
 import DiaryModal from './DiaryModal';
 import SleepSummaryCard from './SleepSummaryCard';
 import BodyClockDial from './components/BodyClockDial';
+import TimePickerModal from '../../components/TimePickerModal';
 import { styles } from './sleepStyles';
 
 interface HomePageProps {
@@ -48,6 +49,7 @@ export default function HomePage(props: HomePageProps) {
   const [editBedtime, setEditBedtime] = useState('');
   const [editWake, setEditWake] = useState('');
   const [editHours, setEditHours] = useState('');
+  const [goalPickerType, setGoalPickerType] = useState<'bedtime' | 'wake' | null>(null);
 
   const openGoalModal = () => {
     setEditBedtime(sleepGoal.targetBedtime);
@@ -282,13 +284,27 @@ export default function HomePage(props: HomePageProps) {
       {/* ── Sleep Goal Edit Modal ── */}
       {showGoalModal && (
         <Modal visible transparent animationType="fade" onRequestClose={() => setShowGoalModal(false)}>
-          <TouchableOpacity style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center', alignItems: 'center', padding: 32 }} activeOpacity={1} onPress={() => setShowGoalModal(false)}>
+          <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center', alignItems: 'center', padding: 32 }}>
             <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 28, width: '100%', maxWidth: 320, borderWidth: 1, borderColor: TH.border }}>
               <Text style={{ fontSize: 20, fontWeight: '800', color: TH.primary, textAlign: 'center', marginBottom: 20 }}>{T('sleepGoalEditTitle')}</Text>
               <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 8 }}>{T('sleepGoalBedtime')}</Text>
-              <TextInput value={editBedtime} onChangeText={setEditBedtime} placeholder="23:00" placeholderTextColor={TH.sub} style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: 16, marginBottom: 16 }} />
+              <TouchableOpacity
+                onPress={() => setGoalPickerType('bedtime')}
+                style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, marginBottom: 16, borderWidth: 1, borderColor: TH.border }}
+              >
+                <Text style={{ fontSize: 16, color: editBedtime ? TH.text : TH.sub, fontWeight: '600' }}>
+                  {editBedtime || '23:00'}
+                </Text>
+              </TouchableOpacity>
               <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 8 }}>{T('sleepGoalWake')}</Text>
-              <TextInput value={editWake} onChangeText={setEditWake} placeholder="07:00" placeholderTextColor={TH.sub} style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: 16, marginBottom: 16 }} />
+              <TouchableOpacity
+                onPress={() => setGoalPickerType('wake')}
+                style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, marginBottom: 16, borderWidth: 1, borderColor: TH.border }}
+              >
+                <Text style={{ fontSize: 16, color: editWake ? TH.text : TH.sub, fontWeight: '600' }}>
+                  {editWake || '07:00'}
+                </Text>
+              </TouchableOpacity>
               <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 8 }}>{T('sleepGoalHours')}</Text>
               <TextInput value={editHours} onChangeText={setEditHours} placeholder="8" placeholderTextColor={TH.sub} keyboardType="numeric" style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: 16, marginBottom: 20 }} />
               <View style={{ flexDirection: 'row', gap: 12 }}>
@@ -300,9 +316,21 @@ export default function HomePage(props: HomePageProps) {
                 </TouchableOpacity>
               </View>
             </View>
-          </TouchableOpacity>
+          </View>
         </Modal>
       )}
+
+      {/* ── Goal Time Picker Modal ── */}
+      <TimePickerModal
+        visible={goalPickerType != null}
+        value={goalPickerType === 'wake' ? (editWake || '07:00') : (editBedtime || '23:00')}
+        onConfirm={(time) => {
+          if (goalPickerType === 'bedtime') setEditBedtime(time);
+          else if (goalPickerType === 'wake') setEditWake(time);
+          setGoalPickerType(null);
+        }}
+        onClose={() => setGoalPickerType(null)}
+      />
 
       {/* ── Trend Detail Modal ── */}
       {trendDetail && (
