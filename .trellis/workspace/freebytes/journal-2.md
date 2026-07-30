@@ -696,3 +696,36 @@ Task 3 Week 2 完成：HybridEngine + 云端降级 + 4 测试。1852 测试通�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 76: 端侧 AI Week 3（ModelManager）
+
+**Date**: 2026-07-30
+**Task**: 端侧 AI Week 3（ModelManager）
+**Branch**: `master`
+
+### Summary
+
+Task 3 Week 3 完成：ModelManager + OTA 框架 + 6 测试。1862 测试通过。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `ebfd5d84d5984e3c9b50456e` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
