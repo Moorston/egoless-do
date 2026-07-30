@@ -7,8 +7,8 @@ import { ChevronRight } from 'lucide-react-native';
 import React, { useState, useCallback, useEffect, lazy, Suspense, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 
-import { Events } from '../../../analytics/events';
-import { track } from '../../../analytics/track';
+import { Events } from '../../analytics/events';
+import { track } from '../../analytics/track';
 import { useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../navigation/hooks';
