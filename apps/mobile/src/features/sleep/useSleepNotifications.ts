@@ -1,7 +1,7 @@
 // ─── Sleep Notifications — 多阶段智能提醒 ─────────────────────────
 // 支持：多阶段提醒 / 周末差异化 / 智能跳过 / Snooze / 跳过今晚
 
-import { BODY_CLOCK, createLogger } from '@egoless-do/core';
+import { BODY_CLOCK, createLogger, type BodyClockPeriod } from '@egoless-do/core';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { AppState, Platform } from 'react-native';
 
@@ -32,7 +32,7 @@ function getNotifications(): typeof import('expo-notifications') {
 }
 
 /** 获取指定小时对应的时辰 */
-function getPeriodForHour(hour: number) {
+function getPeriodForHour(hour: number): BodyClockPeriod {
   for (let i = BODY_CLOCK.length - 1; i >= 0; i--) {
     if (hour >= BODY_CLOCK[i].startHour || (i === 0 && hour < 1)) {
       return BODY_CLOCK[i];

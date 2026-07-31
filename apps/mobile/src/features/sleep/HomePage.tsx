@@ -268,6 +268,7 @@ export default function HomePage(props: HomePageProps) {
         visible={showBedtimeModal}
         theme={TH}
         bedtime={sleepGoal.targetBedtime}
+        snoozeCount={0}
         onStartRitual={(min) => {
           onDismissBedtimeModal();
           onStartBarrier(min);

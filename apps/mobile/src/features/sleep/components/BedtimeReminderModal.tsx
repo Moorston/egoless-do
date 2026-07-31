@@ -21,6 +21,7 @@ interface Props {
   visible: boolean;
   theme: Theme;
   bedtime: string;
+  snoozeCount?: number;
   onStartRitual: (min: number) => void;
   onSnooze: () => void;
   onSkipTonight: () => void;
@@ -31,7 +32,7 @@ const RING_SIZE = 120;
 const RING_STROKE = 6;
 const RING_RADIUS = (RING_SIZE - RING_STROKE) / 2;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
-const AUTO_RECORD_SEC = 60;
+const AUTO_RECORD_SEC = 30;
 
 // Starfield positions [x, y, size, delay]
 const STAR_POSITIONS: [number, number, number, number][] = [
@@ -45,6 +46,7 @@ export default function BedtimeReminderModal({
   visible,
   theme,
   bedtime,
+  snoozeCount = 0,
   onStartRitual,
   onSnooze,
   onSkipTonight,
@@ -171,9 +173,12 @@ export default function BedtimeReminderModal({
   if (!visible) return null;
 
   return (
-    <SafeAreaView edges={['top', 'bottom']} style={[styles.container, { backgroundColor: '#0F172A' }]}>
-      {/* Starfield background */}
-      <View style={styles.starfield} pointerEvents="none">
+    <SafeAreaView
+      edges={['top', 'bottom']}
+      style={[styles.container, { backgroundColor: '#0F172A' }]}
+    >
+      {/* Starfield background (decorative, hidden from a11y) */}
+      <View style={styles.starfield} pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
         {STAR_POSITIONS.map(([x, y, size, delay], i) => (
           <Animated.View
             key={i}
@@ -192,8 +197,12 @@ export default function BedtimeReminderModal({
       </View>
 
       <View style={styles.content}>
-        {/* Breathing moon with gradient */}
-        <Animated.View style={[styles.moonWrap, { transform: [{ scale: breathe }] }]}>
+        {/* Breathing moon with gradient (decorative) */}
+        <Animated.View
+          style={[styles.moonWrap, { transform: [{ scale: breathe }] }]}
+          accessibilityElementsHidden
+          importantForAccessibility="no"
+        >
           <Svg width={90} height={90} viewBox="0 0 90 90">
             <Defs>
               <RadialGradient id="moonGlow" cx="50%" cy="50%" r="50%">
@@ -226,7 +235,12 @@ export default function BedtimeReminderModal({
         <Text style={[styles.advice, { color: `${sub}CC` }]}>{period.advice}</Text>
 
         {/* Countdown ring (with urgent pulse) */}
-        <Animated.View style={[styles.ringWrap, isUrgent && { transform: [{ scale: urgentPulse }] }]}>
+        <Animated.View
+          style={[styles.ringWrap, isUrgent && { transform: [{ scale: urgentPulse }] }]}
+          accessibilityRole="progressbar"
+          accessibilityLabel={`还剩 ${secondsLeft} 秒自动记录入睡`}
+          accessibilityLiveRegion="polite"
+        >
           <Svg width={RING_SIZE} height={RING_SIZE} viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}>
             {/* Background ring */}
             <Circle
@@ -289,9 +303,10 @@ export default function BedtimeReminderModal({
               useUiStore.getState().showToast('10 分钟后再次提醒', 'info');
               onSnooze();
             }}
-            style={styles.textBtn}
+            style={[styles.cancelBtn, { borderColor: `${sub}50` }]}
           >
-            <Text style={[styles.textBtnLabel, { color: `${sub}CC` }]}>稍后提醒</Text>
+            <Text style={[styles.cancelText, { color: `${sub}DD` }]}>稍后提醒</Text>
+            <Text style={[styles.snoozeHint, { color: `${sub}77` }]}>剩余 {3 - snoozeCount} 次</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
@@ -300,9 +315,9 @@ export default function BedtimeReminderModal({
                 { text: '确定', style: 'destructive', onPress: onSkipTonight },
               ]);
             }}
-            style={styles.textBtn}
+            style={[styles.cancelBtn, { borderColor: `${sub}50` }]}
           >
-            <Text style={[styles.textBtnLabel, { color: `${sub}CC` }]}>跳过今晚</Text>
+            <Text style={[styles.cancelText, { color: `${sub}DD` }]}>跳过今晚</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -411,13 +426,20 @@ const styles = StyleSheet.create({
   },
   secondaryRow: {
     flexDirection: 'row',
-    gap: 24,
+    gap: 16,
   },
-  textBtn: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+  cancelBtn: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    borderWidth: 1.5,
   },
-  textBtnLabel: {
+  cancelText: {
     fontSize: 14,
+    fontWeight: '600',
+  },
+  snoozeHint: {
+    fontSize: 11,
+    marginTop: 2,
   },
 });
