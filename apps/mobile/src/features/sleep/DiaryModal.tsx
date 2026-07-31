@@ -12,29 +12,12 @@ import {
 import TimePickerModal from '../../components/TimePickerModal';
 import { useTheme, useT } from '../../components/UI';
 import { useShallowStore } from '../../store/useAppStore';
+import { parseHHMM, formatHHMM } from './sleepSummaryLogic';
 
 
 interface Props {
   visible: boolean;
   onClose: () => void;
-}
-
-/** Parse a "HH:MM" string into today's timestamp (ms). */
-function parseHHMM(str: string): number | undefined {
-  const m = str.match(/^(\d{1,2}):(\d{2})$/);
-  if (!m) return undefined;
-  const hours = parseInt(m[1], 10);
-  const minutes = parseInt(m[2], 10);
-  if (hours > 23 || minutes > 59) return undefined;
-  const d = new Date();
-  d.setHours(hours, minutes, 0, 0);
-  return d.getTime();
-}
-
-/** Format a timestamp back to "HH:MM". */
-function formatHHMM(ts: number): string {
-  const d = new Date(ts);
-  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 }
 
 const WORK_STATES: { key: WorkState; labelKey: string }[] = [

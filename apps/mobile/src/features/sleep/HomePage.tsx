@@ -15,6 +15,14 @@ import DiaryModal from './DiaryModal';
 import SleepSummaryCard from './SleepSummaryCard';
 import BodyClockDial from './components/BodyClockDial';
 import TimePickerModal from '../../components/TimePickerModal';
+import {
+  formatDuration,
+  formatTime,
+  formatSleepDate,
+  countGratitude,
+  qualityLabel,
+  parseHHMM,
+} from './sleepSummaryLogic';
 import { styles } from './sleepStyles';
 
 interface HomePageProps {
@@ -48,13 +56,21 @@ export default function HomePage(props: HomePageProps) {
   const [showGoalModal, setShowGoalModal] = useState(false);
   const [editBedtime, setEditBedtime] = useState('');
   const [editWake, setEditWake] = useState('');
-  const [editHours, setEditHours] = useState('');
   const [goalPickerType, setGoalPickerType] = useState<'bedtime' | 'wake' | null>(null);
+
+  // 自动根据入睡/起床时间计算目标时长
+  const computedGoalHours = useMemo(() => {
+    const bt = parseHHMM(editBedtime);
+    const wt = parseHHMM(editWake);
+    if (bt == null || wt == null) return sleepGoal.targetHours;
+    let diffMin = wt - bt;
+    if (diffMin < 0) diffMin += 24 * 60 * 60 * 1000;
+    return Math.round(diffMin / 60000 / 60);
+  }, [editBedtime, editWake, sleepGoal.targetHours]);
 
   const openGoalModal = () => {
     setEditBedtime(sleepGoal.targetBedtime);
     setEditWake(sleepGoal.targetWake);
-    setEditHours(String(sleepGoal.targetHours));
     setShowGoalModal(true);
   };
 
@@ -63,11 +79,10 @@ export default function HomePage(props: HomePageProps) {
 
   const saveGoal = () => {
     if (onSetSleepGoal) {
-      const hours = parseInt(editHours, 10);
       if (!isValidTime(editBedtime) || !isValidTime(editWake)) {
         return;
       }
-      const validHours = isNaN(hours) ? sleepGoal.targetHours : Math.max(1, Math.min(24, hours));
+      const validHours = Math.max(1, Math.min(24, computedGoalHours));
       onSetSleepGoal({
         ...sleepGoal,
         targetBedtime: editBedtime,
@@ -311,16 +326,13 @@ export default function HomePage(props: HomePageProps) {
                   {editWake || '07:00'}
                 </Text>
               </TouchableOpacity>
-              <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 8 }}>{T('sleepGoalHours')}</Text>
-              <TextInput
-                value={editHours}
-                onChangeText={setEditHours}
-                placeholder="8"
-                placeholderTextColor={TH.sub}
-                keyboardType="numeric"
-                onBlur={() => Keyboard.dismiss()}
-                style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: 16, marginBottom: 20 }}
-              />
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 4, marginBottom: 20 }}>
+                <Text style={{ fontSize: 14, color: TH.sub }}>{T('sleepGoalHours')}</Text>
+                <View style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, backgroundColor: `${TH.primary}15` }}>
+                  <Text style={{ fontSize: 16, fontWeight: '700', color: TH.primary }}>{computedGoalHours}h</Text>
+                </View>
+                <Text style={{ fontSize: 12, color: TH.sub, opacity: 0.7 }}>（自动计算）</Text>
+              </View>
               <View style={{ flexDirection: 'row', gap: 12 }}>
                 <TouchableOpacity onPress={() => setShowGoalModal(false)} style={{ flex: 1, alignItems: 'center', padding: 12, borderRadius: 12, borderWidth: 1, borderColor: TH.border }}>
                   <Text style={{ fontSize: 15, fontWeight: '600', color: TH.sub }}>{T('commonCancel')}</Text>
