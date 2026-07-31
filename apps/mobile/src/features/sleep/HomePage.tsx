@@ -289,7 +289,10 @@ export default function HomePage(props: HomePageProps) {
               <Text style={{ fontSize: 20, fontWeight: '800', color: TH.primary, textAlign: 'center', marginBottom: 20 }}>{T('sleepGoalEditTitle')}</Text>
               <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 8 }}>{T('sleepGoalBedtime')}</Text>
               <TouchableOpacity
-                onPress={() => setGoalPickerType('bedtime')}
+                onPress={() => {
+                  setShowGoalModal(false);
+                  setGoalPickerType('bedtime');
+                }}
                 style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, marginBottom: 16, borderWidth: 1, borderColor: TH.border }}
               >
                 <Text style={{ fontSize: 16, color: editBedtime ? TH.text : TH.sub, fontWeight: '600' }}>
@@ -298,7 +301,10 @@ export default function HomePage(props: HomePageProps) {
               </TouchableOpacity>
               <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 8 }}>{T('sleepGoalWake')}</Text>
               <TouchableOpacity
-                onPress={() => setGoalPickerType('wake')}
+                onPress={() => {
+                  setShowGoalModal(false);
+                  setGoalPickerType('wake');
+                }}
                 style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, marginBottom: 16, borderWidth: 1, borderColor: TH.border }}
               >
                 <Text style={{ fontSize: 16, color: editWake ? TH.text : TH.sub, fontWeight: '600' }}>
@@ -328,8 +334,12 @@ export default function HomePage(props: HomePageProps) {
           if (goalPickerType === 'bedtime') setEditBedtime(time);
           else if (goalPickerType === 'wake') setEditWake(time);
           setGoalPickerType(null);
+          setShowGoalModal(true);
         }}
-        onClose={() => setGoalPickerType(null)}
+        onClose={() => {
+          setGoalPickerType(null);
+          setShowGoalModal(true);
+        }}
       />
 
       {/* ── Trend Detail Modal ── */}
