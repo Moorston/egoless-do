@@ -28,7 +28,7 @@ import { styles } from './sleepStyles';
 
 interface HomePageProps {
   todaySleep: SleepEntry | null | undefined;
-  sleepGoal: { targetBedtime: string; targetWake: string; targetHours: number; enabled: boolean; reminderBeforeMin: number };
+  sleepGoal: SleepGoal;
   sleepHistory: SleepEntry[];
   sleepStreak: number;
   showBedtimeModal: boolean;
@@ -59,7 +59,11 @@ export default function HomePage(props: HomePageProps) {
   const [showGoalModal, setShowGoalModal] = useState(false);
   const [editBedtime, setEditBedtime] = useState('');
   const [editWake, setEditWake] = useState('');
-  const [goalPickerType, setGoalPickerType] = useState<'bedtime' | 'wake' | null>(null);
+  const [editWeekendBedtime, setEditWeekendBedtime] = useState('');
+  const [editWeekendWake, setEditWeekendWake] = useState('');
+  const [editStages, setEditStages] = useState<number[]>([30, 15, 5]);
+  const [goalPickerType, setGoalPickerType] = useState<'bedtime' | 'wake' | 'weekendBedtime' | 'weekendWake' | null>(null);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   // 自动根据入睡/起床时间计算目标时长
   const computedGoalHours = useMemo(() => {
@@ -74,6 +78,9 @@ export default function HomePage(props: HomePageProps) {
   const openGoalModal = () => {
     setEditBedtime(sleepGoal.targetBedtime);
     setEditWake(sleepGoal.targetWake);
+    setEditWeekendBedtime(sleepGoal.weekendBedtime ?? '');
+    setEditWeekendWake(sleepGoal.weekendWake ?? '');
+    setEditStages(sleepGoal.reminderStages ?? [30, 15, 5]);
     setShowGoalModal(true);
   };
 
@@ -91,6 +98,9 @@ export default function HomePage(props: HomePageProps) {
         targetBedtime: editBedtime,
         targetWake: editWake,
         targetHours: validHours,
+        weekendBedtime: editWeekendBedtime || undefined,
+        weekendWake: editWeekendWake || undefined,
+        reminderStages: editStages,
       });
     }
     setShowGoalModal(false);
@@ -321,13 +331,61 @@ export default function HomePage(props: HomePageProps) {
                   {editWake || '07:00'}
                 </Text>
               </TouchableOpacity>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 4, marginBottom: 20 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 4, marginBottom: 16 }}>
                 <Text style={{ fontSize: 14, color: TH.sub }}>{T('sleepGoalHours')}</Text>
                 <View style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, backgroundColor: `${TH.primary}15` }}>
                   <Text style={{ fontSize: 16, fontWeight: '700', color: TH.primary }}>{computedGoalHours}h</Text>
                 </View>
                 <Text style={{ fontSize: 12, color: TH.sub, opacity: 0.7 }}>（自动计算）</Text>
               </View>
+
+              {/* 高级设置折叠区 */}
+              <TouchableOpacity onPress={() => setShowAdvanced(!showAdvanced)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+                <Text style={{ fontSize: 13, color: TH.sub, fontWeight: '600' }}>高级设置</Text>
+                <Text style={{ fontSize: 12, color: TH.sub }}>{showAdvanced ? '▲' : '▼'}</Text>
+              </TouchableOpacity>
+              {showAdvanced && (
+                <View style={{ marginBottom: 16, padding: 12, borderRadius: 12, backgroundColor: TH.card }}>
+                  <Text style={{ fontSize: 13, color: TH.sub, marginBottom: 8 }}>周末目标（可选）</Text>
+                  <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12 }}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontSize: 12, color: TH.sub, marginBottom: 4 }}>周末入睡</Text>
+                      <TouchableOpacity
+                        onPress={() => { setShowGoalModal(false); setGoalPickerType('weekendBedtime'); }}
+                        style={{ backgroundColor: TH.bg, borderRadius: 8, padding: 10, borderWidth: 1, borderColor: TH.border }}
+                      >
+                        <Text style={{ fontSize: 14, color: editWeekendBedtime ? TH.text : TH.sub }}>{editWeekendBedtime || '不设'}</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontSize: 12, color: TH.sub, marginBottom: 4 }}>周末起床</Text>
+                      <TouchableOpacity
+                        onPress={() => { setShowGoalModal(false); setGoalPickerType('weekendWake'); }}
+                        style={{ backgroundColor: TH.bg, borderRadius: 8, padding: 10, borderWidth: 1, borderColor: TH.border }}
+                      >
+                        <Text style={{ fontSize: 14, color: editWeekendWake ? TH.text : TH.sub }}>{editWeekendWake || '不设'}</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                  <Text style={{ fontSize: 13, color: TH.sub, marginBottom: 8 }}>提醒阶段</Text>
+                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                    {[60, 30, 15, 5].map(min => {
+                      const selected = editStages.includes(min);
+                      return (
+                        <TouchableOpacity
+                          key={min}
+                          onPress={() => setEditStages(prev =>
+                            selected ? prev.filter(m => m !== min) : [...prev, min].sort((a, b) => b - a)
+                          )}
+                          style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, borderWidth: 1, borderColor: selected ? TH.primary : TH.border, backgroundColor: selected ? `${TH.primary}20` : 'transparent' }}
+                        >
+                          <Text style={{ fontSize: 13, color: selected ? TH.primary: TH.sub }}>{min}分钟前</Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                </View>
+              )}
               <View style={{ flexDirection: 'row', gap: 12 }}>
                 <TouchableOpacity onPress={() => setShowGoalModal(false)} style={{ flex: 1, alignItems: 'center', padding: 12, borderRadius: 12, borderWidth: 1, borderColor: TH.border }}>
                   <Text style={{ fontSize: 15, fontWeight: '600', color: TH.sub }}>{T('commonCancel')}</Text>
@@ -344,10 +402,17 @@ export default function HomePage(props: HomePageProps) {
       {/* ── Goal Time Picker Modal ── */}
       <TimePickerModal
         visible={goalPickerType != null}
-        value={goalPickerType === 'wake' ? (editWake || '07:00') : (editBedtime || '23:00')}
+        value={
+          goalPickerType === 'wake' ? (editWake || '07:00')
+          : goalPickerType === 'weekendBedtime' ? (editWeekendBedtime || '23:00')
+          : goalPickerType === 'weekendWake' ? (editWeekendWake || '07:00')
+          : (editBedtime || '23:00')
+        }
         onConfirm={(time) => {
           if (goalPickerType === 'bedtime') setEditBedtime(time);
           else if (goalPickerType === 'wake') setEditWake(time);
+          else if (goalPickerType === 'weekendBedtime') setEditWeekendBedtime(time);
+          else if (goalPickerType === 'weekendWake') setEditWeekendWake(time);
           setGoalPickerType(null);
           setShowGoalModal(true);
         }}
