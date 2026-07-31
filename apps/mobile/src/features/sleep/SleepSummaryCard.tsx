@@ -20,7 +20,7 @@ import {
 } from '@egoless-do/core';
 import * as Haptics from 'expo-haptics';
 import { Star, Moon, Sun, ArrowRight, Check } from 'lucide-react-native';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -50,12 +50,16 @@ interface Props {
   onOpenFullDiary: () => void;
   sleepGoalEnabled?: boolean;
   sleepGoalHours?: number;
+  sleepHistory?: SleepEntry[];
 }
 
 // ─── Constants ────────────────────────────────────────────────────
 
 // Quality star colors: 1=red → 5=gold (severity gradient)
 const QUALITY_COLORS = ['#EF4444', '#F97316', '#F59E0B', '#EAB308', '#FACC15'];
+
+// 空态引导去重：session 级标记（首次进入显示完整引导，之后简化）
+let hasShownEmptyGuide = false;
 
 // ─── Component ────────────────────────────────────────────────────
 
@@ -65,6 +69,7 @@ export default function SleepSummaryCard({
   onOpenFullDiary,
   sleepGoalEnabled = false,
   sleepGoalHours = 8,
+  sleepHistory = [],
 }: Props) {
   const TH = useTheme();
   const T = useT();
@@ -334,6 +339,88 @@ export default function SleepSummaryCard({
           <Text style={[s.metaText, { color: TH.sub }]}>{`感恩 ×${gratitudeCount}`}</Text>
         )}
       </View>
+
+      {/* 7-day mini trend */}
+      <MiniTrendChart data={sleepHistory} goalHours={sleepGoalHours} goalEnabled={sleepGoalEnabled} TH={TH} />
+    </View>
+  );
+}
+
+// ─── Mini Trend Chart（7 天睡眠时长柱状图）────────────────────────
+
+const TREND_DAYS = 7;
+const CHART_HEIGHT = 40;
+const BAR_WIDTH = 8;
+const BAR_GAP = 6;
+
+interface TrendDay {
+  date: string;
+  durationMin: number;
+  hasData: boolean;
+}
+
+function MiniTrendChart({
+  data,
+  goalHours,
+  goalEnabled,
+  TH,
+}: {
+  data: SleepEntry[];
+  goalHours: number;
+  goalEnabled: boolean;
+  TH: Theme;
+}) {
+  // 生成最近 7 天数据
+  const trendData: TrendDay[] = useMemo(() => {
+    const result: TrendDay[] = [];
+    const historyMap = new Map(data.filter(d => !d.deleted).map(d => [d.date, d.durationMin ?? 0]));
+    for (let i = TREND_DAYS - 1; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const ds = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      const dur = historyMap.get(ds) ?? 0;
+      result.push({ date: ds, durationMin: dur, hasData: dur > 0 });
+    }
+    return result;
+  }, [data]);
+
+  const maxDur = Math.max(...trendData.map(d => d.durationMin), goalHours * 60);
+  const goalLineY = goalEnabled ? CHART_HEIGHT - (goalHours * 60 / maxDur) * CHART_HEIGHT : null;
+
+  return (
+    <View style={s.trendWrap}>
+      <View style={s.trendHeader}>
+        <Text style={[s.trendTitle, { color: TH.sub }]}>近 7 天</Text>
+        {goalEnabled && <Text style={[s.trendGoal, { color: `${TH.sub}99` }]}>目标 {goalHours}h</Text>}
+      </View>
+      <View style={s.trendChart}>
+        {/* Goal line */}
+        {goalLineY != null && (
+          <View style={[s.goalLine, { top: goalLineY, borderColor: `${TH.primary}40` }]} />
+        )}
+        {/* Bars */}
+        <View style={s.trendBars}>
+          {trendData.map((d, i) => {
+            const barH = d.hasData ? Math.max((d.durationMin / maxDur) * CHART_HEIGHT, 3) : 2;
+            const weekday = ['日', '一', '二', '三', '四', '五', '六'][new Date(d.date).getDay()];
+            return (
+              <View key={d.date} style={s.trendCol}>
+                <View
+                  style={[
+                    s.trendBar,
+                    {
+                      height: barH,
+                      backgroundColor: d.hasData ? TH.primary : `${TH.border}60`,
+                      width: BAR_WIDTH,
+                    },
+                  ]}
+                />
+                <Text style={[s.trendLabel, { color: `${TH.sub}99` }]}>{weekday}</Text>
+              </View>
+            );
+          })}
+        </View>
+      </View>
     </View>
   );
 }
@@ -341,6 +428,9 @@ export default function SleepSummaryCard({
 // ─── Empty state (illustration + CTA) ────────────────────────────
 
 function EmptySleepCard({ theme, onCta }: { theme: Theme; onCta: () => void }) {
+  const isFirstTime = !hasShownEmptyGuide;
+  hasShownEmptyGuide = true;
+
   const breathe = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
@@ -366,8 +456,12 @@ function EmptySleepCard({ theme, onCta }: { theme: Theme; onCta: () => void }) {
       <Animated.View style={[s.emptyIconWrap, { transform: [{ scale: breathe }] }]}>
         <MoonIcon color={theme.primary} />
       </Animated.View>
-      <Text style={[s.emptyTitle, { color: theme.text }]}>开始记录你的睡眠</Text>
-      <Text style={[s.emptySubtitle, { color: theme.sub }]}>记录每晚睡眠，关注健康变化</Text>
+      <Text style={[s.emptyTitle, { color: theme.text }]}>
+        {isFirstTime ? '开始记录你的睡眠' : '还没有睡眠记录'}
+      </Text>
+      {isFirstTime && (
+        <Text style={[s.emptySubtitle, { color: theme.sub }]}>记录每晚睡眠，关注健康变化</Text>
+      )}
       <TouchableOpacity
         style={[s.emptyCta, { backgroundColor: theme.primary }]}
         onPress={onCta}
@@ -377,10 +471,12 @@ function EmptySleepCard({ theme, onCta }: { theme: Theme; onCta: () => void }) {
         <Text style={s.emptyCtaText}>记录昨晚睡眠</Text>
         <ArrowRight size={18} color="#fff" />
       </TouchableOpacity>
-      <View style={[s.emptyTip, { backgroundColor: `${theme.primary}10` }]}>
-        <Star size={14} color={theme.primary} />
-        <Text style={[s.emptyTipText, { color: theme.primary }]}>点星即可快速记录，不用填写完整日记</Text>
-      </View>
+      {isFirstTime && (
+        <View style={[s.emptyTip, { backgroundColor: `${theme.primary}10` }]}>
+          <Star size={14} color={theme.primary} />
+          <Text style={[s.emptyTipText, { color: theme.primary }]}>点星即可快速记录，不用填写完整日记</Text>
+        </View>
+      )}
     </TouchableOpacity>
   );
 }
@@ -569,5 +665,58 @@ const s = StyleSheet.create({
   emptyTipText: {
     fontSize: FONT_SUB(),
     fontWeight: '500',
+  },
+  // Mini trend chart
+  trendWrap: {
+    marginTop: 16,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(128,128,128,0.2)',
+  },
+  trendHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  trendTitle: {
+    fontSize: FONT_LABEL(),
+    fontWeight: '600',
+  },
+  trendGoal: {
+    fontSize: FONT_SUB(),
+  },
+  trendChart: {
+    position: 'relative',
+    height: CHART_HEIGHT,
+  },
+  goalLine: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    height: 1,
+    borderStyle: 'dashed',
+    borderWidth: 1,
+  },
+  trendBars: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    height: CHART_HEIGHT,
+    gap: BAR_GAP,
+  },
+  trendCol: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'flex-end',
+    height: '100%',
+  },
+  trendBar: {
+    borderRadius: 2,
+    minHeight: 2,
+  },
+  trendLabel: {
+    fontSize: 9,
+    marginTop: 4,
   },
 });

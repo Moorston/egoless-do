@@ -155,6 +155,7 @@ export default function HomePage(props: HomePageProps) {
             onOpenFullDiary={() => onSetShowDiary(true)}
             sleepGoalEnabled={sleepGoal.enabled}
             sleepGoalHours={sleepGoal.targetHours}
+            sleepHistory={props.sleepHistory}
           />
         ) : null}
 
