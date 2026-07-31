@@ -4,7 +4,7 @@
 import { getCurrentPeriod, getNextSleepPeriod, type BodyClockPeriod, FONT_TITLE, type SleepGoal, type WorkState, SleepEntry } from '@egoless-do/core';
 import { Moon, Sun, Clock, Heart, ChevronRight, BarChart3 } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../components/UI';
@@ -312,7 +312,15 @@ export default function HomePage(props: HomePageProps) {
                 </Text>
               </TouchableOpacity>
               <Text style={{ fontSize: 14, color: TH.sub, marginBottom: 8 }}>{T('sleepGoalHours')}</Text>
-              <TextInput value={editHours} onChangeText={setEditHours} placeholder="8" placeholderTextColor={TH.sub} keyboardType="numeric" style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: 16, marginBottom: 20 }} />
+              <TextInput
+                value={editHours}
+                onChangeText={setEditHours}
+                placeholder="8"
+                placeholderTextColor={TH.sub}
+                keyboardType="numeric"
+                onBlur={() => Keyboard.dismiss()}
+                style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: 16, marginBottom: 20 }}
+              />
               <View style={{ flexDirection: 'row', gap: 12 }}>
                 <TouchableOpacity onPress={() => setShowGoalModal(false)} style={{ flex: 1, alignItems: 'center', padding: 12, borderRadius: 12, borderWidth: 1, borderColor: TH.border }}>
                   <Text style={{ fontSize: 15, fontWeight: '600', color: TH.sub }}>{T('commonCancel')}</Text>
