@@ -256,6 +256,22 @@ export default function AppNavigator() {
     return () => { mounted = false; sub?.remove?.(); };
   }, []);
 
+  // Handle sleep notification tap → navigate to Sleep screen
+  useEffect(() => {
+    let sub: { remove?: () => void } | undefined;
+    let mounted = true;
+    void import('expo-notifications').then(Notifications => {
+      if (!mounted) return;
+      sub = Notifications.addNotificationResponseReceivedListener(response => {
+        const type = response.notification.request.content.data?.type as string;
+        if (type?.startsWith('sleep-') && navRef.current) {
+          navRef.current.navigate('Sleep');
+        }
+      });
+    });
+    return () => { mounted = false; sub?.remove?.(); };
+  }, []);
+
   return (
     <ErrorBoundary theme={theme}>
     <View style={{ flex: 1, backgroundColor: TH.bg }}>

@@ -41,11 +41,11 @@ function getPeriodForHour(hour: number) {
   return BODY_CLOCK[0];
 }
 
-/** 根据提醒阶段获取文案前缀 */
-function getStageLabel(minBefore: number): string {
-  if (minBefore >= 30) return '🌙';
-  if (minBefore >= 15) return '🌙';
-  return '⏰';
+/** 根据提醒阶段获取文案前缀 + 紧迫度描述 */
+function getStageLabel(minBefore: number): { icon: string; urgency: string } {
+  if (minBefore >= 30) return { icon: '🌙', urgency: '宜调息静心，准备' };
+  if (minBefore >= 15) return { icon: '⏰', urgency: '请' };
+  return { icon: '⏰', urgency: '请立即' };
 }
 
 export function useSleepNotifications() {
@@ -128,12 +128,11 @@ export function useSleepNotifications() {
       if (remindTime <= now) continue;
 
       const period = getPeriodForHour(rHour);
-      const label = getStageLabel(minBefore);
-      const urgency = minBefore <= 5 ? '请立即' : minBefore <= 15 ? '宜' : '准备';
+      const { icon, urgency } = getStageLabel(minBefore);
 
       await Notifications.scheduleNotificationAsync({
         content: {
-          title: `${label} 距离${period.nameZh}入睡还有 ${minBefore} 分钟`,
+          title: `${icon} 距离${period.nameZh}入睡还有 ${minBefore} 分钟`,
           body: `${period.organ}当令，${urgency}${period.advice}`,
           data: { type: 'sleep-reminder', stage: minBefore },
         },

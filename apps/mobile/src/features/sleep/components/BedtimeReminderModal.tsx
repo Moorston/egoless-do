@@ -8,10 +8,14 @@ import {
   Text,
   TouchableOpacity,
   Animated,
+  Easing,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Svg, { Circle } from 'react-native-svg';
+import Svg, { Circle, Defs, RadialGradient, Stop, Path } from 'react-native-svg';
+
+import { useUiStore } from '../../../store/uiStore';
 
 interface Props {
   visible: boolean;
@@ -29,6 +33,14 @@ const RING_RADIUS = (RING_SIZE - RING_STROKE) / 2;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 const AUTO_RECORD_SEC = 60;
 
+// Starfield positions [x, y, size, delay]
+const STAR_POSITIONS: [number, number, number, number][] = [
+  [30, 80, 3, 0], [80, 60, 2, 500], [150, 100, 2.5, 1000],
+  [220, 70, 2, 1500], [50, 180, 3, 2000], [180, 160, 2, 800],
+  [100, 220, 2.5, 1200], [250, 200, 2, 1800], [40, 260, 2, 600],
+  [200, 280, 3, 1400], [120, 320, 2, 900], [270, 340, 2.5, 1100],
+];
+
 export default function BedtimeReminderModal({
   visible,
   theme,
@@ -40,9 +52,25 @@ export default function BedtimeReminderModal({
 }: Props) {
   const period = getCurrentPeriod();
   const primary = theme.primary;
-  const bg = theme.bg;
-  const text = theme.text;
   const sub = theme.sub;
+
+  // ── Starfield twinkle ───────────────────────────────────────────
+
+  const starOpacity = useRef(new Animated.Value(0.3)).current;
+  useEffect(() => {
+    if (!visible) {
+      starOpacity.setValue(0.3);
+      return;
+    }
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(starOpacity, { toValue: 1, duration: 2500, useNativeDriver: true }),
+        Animated.timing(starOpacity, { toValue: 0.3, duration: 2500, useNativeDriver: true }),
+      ]),
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [visible, starOpacity]);
 
   // ── Breathing animation ─────────────────────────────────────────
 
@@ -62,7 +90,7 @@ export default function BedtimeReminderModal({
     return () => loop.stop();
   }, [visible, breathe]);
 
-  // ── Countdown ring ─────────────────────────────────────────────
+  // ── Countdown ring (native driver) ──────────────────────────────
 
   const [secondsLeft, setSecondsLeft] = useState(AUTO_RECORD_SEC);
   const progressAnim = useRef(new Animated.Value(1)).current;
@@ -76,7 +104,7 @@ export default function BedtimeReminderModal({
     setSecondsLeft(AUTO_RECORD_SEC);
     progressAnim.setValue(1);
 
-    // 100ms tick for smooth UI
+    // 1s tick
     const interval = setInterval(() => {
       setSecondsLeft(prev => {
         const next = prev - 1;
@@ -89,11 +117,12 @@ export default function BedtimeReminderModal({
       });
     }, 1000);
 
-    // Animate ring over 60s
+    // Animate ring over 60s (native driver for 60fps)
     Animated.timing(progressAnim, {
       toValue: 0,
       duration: AUTO_RECORD_SEC * 1000,
-      useNativeDriver: false,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: true,
     }).start();
 
     return () => clearInterval(interval);
@@ -104,29 +133,100 @@ export default function BedtimeReminderModal({
     outputRange: [RING_CIRCUMFERENCE, 0],
   });
 
+  // 最后 10 秒变红 + 脉冲
+  const isUrgent = secondsLeft <= 10;
+  const urgentColor = isUrgent ? '#EF4444' : primary;
+  const urgentPulse = useRef(new Animated.Value(1)).current;
+  useEffect(() => {
+    if (!isUrgent || !visible) {
+      urgentPulse.setValue(1);
+      return;
+    }
+    const pulse = Animated.loop(
+      Animated.sequence([
+        Animated.timing(urgentPulse, { toValue: 1.15, duration: 500, useNativeDriver: true }),
+        Animated.timing(urgentPulse, { toValue: 1, duration: 500, useNativeDriver: true }),
+      ]),
+    );
+    pulse.start();
+    return () => pulse.stop();
+  }, [isUrgent, visible, urgentPulse]);
+
+  if (visible) {
+    // Haptic feedback on modal appear
+    // (done via useEffect on visible change below)
+  }
+
+  // ── Haptic on appear ────────────────────────────────────────────
+
+  useEffect(() => {
+    if (visible) {
+      // 轻触反馈
+      import('expo-haptics').then(Haptics => {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+      });
+    }
+  }, [visible]);
+
   if (!visible) return null;
 
   return (
-    <SafeAreaView edges={['top', 'bottom']} style={[styles.container, { backgroundColor: bg }]}>
+    <SafeAreaView edges={['top', 'bottom']} style={[styles.container, { backgroundColor: '#0F172A' }]}>
+      {/* Starfield background */}
+      <View style={styles.starfield} pointerEvents="none">
+        {STAR_POSITIONS.map(([x, y, size, delay], i) => (
+          <Animated.View
+            key={i}
+            style={[
+              styles.star,
+              {
+                left: x,
+                top: y,
+                width: size,
+                height: size,
+                opacity: starOpacity,
+              },
+            ]}
+          />
+        ))}
+      </View>
+
       <View style={styles.content}>
-        {/* Breathing moon */}
+        {/* Breathing moon with gradient */}
         <Animated.View style={[styles.moonWrap, { transform: [{ scale: breathe }] }]}>
-          <Svg width={80} height={80} viewBox="0 0 80 80">
-            <Circle cx={40} cy={40} r={36} fill={`${primary}20`} />
-            <Circle cx={40} cy={40} r={28} fill={`${primary}40`} />
-            <Circle cx={40} cy={40} r={20} fill={primary} />
+          <Svg width={90} height={90} viewBox="0 0 90 90">
+            <Defs>
+              <RadialGradient id="moonGlow" cx="50%" cy="50%" r="50%">
+                <Stop offset="0%" stopColor={primary} stopOpacity="0.4" />
+                <Stop offset="100%" stopColor={primary} stopOpacity="0" />
+              </RadialGradient>
+              <RadialGradient id="moonBody" cx="40%" cy="35%" r="60%">
+                <Stop offset="0%" stopColor="#FFF" stopOpacity="0.95" />
+                <Stop offset="100%" stopColor={primary} stopOpacity="0.8" />
+              </RadialGradient>
+            </Defs>
+            {/* Glow halo */}
+            <Circle cx={45} cy={45} r={42} fill="url(#moonGlow)" />
+            {/* Crescent moon */}
+            <Path
+              d="M 45 8 A 37 37 0 1 1 45 82 A 28 28 0 1 0 45 8 Z"
+              fill="url(#moonBody)"
+            />
           </Svg>
         </Animated.View>
 
+        {/* Bedtime display */}
+        <Text style={[styles.bedtimeText, { color: sub }]}>目标入睡 {bedtime}</Text>
+
         {/* Period info */}
-        <Text style={[styles.periodName, { color: text }]}>{period.nameZh}</Text>
-        <View style={[styles.organTag, { backgroundColor: `${primary}20` }]}>
+        <Text style={[styles.periodName, { color: '#fff' }]}>{period.nameZh}</Text>
+        <View style={[styles.organTag, { backgroundColor: `${primary}30` }]}>
           <Text style={[styles.organText, { color: primary }]}>{period.organ}当令</Text>
         </View>
-        <Text style={[styles.advice, { color: sub }]}>{period.advice}</Text>
+        <Text style={[styles.advice, { color: `${sub}CC` }]}>{period.advice}</Text>
 
-        {/* Countdown ring */}
-        <View style={styles.ringWrap}>
+        {/* Countdown ring (with urgent pulse) */}
+        <Animated.View style={[styles.ringWrap, isUrgent && { transform: [{ scale: urgentPulse }] }]}>
           <Svg width={RING_SIZE} height={RING_SIZE} viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}>
             {/* Background ring */}
             <Circle
@@ -134,7 +234,7 @@ export default function BedtimeReminderModal({
               cy={RING_SIZE / 2}
               r={RING_RADIUS}
               fill="none"
-              stroke={`${primary}20`}
+              stroke={`${urgentColor}30`}
               strokeWidth={RING_STROKE}
             />
             {/* Progress ring */}
@@ -143,7 +243,7 @@ export default function BedtimeReminderModal({
               cy={RING_SIZE / 2}
               r={RING_RADIUS}
               fill="none"
-              stroke={primary}
+              stroke={urgentColor}
               strokeWidth={RING_STROKE}
               strokeDasharray={RING_CIRCUMFERENCE}
               strokeDashoffset={strokeDashoffset}
@@ -153,12 +253,12 @@ export default function BedtimeReminderModal({
             />
           </Svg>
           <View style={styles.ringCenter}>
-            <AnimatedText style={[styles.ringSeconds, { color: primary }]}>
+            <AnimatedText style={[styles.ringSeconds, { color: urgentColor }]}>
               {secondsLeft}s
             </AnimatedText>
-            <Text style={[styles.ringLabel, { color: sub }]}>后自动记录</Text>
+            <Text style={[styles.ringLabel, { color: `${sub}99` }]}>后自动记录</Text>
           </View>
-        </View>
+        </Animated.View>
 
         {/* Main CTA */}
         <TouchableOpacity
@@ -184,11 +284,25 @@ export default function BedtimeReminderModal({
 
         {/* Secondary actions */}
         <View style={styles.secondaryRow}>
-          <TouchableOpacity onPress={onSnooze} style={styles.textBtn}>
-            <Text style={[styles.textBtnLabel, { color: sub }]}>稍后提醒</Text>
+          <TouchableOpacity
+            onPress={() => {
+              useUiStore.getState().showToast('10 分钟后再次提醒', 'info');
+              onSnooze();
+            }}
+            style={styles.textBtn}
+          >
+            <Text style={[styles.textBtnLabel, { color: `${sub}CC` }]}>稍后提醒</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={onSkipTonight} style={styles.textBtn}>
-            <Text style={[styles.textBtnLabel, { color: sub }]}>跳过今晚</Text>
+          <TouchableOpacity
+            onPress={() => {
+              Alert.alert('跳过今晚', '确定今晚不再提醒？', [
+                { text: '取消', style: 'cancel' },
+                { text: '确定', style: 'destructive', onPress: onSkipTonight },
+              ]);
+            }}
+            style={styles.textBtn}
+          >
+            <Text style={[styles.textBtnLabel, { color: `${sub}CC` }]}>跳过今晚</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -206,6 +320,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  starfield: {
+    ...StyleSheet.absoluteFillObject,
+    overflow: 'hidden',
+  },
+  star: {
+    position: 'absolute',
+    backgroundColor: '#fff',
+    borderRadius: 999,
+  },
   content: {
     alignItems: 'center',
     paddingHorizontal: 32,
@@ -213,7 +336,12 @@ const styles = StyleSheet.create({
     maxWidth: 360,
   },
   moonWrap: {
-    marginBottom: 24,
+    marginBottom: 20,
+  },
+  bedtimeText: {
+    fontSize: 13,
+    marginBottom: 12,
+    opacity: 0.7,
   },
   periodName: {
     fontSize: 28,
