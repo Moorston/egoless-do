@@ -27,7 +27,12 @@ export interface SleepGoal {
   targetWake: string;         // "HH:MM"
   targetHours: number;
   enabled: boolean;           // notifications enabled
-  reminderBeforeMin: number;  // minutes before targetBedtime
+  reminderBeforeMin: number;  // minutes before targetBedtime (向后兼容)
+
+  // 新增：高级提醒配置
+  weekendBedtime?: string;    // 周末目标入睡 "HH:MM"
+  weekendWake?: string;       // 周末目标起床 "HH:MM"
+  reminderStages?: number[];  // 提醒阶段（分钟，默认 [30, 15, 5]）
 }
 
 export const DEFAULT_SLEEP_GOAL: SleepGoal = {
@@ -36,6 +41,7 @@ export const DEFAULT_SLEEP_GOAL: SleepGoal = {
   targetHours: 8,
   enabled: false,
   reminderBeforeMin: 30,
+  reminderStages: [30, 15, 5],
 };
 
 export const BODY_STATE_PRESETS = [

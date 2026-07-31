@@ -14,6 +14,7 @@ import { useRootNavigation } from '../../navigation/hooks';
 import DiaryModal from './DiaryModal';
 import SleepSummaryCard from './SleepSummaryCard';
 import BodyClockDial from './components/BodyClockDial';
+import BedtimeReminderModal from './components/BedtimeReminderModal';
 import TimePickerModal from '../../components/TimePickerModal';
 import {
   formatDuration,
@@ -39,12 +40,14 @@ interface HomePageProps {
   onStartBarrierFromModal: () => void;
   onSaveQuickDiary?: (quality: number, workState?: WorkState) => void;
   onSetSleepGoal?: (goal: SleepGoal) => void;
+  onSnooze?: () => void;
+  onSkipTonight?: () => void;
 }
 
 // eslint-disable-next-line max-lines-per-function -- large screen component; splitting into sub-components is a separate refactor
 export default function HomePage(props: HomePageProps) {
   const { todaySleep, sleepGoal, sleepStreak, showBedtimeModal, showDiary,
-    onStartBarrier, onQuickGratitude, onSetShowDiary, onDismissBedtimeModal, onStartBarrierFromModal, onSaveQuickDiary, onSetSleepGoal } = props;
+    onStartBarrier, onQuickGratitude, onSetShowDiary, onDismissBedtimeModal, onStartBarrierFromModal, onSaveQuickDiary, onSetSleepGoal, onSnooze, onSkipTonight } = props;
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
@@ -251,32 +254,24 @@ export default function HomePage(props: HomePageProps) {
       </ScrollView>
 
       {/* ── Bedtime Reminder Modal ── */}
-      {showBedtimeModal && (
-        <Modal visible transparent animationType="fade">
-          <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: TH.bg }}>
-            <View style={styles.barrierCenter}>
-              <Moon size={60} color={TH.primary} />
-              <Text style={[styles.barrierTime, { marginTop: 24 }]}>现在是 {sleepGoal.targetBedtime}</Text>
-              <Text style={[styles.barrierLabel, { fontSize: FONT_TITLE(), marginTop: 8 }]}>该入睡了 🌙</Text>
-              <Text style={[styles.barrierAwayText, { color: TH.sub, marginTop: 8 }]}>1 分钟无操作将自动记录入睡</Text>
-              <View style={{ flexDirection: 'row', gap: 16, marginTop: 32 }}>
-                <TouchableOpacity
-                  style={[styles.ritualBtn, { paddingHorizontal: 32, paddingVertical: 14 }]}
-                  onPress={() => { onDismissBedtimeModal(); onStartBarrierFromModal(); }}
-                >
-                  <Text style={styles.ritualBtnText}>开始仪轨</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.ritualBtn, { paddingHorizontal: 32, paddingVertical: 14, borderColor: TH.border }]}
-                  onPress={onDismissBedtimeModal}
-                >
-                  <Text style={[styles.ritualBtnText, { color: TH.sub }]}>忽略</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </SafeAreaView>
-        </Modal>
-      )}
+      <BedtimeReminderModal
+        visible={showBedtimeModal}
+        theme={TH}
+        bedtime={sleepGoal.targetBedtime}
+        onStartRitual={(min) => {
+          onDismissBedtimeModal();
+          onStartBarrier(min);
+        }}
+        onSnooze={() => {
+          onDismissBedtimeModal();
+          onSnooze?.();
+        }}
+        onSkipTonight={() => {
+          onDismissBedtimeModal();
+          onSkipTonight?.();
+        }}
+        onDismiss={onDismissBedtimeModal}
+      />
 
       {/* ── Body Clock Detail Modal ── */}
       {clockDetail && (

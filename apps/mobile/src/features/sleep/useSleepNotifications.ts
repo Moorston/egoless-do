@@ -1,4 +1,7 @@
-import { createLogger } from '@egoless-do/core';
+// ─── Sleep Notifications — 多阶段智能提醒 ─────────────────────────
+// 支持：多阶段提醒 / 周末差异化 / 智能跳过 / Snooze / 跳过今晚
+
+import { BODY_CLOCK, createLogger } from '@egoless-do/core';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { AppState, Platform } from 'react-native';
 
@@ -14,7 +17,6 @@ function getNotifications(): typeof import('expo-notifications') {
   if (!_Notifications) {
     _Notifications = require('expo-notifications') as typeof import('expo-notifications');
   }
-  // Configure handler once on first access
   if (!_handlerConfigured) {
     _handlerConfigured = true;
     _Notifications.setNotificationHandler({
@@ -29,6 +31,23 @@ function getNotifications(): typeof import('expo-notifications') {
   return _Notifications;
 }
 
+/** 获取指定小时对应的时辰 */
+function getPeriodForHour(hour: number) {
+  for (let i = BODY_CLOCK.length - 1; i >= 0; i--) {
+    if (hour >= BODY_CLOCK[i].startHour || (i === 0 && hour < 1)) {
+      return BODY_CLOCK[i];
+    }
+  }
+  return BODY_CLOCK[0];
+}
+
+/** 根据提醒阶段获取文案前缀 */
+function getStageLabel(minBefore: number): string {
+  if (minBefore >= 30) return '🌙';
+  if (minBefore >= 15) return '🌙';
+  return '⏰';
+}
+
 export function useSleepNotifications() {
   const { sleepGoal, getTodaySleep, saveSleepDiary } = useShallowStore(s => ({
     sleepGoal: s.sleepGoal,
@@ -37,6 +56,8 @@ export function useSleepNotifications() {
   }));
   const [showBedtimeModal, setShowBedtimeModal] = useState(false);
   const autoRecordTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const snoozeCountRef = useRef(0);
+  const modalVisibleRef = useRef(false);
 
   // Request notification permissions
   const requestPermissions = useCallback(async () => {
@@ -51,13 +72,31 @@ export function useSleepNotifications() {
     return finalStatus === 'granted';
   }, []);
 
-  // Schedule sleep reminders
+  // Cancel all sleep notifications
+  const cancelReminders = useCallback(async () => {
+    const Notifications = getNotifications();
+    const ids = [
+      'sleep-reminder-bedtime',
+      'sleep-reminder-30',
+      'sleep-reminder-15',
+      'sleep-reminder-5',
+      'sleep-snooze',
+    ];
+    await Promise.all(ids.map(id => Notifications.cancelScheduledNotificationAsync(id).catch(() => {})));
+  }, []);
+
+  // Schedule sleep reminders (multi-stage)
   const scheduleReminders = useCallback(async () => {
     if (!sleepGoal.enabled) return;
     const Notifications = getNotifications();
-
-    // Cancel existing sleep notifications
     await cancelReminders();
+
+    // 智能跳过：已记录睡眠 → 不提醒
+    const todaySleep = getTodaySleep();
+    if (todaySleep) {
+      log.info('Already recorded sleep today, skipping reminders');
+      return;
+    }
 
     const granted = await requestPermissions();
     if (!granted) {
@@ -65,36 +104,54 @@ export function useSleepNotifications() {
       return;
     }
 
-    const [bedHour, bedMin] = sleepGoal.targetBedtime.split(':').map(Number);
+    // 判断周末（0=周日，6=周六）
+    const isWeekend = [0, 6].includes(new Date().getDay());
+    const bedtime = (isWeekend && sleepGoal.weekendBedtime)
+      ? sleepGoal.weekendBedtime
+      : sleepGoal.targetBedtime;
 
-    // Reminder 1: before bedtime
-    const reminderMin = bedMin - sleepGoal.reminderBeforeMin;
-    let reminderHour = bedHour;
-    let adjustedMin = reminderMin;
-    if (reminderMin < 0) {
-      reminderHour = (bedHour - 1 + 24) % 24;
-      adjustedMin = reminderMin + 60;
+    const [bedHour, bedMin] = bedtime.split(':').map(Number);
+    const stages = sleepGoal.reminderStages ?? [sleepGoal.reminderBeforeMin];
+
+    // 阶段提醒
+    for (const minBefore of stages) {
+      let rHour = bedHour;
+      let rMin = bedMin - minBefore;
+      if (rMin < 0) {
+        rHour = (rHour - 1 + 24) % 24;
+        rMin += 60;
+      }
+      // 跳过过期的提醒（时间已过）
+      const now = new Date();
+      const remindTime = new Date();
+      remindTime.setHours(rHour, rMin, 0, 0);
+      if (remindTime <= now) continue;
+
+      const period = getPeriodForHour(rHour);
+      const label = getStageLabel(minBefore);
+      const urgency = minBefore <= 5 ? '请立即' : minBefore <= 15 ? '宜' : '准备';
+
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: `${label} 距离${period.nameZh}入睡还有 ${minBefore} 分钟`,
+          body: `${period.organ}当令，${urgency}${period.advice}`,
+          data: { type: 'sleep-reminder', stage: minBefore },
+        },
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.DAILY,
+          hour: rHour,
+          minute: rMin,
+        },
+        identifier: `sleep-reminder-${minBefore}`,
+      });
     }
 
+    // 准时提醒
+    const period = getPeriodForHour(bedHour);
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: '🌙 距离目标入睡还有 ' + sleepGoal.reminderBeforeMin + ' 分钟',
-        body: '准备放下手机，开始睡眠仪轨',
-        data: { type: 'sleep-reminder' },
-      },
-      trigger: {
-        type: Notifications.SchedulableTriggerInputTypes.DAILY,
-        hour: reminderHour,
-        minute: adjustedMin,
-      },
-      identifier: 'sleep-reminder-before',
-    });
-
-    // Reminder 2: at bedtime
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: '🌙 现在是 ' + sleepGoal.targetBedtime + '，该入睡了',
-        body: '点击开始睡眠仪轨',
+        title: `🌙 现在是 ${bedtime}，该入睡了`,
+        body: `${period.organ}当令，${period.advice}`,
         data: { type: 'sleep-bedtime' },
       },
       trigger: {
@@ -105,15 +162,39 @@ export function useSleepNotifications() {
       identifier: 'sleep-reminder-bedtime',
     });
 
-    log.info('Sleep reminders scheduled', { bedtime: sleepGoal.targetBedtime, before: sleepGoal.reminderBeforeMin });
-  }, [sleepGoal, requestPermissions, cancelReminders]);
+    log.info('Sleep reminders scheduled', { bedtime, stages, isWeekend });
+  }, [sleepGoal, getTodaySleep, requestPermissions, cancelReminders]);
 
-  // Cancel sleep notifications
-  const cancelReminders = useCallback(async () => {
+  // Snooze: 10 分钟后再提醒
+  const snooze = useCallback(async () => {
+    if (snoozeCountRef.current >= 3) return; // 最多 3 次/晚
+    snoozeCountRef.current += 1;
+
     const Notifications = getNotifications();
-    await Notifications.cancelScheduledNotificationAsync('sleep-reminder-before').catch(() => {});
-    await Notifications.cancelScheduledNotificationAsync('sleep-reminder-bedtime').catch(() => {});
+    const now = new Date();
+    now.setMinutes(now.getMinutes() + 10);
+
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: '🌙 再次提醒：该入睡了',
+        body: '点击开始睡眠仪轨',
+        data: { type: 'sleep-snooze' },
+      },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.DATE,
+        date: now,
+      },
+      identifier: 'sleep-snooze',
+    });
+
+    setShowBedtimeModal(false);
   }, []);
+
+  // Skip tonight: 取消今晚所有提醒
+  const skipTonight = useCallback(async () => {
+    await cancelReminders();
+    setShowBedtimeModal(false);
+  }, [cancelReminders]);
 
   // Handle foreground notification (show modal instead)
   useEffect(() => {
@@ -122,16 +203,17 @@ export function useSleepNotifications() {
 
     const subscription = Notifications.addNotificationReceivedListener(notification => {
       const type = notification.request.content.data?.type;
-      if (type === 'sleep-bedtime') {
-        // Show modal instead of notification when app is in foreground
-        if (AppState.currentState === 'active') {
+      if (type === 'sleep-bedtime' || type === 'sleep-snooze') {
+        if (AppState.currentState === 'active' && !modalVisibleRef.current) {
+          modalVisibleRef.current = true;
           setShowBedtimeModal(true);
-          // Start 1-min auto-record timer
+          // 60s 自动记录定时器
           autoRecordTimerRef.current = setTimeout(() => {
             const existing = getTodaySleep();
             if (!existing) {
               saveSleepDiary({ bedtimeAt: Date.now(), barrierDone: false });
             }
+            modalVisibleRef.current = false;
             setShowBedtimeModal(false);
           }, 60000);
         }
@@ -148,8 +230,8 @@ export function useSleepNotifications() {
 
     const subscription = Notifications.addNotificationResponseReceivedListener(response => {
       const type = response.notification.request.content.data?.type;
-      if (type === 'sleep-bedtime' || type === 'sleep-reminder') {
-        // Navigate to sleep screen - handled by the caller
+      if (type === 'sleep-bedtime' || type === 'sleep-reminder' || type === 'sleep-snooze') {
+        // 由调用方处理导航（deep link）
       }
     });
 
@@ -162,14 +244,9 @@ export function useSleepNotifications() {
       clearTimeout(autoRecordTimerRef.current);
       autoRecordTimerRef.current = null;
     }
+    modalVisibleRef.current = false;
     setShowBedtimeModal(false);
   }, []);
-
-  // Start ritual from modal
-  const startRitualFromModal = useCallback(() => {
-    dismissBedtimeModal();
-    // Caller should navigate to barrier
-  }, [dismissBedtimeModal]);
 
   // Schedule/cancel when goal changes
   useEffect(() => {
@@ -178,14 +255,27 @@ export function useSleepNotifications() {
     } else {
       void cancelReminders();
     }
-  }, [sleepGoal.enabled, sleepGoal.targetBedtime, sleepGoal.reminderBeforeMin, cancelReminders, scheduleReminders]);
+  }, [sleepGoal.enabled, sleepGoal.targetBedtime, sleepGoal.weekendBedtime, sleepGoal.reminderStages, cancelReminders, scheduleReminders]);
+
+  // 每天 00:01 重置 snooze 计数
+  useEffect(() => {
+    const now = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 1, 0, 0);
+    const msUntilReset = tomorrow.getTime() - now.getTime();
+    const timer = setTimeout(() => { snoozeCountRef.current = 0; }, msUntilReset);
+    return () => clearTimeout(timer);
+  }, []);
 
   return {
     showBedtimeModal,
     dismissBedtimeModal,
-    startRitualFromModal,
+    startRitualFromModal: dismissBedtimeModal, // 调用方处理导航
     scheduleReminders,
     cancelReminders,
     requestPermissions,
+    snooze,
+    skipTonight,
   };
 }
