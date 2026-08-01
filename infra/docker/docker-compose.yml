@@ -8,9 +8,9 @@ services:
     ports:
       - "8090:8090"
     volumes:
-      - ../backend/pb_data:/pb/pb_data
-      - ../backend/pb_migrations:/pb/pb_migrations
-      - ../backend/pb_hooks:/pb/pb_hooks
+      - ../../backend/pb_data:/pb/pb_data
+      - ../../backend/pb_migrations:/pb/pb_migrations
+      - ../../backend/pb_hooks:/pb/pb_hooks
     environment:
       - PB_ENCRYPTION_KEY=${PB_ENCRYPTION_KEY}
       - TZ=Asia/Shanghai
@@ -63,8 +63,8 @@ services:
         echo "0 3 * * * /scripts/backup-pb.sh" | crontab -
         crond -f -l 2
     volumes:
-      - ../infra/scripts/backup-pb.sh:/scripts/backup-pb.sh:ro
-      - ../backups:/opt/backups/pb
+      - ../../infra/scripts/backup-pb.sh:/scripts/backup-pb.sh:ro
+      - ../../backups:/opt/backups/pb
     environment:
       - PB_URL=http://pocketbase:8090
       - PB_ADMIN_EMAIL=${PB_ADMIN_EMAIL}
@@ -77,69 +77,8 @@ services:
     networks:
       - egoless-net
 
-  # ─── PostHog 产品分析（自托管）──────────────────────────────
-  posthog:
-    image: posthog/posthog:release-2024-12-18
-    container_name: egoless-do-posthog
-    restart: unless-stopped
-    ports:
-      - "8000:8000"
-    environment:
-      POSTHOG_DB_HOST: postgres
-      POSTHOG_DB_PORT: 5432
-      POSTHOG_DB_NAME: posthog
-      POSTHOG_DB_USER: posthog
-      POSTHOG_DB_PASS: ${POSTHOG_DB_PASS}
-      POSTHOG_POSTGRES_HOST: postgres
-      POSTHOG_REDIS_HOST: redis
-      POSTHOG_SECRET_KEY: ${POSTHOG_SECRET}
-      POSTHOG_API_KEY: ${POSTHOG_API_KEY}
-      POSTHOG_IP_MASKING_ENABLED: "true"
-      SITE_URL: ${POSTHOG_SITE_URL:-http://localhost:8000}
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    networks:
-      - egoless-net
-
-  postgres:
-    image: postgres:16-alpine
-    container_name: egoless-do-postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: posthog
-      POSTGRES_USER: posthog
-      POSTGRES_PASSWORD: ${POSTHOG_DB_PASS}
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U posthog"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - egoless-net
-
-  redis:
-    image: redis:7-alpine
-    container_name: egoless-do-redis
-    restart: unless-stopped
-    volumes:
-      - redis-data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - egoless-net
-
 volumes:
   auth-api-data:
-  postgres-data:
-  redis-data:
 
 networks:
   egoless-net:

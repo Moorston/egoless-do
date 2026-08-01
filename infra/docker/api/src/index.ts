@@ -17,6 +17,7 @@ import { initAccountLockoutCollection } from './account-lockout.js';
 import { initAuditLogCollection } from './audit-log.js';
 import { initMFACollection } from './mfa.js';
 import { initRBACCollection } from './rbac.js';
+import syncApp from './sync.js';
 
 // Auth 路由
 import loginApp from './auth/login.js';
@@ -101,6 +102,7 @@ app.route('/api', pushApp);
 app.route('/api/plan', planApp);
 app.route('/api', monitoringApp);
 app.route('/api', setupApp);
+app.route('/api', syncApp);
 
 // 404 兜底 — 未匹配的 /api/* 请求转发到 PocketBase（内部代理）
 app.all('/api/*', async (c) => {

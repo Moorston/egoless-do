@@ -18,6 +18,9 @@ react {
     // Use Expo CLI to bundle the app, this ensures the Metro config
     // works correctly with Expo projects.
     cliFile = new File(["node", "--print", "require.resolve('@expo/cli', { paths: [require.resolve('expo/package.json')] })"].execute(null, rootDir).text.trim())
+    // Monorepo workaround: the plugin runs the bundle from the repo root, which
+    // makes Expo walk up to the monorepo package.json and break entry resolution.
+    // bundle-cli.cjs cds into the mobile dir first, so Expo's project root is correct.
     bundleCommand = "export:embed"
 
     /* Folders */
@@ -82,6 +85,13 @@ def enableMinifyInReleaseBuilds = (findProperty('android.enableMinifyInReleaseBu
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
 apply from: new File(["node", "--print", "require('path').dirname(require.resolve('@sentry/react-native/package.json'))"].execute().text.trim(), "sentry.gradle.kts")
+
+// Disable Sentry auto-upload: sentry-cli is not on the Windows PATH in this
+// environment, and local APK builds don't need source-map upload. The plugin
+// otherwise aborts the whole build when the upload task fails.
+ext.shouldSentryAutoUpload = { false }
+ext.shouldSentryAutoUploadGeneral = { false }
+ext.shouldSentryAutoUploadNative = { false }
 
 android {
     ndkVersion rootProject.ext.ndkVersion

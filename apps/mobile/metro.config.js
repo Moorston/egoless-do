@@ -5,6 +5,14 @@ const config = getDefaultConfig(__dirname);
 
 // Resolve workspace packages from monorepo root
 config.projectRoot = __dirname;
+
+// MONOREPO FIX: Pin the Metro server root to the mobile dir.
+// The RN Gradle plugin runs the bundle command from the repo root, which makes
+// Expo walk up to the monorepo package.json. Without this, entry resolution
+// fails because Metro's server root is the repo root, not the mobile dir.
+if (!config.server) config.server = {};
+config.server.unstable_serverRoot = __dirname;
+
 // Only watch directories that mobile actually needs (prevents heap OOM)
 config.watchFolders = [
   __dirname,                                    // apps/mobile

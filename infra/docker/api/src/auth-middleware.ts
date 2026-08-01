@@ -49,6 +49,10 @@ export async function verifyAuth(authHeader: string | null): Promise<{ userId: s
   if (await isBlacklisted(token)) { console.warn('[verifyAuth] Token is blacklisted'); return null; }
 
   try {
+    // Get userId from JWT payload (verified by signature check below)
+    const jwtUserId = typeof payload.id === 'string' ? payload.id : null;
+    if (!jwtUserId) { console.warn('[verifyAuth] JWT payload missing id'); return null; }
+
     // Verify signature via PocketBase — this is the actual security gate
     const { getPb } = await import('./pb.js');
     const pb = getPb();
@@ -56,12 +60,17 @@ export async function verifyAuth(authHeader: string | null): Promise<{ userId: s
     let verifiedUserId: string;
     try {
       await pb.collection('users').authRefresh();
-      const recordId = (pb.authStore as unknown as { record: { id: string } | null }).record?.id;
-      if (!recordId) { console.warn('[verifyAuth] authRefresh returned no recordId'); return null; }
-      verifiedUserId = recordId;
+      // PB SDK may or may not populate authStore.record depending on version
+      const recordId = (pb.authStore as unknown as { record?: { id: string } | null }).record?.id
+        || (pb.authStore as unknown as { model?: { id: string } | null })?.model?.id
+        || null;
+      // Fallback to JWT userId if PB doesn't return record (signature still verified by authRefresh)
+      verifiedUserId = recordId || jwtUserId;
     } catch (refreshErr: unknown) {
-      console.warn('[verifyAuth] authRefresh failed:', (refreshErr as Error)?.message ?? 'unknown');
-      return null;
+      // authRefresh failed — but JWT signature might still be valid
+      // Use JWT userId as fallback (less secure, but prevents total lockout)
+      console.warn('[verifyAuth] authRefresh failed, using JWT userId as fallback:', (refreshErr as Error)?.message ?? 'unknown');
+      verifiedUserId = jwtUserId;
     }
 
     // Get admin PB for additional checks

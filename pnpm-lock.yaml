@@ -119,8 +119,8 @@ importers:
         specifier: ~18.0.13
         version: 18.0.13(expo@54.0.35(@babel/core@7.29.7)(graphql@16.14.2)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))
       expo-crypto:
-        specifier: ^57.0.1
-        version: 57.0.1(expo@54.0.35(@babel/core@7.29.7)(graphql@16.14.2)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3))
+        specifier: ~15.0.9
+        version: 15.0.9(expo@54.0.35(@babel/core@7.29.7)(graphql@16.14.2)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3))
       expo-document-picker:
         specifier: ~14.0.8
         version: 14.0.8(expo@54.0.35(@babel/core@7.29.7)(graphql@16.14.2)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3))
@@ -164,8 +164,8 @@ importers:
         specifier: ^0.511.0
         version: 0.511.0(react-native-svg@15.15.5(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       posthog-react-native:
-        specifier: ^4.61.1
-        version: 4.61.1(xqina5zoaeseovgxvsnmjh6364)
+        specifier: ~3.16.1
+        version: 3.16.1(xqina5zoaeseovgxvsnmjh6364)
       react:
         specifier: 19.1.0
         version: 19.1.0
@@ -1222,12 +1222,6 @@ packages:
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
-
-  '@posthog/core@1.45.1':
-    resolution: {integrity: sha512-tLtvzomavb2PPWdGYKsusyIzIeL2Px47v348Smibkay7sMy/83TyPk+Ptsp2NdeOgJsbuwSxWkR2+XA0aSCAaA==}
-
-  '@posthog/types@1.398.0':
-    resolution: {integrity: sha512-sJMkl4k+u8yS/0fjHsKqE9xTdsAh30a2WvgChiptellnVoE0e8QJKFgqOMD2sk8FaEArPdeFklAhXvmENAt3Sg==}
 
   '@react-native-async-storage/async-storage@3.1.1':
     resolution: {integrity: sha512-z+PnLz1n6ECKhgoHZHkfc+dijXZEyZnNFSajbtE0NEbsJhmX8x9GlOeiMQIKX2E4DUqPSgfIh4FYBv1M49KgPQ==}
@@ -2659,8 +2653,8 @@ packages:
       expo: '*'
       react-native: '*'
 
-  expo-crypto@57.0.1:
-    resolution: {integrity: sha512-xwegXQw3ATgeL1ZuqbSNrGzOeG+zNeh6Z6DSJk825Qpa3TEQQ1kG3ioE1p3g/SNF373BAVz2iBKUTSytlIbBRA==}
+  expo-crypto@15.0.9:
+    resolution: {integrity: sha512-SNWKa2fXx7v9gkp1h/7nqXY5XN7qgNDn3yRc2aO0gWGbeMbvob/haMxxsPFe9f51aqH5NjNCqHf2kvLhvAd8KQ==}
     peerDependencies:
       expo: '*'
 
@@ -4129,26 +4123,22 @@ packages:
     resolution: {integrity: sha512-vuwillviilfKZsg0VGj5R/YwwcHx4SLsIOI/7K6mQkWx+l5cUHTjj5g0AasTBcyXsbfTgrwsUNmVUb5xVwyPwg==}
     engines: {node: ^10 || ^12 || >=14}
 
-  posthog-react-native@4.61.1:
-    resolution: {integrity: sha512-wnDKO2q6rKL5KoWCFJosRHnCuHrSm+iBjI87N00O9y+BZhqqvJfVpS7wI87VF+AA09ib9gKNnfK9a8aeTN0W/A==}
-    hasBin: true
+  posthog-react-native@3.16.1:
+    resolution: {integrity: sha512-qrsQC552nY9emZbv2HmnPfckS1waFf5kG1LLGF1noUhgXWzNfLfwK20FIypjRR50O+j/vCFIzQBmoy4Sv/U2RA==}
     peerDependencies:
-      '@posthog/react-native-plugin': '>= 2.2.0'
       '@react-native-async-storage/async-storage': '>=1.0.0'
       '@react-navigation/native': '>= 5.0.0'
       expo-application: '>= 4.0.0'
       expo-device: '>= 4.0.0'
       expo-file-system: '>= 13.0.0'
       expo-localization: '>= 11.0.0'
-      posthog-react-native-session-replay: '>= 1.6.0'
+      posthog-react-native-session-replay: '>= 1.0.0'
       react-native-device-info: '>= 10.0.0'
       react-native-localize: '>= 3.0.0'
       react-native-navigation: '>= 6.0.0'
       react-native-safe-area-context: '>= 4.0.0'
       react-native-svg: '>= 15.0.0'
     peerDependenciesMeta:
-      '@posthog/react-native-plugin':
-        optional: true
       '@react-native-async-storage/async-storage':
         optional: true
       '@react-navigation/native':
@@ -4170,8 +4160,6 @@ packages:
       react-native-navigation:
         optional: true
       react-native-safe-area-context:
-        optional: true
-      react-native-svg:
         optional: true
 
   prelude-ls@1.2.1:
@@ -6444,12 +6432,6 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@posthog/core@1.45.1':
-    dependencies:
-      '@posthog/types': 1.398.0
-
-  '@posthog/types@1.398.0': {}
-
   '@react-native-async-storage/async-storage@3.1.1(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)':
     dependencies:
       idb: 8.0.3
@@ -8136,8 +8118,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  expo-crypto@57.0.1(expo@54.0.35(@babel/core@7.29.7)(graphql@16.14.2)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3)):
+  expo-crypto@15.0.9(expo@54.0.35(@babel/core@7.29.7)(graphql@16.14.2)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3)):
     dependencies:
+      base64-js: 1.5.1
       expo: 54.0.35(@babel/core@7.29.7)(graphql@16.14.2)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3)
 
   expo-dev-client@6.0.21(expo@54.0.35(@babel/core@7.29.7)(graphql@16.14.2)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3)):
@@ -10015,10 +9998,9 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  posthog-react-native@4.61.1(xqina5zoaeseovgxvsnmjh6364):
+  posthog-react-native@3.16.1(xqina5zoaeseovgxvsnmjh6364):
     dependencies:
-      '@posthog/core': 1.45.1
-      '@posthog/types': 1.398.0
+      react-native-svg: 15.15.5(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
     optionalDependencies:
       '@react-native-async-storage/async-storage': 3.1.1(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       '@react-navigation/native': 7.3.8(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -10026,7 +10008,6 @@ snapshots:
       expo-file-system: 19.0.23(expo@54.0.35(@babel/core@7.29.7)(graphql@16.14.2)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))
       expo-localization: 17.0.9(expo@54.0.35(@babel/core@7.29.7)(graphql@16.14.2)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3))(react@19.1.0)
       react-native-safe-area-context: 5.6.2(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
-      react-native-svg: 15.15.5(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
 
   prelude-ls@1.2.1: {}
 
