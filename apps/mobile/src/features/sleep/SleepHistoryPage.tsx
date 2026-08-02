@@ -1,4 +1,4 @@
-import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, dateStr, yesterday, type Theme , SleepEntry , FONT_LABEL, FONT_SMALL, scaleFontSize} from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, dateStr, yesterday, t, type Theme , SleepEntry , FONT_LABEL, FONT_SMALL, scaleFontSize} from '@egoless-do/core';
 import { formatSleepDuration } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ChevronLeft, ChevronRight, Moon, Trash2, X, Heart } from 'lucide-react-native';
@@ -12,17 +12,20 @@ import { useAppStore, useShallowStore } from '../../store/useAppStore';
 
 
 
-const WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六'];
+import type { I18nKey } from '@egoless-do/core';
 
-function getWeekday(ds: string): string {
+const WEEKDAY_KEYS: readonly I18nKey[] = ['weekdaySun', 'weekdayMon', 'weekdayTue', 'weekdayWed', 'weekdayThu', 'weekdayFri', 'weekdaySat'] as const;
+
+function getWeekday(ds: string): I18nKey | '' {
   const [y, m, d] = ds.split('-').map(Number);
   const date = new Date(y, m - 1, d);
-  return isNaN(date.getTime()) ? '' : WEEKDAYS[date.getDay()];
+  if (isNaN(date.getTime())) return '';
+  return WEEKDAY_KEYS[date.getDay()];
 }
 
 function formatMonth(key: string): string {
   const [y, mo] = key.split('-');
-  return `${y}年${parseInt(mo)}月`;
+  return `${y}${t('sleepYearUnit')}${parseInt(mo)}${t('sleepMonthUnit')}`;
 }
 
 function formatTime(ts?: number): string {
@@ -61,7 +64,7 @@ function renderStars(quality?: number): string {
 }
 
 // ── Stats Card ──
-function StatsCard({ entries, TH: _TH }: { entries: SleepEntry[]; TH: Theme }) {
+function StatsCard({ entries, TH: _TH, T: _T }: { entries: SleepEntry[]; TH: Theme; T: (key: string) => string }) {
   const styles = mkStyles(_TH);
   const totalDays = useMemo(() => new Set(entries.map(e => e.date)).size, [entries]);
   const avgDuration = useMemo(() => {
@@ -85,13 +88,13 @@ function StatsCard({ entries, TH: _TH }: { entries: SleepEntry[]; TH: Theme }) {
   return (
     <View style={styles.statsCardContainer}>
       <LinearGradient colors={['#6366f1', '#818cf8']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.statsGradient}>
-        <Text style={styles.statsTitle}>✦ 累计睡眠</Text>
+        <Text style={styles.statsTitle}>✦ {_T('sleepTotalSleep')}</Text>
         <View style={styles.statsRow}>
           {[
-            { val: totalDays, label: '累计天数' },
-            { val: formatSleepDuration(avgDuration), label: '平均时长' },
-            { val: avgQuality.toFixed(1), label: '平均质量' },
-            { val: streak, label: '连续天数' },
+            { val: totalDays, label: _T('sleepTotalDays') },
+            { val: formatSleepDuration(avgDuration), label: _T('sleepAvgDuration') },
+            { val: avgQuality.toFixed(1), label: _T('sleepAvgQuality') },
+            { val: streak, label: _T('sleepStreakDays') },
           ].map((s, i) => (
             <View key={i} style={styles.statsItem}>
               <Text style={styles.statsValue}>{s.val}</Text>
@@ -102,11 +105,11 @@ function StatsCard({ entries, TH: _TH }: { entries: SleepEntry[]; TH: Theme }) {
         <View style={styles.statsDivider}>
           <View style={styles.statsWeekRow}>
             <Text style={styles.statsWeekLabel}>{formatSleepDuration(weekAvg)}</Text>
-            <Text style={styles.statsWeekSub}>本周均时</Text>
+            <Text style={styles.statsWeekSub}>{_T('sleepWeekAvgTime')}</Text>
           </View>
           <View style={styles.statsWeekRow}>
             <Text style={styles.statsWeekLabel}>{formatSleepDuration(monthAvg)}</Text>
-            <Text style={styles.statsWeekSub}>本月均时</Text>
+            <Text style={styles.statsWeekSub}>{_T('sleepMonthAvgTime')}</Text>
           </View>
         </View>
       </LinearGradient>
@@ -115,7 +118,7 @@ function StatsCard({ entries, TH: _TH }: { entries: SleepEntry[]; TH: Theme }) {
 }
 
 // ── Heatmap ──
-function Heatmap({ entries, TH, onPress }: { entries: SleepEntry[]; TH: Theme; onPress: () => void }) {
+function Heatmap({ entries, TH, onPress, T: _T }: { entries: SleepEntry[]; TH: Theme; onPress: () => void; T: (key: string) => string }) {
   const styles = mkStyles(TH);
   const now = new Date();
   const [viewYear, setViewYear] = useState(now.getFullYear());
@@ -152,16 +155,18 @@ function Heatmap({ entries, TH, onPress }: { entries: SleepEntry[]; TH: Theme; o
         <TouchableOpacity onPress={prevMonth} style={styles.heatmapNavBtn}>
           <ChevronLeft size={18} color={TH.text} />
         </TouchableOpacity>
-        <Text style={styles.heatmapTitle}>{formatMonth(ym)} 睡眠热力图</Text>
+        <Text style={styles.heatmapTitle}>{formatMonth(ym)} {_T('sleepHeatmapTitle')}</Text>
         <View style={styles.heatmapStatsRow}>
-          <Text style={styles.heatmapStatsText}>{sleepDays}/{daysInMonth}天</Text>
+          <Text style={styles.heatmapStatsText}>{sleepDays}/{daysInMonth}{_T('sleepDayUnit')}</Text>
           <TouchableOpacity onPress={nextMonth} style={styles.heatmapNavBtn}>
             <ChevronRight size={18} color={TH.text} />
           </TouchableOpacity>
         </View>
       </View>
       <View style={styles.heatmapWeekdays}>
-        {WEEKDAYS.map(w => <Text key={w} style={styles.heatmapWeekdayText}>{w}</Text>)}
+        {(['weekdaySun', 'weekdayMon', 'weekdayTue', 'weekdayWed', 'weekdayThu', 'weekdayFri', 'weekdaySat'] as const).map(w => (
+          <Text key={w} style={styles.heatmapWeekdayText}>{_T(w)}</Text>
+        ))}
       </View>
       <View style={styles.heatmapGrid}>
         {cells.map((d, i) => {
@@ -182,17 +187,17 @@ function Heatmap({ entries, TH, onPress }: { entries: SleepEntry[]; TH: Theme; o
 }
 
 // ── Detail Modal ──
-function DetailModal({ entry, TH, T: _T, onClose, onDelete }: { entry: SleepEntry | null; TH: Theme; T: (key: string) => string; onClose: () => void; onDelete: (id: string) => void }) {
+function DetailModal({ entry, TH, T, onClose, onDelete }: { entry: SleepEntry | null; TH: Theme; T: (key: string) => string; onClose: () => void; onDelete: (id: string) => void }) {
   const styles = mkStyles(TH);
   const [editingNote, setEditingNote] = useState(false);
   const [noteText, setNoteText] = useState('');
 
   if (!entry) return null;
 
-  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+  const weekdayKeys = ['weekdaySun', 'weekdayMon', 'weekdayTue', 'weekdayWed', 'weekdayThu', 'weekdayFri', 'weekdaySat'] as const;
   const [y, m, d] = entry.date.split('-').map(Number);
   const dt = new Date(y, m - 1, d);
-  const weekday = isNaN(dt.getTime()) ? '' : `周${weekdays[dt.getDay()]}`;
+  const weekday = isNaN(dt.getTime()) ? '' : `${T('sleepWeekdayPrefix')}${T(weekdayKeys[dt.getDay()])}`;
 
   const startEdit = () => { setNoteText(entry.note ?? ''); setEditingNote(true); };
   const saveNote = () => {
@@ -204,11 +209,11 @@ function DetailModal({ entry, TH, T: _T, onClose, onDelete }: { entry: SleepEntr
   };
 
   const practiceLabels: Record<string, string> = {
-    breath: '调息',
-    meditation: '冥想',
-    reading: '阅读',
-    journal: '日记',
-    gratitude: '感恩',
+    breath: T('sleepBreath'),
+    meditation: T('sleepMeditate'),
+    reading: T('sleepReading'),
+    journal: T('sleepJournal'),
+    gratitude: T('sleepGratitudeSmall'),
   };
 
   return (
@@ -217,7 +222,7 @@ function DetailModal({ entry, TH, T: _T, onClose, onDelete }: { entry: SleepEntr
         <View style={styles.detailContent}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.detailHeader}>
-              <Text style={styles.detailDateText}>{`${parseInt(String(m))}月${parseInt(String(d))}日 ${weekday}`}</Text>
+              <Text style={styles.detailDateText}>{`${parseInt(String(m))}${T('sleepMonthUnit')}${parseInt(String(d))}${T('sleepDayUnit')} ${weekday}`}</Text>
               <TouchableOpacity onPress={onClose}><X size={20} color={TH.sub} /></TouchableOpacity>
             </View>
 
@@ -225,18 +230,18 @@ function DetailModal({ entry, TH, T: _T, onClose, onDelete }: { entry: SleepEntr
             <Text style={styles.detailDuration}>
               {entry.durationMin ? formatSleepDuration(entry.durationMin) : '--'}
             </Text>
-            <Text style={styles.detailDurationLabel}>睡眠时长</Text>
+            <Text style={styles.detailDurationLabel}>{T('sleepDuration')}</Text>
 
             {/* Bedtime / Wake */}
             <View style={styles.detailTimeRow}>
               <View style={styles.detailTimeItem}>
                 <Moon size={16} color={TH.sub} />
-                <Text style={styles.detailTimeLabel}>入睡</Text>
+                <Text style={styles.detailTimeLabel}>{T('sleepBedtimeShort')}</Text>
                 <Text style={styles.detailTimeValue}>{formatTime(entry.bedtimeAt)}</Text>
               </View>
               <View style={styles.detailTimeItem}>
                 <Text style={{ fontSize: FONT_LABEL() }}>☀</Text>
-                <Text style={styles.detailTimeLabel}>起床</Text>
+                <Text style={styles.detailTimeLabel}>{T('sleepWakeShort')}</Text>
                 <Text style={styles.detailTimeValue}>{formatTime(entry.wakeAt)}</Text>
               </View>
             </View>
@@ -244,7 +249,7 @@ function DetailModal({ entry, TH, T: _T, onClose, onDelete }: { entry: SleepEntr
             {/* Quality */}
             {entry.quality != null && (
               <View style={styles.detailQualityRow}>
-                <Text style={[styles.detailQualityLabel, { color: TH.sub }]}>质量</Text>
+                <Text style={[styles.detailQualityLabel, { color: TH.sub }]}>{T('sleepQuality')}</Text>
                 <Text style={[styles.detailQualityLabel, { color: '#fbbf24' }]}>{renderStars(entry.quality)}</Text>
               </View>
             )}
@@ -253,14 +258,18 @@ function DetailModal({ entry, TH, T: _T, onClose, onDelete }: { entry: SleepEntr
             <View style={styles.detailBarrierRow}>
               <View style={[styles.detailBarrierDot, { backgroundColor: entry.barrierDone ? '#22c55e' : '#ef4444' }]} />
               <Text style={styles.detailBarrierText}>
-                {entry.barrierDone ? `睡眠屏障已${entry.barrierMin ? `完成(${entry.barrierMin}分钟)` : '完成'}` : '未完成睡眠屏障'}
+                {entry.barrierDone
+                  ? entry.barrierMin
+                    ? `${T('sleepBarrierDone')}(${entry.barrierMin}${T('sleepMinutes')})`
+                    : T('sleepBarrierDone')
+                  : T('sleepBarrierNotDone')}
               </Text>
             </View>
 
             {/* Practice list */}
             {entry.practice && entry.practice.length > 0 && (
               <View style={styles.detailSection}>
-                <Text style={styles.detailSectionTitle}>修行练习</Text>
+                <Text style={styles.detailSectionTitle}>{T('sleepPracticeRecord')}</Text>
                 <View style={styles.detailTagRow}>
                   {entry.practice.map(p => (
                     <View key={p} style={styles.detailTag}>
@@ -275,7 +284,7 @@ function DetailModal({ entry, TH, T: _T, onClose, onDelete }: { entry: SleepEntr
             {entry.gratitude && entry.gratitude.filter(g => g.trim()).length > 0 && (
               <View style={styles.detailSection}>
                 <Text style={styles.detailSectionTitle}>
-                  <Heart size={14} color={TH.primary} /> 感恩事项
+                  <Heart size={14} color={TH.primary} /> {T('sleepGratitudeItems')}
                 </Text>
                 {entry.gratitude.filter(g => g.trim()).map((g, i) => (
                   <Text key={i} style={styles.detailGratitudeItem}>· {g}</Text>
@@ -286,43 +295,43 @@ function DetailModal({ entry, TH, T: _T, onClose, onDelete }: { entry: SleepEntr
             {/* States */}
             {entry.bodyState && entry.bodyState.length > 0 && (
               <View style={{ marginBottom: 8 }}>
-                <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>身体: {entry.bodyState.join('、')}</Text>
+                <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{T('sleepBodyState')}: {entry.bodyState.join('、')}</Text>
               </View>
             )}
             {entry.mindState && entry.mindState.length > 0 && (
               <View style={{ marginBottom: 8 }}>
-                <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>心理: {entry.mindState.join('、')}</Text>
+                <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{T('sleepMindState')}: {entry.mindState.join('、')}</Text>
               </View>
             )}
 
             {/* Note */}
             <View style={styles.detailSection}>
               <View style={styles.detailNoteHeader}>
-                <Text style={styles.detailSectionTitle}>感悟笔记</Text>
-                {!editingNote && <TouchableOpacity onPress={startEdit}><Text style={styles.detailTagText}>{entry.note ? '编辑' : '添加'}</Text></TouchableOpacity>}
+                <Text style={styles.detailSectionTitle}>{T('sleepInsightNote')}</Text>
+                {!editingNote && <TouchableOpacity onPress={startEdit}><Text style={styles.detailTagText}>{entry.note ? T('commonEdit') : T('commonAdd')}</Text></TouchableOpacity>}
               </View>
               {editingNote ? (
                 <>
-                  <TextInput style={[styles.detailNoteInput, { backgroundColor: TH.card }]} multiline maxLength={500} value={noteText} onChangeText={setNoteText} placeholder="写下你的感悟..." placeholderTextColor={TH.sub} />
+                  <TextInput style={[styles.detailNoteInput, { backgroundColor: TH.card }]} multiline maxLength={500} value={noteText} onChangeText={setNoteText} placeholder={T('sleepWriteInsight')} placeholderTextColor={TH.sub} />
                   <View style={styles.detailNoteActions}>
-                    <TouchableOpacity onPress={() => setEditingNote(false)} style={[styles.detailNoteBtn, styles.detailNoteCancelBtn, { borderColor: TH.border }]}><Text style={{ color: TH.sub }}>取消</Text></TouchableOpacity>
-                    <TouchableOpacity onPress={saveNote} style={[styles.detailNoteBtn, styles.detailNoteSaveBtn, { backgroundColor: TH.primary }]}><Text style={{ color: '#fff', fontWeight: '600' }}>保存</Text></TouchableOpacity>
+                    <TouchableOpacity onPress={() => setEditingNote(false)} style={[styles.detailNoteBtn, styles.detailNoteCancelBtn, { borderColor: TH.border }]}><Text style={{ color: TH.sub }}>{T('commonCancel')}</Text></TouchableOpacity>
+                    <TouchableOpacity onPress={saveNote} style={[styles.detailNoteBtn, styles.detailNoteSaveBtn, { backgroundColor: TH.primary }]}><Text style={{ color: '#fff', fontWeight: '600' }}>{T('commonSave')}</Text></TouchableOpacity>
                   </View>
                 </>
               ) : (
-                <Text style={{ fontSize: FONT_BODY(), color: entry.note ? TH.text : TH.sub }}>{entry.note || '暂无笔记'}</Text>
+                <Text style={{ fontSize: FONT_BODY(), color: entry.note ? TH.text : TH.sub }}>{entry.note || T('sleepNoNotes')}</Text>
               )}
             </View>
 
             {/* Delete */}
             <TouchableOpacity onPress={() => {
-              Alert.alert('删除记录', '确定要删除这条睡眠记录吗？', [
-                { text: '取消', style: 'cancel' },
-                { text: '删除', style: 'destructive', onPress: () => { onDelete(entry.id); onClose(); } },
+              Alert.alert(T('sleepDeleteRecord'), T('sleepDeleteRecordConfirm'), [
+                { text: T('commonCancel'), style: 'cancel' },
+                { text: T('commonDelete'), style: 'destructive', onPress: () => { onDelete(entry.id); onClose(); } },
               ]);
             }} style={styles.detailDeleteBtn}>
               <Trash2 size={16} color="#ef4444" />
-              <Text style={{ color: '#ef4444', fontSize: FONT_BODY() }}>删除记录</Text>
+              <Text style={{ color: '#ef4444', fontSize: FONT_BODY() }}>{T('sleepDeleteRecord')}</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
@@ -393,14 +402,14 @@ export default function SleepHistoryPage() {
   }, []);
 
   const renderItem = useCallback(({ item }: { item: FlatItem }) => {
-    if (item.type === 'statCard') return <StatsCard entries={activeEntries} TH={TH} />;
-    if (item.type === 'heatmap') return <Heatmap entries={activeEntries} TH={TH} onPress={() => {}} />;
+    if (item.type === 'statCard') return <StatsCard entries={activeEntries} TH={TH} T={T as unknown as (key: string) => string} />;
+    if (item.type === 'heatmap') return <Heatmap entries={activeEntries} TH={TH} onPress={() => {}} T={T as unknown as (key: string) => string} />;
     if (item.type === 'monthHeader') {
       return (
         <View style={styles.monthHeader}>
           <View style={styles.monthDot} />
           <Text style={styles.monthText}>{formatMonth(item.monthKey!)}</Text>
-          <Text style={styles.monthStatsText}>{item.items!.length}天 · {formatSleepDuration(item.monthDurAvg!)}</Text>
+          <Text style={styles.monthStatsText}>{item.items!.length}{T('sleepDayUnit')} · {formatSleepDuration(item.monthDurAvg!)}</Text>
         </View>
       );
     }
@@ -409,7 +418,7 @@ export default function SleepHistoryPage() {
     const parts = s.date.split('-');
     const dayStr = parts.length >= 3 ? `${parseInt(parts[1])}-${parseInt(parts[2])}` : s.date;
     const notePreview = s.note ? (s.note.length > 30 ? s.note.slice(0, 30) + '...' : s.note) : '';
-    const practiceLabels: Record<string, string> = { breath: '调息', meditation: '冥想', reading: '阅读', journal: '日记', gratitude: '感恩' };
+    const practiceLabels: Record<string, string> = { breath: T('sleepBreath'), meditation: T('sleepMeditate'), reading: T('sleepReading'), journal: T('sleepJournal'), gratitude: T('sleepGratitudeSmall') };
     const practiceList = (s.practice ?? []).map(p => practiceLabels[p] ?? p);
     return (
       <TouchableOpacity onPress={() => setSelectedEntry(s)} activeOpacity={0.7}>
@@ -422,7 +431,7 @@ export default function SleepHistoryPage() {
             <View style={styles.entryHeader}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                 <Text style={styles.entryDayText}>{dayStr}</Text>
-                <Text style={styles.entryWeekday}>周{getWeekday(s.date)}</Text>
+                <Text style={styles.entryWeekday}>{T('sleepWeekdayPrefix')}{(() => { const k = getWeekday(s.date); return k ? T(k) : ''; })()}</Text>
               </View>
               {s.durationMin ? (
                 <View style={styles.durationBadge}>
@@ -436,7 +445,7 @@ export default function SleepHistoryPage() {
             {s.gratitude && s.gratitude.filter(g => g.trim()).length > 0 && (
               <View style={styles.gratitudeRow}>
                 <Heart size={12} color={TH.primary} />
-                <Text style={styles.gratitudeText}>{s.gratitude.filter(g => g.trim()).length}条感恩</Text>
+                <Text style={styles.gratitudeText}>{s.gratitude.filter(g => g.trim()).length}{T('sleepGratitudeCount')}</Text>
               </View>
             )}
             {practiceList.length > 0 && (
@@ -449,7 +458,7 @@ export default function SleepHistoryPage() {
               </View>
             )}
             {notePreview ? (
-              <Text style={styles.notePreview}>「{notePreview}」</Text>
+              <Text style={styles.notePreview}>{`「${notePreview}」`}</Text>
             ) : null}
           </View>
         </View>
@@ -458,8 +467,8 @@ export default function SleepHistoryPage() {
   }, [activeEntries, TH]);
 
   const ListHeader = useMemo(() => (
-    <ScreenHeader title="睡眠历史" onBack={() => nav.goBack()} />
-  ), [nav]);
+    <ScreenHeader title={T('sleepHistoryTitle')} onBack={() => nav.goBack()} />
+  ), [nav, T]);
 
   if (activeEntries.length === 0) {
     return (
@@ -468,11 +477,11 @@ export default function SleepHistoryPage() {
           {ListHeader}
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyIcon}>🌙</Text>
-            <Text style={styles.emptyTitle}>还没有睡眠记录</Text>
-            <Text style={styles.emptySubtitle}>每晚的安睡都是送给身体的礼物</Text>
-            <Text style={styles.emptySubtitle2}>从今天开始，记录你的睡眠</Text>
+            <Text style={styles.emptyTitle}>{T('sleepNoRecords')}</Text>
+            <Text style={styles.emptySubtitle}>{T('sleepEmptySubtitle')}</Text>
+            <Text style={styles.emptySubtitle2}>{T('sleepEmptySubtitle2')}</Text>
             <TouchableOpacity onPress={() => nav.navigate('MainTabs', { screen: 'Sleep' as keyof MainTabParamList })} style={styles.emptyBtn}>
-              <Text style={styles.emptyBtnText}>✦ 开始记录睡眠</Text>
+              <Text style={styles.emptyBtnText}>✦ {T('sleepStartRecording')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -491,7 +500,7 @@ export default function SleepHistoryPage() {
         removeClippedSubviews={true}
         showsVerticalScrollIndicator={false}
       />
-      <DetailModal entry={selectedEntry} TH={TH} T={T} onClose={() => setSelectedEntry(null)} onDelete={handleDelete} />
+      <DetailModal entry={selectedEntry} TH={TH} T={T as unknown as (key: string) => string} onClose={() => setSelectedEntry(null)} onDelete={handleDelete} />
     </SafeAreaView>
   );
 }

@@ -108,7 +108,7 @@ export default function SleepReportPage(props: Props) {
           {quality > 0 && (
             <View style={styles.reportRow}>
               <Star size={16} color="#F59E0B" />
-              <Text style={[styles.reportLabel, { color: TH.sub }]}>睡眠质量</Text>
+              <Text style={[styles.reportLabel, { color: TH.sub }]}>{T('sleepQuality')}</Text>
               <Text style={[styles.reportValue, { color: '#F59E0B' }]}>{'★'.repeat(quality)}</Text>
             </View>
           )}
@@ -124,15 +124,15 @@ export default function SleepReportPage(props: Props) {
           {completedPractice.length > 0 && (
             <View style={styles.reportRow}>
               <Wind size={16} color="#8B5CF6" />
-              <Text style={[styles.reportLabel, { color: TH.sub }]}>修行记录</Text>
+              <Text style={[styles.reportLabel, { color: TH.sub }]}>{T('sleepPracticeRecord')}</Text>
               <Text style={[styles.reportValue, { color: '#8B5CF6' }]}>{completedPractice.join(', ')}</Text>
             </View>
           )}
           {sleepStreak > 0 && (
             <View style={styles.reportRow}>
               <Text style={{ fontSize: FONT_LABEL() }}>🔥</Text>
-              <Text style={[styles.reportLabel, { color: TH.sub }]}>连续天数</Text>
-              <Text style={[styles.reportValue, { color: '#EF4444' }]}>{sleepStreak} 天</Text>
+              <Text style={[styles.reportLabel, { color: TH.sub }]}>{T('sleepStreakDays')}</Text>
+              <Text style={[styles.reportValue, { color: '#EF4444' }]}>{sleepStreak} {T('sleepDayUnit')}</Text>
             </View>
           )}
         </View>
@@ -142,13 +142,13 @@ export default function SleepReportPage(props: Props) {
             style={[styles.saveBtn, { backgroundColor: TH.primary, flex: 1 }]}
             onPress={onFinish}
           >
-            <Text style={styles.saveBtnText}>回到首页</Text>
+            <Text style={styles.saveBtnText}>{T('sleepBackToHome')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.saveBtn, { backgroundColor: `${TH.primary}15`, flex: 1, borderWidth: 1, borderColor: `${TH.primary}30` }]}
             onPress={onViewHistory}
           >
-            <Text style={[styles.saveBtnText, { color: TH.primary }]}>查看历史</Text>
+            <Text style={[styles.saveBtnText, { color: TH.primary }]}>{T('sleepViewHistory')}</Text>
           </TouchableOpacity>
         </View>
       </View>

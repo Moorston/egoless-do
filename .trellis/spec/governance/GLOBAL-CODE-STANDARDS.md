@@ -460,7 +460,56 @@ const mockAdapter = {
 
 **验收**：新增 `T('someKey')` 引用时，必须同时在 `packages/core/src/i18n/types.ts` 声明 key，并在 zh.ts / en.ts / zh-Hant.ts 三个文件提供翻译。
 
-### 8.4 颜色/字号走 Token
+### 8.4 运行时生成的字符串也必须国际化
+
+> [🔴 MUST] [👁 Manual]
+> 适用范围: mobile
+
+8.1 规则禁止 JSX 中的字面量硬编码，但**运行时拼接产生的非 ASCII 文本同样违规**。日期、时长、数量等格式化函数若返回中文/英文文本，必须通过 i18n key 输出，不能用字符串拼接生成。
+
+```typescript
+// ❌ 禁止 — 拼接产生中文，且永远不响应语言切换
+return `${month}月${day}day`;              // "8月2日" — 硬编码中文量词
+return `距${period}还有 ${h}h${m}m`;       // "距子时还有" — 硬编码中文
+
+// ✅ 正确 — 通过 T() 输出，响应语言切换
+return T('sleepDistance', { time: `${h}h${m}m` });  // 文案在字典中翻译
+```
+
+**常见陷阱**：
+- 日期格式化（"M月D日"、"周X"）→ 使用 `T('monthUnit')` / `T('weekdayMon')` 等 key
+- 时长格式化（"X小时Y分"）→ 字典中定义单位 key，数值作为参数传入
+- 列表连接（"A、B、C"）→ 使用 `Intl.ListFormat` 或 i18n key 模板
+
+**验收**：grep 非字典文件中的中文量词（月、日、时、分、秒）和连接词（和、与、或），确认均为运行时参数而非拼接产物。
+
+### 8.5 `t()` 与 `T()` 的选择
+
+> [🔴 MUST] [👁 Manual]
+> 适用范围: mobile
+
+项目存在两套翻译函数，行为不同：
+
+| 函数 | 来源 | 响应语言切换 | 使用场景 |
+|------|------|-------------|---------|
+| `T()` | `useT()` hook（来自 `../../components/UI`） | ✅ 响应 | React 组件/hook 内部 |
+| `t()` | `@egoless-do/core` 模块级导出 | ❌ 不响应，默认 zh | 纯工具函数、非 React 上下文 |
+
+```typescript
+// ❌ 禁止 — 组件内使用 t()，切换语言后仍显示中文
+import { t } from '@egoless-do/core';
+<Text>{t('sleepMonthAvg')}</Text>   // 切换英文后仍显示"本月平均"
+
+// ✅ 正确 — 组件内使用 T() 响应语言切换
+const { T } = useTheme();  // 或从 UI hook 解构
+<Text>{T('sleepMonthAvg')}</Text>
+```
+
+**例外**：非 React 工具函数（如 `business/sleep.ts`、`business/dateUtils.ts`）可用 `t()` 作为静态文案输出，但需注释说明"该函数不在 React 上下文中，语言切换需调用方自行刷新"。
+
+**验收**：组件/hook 文件中的翻译调用必须是 `T()`；若因层级传递无法使用 hook，需通过 props 传入翻译后的文本。
+
+### 8.6 颜色/字号走 Token
 
 > [🔴 MUST] [👁 Manual]
 > 适用范围: mobile
@@ -490,6 +539,8 @@ const mockAdapter = {
 | 4.3 禁止 core→React | `no-restricted-imports` | ❌ 未配置，需添加 |
 | 嵌套深度 | `max-depth: [warn, 4]` | ✅ 已配置 |
 | 8.3 假国际化（key 必须声明） | 自定义 lint 脚本 + code review | 🟡 需确认 |
+| 8.4 运行时字符串国际化 | grep 扫描中文量词 + code review | 🟡 需确认 |
+| 8.5 t()/T() 选择 | 静态分析：组件文件禁止 import t from core | 🟡 待配置 |
 | 函数长度 | `max-lines-per-function: [warn, 300]` | ✅ 已配置 |
 | 等号判断 | `eqeqeq: [error, smart]` | ✅ 已配置 |
 | 重复导入 | `import/no-duplicates: error` | ✅ 已配置 |

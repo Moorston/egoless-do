@@ -75,7 +75,7 @@ export default function SleepGratitudePage(props: Props) {
       </View>
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
         {/* Quality Rating */}
-        <Text style={[styles.qualityLabel, { color: TH.text }]}>今晚睡得怎么样？</Text>
+        <Text style={[styles.qualityLabel, { color: TH.text }]}>{T('sleepHowWasSleep')}</Text>
         <View style={styles.qualityRow}>
           {[1, 2, 3, 4, 5].map(i => (
             <TouchableOpacity key={i} onPress={() => setQuality(i)}>
@@ -101,15 +101,15 @@ export default function SleepGratitudePage(props: Props) {
           />
         ))}
         <TouchableOpacity onPress={() => setGratitude([...gratitude, ''])}>
-          <Text style={[styles.addGratitudeBtn, { color: TH.primary }]}>+ 添加更多</Text>
+          <Text style={[styles.addGratitudeBtn, { color: TH.primary }]}>{T('sleepAddMore')}</Text>
         </TouchableOpacity>
 
         {/* Note */}
-        <Text style={[styles.noteLabel, { color: TH.text }]}>今日感悟（可选）</Text>
+        <Text style={[styles.noteLabel, { color: TH.text }]}>{T('sleepTodayNote')}</Text>
         <TextInput
           value={noteText}
           onChangeText={setNoteText}
-          placeholder="写下今天的感悟..."
+          placeholder={T('sleepTodayNotePlaceholder')}
           placeholderTextColor={TH.sub}
           multiline
           style={[styles.noteInput, { color: TH.text, borderColor: TH.border, backgroundColor: TH.card }]}

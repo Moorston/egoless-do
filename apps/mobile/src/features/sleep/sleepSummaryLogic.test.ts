@@ -69,12 +69,12 @@ describe('findWorkStateLabelKey', () => {
 
 describe('qualityLabel', () => {
   it('returns empty for 0', () => expect(qualityLabel(0)).toBe(''));
-  it('maps 1 to 差', () => expect(qualityLabel(1)).toBe('差'));
-  it('maps 2 to 偏差', () => expect(qualityLabel(2)).toBe('偏差'));
-  it('maps 3 to 一般', () => expect(qualityLabel(3)).toBe('一般'));
-  it('maps 4 to 好', () => expect(qualityLabel(4)).toBe('好'));
-  it('maps 5 to 很好', () => expect(qualityLabel(5)).toBe('很好'));
-  it('maps >5 to 很好', () => expect(qualityLabel(6)).toBe('很好'));
+  it('maps 1 to sleepQualityBad key', () => expect(qualityLabel(1)).toBe('sleepQualityBad'));
+  it('maps 2 to sleepQualityPoor key', () => expect(qualityLabel(2)).toBe('sleepQualityPoor'));
+  it('maps 3 to sleepQualityAverage key', () => expect(qualityLabel(3)).toBe('sleepQualityAverage'));
+  it('maps 4 to sleepQualityGood key', () => expect(qualityLabel(4)).toBe('sleepQualityGood'));
+  it('maps 5 to sleepQualityExcellent key', () => expect(qualityLabel(5)).toBe('sleepQualityExcellent'));
+  it('maps >5 to sleepQualityExcellent key', () => expect(qualityLabel(6)).toBe('sleepQualityExcellent'));
 });
 
 // ─── formatSleepDate ─────────────────────────────────────────────

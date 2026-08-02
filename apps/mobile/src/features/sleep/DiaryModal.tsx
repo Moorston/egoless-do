@@ -137,7 +137,7 @@ export default function DiaryModal({ visible, onClose }: Props) {
         <View style={[s.sheet, { backgroundColor: TH.cardSolid }]}>
           {/* ── Header ── */}
           <View style={s.header}>
-            <Text style={[s.headerTitle, { color: TH.text }]}>填写今日日记</Text>
+            <Text style={[s.headerTitle, { color: TH.text }]}>{T('sleepDiaryTitle')}</Text>
             <TouchableOpacity onPress={onClose} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
               <X size={24} color={TH.sub} />
             </TouchableOpacity>
@@ -147,18 +147,18 @@ export default function DiaryModal({ visible, onClose }: Props) {
 
             {/* ── 1. Bedtime / Wake Time ── */}
             <View style={[s.card, { borderColor: `${P}30` }]}>
-              <SectionLabel icon={<Moon size={16} color={P} />} text="入睡 / 起床时间" />
+              <SectionLabel icon={<Moon size={16} color={P} />} text={T('sleepBedtimeWake')} />
               <View style={s.timeRow}>
                 <View style={s.timeCol}>
                   <Text style={[s.timeLabel, { color: TH.sub }]}>
-                    <Moon size={12} color={TH.sub} /> 入睡
+                    <Moon size={12} color={TH.sub} /> {T('sleepBedtimeShort')}
                   </Text>
                   <TouchableOpacity
                     onPress={() => setPickerType('bedtime')}
                     style={[s.timeTouch, { borderColor: TH.border, backgroundColor: TH.card }]}
-                    accessibilityLabel={`入睡时间${bedtimeStr ? ' ' + bedtimeStr : '未设置'}`}
+                    accessibilityLabel={`${T('sleepBedtimeShort')}${bedtimeStr ? ' ' + bedtimeStr : ' ' + T('sleepNotSet')}`}
                     accessibilityRole="button"
-                    accessibilityHint="点击打开时间选择器"
+                    accessibilityHint={T('sleepTimePickerHint')}
                   >
                     <Text style={[s.timeTouchText, { color: bedtimeStr ? TH.text : TH.sub }]}>
                       {bedtimeStr || '--:--'}
@@ -167,14 +167,14 @@ export default function DiaryModal({ visible, onClose }: Props) {
                 </View>
                 <View style={s.timeCol}>
                   <Text style={[s.timeLabel, { color: TH.sub }]}>
-                    <Sun size={12} color={TH.sub} /> 起床
+                    <Sun size={12} color={TH.sub} /> {T('sleepWakeShort')}
                   </Text>
                   <TouchableOpacity
                     onPress={() => setPickerType('wake')}
                     style={[s.timeTouch, { borderColor: TH.border, backgroundColor: TH.card }]}
-                    accessibilityLabel={`起床时间${wakeStr ? ' ' + wakeStr : '未设置'}`}
+                    accessibilityLabel={`${T('sleepWakeShort')}${wakeStr ? ' ' + wakeStr : ' ' + T('sleepNotSet')}`}
                     accessibilityRole="button"
-                    accessibilityHint="点击打开时间选择器"
+                    accessibilityHint={T('sleepTimePickerHint')}
                   >
                     <Text style={[s.timeTouchText, { color: wakeStr ? TH.text : TH.sub }]}>
                       {wakeStr || '--:--'}
@@ -205,7 +205,7 @@ export default function DiaryModal({ visible, onClose }: Props) {
 
             {/* ── 2. Quality Rating ── */}
             <View style={[s.card, { borderColor: `${P}30` }]}>
-              <SectionLabel icon={<Star size={16} color={P} />} text="睡眠质量" />
+              <SectionLabel icon={<Star size={16} color={P} />} text={T('sleepQuality')} />
               <View style={s.starRow}>
                 {[1, 2, 3, 4, 5].map(i => (
                   <TouchableOpacity key={i} onPress={() => setQuality(i)}>
@@ -221,7 +221,7 @@ export default function DiaryModal({ visible, onClose }: Props) {
 
             {/* ── 3. Work State (single-select) ── */}
             <View style={[s.card, { borderColor: `${P}30` }]}>
-              <SectionLabel icon={<Text style={{ fontSize: FONT_LABEL() }}>💼</Text>} text={T('sleepWorkState') || '工作状态'} />
+              <SectionLabel icon={<Text style={{ fontSize: FONT_LABEL() }}>💼</Text>} text={T('sleepWorkState')} />
               <View style={s.chipRow}>
                 {WORK_STATES.map(({ key, labelKey }) => {
                   const selected = workState === key;
@@ -248,7 +248,7 @@ export default function DiaryModal({ visible, onClose }: Props) {
 
             {/* ── 4. Body State (multi-select) ── */}
             <View style={[s.card, { borderColor: `${P}30` }]}>
-              <SectionLabel icon={<Text style={{ fontSize: FONT_LABEL() }}>🏃</Text>} text={T('sleepBodyState') || '身体状态'} />
+              <SectionLabel icon={<Text style={{ fontSize: FONT_LABEL() }}>🏃</Text>} text={T('sleepBodyState')} />
               <View style={s.chipRow}>
                 {BODY_STATE_PRESETS.map(tag => {
                   const selected = bodyState.includes(tag);
@@ -273,7 +273,7 @@ export default function DiaryModal({ visible, onClose }: Props) {
                 <TextInput
                   value={customBodyTag}
                   onChangeText={setCustomBodyTag}
-                  placeholder={T('sleepCustomTag') || '自定义标签'}
+                  placeholder={T('sleepCustomTag')}
                   placeholderTextColor={TH.sub}
                   style={[s.customTagInput, { color: TH.text, borderColor: TH.border, backgroundColor: TH.card }]}
                   onSubmitEditing={() => addCustomTag(customBodyTag, bodyState, setBodyState, () => setCustomBodyTag(''))}
@@ -282,7 +282,7 @@ export default function DiaryModal({ visible, onClose }: Props) {
                   onPress={() => addCustomTag(customBodyTag, bodyState, setBodyState, () => setCustomBodyTag(''))}
                   style={[s.addTagBtn, { backgroundColor: P }]}
                 >
-                  <Text style={s.addTagBtnText}>{T('sleepAddTag') || '添加标签'}</Text>
+                  <Text style={s.addTagBtnText}>{T('sleepAddTag')}</Text>
                 </TouchableOpacity>
               </View>
               {/* Show custom tags that are not in presets */}
@@ -304,7 +304,7 @@ export default function DiaryModal({ visible, onClose }: Props) {
 
             {/* ── 5. Mind State (multi-select) ── */}
             <View style={[s.card, { borderColor: `${P}30` }]}>
-              <SectionLabel icon={<Text style={{ fontSize: FONT_LABEL() }}>🧠</Text>} text={T('sleepMindState') || '心理状态'} />
+              <SectionLabel icon={<Text style={{ fontSize: FONT_LABEL() }}>🧠</Text>} text={T('sleepMindState')} />
               <View style={s.chipRow}>
                 {MIND_STATE_PRESETS.map(tag => {
                   const selected = mindState.includes(tag);
@@ -329,7 +329,7 @@ export default function DiaryModal({ visible, onClose }: Props) {
                 <TextInput
                   value={customMindTag}
                   onChangeText={setCustomMindTag}
-                  placeholder={T('sleepCustomTag') || '自定义标签'}
+                  placeholder={T('sleepCustomTag')}
                   placeholderTextColor={TH.sub}
                   style={[s.customTagInput, { color: TH.text, borderColor: TH.border, backgroundColor: TH.card }]}
                   onSubmitEditing={() => addCustomTag(customMindTag, mindState, setMindState, () => setCustomMindTag(''))}
@@ -338,7 +338,7 @@ export default function DiaryModal({ visible, onClose }: Props) {
                   onPress={() => addCustomTag(customMindTag, mindState, setMindState, () => setCustomMindTag(''))}
                   style={[s.addTagBtn, { backgroundColor: P }]}
                 >
-                  <Text style={s.addTagBtnText}>{T('sleepAddTag') || '添加标签'}</Text>
+                  <Text style={s.addTagBtnText}>{T('sleepAddTag')}</Text>
                 </TouchableOpacity>
               </View>
               {mindState.filter(t => !MIND_STATE_PRESETS.includes(t)).length > 0 && (
@@ -359,11 +359,11 @@ export default function DiaryModal({ visible, onClose }: Props) {
 
             {/* ── 6. Note ── */}
             <View style={[s.card, { borderColor: `${P}30` }]}>
-              <SectionLabel icon={<Text style={{ fontSize: FONT_LABEL() }}>📝</Text>} text={T('sleepNote') || '今日感悟'} />
+              <SectionLabel icon={<Text style={{ fontSize: FONT_LABEL() }}>📝</Text>} text={T('sleepNote')} />
               <TextInput
                 value={note}
                 onChangeText={setNote}
-                placeholder={T('sleepNotePlaceholder') || '记录今日感悟...'}
+                placeholder={T('sleepNotePlaceholder')}
                 placeholderTextColor={TH.sub}
                 multiline
                 numberOfLines={3}
@@ -377,12 +377,12 @@ export default function DiaryModal({ visible, onClose }: Props) {
               style={[s.saveBtn, { backgroundColor: quality > 0 ? P : `${P}50` }]}
               disabled={quality === 0}
             >
-              <Text style={s.saveBtnText}>{T('commonSave') || '保存'}</Text>
+              <Text style={s.saveBtnText}>{T('commonSave')}</Text>
             </TouchableOpacity>
 
             {/* Cancel */}
             <TouchableOpacity onPress={onClose} style={[s.cancelBtn, { borderColor: TH.border }]}>
-              <Text style={[s.cancelBtnText, { color: TH.sub }]}>{T('commonCancel') || '取消'}</Text>
+              <Text style={[s.cancelBtnText, { color: TH.sub }]}>{T('commonCancel')}</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>

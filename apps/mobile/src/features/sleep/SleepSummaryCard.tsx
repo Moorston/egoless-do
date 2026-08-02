@@ -129,7 +129,7 @@ export default function SleepSummaryCard({
 
   const triggerFeedback = useCallback(() => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
-    useUiStore.getState().showToast('已保存', 'success');
+    useUiStore.getState().showToast(T('sleepSaved'), 'success');
     flashSaved();
   }, [flashSaved]);
 
@@ -168,10 +168,10 @@ export default function SleepSummaryCard({
               testID={`star-${i}`}
               onPress={() => handleStarPress(i)}
               disabled={!todaySleep}
-              accessibilityLabel={filled ? `当前 ${i} 星` : `设为 ${i} 星`}
+              accessibilityLabel={filled ? T('sleepCurrentStar', { n: i }) : T('sleepSetStar', { n: i })}
               accessibilityRole="button"
               accessibilityState={{ selected: filled }}
-              accessibilityHint="点击直接保存睡眠质量"
+              accessibilityHint={T('sleepTapToSaveQuality')}
               hitSlop={{ top: 8, bottom: 8, left: 4, right: 4 }}
             >
               <Star
@@ -197,10 +197,10 @@ export default function SleepSummaryCard({
             testID={`workstate-${key}`}
             onPress={() => handleWorkStatePress(key)}
             disabled={!todaySleep}
-            accessibilityLabel={`工作状态: ${T(labelKey as I18nKey)}`}
+            accessibilityLabel={`${T('sleepWorkState')}: ${T(labelKey as I18nKey)}`}
             accessibilityRole="button"
             accessibilityState={{ selected }}
-            accessibilityHint="点击直接保存工作状态"
+            accessibilityHint={T('sleepTapToSaveWorkState')}
             style={[
               s.chip,
               {
@@ -230,7 +230,7 @@ export default function SleepSummaryCard({
     const isOnTarget = absMin <= 30;
     return (
       <Text style={[s.goalText, { color: isOnTarget ? '#10B981' : TH.sub }]}>
-        {isOnTarget ? '达成目标' : `${diff > 0 ? '多' : '差'} ${diffStr}`}
+        {isOnTarget ? T('sleepGoalAchieved') : `${diff > 0 ? T('sleepMore') : T('sleepLess')} ${diffStr}`}
       </Text>
     );
   };
@@ -238,7 +238,7 @@ export default function SleepSummaryCard({
   // ── Empty state (no data) ──────────────────────────────────────
 
   if (!todaySleep) {
-    return <EmptySleepCard theme={TH} onCta={handleEmptyCta} />;
+    return <EmptySleepCard theme={TH} onCta={handleEmptyCta} T={T as unknown as (key: string) => string} />;
   }
 
   // ── Read mode (has data) ───────────────────────────────────────
@@ -268,23 +268,23 @@ export default function SleepSummaryCard({
       {/* Header */}
       <View style={s.headerRow}>
         <Text style={[s.cardTitle, { color: TH.primary }]} accessibilityRole="header">
-          {`睡眠记录 · ${formatSleepDate(dateStr)}`}
+          {`${T('sleepRecord')} · ${formatSleepDate(dateStr)}`}
         </Text>
         <TouchableOpacity
           testID="sleep-diary-link"
           onPress={onOpenFullDiary}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          accessibilityLabel="打开完整睡眠日记"
+          accessibilityLabel={T('sleepOpenFullDiary')}
           accessibilityRole="link"
         >
-          <Text style={[s.diaryLinkText, { color: TH.primary }]}>完整日记 →</Text>
+          <Text style={[s.diaryLinkText, { color: TH.primary }]}>{T('sleepFullDiary')} →</Text>
         </TouchableOpacity>
       </View>
 
       {/* Quality stars (primary visual) */}
       {renderStars(quality, 28)}
       <Text style={[s.qualityLabel, { color: TH.sub }]}>
-        {quality > 0 ? `质量：${qualityLabel(quality)}` : '点击星星评价'}
+        {quality > 0 ? `${T('sleepQuality')}：${T(qualityLabel(quality) as import('@egoless-do/core').I18nKey)}` : T('sleepTapToRate')}
       </Text>
 
       {/* Duration + goal comparison */}
@@ -294,7 +294,7 @@ export default function SleepSummaryCard({
         </Text>
         {sleepGoalEnabled && (
           <Text style={[s.goalBaseText, { color: TH.sub }]}>
-            目标 {sleepGoalHours}h · {renderGoalComparison()}
+            {T('sleepGoal')} {sleepGoalHours}h · {renderGoalComparison()}
           </Text>
         )}
       </View>
@@ -324,7 +324,7 @@ export default function SleepSummaryCard({
 
       {/* Work state chips */}
       <Text style={[s.sectionLabel, { color: TH.sub }]}>
-        {T('sleepWorkState') || '工作状态'}
+        {T('sleepWorkState')}
       </Text>
       {renderWorkStateChips()}
 
@@ -332,16 +332,16 @@ export default function SleepSummaryCard({
       <View style={s.metaRow}>
         {barrierDone && (
           <View style={[s.badge, { backgroundColor: 'rgba(16,185,129,0.2)' }]}>
-            <Text style={[s.badgeText, { color: '#10B981' }]}>仪轨</Text>
+            <Text style={[s.badgeText, { color: '#10B981' }]}>{T('sleepRitual')}</Text>
           </View>
         )}
         {gratitudeCount > 0 && (
-          <Text style={[s.metaText, { color: TH.sub }]}>{`感恩 ×${gratitudeCount}`}</Text>
+          <Text style={[s.metaText, { color: TH.sub }]}>{`${T('sleepGratitude')} ×${gratitudeCount}`}</Text>
         )}
       </View>
 
       {/* 7-day mini trend */}
-      <MiniTrendChart data={sleepHistory} goalHours={sleepGoalHours} goalEnabled={sleepGoalEnabled} TH={TH} />
+      <MiniTrendChart data={sleepHistory} goalHours={sleepGoalHours} goalEnabled={sleepGoalEnabled} TH={TH} T={T as unknown as (key: string) => string} />
     </View>
   );
 }
@@ -364,11 +364,13 @@ function MiniTrendChart({
   goalHours,
   goalEnabled,
   TH,
+  T: _T,
 }: {
   data: SleepEntry[];
   goalHours: number;
   goalEnabled: boolean;
   TH: Theme;
+  T: (key: string) => string;
 }) {
   // 生成最近 7 天数据
   const trendData: TrendDay[] = useMemo(() => {
@@ -390,8 +392,8 @@ function MiniTrendChart({
   return (
     <View style={s.trendWrap}>
       <View style={s.trendHeader}>
-        <Text style={[s.trendTitle, { color: TH.sub }]}>近 7 天</Text>
-        {goalEnabled && <Text style={[s.trendGoal, { color: `${TH.sub}99` }]}>目标 {goalHours}h</Text>}
+        <Text style={[s.trendTitle, { color: TH.sub }]}>{_T('sleepLast7Days')}</Text>
+        {goalEnabled && <Text style={[s.trendGoal, { color: `${TH.sub}99` }]}>{_T('sleepGoal')} {goalHours}h</Text>}
       </View>
       <View style={s.trendChart}>
         {/* Goal line */}
@@ -402,7 +404,7 @@ function MiniTrendChart({
         <View style={s.trendBars}>
           {trendData.map((d, i) => {
             const barH = d.hasData ? Math.max((d.durationMin / maxDur) * CHART_HEIGHT, 3) : 2;
-            const weekday = ['日', '一', '二', '三', '四', '五', '六'][new Date(d.date).getDay()];
+            const weekday = [_T('weekdaySun'), _T('weekdayMon'), _T('weekdayTue'), _T('weekdayWed'), _T('weekdayThu'), _T('weekdayFri'), _T('weekdaySat')][new Date(d.date).getDay()];
             return (
               <View key={d.date} style={s.trendCol}>
                 <View
@@ -427,7 +429,7 @@ function MiniTrendChart({
 
 // ─── Empty state (illustration + CTA) ────────────────────────────
 
-function EmptySleepCard({ theme, onCta }: { theme: Theme; onCta: () => void }) {
+function EmptySleepCard({ theme, onCta, T: _T }: { theme: Theme; onCta: () => void; T: (key: string) => string }) {
   const isFirstTime = !hasShownEmptyGuide;
   hasShownEmptyGuide = true;
 
@@ -450,31 +452,31 @@ function EmptySleepCard({ theme, onCta }: { theme: Theme; onCta: () => void }) {
       activeOpacity={0.85}
       onPress={onCta}
       style={[s.card, s.emptyCard, { backgroundColor: theme.card, borderColor: theme.border }]}
-      accessibilityLabel="睡眠记录为空，点击快速记录"
+      accessibilityLabel={_T('sleepEmptyTapToRecord')}
       accessibilityRole="button"
     >
       <Animated.View style={[s.emptyIconWrap, { transform: [{ scale: breathe }] }]}>
         <MoonIcon color={theme.primary} />
       </Animated.View>
       <Text style={[s.emptyTitle, { color: theme.text }]}>
-        {isFirstTime ? '开始记录你的睡眠' : '还没有睡眠记录'}
+        {isFirstTime ? _T('sleepStartRecording') : _T('sleepNoRecords')}
       </Text>
       {isFirstTime && (
-        <Text style={[s.emptySubtitle, { color: theme.sub }]}>记录每晚睡眠，关注健康变化</Text>
+        <Text style={[s.emptySubtitle, { color: theme.sub }]}>{_T('sleepEmptySubtitle')}</Text>
       )}
       <TouchableOpacity
         style={[s.emptyCta, { backgroundColor: theme.primary }]}
         onPress={onCta}
         activeOpacity={0.8}
-        accessibilityLabel="记录昨晚睡眠"
+        accessibilityLabel={_T('sleepRecordLastNight')}
       >
-        <Text style={s.emptyCtaText}>记录昨晚睡眠</Text>
+        <Text style={s.emptyCtaText}>{_T('sleepRecordLastNight')}</Text>
         <ArrowRight size={18} color="#fff" />
       </TouchableOpacity>
       {isFirstTime && (
         <View style={[s.emptyTip, { backgroundColor: `${theme.primary}10` }]}>
           <Star size={14} color={theme.primary} />
-          <Text style={[s.emptyTipText, { color: theme.primary }]}>点星即可快速记录，不用填写完整日记</Text>
+          <Text style={[s.emptyTipText, { color: theme.primary }]}>{_T('sleepQuickRecordTip')}</Text>
         </View>
       )}
     </TouchableOpacity>

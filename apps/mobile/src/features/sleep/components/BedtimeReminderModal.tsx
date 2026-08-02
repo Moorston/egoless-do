@@ -15,6 +15,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Circle, Defs, RadialGradient, Stop, Path } from 'react-native-svg';
 
+import { useT } from '../../../components/UI';
 import { useUiStore } from '../../../store/uiStore';
 
 interface Props {
@@ -55,6 +56,7 @@ export default function BedtimeReminderModal({
   const period = getCurrentPeriod();
   const primary = theme.primary;
   const sub = theme.sub;
+  const T = useT();
 
   // ── Starfield twinkle ───────────────────────────────────────────
 
@@ -225,12 +227,12 @@ export default function BedtimeReminderModal({
         </Animated.View>
 
         {/* Bedtime display */}
-        <Text style={[styles.bedtimeText, { color: sub }]}>目标入睡 {bedtime}</Text>
+        <Text style={[styles.bedtimeText, { color: sub }]}>{T('sleepTargetBedtime')} {bedtime}</Text>
 
         {/* Period info */}
         <Text style={[styles.periodName, { color: '#fff' }]}>{period.nameZh}</Text>
         <View style={[styles.organTag, { backgroundColor: `${primary}30` }]}>
-          <Text style={[styles.organText, { color: primary }]}>{period.organ}当令</Text>
+          <Text style={[styles.organText, { color: primary }]}>{period.organ}{T('sleepOrganActive')}</Text>
         </View>
         <Text style={[styles.advice, { color: `${sub}CC` }]}>{period.advice}</Text>
 
@@ -238,7 +240,7 @@ export default function BedtimeReminderModal({
         <Animated.View
           style={[styles.ringWrap, isUrgent && { transform: [{ scale: urgentPulse }] }]}
           accessibilityRole="progressbar"
-          accessibilityLabel={`还剩 ${secondsLeft} 秒自动记录入睡`}
+          accessibilityLabel={T('sleepAutoRecordCountdown', { sec: secondsLeft })}
           accessibilityLiveRegion="polite"
         >
           <Svg width={RING_SIZE} height={RING_SIZE} viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}>
@@ -270,7 +272,7 @@ export default function BedtimeReminderModal({
             <AnimatedText style={[styles.ringSeconds, { color: urgentColor }]}>
               {secondsLeft}s
             </AnimatedText>
-            <Text style={[styles.ringLabel, { color: `${sub}99` }]}>后自动记录</Text>
+            <Text style={[styles.ringLabel, { color: `${sub}99` }]}>{T('sleepAutoRecordAfter')}</Text>
           </View>
         </Animated.View>
 
@@ -280,7 +282,7 @@ export default function BedtimeReminderModal({
           onPress={() => onStartRitual(20)}
           activeOpacity={0.8}
         >
-          <Text style={styles.ctaText}>开始睡眠仪轨</Text>
+          <Text style={styles.ctaText}>{T('sleepStartRitual')}</Text>
         </TouchableOpacity>
 
         {/* Quick ritual durations */}
@@ -291,7 +293,7 @@ export default function BedtimeReminderModal({
               style={[styles.quickBtn, { borderColor: primary }]}
               onPress={() => onStartRitual(min)}
             >
-              <Text style={[styles.quickText, { color: primary }]}>{min}分钟</Text>
+              <Text style={[styles.quickText, { color: primary }]}>{min}{T('sleepMinutes')}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -300,24 +302,24 @@ export default function BedtimeReminderModal({
         <View style={styles.secondaryRow}>
           <TouchableOpacity
             onPress={() => {
-              useUiStore.getState().showToast('10 分钟后再次提醒', 'info');
+              useUiStore.getState().showToast(T('sleepSnoozeIn10Min'), 'info');
               onSnooze();
             }}
             style={[styles.cancelBtn, { borderColor: `${sub}50` }]}
           >
-            <Text style={[styles.cancelText, { color: `${sub}DD` }]}>稍后提醒</Text>
-            <Text style={[styles.snoozeHint, { color: `${sub}77` }]}>剩余 {3 - snoozeCount} 次</Text>
+            <Text style={[styles.cancelText, { color: `${sub}DD` }]}>{T('sleepRemindLater')}</Text>
+            <Text style={[styles.snoozeHint, { color: `${sub}77` }]}>{T('sleepRemaining')} {3 - snoozeCount} {T('sleepTimes')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              Alert.alert('跳过今晚', '确定今晚不再提醒？', [
-                { text: '取消', style: 'cancel' },
-                { text: '确定', style: 'destructive', onPress: onSkipTonight },
+              Alert.alert(T('sleepSkipTonight'), T('sleepSkipTonightConfirm'), [
+                { text: T('commonCancel'), style: 'cancel' },
+                { text: T('commonConfirm'), style: 'destructive', onPress: onSkipTonight },
               ]);
             }}
             style={[styles.cancelBtn, { borderColor: `${sub}50` }]}
           >
-            <Text style={[styles.cancelText, { color: `${sub}DD` }]}>跳过今晚</Text>
+            <Text style={[styles.cancelText, { color: `${sub}DD` }]}>{T('sleepSkipTonight')}</Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -163,7 +163,7 @@ export default function HomePage(props: HomePageProps) {
         <View style={{ borderRadius: 20, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, padding: 20, marginBottom: 16, alignItems: 'center', overflow: 'hidden' }}>
           {/* Top accent bar */}
           <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, backgroundColor: TH.primary, opacity: 0.6 }} />
-          <Text style={{ fontSize: 13, fontWeight: '600', color: TH.primary, marginBottom: 10, alignSelf: 'flex-start', letterSpacing: 1 }}>十 二 时 辰</Text>
+          <Text style={{ fontSize: 13, fontWeight: '600', color: TH.primary, marginBottom: 10, alignSelf: 'flex-start', letterSpacing: 1 }}>{T('sleepTwelvePeriods')}</Text>
           <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 10, marginBottom: 6 }}>
             <Text style={{ fontSize: 26, fontWeight: '900', color: TH.text }}>{currentPeriod.nameZh}</Text>
             <View style={{ paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6, backgroundColor: `${TH.primary}15` }}>
@@ -175,7 +175,7 @@ export default function HomePage(props: HomePageProps) {
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 10 }}>
             <Moon size={15} color={TH.sub} />
             <Text style={{ fontSize: 13, color: TH.sub }}>
-              {`距${nextSleep.period.nameZh}还有 ${Math.floor(nextSleep.minutesUntil / 60)}h${nextSleep.minutesUntil % 60}m`}
+              {T('sleepDistance', { time: `${Math.floor(nextSleep.minutesUntil / 60)}h${nextSleep.minutesUntil % 60}m` })}
             </Text>
           </View>
         </View>
@@ -183,25 +183,25 @@ export default function HomePage(props: HomePageProps) {
         {/* ── SleepGoalCard ── */}
         <View style={{ borderRadius: 20, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, padding: 20, marginBottom: 16 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: TH.text }}>睡眠目标</Text>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: TH.text }}>{T('sleepGoal')}</Text>
             <TouchableOpacity onPress={openGoalModal}>
-              <Text style={{ fontSize: 14, color: TH.primary, fontWeight: '600' }}>编辑</Text>
+              <Text style={{ fontSize: 14, color: TH.primary, fontWeight: '600' }}>{T('commonEdit')}</Text>
             </TouchableOpacity>
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
             <View style={{ alignItems: 'center', gap: 4 }}>
               <Moon size={16} color={TH.primary} />
-              <Text style={{ fontSize: 14, color: TH.sub }}>目标入睡</Text>
+              <Text style={{ fontSize: 14, color: TH.sub }}>{T('sleepGoalBedtime')}</Text>
               <Text style={{ fontSize: 22, fontWeight: '800', color: TH.text }}>{sleepGoal.targetBedtime}</Text>
             </View>
             <View style={{ alignItems: 'center', gap: 4 }}>
               <Sun size={16} color="#F59E0B" />
-              <Text style={{ fontSize: 14, color: TH.sub }}>目标起床</Text>
+              <Text style={{ fontSize: 14, color: TH.sub }}>{T('sleepGoalWake')}</Text>
               <Text style={{ fontSize: 22, fontWeight: '800', color: TH.text }}>{sleepGoal.targetWake}</Text>
             </View>
             <View style={{ alignItems: 'center', gap: 4 }}>
               <Clock size={16} color="#10B981" />
-              <Text style={{ fontSize: 14, color: TH.sub }}>目标时长</Text>
+              <Text style={{ fontSize: 14, color: TH.sub }}>{T('sleepGoalHours')}</Text>
               <Text style={{ fontSize: 22, fontWeight: '800', color: TH.text }}>{sleepGoal.targetHours}h</Text>
             </View>
           </View>
@@ -210,26 +210,26 @@ export default function HomePage(props: HomePageProps) {
         {/* ── Ritual Entrance ── */}
         <View style={{ borderRadius: 20, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, padding: 24, alignItems: 'center', gap: 8, marginBottom: 16 }}>
           <Moon size={28} color={TH.primary} />
-          <Text style={{ fontSize: 18, fontWeight: '700', color: TH.text }}>调眠仪轨</Text>
-          <Text style={{ fontSize: 14, color: TH.sub }}>选择仪轨时长</Text>
+          <Text style={{ fontSize: 18, fontWeight: '700', color: TH.text }}>{T('sleepRitualEntrance')}</Text>
+          <Text style={{ fontSize: 14, color: TH.sub }}>{T('sleepBarrierSelect')}</Text>
           <View style={{ flexDirection: 'row', gap: 12, marginTop: 8 }}>
             {[15, 20, 30].map(min => (
               <TouchableOpacity key={min} onPress={() => onStartBarrier(min)}
                 style={{ paddingHorizontal: 24, paddingVertical: 12, borderRadius: 20, borderWidth: 1, borderColor: TH.border }}>
-                <Text style={{ fontSize: 15, fontWeight: '600', color: TH.text }}>{min}分钟</Text>
+                <Text style={{ fontSize: 15, fontWeight: '600', color: TH.text }}>{min}{T('sleepMinutes')}</Text>
               </TouchableOpacity>
             ))}
           </View>
           <TouchableOpacity onPress={onQuickGratitude} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 12, padding: 8 }}>
             <Heart size={16} color={TH.sub} />
-            <Text style={{ fontSize: 15, color: TH.sub }}>快速感恩</Text>
+            <Text style={{ fontSize: 15, color: TH.sub }}>{T('sleepQuickGratitude')}</Text>
           </TouchableOpacity>
         </View>
 
         {/* ── TrendChart ── */}
         <View style={{ borderRadius: 20, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, padding: 20, marginBottom: 16 }}>
           <Text style={{ fontSize: 14, fontWeight: '700', color: TH.text, marginBottom: 12 }}>
-            本周趋势{avgDuration > 0 ? ` · 平均 ${Math.floor(avgDuration / 60)}h${avgDuration % 60}m` : ''}
+            {T('sleepWeekTrend')}{avgDuration > 0 ? ` · ${T('sleepAverage')} ${Math.floor(avgDuration / 60)}h${avgDuration % 60}m` : ''}
           </Text>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', height: 80, gap: 4 }}>
             {trendData.map((d, i) => {
@@ -238,7 +238,7 @@ export default function HomePage(props: HomePageProps) {
               return (
                 <TouchableOpacity key={d.date} onPress={() => setTrendDetail(d)} style={{ flex: 1, alignItems: 'center', gap: 4 }}>
                   <View style={{ width: '100%', height: barH, borderRadius: 4, backgroundColor: color, minHeight: 4 }} />
-                  <Text style={{ fontSize: 10, color: TH.sub }}>{['日', '一', '二', '三', '四', '五', '六'][i]}</Text>
+                  <Text style={{ fontSize: 10, color: TH.sub }}>{[T('weekdaySun'), T('weekdayMon'), T('weekdayTue'), T('weekdayWed'), T('weekdayThu'), T('weekdayFri'), T('weekdaySat')][i]}</Text>
                 </TouchableOpacity>
               );
             })}
@@ -249,7 +249,7 @@ export default function HomePage(props: HomePageProps) {
         {sleepStreak > 0 && (
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 16 }}>
             <Text style={{ fontSize: 28 }}>🔥</Text>
-            <Text style={{ fontSize: 22, fontWeight: '800', color: '#F59E0B' }}>连续记录 {sleepStreak} 天</Text>
+            <Text style={{ fontSize: 22, fontWeight: '800', color: '#F59E0B' }}>{T('sleepStreakRecord')} {sleepStreak} {T('sleepDayUnit')}</Text>
           </View>
         )}
 
@@ -259,7 +259,7 @@ export default function HomePage(props: HomePageProps) {
           onPress={() => nav.navigate('SleepHistory' as never)}
         >
           <BarChart3 size={18} color={TH.primary} />
-          <Text style={{ fontSize: 15, fontWeight: '600', color: TH.primary }}>查看睡眠历史</Text>
+          <Text style={{ fontSize: 15, fontWeight: '600', color: TH.primary }}>{T('sleepViewHistory')}</Text>
           <ChevronRight size={18} color={TH.primary} />
         </TouchableOpacity>
       </ScrollView>
@@ -296,7 +296,7 @@ export default function HomePage(props: HomePageProps) {
               <View style={{ height: 1, backgroundColor: TH.border, marginVertical: 16 }} />
               <Text style={{ fontSize: 14, color: TH.sub, textAlign: 'center' }}>{`${clockDetail.startHour}:00 - ${(clockDetail.startHour + 1) % 24}:00`}</Text>
               <TouchableOpacity onPress={() => setClockDetail(null)} style={{ marginTop: 20, alignItems: 'center', padding: 12, borderRadius: 12, backgroundColor: TH.card }}>
-                <Text style={{ fontSize: 15, fontWeight: '600', color: TH.primary }}>关闭</Text>
+                <Text style={{ fontSize: 15, fontWeight: '600', color: TH.primary }}>{T('commonClose')}</Text>
               </TouchableOpacity>
             </View>
           </TouchableOpacity>
@@ -338,38 +338,38 @@ export default function HomePage(props: HomePageProps) {
                 <View style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, backgroundColor: `${TH.primary}15` }}>
                   <Text style={{ fontSize: 16, fontWeight: '700', color: TH.primary }}>{computedGoalHours}h</Text>
                 </View>
-                <Text style={{ fontSize: 12, color: TH.sub, opacity: 0.7 }}>（自动计算）</Text>
+                <Text style={{ fontSize: 12, color: TH.sub, opacity: 0.7 }}>{T('sleepAutoCalculate')}</Text>
               </View>
 
               {/* 高级设置折叠区 */}
               <TouchableOpacity onPress={() => setShowAdvanced(!showAdvanced)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
-                <Text style={{ fontSize: 13, color: TH.sub, fontWeight: '600' }}>高级设置</Text>
+                <Text style={{ fontSize: 13, color: TH.sub, fontWeight: '600' }}>{T('sleepAdvancedSettings')}</Text>
                 <Text style={{ fontSize: 12, color: TH.sub }}>{showAdvanced ? '▲' : '▼'}</Text>
               </TouchableOpacity>
               {showAdvanced && (
                 <View style={{ marginBottom: 16, padding: 12, borderRadius: 12, backgroundColor: TH.card }}>
-                  <Text style={{ fontSize: 13, color: TH.sub, marginBottom: 8 }}>周末目标（可选）</Text>
+                  <Text style={{ fontSize: 13, color: TH.sub, marginBottom: 8 }}>{T('sleepWeekendGoalOptional')}</Text>
                   <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12 }}>
                     <View style={{ flex: 1 }}>
-                      <Text style={{ fontSize: 12, color: TH.sub, marginBottom: 4 }}>周末入睡</Text>
+                      <Text style={{ fontSize: 12, color: TH.sub, marginBottom: 4 }}>{T('sleepWeekendBedtime')}</Text>
                       <TouchableOpacity
                         onPress={() => { setShowGoalModal(false); setGoalPickerType('weekendBedtime'); }}
                         style={{ backgroundColor: TH.bg, borderRadius: 8, padding: 10, borderWidth: 1, borderColor: TH.border }}
                       >
-                        <Text style={{ fontSize: 14, color: editWeekendBedtime ? TH.text : TH.sub }}>{editWeekendBedtime || '不设'}</Text>
+                        <Text style={{ fontSize: 14, color: editWeekendBedtime ? TH.text : TH.sub }}>{editWeekendBedtime || T('sleepNotSet')}</Text>
                       </TouchableOpacity>
                     </View>
                     <View style={{ flex: 1 }}>
-                      <Text style={{ fontSize: 12, color: TH.sub, marginBottom: 4 }}>周末起床</Text>
+                      <Text style={{ fontSize: 12, color: TH.sub, marginBottom: 4 }}>{T('sleepWeekendWake')}</Text>
                       <TouchableOpacity
                         onPress={() => { setShowGoalModal(false); setGoalPickerType('weekendWake'); }}
                         style={{ backgroundColor: TH.bg, borderRadius: 8, padding: 10, borderWidth: 1, borderColor: TH.border }}
                       >
-                        <Text style={{ fontSize: 14, color: editWeekendWake ? TH.text : TH.sub }}>{editWeekendWake || '不设'}</Text>
+                        <Text style={{ fontSize: 14, color: editWeekendWake ? TH.text : TH.sub }}>{editWeekendWake || T('sleepNotSet')}</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
-                  <Text style={{ fontSize: 13, color: TH.sub, marginBottom: 8 }}>提醒阶段</Text>
+                  <Text style={{ fontSize: 13, color: TH.sub, marginBottom: 8 }}>{T('sleepReminderStages')}</Text>
                   <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
                     {[60, 30, 15, 5].map(min => {
                       const selected = editStages.includes(min);
@@ -381,7 +381,7 @@ export default function HomePage(props: HomePageProps) {
                           )}
                           style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, borderWidth: 1, borderColor: selected ? TH.primary : TH.border, backgroundColor: selected ? `${TH.primary}20` : 'transparent' }}
                         >
-                          <Text style={{ fontSize: 13, color: selected ? TH.primary: TH.sub }}>{min}分钟前</Text>
+                          <Text style={{ fontSize: 13, color: selected ? TH.primary: TH.sub }}>{min}{T('sleepMinutesBefore')}</Text>
                         </TouchableOpacity>
                       );
                     })}

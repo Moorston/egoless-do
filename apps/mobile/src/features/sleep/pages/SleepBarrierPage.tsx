@@ -90,7 +90,7 @@ export default function SleepBarrierPage(props: Props) {
         {/* Practice progress */}
         {completedPractice.length > 0 && (
           <View style={styles.practiceProgress}>
-            <Text style={styles.practiceProgressTitle}>{T('sleepPracticeProgress') || '修行进度'}</Text>
+            <Text style={styles.practiceProgressTitle}>{T('sleepPracticeProgress')}</Text>
             {completedPractice.map(p => (
               <Text key={p} style={styles.practiceProgressItem}>✓ {p}</Text>
             ))}
@@ -103,8 +103,8 @@ export default function SleepBarrierPage(props: Props) {
           {[
             { type: 'breathing', Icon: Wind, label: T('sleepChooseBreath') },
             { type: 'meditation', Icon: Brain, label: T('sleepChooseMeditate') },
-            { type: 'mantra', Icon: BellRing, label: '持咒' },
-            { type: 'reading', Icon: BookOpen, label: '阅读' },
+            { type: 'mantra', Icon: BellRing, label: T('sleepChooseMantra') },
+            { type: 'reading', Icon: BookOpen, label: T('sleepChooseReading') },
           ].map(({ type, Icon, label }) => (
             <TouchableOpacity key={type} style={styles.barrierChoiceBtn} onPress={() => onChoosePractice(type)}>
               <Icon size={24} color="#8B5CF6" />

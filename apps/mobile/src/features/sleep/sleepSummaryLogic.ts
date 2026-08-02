@@ -31,13 +31,15 @@ export function findWorkStateLabelKey(workState: WorkState | null): string | nul
   return opt ? opt.labelKey : null;
 }
 
-/** Map quality (1-5) to a short Chinese label. */
+/** Map quality (1-5) to a short Chinese label.
+ *  Note: These are i18n keys, not display strings. Use with T() to get translated text.
+ */
 export function qualityLabel(quality: number): string {
-  if (quality >= 5) return '很好';
-  if (quality >= 4) return '好';
-  if (quality >= 3) return '一般';
-  if (quality >= 2) return '偏差';
-  if (quality >= 1) return '差';
+  if (quality >= 5) return 'sleepQualityExcellent';
+  if (quality >= 4) return 'sleepQualityGood';
+  if (quality >= 3) return 'sleepQualityAverage';
+  if (quality >= 2) return 'sleepQualityPoor';
+  if (quality >= 1) return 'sleepQualityBad';
   return '';
 }
 
