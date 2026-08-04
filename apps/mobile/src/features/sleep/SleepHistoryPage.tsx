@@ -1,5 +1,4 @@
-import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, dateStr, yesterday, t, type Theme , SleepEntry , FONT_LABEL, FONT_SMALL, scaleFontSize} from '@egoless-do/core';
-import { formatSleepDuration } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, dateStr, yesterday, t, type Theme , SleepEntry , FONT_LABEL, FONT_SMALL, scaleFontSize, formatSleepDuration, type I18nKey} from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ChevronLeft, ChevronRight, Moon, Trash2, X, Heart } from 'lucide-react-native';
 import React, { useMemo, useState, useCallback } from 'react';
@@ -9,10 +8,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme, ScreenHeader, useT } from '../../components/UI';
 import { useRootNavigation, type MainTabParamList } from '../../navigation/hooks';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
-
-
-
-import type { I18nKey } from '@egoless-do/core';
 
 const WEEKDAY_KEYS: readonly I18nKey[] = ['weekdaySun', 'weekdayMon', 'weekdayTue', 'weekdayWed', 'weekdayThu', 'weekdayFri', 'weekdaySat'] as const;
 

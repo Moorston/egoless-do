@@ -166,7 +166,7 @@ export default function BedtimeReminderModal({
   useEffect(() => {
     if (visible) {
       // 轻触反馈
-      import('expo-haptics').then(Haptics => {
+      void import('expo-haptics').then(Haptics => {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
       });
     }
