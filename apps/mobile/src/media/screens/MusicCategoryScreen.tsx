@@ -6,9 +6,9 @@ import React, { useEffect, useCallback, useMemo } from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useTheme, useT } from '../../../components/UI';
-import { useRootNavigation } from '../../../navigation/hooks';
-import type { RootStackParamList } from '../../../navigation/hooks';
+import { useTheme, useT } from '../../components/UI';
+import { useRootNavigation } from '../../navigation/hooks';
+import type { RootStackParamList } from '../../navigation/hooks';
 import PlayerBar from '../components/PlayerBar';
 import TrackListItem from '../components/TrackListItem';
 import { useMusicStore, computeTracksByCategory } from '../useMusicStore';

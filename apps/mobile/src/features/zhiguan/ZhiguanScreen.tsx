@@ -12,7 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { useMusicStore } from '../music/useMusicStore';
+import { useMusicStore } from '../../media/useMusicStore';
 
 import SessionComplete from './SessionComplete';
 import ZhiguanSettingsSheet from './ZhiguanSettingsSheet';

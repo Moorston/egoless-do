@@ -4,7 +4,7 @@ import { Upload } from 'lucide-react-native';
 import React, { useCallback, useState } from 'react';
 import { TouchableOpacity, Text, Alert } from 'react-native';
 
-import { useTheme } from '../../../components/UI';
+import { useTheme } from '../../components/UI';
 import { useMusicStore } from '../useMusicStore';
 
 const log = createLogger('Music');

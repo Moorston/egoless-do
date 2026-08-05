@@ -43,31 +43,14 @@ module.exports = {
         case 'Literal':
           return typeof node.value === 'string';
         case 'TemplateLiteral':
-          return true;
         case 'TaggedTemplateExpression':
           return true;
-        case 'CallExpression': {
-          const callee = node.callee;
-          // String(...)
-          if (callee.type === 'Identifier' && callee.name === 'String') return true;
-          // T('...') / t('...') i18n
-          if (
-            callee.type === 'Identifier' &&
-            (callee.name === 'T' || callee.name === 't')
-          ) {
-            return true;
-          }
-          return false;
-        }
+        case 'CallExpression':
+          return isStringCall(node);
         case 'ConditionalExpression':
-          return (
-            isStringExpression(node.consequent) &&
-            isStringExpression(node.alternate)
-          );
+          return isStringExpression(node.consequent) && isStringExpression(node.alternate);
         case 'LogicalExpression':
-          return (
-            isStringExpression(node.left) && isStringExpression(node.right)
-          );
+          return isStringExpression(node.left) && isStringExpression(node.right);
         case 'JSXElement':
         case 'JSXFragment':
           return true;
@@ -76,77 +59,71 @@ module.exports = {
       }
     }
 
+    /** Check if a call expression produces a string */
+    function isStringCall(node) {
+      const callee = node.callee;
+      if (callee.type !== 'Identifier') return false;
+      // String(...) or T('...') / t('...')
+      return callee.name === 'String' || callee.name === 'T' || callee.name === 't';
+    }
+
     /** Heuristic: does the expression look numeric via AST shape */
     function looksNumericByShape(node) {
       if (!node) return false;
       switch (node.type) {
         case 'Literal':
           return typeof node.value === 'number';
-        case 'MemberExpression': {
-          const prop = node.property;
-          if (prop.type !== 'Identifier') return false;
-          // .length / .size / .count — always numeric
-          if (/\b(length|size|count)\b/.test(prop.name)) return true;
-          // numeric-sounding property names
-          if (
-            /\b(total|completed|reduced|duration|calories|minutes|seconds|hours|days|weeks|months|value|amount|price|km|ml|kg|reps|sets|streak|progress|percent|rate|average|avg|sum|kcal|kcalGoal|calGoal|waterGoal)\b/i.test(prop.name)
-          ) {
-            return true;
-          }
-          return false;
-        }
-        case 'CallExpression': {
-          const callee = node.callee;
-          // Math.round / Math.floor / Math.ceil / Math.max / Math.min / Math.abs
-          if (
-            callee.type === 'MemberExpression' &&
-            callee.object.type === 'Identifier' &&
-            callee.object.name === 'Math'
-          ) {
-            return true;
-          }
-          if (callee.type === 'Identifier' && callee.name === 'Number') return true;
-          if (callee.type === 'Identifier' && callee.name === 'parseInt') return true;
-          if (callee.type === 'Identifier' && callee.name === 'parseFloat') return true;
-          // .reduce(...) — numeric accumulator pattern
-          if (
-            callee.type === 'MemberExpression' &&
-            callee.property.type === 'Identifier' &&
-            callee.property.name === 'reduce'
-          ) {
-            return true;
-          }
-          return false;
-        }
+        case 'MemberExpression':
+          return isNumericMember(node);
+        case 'CallExpression':
+          return isNumericCall(node);
         case 'BinaryExpression':
-          // arithmetic — always numeric
-          if (['+', '-', '*', '/', '%', '**'].includes(node.operator)) {
-            // For +, if either side is clearly a string literal/template/T(), treat as string concat
-            if (node.operator === '+') {
-              if (isStringExpression(node.left) || isStringExpression(node.right)) return false;
-            }
-            return true;
-          }
-          return false;
+          return isNumericBinary(node);
         case 'UnaryExpression':
-          // Only flag unary operators that produce numeric values: -, +, ~
-          // Do NOT flag ! (logical not, always boolean) or typeof (always string)
           return ['-', '+', '~'].includes(node.operator);
         case 'ConditionalExpression':
-          // Flag when branches are numeric (cond ? len : 0), or when test is an
-          // arithmetic/binary expression (count > 0 ? 'yes' : 'no').
-          return (
-            looksNumericByShape(node.consequent) ||
-            looksNumericByShape(node.alternate) ||
-            looksNumericByShape(node.test)
-          );
+          return isNumericConditional(node);
         case 'LogicalExpression':
-          return (
-            looksNumericByShape(node.left) || looksNumericByShape(node.right)
-          );
+          return looksNumericByShape(node.left) || looksNumericByShape(node.right);
         default:
           return false;
       }
+    }
+
+    /** Check if a member expression is numeric (.length, .count, .total, etc.) */
+    function isNumericMember(node) {
+      const prop = node.property;
+      if (prop.type !== 'Identifier') return false;
+      if (/\b(length|size|count)\b/.test(prop.name)) return true;
+      // numeric-sounding property names
+      const NUMERIC_PROPS = /\b(total|completed|reduced|duration|calories|minutes|seconds|hours|days|weeks|months|value|amount|price|km|ml|kg|reps|sets|streak|progress|percent|rate|average|avg|sum|kcal|kcalGoal|calGoal|waterGoal)\b/i;
+      return NUMERIC_PROPS.test(prop.name);
+    }
+
+    /** Check if a call expression is numeric (Math.*, Number, parseInt, .reduce) */
+    function isNumericCall(node) {
+      const callee = node.callee;
+      if (callee.type === 'MemberExpression' && callee.object.type === 'Identifier' && callee.object.name === 'Math') return true;
+      if (callee.type === 'Identifier' && ['Number', 'parseInt', 'parseFloat'].includes(callee.name)) return true;
+      // .reduce(...) — numeric accumulator
+      if (callee.type === 'MemberExpression' && callee.property.type === 'Identifier' && callee.property.name === 'reduce') return true;
+      return false;
+    }
+
+    /** Check if a binary expression is arithmetic */
+    function isNumericBinary(node) {
+      // For +, if either side is a string, treat as string concat
+      if (node.operator === '+') {
+        if (isStringExpression(node.left) || isStringExpression(node.right)) return false;
+      }
+      return ['+', '-', '*', '/', '%', '**'].includes(node.operator);
+    }
+
+    /** Check if a conditional expression is numeric */
+    function isNumericConditional(node) {
+      return looksNumericByShape(node.consequent) ||
+        looksNumericByShape(node.alternate) ||
+        looksNumericByShape(node.test);
     }
 
     function getJSXElementName(node) {

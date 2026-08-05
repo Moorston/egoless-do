@@ -4,7 +4,7 @@ import { Platform, InteractionManager } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation';
-import { AudioEngineProvider } from './src/features/music';
+import { AudioEngineProvider } from './src/media';
 import SplashScreen from './src/features/splash/SplashScreen';
 import { initApp } from './src/store/initApp';
 import { initSentry } from './src/sentry';
@@ -37,7 +37,7 @@ const PRELOAD_SCREEN_MODULES = [
   () => import('./src/features/sutra/SutraScreen'),
   () => import('./src/features/habits/HabitsScreen'),
   () => import('./src/features/stats/StatsScreen'),
-  () => import('./src/features/music/screens/MusicScreen'),
+  () => import('./src/media/screens/MusicScreen'),
   // Thin wrappers (preload so second-level lazy resolves instantly)
   () => import('./src/features/breathing/BreathingScreen'),
   () => import('./src/features/mantra/MantraScreen'),
@@ -66,7 +66,7 @@ const PRELOAD_SCREEN_MODULES = [
   () => import('./src/features/plan/PlanCreateScreen'),
   () => import('./src/features/plan/PlanDetailScreen'),
   () => import('./src/features/plan/PlanHistoryScreen'),
-  () => import('./src/features/music/screens/MusicCategoryScreen'),
+  () => import('./src/media/screens/MusicCategoryScreen'),
   () => import('./src/features/settings/RecycleBinScreen'),
   () => import('./src/features/settings/ProfileScreen'),
   () => import('./src/features/settings/AISettingsScreen'),

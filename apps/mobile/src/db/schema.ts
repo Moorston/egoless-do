@@ -31,13 +31,13 @@ export function openDatabase(): Promise<SQLite.SQLiteDatabase> {
   if (!_dbPromise) {
     _dbPromise = (async () => {
       try {
-        console.log('[DB] Opening database:', DB_NAME);
+        console.warn('[DB] Opening database:', DB_NAME);
         const instance = await SQLite.openDatabaseAsync(DB_NAME);
-        console.log('[DB] Database opened successfully');
+        console.warn('[DB] Database opened successfully');
         await initDatabase(instance);
-        console.log('[DB] Schema initialized');
+        console.warn('[DB] Schema initialized');
         await migrateDatabase(instance);
-        console.log('[DB] Migrations complete');
+        console.warn('[DB] Migrations complete');
         return instance;
       } catch (err) {
         console.error('[DB] Open failed:', err);

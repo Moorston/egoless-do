@@ -57,7 +57,7 @@ vi.mock('../../store/storageAdapter', () => ({
   setStorageAdapterTrigger: vi.fn(),
 }));
 
-vi.mock('../music/useMusicStore', () => ({
+vi.mock('../../media/useMusicStore', () => ({
   useMusicStore: { getState: vi.fn() },
 }));
 
@@ -90,7 +90,7 @@ describe('useSync (unit)', () => {
       const mockPatch = { habit: [{ id: 'h1', name: 'test' }] };
       const mockStore = { habits: [] };
 
-      vi.mocked(mergeSyncPatch)(mockStore as any, mockPatch as any);
+      vi.mocked(mergeSyncPatch)(mockStore as any, mockPatch as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
       expect(mergeSyncPatch).toHaveBeenCalledWith(mockStore, mockPatch);
     });

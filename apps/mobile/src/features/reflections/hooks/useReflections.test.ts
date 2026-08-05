@@ -52,7 +52,7 @@ describe('useReflections (unit)', () => {
       ];
       const filters = { search: 'test', tags: [], moods: [], dateRange: 'all', category: null, sortBy: 'newest' };
 
-      vi.mocked(filterReflections)(reflections as any, filters as any);
+      vi.mocked(filterReflections)(reflections as any, filters as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
       expect(filterReflections).toHaveBeenCalledWith(reflections, filters);
     });

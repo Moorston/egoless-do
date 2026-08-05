@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>egoless-do 大型系统架构蓝图 & 3-5 年演进规划</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --panel: #f8fafc;
+    --panel2: #f1f5f9;
+    --ink: #0f172a;
+    --muted: #475569;
+    --line: #cbd5e1;
+    --brand: #4f46e5;
+    --brand-soft: #eef2ff;
+    --green: #047857;
+    --green-soft: #ecfdf5;
+    --amber: #b45309;
+    --amber-soft: #fef3c7;
+    --red: #b91c1c;
+    --red-soft: #fee2e2;
+    --blue: #1d4ed8;
+    --blue-soft: #eff6ff;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    line-height: 1.65; font-size: 15px;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 28px 80px; }
+  header.hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: #fff; border-radius: 16px; padding: 34px 36px; margin-bottom: 26px;
+  }
+  header.hero h1 { margin: 0 0 8px; font-size: 26px; letter-spacing: .3px; }
+  header.hero p { margin: 0; opacity: .92; font-size: 14px; }
+  .tag { display: inline-block; background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35);
+    padding: 3px 10px; border-radius: 999px; font-size: 12px; margin: 4px 6px 0 0; }
+  h2 { font-size: 20px; margin: 40px 0 12px; padding-bottom: 8px; border-bottom: 2px solid var(--brand-soft); }
+  h3 { font-size: 16px; margin: 26px 0 8px; color: var(--brand); }
+  p { margin: 10px 0; }
+  .lead { font-size: 15.5px; color: var(--muted); }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; margin: 14px 0; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  @media (max-width: 820px){ .grid2,.grid3 { grid-template-columns: 1fr; } }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13.5px; }
+  th, td { border: 1px solid var(--line); padding: 9px 11px; text-align: left; vertical-align: top; }
+  th { background: var(--panel2); color: var(--ink); font-weight: 600; }
+  td code, p code, li code { font-family: var(--mono); font-size: 12.5px; background: var(--panel2);
+    padding: 1px 5px; border-radius: 4px; color: #be123c; }
+  .pill { display:inline-block; font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 6px; }
+  .p-good { background: var(--green-soft); color: var(--green); }
+  .p-bad { background: var(--red-soft); color: var(--red); }
+  .p-warn { background: var(--amber-soft); color: var(--amber); }
+  .p-info { background: var(--blue-soft); color: var(--blue); }
+  .p-brand { background: var(--brand-soft); color: var(--brand); }
+  .callout { border-left: 4px solid var(--brand); background: var(--brand-soft); padding: 12px 16px; border-radius: 8px; margin: 14px 0; }
+  .callout.warn { border-color: var(--amber); background: var(--amber-soft); }
+  .callout.danger { border-color: var(--red); background: var(--red-soft); }
+  .callout.good { border-color: var(--green); background: var(--green-soft); }
+  ul.tight { margin: 8px 0; padding-left: 22px; }
+  ul.tight li { margin: 5px 0; }
+  .kpi { display:flex; gap:10px; flex-wrap:wrap; margin:12px 0; }
+  .kpi .box { flex:1; min-width:140px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 14px; }
+  .kpi .num { font-size:22px; font-weight:800; color:var(--brand); }
+  .kpi .lab { font-size:12px; color:var(--muted); }
+  svg { width: 100%; height: auto; display: block; }
+  .phase { border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin:14px 0; background:#fff; }
+  .phase .ph { font-weight:800; color:var(--brand); font-size:15px; }
+  .footer { margin-top: 50px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12.5px; }
+  .adr { border:1px solid var(--line); border-radius:12px; padding:16px 20px; margin:14px 0; background:#fff; }
+  .adr h4 { margin: 0 0 6px; font-size:15px; }
+  .adr .meta { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .twocol { columns: 2; column-gap: 26px; }
+  @media (max-width: 820px){ .twocol { columns: 1; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>egoless-do · 大型系统架构蓝图与 3–5 年演进规划</h1>
+  <p>面向业务规模持续增长与功能灵活扩展的整体架构方案 — 由软件架构师基于当前代码库实测状态起草</p>
+  <div style="margin-top:12px">
+    <span class="tag">现状基准日 2026-08-05</span>
+    <span class="tag">PocketBase 0.38.2 / SQLite 单节点</span>
+    <span class="tag">客户端厚计算模型</span>
+    <span class="tag">模块化单体内核 + 抽取式服务</span>
+  </div>
+</header>
+
+<div class="callout good">
+  <strong>核心判断（先讲结论，避免架构太空步）。</strong>
+  你们的最大可扩展性优势是：<strong>几乎所有计算本来就在客户端</strong>——领域逻辑、RAG 检索、LLM 调用、本地 SQLite、通知排程、同步离线队列全部跑在设备上，用户增长几乎不增加服务器 CPU。因此本方案<strong>不主张"全面微服务化"</strong>，而是：<strong>保持客户端厚、解耦数据平面、仅对确实需服务端权威性的领域按触发点抽取服务</strong>。当前唯一的硬瓶颈是 <code>单个 PocketBase+SQLite 节点</code>，它同时承载数据写入、realtime SSE、同步写锁、以及（开启时）基于 PB 的限流——且没有任何缓存与消息队列作为减震层。架构演进的全部重心，就是把这块单点从"一切之母"降级为"可替换的存储协调者"。
+</div>
+
+<h2>一、现状真实体检（不是文件清单，是扩展天花板）</h2>
+<p class="lead">以下每一项均来自对仓库的只读核查，是后续所有决策的硬约束。</p>
+
+<div class="grid2">
+  <div class="card">
+    <h3 style="margin-top:0">✅ 今天已能水平扩展的</h3>
+    <ul class="tight">
+      <li><strong>移动客户端</strong>：业务计算 100% 在设备侧，用户增长≈零服务器成本。这是系统最强的伸缩资产。</li>
+      <li><strong>静态音频</strong>：打包进 App 二进制，由应用商店 CDN 分发，无需服务端。</li>
+      <li><strong>推送扇出</strong>：Expo Push 代理 FCM/APNs，网关只负责每批 100 个 token 的聚合，压力外移。</li>
+      <li><strong>nginx</strong>：本身无状态可复制（但当前 <code>upstream auth-api</code> 硬编码单后端，限流状态按实例翻倍）。</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">🔴 硬性单节点瓶颈</h3>
+    <ul class="tight">
+      <li><strong>PocketBase + SQLite</strong>：单进程、单写者、宿主绑定挂载、<code>container_name</code> 写死、零复制。同时服务：全部同步写、每条 SSE 实时连接、auth 记录、push token、以及（开启时）每次限流的读+写。</li>
+      <li><strong>Hono 网关不可复制</strong>：<code>better-sqlite3</code> 单进程、三处<strong>进程内</strong>存储（限流 / MFA 挑战 / 推送限流）。第二个实例会静默翻倍限流并作废进行中的 MFA 登录。</li>
+      <li><strong>无缓存、无队列</strong>：没有 Redis，没有消息代理，所有请求同步终止于 SQLite，唯一缓冲是每设备客户端发件箱。</li>
+      <li><strong>正确性天花板</strong>：冲突解决是整记录 LWW（基于客户端 <code>updatedAt</code>），无 CRDT / 版本向量；每用户设备数上升后静默字段丢失概率增加。</li>
+    </ul>
+  </div>
+</div>
+
+<table>
+  <tr><th>维度</th><th>现状事实（实测）</th><th>扩展影响</th></tr>
+  <tr><td>数据存储引擎</td><td>PB <code>0.38.2</code> 内置 SQLite；<code>pb_data/data.db</code> ≈ 2.6MB；无 Postgres/复制/<code>litestream</code></td><td class="p-bad">单写者天花板；写放大（<code>/api/sync/push</code> 在请求内串行 <code>$app.save()</code>）</td></tr>
+  <tr><td>缓存层</td><td>无任何 Redis/Memcached；限流/MFA/推送均为进程内 <code>Map</code>；AI 缓存为设备端 LRU(50/5min)</td><td class="p-bad">多实例即失效；重启丢 MFA 挑战</td></tr>
+  <tr><td>消息/事件总线</td><td>无 Kafka/RabbitMQ/NATS/BullMQ；唯一"队列"是客户端 SQLite 发件箱（2000 容量）</td><td class="p-bad">服务端无缓冲、无死信、无异步解耦</td></tr>
+  <tr><td>对象存储</td><td>无 S3/MinIO/COS；<code>pb_schema.json</code> 中 <code>file</code> 类型字段数为 <strong>0</strong>；持咒/经文音频走"客户端下载未定义主机的 URL"</td><td class="p-warn">远程音频无 CDN/源站；缺字段即降级 TTS</td></tr>
+  <tr><td>多端同步</td><td>整记录 LWW + 服务端权威平局；字段级 delta 仅省体积不提精度；无 CRDT</td><td class="p-warn">设备数↑ → 静默数据丢失风险</td></tr>
+  <tr><td>AI / RAG</td><td>100% 客户端；用户 API Key 作为同步实体穿越同步管线；检索为关键词打分，无向量库</td><td class="p-warn">无服务端管控点（成本/密钥轮换/审计/滥用）</td></tr>
+  <tr><td>通知</td><td><code>expo-notifications</code> 设备侧排程；<strong>无服务端调度器</strong>；服务端仅 1 个 cron（清会话）</td><td class="p-warn">应用卸载/系统丢弃本地排程即漏提醒</td></tr>
+  <tr><td>配置漂移</td><td>两份 <code>docker-compose</code> 拓扑不一致；<code>nginx.conf</code> 未纳入任何 compose；<code>Dockerfile.web</code> 构建不存在的 <code>apps/web</code></td><td class="p-warn">不可复现部署；死配置会失败</td></tr>
+</table>
+
+<div class="callout warn">
+  <strong>架构师提示：</strong>这些不是"技术债清单"，而是<strong>抽服务的优先级排序器</strong>。凡是"服务端需权威 + 写多 / 需异步 + 需管控"的领域，才值得抽取；纯客户端能力（RAG 检索、本地排程）应继续留在设备侧以省服务器成本。
+</div>
+
+<h2>二、架构原则（约束抽象，杜绝过度设计）</h2>
+<div class="grid3">
+  <div class="card"><strong>① 客户端保持厚</strong><p class="lead" style="font-size:13px">用户侧计算是零成本伸缩。任何"为了优雅"把客户端逻辑搬回服务端的提议，默认否决。</p></div>
+  <div class="card"><strong>② 数据平面先解耦</strong><p class="lead" style="font-size:13px">单点 PB 是第一风险。先于任何功能扩张，先把同步写、缓存、媒体从单节点卸载。</p></div>
+  <div class="card"><strong>③ 按触发点抽服务</strong><p class="lead" style="font-size:13px">不预设微服务。只有当某领域越过"写吞吐 / 异步需求 / 管控需求"阈值，才抽取，且保留回退路径。</p></div>
+  <div class="card"><strong>④ 可逆优先</strong><p class="lead" style="font-size:13px">优先选易回退的决策（特性开关、事件日志可重放、按服务分库）而非"最优但锁定"的方案。</p></div>
+  <div class="card"><strong>⑤ 文档决策非设计</strong><p class="lead" style="font-size:13px">每条关键决策写 ADR，记录"放弃了什么"，而非只记"做了什么"。</p></div>
+  <div class="card"><strong>⑥ 模块化边界即反腐层</strong><p class="lead" style="font-size:13px">服务间、客户端与 PB 间全部经明确定义的接口（核心已有的 §2.1 决策树升级为正式契约）。</p></div>
+</div>
+
+<h2>三、分层架构（C4 视角：当前 → 目标）</h2>
+
+<h3>当前（C0）：客户端厚 + 单点服务端</h3>
+<div class="card">
+<svg viewBox="0 0 680 250" role="img" aria-label="当前架构">
+  <rect x="0" y="0" width="680" height="250" fill="#ffffff"/>
+  <!-- Client -->
+  <rect x="20" y="20" width="280" height="80" rx="10" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
+  <text x="34" y="44" fill="#0f172a" font-size="13" font-weight="700">移动客户端 (RN+Expo) — 厚计算</text>
+  <text x="34" y="64" fill="#334155" font-size="11">领域逻辑·RAG·LLM·本地SQLite·离线发件箱·通知排程</text>
+  <text x="34" y="82" fill="#334155" font-size="11">直连 PB /realtime SSE（绕过网关）</text>
+  <!-- Gateway -->
+  <rect x="340" y="20" width="320" height="55" rx="10" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.5"/>
+  <text x="354" y="44" fill="#0f172a" font-size="13" font-weight="700">Hono 网关 (BFF, 单节点)</text>
+  <text x="354" y="64" fill="#334155" font-size="11">auth·限流·路由 · better-sqlite3 + 进程内状态</text>
+  <!-- PB -->
+  <rect x="340" y="100" width="320" height="60" rx="10" fill="#fee2e2" stroke="#b91c1c" stroke-width="1.5"/>
+  <text x="354" y="124" fill="#0f172a" font-size="13" font-weight="700">PocketBase 0.38 · SQLite 单节点 ⚠</text>
+  <text x="354" y="144" fill="#7f1d1d" font-size="11">数据+同步写+realtime+限流 · 无复制 · 宿主绑定</text>
+  <!-- nginx -->
+  <rect x="20" y="170" width="280" height="55" rx="10" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="34" y="194" fill="#0f172a" font-size="13" font-weight="700">nginx 反代（未纳入 compose）</text>
+  <text x="34" y="214" fill="#334155" font-size="11">硬编码单 upstream · 限流按实例翻倍</text>
+  <!-- arrows -->
+  <line x1="300" y1="60" x2="340" y2="48" stroke="#475569" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="360" y1="75" x2="360" y2="100" stroke="#475569" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="160" y1="100" x2="160" y2="170" stroke="#475569" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="340" y1="197" x2="340" y2="130" stroke="#475569" stroke-width="1.5" marker-end="url(#a)"/>
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#475569"/></marker></defs>
+</svg>
+</div>
+
+<h3>目标（C3，3 年内）：客户端厚 + 网关无状态 + 抽取式领域服务 + 解耦数据平面</h3>
+<div class="card">
+<svg viewBox="0 0 680 470" role="img" aria-label="目标架构">
+  <rect x="0" y="0" width="680" height="470" fill="#ffffff"/>
+  <!-- Client layer -->
+  <rect x="20" y="16" width="640" height="58" rx="10" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
+  <text x="34" y="38" fill="#0f172a" font-size="13" font-weight="700">① 客户端层（离线优先 · 厚领域逻辑）</text>
+  <text x="34" y="58" fill="#334155" font-size="11">Mobile (RN) · 未来 Web/Desktop 薄壳复用同一 core（packages/core 可移植）</text>
+
+  <!-- Edge -->
+  <rect x="20" y="88" width="640" height="56" rx="10" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.5"/>
+  <text x="34" y="110" fill="#0f172a" font-size="13" font-weight="700">② 边缘 / 网关层（无状态 · 可复制）</text>
+  <text x="34" y="130" fill="#334155" font-size="11">nginx(托管) → Hono BFF：auth·聚合·限流(Redis)·API 网关 · 多实例 HPA</text>
+
+  <!-- Services -->
+  <rect x="20" y="160" width="640" height="120" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="34" y="180" fill="#0f172a" font-size="12.5" font-weight="700">③ 领域服务层（抽取式 · 各持存储 · 经反腐层通信）</text>
+  <rect x="34" y="190" width="140" height="38" rx="8" fill="#ecfdf5" stroke="#047857"/><text x="44" y="213" fill="#064e3b" font-size="11">Auth 服务</text>
+  <rect x="184" y="190" width="140" height="38" rx="8" fill="#ecfdf5" stroke="#047857"/><text x="194" y="213" fill="#064e3b" font-size="11">Sync 服务</text>
+  <rect x="334" y="190" width="150" height="38" rx="8" fill="#fef3c7" stroke="#b45309"/><text x="344" y="213" fill="#78350f" font-size="11">AI 网关+RAG</text>
+  <rect x="494" y="190" width="150" height="38" rx="8" fill="#fef3c7" stroke="#b45309"/><text x="504" y="213" fill="#78350f" font-size="11">通知服务+调度</text>
+  <rect x="34" y="234" width="180" height="38" rx="8" fill="#eef2ff" stroke="#4f46e5"/><text x="44" y="257" fill="#3730a3" font-size="11">洞察/分析(读模型)</text>
+  <rect x="224" y="234" width="170" height="38" rx="8" fill="#eef2ff" stroke="#4f46e5"/><text x="234" y="257" fill="#3730a3" font-size="11">内容/媒体服务</text>
+  <rect x="404" y="234" width="160" height="38" rx="8" fill="#f1f5f9" stroke="#94a3b8"/><text x="414" y="257" fill="#334155" font-size="11">未来：订阅/计费</text>
+
+  <!-- Event bus -->
+  <rect x="20" y="294" width="640" height="46" rx="10" fill="#fce7f3" stroke="#db2777" stroke-width="1.5"/>
+  <text x="34" y="314" fill="#0f172a" font-size="12.5" font-weight="700">④ 异步 / 事件层</text>
+  <text x="34" y="332" fill="#831843" font-size="11">消息总线 (NATS/Kafka) · 作业队列 · 同步事件日志(可重放) · 解耦写/读/推送/分析</text>
+
+  <!-- Data plane -->
+  <rect x="20" y="354" width="640" height="100" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="34" y="374" fill="#0f172a" font-size="12.5" font-weight="700">⑤ 数据平面（每服务可独立库 · 读写分离）</text>
+  <rect x="34" y="384" width="115" height="40" rx="8" fill="#fff" stroke="#475569"/><text x="44" y="408" fill="#334155" font-size="11">Postgres(主)</text>
+  <rect x="159" y="384" width="115" height="40" rx="8" fill="#fff" stroke="#475569"/><text x="169" y="408" fill="#334155" font-size="11">读副本</text>
+  <rect x="284" y="384" width="115" height="40" rx="8" fill="#fff" stroke="#475569"/><text x="294" y="408" fill="#334155" font-size="11">Redis</text>
+  <rect x="409" y="384" width="120" height="40" rx="8" fill="#fff" stroke="#475569"/><text x="419" y="408" fill="#334155" font-size="11">对象存储+CDN</text>
+  <rect x="539" y="384" width="115" height="40" rx="8" fill="#fff" stroke="#475569"/><text x="549" y="408" fill="#334155" font-size="11">向量库</text>
+  <text x="34" y="442" fill="#475569" font-size="10.5">PocketBase 退居为"认证+同步协调者"（可选 Postgres 后端），不再是唯一写入瓶颈</text>
+
+  <defs><marker id="b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#475569"/></marker></defs>
+  <line x1="340" y1="74" x2="340" y2="88" stroke="#475569" stroke-width="1.5" marker-end="url(#b)"/>
+  <line x1="340" y1="144" x2="340" y2="160" stroke="#475569" stroke-width="1.5" marker-end="url(#b)"/>
+  <line x1="340" y1="280" x2="340" y2="294" stroke="#475569" stroke-width="1.5" marker-end="url(#b)"/>
+  <line x1="340" y1="340" x2="340" y2="354" stroke="#475569" stroke-width="1.5" marker-end="url(#b)"/>
+</svg>
+</div>
+
+<h2>四、核心模块 / 限界上下文划分</h2>
+<p class="lead">以领域驱动划分限界上下文（Bounded Context）。<strong>关键原则：</strong>上下文内部自治，上下文之间只经"反腐层（ACL）"通信；客户端与 PB 之间的同步协议本身就是第一道反腐层。</p>
+
+<table>
+  <tr><th>限界上下文</th><th>职责</th><th>当前归属</th><th>目标归属</th><th>抽取触发点</th></tr>
+  <tr><td>Identity & Auth</td><td>登录/注册/微信/MFA/RBAC/审计/限流</td><td>网关(Hono)+PB 安全集合</td><td>网关 + Auth 服务（密钥库外置）</td><td>已抽取；仅待无状态化</td></tr>
+  <tr><td>Cultivation Records</td><td>打卡（持咒/禅修/运动/素食/止语…）</td><td>客户端 + PB 集合</td><td>客户端为主 + Sync 服务落库</td><td>始终客户端权威（离线优先）</td></tr>
+  <tr><td>Sync & Multi-device</td><td>多端合并、冲突、发件箱、实时</td><td>PB hooks + 客户端引擎</td><td><span class="p-warn">Sync 服务 + 事件日志</span></td><td><strong>写吞吐越过单 PB → 立即抽</strong></td></tr>
+  <tr><td>Meditation / Music Media</td><td>音频播放、冥想音乐、呼吸引导</td><td>客户端 features/music（应提升共享层）</td><td>客户端共享媒体层 + 媒体服务(CDN)</td><td>远程音频需求增长 → 媒体服务</td></tr>
+  <tr><td>AI Companion (RAG)</td><td>智能问答、情绪陪伴、引导</td><td>100% 客户端 · 用户 Key 同步</td><td><span class="p-warn">AI 网关（密钥库/成本帽/向量RAG）</span></td><td><strong>需成本管控/合规 → 必抽</strong></td></tr>
+  <tr><td>Insights / Analytics</td><td>修行趋势、关系图、复盘分析</td><td>客户端计算 + core 纯函数</td><td>读模型(CQRS) + 分析服务</td><td>读多写少 → 读副本即可，暂不必抽</td></tr>
+  <tr><td>Notifications</td><td>提醒、推送、活动</td><td>客户端 expo-notifications</td><td><span class="p-warn">通知服务 + 服务端调度</span></td><td><strong>需服务端触达/留存 → 抽</strong></td></tr>
+  <tr><td>Content Library</td><td>经文/咒语/开示内容源</td><td>种子数据 + 同步实体</td><td>内容服务 + 搜索(可选 Meilisearch)</td><td>内容量/搜索需求上升 → 抽</td></tr>
+  <tr><td>Billing (未来)</td><td>订阅/会员/支付</td><td>无</td><td>独立服务（合规强隔离）</td><td>商业化启动时新建</td></tr>
+</table>
+
+<div class="callout">
+  <strong>反腐层（ACL）落点：</strong>① 客户端 ↔ Sync 服务的<strong>同步协议实体 schema</strong>（已定义在 <code>core/sync</code>，需升为正式版本化契约）；② 网关 ↔ 各服务的<strong>内部 API 契约</strong>；③ 当 PB 退居协调者时，服务通过 PB 的 <code>/api/collections</code> 或专属 SDK 访问，<strong>不直接依赖 PB 内部表结构</strong>。
+</div>
+
+<h2>五、服务间通信机制</h2>
+<table>
+  <tr><th>通信对</th><th>机制</th><th>选型理由 / 取舍</th></tr>
+  <tr><td>客户端 ↔ 网关</td><td>REST + SSE（实时）；未来可选 BFF GraphQL 聚合</td><td>沿用既有；<strong>放弃</strong>：早期上 GraphQL 增加客户端复杂度，待多端聚合需求明显再加</td></tr>
+  <tr><td>网关 ↔ 领域服务</td><td>内部 REST（同步短事务）/ gRPC（高吞吐内部调用）</td><td>REST 简单可逆；gRPC 仅在 Sync/AI 高吞吐链路引入</td></tr>
+  <tr><td>服务 ↔ 服务（异步）</td><td><span class="p-warn">消息总线（NATS 优先，Kafka 为大规模备选）</span></td><td>NATS 轻量、运维成本低、易回退；<strong>放弃</strong>：Kafka 早期过重。换来：事件溯源、削峰、重放能力</td></tr>
+  <tr><td>同步写路径</td><td>客户端发件箱 → Sync 服务 → <strong>追加式事件日志</strong>（不在请求内串行 save）</td><td><strong>放弃</strong>：请求内整批串行写入的吞吐与锁竞争；换来：写可水平扩展、断点重放、冲突可审计</td></tr>
+  <tr><td>读路径</td><td>CQRS：写主库 + 读副本/物化视图（洞察、关系图）</td><td>读多写少场景收益大；<strong>放弃</strong>：强一致实时读（修行数据最终一致可接受）</td></tr>
+  <tr><td>客户端实时</td><td>经网关代理的 SSE（不再直连 PB）；或 WebSocket 网关</td><td>修正当前"绕过网关直连 8090"的架构违例；统一入口、统一鉴权</td></tr>
+</table>
+
+<h2>六、数据存储策略（按域分治，读写分离）</h2>
+<div class="grid2">
+  <div class="card">
+    <h3 style="margin-top:0">持久化（OLTP）</h3>
+    <ul class="tight">
+      <li><strong>主库 Postgres</strong>：高写领域（同步日志、分析、通知、AI 作业）各自库或共享按服务分库。</li>
+      <li><strong>PocketBase 退居</strong>：保留为认证 + 同步协调者；若 PB 后续支持外部 DB 则切换后端，否则将其"协调者"职责（冲突仲裁、token 发牌）保留、数据落库外移。</li>
+      <li><strong>客户端 SQLite</strong>：离线真源，冲突在拉取/推送时由 Sync 服务仲裁。</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">缓存 / 高速 / 特殊存储</h3>
+    <ul class="tight">
+      <li><strong>Redis</strong>：网关限流、MFA 挑战、会话、AI 结果缓存、热点读模型。</li>
+      <li><strong>对象存储 + CDN</strong>：持咒/经文/用户音频，替代"未定义主机的远程下载"。</li>
+      <li><strong>向量库</strong>（pgvector 或 Qdrant）：AI 网关服务端 RAG 检索。</li>
+      <li><strong>搜索</strong>（Meilisearch/OpenSearch）：内容库规模化后的检索。</li>
+    </ul>
+  </div>
+</div>
+
+<div class="callout warn">
+  <strong>关于 PocketBase 0.38 的硬约束：</strong>当前版本<strong>仅支持 SQLite，无外部 DB 开关</strong>。因此"把 PB 换成 Postgres"不是一行配置，而是架构动作。两条可逆路径：<br>
+  (A) <strong>最小风险</strong>：保留 PB 作协调者，把高写领域（同步事件日志、分析、AI 作业）抽到独立 Postgres 服务，PB 仅存"协调元数据"——客户端离线模型不变。<br>
+  (B) <strong>等待/升级</strong>：待 PB 原生支持外部 DB 后再迁移数据平面。本蓝图默认采用 (A)，因为它不锁定、可逐步推进，且立即解除单点写瓶颈。
+</div>
+
+<h2>七、可扩展性设计要点</h2>
+
+<h3>7.1 水平扩展（Horizontal Scaling）</h3>
+<table>
+  <tr><th>组件</th><th>扩展方式</th><th>当前障碍 → 目标</th></tr>
+  <tr><td>网关(Hono)</td><td>k8s HPA，无状态</td><td>进程内 Map/单进程 sqlite → <strong>外置 Redis + 无状态化</strong></td></tr>
+  <tr><td>领域服务</td><td>k8s HPA，无状态 + 各自 DB 连接池</td><td>新建设计即无状态</td></tr>
+  <tr><td>数据写</td><td>事件日志分片 / 按用户哈希分区</td><td>单 PB 串行 save → 追加日志 + 消费者组</td></tr>
+  <tr><td>媒体</td><td>对象存储天然水平 + CDN 边缘</td><td>无源站 → 接入对象存储+CDN</td></tr>
+  <tr><td>缓存</td><td>Redis 集群</td><td>无 → 引入</td></tr>
+  <tr><td>读</td><td>读副本 + 物化视图</td><td>全读主库 → 读写分离</td></tr>
+</table>
+
+<h3>7.2 插件化 / 功能灵活扩展（Plugin Model）</h3>
+<p>这是"功能模块灵活扩展"的核心答案，且<strong>不增加服务端负担</strong>——因为新增修行类型本就主要发生在客户端。</p>
+<ul class="tight">
+  <li><strong>修行类型数据驱动化</strong>：将"持咒/禅修/运动/素食/止语"从硬编码 feature 变为<strong>数据驱动的插件描述</strong>（元数据：名称、图标、计分规则、是否需音频、是否需计时）。新增一种修行 = 配置 + 一个小 feature 模块，<strong>不改 core</strong>。</li>
+  <li><strong>Feature Registry</strong>：客户端启动时从核心注册表加载可用修行模块；core 只定义插件契约（接口），不感知具体实现。</li>
+  <li><strong>共享媒体层提升</strong>：把反复被 5 个模块直引的 <code>features/music</code> 提升为 <code>components/media/</code>（或独立 <code>packages/media</code>），以共享层契约消除 §2.2 红线复发——这本身即"插件底座"。</li>
+  <li><strong>服务端插件点</strong>：AI 网关以"provider 插件"接入不同 LLM；通知服务以"通道插件"接入 Expo/短信/未来自有通道。</li>
+</ul>
+
+<h3>7.3 微服务 / 模块化边界（何时抽、何时不抽）</h3>
+<div class="twocol">
+  <div>
+    <h4 style="color:var(--green);margin:6px 0">保持模块化单体（暂不抽）</h4>
+    <ul class="tight">
+      <li><code>packages/core</code> 领域模型：仍是单一可信源，按 bounded context 分包即可。</li>
+      <li>洞察/分析：经读副本满足，不必独立服务。</li>
+      <li>客户端各 feature：经 Feature Registry 自治。</li>
+    </ul>
+  </div>
+  <div>
+    <h4 style="color:var(--amber);margin:6px 0">越过阈值即抽取（带触发点）</h4>
+    <ul class="tight">
+      <li><strong>Sync 服务</strong>：单 PB 写入延迟/P99 越线，或日同步事件 &gt; N 百万。</li>
+      <li><strong>AI 网关</strong>：出现成本失控/合规/密钥泄露风险（基本必然，建议 M1 即抽）。</li>
+      <li><strong>通知服务</strong>：需服务端触达/留存营销/跨设备可靠提醒。</li>
+      <li><strong>内容/媒体服务</strong>：远程音频/内容规模上升。</li>
+    </ul>
+  </div>
+</div>
+
+<h2>八、3–5 年技术演进路线（触发点驱动，非时间表驱动）</h2>
+
+<div class="phase">
+  <div class="ph">阶段 0 · 稳定与解耦（0–3 个月）— 快赢</div>
+  <ul class="tight">
+    <li>清理配置漂移：删除死 <code>Dockerfile.web</code>；统一两份 compose；将 <code>nginx.conf</code> 纳入 compose 托管。</li>
+    <li>网关无状态化：引入 Redis 承载限流/MFA/推送状态，使 Hono 可多实例。</li>
+    <li>修复架构违例：将 <code>features/music</code> 提升为共享媒体层，清零 9 处跨 feature 非法 import（一次性根治 §2.2 红线）。</li>
+    <li>媒体外置：对象存储 + CDN 接管远程音频，消除"无源站下载"。</li>
+    <li>建立同步事件日志原型（落 Postgres），替代请求内串行 save——这是解除单点写的第一刀。</li>
+  </ul>
+</div>
+
+<div class="phase">
+  <div class="ph">阶段 1 · 首个服务端抽取（3–12 个月）</div>
+  <ul class="tight">
+    <li><strong>AI 网关 + 服务端 RAG</strong>：密钥库外置、成本帽、调用审计、向量检索；用户 Key 不再穿越同步管线。</li>
+    <li><strong>通知服务 + 服务端调度</strong>：可靠触达、留存能力、跨设备提醒。</li>
+    <li><strong>读写分离</strong>：洞察/分析走读副本 + 物化视图（CQRS 读模型）。</li>
+    <li>客户端 Feature Registry + 修行类型数据驱动化（插件化落地）。</li>
+    <li>可观测性基线：集中日志、追踪（跨边界 traceId）、核心 SLI。</li>
+  </ul>
+</div>
+
+<div class="phase">
+  <div class="ph">阶段 2 · 数据平面成熟（1–2.5 年）</div>
+  <ul class="tight">
+    <li><strong>事件总线常态化</strong>（NATS→Kafka 按规模）：同步、推送、分析摄取、AI 作业全异步解耦。</li>
+    <li>PocketBase 退居"认证+协调者"，高写域全面落到独立 Postgres（路径 A 完成）。</li>
+    <li>冲突解决升级：引入<strong>版本向量 / 字段级 CRDT</strong>，消除多设备静默丢失。</li>
+    <li>媒体管线完备：转码、多码率、全球 CDN。</li>
+    <li>多区域只读副本（若用户跨地域增长）。</li>
+  </ul>
+</div>
+
+<div class="phase">
+  <div class="ph">阶段 3 · 平台化（2.5–5 年）</div>
+  <ul class="tight">
+    <li>database-per-service 成熟，团队按限界上下文独立交付（康威对齐）。</li>
+    <li>特性开关 + A/B 实验平台；AI 个性化推荐服务。</li>
+    <li>若需，重引 Web/Desktop 薄壳——复用已可移植的 <code>packages/core</code>。</li>
+    <li>高级 DORA 度量、混沌演练、SLO 文化。</li>
+    <li>合规与多租户（如出海/机构版）作为独立强隔离上下文。</li>
+  </ul>
+</div>
+
+<h2>九、关键架构决策记录（ADR，节选）</h2>
+
+<div class="adr">
+  <h4>ADR-EXT-001 · 引入服务端同步事件日志，替代请求内串行写入</h4>
+  <div class="meta">状态：Proposed · 提出 2026-08-05</div>
+  <p><strong>Context：</strong><code>/api/sync/push</code> 在 HTTP 请求内对整批变更串行 <code>$app.save()</code>，持有 SQLite 写锁整段时长；单 PB 节点成为唯一写入瓶颈，且大批量请求会拖垮实时连接。</p>
+  <p><strong>Decision：</strong>客户端发件箱写入 Sync 服务后，变更以<strong>追加式事件日志</strong>（Postgres）持久化，由消费者异步落库；支持断点重放与冲突审计。PB 退居协调者。</p>
+  <p><strong>Consequences：</strong>✅ 写路径水平扩展、削峰、可重放、冲突可查。❌ 引入异步一致性与新组件运维成本；需定义事件 schema 版本化。</p>
+</div>
+
+<div class="adr">
+  <h4>ADR-EXT-002 · AI 能力由客户端迁移至服务端 AI 网关</h4>
+  <div class="meta">状态：Proposed · 提出 2026-08-05</div>
+  <p><strong>Context：</strong>AI 100% 客户端运行，用户 API Key 作为同步实体穿越同步管线；无成本管控、密钥轮换、调用审计、滥用防护的服务端控制点；检索为关键词打分而非向量。</p>
+  <p><strong>Decision：</strong>建立 AI 网关：密钥库外置、成本帽、审计日志、provider 插件化，并以向量库承载服务端 RAG。客户端通过网关调用，本地保留离线降级路径。</p>
+  <p><strong>Consequences：</strong>✅ 成本可控、合规可达、检索质量提升、密钥不随同步流动。❌ 新增服务端 AI 负载与延迟；需保留客户端降级以防网关不可用。</p>
+</div>
+
+<div class="adr">
+  <h4>ADR-EXT-003 · 修行类型数据驱动插件化</h4>
+  <div class="meta">状态：Proposed · 提出 2026-08-05</div>
+  <p><strong>Context：</strong>新增一种修行（如"抄经""诵经"）当前需改 core + 新建 feature，违反"灵活扩展"诉求，且 music 被 5 模块直引暴露耦合。</p>
+  <p><strong>Decision：</strong>修行类型改为<strong>数据驱动的插件描述</strong> + 客户端 Feature Registry；<code>features/music</code> 提升为共享媒体层契约。core 只定义插件接口。</p>
+  <p><strong>Consequences：</strong>✅ 新增修行≈配置+小模块，不改 core；从根消除 §2.2 红线复发。❌ 需设计插件契约与版本兼容策略，初期有迁移成本。</p>
+</div>
+
+<h2>十、风险登记与技术债看板</h2>
+<table>
+  <tr><th>风险 / 债项</th><th>严重</th><th>缓解（对应阶段）</th></tr>
+  <tr><td>单 PB+SQLite 写瓶颈 / 单点故障</td><td class="p-bad">高</td><td>阶段0 事件日志原型 → 阶段2 路径A 全面落地</td></tr>
+  <tr><td>网关不可复制（进程内状态）</td><td class="p-bad">高</td><td>阶段0 Redis 外置 + 无状态化</td></tr>
+  <tr><td>无缓存 / 无队列减震</td><td class="p-bad">高</td><td>阶段0 Redis → 阶段2 事件总线</td></tr>
+  <tr><td>整记录 LWW 静默数据丢失</td><td class="p-warn">中</td><td>阶段2 版本向量/字段级 CRDT</td></tr>
+  <tr><td>用户 AI Key 穿越同步管线</td><td class="p-warn">中</td><td>阶段1 AI 网关密钥库外置</td></tr>
+  <tr><td>远程音频无源站/CDN</td><td class="p-warn">中</td><td>阶段0 对象存储+CDN</td></tr>
+  <tr><td>架构违例（music 跨 feature 直引 / SSE 绕过网关）</td><td class="p-warn">中</td><td>阶段0 共享媒体层 + 网关代理 SSE</td></tr>
+  <tr><td>配置漂移（双 compose / 死 Dockerfile）</td><td class="p-info">低</td><td>阶段0 清理统一</td></tr>
+  <tr><td>>800 行超大文件（db/schema、SyncEngine 等）</td><td class="p-info">低</td><td>渐进式（P6 原则）拆分，纳入 CI 行数门禁</td></tr>
+</table>
+
+<h2>十一、未来 90 天即刻行动（把蓝图落到地）</h2>
+<div class="kpi">
+  <div class="box"><div class="num">9→0</div><div class="lab">跨 feature 非法 import 清零（共享媒体层）</div></div>
+  <div class="box"><div class="num">+Redis</div><div class="lab">网关限流/MFA 外置，可多实例</div></div>
+  <div class="box"><div class="num">事件日志</div><div class="lab">Sync 写路径解耦原型</div></div>
+  <div class="box"><div class="num">CDN</div><div class="lab">远程音频源站接入</div></div>
+</div>
+<ul class="tight">
+  <li><strong>W1–2：</strong>清理配置漂移 + 提升 <code>music</code> 为共享媒体层（一次性根治 §2.2）+ 接入对象存储/CDN。</li>
+  <li><strong>W3–6：</strong>引入 Redis，网关无状态化；搭建同步事件日志（Postgres）原型，灰度替换 <code>/api/sync/push</code> 串行写。</li>
+  <li><strong>W7–12：</strong>Feature Registry + 修行类型数据驱动化；可观测性基线（日志/追踪/SLI）；把本蓝图纳入 <code>openspec/</code> 作为 ADR 跟踪。</li>
+</ul>
+
+<div class="callout good">
+  <strong>一句话收尾：</strong>你们不需要"更大的架构"，需要的是<strong>把单点解耦 + 把扩展点埋好</strong>。客户端厚是天赋，别动它；服务端只抽"确实需要权威/异步/管控"的三类领域；一切抽取以触发点为界、以可逆为先。这份蓝图的全部价值，在于它让"何时该抽服务"变成可判定的工程决策，而非架构师的审美之争。
+</div>
+
+<div class="footer">
+  文档由软件架构师基于 egoless-do 仓库实测状态起草 · 基准日 2026-08-05 · 所有现状事实均来自只读代码核查（PocketBase 0.38.2 / SQLite 单节点 / 无 Redis / 无消息总线 / 客户端厚计算模型）。本文件为规划性蓝图，具体实施以对应 ADR 评审通过为准。
+</div>
+
+</div>
+</body>
+</html>

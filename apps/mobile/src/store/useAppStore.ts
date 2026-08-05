@@ -27,7 +27,7 @@ import { useShallow } from 'zustand/react/shallow';
 
 
 import { API_URL, PB_URL } from '../config';
-import { useMusicStore, setMusicSyncCallback } from '../features/music/useMusicStore';
+import { useMusicStore, setMusicSyncCallback } from '../media/useMusicStore';
 import { runSync, resetSyncState, softResetSyncState, resetMigrationFlag, rehydrateFromDb, initialSync } from '../features/sync/SyncService';
 
 import { createMobileUiSlice, type MobileUiSlice } from './createMobileUiSlice';

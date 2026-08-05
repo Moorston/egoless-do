@@ -1,4 +1,4 @@
-import { useMusicStore } from '../features/music/useMusicStore';
+import { useMusicStore } from '../media/useMusicStore';
 
 /**
  * 音频源类型

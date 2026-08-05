@@ -50,7 +50,7 @@ vi.mock('./storageAdapter', () => ({
   setPersistErrorHandler: mockSetPersistErrorHandler,
 }));
 
-vi.mock('../features/music/useMusicStore', () => ({
+vi.mock('../media/useMusicStore', () => ({
   useMusicStore: {
     getState: vi.fn(() => ({
       favorites: ['fav1'],
@@ -128,7 +128,7 @@ vi.mock('./createMobileUiSlice', () => {
 });
 
 // ── Imports (after all mocks) ─────────────────────────────────────
-import { setMusicSyncCallback } from '../features/music/useMusicStore';
+import { setMusicSyncCallback } from '../media/useMusicStore';
 import {
   runSync, softResetSyncState,
   resetMigrationFlag, rehydrateFromDb, initialSync,

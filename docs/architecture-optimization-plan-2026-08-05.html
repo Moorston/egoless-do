@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>egoless-do 架构诊断与优化方案 · 2026-08-05</title>
+<style>
+  :root{
+    --bg:#ffffff; --ink:#1f2430; --muted:#5b6472; --line:#e6e9ef;
+    --indigo:#4f46e5; --indigo-soft:#eef0fe;
+    --green:#0f9d58; --green-soft:#e7f6ee;
+    --amber:#d98a00; --amber-soft:#fdf3e0;
+    --red:#d6453d; --red-soft:#fdeceb;
+    --slate:#f7f8fb;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    color:var(--ink);background:var(--bg);line-height:1.65;font-size:15px}
+  .wrap{max-width:1080px;margin:0 auto;padding:40px 28px 80px}
+  h1{font-size:28px;margin:0 0 6px}
+  h2{font-size:21px;margin:44px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--indigo-soft)}
+  h3{font-size:17px;margin:26px 0 10px;color:var(--indigo)}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 24px}
+  p{margin:10px 0}
+  code{background:var(--slate);padding:1px 6px;border-radius:5px;font-size:13px;font-family:"SFMono-Regular",Consolas,monospace}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+  th{background:var(--slate);font-weight:600}
+  tr:nth-child(even) td{background:#fcfdff}
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:18px 0}
+  .card{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--slate)}
+  .card .n{font-size:26px;font-weight:700;color:var(--indigo)}
+  .card .l{font-size:12px;color:var(--muted);margin-top:2px}
+  .badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:600}
+  .b-ok{background:var(--green-soft);color:var(--green)}
+  .b-warn{background:var(--amber-soft);color:var(--amber)}
+  .b-bad{background:var(--red-soft);color:var(--red)}
+  .callout{border-left:4px solid var(--indigo);background:var(--indigo-soft);padding:12px 16px;border-radius:0 10px 10px 0;margin:16px 0}
+  .callout.green{border-color:var(--green);background:var(--green-soft)}
+  .callout.amber{border-color:var(--amber);background:var(--amber-soft)}
+  .callout.red{border-color:var(--red);background:var(--red-soft)}
+  .adr{border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:16px 0;background:#fff}
+  .adr h4{margin:0 0 6px;font-size:15px;color:var(--indigo)}
+  .adr .meta{font-size:12px;color:var(--muted);margin-bottom:8px}
+  .svgbox{border:1px solid var(--line);border-radius:12px;padding:14px;margin:16px 0;background:#fff;overflow-x:auto}
+  .svgbox .cap{font-size:12px;color:var(--muted);margin-top:8px}
+  ul{margin:8px 0 8px 2px;padding-left:20px}
+  li{margin:5px 0}
+  .prio{font-weight:700}
+  .p0{color:var(--red)} .p1{color:var(--amber)} .p2{color:var(--indigo)} .p3{color:var(--muted)}
+  .foot{margin-top:50px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:820px){.cards{grid-template-columns:repeat(2,1fr)}.twocol{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>egoless-do · 架构现状诊断与优化方案</h1>
+<p class="sub">面向对象：团队技术负责人 / 资深开发 · 日期：2026-08-05 · 方法：实测代码库扫描（非假设）· 配套文档：<code>architecture-analysis-2026-08-13.html</code>、<code>architecture-blueprint-2026-08-05.html</code>、<code>technical-improvement-plan.html</code></p>
+
+<div class="callout">
+<b>一句话结论：</b>地基是好的——单向依赖 <code>app → core</code> 守得住、核心层是唯一真源、计算下沉到端侧使服务端随用户增长的 CPU 成本近乎为零、可观测性（Sentry + PostHog）已接入。真正的问题不在"架构方向"，而在<b>业务边界没闭合</b>：引擎/服务仍泄漏到 <code>apps/mobile</code> 壳里、巨型文件在累积、质量门禁"半建成"（husky 调了 Prettier 却没装、覆盖率 provider 没接线、ESLint 还是 legacy）。<b>本方案不推倒重来，而是把"该收口的地方收口"。</b>
+</div>
+
+<div class="cards">
+  <div class="card"><div class="n">126k</div><div class="l">核心+移动端源码总行数（core 65k / mobile 60k）</div></div>
+  <div class="card"><div class="n">2</div><div class="l">残余 §2.2 跨 feature 非法 import（notifications）</div></div>
+  <div class="card"><div class="n">9</div><div class="l">超 900 行巨型文件（含 schema 1413 / PlanDetail 1034）</div></div>
+  <div class="card"><div class="n">0</div><div class="l">core → app 反向依赖（红线守住了 ✅）</div></div>
+</div>
+
+<!-- ========== 第一部分 ========== -->
+<h2>一、现状诊断</h2>
+
+<h3>1.1 代码结构总览（实测）</h3>
+<table>
+<tr><th>层级</th><th>位置</th><th>行数</th><th>职责判定</th></tr>
+<tr><td>核心逻辑</td><td><code>packages/core/src</code></td><td>65,478</td><td>✅ 唯一真源：类型/常量/纯函数/同步协议/i18n</td></tr>
+<tr><td>移动端壳</td><td><code>apps/mobile/src</code></td><td>60,544</td><td>⚠️ 仍承载 SyncEngine / BreathingEngine / SleepEngine 等重逻辑</td></tr>
+<tr><td>后端</td><td><code>backend/</code>（PocketBase）</td><td>—</td><td>单一数据源 + hooks（sync/auth/rate-limit）</td></tr>
+<tr><td>运维</td><td><code>infra/</code>（Hono 网关 + nginx）</td><td>—</td><td>认证网关，但 rate-limit 仍在 PB 内（有状态）</td></tr>
+</table>
+
+<h3>1.2 技术栈清单（来自 package.json 实测版本）</h3>
+<table>
+<tr><th>维度</th><th>选型</th><th>版本</th><th>评价</th></tr>
+<tr><td>框架</td><td>React Native + Expo</td><td>RN 0.81.5 / Expo ~54.0.35 / React 19.1</td><td>✅ 较新；Expo 54 支持 RN 0.81</td></tr>
+<tr><td>状态管理</td><td>Zustand</td><td>^5.0.0</td><td>✅ 选择器订阅规范（未发现 whole-store 订阅）</td></tr>
+<tr><td>导航</td><td>@react-navigation</td><td>^7.x</td><td>✅ v7 现代</td></tr>
+<tr><td>本地存储</td><td>expo-sqlite</td><td>~16.0.10</td><td>⚠️ 单文件 <code>schema.ts</code> 已膨胀至 1413 行</td></tr>
+<tr><td>实时</td><td>react-native-sse</td><td>^1.2.1</td><td>⚠️ 直连 PB SSE，无中间缓冲</td></tr>
+<tr><td>音频</td><td>expo-audio</td><td>~1.1.1</td><td>✅ <code>audioPlayerRef</code> 为模块级单例，避免多实例</td></tr>
+<tr><td>i18n</td><td>自研（core/i18n）</td><td>en/zh/zh-Hant 各 ~1300 行</td><td>⚠️ 手写三语键表，易漂移、无生成校验</td></tr>
+<tr><td>校验</td><td>zod</td><td>^4.4.3</td><td>✅ 已在 core 使用</td></tr>
+<tr><td>可观测</td><td>Sentry + PostHog</td><td>8.18 / 3.16</td><td>✅ 已接入 RN 端</td></tr>
+<tr><td>测试</td><td>Vitest</td><td>^3.2.7</td><td>⚠️ <code>@vitest/coverage-v8</code> 已装，但 vitest.config 未配 provider</td></tr>
+<tr><td>Lint</td><td>ESLint</td><td>^8.57（legacy）</td><td>❌ 无 flat config；宪法要求的 complexity/max-depth/no-any 未落地</td></tr>
+<tr><td>门禁</td><td>husky + lint-staged</td><td>9 / 17</td><td>❌ lint-staged 调用 <code>prettier --write</code>，但 Prettier 未安装、无 .prettierrc</td></tr>
+</table>
+
+<h3>1.3 模块依赖分析</h3>
+<ul>
+<li><span class="badge b-ok">守住</span> <b>无 core → app 反向依赖</b>：<code>packages/core</code> 内未出现任何指向 <code>apps/mobile</code> 的导入（红线条例 P3 合规）。</li>
+<li><span class="badge b-ok">守住</span> <b>无 Zustand 全量订阅</b>：扫描 <code>useAppStore()</code> 无参调用为 0，团队普遍使用选择器，重渲染风险低。</li>
+<li><span class="badge b-warn">残留</span> <b>2 处跨 feature 导入</b>：<code>features/habits</code> 与 <code>features/settings</code> 均 <code>import ... from '../notifications/NotificationService'</code>。即 <code>notifications</code> 是继 <code>music</code> 之后<b>第二个"共享能力却挂在 features 下"的反模式</b>。</li>
+<li><span class="badge b-ok">已修复</span> <code>music</code> 已于 2026-08-05 提升为共享层 <code>apps/mobile/src/media/</code>，9 处耦合归零。</li>
+<li><b>耦合枢纽（高扇入）</b>：<code>core/types</code>、<code>core/constants</code>、<code>core/store</code> 切片、<code>media/useMusicStore</code>、<code>features/sync</code> 被最广泛引用——这些应是改动最谨慎的"稳定内核"。</li>
+</ul>
+
+<h3>1.4 性能瓶颈</h3>
+<table>
+<tr><th>问题</th><th>证据</th><th>严重度</th></tr>
+<tr><td>同步写为逐行 SQL</td><td><code>SyncEngine.ts:420-423</code> 在批次内对每行 <code>db.runAsync(INSERT ...)</code>，未包裹事务</td><td><span class="badge b-warn">中</span></td></tr>
+<tr><td>单节点 PB 承载全部压力</td><td>PB+SQLite 同时承担 数据 + SSE 实时 + 同步写 + rate-limit；无缓存、无队列</td><td><span class="badge b-bad">高</span></td></tr>
+<tr><td>巨型文件拖慢编译/审读</td><td><code>db/schema.ts 1413</code>、<code>PlanDetailContent 1034</code>、<code>BodyDashboard 1146</code> 等 9 个文件 &gt;900 行</td><td><span class="badge b-warn">中</span></td></tr>
+<tr><td>i18n 三语表手工维护</td><td>en/zh/zh-Hant 各 ~1300 行 + types 1160，无生成校验，易漏键/漂移</td><td><span class="badge b-warn">中</span></td></tr>
+<tr><td>同步触发非轮询（好）</td><td><code>SyncEngine</code> 用 <code>setTimeout</code> 去抖触发（行 203），无 <code>setInterval</code> 轮询</td><td><span class="badge b-ok">优</span></td></tr>
+</table>
+
+<h3>1.5 可维护性问题</h3>
+<table>
+<tr><th>问题</th><th>证据</th><th>严重度</th></tr>
+<tr><td>门禁半建成：husky 调了不存在的 Prettier</td><td><code>package.json</code> lint-staged 含 <code>prettier --write</code>，但依赖树无 prettier、无 <code>.prettierrc</code></td><td><span class="badge b-bad">高</span></td></tr>
+<tr><td>覆盖率 provider 未接线</td><td><code>@vitest/coverage-v8</code> 已装，<code>vitest.config.ts</code> 无 <code>test.coverage.provider</code>，<code>test:coverage</code> 跑不出阈值门禁</td><td><span class="badge b-warn">中</span></td></tr>
+<tr><td>ESLint 仍 legacy</td><td>无 <code>eslint.config.*</code>（flat config），宪法 §4 的 complexity/max-depth/no-any 规则未强制</td><td><span class="badge b-warn">中</span></td></tr>
+<tr><td>巨型文件持续变大（非收敛）</td><td><code>db/schema.ts</code> 较上次扫描 +210 行（1203→1413）、<code>SyncEngine</code> 884→915、<code>HomeScreen</code> 838→860——P6 渐进重构未追上新增</td><td><span class="badge b-warn">中</span></td></tr>
+<tr><td>core 纯逻辑测试缺口</td><td><code>precepts / sleep / zhiguanConstants / zhiguanMethods</code> 仍无 <code>.test.ts</code>；<code>rowMappers.test.ts</code> 自身已达 1052 行（测试膨胀）</td><td><span class="badge b-warn">中</span></td></tr>
+<tr><td>"共享能力当 feature"反模式复发</td><td><code>music</code> 已修；<code>notifications</code> 现同样问题（2 处越界）——打地鼠式修会无限复发</td><td><span class="badge b-bad">高</span></td></tr>
+</table>
+
+<h3>1.6 业务痛点（从技术债翻译为人话）</h3>
+<ul>
+<li><b>交付慢、易回归</b>：引擎与业务逻辑散落在壳层，改一处要读懂 900+ 行文件；无强制覆盖率，核心纯逻辑（轨迹生成、反思图谱）改动无防护网。</li>
+<li><b>规模化天花板</b>：单节点 PB 同时扛数据/实时/同步/限流，用户量或同步并发上来即单点抖动；没有缓存与队列吸收峰值。</li>
+<li><b>工具门禁形同虚设</b>：husky 因 Prettier 缺失可能直接失败或静默跳过，宪法里的规范"写了没卡住"，新人容易又引入跨层耦合。</li>
+<li><b>重复踩同一个坑</b>：共享能力反复被当 feature 放置（music→已修，notifications→在修），说明目录约定本身有缺口，需要结构性解法而非逐案修补。</li>
+</ul>
+
+<h3>1.7 架构优缺点汇总</h3>
+<div class="twocol">
+<div>
+<h4 style="color:var(--green);margin:6px 0">优点（守住的）</h4>
+<ul>
+<li>单向依赖铁律 <code>app → core</code>，无反向引用</li>
+<li>Core 集中类型/常量/同步协议/i18n，真源单一</li>
+<li>计算下沉端侧，服务端随用户增长的 CPU 成本≈0</li>
+<li>Zustand 选择器规范、音频单例、同步去抖——基础卫生好</li>
+<li>可观测性（Sentry+PostHog）已接入</li>
+<li>husky/lint-staged/coverage 包已引入（在建）</li>
+</ul>
+</div>
+<div>
+<h4 style="color:var(--red);margin:6px 0">缺点（待收口）</h4>
+<ul>
+<li>引擎/服务泄漏到 apps/mobile 壳（违 P1/P2）</li>
+<li>巨型文件累积且变大，未收敛</li>
+<li>共享能力反模式复发（notifications）</li>
+<li>质量门禁半建成（Prettier 缺失/覆盖率未接线/ESLint legacy）</li>
+<li>单节点 PB 为规模化瓶颈</li>
+<li>core 关键纯逻辑缺测试、测试文件自身膨胀</li>
+</ul>
+</div>
+</div>
+
+<!-- ========== 第二部分 ========== -->
+<h2>二、架构优化方案</h2>
+
+<h3>2.1 模块拆分与边界界定</h3>
+<p>核心思路：建立"<b>共享能力层</b>"约定，让 <code>media</code>/<code>notifications</code> 这类"被多 feature 复用"的模块有合法归宿，从根上消除 §2.2 红线复发。同时把"引擎编排"从壳层抽回 core。</p>
+
+<div class="svgbox">
+<svg viewBox="0 0 680 240" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
+  <defs><marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#4f46e5"/></marker></defs>
+  <rect x="14" y="20" width="652" height="200" rx="12" fill="#f7f8fb" stroke="#e6e9ef"/>
+  <text x="24" y="42" font-size="13" font-weight="700" fill="#4f46e5">目标分层（收口后）</text>
+  <!-- apps -->
+  <rect x="24" y="56" width="200" height="150" rx="8" fill="#fff" stroke="#d6453d"/>
+  <text x="34" y="76" font-size="12" font-weight="700" fill="#d6453d">apps/mobile（薄壳）</text>
+  <text x="34" y="96" font-size="11">screens / components</text>
+  <text x="34" y="112" font-size="11">navigation / theme</text>
+  <text x="34" y="128" font-size="11">feature-*（仅编排）</text>
+  <text x="34" y="150" font-size="11" fill="#0f9d58">✅ 引擎已迁出</text>
+  <!-- shared -->
+  <rect x="240" y="56" width="200" height="150" rx="8" fill="#eef0fe" stroke="#4f46e5"/>
+  <text x="250" y="76" font-size="12" font-weight="700" fill="#4f46e5">共享能力层</text>
+  <text x="250" y="96" font-size="11">src/media/  (原 music)</text>
+  <text x="250" y="112" font-size="11">src/shared/notifications/</text>
+  <text x="250" y="128" font-size="11">src/shared/ (UI/工具)</text>
+  <text x="250" y="150" font-size="11" fill="#0f9d58">✅ 红线归零</text>
+  <!-- core -->
+  <rect x="456" y="56" width="200" height="150" rx="8" fill="#e7f6ee" stroke="#0f9d58"/>
+  <text x="466" y="76" font-size="12" font-weight="700" fill="#0f9d58">packages/core</text>
+  <text x="466" y="96" font-size="11">business / store / sync</text>
+  <text x="466" y="112" font-size="11">engines/*（迁入）</text>
+  <text x="466" y="128" font-size="11">types / constants / i18n</text>
+  <text x="466" y="150" font-size="11" fill="#0f9d58">✅ 唯一真源强化</text>
+  <line x1="224" y1="130" x2="240" y2="130" stroke="#4f46e5" marker-end="url(#ar)"/>
+  <line x1="440" y1="130" x2="456" y2="130" stroke="#4f46e5" marker-end="url(#ar)"/>
+  <line x1="224" y1="160" x2="456" y2="120" stroke="#0f9d58" stroke-dasharray="4 3" marker-end="url(#ar)"/>
+</svg>
+<div class="cap">图 1 · 目标分层：薄壳 → 共享能力层 → core（引擎与共享能力各归其位）</div>
+</div>
+
+<div class="adr">
+<h4>ADR-01 · 设立"共享能力层"并提升 notifications</h4>
+<div class="meta">状态：建议采纳（Proposed） · 类型：模块边界</div>
+<p><b>背景：</b><code>features/habits</code> 与 <code>features/settings</code> 跨 feature 引用 <code>../notifications/NotificationService</code>，与已修复的 <code>music</code> 同构——证明"共享能力挂在 features 下"是结构性缺陷，逐案修会复发。</p>
+<p><b>决策：</b>在 <code>apps/mobile/src/shared/</code> 下建立共享能力目录（与已落地的 <code>src/media/</code> 并列）；将 <code>features/notifications</code> 整体迁至 <code>src/shared/notifications/</code>，保留其导航注册；更新 2 处消费者引用。</p>
+<p><b>后果：</b>§2.2 跨 feature 红线归零且不再复发；feature 目录仅含"真正独立业务域"。代价：需一次批量 import 改写（可脚本化，低风险）。</p>
+</div>
+
+<h3>2.2 服务 / 组件职责重构</h3>
+<p>把 915 行的 <code>SyncEngine</code> 按职责拆为可独立测试的服务，并将编排逻辑下沉 core（符合 P1/P2）。音频/通知等能力已单例化，应复用既有模式。</p>
+
+<div class="svgbox">
+<svg viewBox="0 0 680 200" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
+  <defs><marker id="ar2" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#4f46e5"/></marker></defs>
+  <rect x="14" y="16" width="200" height="168" rx="8" fill="#fdeceb" stroke="#d6453d"/>
+  <text x="24" y="38" font-size="12" font-weight="700" fill="#d6453d">现状：SyncEngine（915行）</text>
+  <text x="24" y="60" font-size="11">拉取 + 推送 + 冲突</text>
+  <text x="24" y="76" font-size="11">+ 调度 + 重试 + 状态</text>
+  <text x="24" y="92" font-size="11">+ SQL 写入（逐行）</text>
+  <text x="24" y="116" font-size="11" fill="#d6453d">❌ 难测试、难维护</text>
+  <text x="24" y="132" font-size="11" fill="#d6453d">❌ 在壳层违 P1</text>
+
+  <text x="240" y="100" font-size="22" fill="#4f46e5">➜</text>
+
+  <rect x="300" y="16" width="366" height="168" rx="8" fill="#eef0fe" stroke="#4f46e5"/>
+  <text x="312" y="38" font-size="12" font-weight="700" fill="#4f46e5">目标：core/sync 服务组合</text>
+  <text x="312" y="60" font-size="11">PullService（拉取+游标）</text>
+  <text x="312" y="78" font-size="11">PushService（批量事务写）</text>
+  <text x="312" y="96" font-size="11">ConflictResolver（版本向量）</text>
+  <text x="312" y="114" font-size="11">SyncScheduler（去抖+退避）</text>
+  <text x="312" y="132" font-size="11">SyncEngine（薄编排，≤200行）</text>
+  <text x="312" y="158" font-size="11" fill="#0f9d58">✅ 各服务独立单测 ✅ 编排回 core</text>
+</svg>
+<div class="cap">图 2 · SyncEngine 职责拆分：巨型类 → 可测试服务组合</div>
+</div>
+
+<div class="adr">
+<h4>ADR-02 · 引擎编排下沉 core，壳层只做调度</h4>
+<div class="meta">状态：建议采纳（Proposed） · 类型：职责边界</div>
+<p><b>背景：</b>SyncEngine / BreathingEngine / SleepEngine 均在 <code>apps/mobile</code>，违反 P1（core=唯一真源）与 P2（app 是薄壳）。</p>
+<p><b>决策：</b>同步编排（ADR-01 拆出的服务）迁入 <code>packages/core/src/sync/</code>；Breathing/Sleep 的<b>纯逻辑</b>迁入 <code>core/business/</code>，RN 专属副作用（动画/计时器）留在 <code>apps/mobile/src/features/*/engines</code> 薄封装。壳层文件目标 ≤350 行。</p>
+<p><b>后果：</b>核心业务可跨端复用、可单测；壳层体积下降。代价：需界定"纯逻辑 vs RN 副作用"边界，分批迁移。</p>
+</div>
+
+<h3>2.3 数据流与接口规范</h3>
+<p>当前数据通过 PB SDK + SSE 直连，缺少统一契约层。建议补三道规范：</p>
+<table>
+<tr><th>规范</th><th>落地方式</th><th>收益</th></tr>
+<tr><td>数据网关接口</td><td>core 已有 <code>DataGateway</code> 抽象——强制所有端侧读写经此接口，禁止 feature 直连 PB SDK</td><td>解耦、可 mock、可换后端</td></tr>
+<tr><td>实体 DTO + zod 校验</td><td>同步实体用 <code>entitySchemas.ts</code>（已 1228 行）统一校验；入站/出站 DTO 显式区分</td><td>边界清晰、少运行时坑</td></tr>
+<tr><td>领域事件总线</td><td>core 内轻量 event-emitter（同步完成/冲突/网络变更），feature 订阅而非互相调用</td><td>彻底消除 feature→feature 调用</td></tr>
+<tr><td>错误信封</td><td>统一 <code>{code, message, retryable}</code> 错误类型，UI 与重试策略据此分支</td><td>容错策略一致</td></tr>
+<tr><td>同步协议版本化</td><td>sync payload 带 <code>schemaVersion</code>，后端按版本兼容演进</td><td>客户端灰度、无断层升级</td></tr>
+</table>
+
+<h3>2.4 扩展性与容错能力提升</h3>
+<p>沿用蓝图结论：<b>不要微服务化</b>——计算已在端侧。真正的扩展点在"数据平面"与"故障吸收"。</p>
+<div class="svgbox">
+<svg viewBox="0 0 680 230" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
+  <defs><marker id="ar3" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#4f46e5"/></marker></defs>
+  <rect x="14" y="14" width="652" height="204" rx="12" fill="#f7f8fb" stroke="#e6e9ef"/>
+  <text x="24" y="36" font-size="13" font-weight="700" fill="#4f46e5">目标数据平面（解耦单点）</text>
+  <!-- client -->
+  <rect x="24" y="54" width="150" height="60" rx="8" fill="#eef0fe" stroke="#4f46e5"/>
+  <text x="34" y="76" font-size="11" font-weight="700">RN 端侧</text>
+  <text x="34" y="94" font-size="10">SQLite + 离线队列</text>
+  <!-- gateway -->
+  <rect x="200" y="54" width="150" height="60" rx="8" fill="#fff" stroke="#0f9d58"/>
+  <text x="210" y="76" font-size="11" font-weight="700">Hono 网关（无状态）</text>
+  <text x="210" y="94" font-size="10">+ Redis 限流/会话</text>
+  <!-- pb -->
+  <rect x="376" y="54" width="150" height="60" rx="8" fill="#fff" stroke="#d6453d"/>
+  <text x="386" y="76" font-size="11" font-weight="700">PocketBase</text>
+  <text x="386" y="94" font-size="10">→ Postgres 外置</text>
+  <!-- obj store -->
+  <rect x="552" y="54" width="110" height="60" rx="8" fill="#fff" stroke="#4f46e5"/>
+  <text x="562" y="76" font-size="11" font-weight="700">对象存储</text>
+  <text x="562" y="94" font-size="10">+ CDN（音频）</text>
+  <!-- queue -->
+  <rect x="200" y="138" width="150" height="56" rx="8" fill="#fdf3e0" stroke="#d98a00"/>
+  <text x="210" y="160" font-size="11" font-weight>同步事件队列</text>
+  <text x="210" y="178" font-size="10">削峰 / 重试 / 幂等</text>
+  <!-- circuit -->
+  <rect x="376" y="138" width="150" height="56" rx="8" fill="#fdf3e0" stroke="#d98a00"/>
+  <text x="386" y="160" font-size="11" font-weight>熔断器 + 退避</text>
+  <text x="386" y="178" font-size="10">防雪崩</text>
+
+  <line x1="174" y1="84" x2="200" y2="84" stroke="#4f46e5" marker-end="url(#ar3)"/>
+  <line x1="350" y1="84" x2="376" y2="84" stroke="#4f46e5" marker-end="url(#ar3)"/>
+  <line x1="526" y1="84" x2="552" y2="84" stroke="#4f46e5" marker-end="url(#ar3)"/>
+  <line x1="275" y1="114" x2="275" y2="138" stroke="#d98a00" marker-end="url(#ar3)"/>
+  <line x1="451" y1="114" x2="451" y2="138" stroke="#d98a00" marker-end="url(#ar3)"/>
+</svg>
+<div class="cap">图 3 · 数据平面解耦：网关无状态化 + PB 外置 + 对象存储 + 队列/熔断吸收故障</div>
+</div>
+<table>
+<tr><th>能力</th><th>现状</th><th>目标</th><th>收益</th></tr>
+<tr><td>限流/会话</td><td>PB 内有状态</td><td>Redis 外置，网关无状态可水平扩</td><td>网关多实例扛峰值</td></tr>
+<tr><td>主数据库</td><td>PB+SQLite 单节点</td><td>PB 接 Postgres（或外部 PG）</td><td>读写分离、备份、垂直扩展</td></tr>
+<tr><td>媒体</td><td>随 PB 集合 / 本地</td><td>对象存储 + CDN</td><td>源站减负、端侧秒开</td></tr>
+<tr><td>同步写</td><td>直写 PB</td><td>事件队列 + 幂等 + 退避</td><td>削峰、防雪崩、可重放</td></tr>
+<tr><td>故障隔离</td><td>无</td><td>熔断器 + 离线队列</td><td>后端抖动不影响端侧使用</td></tr>
+</table>
+
+<h3>2.5 优化前后对比收益</h3>
+<table>
+<tr><th>指标</th><th>优化前</th><th>优化后</th><th>收益</th></tr>
+<tr><td>§2.2 跨 feature 耦合</td><td>2 处（notifications）</td><td>0（共享层收口）</td><td>红线不再复发</td></tr>
+<tr><td>最大单文件</td><td>schema.ts 1413 行</td><td>按域拆分，单文件 ≤350~500</td><td>审读/编译/重构成本↓</td></tr>
+<tr><td>同步可测性</td><td>915 行类，难单测</td><td>服务组合，各可独立单测</td><td>核心逻辑有防护网</td></tr>
+<tr><td>husky 门禁</td><td>调 Prettier 却缺失→失败/跳过</td><td>Prettier 装好 + .prettierrc</td><td>提交即格式化，规范真卡住</td></tr>
+<tr><td>覆盖率门禁</td><td>provider 未接线，无阈值</td><td>v8 provider + CI 阈值（core≥80%）</td><td>回归可被拦截</td></tr>
+<tr><td>ESLint</td><td>legacy 8.57，规则未强制</td><td>v9 flat + complexity/max-depth/no-any</td><td>复杂度被持续约束</td></tr>
+<tr><td>规模化天花板</td><td>单节点 PB 全担</td><td>网关无状态 + PG + 队列 + CDN</td><td>用户/并发增长可水平应对</td></tr>
+<tr><td>故障吸收</td><td>无熔断/离线队列</td><td>熔断 + 离线队列 + 幂等</td><td>后端抖动不影响端侧</td></tr>
+</table>
+
+<h3>2.6 实施优先级路线图</h3>
+<table>
+<tr><th>阶段</th><th>动作</th><th>量级</th><th>影响</th><th>风险</th></tr>
+<tr><td><span class="prio p0">P0</span> 本周快赢</td><td>① 修 husky 门禁：装 Prettier + .prettierrc（或移出 lint-staged）<br>② vitest.config 加 <code>coverage.provider='v8'</code> + 阈值<br>③ 提升 <code>notifications</code> 到 <code>src/shared/</code>（清 2 处越界）</td><td>小</td><td>高</td><td>低</td></tr>
+<tr><td><span class="prio p1">P1</span> 1–2 冲刺</td><td>④ SyncEngine 拆服务 + 编排回 core<br>⑤ 拆 <code>db/schema.ts</code> 按域；Breathing/Sleep 纯逻辑迁 core<br>⑥ ESLint v9 flat + 强制复杂度/深度/no-any</td><td>中</td><td>高</td><td>中</td></tr>
+<tr><td><span class="prio p2">P2</span> 1–2 季度</td><td>⑦ 网关去状态（Redis 限流/会话）+ PB→Postgres 外置<br>⑧ 对象存储 + CDN 接管音频<br>⑨ 同步事件队列 + 熔断 + 离线队列加固</td><td>大</td><td>高</td><td>中</td></tr>
+<tr><td><span class="prio p3">P3</span> 持续</td><td>⑩ i18n 键表代码生成/校验<br>⑪ 补 core 测试缺口（precepts/sleep/zhiguan*）；拆分 1052 行测试文件<br>⑫ 领域事件总线全面替代 feature 互调</td><td>中</td><td>中</td><td>低</td></tr>
+</table>
+
+<div class="callout green">
+<b>落地顺序的取舍：</b>P0 三件事都是"低风险高回报、且能立即让质量门禁真正生效"——尤其 ① 和 ③ 直接堵住"规范写了没卡住"与"红线复发"两个根因。P1 才是真正的架构收口（引擎回 core、巨型文件拆分），需要核心成员结对推进以防回归。P2 的基建改造应在 P0/P1 稳定后再上，避免同时动"代码"与"运行平台"两层。
+</div>
+
+<h2>三、架构决策记录（汇总）</h2>
+<table>
+<tr><th>ADR</th><th>决策</th><th>状态</th></tr>
+<tr><td>ADR-01</td><td>建立共享能力层，提升 <code>notifications</code> 至 <code>src/shared/</code></td><td>Proposed</td></tr>
+<tr><td>ADR-02</td><td>引擎编排下沉 core，壳层只做调度（≤350 行）</td><td>Proposed</td></tr>
+<tr><td>ADR-03（衍生）</td><td>补全质量门禁：Prettier 安装 + coverage provider + ESLint v9 flat</td><td>Proposed</td></tr>
+<tr><td>ADR-04（衍生）</td><td>数据平面解耦：网关无状态 + PB→PG + 对象存储 + 队列/熔断</td><td>Proposed</td></tr>
+</table>
+
+<div class="foot">
+配套文档：<code>architecture-analysis-2026-08-13.html</code>（现状扫描）、<code>architecture-blueprint-2026-08-05.html</code>（3–5 年演进）、<code>technical-improvement-plan.html</code>（团队能力提升）。
+本诊断基于 2026-08-05 实测代码库，版本与行数均来自真实扫描。已落地的 <code>music→media</code> 提升（2026-08-05）作为先例，证明 ADR-01 模式可行。
+</div>
+
+</div>
+</body>
+</html>

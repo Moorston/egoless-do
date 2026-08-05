@@ -4,7 +4,7 @@ import { Music, Play, Pause, Repeat, Repeat1, Shuffle } from 'lucide-react-nativ
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 
-import { useTheme } from '../../../components/UI';
+import { useTheme } from '../../components/UI';
 import type { PlayMode } from '../useMusicStore';
 import { useMusicStore } from '../useMusicStore';
 

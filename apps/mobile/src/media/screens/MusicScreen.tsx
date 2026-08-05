@@ -4,9 +4,9 @@ import React, { useEffect, useCallback, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import AnimatedMusicIcon from '../../../components/AnimatedMusicIcon';
-import { useTheme, useT } from '../../../components/UI';
-import { useRootNavigation } from '../../../navigation/hooks';
+import AnimatedMusicIcon from '../../components/AnimatedMusicIcon';
+import { useTheme, useT } from '../../components/UI';
+import { useRootNavigation } from '../../navigation/hooks';
 import CategoryCard from '../components/CategoryCard';
 import ImportMusicButton from '../components/ImportMusicButton';
 import PlayerBar from '../components/PlayerBar';

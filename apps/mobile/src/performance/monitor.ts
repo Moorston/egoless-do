@@ -17,7 +17,7 @@ export function startFrameMonitor(): void {
   if (monitorStarted || !__DEV__) return;
   monitorStarted = true;
 
-  let sampleCount = 0;
+  let sampleCount = 0; // eslint-disable-line prefer-const
   const SAMPLE_INTERVAL = 5000; // 5 秒采样一次（减少开销）
 
   requestAnimationFrame(function loop() {

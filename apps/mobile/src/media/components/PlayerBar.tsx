@@ -3,8 +3,8 @@ import { Repeat, Repeat1, Shuffle, SkipBack, SkipForward, Volume2, VolumeX, Cloc
 import React, { useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Modal } from 'react-native';
 
-import AnimatedMusicIcon from '../../../components/AnimatedMusicIcon';
-import { useTheme, useT } from '../../../components/UI';
+import AnimatedMusicIcon from '../../components/AnimatedMusicIcon';
+import { useTheme, useT } from '../../components/UI';
 import { audioPlayerRef } from '../services/audioPlayerRef';
 import { useMusicStore } from '../useMusicStore';
 import type { PlayMode } from '../useMusicStore';

@@ -30,7 +30,7 @@ const mockDb = {
 beforeEach(() => {
   memoryStore = new Map();
   vi.clearAllMocks();
-  vi.mocked(SQLite.openDatabaseAsync).mockResolvedValue(mockDb as any);
+  vi.mocked(SQLite.openDatabaseAsync).mockResolvedValue(mockDb as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 });
 
 import { mobileStorageAdapter } from './storageAdapter';

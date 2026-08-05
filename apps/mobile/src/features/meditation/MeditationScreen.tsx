@@ -21,8 +21,8 @@ import { ActiveInsightBar } from '../global-pulse/components/ActiveInsightBar';
 import { useGoalResolver } from '../global-pulse/hooks/useGoalResolver';
 import { useSessionHeartbeat } from '../global-pulse/hooks/useSessionHeartbeat';
 import { createSession, deleteSession, updateSession } from '../global-pulse/services/activeSessionApi';
-import MusicPickerModal from '../music/components/MusicPickerModal';
-import { useMusicStore } from '../music/useMusicStore';
+import MusicPickerModal from '../../media/components/MusicPickerModal';
+import { useMusicStore } from '../../media/useMusicStore';
 
 const log = createLogger('Meditation');
 
