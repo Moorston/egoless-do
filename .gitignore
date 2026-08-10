@@ -25,6 +25,9 @@ apps/mobile/ios/build/
 .env.production
 .envrc
 
+# API Keys & Secrets
+scripts/config.json
+
 # Analysis / intermediate files
 .ua/
 

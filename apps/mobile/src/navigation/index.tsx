@@ -45,7 +45,7 @@ import {
   GlobalPulseScreen, GracePage, HabitDetailScreen, HabitsScreen,
   LoginScreen, MantraHistoryScreen, MantraScreen,
   MedHistoryModule, MeditationScreen, MindScreen,
-  MusicCategoryScreen, MusicScreen,
+  MusicCategoryScreen, MusicScreen, MusicLibraryScreen,
   PlanCreateScreen, PlanDetailScreen, PlanHistoryScreen,
   PracticeScreen, PreceptHistoryPage, PreceptScreen,
   PrivacyPolicyScreen, ProfileScreen, RecycleBinScreen,
@@ -337,6 +337,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Profile"       component={withErrorBoundary(ProfileScreen)} />
         <Stack.Screen name="Music"         component={withErrorBoundary(MusicScreen)} />
         <Stack.Screen name="MusicCategory" component={MusicCategoryScreen} />
+        <Stack.Screen name="MusicLibrary"  component={withErrorBoundary(MusicLibraryScreen)} />
         <Stack.Screen name="Stats"         component={withErrorBoundary(StatsScreen)} />
         <Stack.Screen name="ReflectionStats" component={ReflectionStatsScreen} />
         <Stack.Screen name="MindTrail"     component={MindTrailScreen} />

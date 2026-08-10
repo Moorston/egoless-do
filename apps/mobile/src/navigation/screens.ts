@@ -55,6 +55,7 @@ export const MeditationScreen       = React.lazy(() => import('../features/medit
 export const MindScreen             = React.lazy(() => import('../features/mind/MindScreen'));
 export const MusicCategoryScreen    = React.lazy(() => import('../media/screens/MusicCategoryScreen'));
 export const MusicScreen            = React.lazy(() => import('../media/screens/MusicScreen'));
+export const MusicLibraryScreen     = React.lazy(() => import('../media/screens/MusicLibraryScreen'));
 export const PlanCreateScreen       = React.lazy(() => import('../features/plan/PlanCreateScreen'));
 export const PlanDetailScreen       = React.lazy(() => import('../features/plan/PlanDetailScreen'));
 export const PlanHistoryScreen      = React.lazy(() => import('../features/plan/PlanHistoryScreen'));

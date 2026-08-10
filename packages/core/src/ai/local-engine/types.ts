@@ -1,6 +1,4 @@
-// ─── Local AI Engine 接口 ──────────────────────────────────────
-// 端侧推理引擎统一接口（ONNX/Core ML 共享）
-
+// ─── AI 结果类型 ──────────────────────────────────────────────
 export interface AIResult {
   text: string;
   confidence: number;
@@ -8,6 +6,15 @@ export interface AIResult {
   modelVersion: string;
 }
 
+// ─── Cloud AI Engine 接口 ─────────────────────────────────────
+// 云端推理引擎统一接口
+export interface CloudAIEngine {
+  initialize(): Promise<void>;
+  predict(input: string): Promise<AIResult>;
+}
+
+// ─── Local AI Engine 接口 ──────────────────────────────────────
+// 端侧推理引擎统一接口（ONNX/Core ML 共享）
 export interface LocalAIEngine {
   readonly modelName: string;
   readonly modelVersion: string;

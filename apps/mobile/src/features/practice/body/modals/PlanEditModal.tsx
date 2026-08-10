@@ -58,6 +58,7 @@ export default function PlanEditModal({ visible, TH, T, plans, onClose, onSave }
   }, [T]);
 
   // Build key-to-label map for display
+  const keyToLabel = useMemo(() => {
     const m = new Map<string, string>();
     for (const cat of EXERCISE_CATEGORIES) {
       m.set(cat.key, T(cat.i18nKey));

@@ -16,7 +16,7 @@ export function SyncConflictPanel() {
     <View style={[styles.container, { backgroundColor: TH.card, borderColor: TH.border }]}>
       <View style={styles.header}>
         <Text style={[styles.title, { color: TH.warning || '#f59e0b' }]}>
-          同步冲突 ({conflicts.length})
+          同步冲突 ({String(conflicts.length)})
         </Text>
         <TouchableOpacity onPress={clearConflicts}>
           <Text style={[styles.clearBtn, { color: TH.sub }]}>全部清除</Text>

@@ -699,7 +699,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       // NOTE: PocketBase collection field is `data` (JSON blob), but local SQLite
       // splits out period/start_date/end_date as top-level NOT NULL columns.
       // Parse server blob once, then map to the hybrid local layout.
-      const parsed = typeof r.data === 'string' ? JSON.parse(r.data) as Record<string, unknown> : (r.data ?? {});
+      const parsed = (typeof r.data === 'string' ? JSON.parse(r.data) : (r.data ?? {})) as Record<string, unknown>;
       const raw = typeof r.data === 'string' ? r.data : JSON.stringify(r.data ?? {});
       return {
         id: r.id, review_id: r.reviewId ?? r.id,

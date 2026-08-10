@@ -3,7 +3,6 @@ import type { PlanItem, PlanItemCheckin } from '@egoless-do/core';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { Trash2, Network } from 'lucide-react-native';
-
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';

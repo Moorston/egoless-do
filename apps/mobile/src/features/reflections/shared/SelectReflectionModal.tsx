@@ -114,7 +114,7 @@ export function SelectReflectionModal({
               <Text style={{ color: TH.sub, fontSize: FONT_SMALL(), fontWeight: '600' }}>取消全选</Text>
             </TouchableOpacity>
             <Text style={{ color: TH.sub, fontSize: FONT_SMALL(), marginLeft: 'auto' }}>
-              已选 {selectedIds.size} 项
+              已选 {String(selectedIds.size)} 项
             </Text>
           </View>
 
@@ -175,7 +175,7 @@ export function SelectReflectionModal({
             </TouchableOpacity>
             <TouchableOpacity onPress={handleConfirm} style={[styles.footerBtn, { backgroundColor: P }]}>
               <Text style={{ color: '#fff', fontWeight: '600' }}>
-                {T('commonConfirm')} ({selectedIds.size})
+                {T('commonConfirm')} ({String(selectedIds.size)})
               </Text>
             </TouchableOpacity>
           </View>

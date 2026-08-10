@@ -161,7 +161,7 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
                 style={[styles.selectButton, { borderColor: P }]}
               >
                 <Text style={{ color: P, fontSize: FONT_BODY() }}>
-                  {T('thoughtTrailSelectReflection')} ({selectedIds.size})
+                  {T('thoughtTrailSelectReflection')} ({String(selectedIds.size)})
                 </Text>
               </TouchableOpacity>
             </ScrollView>
@@ -197,7 +197,7 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
                   <Text style={{ color: TH.sub, fontSize: FONT_SMALL(), fontWeight: '600' }}>取消全选</Text>
                 </TouchableOpacity>
                 <Text style={{ color: TH.sub, fontSize: FONT_SMALL(), marginLeft: 'auto' }}>
-                  已选 {selectedIds.size} 项
+                  已选 {String(selectedIds.size)} 项
                 </Text>
               </View>
 
@@ -274,7 +274,7 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
                   style={[styles.selectorBackBtn, { backgroundColor: P }]}
                 >
                   <Text style={{ color: '#fff', fontSize: FONT_BODY(), fontWeight: '600' }}>
-                    {T('commonBack')} ({selectedIds.size})
+                    {T('commonBack')} ({String(selectedIds.size)})
                   </Text>
                 </TouchableOpacity>
               </View>

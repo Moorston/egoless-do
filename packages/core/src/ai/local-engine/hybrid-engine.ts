@@ -1,8 +1,7 @@
 // ─── HybridEngine（端侧 + 云端降级）──────────────────────────────
 // 优先使用端侧推理，失败时自动降级到云端。
 
-import { LocalAIEngine, AIResult } from './types';
-import { CloudAIEngine } from '../ai-service';
+import { LocalAIEngine, AIResult, CloudAIEngine } from './types';
 
 export class HybridEngine {
   private localEngine: LocalAIEngine | null = null;

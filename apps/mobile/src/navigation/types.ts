@@ -38,6 +38,7 @@ export type RootStackParamList = {
   HabitDetail: { habitId: string };
   Music: undefined;
   MusicCategory: { category: string };
+  MusicLibrary: undefined;
   RelationMap: { context: { type: string; id: string } } | undefined;
   AISettings: undefined;
   Profile: undefined;

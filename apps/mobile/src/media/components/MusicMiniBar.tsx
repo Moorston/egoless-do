@@ -6,6 +6,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 
 import { useTheme } from '../../components/UI';
 import { useMusicStore } from '../useMusicStore';
+
 const MODE_ICONS: Record<string, typeof Repeat> = {
   sequential: Repeat,
   'repeat-all': Repeat,

@@ -1,0 +1,187 @@
+{
+  "focus": [
+    {
+      "id": "freesound-4045",
+      "title": "ind white noise robotic echo.wav",
+      "creator": "NoiseCollector",
+      "license": "http://creativecommons.org/licenses/by/3.0/",
+      "source": "freesound"
+    },
+    {
+      "id": "freesound-4044",
+      "title": "ind white noise parking garage.wav",
+      "creator": "NoiseCollector",
+      "license": "http://creativecommons.org/licenses/by/3.0/",
+      "source": "freesound"
+    },
+    {
+      "id": "freesound-4043",
+      "title": "ind white noise flange3.wav",
+      "creator": "NoiseCollector",
+      "license": "http://creativecommons.org/licenses/by/3.0/",
+      "source": "freesound"
+    },
+    {
+      "id": "freesound-764379",
+      "title": "91 BPM Industrial Ambient Loop #7237 (WAV)",
+      "creator": "looplicator",
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "freesound"
+    },
+    {
+      "id": "freesound-763499",
+      "title": "71 BPM Industrial Ambient Loop #7187 (WAV)",
+      "creator": "looplicator",
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "freesound"
+    }
+  ],
+  "meditate": [
+    {
+      "id": "freesound-432768",
+      "title": "meditation_eternal_catholic_prayer.wav",
+      "creator": "deleted_user_8713024",
+      "license": "http://creativecommons.org/licenses/by/3.0/",
+      "source": "freesound"
+    },
+    {
+      "id": "freesound-432767",
+      "title": "meditation_eternal_flute.wav",
+      "creator": "deleted_user_8713024",
+      "license": "http://creativecommons.org/licenses/by/3.0/",
+      "source": "freesound"
+    },
+    {
+      "id": "freesound-432766",
+      "title": "meditation_eternal_mild_drums.wav",
+      "creator": "deleted_user_8713024",
+      "license": "http://creativecommons.org/licenses/by/3.0/",
+      "source": "freesound"
+    },
+    {
+      "id": "freesound-524065",
+      "title": "relaxation music #15.mp3",
+      "creator": "ZHRØ",
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "freesound"
+    },
+    {
+      "id": "freesound-523366",
+      "title": "relaxation music #14.mp3",
+      "creator": "ZHRØ",
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "freesound"
+    }
+  ],
+  "exercise": [
+    {
+      "id": "freesound-505756",
+      "title": "Video Workout Session2.wav",
+      "creator": "Xcreenplay",
+      "license": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "source": "freesound"
+    },
+    {
+      "id": "freesound-441834",
+      "title": "Workout machine sound",
+      "creator": "JJDG",
+      "license": "http://creativecommons.org/licenses/by-nc/3.0/",
+      "source": "freesound"
+    },
+    {
+      "id": "freesound-845523",
+      "title": "Metal Dumbbell Workout – Reps, Plate Chatter & Handle Friction (192 kHz Foley) - 260216_004",
+      "creator": "TSP-Talk",
+      "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "source": "freesound"
+    },
+    {
+      "id": "freesound-153236",
+      "title": "Fitness room Posilovana AMB.wav",
+      "creator": "J.Zazvurek",
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "freesound"
+    },
+    {
+      "id": "freesound-340031",
+      "title": "Fitness Center Noises | Grunting | Conversations",
+      "creator": "IESP",
+      "license": "http://creativecommons.org/licenses/by/3.0/",
+      "source": "freesound"
+    }
+  ],
+  "sleep": [
+    {
+      "id": "freesound-176384",
+      "title": "Sleep Study - 1 2.mp3",
+      "creator": "SoundAndItsEffectOnSleep",
+      "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "source": "freesound"
+    },
+    {
+      "id": "freesound-176383",
+      "title": "Sleep Study - 2 2.mp3",
+      "creator": "SoundAndItsEffectOnSleep",
+      "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "source": "freesound"
+    },
+    {
+      "id": "freesound-176382",
+      "title": "Sleep Study - 3.mp3",
+      "creator": "SoundAndItsEffectOnSleep",
+      "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "source": "freesound"
+    },
+    {
+      "id": "freesound-578725",
+      "title": "Short Sentimental Lullaby Trailer - Celesta.wav",
+      "creator": "GregorQuendel",
+      "license": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "source": "freesound"
+    },
+    {
+      "id": "freesound-478220",
+      "title": "Quartet Driest - lullaby 190413_1345.wav",
+      "creator": "klankbeeld",
+      "license": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "source": "freesound"
+    }
+  ],
+  "nature": [
+    {
+      "id": "freesound-34069",
+      "title": "AMBIENT - Rain - On Pavement (LOOP).mp3",
+      "creator": "Arctura",
+      "license": "http://creativecommons.org/licenses/by/3.0/",
+      "source": "freesound"
+    },
+    {
+      "id": "freesound-34066",
+      "title": "AMBIENT - Rain - Light - Near Drainpipe (LOOP).mp3",
+      "creator": "Arctura",
+      "license": "http://creativecommons.org/licenses/by/3.0/",
+      "source": "freesound"
+    },
+    {
+      "id": "freesound-31828",
+      "title": "Rain in the Backyard.wav",
+      "creator": "inchadney",
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "freesound"
+    },
+    {
+      "id": "freesound-161697",
+      "title": "ocean-1.wav",
+      "creator": "xserra",
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "freesound"
+    },
+    {
+      "id": "freesound-476447",
+      "title": "CreekByOcean.wav",
+      "creator": "shelbyshark",
+      "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+      "source": "freesound"
+    }
+  ]
+}
