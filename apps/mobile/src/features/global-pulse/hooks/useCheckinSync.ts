@@ -8,7 +8,7 @@ import * as Location from 'expo-location';
 import { useCallback } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
-import { useAppStore, useShallowStore, type MobileStore } from '../../../store/useAppStore';
+import {useAppStore, type MobileStore} from '../../../store/useAppStore';
 import { submitCheckin } from '../services/globalPulseApi';
 import { getUserHash, getFuzzSecret } from '../services/userHash';
 

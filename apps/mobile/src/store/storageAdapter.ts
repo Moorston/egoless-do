@@ -5,7 +5,6 @@ import { openDatabase, withDbLock, getState, setState } from '../db/schema';
 
 import { WriteBatcher } from './WriteBatcher';
 import { ENTITY_TABLE_MAP } from './entityTableMap';
-import { saveDataToFile, markDeleteInFile } from './fileStorage';
 
 const log = createLogger('StorageAdapter');
 

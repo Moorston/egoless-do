@@ -1,8 +1,8 @@
 import { dateStr } from '@egoless-do/core';
-import type { Vision, Dedication, HabitStat, PlanProgress, VisionProgress, Habit, Plan, PlanItem } from '@egoless-do/core';
+import type { Vision, HabitStat, PlanProgress, VisionProgress, Habit, Plan, PlanItem } from '@egoless-do/core';
 import { useMemo } from 'react';
 
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+import {useShallowStore} from '../../store/useAppStore';
 
 
 export interface DayData {
@@ -77,7 +77,7 @@ export function useVowProgress(): VowProgressData {
     }
 
     // Plan progress comes from plan.progress field
-    for (const p of activePlans) {
+    for (const _p of activePlans) {
       // Plans don't have daily checkins in the same way; track by progress changes
       // We'll count any plan with progress > 0 as active
     }

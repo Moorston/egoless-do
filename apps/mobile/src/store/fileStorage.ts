@@ -8,7 +8,6 @@ const log = createLogger('FileStorage');
 
 const STORAGE_DIR = FileSystem.documentDirectory + 'egoless_storage/';
 const TOKEN_FILE = STORAGE_DIR + 'auth.json';
-const DATA_FILE = STORAGE_DIR + 'data.json';
 
 /** Shape of the persisted auth token file. */
 interface AuthTokenFile {

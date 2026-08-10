@@ -12,8 +12,8 @@ import { useTheme, useT, ProgressBar, Checkbox, ThemedInput } from '../../../com
 import SimpleHeader from '../../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useNavigateToTab } from '../../../navigation/useAppNavigation';
-import { useAppStore, useShallowStore, type MobileStore } from '../../../store/useAppStore';
 import { useCheckinStreak, useActiveHabits } from '../../../store/selectors';
+import { useAppStore, useShallowStore, type MobileStore } from '../../../store/useAppStore';
 import Banner from '../components/Banner';
 import CheckinStatsModal from '../components/CheckinStatsModal';
 import DateBar from '../components/DateBar';

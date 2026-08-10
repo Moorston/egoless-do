@@ -1,4 +1,4 @@
-import { FONT_SMALL, FONT_BODY , FONT_TITLE } from '@egoless-do/core';
+import {FONT_SMALL, FONT_TITLE} from '@egoless-do/core';
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 

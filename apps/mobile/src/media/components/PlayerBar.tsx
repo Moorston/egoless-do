@@ -18,7 +18,7 @@ interface Props {
   category?: string;
 }
 
-export default function PlayerBar({ primaryColor, category }: Props) {
+export default function PlayerBar({ primaryColor, _category }: Props) {
   const TH = useTheme();
   const T = useT();
   const currentTrack = useMusicStore(s => s.currentTrack);

@@ -2,12 +2,10 @@
 // 11 个 Modal 组件集合，从 BodyDashboard.tsx 提取
 // 所有数据和回调通过 Props 传入
 
-import { FONT_TITLE, FONT_BODY, FONT_SUB, type BodyGoal, type BodyTrainingPlan, type BodyPlan, type DayOverride, type ExerciseDef, type BodyCheckin } from '@egoless-do/core';
-import { X } from 'lucide-react-native';
+import {FONT_TITLE, FONT_BODY, type BodyGoal, type BodyTrainingPlan, type BodyPlan, type DayOverride, type ExerciseDef} from '@egoless-do/core';
 import React from 'react';
 import { View, Text, TouchableOpacity, Modal } from 'react-native';
 
-import { styles } from './BodyDashboardStyles';
 import AdjustExerciseModal from './modals/AdjustExerciseModal';
 import AssessmentModal from './modals/AssessmentModal';
 import BodyCheckinModal from './modals/BodyCheckinModal';

@@ -1,9 +1,9 @@
-import { FONT_BODY, FONT_BUTTON, FONT_SMALL, COLORS } from '@egoless-do/core';
-import { Trash2, Pin, PinOff, Tag, X, CheckSquare, Square } from 'lucide-react-native';
+import {FONT_BODY, FONT_BUTTON, FONT_SMALL, COLORS} from '@egoless-do/core';
+import {Trash2, Pin, PinOff, Tag, X, CheckSquare, Square} from 'lucide-react-native';
 import React, { useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Alert} from 'react-native';
 
-import { useTheme, useT } from '../../../components/UI';
+import {useTheme, useT} from '../../../components/UI';
 
 interface Props {
   selectedCount: number;
@@ -19,7 +19,7 @@ interface Props {
 
 function BatchActionBarComponent({
   selectedCount,
-  totalCount,
+  _totalCount,
   onSelectAll,
   onDeselectAll,
   onCancel,
@@ -29,7 +29,6 @@ function BatchActionBarComponent({
   onAddTag,
 }: Props) {
   const TH = useTheme();
-  const T = useT();
   const P = TH.primary;
 
   const handleDelete = useCallback(() => {

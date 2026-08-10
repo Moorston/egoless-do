@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_BADGE, PLAN_TEMPLATES, type PlanTemplate, type Theme } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, PLAN_TEMPLATES, type PlanTemplate, type Theme} from '@egoless-do/core';
 import { X, ChevronRight } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity, Modal, ScrollView } from 'react-native';

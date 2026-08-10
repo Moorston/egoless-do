@@ -1,5 +1,5 @@
 import { FONT_TITLE, FONT_BODY, FONT_SUB, MUSIC_CATEGORY_META, TRACK_VISUAL } from '@egoless-do/core';
-import { ArrowLeft, Music } from 'lucide-react-native';
+import {ArrowLeft} from 'lucide-react-native';
 import React, { useEffect, useCallback, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,7 +11,7 @@ import CategoryCard from '../components/CategoryCard';
 import ImportMusicButton from '../components/ImportMusicButton';
 import PlayerBar from '../components/PlayerBar';
 import WaveformBar from '../components/WaveformBar';
-import { useMusicStore, computeCategoryMeta } from '../useMusicStore';
+import {useMusicStore, computeCategoryMeta} from '../useMusicStore';
 
 export default function MusicScreen() {
   const TH = useTheme();

@@ -15,7 +15,6 @@ describe('Performance benchmarks', () => {
 
       // Simulate multiple page loads
       for (let page = 1; page <= 10; page++) {
-        const items = data.slice(0, page * pageSize);
         const hasMore = page < Math.ceil(data.length / pageSize);
       }
 

@@ -9,7 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme, ScreenHeader, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import type { RootStackParamList } from '../../navigation/types';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+import {useShallowStore} from '../../store/useAppStore';
 
 import HabitActionMenu from './components/HabitActionMenu';
 import HabitCalendarModal from './components/HabitCalendarModal';

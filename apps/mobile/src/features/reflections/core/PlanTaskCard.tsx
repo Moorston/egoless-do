@@ -1,9 +1,9 @@
-import { FONT_SMALL, FONT_BODY, FONT_TINY, computeExpectedDays, dateStr } from '@egoless-do/core';
+import {FONT_BODY, FONT_TINY, computeExpectedDays, dateStr} from '@egoless-do/core';
 import type { PlanItem, PlanItemCheckin } from '@egoless-do/core';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { Trash2, Network } from 'lucide-react-native';
-import React, { useMemo } from 'react';
+
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';
@@ -20,7 +20,7 @@ interface PlanTaskCardProps {
 const PRIORITY_COLORS = { high: '#EF4444', medium: '#F59E0B', low: '#10B981' };
 const PRIORITY_LABELS = { high: '高', medium: '中', low: '低' };
 
-export const PlanTaskCard = React.memo(function PlanTaskCard({ planItem, checkins, onPress, onDelete }: PlanTaskCardProps) {
+export const PlanTaskCard = React.memo(function PlanTaskCard({ planItem, _checkins, onPress, onDelete }: PlanTaskCardProps) {
   const TH = useTheme();
   const T = useT();
   const nav = useNavigation<StackNavigationProp<RootStackParamList>>();

@@ -1,4 +1,4 @@
-import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, dateStr, getTrailsByReflection, createLogger, formatDate, formatTime } from '@egoless-do/core';
+import {MIND_COLORS_EXTENDED, FONT_BODY, FONT_BUTTON, FONT_SMALL, dateStr, getTrailsByReflection, createLogger, formatDate, formatTime} from '@egoless-do/core';
 import type { MindReflection } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, ExternalLink, Link, Pin, Network, MoreHorizontal } from 'lucide-react-native';

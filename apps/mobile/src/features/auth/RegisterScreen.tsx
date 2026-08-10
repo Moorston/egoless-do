@@ -1,4 +1,4 @@
-import { apiSendCode, validatePassword, FONT_SUB, FONT_BUTTON, FONT_ERROR } from '@egoless-do/core';
+import {apiSendCode, validatePassword, FONT_SUB, FONT_ERROR} from '@egoless-do/core';
 import { Image } from 'expo-image';
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';

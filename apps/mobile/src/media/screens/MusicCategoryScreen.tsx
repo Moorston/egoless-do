@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, MUSIC_CATEGORY_META } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, MUSIC_CATEGORY_META} from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { ArrowLeft, Music, Heart } from 'lucide-react-native';

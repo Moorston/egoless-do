@@ -1,7 +1,7 @@
 // ─── ExerciseProgressBanner ─────────────────────────────────────
 // 顶部进度条：显示今日训练各步骤进度
 
-import { FONT_BODY, FONT_SMALL, FONT_SUB, type Theme } from '@egoless-do/core';
+import {FONT_SMALL, type Theme} from '@egoless-do/core';
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 

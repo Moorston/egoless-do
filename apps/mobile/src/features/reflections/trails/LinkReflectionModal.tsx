@@ -1,11 +1,11 @@
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY } from '@egoless-do/core';
 import type { LinkType, MindReflection } from '@egoless-do/core';
-import { X, Link2, Check } from 'lucide-react-native';
+import {X, Check} from 'lucide-react-native';
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, Modal, TouchableOpacity, ScrollView, TextInput, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import {useShallowStore} from '../../../store/useAppStore';
 
 
 const LINK_TYPES: { type: LinkType; icon: string; label: string; description: string }[] = [

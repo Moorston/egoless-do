@@ -8,7 +8,7 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import {useShallowStore} from '../../../store/useAppStore';
 
 import { ActiveUsersList } from './ActiveUsersList';
 import { Leaderboard } from './Leaderboard';
@@ -36,8 +36,8 @@ export const BottomPanel: React.FC<BottomPanelProps> = ({
   onUserPress,
   onLeaderboardUserPress,
   selectedUserId,
-  onRefresh,
-  isRefreshing,
+  _onRefresh,
+  _isRefreshing,
   myHash,
 }) => {
   const theme = useTheme();

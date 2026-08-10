@@ -1,10 +1,11 @@
 // ─── Memoized Selectors（派生状态）──────────────────────────────
 // 从 Source of Truth 实时计算，避免冗余存储。
 
-import { useMemo } from 'react';
-import { useAppStore, type MobileStore } from './useAppStore';
-import { useShallow } from 'zustand/react/shallow';
 import { calculateStreakFromCheckins, dateStr } from '@egoless-do/core';
+import { useMemo } from 'react';
+import { useShallow } from 'zustand/react/shallow';
+
+import { useAppStore, type MobileStore } from './useAppStore';
 
 /**
  * 计算习惯连续打卡天数。

@@ -20,7 +20,7 @@ function TimelineNoteItemComponent({
   primaryColor,
   isLast,
   onDelete,
-  onCreatePlan,
+  _onCreatePlan,
 }: TimelineNoteItemProps) {
   const TH = useTheme();
   const T = useT();

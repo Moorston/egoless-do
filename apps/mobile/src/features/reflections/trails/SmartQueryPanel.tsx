@@ -1,10 +1,10 @@
-import { FONT_SMALL, FONT_BUTTON } from '@egoless-do/core';
+import {FONT_SMALL, FONT_BUTTON} from '@egoless-do/core';
 import type { SmartQueryResult } from '@egoless-do/core';
 import { X } from 'lucide-react-native';
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 
-import { useTheme, useT } from '../../../components/UI';
+import {useTheme, useT} from '../../../components/UI';
 import { SmartQueryBubble } from '../insights/SmartQueryBubble';
 
 
@@ -27,7 +27,6 @@ export default function SmartQueryPanel({
   chatHistory,
 }: Props) {
   const TH = useTheme();
-  const T = useT();
 
   if (!show) return null;
 

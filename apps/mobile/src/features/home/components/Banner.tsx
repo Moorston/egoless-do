@@ -26,7 +26,6 @@ export default function Banner({
   isToday, totalCompleted, viewDateStats, streak,
   showGrace, graceAvailable, onStatsPress,
 }: Props) {
-  const TH = useTheme();
   const T = useT();
 
   return (

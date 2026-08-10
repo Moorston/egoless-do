@@ -1,10 +1,10 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_TINY, VISION_TIME_FRAMES, dateStr } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_TINY, VISION_TIME_FRAMES, dateStr} from '@egoless-do/core';
 import type { Vision, VisionType, VisionTimeFrame, Theme, Habit, Plan } from '@egoless-do/core';
-import { X, Link, Unlink, ChevronLeft, ChevronRight, Calendar, Star, Flag, Target } from 'lucide-react-native';
+import {X, Link, Unlink, ChevronLeft, ChevronRight, Calendar, Star, Flag, Target} from 'lucide-react-native';
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { View, Text, Modal, TextInput, TouchableOpacity, ScrollView, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import {View, Text, Modal, TextInput, TouchableOpacity, ScrollView, StyleSheet, KeyboardAvoidingView, Platform} from 'react-native';
 
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import {useShallowStore} from '../../../store/useAppStore';
 
 const TF_MONTHS: Record<VisionTimeFrame, number> = {
   '3months': 3, '6months': 6, '1year': 12,
@@ -18,7 +18,7 @@ const TYPE_CONFIG: Record<VisionType, { icon: React.ComponentType<{ size?: numbe
 };
 
 // ── Mini month calendar picker ──────────────────────────────────
-function MonthPicker({ value, onChange, TH, T }: { value: string; onChange: (d: string) => void; TH: Theme; T: (k: string) => string }) {
+function MonthPicker({ value, onChange, TH, _T }: { value: string; onChange: (d: string) => void; TH: Theme; T: (k: string) => string }) {
   const initDate = value ? new Date(value) : new Date();
   const [year, setYear] = useState(initDate.getFullYear());
   const [month, setMonth] = useState(initDate.getMonth()); // 0-based

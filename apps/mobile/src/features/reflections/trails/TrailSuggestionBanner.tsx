@@ -1,4 +1,4 @@
-import { FONT_SMALL, FONT_TINY, MS_PER_DAY, createLogger , computeCandidatePool, computeRecommendations, buildIgnoredPattern } from '@egoless-do/core';
+import {FONT_SMALL, FONT_TINY, MS_PER_DAY, createLogger, computeRecommendations, buildIgnoredPattern} from '@egoless-do/core';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Zap, X } from 'lucide-react-native';
@@ -8,7 +8,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { useTheme, useT } from '../../../components/UI';
 import type { RootStackParamList } from '../../../navigation/types';
 import { safeGetItem, safeSetItem } from '../../../store/safeAsyncStorage';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import {useShallowStore} from '../../../store/useAppStore';
 
 
 

@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import {useShallowStore} from '../../../store/useAppStore';
 
 
 interface Props {
@@ -14,7 +14,6 @@ interface Props {
 function MindTrailEntryCard({ onPress }: Props) {
   const TH = useTheme();
   const T = useT();
-  const P = TH.primary;
   const { thoughtTrails: rawThoughtTrails } = useShallowStore(s => ({
     thoughtTrails: s.thoughtTrails,
   }));

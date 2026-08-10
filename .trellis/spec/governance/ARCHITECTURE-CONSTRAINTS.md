@@ -399,40 +399,38 @@ const theme = store.theme;
 
 | 约束条目 | ESLint 规则 | 优先级 | 配置状态 |
 |---------|------------|--------|---------|
-| 2.1 禁止 core→app 导入 | `no-restricted-imports` | P0 | ❌ 未配置 |
-| 2.1 禁止 core→react 导入 | `no-restricted-imports` | P0 | ❌ 未配置 |
+| 2.1 禁止 core→app 导入 | `no-restricted-imports` | P0 | ✅ 已配置 |
+| 2.1 禁止 core→react 导入 | `no-restricted-imports` | P0 | ✅ 已配置 |
 | 1.1 any 禁止 | `@typescript-eslint/no-explicit-any` | P0 | ✅ 已配置 |
 | 6.4 useShallow 规则 | 自定义规则（建议由 Code Review 检查） | P2 | ❌ 无自动化 |
 | 4.1 导入顺序 | `import/order` | P1 | ✅ 已配置 |
-| 8.4 未捕获 Promise | `@typescript-eslint/no-floating-promises` | P0 | ❌ 未配置 |
+| 8.4 未捕获 Promise | `@typescript-eslint/no-floating-promises` | P0 | ✅ 已配置 |
 | 函数复杂度 | `max-depth`, `max-lines-per-function` | P1 | ✅ 已配置 |
 | 8.12 Slice 中 any | `@typescript-eslint/no-explicit-any` | P0 | ✅ 已配置 |
 
-### 建议新增 ESLint 配置
+### 已配置的 ESLint 规则（截至 2026-08-06）
 
-在 `packages/config/eslint.base.js` 中添加：
+以下规则已在 `packages/config/eslint.base.js` 中配置：
 
 ```javascript
-// 1. 禁止 core→app 和 core→react 的非法跨层导入
+// 1. 禁止 core→app 和 core→react 的非法跨层导入（P0）
 'no-restricted-imports': ['error', {
-  paths: [{
-    name: 'react',
-    message: 'packages/core 必须保持平台无关，禁止导入 react',
-  }, {
-    name: 'react-native',
-    message: 'packages/core 必须保持平台无关，禁止导入 react-native',
-  }],
-  patterns: [{
-    group: ['../../apps/*'],
-    message: 'packages/core 禁止导入 apps 中的代码',
-  }],
+  paths: [
+    { name: 'react', message: '...' },
+    { name: 'react-native', message: '...' },
+    { name: 'expo', message: '...' },
+  ],
+  patterns: [{ group: ['@egoless-do/mobile', '@egoless-do/web'], message: '...' }],
 }],
+// ↑ 已在 packages/core override 中配置
 
-// 2. 禁止未捕获的 Promise
-'@typescript-eslint/no-floating-promises': 'error',
+// 2. 禁止未捕获的 Promise（P0）
+'@typescript-eslint/no-floating-promises': ['error', { ignoreIIFE: true }],
+// ↑ 已在 packages/core 和 apps/mobile override 中配置
 
-// 3. 禁止 console.log（强制使用 createLogger）
+// 3. 禁止 console.log（P0）
 'no-console': ['error', { allow: ['warn', 'error'] }],
+// ↑ 已在 base rules 中配置
 ```
 
 ---

@@ -61,7 +61,7 @@ function buildLeaderboard(checkins: GlobalCheckin[], sortBy: LeaderboardSort): L
 
 export const Leaderboard: React.FC<LeaderboardProps> = ({
   checkins,
-  type,
+  _type,
   onBack,
   onUserPress,
   selectedUserId,

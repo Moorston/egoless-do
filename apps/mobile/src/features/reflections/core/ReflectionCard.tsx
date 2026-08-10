@@ -6,7 +6,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { View, Text, TouchableOpacity, Linking, StyleSheet } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
 
-import { useTheme, useT } from '../../../components/UI';
+import {useTheme} from '../../../components/UI';
 import { useAppStore, type MobileStore } from '../../../store/useAppStore';
 
 
@@ -40,7 +40,6 @@ function ReflectionCardComponent({
   index = 0,
 }: Props) {
   const TH = useTheme();
-  const P = TH.primary;
   const language = useAppStore(useShallow((s: MobileStore) => s.language));
   const [expanded, setExpanded] = useState(false);
 

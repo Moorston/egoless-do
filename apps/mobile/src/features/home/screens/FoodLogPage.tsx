@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AddFoodModal from '../../../components/AddFoodModal';
 import { Card, useTheme, useT, ScreenHeader } from '../../../components/UI';
 import { useRootNavigation } from '../../../navigation/hooks';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import {useShallowStore} from '../../../store/useAppStore';
 
 
 export default function FoodLogPage() {

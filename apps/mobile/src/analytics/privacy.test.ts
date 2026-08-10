@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { sanitize } from '../analytics/privacy';
+import {describe, expect} from 'vitest';
+
+import {sanitize} from '../analytics/privacy';
 
 describe('analytics/privacy', () => {
   describe('sanitize', () => {

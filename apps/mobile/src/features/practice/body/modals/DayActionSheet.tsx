@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, type Theme } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SMALL, type Theme} from '@egoless-do/core';
 import { RefreshCw, SkipForward, ArrowLeftRight, Settings, X } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, Modal, TouchableOpacity } from 'react-native';

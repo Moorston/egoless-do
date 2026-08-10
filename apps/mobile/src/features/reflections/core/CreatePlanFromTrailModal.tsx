@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_SUB, FONT_SMALL, FONT_BODY, dateStr } from '@egoless-do/core';
+import {FONT_TITLE, FONT_SMALL, dateStr} from '@egoless-do/core';
 import type { TrailInsightCache, UnifiedPlanItemForm } from '@egoless-do/core';
 import { X } from 'lucide-react-native';
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';

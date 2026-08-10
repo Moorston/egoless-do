@@ -1,8 +1,8 @@
 // ─── PostHog 性能事件追踪 ──────────────────────────────────────
 // 追踪关键性能指标，用于监控和告警。
 
-import { track } from './track';
 import { Events } from './events';
+import { track } from './track';
 
 /**
  * 追踪应用启动时间。

@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY , getMoodIcon } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY} from '@egoless-do/core';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeft, Plus, Lightbulb, TrendingUp, AlertTriangle, X } from 'lucide-react-native';
 import React, { useMemo, useState, useCallback } from 'react';

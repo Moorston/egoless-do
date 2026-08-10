@@ -1,4 +1,4 @@
-import { REP_MILESTONES, TIME_MILESTONES, getSoftTarget, TARGET_PRESETS, getSportType } from '@egoless-do/core';
+import {REP_MILESTONES, TIME_MILESTONES, getSoftTarget} from '@egoless-do/core';
 import type { SportType } from '@egoless-do/core';
 import * as Haptics from 'expo-haptics';
 import { useState, useRef, useCallback } from 'react';

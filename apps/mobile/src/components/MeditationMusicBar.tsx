@@ -55,7 +55,6 @@ function CoverIcon({ track, size = 44 }: { track: MusicTrack | null; size?: numb
 }
 
 export default function MeditationMusicBar({ track, isActive, isPlaying, primaryColor, loop, onPress, onTogglePlay, onToggleLoop }: Props) {
-  const TH = useTheme();
   const T = useT();
 
   if (isActive) {

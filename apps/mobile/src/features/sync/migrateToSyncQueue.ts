@@ -5,7 +5,6 @@ import type { SyncEntity } from '@egoless-do/core';
 import { createLogger } from '@egoless-do/core';
 
 import { openDatabase } from '../../db/schema';
-import { enqueueChange } from '../../db/syncQueue';
 
 const log = createLogger('Sync');
 

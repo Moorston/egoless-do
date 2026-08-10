@@ -5,7 +5,7 @@ import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { View, Text, Modal, TextInput, TouchableOpacity, ScrollView, StyleSheet, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import {useShallowStore} from '../../../store/useAppStore';
 
 
 interface Props {

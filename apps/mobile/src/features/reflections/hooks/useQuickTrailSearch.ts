@@ -27,7 +27,7 @@ export function useQuickTrailSearch(
   reflections: MindReflection[],
   initialText: string,
   T: (key: string) => string,
-  aiConfig?: { mode: string; models: unknown[] },
+  _aiConfig?: { mode: string; models: unknown[] },
 ) {
   const analyzingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const chatHistoryRef = useRef<string[]>([]);

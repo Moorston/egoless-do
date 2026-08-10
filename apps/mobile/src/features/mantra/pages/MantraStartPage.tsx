@@ -4,7 +4,7 @@
 import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL , FONT_STAT_CARD, FONT_BACK} from '@egoless-do/core';
 import type { MantraDef } from '@egoless-do/core';
 import React from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../../components/UI';

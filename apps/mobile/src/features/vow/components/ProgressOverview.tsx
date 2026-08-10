@@ -1,10 +1,9 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, type Theme } from '@egoless-do/core';
+import {FONT_TITLE, FONT_SUB, FONT_STAT_CARD, type Theme} from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Calendar, TrendingUp, Flame } from 'lucide-react-native';
 import React from 'react';
 import { View, Text } from 'react-native';
 
-import { ProgressBar } from '../../../components/UI';
 
 interface Props {
   TH: Theme;
@@ -14,7 +13,7 @@ interface Props {
   longestStreak: number;
 }
 
-export default function ProgressOverview({ TH, T, thisWeekPracticeDays, thisMonthPracticeDays, longestStreak }: Props) {
+export default function ProgressOverview({ _TH, T, thisWeekPracticeDays, thisMonthPracticeDays, longestStreak }: Props) {
   const weekPct = Math.round((thisWeekPracticeDays / 7) * 100);
 
   return (

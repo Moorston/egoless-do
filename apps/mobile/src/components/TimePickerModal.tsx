@@ -1,4 +1,4 @@
-import { FONT_HERO, FONT_TITLE, FONT_SUB, FONT_BODY, FONT_BUTTON , scaleFontSize } from '@egoless-do/core';
+import {FONT_TITLE, FONT_SUB, FONT_BUTTON, scaleFontSize} from '@egoless-do/core';
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, Modal, ScrollView } from 'react-native';
 

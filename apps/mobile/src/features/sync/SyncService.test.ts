@@ -1,5 +1,5 @@
 // ─── SyncService tests ────────────────────────────────────────────
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import {describe, it, expect, beforeEach, vi} from 'vitest';
 
 // Mock all dependencies before importing
 vi.mock('../../db/schema', () => ({

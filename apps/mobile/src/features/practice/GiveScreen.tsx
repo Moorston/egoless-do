@@ -7,7 +7,7 @@ import { View, Text, FlatList, ScrollView, TouchableOpacity, TextInput, Modal, S
 import { useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+import {useShallowStore} from '../../store/useAppStore';
 
 
 const GIVE_TYPES: { type: GiveType; icon: string; color: string }[] = [

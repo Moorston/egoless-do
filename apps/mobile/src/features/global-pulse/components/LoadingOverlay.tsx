@@ -5,13 +5,7 @@
 
 import { FONT_LABEL } from '@egoless-do/core';
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  Animated
-} from 'react-native';
+import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';
 

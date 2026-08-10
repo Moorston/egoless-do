@@ -272,14 +272,14 @@ import { styles } from './styles';
 
 ### 4.2 禁止导入 core → app
 
-> [🔴 MUST] [🤖 Auto — 需配置 `no-restricted-imports`]
+> [🔴 MUST] [🤖 Auto — 已配置 `no-restricted-imports`]
 > 适用范围: core
 
 `packages/core` 禁止导入 `apps/mobile` 或 `apps/web` 中的任何内容，构成循环依赖。
 
 ### 4.3 禁止导入 core → react/react-native
 
-> [🔴 MUST] [🤖 Auto — 需配置 `no-restricted-imports`]
+> [🔴 MUST] [🤖 Auto — 已配置 `no-restricted-imports`]
 > 适用范围: core
 
 `packages/core` 必须保持平台无关，禁止导入 `react`、`react-native`、`expo-*`。
@@ -535,8 +535,8 @@ const { T } = useTheme();  // 或从 UI hook 解构
 | 1.1 any 禁止 | `@typescript-eslint/no-explicit-any: error` | ✅ 已配置 |
 | 1.3 @ts-* 管理 | `@typescript-eslint/ban-ts-comment` | 🟡 需确认 |
 | 4.1 导入顺序 | `import/order` | ✅ 已配置 |
-| 4.2 禁止 core→app | `no-restricted-imports` | ❌ 未配置，需添加 |
-| 4.3 禁止 core→React | `no-restricted-imports` | ❌ 未配置，需添加 |
+| 4.2 禁止 core→app | `no-restricted-imports` | ✅ 已配置（packages/core override） |
+| 4.3 禁止 core→React | `no-restricted-imports` | ✅ 已配置（packages/core override） |
 | 嵌套深度 | `max-depth: [warn, 4]` | ✅ 已配置 |
 | 8.3 假国际化（key 必须声明） | 自定义 lint 脚本 + code review | 🟡 需确认 |
 | 8.4 运行时字符串国际化 | grep 扫描中文量词 + code review | 🟡 需确认 |
@@ -549,8 +549,8 @@ const { T } = useTheme();  // 或从 UI hook 解构
 
 | 优先级 | 规则 | 说明 |
 |--------|------|------|
-| **P0** | `no-restricted-imports` | 阻止 core→app 和 core→react 的非法跨层导入 |
-| **P0** | `react-hooks/exhaustive-deps` | 确保 useEffect 等 hooks 的依赖数组完整 |
+| **P0** | ~~`no-restricted-imports`~~ | ~~阻止 core→app 和 core→react 的非法跨层导入~~ ✅ 已配置 |
+| **P0** | ~~`react-hooks/exhaustive-deps`~~ | ~~确保 useEffect 等 hooks 的依赖数组完整~~ ✅ 已配置（mobile） |
 | **P1** | `no-console` (error) | 强制使用 createLogger，禁止 console.* |
 | **P1** | `import/no-restricted-paths` | 补充 no-restricted-imports 的路径级限制 |
 | **P1** | `@typescript-eslint/prefer-nullish-coalescing` | 统一使用 `??` 而非 `\|\|` 处理 null/undefined |

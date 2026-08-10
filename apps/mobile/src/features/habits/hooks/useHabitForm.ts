@@ -1,10 +1,10 @@
 // ─── useHabitForm: habit add/edit form state ─────────────────────
-import { track } from '../../../analytics/track';
-import { Events } from '../../../analytics/events';
 import { activeOnly } from '@egoless-do/core';
 import type { Habit, HabitLink } from '@egoless-do/core';
 import { useState, useCallback } from 'react';
 
+import { Events } from '../../../analytics/events';
+import { track } from '../../../analytics/track';
 import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { requestNotificationPermission, rescheduleAllHabitReminders } from '../../notifications/NotificationService';
 

@@ -31,7 +31,7 @@ function TimelineReflectionItemComponent({
   isLast,
   linkToNext,
   onRemove,
-  onCreatePlan,
+  _onCreatePlan,
 }: TimelineReflectionItemProps) {
   const TH = useTheme();
   const T = useT();

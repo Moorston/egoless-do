@@ -9,7 +9,7 @@ import {
 import { Events } from '../../../analytics/events';
 import { track } from '../../../analytics/track';
 import { useTheme, useT } from '../../../components/UI';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import {useShallowStore} from '../../../store/useAppStore';
 
 
 interface CreateReflectionModalProps {

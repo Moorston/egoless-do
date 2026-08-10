@@ -3,14 +3,14 @@ import {
   detectStreakBreaks, computeLongestStreak, computeCurrentStreak,
   computeBreakInsights, computeHypotheticalStreak, generateEncouragement, getRecoveryData,
   FONT_STAT_SECTION, FONT_SUB, FONT_BODY, FONT_BADGE, FONT_TINY, FONT_SMALL } from '@egoless-do/core';
-import { PartyPopper, ArrowRight, Flame, Heart, Clock, Sprout, Shield } from 'lucide-react-native';
+import {PartyPopper, Flame, Heart, Clock, Sprout, Shield} from 'lucide-react-native';
 import React, { useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT, ScreenHeader, Card } from '../../../components/UI';
 import { useRootNavigation } from '../../../navigation/hooks';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import {useShallowStore} from '../../../store/useAppStore';
 
 export default function StreakBreakScreen() {
   const TH = useTheme();

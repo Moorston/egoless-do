@@ -1,9 +1,9 @@
-import { FONT_BODY, FONT_SMALL, FONT_SUB } from '@egoless-do/core';
+import {FONT_BODY, FONT_SMALL, FONT_SUB} from '@egoless-do/core';
 import { X, BarChart3 } from 'lucide-react-native';
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import {View, Text, ScrollView, TouchableOpacity, TextInput} from 'react-native';
 
-import { useTheme, useT } from '../../../components/UI';
+import {useTheme, useT} from '../../../components/UI';
 
 
 interface FilterItem {
@@ -31,7 +31,6 @@ export default function SearchFilterBar({
   hasActiveFilters, activeFilters, onRemoveFilter, onClearAllFilters,
 }: Props) {
   const TH = useTheme();
-  const T = useT();
   const P = TH.primary;
 
   return (

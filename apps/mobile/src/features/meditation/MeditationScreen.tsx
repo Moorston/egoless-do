@@ -13,6 +13,8 @@ import { Events } from '../../analytics/events';
 import { track } from '../../analytics/track';
 import MeditationMusicBar from '../../components/MeditationMusicBar';
 import { Card, useTheme, PrimaryButton, TagPill, ProgressBar, OutlineButton, useT } from '../../components/UI';
+import MusicPickerModal from '../../media/components/MusicPickerModal';
+import { useMusicStore } from '../../media/useMusicStore';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../navigation/hooks';
 import { audioSessionManager } from '../../services/AudioSessionManager';
@@ -21,8 +23,6 @@ import { ActiveInsightBar } from '../global-pulse/components/ActiveInsightBar';
 import { useGoalResolver } from '../global-pulse/hooks/useGoalResolver';
 import { useSessionHeartbeat } from '../global-pulse/hooks/useSessionHeartbeat';
 import { createSession, deleteSession, updateSession } from '../global-pulse/services/activeSessionApi';
-import MusicPickerModal from '../../media/components/MusicPickerModal';
-import { useMusicStore } from '../../media/useMusicStore';
 
 const log = createLogger('Meditation');
 

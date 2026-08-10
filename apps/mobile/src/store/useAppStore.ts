@@ -27,8 +27,8 @@ import { useShallow } from 'zustand/react/shallow';
 
 
 import { API_URL, PB_URL } from '../config';
-import { useMusicStore, setMusicSyncCallback } from '../media/useMusicStore';
 import { runSync, resetSyncState, softResetSyncState, resetMigrationFlag, rehydrateFromDb, initialSync } from '../features/sync/SyncService';
+import { useMusicStore, setMusicSyncCallback } from '../media/useMusicStore';
 
 import { createMobileUiSlice, type MobileUiSlice } from './createMobileUiSlice';
 import { saveSecureTokens } from './secureAuth';
@@ -128,11 +128,6 @@ function flushAIConfig() {
     updatedAt: Date.now(),
     deleted: false,
   }).catch((e) => log.error(e));
-}
-
-function persistAIConfig() {
-  if (_aiConfigPersistTimer) clearTimeout(_aiConfigPersistTimer);
-  _aiConfigPersistTimer = setTimeout(flushAIConfig, 500);
 }
 
 // Backward-compatible: register AppState listener at module load time

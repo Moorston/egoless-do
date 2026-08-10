@@ -1,4 +1,4 @@
-import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_SMALL, formatDate , FONT_HERO } from '@egoless-do/core';
+import {MIND_COLORS_EXTENDED, FONT_BODY, FONT_SMALL, formatDate, FONT_HERO} from '@egoless-do/core';
 import { File as FSFile, Directory as FSDirectory } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { X, Download, Share2, MessageSquare } from 'lucide-react-native';
@@ -24,7 +24,6 @@ interface ShareCardProps {
 }
 
 export default function ShareCard({ visible, onClose, reflection, onTextShare }: ShareCardProps) {
-  const TH = useTheme();
   const T = useT();
   const viewShotRef = useRef<ViewShotRef>(null);
   const [capturing, setCapturing] = useState(false);

@@ -6,15 +6,15 @@ import { View, Animated, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../components/UI';
+import MusicPickerModal from '../../media/components/MusicPickerModal';
+import { audioPlayerRef } from '../../media/services/audioPlayerRef';
+import { useMusicStore } from '../../media/useMusicStore';
 import { useRootNavigation, type MainTabParamList, type RootStackParamList } from '../../navigation/hooks';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { ActiveInsightBar } from '../global-pulse/components/ActiveInsightBar';
 import { useGoalResolver } from '../global-pulse/hooks/useGoalResolver';
 import { useSessionHeartbeat } from '../global-pulse/hooks/useSessionHeartbeat';
 import { createSession, deleteSession, updateSession } from '../global-pulse/services/activeSessionApi';
-import MusicPickerModal from '../../media/components/MusicPickerModal';
-import { audioPlayerRef } from '../../media/services/audioPlayerRef';
-import { useMusicStore } from '../../media/useMusicStore';
 
 import type { ExerciseResult } from './components/ComboProgressHeader';
 import ComboProgressHeader from './components/ComboProgressHeader';

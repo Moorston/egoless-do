@@ -1,5 +1,5 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, FONT_STAT_CARD, FONT_STAT_SECTION, type Theme } from '@egoless-do/core';
-import { CheckCircle2, Trophy, Sparkles } from 'lucide-react-native';
+import {FONT_TITLE, FONT_BODY, FONT_BADGE, FONT_SMALL, FONT_STAT_CARD, FONT_STAT_SECTION, type Theme} from '@egoless-do/core';
+import {Trophy} from 'lucide-react-native';
 import React, { useEffect, useRef } from 'react';
 import { View, Text, Animated, Dimensions, TouchableWithoutFeedback, StyleSheet } from 'react-native';
 

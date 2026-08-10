@@ -128,12 +128,8 @@ vi.mock('./createMobileUiSlice', () => {
 });
 
 // ── Imports (after all mocks) ─────────────────────────────────────
+import {softResetSyncState, resetMigrationFlag, rehydrateFromDb, initialSync, resetSyncState} from '../features/sync/SyncService';
 import { setMusicSyncCallback } from '../media/useMusicStore';
-import {
-  runSync, softResetSyncState,
-  resetMigrationFlag, rehydrateFromDb, initialSync,
-  resetSyncState,
-} from '../features/sync/SyncService';
 
 import { setPersistErrorHandler } from './storageAdapter';
 import {

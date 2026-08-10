@@ -12,7 +12,7 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet, Alert, Share, Modal } from 'react-native';
 
 import { useT } from '../../components/UI';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+import {useShallowStore} from '../../store/useAppStore';
 
 const COLORS = ['rgba(139, 115, 85, 0.15)', 'rgba(139, 115, 85, 0.35)', 'rgba(201, 169, 110, 0.55)', 'rgba(201, 169, 110, 0.75)', 'rgba(201, 169, 110, 1)'];
 

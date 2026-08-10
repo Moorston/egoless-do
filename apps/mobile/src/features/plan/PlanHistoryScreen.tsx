@@ -1,4 +1,4 @@
-import { PLAN_STATUS_COLORS, statusToI18nKey, getHistoryPlans, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
+import {PLAN_STATUS_COLORS, statusToI18nKey, getHistoryPlans, FONT_TITLE, FONT_BODY, FONT_BADGE} from '@egoless-do/core';
 import type { PlanStatus } from '@egoless-do/core';
 import { ChevronLeft, ClipboardList, ChevronRight } from 'lucide-react-native';
 import React, { useMemo, useCallback } from 'react';
@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Card, useTheme, useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+import {useShallowStore} from '../../store/useAppStore';
 
 
 

@@ -14,7 +14,7 @@ import DateRangePickerModal from '../../components/DateRangePickerModal';
 import { Card, useTheme, useT, PrimaryButton } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
 import type { RootStackParamList } from '../../navigation/types';
-import { useAppStore, useShallowStore, type MobileStore } from '../../store/useAppStore';
+import {useShallowStore} from '../../store/useAppStore';
 
 const log = createLogger('Plan');
 

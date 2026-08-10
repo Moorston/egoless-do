@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 
 import { useTheme, useT } from '../../components/UI';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+import {useShallowStore} from '../../store/useAppStore';
 
 
 export default function PlanTodoListModal({ onClose }: { onClose: () => void }) {

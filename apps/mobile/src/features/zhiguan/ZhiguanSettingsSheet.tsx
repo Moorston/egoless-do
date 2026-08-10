@@ -131,7 +131,7 @@ export default function ZhiguanSettingsSheet({ settings, onSave, onClose }: Prop
             {/* Five Hindrance Sliders */}
             <Text style={styles.sectionTitle}>{T('zhiguanFiveHindrancesTitle')}</Text>
             <Text style={{ fontSize: FONT_SMALL(), color: '#8B7355', marginBottom: 8 }}>{T('zhiguanFiveHindrancesHint')}</Text>
-            {FIVE_HINDRANCE_KEYS.map((key, idx) => (
+            {FIVE_HINDRANCE_KEYS.map((key, _idx) => (
               <View key={key} style={{ marginBottom: 12 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
                   <Text style={{ fontSize: FONT_SUB(), color: '#4A3F35' }}>{T(FIVE_HINDRANCE_LABEL_KEYS[key])}</Text>

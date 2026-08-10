@@ -1,7 +1,7 @@
 // ─── Health Service — Apple HealthKit / Health Connect abstraction ──
 import type { ExerciseEntry } from '@egoless-do/core';
 import { dateStr, MS_PER_DAY, createLogger } from '@egoless-do/core';
-import { Platform, Alert } from 'react-native';
+import {Platform} from 'react-native';
 
 const log = createLogger('Health');
 

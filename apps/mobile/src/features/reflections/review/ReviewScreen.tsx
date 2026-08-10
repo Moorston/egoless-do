@@ -1,4 +1,4 @@
-import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, MS_PER_WEEK , getMoodIcon , scaleFontSize, FONT_STAT_CARD} from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SMALL, MS_PER_WEEK, getMoodIcon, scaleFontSize, FONT_STAT_CARD} from '@egoless-do/core';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeft, ChevronRight, Check, Calendar, Heart, Lightbulb } from 'lucide-react-native';
 import React, { useState, useMemo, useCallback } from 'react';
@@ -96,7 +96,7 @@ export default function ReviewScreen() {
         <View style={[styles.moodDistribution, { backgroundColor: TH.card, borderColor: TH.border }]}>
           <Text style={[styles.moodLabel, { color: TH.sub }]}>{T('reviewMoodDistribution')}</Text>
           <View style={styles.moodRow}>
-            {moodStats.map(({ mood, count }) => (
+            {moodStats.map(({ mood, _count }) => (
               <Text key={mood} style={styles.moodEmoji}>
                 {getMoodIcon(mood)}
               </Text>

@@ -2,7 +2,7 @@
 import { FONT_BUTTON } from '@egoless-do/core';
 import { CheckCircle } from 'lucide-react-native';
 import React, { useCallback, useRef } from 'react';
-import { View, Text, TouchableOpacity, Animated } from 'react-native';
+import {Text, TouchableOpacity, Animated} from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';
 

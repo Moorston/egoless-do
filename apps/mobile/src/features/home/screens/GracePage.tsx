@@ -1,6 +1,5 @@
-import { COLORS, yesterday, dateStr, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_SMALL, FONT_TINY,
-  getMonthGraceCount, getRemainingGrace, isGraceAvailable } from '@egoless-do/core';
-import { Shield, ShieldCheck, CheckCircle2, Clock, Calendar, Settings } from 'lucide-react-native';
+import {COLORS, yesterday, dateStr, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_TINY, getMonthGraceCount, getRemainingGrace, isGraceAvailable} from '@egoless-do/core';
+import {Shield, CheckCircle2, Clock, Calendar, Settings} from 'lucide-react-native';
 import React, { useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';

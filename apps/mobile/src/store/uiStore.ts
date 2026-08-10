@@ -37,7 +37,7 @@ export interface UiStore {
 }
 
 export const useUiStore = create<UiStore>()(
-  (set, get) => ({
+  (set, _get) => ({
     // Modal states
     modals: {},
     showModal: (type, data) =>

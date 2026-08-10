@@ -1,6 +1,5 @@
 // ─── HabitCard: habit card with original prominent style ─────────
-import { getHabitStreak, COLORS, dateStr, FONT_TITLE, FONT_BODY, FONT_BUTTON, FONT_SUB,
-  FONT_SMALL, FONT_BADGE, FONT_STAT_CARD, HABIT_LINK_COLORS, type Habit } from '@egoless-do/core';
+import {getHabitStreak, COLORS, dateStr, FONT_TITLE, FONT_BODY, FONT_BUTTON, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, HABIT_LINK_COLORS, type Habit} from '@egoless-do/core';
 import { Target, Pause, X, CheckCircle, Bell, BellOff } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';

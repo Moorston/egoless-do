@@ -1,30 +1,22 @@
 // ─── HomePage — Sleep home page (extracted from SleepEngine) ─────
 // Displays: body clock, sleep goal, diary, ritual entry, trend, streak
 
-import { getCurrentPeriod, getNextSleepPeriod, type BodyClockPeriod, FONT_TITLE, type SleepGoal, type WorkState, SleepEntry } from '@egoless-do/core';
+import {getCurrentPeriod, getNextSleepPeriod, type BodyClockPeriod, type SleepGoal, type WorkState, SleepEntry} from '@egoless-do/core';
 import { Moon, Sun, Clock, Heart, ChevronRight, BarChart3 } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Keyboard } from 'react-native';
+import {View, Text, ScrollView, TouchableOpacity, Modal} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import TimePickerModal from '../../components/TimePickerModal';
 import { useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../navigation/hooks';
 
 import DiaryModal from './DiaryModal';
 import SleepSummaryCard from './SleepSummaryCard';
-import BodyClockDial from './components/BodyClockDial';
 import BedtimeReminderModal from './components/BedtimeReminderModal';
-import TimePickerModal from '../../components/TimePickerModal';
-import {
-  formatDuration,
-  formatTime,
-  formatSleepDate,
-  countGratitude,
-  qualityLabel,
-  parseHHMM,
-} from './sleepSummaryLogic';
-import { styles } from './sleepStyles';
+import BodyClockDial from './components/BodyClockDial';
+import {parseHHMM} from './sleepSummaryLogic';
 
 interface HomePageProps {
   todaySleep: SleepEntry | null | undefined;

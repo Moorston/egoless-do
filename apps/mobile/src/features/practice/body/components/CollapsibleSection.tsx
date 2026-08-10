@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_SUB, FONT_BADGE, type Theme } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BADGE, type Theme} from '@egoless-do/core';
 import { ChevronDown } from 'lucide-react-native';
 import React, { useState, useRef, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Animated, StyleSheet } from 'react-native';

@@ -1,7 +1,7 @@
-import { COLORS, dateStr, FONT_SUB, FONT_BADGE , FONT_SMALL } from '@egoless-do/core';
+import {COLORS, dateStr, FONT_SMALL} from '@egoless-do/core';
 import type { PlanItem, PlanItemCheckin, Theme } from '@egoless-do/core';
 import React, { useMemo, useState } from 'react';
-import { View, Text, TouchableOpacity, LayoutChangeEvent } from 'react-native';
+import {View, Text, LayoutChangeEvent} from 'react-native';
 
 interface ItemHeatmapProps {
   item: PlanItem;

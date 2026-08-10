@@ -59,7 +59,6 @@ import type { RootStackParamList, MainTabParamList } from './types';
 // All screen imports from screens.ts (single source, no duplicates)
 
 export type { RootStackParamList, MainTabParamList } from './types';
-import { useRootNavigation } from './hooks';
 
 const log = createLogger('App');
 
@@ -95,11 +94,6 @@ function MedHistoryWrapper() {
 
 export { SimpleHeaderComponent as SimpleHeader };
 
-const TAB_ROUTES: Record<string, string> = {
-  home: 'Home', plan: 'Plan', fasting: 'Fasting', meditation: 'Meditation',
-  exercise: 'Exercise', settings: 'Settings', reflections: 'Reflections',
-  habits: 'Habits', stats: 'Stats',
-};
 
 function MainTabBar({ state, navigation, descriptors, insets }: BottomTabBarProps) {
   const TH = useTheme();

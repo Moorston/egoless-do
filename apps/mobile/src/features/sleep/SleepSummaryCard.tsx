@@ -19,7 +19,7 @@ import {
   type Theme,
 } from '@egoless-do/core';
 import * as Haptics from 'expo-haptics';
-import { Star, Moon, Sun, ArrowRight, Check } from 'lucide-react-native';
+import {Star, Moon, Sun, ArrowRight, Check} from 'lucide-react-native';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   View,
@@ -31,7 +31,7 @@ import {
 import Svg, { Circle } from 'react-native-svg';
 
 import { useTheme, useT } from '../../components/UI';
-import { useUiStore } from '../../store/uiStore';
+import {useUiStore} from '../../store/uiStore';
 
 import {
   formatDuration,
@@ -402,7 +402,7 @@ function MiniTrendChart({
         )}
         {/* Bars */}
         <View style={s.trendBars}>
-          {trendData.map((d, i) => {
+          {trendData.map((d, _i) => {
             const barH = d.hasData ? Math.max((d.durationMin / maxDur) * CHART_HEIGHT, 3) : 2;
             const weekday = [_T('weekdaySun'), _T('weekdayMon'), _T('weekdayTue'), _T('weekdayWed'), _T('weekdayThu'), _T('weekdayFri'), _T('weekdaySat')][new Date(d.date).getDay()];
             return (

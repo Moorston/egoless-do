@@ -48,7 +48,6 @@ export const LeaderboardItem: React.FC<LeaderboardItemProps> = React.memo(({
   const typeIcon = getCheckinTypeIcon(entry.type);
   const typeColor = getCheckinTypeColor(entry.type);
   const startFormatted = useMemo(() => formatDate(entry.created_at), [entry.created_at]);
-  const ongoingDays = useMemo(() => daysSince(entry.created_at), [entry.created_at]);
 
   return (
     <TouchableOpacity

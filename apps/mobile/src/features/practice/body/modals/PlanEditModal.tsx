@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, EXERCISE_CATEGORIES, type BodyPlan, type Theme } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, EXERCISE_CATEGORIES, type BodyPlan, type Theme} from '@egoless-do/core';
 import { X } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput } from 'react-native';
@@ -58,7 +58,6 @@ export default function PlanEditModal({ visible, TH, T, plans, onClose, onSave }
   }, [T]);
 
   // Build key-to-label map for display
-  const keyToLabel = useMemo(() => {
     const m = new Map<string, string>();
     for (const cat of EXERCISE_CATEGORIES) {
       m.set(cat.key, T(cat.i18nKey));

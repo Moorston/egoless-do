@@ -1,10 +1,10 @@
-import { FONT_BODY, FONT_SMALL, FONT_BUTTON, FONT_LABEL, dateStr , FONT_TITLE } from '@egoless-do/core';
+import {FONT_SMALL, FONT_BUTTON, FONT_LABEL, dateStr, FONT_TITLE} from '@egoless-do/core';
 import { X, Link, ListChecks, Calendar } from 'lucide-react-native';
 import React, { useState, useCallback } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import {View, Text, TouchableOpacity, ScrollView, StyleSheet} from 'react-native';
 
 import DateRangePickerModal from '../../../components/DateRangePickerModal';
-import { useTheme, useT, PillSelector } from '../../../components/UI';
+import {useTheme, useT, PillSelector} from '../../../components/UI';
 
 interface Props {
   visible: boolean;
@@ -73,7 +73,6 @@ function FilterDrawerComponent({
   primaryColor: P,
 }: Props) {
   const TH = useTheme();
-  const T = useT();
 
   const [showRangePicker, setShowRangePicker] = useState(false);
 

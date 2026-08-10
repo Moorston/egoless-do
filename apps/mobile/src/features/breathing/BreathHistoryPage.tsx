@@ -32,7 +32,6 @@ export default function BreathHistoryPage() {
 
     // Streak: consecutive days with at least one record
     const dates = new Set(records.map((r: BreathingRecord) => r.date));
-    const sortedDates = [...dates].sort().reverse();
     let streak = 0;
     const today = dateStr();
     let checkDate = today;

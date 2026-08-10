@@ -3,7 +3,7 @@
 
 import PostHog, { type PostHogOptions } from 'posthog-react-native';
 
-import { getAnalyticsConsent, setAnalyticsConsent } from './privacy';
+import {getAnalyticsConsent} from './privacy';
 
 let posthogInstance: PostHog | null = null;
 let initPromise: Promise<PostHog | null> | null = null;

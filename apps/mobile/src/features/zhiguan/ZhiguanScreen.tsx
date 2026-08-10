@@ -10,9 +10,9 @@ import { View, Text, Pressable, Animated, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useT } from '../../components/UI';
-import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { useMusicStore } from '../../media/useMusicStore';
+import { useRootNavigation } from '../../navigation/hooks';
+import {useShallowStore} from '../../store/useAppStore';
 
 import SessionComplete from './SessionComplete';
 import ZhiguanSettingsSheet from './ZhiguanSettingsSheet';

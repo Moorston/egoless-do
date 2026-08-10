@@ -78,12 +78,6 @@ export async function dbGetCheckins(db: SQLiteDatabase, cursor?: string, limit =
   return { items, nextCursor };
 }
 
-// ── Safe JSON parse ──────────────────────────────────────────────
-function safeParse<T>(raw: string | null | undefined, fallback: T): T {
-  if (raw == null) return fallback; // Distinguish null/undefined from empty string
-  try { return JSON.parse(raw) as T; } catch { return fallback; }
-}
-
 // ── Thought Trails ───────────────────────────────────────────────
 export async function dbGetAllThoughtTrails(db: SQLiteDatabase): Promise<ThoughtTrail[]> {
   const rows = await db.getAllAsync<Record<string, unknown>>(

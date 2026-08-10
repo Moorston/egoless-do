@@ -1,15 +1,11 @@
-import { FONT_BODY, FONT_SUB } from '@egoless-do/core';
+import {FONT_SUB} from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
 import { Music, Play, Pause, Repeat, Repeat1, Shuffle } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 
 import { useTheme } from '../../components/UI';
-import type { PlayMode } from '../useMusicStore';
 import { useMusicStore } from '../useMusicStore';
-
-import WaveformBar from './WaveformBar';
-
 const MODE_ICONS: Record<string, typeof Repeat> = {
   sequential: Repeat,
   'repeat-all': Repeat,
@@ -27,7 +23,7 @@ interface Props {
   primaryColor: string;
 }
 
-export default function MusicMiniBar({ currentTrack, isPlaying, loop, onTogglePlay, onToggleLoop, onPressTrackName, primaryColor }: Props) {
+export default function MusicMiniBar({ currentTrack, isPlaying, _loop, onTogglePlay, onToggleLoop, onPressTrackName, primaryColor }: Props) {
   const TH = useTheme();
   const playMode = useMusicStore(s => s.playMode);
   const currentTime = useMusicStore(s => s.currentTime);

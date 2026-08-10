@@ -2,7 +2,6 @@
 // Centralized SQL utilities for safe parameterized queries.
 // Prevents SQL injection by validating column/table names.
 
-import type { SQLiteDatabase } from 'expo-sqlite';
 
 /** Validate that a name contains only safe characters (alphanumeric + underscore). */
 export function isValidSqlName(name: string): boolean {
@@ -85,7 +84,7 @@ export function buildDeleteInStatement(
 }
 
 /** Build a parameterized SELECT statement with IN clause. */
-export function buildSelectInStatement<T>(
+export function buildSelectInStatement(
   table: string,
   column: string,
   ids: (string | number)[],

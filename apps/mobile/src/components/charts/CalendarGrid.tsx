@@ -23,7 +23,7 @@ function dateStr(d: Date): string {
 }
 
 export default function CalendarGrid({
-  history, primaryColor, textColor, subColor, borderColor, onDayPress,
+  history, primaryColor, textColor, subColor, _borderColor, onDayPress,
 }: CalendarGridProps) {
   const today = new Date();
   const [viewYear, setViewYear] = useState(today.getFullYear());

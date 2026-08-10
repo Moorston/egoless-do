@@ -2,7 +2,7 @@ import { getAIService } from '@egoless-do/core';
 import type { TrailInsightCache, TrailReviewCache, ThoughtTrail, MindReflection, TrailNote } from '@egoless-do/core';
 import { useCallback, useRef, useMemo, useEffect } from 'react';
 
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import {useShallowStore} from '../../../store/useAppStore';
 
 const CACHE_FRESH_MS = 5 * 60 * 1000;
 

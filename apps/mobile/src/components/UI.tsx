@@ -1,13 +1,10 @@
 // ─── Shared UI primitives ─────────────────────────────────────────
-import { THEMES, COLORS, t, FONT_BUTTON, FONT_BACK, FONT_LABEL, FONT_SUB, FONT_STAT_CARD, FONT_BODY, FONT_HERO , FONT_SMALL } from '@egoless-do/core';
+import {THEMES, t, FONT_BUTTON, FONT_BACK, FONT_LABEL, FONT_SUB, FONT_STAT_CARD, FONT_BODY, FONT_HERO, FONT_SMALL} from '@egoless-do/core';
 import type { I18nKey, Theme, ThemeName } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ChevronLeft, Check } from 'lucide-react-native';
 import React from 'react';
-import {
-  View, Text, TouchableOpacity, TextInput, ScrollView,
-  StyleSheet, ViewStyle, TextStyle,
-} from 'react-native';
+import {View, Text, TouchableOpacity, TextInput, ViewStyle, TextStyle} from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useAppStore, type MobileStore } from '../store/useAppStore';

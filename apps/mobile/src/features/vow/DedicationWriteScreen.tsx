@@ -7,7 +7,7 @@ import { View, Text, ScrollView, TextInput, TouchableOpacity, Alert, StyleSheet 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT, ProgressBar } from '../../components/UI';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+import {useShallowStore} from '../../store/useAppStore';
 
 import { useVowProgress } from './useVowProgress';
 

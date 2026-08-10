@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION, createLogger, MFARequiredError } from '@egoless-do/core';
+import {FONT_TITLE, FONT_SUB, FONT_ERROR, createLogger, MFARequiredError} from '@egoless-do/core';
 import { Image } from 'expo-image';
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, ImageRequireSource } from 'react-native';
@@ -10,7 +10,6 @@ import { useAppStore, type MobileStore } from '../../store/useAppStore';
 
 import { registerExpoPushToken } from './pushTokenRegistration';
 
-const log = createLogger('Auth');
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

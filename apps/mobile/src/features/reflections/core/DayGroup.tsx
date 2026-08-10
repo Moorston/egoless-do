@@ -1,4 +1,4 @@
-import { FONT_SUB, FONT_SMALL, FONT_TINY, formatDate , FONT_STAT_SECTION } from '@egoless-do/core';
+import {FONT_SMALL, FONT_TINY, formatDate, FONT_STAT_SECTION} from '@egoless-do/core';
 import type { MindReflection } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';

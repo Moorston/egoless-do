@@ -1,6 +1,6 @@
-import { COLORS, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_TITLE, FONT_STAT_CARD, FONT_LABEL , FONT_STAT_SECTION } from '@egoless-do/core';
+import {COLORS, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_TITLE, FONT_STAT_CARD, FONT_STAT_SECTION} from '@egoless-do/core';
 import { Utensils, Pencil, X } from 'lucide-react-native';
-import React, { useState, useMemo, memo } from 'react';
+import React, {useState, memo} from 'react';
 import {
   View, Text, TouchableOpacity, Modal, TextInput, StyleSheet,
 } from 'react-native';
@@ -45,7 +45,7 @@ interface HomeFoodSectionProps {
 }
 
 const HomeFoodSection = memo(function HomeFoodSection({
-  foods, totalCal, recentFoods, isToday, calGoal, isReadOnly,
+  foods, totalCal, recentFoods, isToday, calGoal, _isReadOnly,
   onDeleteFood, onAddFood, onFoodChanged, onSetCalGoal,
 }: HomeFoodSectionProps) {
   const TH = useTheme();

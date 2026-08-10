@@ -1,7 +1,7 @@
 // ─── BedtimeReminderModal — 全屏沉浸式睡眠提醒 ─────────────────────
 // 暗色背景 + 呼吸月亮 + 环形进度条 + 时辰信息 + 快速仪轨
 
-import { BODY_CLOCK, getCurrentPeriod, type BodyClockPeriod, type Theme } from '@egoless-do/core';
+import {getCurrentPeriod, type Theme} from '@egoless-do/core';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
@@ -181,7 +181,7 @@ export default function BedtimeReminderModal({
     >
       {/* Starfield background (decorative, hidden from a11y) */}
       <View style={styles.starfield} pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-        {STAR_POSITIONS.map(([x, y, size, delay], i) => (
+        {STAR_POSITIONS.map(([x, y, size, _delay], i) => (
           <Animated.View
             key={i}
             style={[

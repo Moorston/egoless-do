@@ -1,4 +1,4 @@
-import { COLORS, FONT_HERO, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BODY, fmt } from '@egoless-do/core';
+import {COLORS, FONT_HERO, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BODY} from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Minus, Plus, Pause } from 'lucide-react-native';
 import React from 'react';

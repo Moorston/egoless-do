@@ -19,7 +19,6 @@ export function AudioEngineProvider({ children }: { children: React.ReactNode })
   const currentTrack = useMusicStore(s => s.currentTrack);
   const isPlaying = useMusicStore(s => s.isPlaying);
   const volume = useMusicStore(s => s.volume);
-  const loop = useMusicStore(s => s.loop);
   const playMode = useMusicStore(s => s.playMode);
 
   const source = currentTrack

@@ -6,7 +6,7 @@
 import { CheckinType } from '@egoless-do/core';
 import { useCallback } from 'react';
 
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import {useShallowStore} from '../../../store/useAppStore';
 
 export function useGoalResolver() {
   const planItems = useShallowStore(s => s.planItems);

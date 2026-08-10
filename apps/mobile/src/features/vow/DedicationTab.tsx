@@ -3,7 +3,7 @@ import { Settings, PenLine, History } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+import {useShallowStore} from '../../store/useAppStore';
 
 import DedicationCard from './components/DedicationCard';
 import DedicationSettingsModal from './modals/DedicationSettingsModal';

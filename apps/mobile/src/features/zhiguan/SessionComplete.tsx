@@ -77,7 +77,7 @@ export default function SessionComplete({ durationSec, startTime, sankalpa, onSa
         <Text style={styles.sectionTitle}>{T('zhiguanEightTactileTitle')}</Text>
         <Text style={styles.sectionHint}>{T('zhiguanEightTactileHint')}</Text>
         <View style={styles.chipGroup}>
-          {EIGHT_TACTILE_KEYS.map((key, idx) => (
+          {EIGHT_TACTILE_KEYS.map((key, _idx) => (
             <Pressable
               key={key}
               style={[styles.chip, eightTactile[key] && styles.chipActive]}

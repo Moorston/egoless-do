@@ -1,4 +1,4 @@
-import { FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, type ExerciseEntry, type BodyPlan, type Theme, dateStr } from '@egoless-do/core';
+import {FONT_BODY, FONT_SMALL, FONT_TINY, type ExerciseEntry, type BodyPlan, type Theme, dateStr} from '@egoless-do/core';
 import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
@@ -70,7 +70,6 @@ export default function TrainingCalendar({ TH, T, exerciseLog, plans }: Props) {
     }
 
     // Current month
-    const today = dateStr();
     for (let d = 1; d <= daysInMonth; d++) {
       const date = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
       const dayOfWeek = new Date(year, month - 1, d).getDay();

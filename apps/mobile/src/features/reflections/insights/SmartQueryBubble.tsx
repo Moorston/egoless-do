@@ -2,7 +2,7 @@ import { FONT_SMALL, FONT_TINY , FONT_LABEL } from '@egoless-do/core';
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 
-import { useTheme, useT } from '../../../components/UI';
+import {useTheme} from '../../../components/UI';
 
 interface SmartQueryBubbleProps {
   question: string;
