@@ -18,6 +18,7 @@ import {
   type CatalogTrack,
 } from '../services/MusicCatalogService';
 import { audioPreviewService, type PreviewStatus } from '../services/AudioPreviewService';
+import { musicCacheService } from '../services/MusicCacheService';
 import { musicDownloadService, type DownloadStatus } from '../services/MusicDownloadService';
 
 export default function MusicLibraryScreen() {
@@ -51,6 +52,7 @@ export default function MusicLibraryScreen() {
   // 初始化服务
   useEffect(() => {
     void audioPreviewService.initialize();
+    void musicCacheService.initialize();
     void musicDownloadService.initialize();
 
     return () => {

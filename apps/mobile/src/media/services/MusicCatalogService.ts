@@ -3,6 +3,8 @@
 
 import { createLogger } from '@egoless-do/core';
 
+import { musicCacheService } from './MusicCacheService';
+
 const log = createLogger('MusicCatalog');
 
 // API 配置 - 优先使用环境变量
@@ -104,7 +106,7 @@ async function fetchJson<T>(url: string): Promise<T> {
   return response.json() as Promise<T>;
 }
 
-// 搜索 Freesound
+// 搜索 Freesound（带缓存）
 export async function searchFreesound(
   query: string,
   options: {
@@ -114,6 +116,15 @@ export async function searchFreesound(
   } = {}
 ): Promise<{ count: number; results: CatalogTrack[] }> {
   const { page = 1, pageSize = 20, filter } = options;
+
+  // 检查缓存（只在无 filter 时使用缓存）
+  if (!filter) {
+    const cached = await musicCacheService.getCachedSearchResults(query, page);
+    if (cached) {
+      log.info('使用缓存搜索结果:', query);
+      return { count: cached.length, results: cached };
+    }
+  }
 
   let url = `${FREESOUND_API_BASE}/search/text/?query=${encodeURIComponent(query)}&token=${FREESOUND_TOKEN}&page=${page}&page_size=${pageSize}&sort=score`;
 
@@ -136,6 +147,11 @@ export async function searchFreesound(
       category: 'focus', // 默认分类，后续根据查询词判断
     }));
 
+    // 缓存结果
+    if (!filter) {
+      void musicCacheService.cacheSearchResults(query, results, page);
+    }
+
     return {
       count: data.count,
       results,
@@ -146,7 +162,7 @@ export async function searchFreesound(
   }
 }
 
-// 根据分类搜索音乐
+// 根据分类搜索音乐（带缓存）
 export async function searchByCategory(
   category: MusicCategory,
   options: {
@@ -157,6 +173,13 @@ export async function searchByCategory(
   const categoryConfig = MUSIC_CATEGORIES[category];
   if (!categoryConfig) {
     throw new Error(`未知分类: ${category}`);
+  }
+
+  // 检查缓存
+  const cached = await musicCacheService.getCachedCategoryResults(category);
+  if (cached) {
+    log.info('使用缓存分类结果:', category);
+    return cached.slice(0, options.pageSize || 10);
   }
 
   const { pageSize = 10 } = options;
@@ -194,7 +217,12 @@ export async function searchByCategory(
     return true;
   });
 
-  return uniqueResults.slice(0, pageSize);
+  const finalResults = uniqueResults.slice(0, pageSize);
+
+  // 缓存结果
+  void musicCacheService.cacheCategoryResults(category, finalResults);
+
+  return finalResults;
 }
 
 // 搜索音乐（跨分类）
