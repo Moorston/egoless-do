@@ -29,13 +29,37 @@ async function readJsonFile<T>(filename: string): Promise<T | null> {
 
 // 内置音乐文件映射（require 必须在模块顶层静态声明）
 const BUILTIN_FILES: Record<string, number> = {
+  // ── 专注类 ──────────────────────────────────────────────────
   'ocean':          require('../../assets/sounds/ocean.mp3') as number,
   'rain':           require('../../assets/sounds/rain.mp3') as number,
   'flowing-stream': require('../../assets/sounds/flowing-stream.mp3') as number,
+  'white-noise':    require('../../assets/sounds/white-noise.mp3') as number,
+  'cafe':           require('../../assets/sounds/cafe.mp3') as number,
+  'keyboard':       require('../../assets/sounds/keyboard.mp3') as number,
+
+  // ── 冥想类 ──────────────────────────────────────────────────
   'bowl':           require('../../assets/sounds/bowl.mp3') as number,
   'wind-chimes':    require('../../assets/sounds/wind-chimes.mp3') as number,
   'birds':          require('../../assets/sounds/birds.mp3') as number,
   'temple-bell':    require('../../assets/sounds/temple_bell.mp3') as number,
+  'singing-bowl':   require('../../assets/sounds/singing-bowl.mp3') as number,
+  'tibetan-bell':   require('../../assets/sounds/tibetan-bell.mp3') as number,
+  'water-flow':     require('../../assets/sounds/water-flow.mp3') as number,
+
+  // ── 运动类 ──────────────────────────────────────────────────
+  'beat':           require('../../assets/sounds/beat.mp3') as number,
+  'drums':          require('../../assets/sounds/drums.mp3') as number,
+  'electronic':     require('../../assets/sounds/electronic.mp3') as number,
+
+  // ── 睡眠类 ──────────────────────────────────────────────────
+  'lullaby':        require('../../assets/sounds/lullaby.mp3') as number,
+  'asmr':           require('../../assets/sounds/asmr.mp3') as number,
+  'fireplace':      require('../../assets/sounds/fireplace.mp3') as number,
+
+  // ── 自然类 ──────────────────────────────────────────────────
+  'forest':         require('../../assets/sounds/forest.mp3') as number,
+  'thunderstorm':   require('../../assets/sounds/thunderstorm.mp3') as number,
+  'seagulls':       require('../../assets/sounds/seagulls.mp3') as number,
 };
 
 // 填充内置音乐的 file 字段
@@ -128,6 +152,8 @@ export function computeCategoryMeta(library: MusicTrack[], userTracks: MusicTrac
     { key: 'focus', name: '专注', icon: 'Waves', count: library.filter(t => t.category === 'focus').length },
     { key: 'meditate', name: '冥想', icon: 'Bell', count: library.filter(t => t.category === 'meditate').length },
     { key: 'exercise', name: '运动', icon: 'Dumbbell', count: library.filter(t => t.category === 'exercise').length },
+    { key: 'sleep', name: '睡眠', icon: 'Moon', count: library.filter(t => t.category === 'sleep').length },
+    { key: 'nature', name: '自然', icon: 'TreePine', count: library.filter(t => t.category === 'nature').length },
     { key: 'my', name: '我的', icon: 'Music', count: userTracks.length },
     { key: 'favorites', name: '收藏', icon: 'Heart', count: allTracks.filter(t => favorites.includes(t.id)).length, isFavorite: true },
   ];
