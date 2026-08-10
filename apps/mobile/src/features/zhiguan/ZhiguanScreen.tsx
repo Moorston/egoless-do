@@ -61,7 +61,9 @@ export default function ZhiguanScreen() {
     startSession: s.startSession,
     completeSession: s.completeSession,
   }));
-  const musicStore = useMusicStore();
+  const musicLibrary = useMusicStore(s => s.library);
+  const musicPlay = useMusicStore(s => s.play);
+  const musicStop = useMusicStore(s => s.stop);
 
   const [mode, setMode] = useState<ViewMode>('idle');
   const [settings, setSettings] = useState<ZhiguanSettings>(DEFAULT_SETTINGS);
@@ -154,13 +156,13 @@ export default function ZhiguanScreen() {
       };
       const trackId = soundMap[settings.backgroundSound];
       if (trackId) {
-        const track = musicStore.library.find(t => t.id === trackId);
+        const track = musicLibrary.find(t => t.id === trackId);
         if (track) {
-          musicStore.play(track);
+          musicPlay(track);
         }
       }
     }
-  }, [timer, settings, musicStore, updateDraft, startSession]);
+  }, [timer, settings, musicLibrary, musicPlay, updateDraft, startSession]);
 
   const handleLongPressStart = useCallback(() => {
     setIsLongPressing(true);
@@ -173,9 +175,9 @@ export default function ZhiguanScreen() {
       setMode('complete');
       setIsLongPressing(false);
       void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      musicStore.stop();
+      musicStop();
     }, 2000);
-  }, [timer, musicStore]);
+  }, [timer, musicStop]);
 
   const handleLongPressEnd = useCallback(() => {
     if (pressTimerRef.current) {
@@ -206,9 +208,9 @@ export default function ZhiguanScreen() {
 
   const handleAbandon = useCallback(() => {
     resetDraft();
-    musicStore.stop();
+    musicStop();
     nav.goBack();
-  }, [nav, musicStore, resetDraft]);
+  }, [nav, musicStop, resetDraft]);
 
   const handleSaveSettings = useCallback((newSettings: ZhiguanSettings) => {
     setSettings(newSettings);

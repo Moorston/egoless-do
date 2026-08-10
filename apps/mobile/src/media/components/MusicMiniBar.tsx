@@ -3,6 +3,7 @@ import type { MusicTrack } from '@egoless-do/core';
 import { Music, Play, Pause, Repeat, Repeat1, Shuffle } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
+import { useShallow } from 'zustand/react/shallow';
 
 import { useTheme } from '../../components/UI';
 import { useMusicStore } from '../useMusicStore';
@@ -26,9 +27,13 @@ interface Props {
 
 export default function MusicMiniBar({ currentTrack, isPlaying, _loop, onTogglePlay, onToggleLoop, onPressTrackName, primaryColor }: Props) {
   const TH = useTheme();
-  const playMode = useMusicStore(s => s.playMode);
-  const currentTime = useMusicStore(s => s.currentTime);
-  const duration = useMusicStore(s => s.duration);
+
+  // 使用 useShallow 批量选择状态
+  const { playMode, currentTime, duration } = useMusicStore(useShallow(s => ({
+    playMode: s.playMode,
+    currentTime: s.currentTime,
+    duration: s.duration,
+  })));
 
   if (!currentTrack) return null;
 

@@ -2,6 +2,7 @@ import { FONT_BODY, FONT_SUB } from '@egoless-do/core';
 import { Repeat, Repeat1, Shuffle, SkipBack, SkipForward, Volume2, VolumeX, Clock } from 'lucide-react-native';
 import React, { useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Modal } from 'react-native';
+import { useShallow } from 'zustand/react/shallow';
 
 import AnimatedMusicIcon from '../../components/AnimatedMusicIcon';
 import { useTheme, useT } from '../../components/UI';
@@ -21,16 +22,31 @@ interface Props {
 export default function PlayerBar({ primaryColor, _category }: Props) {
   const TH = useTheme();
   const T = useT();
-  const currentTrack = useMusicStore(s => s.currentTrack);
-  const isPlaying = useMusicStore(s => s.isPlaying);
-  const playMode = useMusicStore(s => s.playMode);
-  const currentTime = useMusicStore(s => s.currentTime);
-  const duration = useMusicStore(s => s.duration);
-  const volume = useMusicStore(s => s.volume);
-  const sleepTimerMinutes = useMusicStore(s => s.sleepTimerMinutes);
-  const sleepTimerRemaining = useMusicStore(s => s.sleepTimerRemaining);
-  const error = useMusicStore(s => s.error);
 
+  // 使用 useShallow 批量选择状态
+  const {
+    currentTrack,
+    isPlaying,
+    playMode,
+    currentTime,
+    duration,
+    volume,
+    sleepTimerMinutes,
+    sleepTimerRemaining,
+    error,
+  } = useMusicStore(useShallow(s => ({
+    currentTrack: s.currentTrack,
+    isPlaying: s.isPlaying,
+    playMode: s.playMode,
+    currentTime: s.currentTime,
+    duration: s.duration,
+    volume: s.volume,
+    sleepTimerMinutes: s.sleepTimerMinutes,
+    sleepTimerRemaining: s.sleepTimerRemaining,
+    error: s.error,
+  })));
+
+  // 函数单独订阅（引用稳定）
   const pause = useMusicStore(s => s.pause);
   const resume = useMusicStore(s => s.resume);
   const play = useMusicStore(s => s.play);

@@ -10,6 +10,9 @@ import { audioPlayerRef } from './audioPlayerRef';
 
 const log = createLogger('Music');
 
+// 节流间隔（毫秒）- 限制状态更新频率
+const THROTTLE_MS = 500; // 每秒更新 2 次
+
 /**
  * 全局音频引擎 Provider，挂载在 App 顶层。
  * 监听 useMusicStore 状态变化执行播放控制。
@@ -28,8 +31,16 @@ export function AudioEngineProvider({ children }: { children: React.ReactNode })
   const player = useAudioPlayer(source, { updateInterval: 250 });
   const status = useAudioPlayerStatus(player);
 
-  // Sync playback status to store
+  // 节流：限制播放状态更新频率
+  const lastUpdateRef = useRef(0);
+
+  // Sync playback status to store (throttled)
   useEffect(() => {
+    const now = Date.now();
+    // 节流：限制更新频率为每秒 2 次
+    if (now - lastUpdateRef.current < THROTTLE_MS) return;
+    lastUpdateRef.current = now;
+
     useMusicStore.getState().setPlaybackStatus(status.currentTime, status.duration);
   }, [status.currentTime, status.duration]);
 

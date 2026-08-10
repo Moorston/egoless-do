@@ -3,7 +3,7 @@
 
 import { FONT_TITLE, FONT_BODY, FONT_SUB } from '@egoless-do/core';
 import { ArrowLeft, Search, Download, Play, Pause, Heart, Square, Check } from 'lucide-react-native';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, ActivityIndicator, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -44,6 +44,9 @@ export default function MusicLibraryScreen() {
   const [previewDuration, setPreviewDuration] = useState(0);
   const [downloadStatuses, setDownloadStatuses] = useState<Record<string, DownloadStatus>>({});
   const [downloadingTracks, setDownloadingTracks] = useState<Set<string>>(new Set());
+  // 使用 ref 避免回调依赖 Set 引用
+  const downloadingTracksRef = useRef(downloadingTracks);
+  downloadingTracksRef.current = downloadingTracks;
 
   // 初始化服务
   useEffect(() => {
@@ -153,8 +156,8 @@ export default function MusicLibraryScreen() {
       return;
     }
 
-    // 检查是否正在下载
-    if (downloadingTracks.has(trackId)) {
+    // 检查是否正在下载（使用 ref 避免依赖 Set 引用）
+    if (downloadingTracksRef.current.has(trackId)) {
       Alert.alert(T('common.notice'), T('music_library.downloading'));
       return;
     }
@@ -177,7 +180,7 @@ export default function MusicLibraryScreen() {
         return next;
       });
     }
-  }, [downloadingTracks]);
+  }, []); // 依赖数组为空，引用稳定
 
   // 检查是否已下载
   const isTrackDownloaded = useCallback((trackId: string) => {
