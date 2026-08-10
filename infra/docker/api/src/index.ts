@@ -60,6 +60,8 @@ app.use('*', async (c, next) => {
   c.header('X-Frame-Options', 'DENY');
   c.header('X-XSS-Protection', '1; mode=block');
   c.header('Referrer-Policy', 'strict-origin-when-cross-origin');
+  // CSP — 纯 JSON API 最严格策略：拒绝所有资源加载，防止 iframe 嵌入和注入攻击
+  c.header('Content-Security-Policy', "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'");
   if (cfg.nodeEnv === 'production') {
     c.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
   }
