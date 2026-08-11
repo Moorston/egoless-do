@@ -1,8 +1,8 @@
 // ─── 音频预览服务 ──────────────────────────────────────────────────
 // 使用 expo-audio 实现音乐预览播放
 
-import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from 'expo-audio';
 import { createLogger } from '@egoless-do/core';
+import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from 'expo-audio';
 
 const log = createLogger('AudioPreview');
 

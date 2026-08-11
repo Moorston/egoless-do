@@ -1,33 +1,31 @@
 import { FONT_BODY, FONT_SUB } from '@egoless-do/core';
-import { Repeat, Repeat1, Shuffle, SkipBack, SkipForward, Volume2, VolumeX, Clock, List } from 'lucide-react-native';
+import { SkipBack, SkipForward, Volume2, VolumeX, Clock, List } from 'lucide-react-native';
 import React, { useState, useCallback } from 'react';
-import { View, Text, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
 
 import AnimatedMusicIcon from '../../components/AnimatedMusicIcon';
 import { useTheme, useT } from '../../components/UI';
 import { audioPlayerRef } from '../services/audioPlayerRef';
 import { useMusicStore } from '../useMusicStore';
-import type { PlayMode } from '../useMusicStore';
+import { PLAY_MODES } from '../utils/constants';
+import { formatTime } from '../utils/format';
 
 import FullPlayerScreen from './FullPlayerScreen';
 import QueueModal from './QueueModal';
+import SleepTimerModal from './SleepTimerModal';
 import WaveformBar from './WaveformBar';
-
-const SLEEP_PRESETS = [15, 30, 45, 60, 90];
 
 interface Props {
   primaryColor: string;
   category?: string;
-  /** Legacy prop kept for backward-compat callers; not rendered. */
   _category?: string;
 }
 
-export default function PlayerBar({ primaryColor, _category }: Props) {
+export default function PlayerBar({ primaryColor }: Props) {
   const TH = useTheme();
   const T = useT();
 
-  // 使用 useShallow 批量选择状态
   const {
     currentTrack,
     isPlaying,
@@ -50,7 +48,6 @@ export default function PlayerBar({ primaryColor, _category }: Props) {
     error: s.error,
   })));
 
-  // 函数单独订阅（引用稳定）
   const pause = useMusicStore(s => s.pause);
   const resume = useMusicStore(s => s.resume);
   const play = useMusicStore(s => s.play);
@@ -58,24 +55,15 @@ export default function PlayerBar({ primaryColor, _category }: Props) {
   const playNext = useMusicStore(s => s.playNext);
   const playPrevious = useMusicStore(s => s.playPrevious);
   const setVolume = useMusicStore(s => s.setVolume);
-  const setSleepTimer = useMusicStore(s => s.setSleepTimer);
   const setError = useMusicStore(s => s.setError);
 
   const [showSleepModal, setShowSleepModal] = useState(false);
-const [showQueueModal, setShowQueueModal] = useState(false);
-const [showFullPlayer, setShowFullPlayer] = useState(false);
+  const [showQueueModal, setShowQueueModal] = useState(false);
+  const [showFullPlayer, setShowFullPlayer] = useState(false);
 
   const progress = duration > 0 ? currentTime / duration : 0;
   const currentTimeStr = formatTime(currentTime);
   const durationStr = formatTime(duration);
-
-  const PLAY_MODES: { mode: PlayMode; icon: typeof Repeat; labelKey: string }[] = [
-    { mode: 'sequential', icon: Repeat, labelKey: 'musicPlayModeSequential' },
-    { mode: 'repeat-all', icon: Repeat, labelKey: 'musicPlayModeRepeatAll' },
-    { mode: 'repeat-one', icon: Repeat1, labelKey: 'musicPlayModeRepeatOne' },
-    { mode: 'shuffle', icon: Shuffle, labelKey: 'musicPlayModeShuffle' },
-  ];
-
   const [dragProgress, setDragProgress] = useState<number | null>(null);
 
   const handleSeek = useCallback((ratio: number) => {
@@ -100,11 +88,6 @@ const [showFullPlayer, setShowFullPlayer] = useState(false);
     setVolume(volume > 0 ? 0 : 0.3);
   }, [volume, setVolume]);
 
-  const handleSleepSelect = useCallback((minutes: number | null) => {
-    setSleepTimer(minutes);
-    setShowSleepModal(false);
-  }, [setSleepTimer]);
-
   const formatSleepTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
     const s = seconds % 60;
@@ -124,7 +107,7 @@ const [showFullPlayer, setShowFullPlayer] = useState(false);
         {error && (
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'rgba(239,68,68,.2)', borderRadius: 8, padding: 8, marginBottom: 8 }}>
             <Text style={{ color: '#EF4444', fontSize: FONT_SUB(), flex: 1 }}>{T('musicPlayFailed')}</Text>
-            <TouchableOpacity onPress={() => { setError(null); play(currentTrack); }}>
+            <TouchableOpacity onPress={() => { setError(null); play(currentTrack); }} accessibilityLabel={T('musicRetry')}>
               <Text style={{ color: primaryColor, fontSize: FONT_SUB(), fontWeight: '600' }}>{T('musicRetry')}</Text>
             </TouchableOpacity>
           </View>
@@ -132,7 +115,7 @@ const [showFullPlayer, setShowFullPlayer] = useState(false);
 
         {/* Track info + controls */}
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 }}>
-          <TouchableOpacity style={{ flex: 1 }} onPress={() => setShowFullPlayer(true)} activeOpacity={0.7}>
+          <TouchableOpacity style={{ flex: 1 }} onPress={() => setShowFullPlayer(true)} activeOpacity={0.7} accessibilityRole="button" accessibilityLabel={currentTrack.name}>
             <Text style={{ fontSize: FONT_BODY(), color: TH.text, fontWeight: '600' }} numberOfLines={1}>
               {currentTrack.name}
             </Text>
@@ -143,43 +126,43 @@ const [showFullPlayer, setShowFullPlayer] = useState(false);
 
           {/* Sleep timer */}
           {sleepTimerMinutes && (
-            <TouchableOpacity onPress={() => setShowSleepModal(true)} style={{ padding: 6 }}>
+            <TouchableOpacity onPress={() => setShowSleepModal(true)} style={{ padding: 6 }} accessibilityLabel={T('musicSleepTimer')}>
               <Text style={{ color: primaryColor, fontSize: FONT_SUB(), fontWeight: '600' }}>
                 {formatSleepTime(sleepTimerRemaining)}
               </Text>
             </TouchableOpacity>
           )}
-          <TouchableOpacity onPress={() => setShowSleepModal(true)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} style={{ padding: 8 }}>
+          <TouchableOpacity onPress={() => setShowSleepModal(true)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} style={{ padding: 8 }} accessibilityLabel={T('musicSleepTimer')}>
             <Clock size={18} color={sleepTimerMinutes ? primaryColor : TH.sub} />
           </TouchableOpacity>
 
           {/* Queue */}
-          <TouchableOpacity onPress={() => setShowQueueModal(true)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} style={{ padding: 8 }}>
+          <TouchableOpacity onPress={() => setShowQueueModal(true)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} style={{ padding: 8 }} accessibilityLabel="Queue">
             <List size={18} color={TH.sub} />
           </TouchableOpacity>
 
           {/* Volume */}
-          <TouchableOpacity onPress={handleToggleVolume} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} style={{ padding: 8 }}>
+          <TouchableOpacity onPress={handleToggleVolume} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} style={{ padding: 8 }} accessibilityLabel={volume > 0 ? 'Mute' : 'Unmute'}>
             {volume > 0 ? <Volume2 size={18} color={TH.sub} /> : <VolumeX size={18} color={TH.sub} />}
           </TouchableOpacity>
 
           {/* Play mode */}
-          <TouchableOpacity onPress={handleCycleMode} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} style={{ padding: 8 }}>
+          <TouchableOpacity onPress={handleCycleMode} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} style={{ padding: 8 }} accessibilityLabel={modeLabel}>
             <ModeIcon size={18} color={playMode !== 'sequential' ? primaryColor : TH.sub} />
           </TouchableOpacity>
         </View>
 
         {/* Playback controls row */}
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 8 }}>
-          <TouchableOpacity onPress={playPrevious} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} style={{ padding: 8 }}>
+          <TouchableOpacity onPress={playPrevious} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} style={{ padding: 8 }} accessibilityLabel="Previous">
             <SkipBack size={22} color={TH.text} />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={handleTogglePlay} style={{ padding: 8 }}>
+          <TouchableOpacity onPress={handleTogglePlay} style={{ padding: 8 }} accessibilityLabel={isPlaying ? 'Pause' : 'Play'}>
             <AnimatedMusicIcon isPlaying={isPlaying} color={TH.text} size={28} />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={playNext} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} style={{ padding: 8 }}>
+          <TouchableOpacity onPress={playNext} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} style={{ padding: 8 }} accessibilityLabel="Next">
             <SkipForward size={22} color={TH.text} />
           </TouchableOpacity>
 
@@ -208,30 +191,7 @@ const [showFullPlayer, setShowFullPlayer] = useState(false);
       </View>
 
       {/* Sleep Timer Modal */}
-      <Modal visible={showSleepModal} transparent animationType="fade" onRequestClose={() => setShowSleepModal(false)}>
-        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.5)', justifyContent: 'center', padding: 24 }}>
-          <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24, borderWidth: 1, borderColor: TH.border }}>
-            <Text style={{ fontWeight: '700', fontSize: FONT_BODY(), color: TH.text, marginBottom: 16, textAlign: 'center' }}>{T('musicSleepTimer')}</Text>
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, justifyContent: 'center' }}>
-              {SLEEP_PRESETS.map(min => (
-                <TouchableOpacity key={min} onPress={() => handleSleepSelect(min)}
-                  style={{ paddingHorizontal: 20, paddingVertical: 12, borderRadius: 12, backgroundColor: sleepTimerMinutes === min ? primaryColor : TH.card }}>
-                  <Text style={{ color: sleepTimerMinutes === min ? '#fff' : TH.text, fontWeight: '600', fontSize: FONT_BODY() }}>{T('musicMinutes').replace('{n}', String(min))}</Text>
-                </TouchableOpacity>
-              ))}
-              {sleepTimerMinutes && (
-                <TouchableOpacity onPress={() => handleSleepSelect(null)}
-                  style={{ paddingHorizontal: 20, paddingVertical: 12, borderRadius: 12, backgroundColor: 'rgba(239,68,68,.15)', width: '100%', alignItems: 'center' }}>
-                  <Text style={{ color: '#EF4444', fontWeight: '600', fontSize: FONT_BODY() }}>{T('musicSleepTimerOff')}</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-            <TouchableOpacity onPress={() => setShowSleepModal(false)} style={{ marginTop: 16, padding: 12, alignItems: 'center' }}>
-              <Text style={{ color: TH.sub, fontSize: FONT_BODY() }}>{T('cancel')}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      <SleepTimerModal visible={showSleepModal} onClose={() => setShowSleepModal(false)} primaryColor={primaryColor} />
 
       {/* Queue Modal */}
       <QueueModal visible={showQueueModal} onClose={() => setShowQueueModal(false)} primaryColor={primaryColor} />
@@ -240,10 +200,4 @@ const [showFullPlayer, setShowFullPlayer] = useState(false);
       <FullPlayerScreen visible={showFullPlayer} onClose={() => setShowFullPlayer(false)} primaryColor={primaryColor} />
     </>
   );
-}
-
-function formatTime(sec: number): string {
-  const m = Math.floor(sec / 60);
-  const s = Math.floor(sec % 60);
-  return `${m}:${String(s).padStart(2, '0')}`;
 }

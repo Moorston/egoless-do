@@ -2,14 +2,15 @@
 // 浏览、搜索、预览、下载音乐
 
 import { FONT_TITLE, FONT_BODY, FONT_SUB } from '@egoless-do/core';
-import { ArrowLeft, Search, Download, Play, Pause, Heart, Square, Check } from 'lucide-react-native';
+import { ArrowLeft, Search, Download, Play, Pause, Square, Check } from 'lucide-react-native';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, ActivityIndicator, StyleSheet, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, ActivityIndicator, StyleSheet, Alert, type DimensionValue } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useMusicStore } from '../useMusicStore';
+import { audioPreviewService, type PreviewStatus } from '../services/AudioPreviewService';
+import { musicCacheService } from '../services/MusicCacheService';
 import {
   searchByCategory,
   searchMusic,
@@ -17,10 +18,9 @@ import {
   type MusicCategory,
   type CatalogTrack,
 } from '../services/MusicCatalogService';
-import { audioPreviewService, type PreviewStatus } from '../services/AudioPreviewService';
-import { musicCacheService } from '../services/MusicCacheService';
 import { musicDownloadService, type DownloadStatus } from '../services/MusicDownloadService';
 
+// eslint-disable-next-line max-lines-per-function -- MusicLibraryScreen is a single-scroll page; splitting would fragment section grouping
 export default function MusicLibraryScreen() {
   const TH = useTheme();
   const T = useT();
@@ -182,7 +182,7 @@ export default function MusicLibraryScreen() {
         return next;
       });
     }
-  }, []); // 依赖数组为空，引用稳定
+  }, [T]);
 
   // 检查是否已下载
   const isTrackDownloaded = useCallback((trackId: string) => {
@@ -229,15 +229,15 @@ export default function MusicLibraryScreen() {
             {track.title}
           </Text>
           <Text style={[styles.trackArtist, { color: TH.sub }]}>
-            {track.artist} · {Math.floor(track.duration / 60)}:{String(Math.floor(track.duration % 60)).padStart(2, '0')}
+            {track.artist} · {String(Math.floor(track.duration / 60))}:{String(Math.floor(track.duration % 60)).padStart(2, '0')}
           </Text>
           {isDownloading && downloadStatus && (
             <View style={styles.downloadProgress}>
               <View style={[styles.downloadProgressBar, { backgroundColor: `${P}30` }]}>
-                <View style={[styles.downloadProgressFill, { backgroundColor: P, width: `${downloadStatus.progress}%` }]} />
+                <View style={[styles.downloadProgressFill, { backgroundColor: P, width: (downloadStatus.progress + '%') as DimensionValue }]} />
               </View>
               <Text style={[styles.downloadProgressText, { color: TH.sub }]}>
-                {downloadStatus.progress}%
+                {String(downloadStatus.progress)}%
               </Text>
             </View>
           )}

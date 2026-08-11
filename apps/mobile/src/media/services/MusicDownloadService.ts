@@ -1,8 +1,8 @@
 // ─── 音乐下载服务 ──────────────────────────────────────────────────
 // 下载音乐到本地存储
 
-import { File, Directory, Paths } from 'expo-file-system';
 import { createLogger } from '@egoless-do/core';
+import { File, Directory, Paths } from 'expo-file-system';
 
 import type { CatalogTrack } from './MusicCatalogService';
 
@@ -232,7 +232,7 @@ class MusicDownloadService {
       if (!recordFile.exists) return;
 
       const content = await recordFile.text();
-      const records: Record<string, string> = JSON.parse(content);
+      const records: Record<string, string> = JSON.parse(content) as Record<string, string>;
 
       delete records[trackId];
       recordFile.write(JSON.stringify(records, null, 2));
@@ -248,7 +248,7 @@ class MusicDownloadService {
       if (!recordFile.exists) return;
 
       const content = await recordFile.text();
-      const records: Record<string, string> = JSON.parse(content);
+      const records: Record<string, string> = JSON.parse(content) as Record<string, string>;
 
       for (const [trackId, filePath] of Object.entries(records)) {
         const file = new File(filePath);

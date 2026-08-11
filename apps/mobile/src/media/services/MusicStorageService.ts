@@ -61,6 +61,7 @@ export async function loadUserTracks(): Promise<MusicTrack[]> {
 
     // 验证文件仍存在
     const valid: MusicTrack[] = [];
+    /* eslint-disable max-depth -- 文件存在性校验循环，提取会增加间接层 */
     for (const track of raw) {
       try {
         if (track.uri) {
@@ -72,6 +73,7 @@ export async function loadUserTracks(): Promise<MusicTrack[]> {
         // Skip tracks that fail validation
       }
     }
+    /* eslint-enable max-depth */
 
     // 如果有无效曲目，更新存储
     if (valid.length !== raw.length) {
