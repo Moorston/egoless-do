@@ -561,7 +561,8 @@ export interface I18nKeys {
   musicPlayModeSequential: string; musicPlayModeRepeatAll: string; musicPlayModeRepeatOne: string;
   musicPlayModeShuffle: string; musicPlayFailed: string; musicRetry: string;
   musicSleepTimer: string; musicSleepTimerOff: string; musicMinutes: string;
-  musicImportSuccess: string; musicImportFailed: string; musicCategory: string;
+  musicImportSuccess: string; musicImportFailed: string; musicImporting: string; musicCategory: string;
+  musicQueue: string; musicSelected: string; musicRecentPlayed: string;
   weekdaySun: string; weekdayMon: string; weekdayTue: string;
   weekdayWed: string; weekdayThu: string; weekdayFri: string;
   weekdaySat: string;

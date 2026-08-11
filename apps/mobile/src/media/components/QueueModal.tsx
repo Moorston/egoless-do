@@ -75,7 +75,7 @@ export default function QueueModal({ visible, onClose, primaryColor }: Props) {
         <View style={{ backgroundColor: TH.cardSolid, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingTop: 16, paddingBottom: 40, maxHeight: '70%' }}>
           {/* Header */}
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingBottom: 12 }}>
-            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('musicQueue') || '播放队列'}</Text>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('musicQueue')}</Text>
             <TouchableOpacity onPress={onClose} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} style={{ padding: 6 }}>
               <X size={20} color={TH.sub} />
             </TouchableOpacity>

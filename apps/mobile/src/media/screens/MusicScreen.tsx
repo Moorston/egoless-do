@@ -178,7 +178,7 @@ export default function MusicScreen() {
         {recentTracks.length > 0 && (
           <View style={{ marginTop: 24 }}>
             <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text, marginBottom: 12 }}>
-              {T('musicRecentPlayed') || '最近播放'}
+              {T('musicRecentPlayed')}
             </Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12 }}>
               {recentTracks.map(track => {

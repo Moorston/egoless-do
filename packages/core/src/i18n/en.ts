@@ -660,7 +660,7 @@ export const en: I18nKeys = {
   musicPlayFailed:'Playback Failed', musicRetry:'Retry',
   musicSleepTimer:'Sleep Timer', musicSleepTimerOff:'Turn Off Timer',
   musicMinutes:'{n} min',
-  musicImportSuccess:'Imported: {name}', musicImportFailed:'Import Failed',
+  musicImportSuccess:'Imported: {name}', musicImportFailed:'Import Failed', musicImporting:'Importing...', musicQueue:'Play Queue', musicSelected:'Selected', musicRecentPlayed:'Recent',
   musicCategory:'Category',
 
   // Calendar weekdays

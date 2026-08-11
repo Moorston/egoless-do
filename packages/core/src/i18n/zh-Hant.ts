@@ -660,7 +660,7 @@ export const zhHant: I18nKeys = {
   musicPlayFailed:'播放失敗', musicRetry:'重試',
   musicSleepTimer:'定時關閉', musicSleepTimerOff:'關閉定時',
   musicMinutes:'{n}分鐘',
-  musicImportSuccess:'已匯入: {name}', musicImportFailed:'匯入失敗',
+  musicImportSuccess:'已匯入: {name}', musicImportFailed:'匯入失敗', musicImporting:'匯入中...', musicQueue:'播放佇列', musicSelected:'已選擇', musicRecentPlayed:'最近播放',
   musicCategory:'分類',
 
   // Calendar weekdays

@@ -159,7 +159,7 @@ export default function MusicCategoryScreen() {
               <X size={22} color={TH.text} />
             </TouchableOpacity>
             <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, flex: 1 }}>
-              {T('musicSelected') || '已选择'} {selectedIds.size}
+              {T('musicSelected')} {selectedIds.size}
             </Text>
             {selectedIds.size > 0 && (
               <TouchableOpacity onPress={handleBatchDelete} style={{ padding: 8, backgroundColor: 'rgba(239,68,68,.15)', borderRadius: 8 }}>
