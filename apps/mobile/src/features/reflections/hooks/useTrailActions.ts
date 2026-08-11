@@ -23,7 +23,7 @@ export function useTrailActions(trailId: string) {
   const updateTrailNote = useShallowStore(s => s.updateTrailNote);
 
   const handleWriteReflection = useCallback(() => {
-    nav.navigate('MainTabs' as never, { screen: 'Reflections', params: { showNew: true, trailId } } as never);
+    (nav.navigate as (route: string, params: Record<string, unknown>) => void)('MainTabs', { screen: 'Reflections', params: { showNew: true, trailId } });
   }, [nav, trailId]);
 
   const handleSelectReflectionsConfirm = useCallback((selectedIds: string[]) => {
@@ -67,7 +67,7 @@ export function useTrailActions(trailId: string) {
   }, [addTrailNote, trailId]);
 
   const handleCreatePlan = useCallback((form: { name: string; description?: string; priority: string; startDate: string; endDate: string; targetMetric?: string }) => {
-    createPlanItemFromTrail(trailId, form);
+    createPlanItemFromTrail(trailId, form as Parameters<typeof createPlanItemFromTrail>[1]);
   }, [createPlanItemFromTrail, trailId]);
 
   const handleUpdateName = useCallback((name: string) => {

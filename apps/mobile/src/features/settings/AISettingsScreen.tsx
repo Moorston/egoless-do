@@ -144,7 +144,11 @@ export default function AISettingsScreen() {
   // 测试连接
   const handleTestConnection = useCallback(async (model: ModelConfig) => {
     setTestingModel(model.id);
-    setTestResults(prev => ({ ...prev, [model.id]: undefined as string | undefined }));
+    setTestResults(prev => {
+      const next = { ...prev };
+      delete next[model.id];
+      return next;
+    });
 
     // 模拟测试（实际应该调用AI Service）
     if (testTimerRef.current) clearTimeout(testTimerRef.current);

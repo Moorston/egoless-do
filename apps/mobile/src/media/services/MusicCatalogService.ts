@@ -157,7 +157,7 @@ export async function searchFreesound(
       results,
     };
   } catch (error) {
-    log.error('Freesound 搜索失败:', error);
+    log.error(error, { message: 'Freesound 搜索失败' });
     throw error;
   }
 }
@@ -237,7 +237,7 @@ export async function searchMusic(
     const { results } = await searchFreesound(query, options);
     return results;
   } catch (error) {
-    log.error('搜索音乐失败:', error);
+    log.error(error, { message: '搜索音乐失败' });
     return [];
   }
 }
@@ -264,7 +264,7 @@ export async function getTrackDetails(trackId: string): Promise<CatalogTrack | n
       category: 'focus',
     };
   } catch (error) {
-    log.error('获取音乐详情失败:', error);
+    log.error(error, { message: '获取音乐详情失败' });
     return null;
   }
 }

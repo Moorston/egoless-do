@@ -2,7 +2,7 @@
 // 11 个 Modal 组件集合，从 BodyDashboard.tsx 提取
 // 所有数据和回调通过 Props 传入
 
-import {FONT_TITLE, FONT_BODY, type BodyGoal, type BodyTrainingPlan, type BodyPlan, type DayOverride, type ExerciseDef} from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, type BodyGoal, type BodyTrainingPlan, type BodyPlan, type DayOverride, type ExerciseDef, type Theme, type CheckinEntry} from '@egoless-do/core';
 import React from 'react';
 import { View, Text, TouchableOpacity, Modal } from 'react-native';
 
@@ -18,7 +18,7 @@ import WeightTrendModal from './modals/WeightTrendModal';
 import CelebrationOverlay from './screens/CelebrationOverlay';
 
 interface BodyDashboardModalsProps {
-  TH: { primary: string; sub: string; bg: string; card: string; cardSolid: string; border: string; text: string };
+  TH: Theme;
   T: (key: string, params?: Record<string, string | number>) => string;
   todayPlan?: BodyPlan;
   activeGoal?: BodyGoal;
@@ -54,7 +54,7 @@ interface BodyDashboardModalsProps {
   onDaySwapConfirm: (targetDay: number) => void;
   onSaveGoalLight: (data: { strategy?: string; targetWeight?: number; targetBodyFat?: number; goalNote?: string }) => void;
   // Other
-  checkinHistory?: { deleted?: boolean; weight?: number; date: string }[];
+  checkinHistory?: CheckinEntry[];
   celebrationData: { planName: string; totalDays: number; completedDays: number; totalDurationMin: number; totalCalories: number } | null;
 }
 

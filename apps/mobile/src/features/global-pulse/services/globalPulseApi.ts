@@ -3,6 +3,7 @@
  * 直接使用 PocketBase REST API
  */
 
+import type { CheckinType } from '@egoless-do/core';
 import {
   GlobalCheckin,
   GlobalStats,
@@ -167,13 +168,13 @@ export async function getCheckins(params?: {
     // 转换 PocketBase 响应格式，确保数值字段为数字类型
     const checkins = (result.data.items || []).map((item: Record<string, unknown>) => ({
       ...item,
-      checkin_id: item.id || item.checkin_id,
-      nickname: item.nickname || '',
+      checkin_id: String(item.id || item.checkin_id || ''),
+      nickname: String(item.nickname || ''),
       lat: Number(item.lat) || 0,
       lng: Number(item.lng) || 0,
       streak: Number(item.streak) || 0,
       total_days: Number(item.total_days) || 0,
-    }));
+    }) as GlobalCheckin);
     return {
       success: true,
       data: {
@@ -184,7 +185,7 @@ export async function getCheckins(params?: {
     };
   }
 
-  return result as ApiResponse<{ checkins: GlobalCheckin[]; total: number; has_more: boolean }>;
+  return result as unknown as ApiResponse<{ checkins: GlobalCheckin[]; total: number; has_more: boolean }>;
 }
 
 /**
@@ -195,7 +196,7 @@ export async function getGlobalStats(): Promise<ApiResponse<GlobalStats>> {
     `/api/collections/${STATS_COLLECTION}/records?perPage=1`
   );
 
-  if (result.success && result.data?.items?.length > 0) {
+  if (result.success && result.data && result.data.items?.length > 0) {
     return {
       success: true,
       data: result.data.items[0] as unknown as GlobalStats
@@ -220,20 +221,20 @@ export async function getLeaderboard(params?: {
   const limit = params?.limit || 100;
 
   const query = `sort=-${sortField}&perPage=${limit}`;
-  const result = await pbRequest<PbListResponse<LeaderboardEntry>>(
+  const result = await pbRequest<PbListResponse<Record<string, unknown>>>(
     `/api/collections/leaderboard/records?${query}`
   );
 
   if (result.success && result.data) {
     const leaderboard: LeaderboardEntry[] = (result.data.items || []).map((item: Record<string, unknown>, index: number) => ({
       rank: index + 1,
-      user_hash: item.user_hash,
+      user_hash: String(item.user_hash || ''),
       lat: 0,
       lng: 0,
-      streak: Number(item.best_streak),
-      total_days: Number(item.total_days),
-      type: '',
-      created_at: item.last_active_at
+      streak: Number(item.best_streak) || 0,
+      total_days: Number(item.total_days) || 0,
+      type: (item.type as CheckinType) || 'exercise',
+      created_at: String(item.last_active_at || '')
     }));
 
     return {
@@ -242,7 +243,7 @@ export async function getLeaderboard(params?: {
     };
   }
 
-  return result as ApiResponse<{ leaderboard: LeaderboardEntry[]; user_rank?: number }>;
+  return result as unknown as ApiResponse<{ leaderboard: LeaderboardEntry[]; user_rank?: number }>;
 }
 
 /**

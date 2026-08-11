@@ -105,7 +105,7 @@ export default function ExercisePickerGrid({ TH, T, exerciseLibrary, addedExIds,
         )}
         {(item.defaultDurationSec ?? 0) > 0 && (
           <Text style={[styles.exMetaText, { color: isSelected ? P : TH.sub }]}>
-            {String(Math.round(item.defaultDurationSec / 60))}min
+            {String(Math.round((item.defaultDurationSec ?? 0) / 60))}min
           </Text>
         )}
       </TouchableOpacity>

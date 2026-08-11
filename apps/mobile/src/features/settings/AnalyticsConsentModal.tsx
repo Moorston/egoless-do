@@ -9,7 +9,7 @@ import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 import { optIn, optOut } from '../../analytics/posthog';
 import { setAnalyticsConsent, type AnalyticsConsent } from '../../analytics/privacy';
-import { useT, useTheme } from '../components/UI';
+import { useT, useTheme } from '../../components/UI';
 
 interface AnalyticsConsentModalProps {
   visible: boolean;
@@ -47,7 +47,7 @@ export function AnalyticsConsentModal({ visible, onDecision }: AnalyticsConsentM
             {T('analyticsConsentTitle', { default: '帮助我们改进产品？' })}
           </Text>
 
-          <Text style={[styles.description, { color: TH.textSecondary }]}>
+          <Text style={[styles.description, { color: TH.sub }]}>
             {T('analyticsConsentDesc', {
               default: '我们可以发送匿名使用数据来改进应用体验。绝不会上传您的冥想笔记、心情记录等敏感内容。'
             })}
@@ -59,7 +59,7 @@ export function AnalyticsConsentModal({ visible, onDecision }: AnalyticsConsentM
               onPress={() => handleDecision('anonymous')}
               disabled={loading}
             >
-              <Text style={[styles.btnText, { color: TH.buttonText }]}>
+              <Text style={[styles.btnText, { color: TH.text }]}>
                 {T('analyticsAllowAnonymous', { default: '允许匿名数据' })}
               </Text>
             </TouchableOpacity>
@@ -79,7 +79,7 @@ export function AnalyticsConsentModal({ visible, onDecision }: AnalyticsConsentM
               onPress={() => handleDecision('denied')}
               disabled={loading}
             >
-              <Text style={[styles.btnText, { color: TH.textSecondary }]}>
+              <Text style={[styles.btnText, { color: TH.sub }]}>
                 {T('analyticsDecline', { default: '拒绝' })}
               </Text>
             </TouchableOpacity>

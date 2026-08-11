@@ -78,7 +78,7 @@ export default function PlanCreateScreen() {
   const [showVisionPicker, setShowVisionPicker] = useState(false);
   const [saving, setSaving] = useState(false);
   const [items, setItems] = useState<ItemForm[]>(() => {
-    const baseItems = existingItems.map(i => ({
+    const baseItems: ItemForm[] = existingItems.map(i => ({
       id: i.id, name: i.name, description: i.description,
       startDate: i.startDate, endDate: i.endDate, contentUrl: i.contentUrl,
       link: i.link, priority: i.priority ?? 'medium', targetMetric: i.targetMetric ?? '', linkConfig: i.linkConfig,
@@ -92,8 +92,8 @@ export default function PlanCreateScreen() {
         ...newItem,
         name: defaultName,
         description: reflection.content ?? '',
-        link: 'reflection',
-      });
+        link: 'reflection' as const,
+      } as ItemForm);
     }
     return baseItems;
   });

@@ -39,7 +39,7 @@ import ReportPage from './pages/ReportPage';
 const log = createLogger('Exercise');
 
 // 组合标题计算：从 ExerciseDef 提取去重分类名
-function computeComboTitle(exercises: ExerciseDef[], count: number, T: (key: keyof I18nKeys, params?: Record<string, string | number>) => string): string {
+function computeComboTitle(exercises: ExerciseDef[], count: number, T: (key: string, params?: Record<string, string | number>) => string): string {
   const seen = new Set<string>();
   const names: string[] = [];
   for (const ex of exercises) {

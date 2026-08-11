@@ -18,7 +18,7 @@ const TYPE_CONFIG: Record<VisionType, { icon: React.ComponentType<{ size?: numbe
 };
 
 // ── Mini month calendar picker ──────────────────────────────────
-function MonthPicker({ value, onChange, TH, _T }: { value: string; onChange: (d: string) => void; TH: Theme; T: (k: string) => string }) {
+function MonthPicker({ value, onChange, TH, _T }: { value: string; onChange: (d: string) => void; TH: Theme; T: (k: string) => string; _T?: (k: string) => string }) {
   const initDate = value ? new Date(value) : new Date();
   const [year, setYear] = useState(initDate.getFullYear());
   const [month, setMonth] = useState(initDate.getMonth()); // 0-based

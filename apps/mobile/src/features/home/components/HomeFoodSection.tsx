@@ -34,6 +34,8 @@ interface HomeFoodSectionProps {
   calGoal: number;
   /** Whether the section is read-only */
   isReadOnly: boolean;
+  /** Legacy prop kept for backward-compat callers; not rendered. */
+  _isReadOnly?: boolean;
   /** Delete a food entry */
   onDeleteFood: (id: string) => void;
   /** Add a food entry */

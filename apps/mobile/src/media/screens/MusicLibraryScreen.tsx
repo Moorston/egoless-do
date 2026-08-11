@@ -201,7 +201,7 @@ export default function MusicLibraryScreen() {
         onPress={() => {
           setActiveCategory(category);
           if (tracks.length === 0) {
-            loadCategoryTracks(category);
+            void loadCategoryTracks(category);
           }
         }}
       >

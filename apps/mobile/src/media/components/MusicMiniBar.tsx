@@ -23,6 +23,8 @@ interface Props {
   onToggleLoop: () => void;
   onPressTrackName?: () => void;
   primaryColor: string;
+  /** Legacy prop kept for backward-compat callers; not rendered. */
+  _loop?: boolean;
 }
 
 export default function MusicMiniBar({ currentTrack, isPlaying, _loop, onTogglePlay, onToggleLoop, onPressTrackName, primaryColor }: Props) {

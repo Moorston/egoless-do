@@ -1,5 +1,5 @@
 import { COLORS, FOOD_PRESETS, WUXING_MAP, WUXING_ELEMENT_CONFIG, EATING_MOTIVATIONS, FONT_TITLE, FONT_BUTTON, FONT_LABEL, FONT_BADGE, FONT_BODY, FONT_SUB, FONT_EMPTY, FONT_STAT_SECTION, FONT_BACK, dateStr, FONT_SMALL } from '@egoless-do/core';
-import type { WuxingElement, FlavorType, FoodWuxingItem } from '@egoless-do/core';
+import type { WuxingElement, FlavorType, FoodWuxingItem, EatingMotivation } from '@egoless-do/core';
 import {
   Star, ChevronLeft, X, Search,
   Wheat, Beef, Leaf, Apple, CupSoda, Cookie, Utensils,
@@ -133,7 +133,7 @@ export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
       const todayFoods = (store.foodLog ?? []).filter(f => !f.deleted && dateStr(new Date(f.timestamp)) === dateStr());
       const lastFood = todayFoods[0]; // most recent
       if (lastFood) {
-        store.setFoodMotivation({ foodId: lastFood.id, date: dateStr(), motivation: motivation as string });
+        store.setFoodMotivation({ foodId: lastFood.id, date: dateStr(), motivation: motivation as EatingMotivation });
       }
     }
     showToast(`${T('foodAdded')}: ${editing.name} ${totalCal}kcal`);
@@ -153,7 +153,7 @@ export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
       const todayFoods = store.foodLog.filter(f => !f.deleted && dateStr(new Date(f.timestamp)) === dateStr());
       const lastFood = todayFoods[0];
       if (lastFood) {
-        store.setFoodMotivation({ foodId: lastFood.id, date: dateStr(), motivation: motivation as string });
+        store.setFoodMotivation({ foodId: lastFood.id, date: dateStr(), motivation: motivation as EatingMotivation });
       }
     }
     showToast(`${T('foodAdded')}: ${editing.name} ${totalCal}kcal`);

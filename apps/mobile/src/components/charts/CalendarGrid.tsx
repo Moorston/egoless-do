@@ -10,6 +10,8 @@ export interface CalendarGridProps {
   subColor: string;
   borderColor: string;
   onDayPress?: (date: string) => void;
+  /** Legacy prop kept for backward-compat callers; not rendered. */
+  _borderColor?: string;
 }
 
 const DAY_LABELS = ['一', '二', '三', '四', '五', '六', '日'];

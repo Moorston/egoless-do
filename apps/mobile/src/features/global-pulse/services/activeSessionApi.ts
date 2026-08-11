@@ -41,7 +41,7 @@ interface PocketBaseList {
 }
 
 // ── Connection state ──────────────────────────────────────────────
-export type ConnectionState = 'idle' | 'connecting' | 'connected' | 'disconnected';
+export type ConnectionState = 'idle' | 'connecting' | 'connected' | 'disconnected' | 'error';
 
 let _connectionState: ConnectionState = 'idle';
 let _connectionListeners: Array<(state: ConnectionState) => void> = [];
@@ -177,10 +177,10 @@ export async function createSession(
   );
 
   if (result.success && result.data) {
-    return { success: true, data: mapSession(result.data) };
+    return { success: true, data: mapSession(result.data as Record<string, unknown>) };
   }
 
-  return result as ApiResponse<ActiveSession>;
+  return result as unknown as ApiResponse<ActiveSession>;
 }
 
 export async function updateSession(
@@ -201,10 +201,10 @@ export async function updateSession(
   );
 
   if (result.success && result.data) {
-    return { success: true, data: mapSession(result.data) };
+    return { success: true, data: mapSession(result.data as Record<string, unknown>) };
   }
 
-  return result as ApiResponse<ActiveSession>;
+  return result as unknown as ApiResponse<ActiveSession>;
 }
 
 export async function deleteSession(recordId: string): Promise<ApiResponse<void>> {
@@ -253,7 +253,7 @@ export async function getActiveSessions(
   );
 
   if (result.success && result.data) {
-    const sessions = (result.data.items || []).map((item: unknown) => mapSession(item));
+    const sessions = (result.data.items || []).map((item: unknown) => mapSession(item as Record<string, unknown>));
     return { success: true, data: sessions };
   }
 
@@ -366,7 +366,7 @@ export function subscribeSessions(
     const AppState = (require('react-native') as typeof import('react-native')).AppState;
     // Move cleanup after require so that if require fails, the old listener survives
     if (_currentAppStateSub) {
-      _currentAppStateSub.remove();
+      _currentAppStateSub.remove?.();
       _currentAppStateSub = null;
     }
     _currentAppStateSub = AppState.addEventListener('change', (s: string) => {

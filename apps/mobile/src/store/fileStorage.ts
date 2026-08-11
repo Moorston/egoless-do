@@ -35,7 +35,7 @@ export async function saveTokenToFile(token: string, refreshToken: string, expir
     const data = JSON.stringify({ token, refreshToken, expiresAt: expiresAt ?? null });
     await FileSystem.writeAsStringAsync(TOKEN_FILE, data, { encoding: FileSystem.EncodingType.UTF8 });
   } catch (e) {
-    log.error('saveTokenToFile failed:', e instanceof Error ? e.message : String(e));
+    log.error(e, { message: 'saveTokenToFile failed' });
   }
 }
 
@@ -87,7 +87,7 @@ export async function saveDataToFile(entity: string, id: string, data: Record<st
     all[id] = data;
     await FileSystem.writeAsStringAsync(file, JSON.stringify(all), { encoding: FileSystem.EncodingType.UTF8 });
   } catch (e) {
-    log.error('saveDataToFile failed:', e instanceof Error ? e.message : String(e));
+    log.error(e, { message: 'saveDataToFile failed' });
   }
 }
 

@@ -20,6 +20,7 @@ export interface Syncable {
 export interface Theme {
   name: string;
   nameEn?: string;
+  mode?: 'dark' | 'light';
   bg: string;
   card: string;
   cardSolid: string;

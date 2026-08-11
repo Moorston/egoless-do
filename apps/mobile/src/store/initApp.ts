@@ -183,7 +183,7 @@ export async function initApp(): Promise<void> {
 
     // ── Step 3a: Deduplicate bodyTrainingPlans (cleanup legacy duplicates from pre-fix data) ──
     try {
-      const plans = (store().bodyTrainingPlans ?? []) as Array<Record<string, unknown>>;
+      const plans = (store().bodyTrainingPlans ?? []) as unknown as Array<Record<string, unknown>>;
       const seen = new Set<string>();
       const duplicates: string[] = [];
       // eslint-disable-next-line max-depth -- for-loop nested in try/try; simple dedup scan, extraction would add indirection
@@ -200,8 +200,8 @@ export async function initApp(): Promise<void> {
         log.warn(`dedupBodyPlans: removing ${duplicates.length} duplicate plan(s)`);
         const dupSet = new Set(duplicates);
         setState({
-          bodyTrainingPlans: plans.filter((p: Record<string, unknown>) => !dupSet.has(p.id)),
-        } as PartialMobileStore);
+          bodyTrainingPlans: plans.filter((p: Record<string, unknown>) => !dupSet.has(String(p.id))),
+        } as unknown as PartialMobileStore);
         // eslint-disable-next-line max-depth -- for-loop nested in if/try/try; simple deletion loop, extraction would add indirection
         for (const id of duplicates) {
           adapter.markDeleted('bodyTrainingPlan' as Parameters<typeof adapter.markDeleted>[0], id).catch(e => log.error(e));

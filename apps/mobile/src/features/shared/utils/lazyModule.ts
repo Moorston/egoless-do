@@ -26,7 +26,7 @@ export function createLazyModule<T>(moduleName: string): () => T {
       try {
         cached = require(moduleName) as T;
       } catch (err) {
-        log.error(`Failed to load module: ${moduleName}`, err);
+        log.error(err, { module: moduleName });
         throw err;
       }
     }

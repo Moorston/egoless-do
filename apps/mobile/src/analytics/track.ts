@@ -10,10 +10,16 @@ import { sanitize } from './privacy';
  * @param event - 事件名（使用 Events 常量）
  * @param props - 事件属性（自动 PII 过滤）
  */
+/* eslint-disable @typescript-eslint/no-explicit-any -- PostHogEventProperties is { [key: string]: JsonType } */
+function sanitizeForPosthog(props: Record<string, unknown>): Record<string, any> {
+  return sanitize(props) as Record<string, any>;
+}
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
 export function track(event: AnalyticsEvent, props: Record<string, unknown> = {}): void {
   const ph = getPostHog();
   if (!ph) return;
-  ph.capture(event, sanitize(props));
+  ph.capture(event, sanitizeForPosthog(props));
 }
 
 /**
@@ -24,7 +30,7 @@ export function track(event: AnalyticsEvent, props: Record<string, unknown> = {}
 export function identify(userId: string, properties: Record<string, unknown> = {}): void {
   const ph = getPostHog();
   if (!ph) return;
-  ph.identify(userId, sanitize(properties));
+  ph.identify(userId, sanitizeForPosthog(properties));
 }
 
 /**
@@ -35,7 +41,7 @@ export function identify(userId: string, properties: Record<string, unknown> = {
 export function screen(screenName: string, props: Record<string, unknown> = {}): void {
   const ph = getPostHog();
   if (!ph) return;
-  void ph.screen(screenName, sanitize(props));
+  void ph.screen(screenName, sanitizeForPosthog(props));
 }
 
 /**
@@ -44,7 +50,7 @@ export function screen(screenName: string, props: Record<string, unknown> = {}):
 export function setPersonProperties(properties: Record<string, unknown>): void {
   const ph = getPostHog();
   if (!ph) return;
-  void ph.register(sanitize(properties));
+  void ph.register(sanitizeForPosthog(properties));
 }
 
 /**

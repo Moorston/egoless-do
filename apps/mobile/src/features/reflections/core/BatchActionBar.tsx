@@ -15,6 +15,8 @@ interface Props {
   onPin: () => void;
   onUnpin: () => void;
   onAddTag: () => void;
+  /** Legacy prop kept for backward-compat callers; not rendered. */
+  _totalCount?: number;
 }
 
 function BatchActionBarComponent({

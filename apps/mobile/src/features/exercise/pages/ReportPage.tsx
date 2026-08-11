@@ -22,20 +22,20 @@ export default function ReportPage(props: ExercisePageProps) {
 
   // 7-day history for the same sport
   const weekHistory = useMemo(() => {
-    const logs = (exerciseLog ?? []).filter((e: Record<string, unknown>) =>
+    const logs = (exerciseLog ?? []).filter(e =>
       !e.deleted && e.sportKey === sportName
     );
     const now = Date.now();
     const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
     return logs
-      .filter((e: Record<string, unknown>) => (e.timestamp as number) >= sevenDaysAgo)
-      .sort((a, b) => ((a.timestamp as number) ?? 0) - ((b.timestamp as number) ?? 0))
+      .filter(e => e.timestamp >= sevenDaysAgo)
+      .sort((a, b) => (a.timestamp ?? 0) - (b.timestamp ?? 0))
       .slice(-7)
-      .map((e: Record<string, unknown>) => ({
-        date: dateStr(new Date(e.timestamp as number)),
-        durationSec: (e.durationSec as number) ?? 0,
-        calories: (e.calories as number) ?? 0,
-        distanceKm: (e.distanceKm as number) ?? 0,
+      .map(e => ({
+        date: dateStr(new Date(e.timestamp)),
+        durationSec: e.durationSec ?? 0,
+        calories: e.calories ?? 0,
+        distanceKm: e.distanceKm ?? 0,
       }));
   }, [exerciseLog, sportName]);
 

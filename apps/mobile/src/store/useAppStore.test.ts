@@ -143,7 +143,7 @@ import {
 
 /** Capture the AppState('change', ...) listener registered by initMobileStore() */
 function getAppStateListener(): (state: string) => void {
-  const changeCall = mockAddEventListener.mock.calls.find(
+  const changeCall: unknown[] | undefined = mockAddEventListener.mock.calls.find(
     (c: unknown[]) => c[0] === 'change',
   );
   if (!changeCall) throw new Error('AppState change listener was not registered');
@@ -173,7 +173,7 @@ function resetStoreDefaults() {
     auth: { isSignedIn: false, user: null },
     medHistory: [],
     checkinHistory: [],
-  } as Partial<MobileStore>);
+  } as unknown as Partial<MobileStore>);
 }
 
 // ── Tests ─────────────────────────────────────────────────────────
@@ -335,7 +335,7 @@ describe('AI Config persistence', () => {
     useAppStore.setState({
       aiMode: 'advanced',
       aiModels: { gpt: 'gpt-4' },
-    } as Partial<MobileStore>);
+    } as unknown as Partial<MobileStore>);
 
     const listener = getAppStateListener();
     listener('background');
@@ -356,9 +356,9 @@ describe('AI Config persistence', () => {
 
   it('flushAIConfig writes config_id self with mode and models', () => {
     useAppStore.setState({
-      aiMode: 'fast',
+      aiMode: 'fast' as MobileStore['aiMode'],
       aiModels: { gemini: 'gemini-pro' },
-    } as Partial<MobileStore>);
+    } as unknown as Partial<MobileStore>);
 
     const listener = getAppStateListener();
     listener('background');

@@ -33,13 +33,10 @@ export async function initPostHog(config: PostHogConfig): Promise<PostHog | null
 
       const options: PostHogOptions = {
         host: config.host,
-        sessionReplay: config.sessionReplay ?? false,
-        captureNativeAppLifecycle: true,
-        captureNativeAppEvents: true,
+        enableSessionReplay: config.sessionReplay ?? false,
+        captureNativeAppLifecycleEvents: true,
         flushAt: 20,
         flushInterval: 30000,
-        // 自托管时禁用 IP 地理定位
-        captureIP: false,
       };
 
       // PostHog 是类，需用 new 实例化

@@ -14,7 +14,7 @@ import { useShallowStore } from '../store/useAppStore';
 import { useTheme } from './UI';
 
 
-const TAB_ICONS_MAP: Record<string, React.ComponentType<{size?: number; color?: string}>> = {
+const TAB_ICONS_MAP: Record<string, React.ComponentType<{size?: number; color?: string; strokeWidth?: number}>> = {
   home: Home, plan: ClipboardList, fasting: Timer, meditation: Binary,
   reflections: Sparkles, exercise: Dumbbell, habits: Target,
   stats: BarChart3, settings: Settings,

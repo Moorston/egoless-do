@@ -59,7 +59,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
         track(Events.AI_FEATURE_USED, {
           feature: 'review',
           period,
-          model: result?.model || 'unknown',
+          model: result?.aiModel || 'unknown',
         });
       }
     }).catch(error => {

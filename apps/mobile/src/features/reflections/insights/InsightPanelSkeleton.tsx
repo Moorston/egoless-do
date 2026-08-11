@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Animated, StyleSheet } from 'react-native';
+import { View, Animated, StyleSheet, type DimensionValue } from 'react-native';
 
 import { useTheme } from '../../../components/UI';
 
@@ -24,7 +24,7 @@ export default function InsightPanelSkeleton() {
     outputRange: [-200, 400],
   });
 
-  const shimmer = (width: number | string, height: number, borderRadius = 6) => (
+  const shimmer = (width: DimensionValue, height: number, borderRadius = 6) => (
     <View style={{ width, height, borderRadius, backgroundColor: `${TH.sub}15`, overflow: 'hidden' }}>
       <Animated.View
         style={{

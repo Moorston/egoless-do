@@ -12,6 +12,7 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  type ViewStyle,
 } from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';
@@ -26,6 +27,8 @@ interface LeaderboardProps {
   onUserPress?: (entry: LeaderboardEntry) => void;
   selectedUserId?: string | null;
   compact?: boolean;
+  /** Legacy prop kept for backward-compat callers; not rendered. */
+  _type?: CheckinType;
 }
 
 // 从 checkins 数据生成排行榜
@@ -100,7 +103,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
             entry={entry}
             medal={medals[index]}
             isSelected={selectedUserId === entry.user_hash}
-            podiumStyle={podiumStyles[index]}
+            podiumStyle={podiumStyles[index] as unknown as ViewStyle}
             onPress={onUserPress}
           />
         ))}

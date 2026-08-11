@@ -23,6 +23,8 @@ interface TimelineReflectionItemProps {
   linkToNext: { type: LinkType } | null;
   onRemove: (id: string) => void;
   onCreatePlan: (id: string) => void;
+  /** Legacy prop kept for backward-compat callers; not rendered. */
+  _onCreatePlan?: (id: string) => void;
 }
 
 function TimelineReflectionItemComponent({

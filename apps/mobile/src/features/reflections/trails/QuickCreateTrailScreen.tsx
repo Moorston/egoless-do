@@ -148,7 +148,7 @@ export default function QuickCreateTrailScreen() {
   }, [selectedIds, trailName, reflectionsMap, createThoughtTrail, nav, T, setSelectedIds, setTrailName]);
 
   const handleGoRecord = useCallback(() => {
-    nav.navigate('Reflections' as never, { showNew: true } as never);
+    (nav.navigate as (route: string, params: Record<string, unknown>) => void)('Reflections', { showNew: true });
   }, [nav]);
 
   // ── Render helpers ────────────────────────────────────────────
@@ -182,7 +182,7 @@ export default function QuickCreateTrailScreen() {
             {T('quickTrailKeepRecording')}
           </Text>
           <TouchableOpacity
-            onPress={() => nav.navigate('Reflections' as never, { showNew: true } as never)}
+            onPress={() => (nav.navigate as (route: string, params: Record<string, unknown>) => void)('Reflections', { showNew: true })}
             style={[styles.emptyGoRecordBtn, { backgroundColor: TH.primary }]}
           >
             <Text style={styles.emptyGoRecordText}>{T('quickTrailGoRecord')}</Text>

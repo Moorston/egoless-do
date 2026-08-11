@@ -87,7 +87,7 @@ export default function MindTrailScreen() {
   // Section 3: Data Filtering & AI Availability
   // ═══════════════════════════════════════════════════════════════
   const aiAvailable = useMemo(() => {
-    return isAIRecommendAvailable({ mode: aiMode, models: aiModels });
+    return isAIRecommendAvailable();
   }, [aiMode, aiModels]);
 
   const thoughtTrails = useMemo(() =>

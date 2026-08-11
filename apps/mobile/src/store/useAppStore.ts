@@ -170,7 +170,7 @@ export const useAppStore: UseBoundStore<StoreApi<MobileStore>> = create<MobileSt
         for (const key of Object.keys(dbPatch)) {
           const patchVal = dbPatch[key];
           if (!Array.isArray(patchVal)) continue;
-          const currentVal = (current as Record<string, unknown>)[key];
+          const currentVal = (current as unknown as Record<string, unknown>)[key];
           if (!Array.isArray(currentVal)) continue;
           const deletedIds = new Set(
             currentVal.filter((r: Record<string, unknown>) => r.deleted).map((r: Record<string, unknown>) => r.id as string),

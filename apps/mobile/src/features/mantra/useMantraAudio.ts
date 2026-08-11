@@ -49,7 +49,7 @@ export function useMantraAudio() {
     const cachedPath = await getCachedPath(mantraId);
     if (cachedPath) {
       try {
-        await setAudioModeAsync({ playsInSilentModeIOS: true });
+        await setAudioModeAsync({ playsInSilentMode: true });
         setShouldLoop(opts?.loop ?? false);
         setSource({ uri: cachedPath });
         return;

@@ -96,7 +96,7 @@ export default function ReviewScreen() {
         <View style={[styles.moodDistribution, { backgroundColor: TH.card, borderColor: TH.border }]}>
           <Text style={[styles.moodLabel, { color: TH.sub }]}>{T('reviewMoodDistribution')}</Text>
           <View style={styles.moodRow}>
-            {moodStats.map(({ mood, _count }) => (
+            {moodStats.map(({ mood, count: _count }) => (
               <Text key={mood} style={styles.moodEmoji}>
                 {getMoodIcon(mood)}
               </Text>

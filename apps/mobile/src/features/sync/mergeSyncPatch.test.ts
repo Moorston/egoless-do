@@ -49,13 +49,13 @@ describe('mergeSyncPatch', () => {
     const merged = (result.storePatch as Record<string, unknown[]>).habits!;
     expect(merged).toHaveLength(2);
     // h2 should be replaced with the delta version
-    expect(merged.find((h: TestRecord) => h.id === 'h2')).toEqual({
+    expect(merged.find((h) => (h as TestRecord).id === 'h2')).toEqual({
       id: 'h2',
       name: 'Exercise (updated)',
       updatedAt: 200,
     });
     // h1 should remain untouched
-    expect(merged.find((h: TestRecord) => h.id === 'h1')).toEqual({
+    expect(merged.find((h) => (h as TestRecord).id === 'h1')).toEqual({
       id: 'h1',
       name: 'Meditate',
       updatedAt: 100,
@@ -140,8 +140,8 @@ describe('mergeSyncPatch', () => {
     expect(result.changedEntities).toContain('thoughtTrail');
     const reflections = result.storePatch.reflections as unknown as Record<string, unknown>[];
     expect(reflections).toBeDefined();
-    const r1 = reflections.find((r: TestRecord) => r.id === 'r1');
-    const r2 = reflections.find((r: TestRecord) => r.id === 'r2');
+    const r1 = reflections.find((r) => (r as TestRecord).id === 'r1');
+    const r2 = reflections.find((r) => (r as TestRecord).id === 'r2');
     expect(r1?.thoughtTrailIds).toEqual(
       expect.arrayContaining(['trail1', 'trail2']),
     );
@@ -169,7 +169,7 @@ describe('mergeSyncPatch', () => {
     // thoughtTrailIds should be reconciled to [] (was ['trail1'])
     const reflections = result.storePatch.reflections as unknown as Record<string, unknown>[];
     expect(reflections).toBeDefined();
-    const r1 = reflections.find((r: TestRecord) => r.id === 'r1');
+    const r1 = reflections.find((r) => (r as TestRecord).id === 'r1');
     expect(r1?.thoughtTrailIds).toEqual([]);
   });
 

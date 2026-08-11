@@ -48,7 +48,7 @@ export function useSutraAudio() {
     if (!cachedPath) return false;
 
     try {
-      await setAudioModeAsync({ playsInSilentModeIOS: true });
+      await setAudioModeAsync({ playsInSilentMode: true });
       setShouldLoop(opts?.loop ?? false);
       setSource({ uri: cachedPath });
       return true;

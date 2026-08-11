@@ -9,6 +9,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 
 import { useTheme, useT } from '../../../components/UI';
 import {useShallowStore} from '../../../store/useAppStore';
+import { useCheckinStreak } from '../../../store/selectors';
 
 import { ActiveUsersList } from './ActiveUsersList';
 import { Leaderboard } from './Leaderboard';
@@ -26,6 +27,10 @@ interface BottomPanelProps {
   onRefresh?: () => void;
   isRefreshing?: boolean;
   myHash?: string;
+  /** Legacy prop kept for backward-compat callers; not rendered. */
+  _onRefresh?: () => void;
+  /** Legacy prop kept for backward-compat callers; not rendered. */
+  _isRefreshing?: boolean;
 }
 
 export const BottomPanel: React.FC<BottomPanelProps> = ({
@@ -42,7 +47,8 @@ export const BottomPanel: React.FC<BottomPanelProps> = ({
 }) => {
   const theme = useTheme();
   const t = useT();
-  const { streak, checkinHistory, totalMedMinutes } = useShallowStore(s => ({ streak: s.streak, checkinHistory: s.checkinHistory, totalMedMinutes: s.totalMedMinutes }));
+  const streak = useCheckinStreak();
+  const { checkinHistory, totalMedMinutes } = useShallowStore(s => ({ checkinHistory: s.checkinHistory, totalMedMinutes: s.totalMedMinutes }));
   const [activeTab, setActiveTab] = useState<TabKey>('realtime');
 
   const tabs: { key: TabKey; label: string }[] = [

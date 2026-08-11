@@ -24,7 +24,7 @@ export default function ReflectionDetailScreen() {
 
   const handleEdit = useCallback((r: MindReflection) => {
     // NOTE: Reflections is a MainTab screen, nested navigator type mismatch
-    nav.navigate('Reflections' as never, { editId: r.id } as never);
+    (nav.navigate as (route: string, params: Record<string, unknown>) => void)('Reflections', { editId: r.id });
   }, [nav]);
 
   const handleShare = useCallback(async (r: MindReflection) => {

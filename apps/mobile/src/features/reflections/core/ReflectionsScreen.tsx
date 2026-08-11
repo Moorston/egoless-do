@@ -338,7 +338,7 @@ export default function ReflectionsScreen() {
   }, [reflections, getActivePlan]);
 
   const handleCreatePlanRef = useCallback((reflectionId: string, form: { name: string; description?: string; priority?: string; startDate?: string; endDate?: string; targetMetric?: string }) => {
-    createPlanItem({ type: 'reflection', id: reflectionId }, form);
+    createPlanItem({ type: 'reflection', id: reflectionId }, form as import('@egoless-do/core').UnifiedPlanItemForm);
     setShowCreatePlanRefModal(false);
     setCreatePlanReflection(null);
     Alert.alert('成功', '计划任务已创建');
@@ -555,7 +555,7 @@ export default function ReflectionsScreen() {
         onClose={() => setShowFilterDrawer(false)}
         filters={filters}
         onApplyFilters={(newFilters) => {
-          setFilters(newFilters);
+          setFilters(prev => ({ ...prev, ...newFilters }));
         }}
         allTagOptions={allTagOptions}
         allMoodOptions={allMoodOptions}

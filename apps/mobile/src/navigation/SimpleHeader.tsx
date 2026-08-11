@@ -54,7 +54,7 @@ export default function SimpleHeader({ routeName }: { routeName?: string }) {
           {HEADER_TAB_KEYS.map((key) => (
             <TouchableOpacity
               key={key}
-              onPress={() => { const route = HEADER_TAB_ROUTES[key]; if (route && route !== routeName) navigation.navigate(route); }}
+              onPress={() => { const route = HEADER_TAB_ROUTES[key]; if (route && route !== routeName) navigation.navigate(route as never); }}
               activeOpacity={0.7}
               style={{ flex: 1, paddingVertical: 8, borderRadius: 12, minHeight: 36, justifyContent: 'center', alignItems: 'center', backgroundColor: key === activeKey ? TH.primary : TH.card }}
             >

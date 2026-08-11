@@ -17,6 +17,8 @@ const SLEEP_PRESETS = [15, 30, 45, 60, 90];
 interface Props {
   primaryColor: string;
   category?: string;
+  /** Legacy prop kept for backward-compat callers; not rendered. */
+  _category?: string;
 }
 
 export default function PlayerBar({ primaryColor, _category }: Props) {

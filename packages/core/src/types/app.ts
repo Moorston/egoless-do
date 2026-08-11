@@ -66,11 +66,16 @@ export function estimateBodyFat(opts: {
 }
 
 export interface UserProfile {
+  name?: string;
   nickname?: string;
   avatar?: string; // base64 data URI
   motto?: string;
   weight?: number;
   gender?: 'male' | 'female' | 'private';
+  theme?: string;
+  language?: string;
+  customTags?: string[];
+  customMoods?: string[];
   ageBracket?: AgeBracket;
   /** @deprecated Numeric age is migrated on read via ageToBracket(). */
   age?: number;

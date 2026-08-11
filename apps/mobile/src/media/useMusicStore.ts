@@ -160,6 +160,7 @@ const playbackService = new MusicPlaybackService(
       queue: s.queue,
       queueIndex: s.queueIndex,
       playMode: s.playMode,
+      loop: s.loop,
       error: s.error,
     };
   }

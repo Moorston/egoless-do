@@ -3,7 +3,7 @@
   "compilerOptions": {
     "jsx": "react-native",
     "lib": ["ES2020"],
-    "types": [],
+    "types": ["vitest/globals"],
     "paths": {
       "@egoless-do/core": ["../../packages/core/src/index.ts"],
       "@/*": ["./src/*"]

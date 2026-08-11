@@ -17,6 +17,7 @@ import { Card, useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore, useShallowStore, type MobileStore } from '../../store/useAppStore';
+import { useCheckinStreak } from '../../store/selectors';
 
 
 
@@ -29,7 +30,7 @@ export default function ProfileScreen() {
   const {
     userProfile, auth, checkinHistory, habits, reflections,
     exerciseLog, fastingHistory, plans, planItems,
-    waterGoal, streak, totalMedMinutes,
+    waterGoal, totalMedMinutes,
   } = useShallowStore(s => ({
     userProfile: s.userProfile,
     auth: s.auth,
@@ -41,9 +42,9 @@ export default function ProfileScreen() {
     plans: s.plans,
     planItems: s.planItems,
     waterGoal: s.waterGoal,
-    streak: s.streak,
     totalMedMinutes: s.totalMedMinutes,
   }));
+  const streak = useCheckinStreak();
   const nav = useRootNavigation();
 
   // Typed helper to avoid ESLint no-unsafe-* warnings on getStore()
@@ -72,7 +73,7 @@ export default function ProfileScreen() {
 
   const profileStats = useMemo(() => {
     const totalCheckinDays = (checkinHistory ?? []).filter(c => c.done && !c.deleted).length;
-    const activeHabits = (habits ?? []).filter(h => !h.deleted && h.status !== 'archived').length;
+    const activeHabits = (habits ?? []).filter(h => !h.deleted && h.status !== ('archived' as never)).length;
     const totalReflections = (reflections ?? []).filter(r => !r.deleted).length;
     return { totalCheckinDays, activeHabits, totalReflections };
   }, [checkinHistory, habits, reflections]);

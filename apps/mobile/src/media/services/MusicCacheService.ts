@@ -169,7 +169,7 @@ class MusicCacheService {
       let loaded = 0;
 
       for (const file of files) {
-        if (!file.name.endsWith('.json')) continue;
+        if (!(file instanceof File) || !file.name.endsWith('.json')) continue;
 
         try {
           const content = await file.text();

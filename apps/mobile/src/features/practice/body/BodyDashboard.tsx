@@ -1,4 +1,4 @@
-import { dateStr, type BodyGoal, type BodyTrainingPlan, type ExerciseEntry, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_LABEL, FONT_STAT_CARD, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, COMBO_WORKOUT_SPORT_KEY, type DayOverride, type ExerciseDef } from '@egoless-do/core';
+import { dateStr, type BodyGoal, type BodyTrainingPlan, type ExerciseEntry, type BodyStrategy, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_LABEL, FONT_STAT_CARD, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, COMBO_WORKOUT_SPORT_KEY, type DayOverride, type ExerciseDef } from '@egoless-do/core';
 import { ChevronRight, Play, Target, Dumbbell, TrendingUp, Activity } from 'lucide-react-native';
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Dimensions, Modal } from 'react-native';
@@ -190,8 +190,8 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
     const last = records[records.length - 1];
     const prev = records[records.length - 2];
     return {
-      current: last.weight,
-      diff: last.weight - prev.weight,
+      current: last.weight!,
+      diff: last.weight! - prev.weight!,
       date: last.date,
     };
   }, [checkinHistory]);
@@ -308,7 +308,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
     setShowDayAction(false);
   }, [selectedDay, activeTrainingPlan, updateBodyTrainingPlan]);
 
-  const handleSaveGoalLight = useCallback((data: { strategy?: string; targetWeight?: number; targetBodyFat?: number; goalNote?: string }) => {
+  const handleSaveGoalLight = useCallback((data: { strategy?: BodyStrategy; targetWeight?: number; targetBodyFat?: number; goalNote?: string }) => {
     if (activeTrainingPlan) {
       updateBodyTrainingPlan(activeTrainingPlan.id, data);
     }
@@ -576,7 +576,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                   {[
                     { value: profile.weight ? `${profile.weight}` : '-', unit: 'kg', label: T('bodyWeight') },
                     { value: profile.height ? `${profile.height}` : '-', unit: 'cm', label: T('bodyHeight') },
-                    { value: profile.weight && profile.height ? `${(profile.weight / ((profile.height / 100) ** 2)).toFixed(1)}` : '-', unit: '', label: 'BMI' },
+                    { value: profile.weight && profile.height ? `${((profile.weight as number) / (((profile.height as number) / 100) ** 2)).toFixed(1)}` : '-', unit: '', label: 'BMI' },
                     { value: profile.bodyFat ? `${profile.bodyFat}` : '-', unit: '%', label: T('bodyBodyFat') },
                   ].map((item, i) => (
                     <View key={i} style={{ flex: 1, alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 10, paddingVertical: 10, paddingHorizontal: 4 }}>
@@ -589,7 +589,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                 {profile.selfAssessment ? (
                   <View style={{ backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 8, padding: 10 }}>
                     <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.9)', lineHeight: 20 }}>
-                      {profile.selfAssessment}
+                      {String(profile.selfAssessment ?? '')}
                     </Text>
                     {(profile.bodyTags as string[] ?? []).length > 0 && (
                       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginTop: 8 }}>
@@ -729,7 +729,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                           .sort((a, b) => a.date.localeCompare(b.date))
                           .slice(-7);
                         if (records.length < 2) return null;
-                        const weights = records.map(r => r.weight);
+                        const weights = records.map(r => r.weight!).filter((w): w is number => w != null);
                         const minW = Math.min(...weights);
                         const maxW = Math.max(...weights);
                         const range = maxW - minW || 1;
@@ -746,9 +746,9 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                               if (i === 0) return null;
                               const prevR = records[i - 1];
                               const x1 = (i - 1) * stepX;
-                              const y1 = chartHeight - ((prevR.weight - minW) / range) * (chartHeight - 15);
+                              const y1 = chartHeight - ((prevR.weight! - minW) / range) * (chartHeight - 15);
                               const x2 = i * stepX;
-                              const y2 = chartHeight - ((r.weight - minW) / range) * (chartHeight - 15);
+                              const y2 = chartHeight - ((r.weight! - minW) / range) * (chartHeight - 15);
                               const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
                               const angle = Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
                               return (
@@ -770,7 +770,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                             {/* Data points with weight labels */}
                             {records.map((r, i) => {
                               const x = i * stepX;
-                              const y = chartHeight - ((r.weight - minW) / range) * (chartHeight - 15);
+                              const y = chartHeight - ((r.weight! - minW) / range) * (chartHeight - 15);
                               const isLast = i === records.length - 1;
                               return (
                                 <React.Fragment key={`point-${i}`}>
@@ -966,7 +966,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan, onGoTo
                     return '';
                   };
                   return (
-                    <View key={task.weekday} style={{ width: 'calc((100% - 24px) / 4)', minWidth: 72, borderRadius: 10, borderWidth: 1, borderColor: isRest ? TH.border : '#f59e0b30', backgroundColor: isRest ? TH.bg : '#f59e0b08', padding: 8 }}>
+                    <View key={task.weekday} style={{ width: (SCREEN_WIDTH - 56) / 4, minWidth: 72, borderRadius: 10, borderWidth: 1, borderColor: isRest ? TH.border : '#f59e0b30', backgroundColor: isRest ? TH.bg : '#f59e0b08', padding: 8 }}>
                       <View style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: isRest ? TH.border : '#f59e0b', alignItems: 'center', justifyContent: 'center', marginBottom: 6 }}>
                         <Text style={{ fontSize: 10, color: isRest ? TH.sub : '#fff', fontWeight: '700' }}>{T(weekdayKeys[task.weekday - 1])}</Text>
                       </View>

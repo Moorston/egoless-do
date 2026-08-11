@@ -60,7 +60,7 @@ export interface ExercisePageProps {
   initialPos: GpsCoord | null;
   amapReady: boolean;
   MapView: React.ComponentType<MapComponentProps> | null;
-  Polyline: React.ComponentType<{ coordinates: GpsCoord[]; color?: string; width?: number }> | null;
+  Polyline: React.ComponentType<Record<string, unknown>> | null;
   mapRef: React.RefObject<unknown>;
 
   // Report

@@ -22,7 +22,7 @@ export async function getCurPos() {
 export async function watchPos(cb: (loc: { coords: { latitude: number; longitude: number; accuracy: number }; timestamp: number }) => void) {
   const m = await getLocation();
   if (!m) return { remove: () => {} };
-  try { return await m.watchPositionAsync({ accuracy: m.Accuracy.High, timeInterval: 2000, distanceInterval: 5 }, cb); } catch { return { remove: () => {} }; }
+  try { return await m.watchPositionAsync({ accuracy: m.Accuracy.High, timeInterval: 2000, distanceInterval: 5 }, cb as Parameters<typeof m.watchPositionAsync>[1]); } catch { return { remove: () => {} }; }
 }
 
 export function computeDistance(coords: { latitude: number; longitude: number }[]): number {

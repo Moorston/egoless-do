@@ -1,7 +1,7 @@
 // ─── 音频预览服务 ──────────────────────────────────────────────────
-// 使用 expo-av 实现音乐预览播放
+// 使用 expo-audio 实现音乐预览播放
 
-import { Audio, type AVPlaybackStatus } from 'expo-av';
+import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from 'expo-audio';
 import { createLogger } from '@egoless-do/core';
 
 const log = createLogger('AudioPreview');
@@ -11,21 +11,22 @@ const PREVIEW_DURATION_LIMIT = 30;
 
 // 音频预览播放器
 class AudioPreviewService {
-  private sound: Audio.Sound | null = null;
+  private player: AudioPlayer | null = null;
   private currentTrackId: string | null = null;
-  private isPlaying = false;
-  private position = 0;
-  private duration = 0;
+  private _isPlaying = false;
+  private _position = 0;
+  private _duration = 0;
   private onStatusUpdate: ((status: PreviewStatus) => void) | null = null;
+  private initialized = false;
 
   // 初始化音频会话
   async initialize(): Promise<void> {
+    if (this.initialized) return;
     try {
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: false,
-        staysActiveInBackground: false,
-        playsInSilentModeIOS: true,
+      await setAudioModeAsync({
+        playsInSilentMode: true,
       });
+      this.initialized = true;
     } catch (error) {
       log.warn('初始化音频会话失败:', error);
     }
@@ -43,93 +44,114 @@ class AudioPreviewService {
 
       log.info('开始播放预览:', trackId);
 
-      // 创建新的 Sound 对象
-      const { sound } = await Audio.Sound.createAsync(
-        { uri: url },
-        { shouldPlay: true, progressUpdateIntervalMillis: 500 },
-        this.handlePlaybackStatus.bind(this)
-      );
-
-      this.sound = sound;
-      this.currentTrackId = trackId;
-      this.isPlaying = true;
       this.onStatusUpdate = onStatusUpdate || null;
 
-      // 设置状态回调
-      sound.setOnPlaybackStatusUpdate(this.handlePlaybackStatus.bind(this));
+      // 创建新的 AudioPlayer
+      const player = createAudioPlayer(
+        { uri: url },
+        { updateInterval: 500 }
+      );
+
+      // 监听播放状态变化
+      this.player = player;
+      this.currentTrackId = trackId;
+      this._isPlaying = true;
+      this._position = 0;
+      this._duration = 0;
+
+      // 启动状态轮询（expo-audio 没有直接的 setOnPlaybackStatusUpdate）
+      this.startStatusPolling(player);
+
+      player.play();
 
     } catch (error) {
-      log.error('播放预览失败:', error);
+      log.error(error, { message: '播放预览失败' });
       throw error;
     }
   }
 
-  // 处理播放状态更新
-  private handlePlaybackStatus(status: AVPlaybackStatus): void {
-    if (!status.isLoaded) {
-      return;
-    }
+  // 状态轮询
+  private pollingTimer: ReturnType<typeof setInterval> | null = null;
 
-    this.position = status.positionMillis / 1000;
-    this.duration = status.durationMillis ? status.durationMillis / 1000 : 0;
-    this.isPlaying = status.isPlaying;
+  private startStatusPolling(player: AudioPlayer): void {
+    this.stopPolling();
 
-    // 检查是否超过预览时长限制
-    if (this.position >= PREVIEW_DURATION_LIMIT) {
-      void this.stop(); // Explicitly mark as fire-and-forget
-      return;
-    }
+    this.pollingTimer = setInterval(() => {
+      if (!player.playing && !player.paused) {
+        // Player 已停止
+        this.stopPolling();
+        return;
+      }
 
-    // 通知状态更新
-    if (this.onStatusUpdate) {
-      this.onStatusUpdate({
-        trackId: this.currentTrackId || '',
-        isPlaying: this.isPlaying,
-        position: this.position,
-        duration: Math.min(this.duration, PREVIEW_DURATION_LIMIT),
-        progress: this.duration > 0 ? this.position / Math.min(this.duration, PREVIEW_DURATION_LIMIT) : 0,
-      });
+      this._position = player.currentTime;
+      this._duration = player.duration;
+
+      // 检查是否超过预览时长限制
+      if (this._position >= PREVIEW_DURATION_LIMIT) {
+        void this.stop();
+        return;
+      }
+
+      // 通知状态更新
+      if (this.onStatusUpdate) {
+        this.onStatusUpdate({
+          trackId: this.currentTrackId || '',
+          isPlaying: player.playing,
+          position: this._position,
+          duration: Math.min(this._duration, PREVIEW_DURATION_LIMIT),
+          progress: this._duration > 0
+            ? this._position / Math.min(this._duration, PREVIEW_DURATION_LIMIT)
+            : 0,
+        });
+      }
+    }, 500);
+  }
+
+  private stopPolling(): void {
+    if (this.pollingTimer) {
+      clearInterval(this.pollingTimer);
+      this.pollingTimer = null;
     }
   }
 
   // 暂停
   async pause(): Promise<void> {
-    if (this.sound && this.isPlaying) {
-      await this.sound.pauseAsync();
-      this.isPlaying = false;
+    if (this.player && this.player.playing) {
+      this.player.pause();
+      this._isPlaying = false;
     }
   }
 
   // 恢复播放
   async resume(): Promise<void> {
-    if (this.sound && !this.isPlaying) {
-      await this.sound.playAsync();
-      this.isPlaying = true;
+    if (this.player && !this.player.playing) {
+      this.player.play();
+      this._isPlaying = true;
     }
   }
 
   // 停止播放
   async stop(): Promise<void> {
-    if (this.sound) {
+    this.stopPolling();
+    if (this.player) {
       try {
-        await this.sound.stopAsync();
-        await this.sound.unloadAsync();
+        this.player.pause();
+        this.player.remove();
       } catch (error) {
         log.warn('停止播放失败:', error);
       }
-      this.sound = null;
+      this.player = null;
       this.currentTrackId = null;
-      this.isPlaying = false;
-      this.position = 0;
-      this.duration = 0;
+      this._isPlaying = false;
+      this._position = 0;
+      this._duration = 0;
     }
   }
 
   // 跳转到指定位置
   async seekTo(positionSeconds: number): Promise<void> {
-    if (this.sound) {
-      const positionMillis = positionSeconds * 1000;
-      await this.sound.setPositionAsync(positionMillis);
+    if (this.player) {
+      void this.player.seekTo(positionSeconds);
     }
   }
 
@@ -137,16 +159,18 @@ class AudioPreviewService {
   getStatus(): PreviewStatus {
     return {
       trackId: this.currentTrackId || '',
-      isPlaying: this.isPlaying,
-      position: this.position,
-      duration: Math.min(this.duration, PREVIEW_DURATION_LIMIT),
-      progress: this.duration > 0 ? this.position / Math.min(this.duration, PREVIEW_DURATION_LIMIT) : 0,
+      isPlaying: this._isPlaying,
+      position: this._position,
+      duration: Math.min(this._duration, PREVIEW_DURATION_LIMIT),
+      progress: this._duration > 0
+        ? this._position / Math.min(this._duration, PREVIEW_DURATION_LIMIT)
+        : 0,
     };
   }
 
   // 是否正在播放指定曲目
   isPlayingTrack(trackId: string): boolean {
-    return this.currentTrackId === trackId && this.isPlaying;
+    return this.currentTrackId === trackId && this._isPlaying;
   }
 
   // 获取当前播放的曲目 ID

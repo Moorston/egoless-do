@@ -82,7 +82,7 @@ export default function BodyScreen() {
       }
     }
 
-    nav.navigate('Sport' as never, navParams as never);
+    (nav.navigate as (route: string, params: Record<string, unknown>) => void)('Sport', navParams);
   }, [nav, activePlanId, todayWeekday, bodyTrainingPlans]);
 
   const handleGoToBreathing = useCallback(() => {

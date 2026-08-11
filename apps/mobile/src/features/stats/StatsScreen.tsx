@@ -1,6 +1,6 @@
 import {COLORS, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, aggregateDailyWater, estimateFastingKcal, getTodayMedMinutes, computePlanProgress, countItemDoneDays, dateStr, FONT_BODY, FONT_SUB, activeOnly , FONT_TITLE, FONT_STAT_CARD} from '@egoless-do/core';
 import {
-  Flame, Sparkles, Target, Star,
+  Flame, Sparkles, Target, Star, Shield,
   CalendarDays, Dumbbell, TrendingUp,
   Clock, ClipboardList,
  ChevronLeft } from 'lucide-react-native';
@@ -14,6 +14,7 @@ import CalendarGrid from '../../components/charts/CalendarGrid';
 import LineChart from '../../components/charts/LineChart';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useShallowStore } from '../../store/useAppStore';
+import { useCheckinStreak } from '../../store/selectors';
 
 
 const CHART_W = Dimensions.get('window').width - 64;
@@ -39,7 +40,7 @@ type ChartKey = typeof CHART_TABS[number];
 export default function StatsScreen() {
   const TH = useTheme();
   const T = useT();
-  const { exerciseLog: rawExerciseLog, fastingHistory: rawFastingHistory, userProfile, totalMedMinutes: rawTotalMedMinutes, medHistory: rawMedHistory, reflections: rawReflections, plans: rawPlans, planItems: rawPlanItems, planItemCheckins, habits: rawHabits, graceHistory, checkinHistory: rawCheckinHistory, foodLog: rawFoodLog, streak } = useShallowStore(s => ({
+  const { exerciseLog: rawExerciseLog, fastingHistory: rawFastingHistory, userProfile, totalMedMinutes: rawTotalMedMinutes, medHistory: rawMedHistory, reflections: rawReflections, plans: rawPlans, planItems: rawPlanItems, planItemCheckins, habits: rawHabits, graceHistory, checkinHistory: rawCheckinHistory, foodLog: rawFoodLog } = useShallowStore(s => ({
     exerciseLog: s.exerciseLog,
     fastingHistory: s.fastingHistory,
     userProfile: s.userProfile,
@@ -53,8 +54,8 @@ export default function StatsScreen() {
     graceHistory: s.graceHistory,
     checkinHistory: s.checkinHistory,
     foodLog: s.foodLog,
-    streak: s.streak,
   }));
+  const streak = useCheckinStreak();
   const P = TH.primary;
   const nav = useRootNavigation();
 
@@ -113,7 +114,7 @@ export default function StatsScreen() {
       const e = f.endedAt ?? 0;
       return sum + (e > 0 ? (e - s) / 3600000 : 0);
     }, 0);
-    return Math.round(estimateFastingKcal(totalHours, userProfile.weight ?? 70, userProfile.gender ?? 'male', userProfile.age ?? 30));
+    return Math.round(estimateFastingKcal(totalHours, userProfile.weight ?? 70, (userProfile.gender === 'private' ? 'male' : userProfile.gender) ?? 'male', userProfile.age ?? 30));
   }, [fastingHistory, userProfile]);
 
   // ── Meditation stats ──

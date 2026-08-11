@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme, useT } from '../../../components/UI';
 import CalendarGrid from '../../../components/charts/CalendarGrid';
 import { useShallowStore } from '../../../store/useAppStore';
+import { useCheckinStreak } from '../../../store/selectors';
 
 
 interface CheckinStatsModalProps {
@@ -19,9 +20,9 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const { checkinHistory, streak } = useShallowStore(s => ({
+  const streak = useCheckinStreak();
+  const { checkinHistory } = useShallowStore(s => ({
     checkinHistory: s.checkinHistory,
-    streak: s.streak,
   }));
   const insets = useSafeAreaInsets();
 

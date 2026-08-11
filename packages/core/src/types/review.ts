@@ -11,6 +11,7 @@ export interface IncompleteReasonStat {
 
 /** 未完成项统计 */
 export interface IncompleteItemStat {
+  id?: string;            // 唯一标识（用于 key）
   type: 'practice' | 'habit' | 'planItem';  // 类型
   name: string;           // 名称
   count: number;          // 未完成次数

@@ -19,7 +19,7 @@ export function useTheme(): Theme {
 // ── useT ──────────────────────────────────────────────────────────
 export function useT() {
   const language = useAppStore(useShallow((s: MobileStore) => s.language));
-  return (key: I18nKey, params?: Record<string, string | number>) => t(key, language, params);
+  return (key: string, params?: Record<string, string | number>) => t(key, language, params);
 }
 
 // ── Card ──────────────────────────────────────────────────────────

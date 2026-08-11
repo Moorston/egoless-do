@@ -99,7 +99,7 @@ export async function getAnalyticsConsent(): Promise<AnalyticsConsent> {
   try {
     // 动态 import() 的模块命名空间解析为 any（TS 已知限制），schema 内 getState/setState 本身类型安全
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const { getState } = await import('../../db/schema');
+    const { getState } = await import('../db/schema');
     const db = await openDatabase();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
     const value = await getState(db, CONSENT_KEY);
@@ -116,7 +116,7 @@ export async function setAnalyticsConsent(consent: AnalyticsConsent): Promise<vo
   try {
     // 动态 import() 的模块命名空间解析为 any（TS 已知限制），schema 内 setState 本身类型安全
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const { setState } = await import('../../db/schema');
+    const { setState } = await import('../db/schema');
     const db = await openDatabase();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     await setState(db, CONSENT_KEY, consent);

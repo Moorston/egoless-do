@@ -45,13 +45,14 @@ export type RootStackParamList = {
   Insight: undefined;
   Review: { period: 'week' | 'month'; startDate: string; endDate: string } | undefined;
   BodyPlanEditor: { planId?: string } | undefined;
+  PlanManagement: undefined;
+  BodyCheckinHistory: undefined;
   StrategyLibrary: undefined;
   MantraHistory: { mantraId?: string };
   SutraHistory: { sutraId?: string };
   Zhiguan: undefined;
   ZhiguanHistory: undefined;
-  // P0-5: 补充 as never 调用缺失的路由类型
-  MedCalendar: undefined;
+  Sleep: undefined;
   Body: { breathingResult?: { completed: boolean; durationMs: number } } | undefined;
   Mantra: undefined;
 };

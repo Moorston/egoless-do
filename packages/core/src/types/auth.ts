@@ -6,6 +6,7 @@ export interface AuthUser {
   name: string;
   avatar?: string;
   phone?: string;
+  isGuest?: boolean;
   createdAt?: number;
 }
 

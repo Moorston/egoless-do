@@ -110,7 +110,7 @@ describe('SyncService', () => {
 
     it('completes successfully with items in queue', async () => {
       vi.mocked(drainQueue).mockResolvedValue([
-        { id: 1, entity: 'habit', entity_id: 'h1', operation: 'upsert', payload: '{"id":"h1"}', retry_count: 0, status: 'pending', created_at: Date.now(), updated_at: Date.now() },
+        { id: 1, entity: 'habit', entity_id: 'h1', operation: 'upsert', payload: '{"id":"h1"}', retry_count: 0, status: 'pending', created_at: Date.now(), last_error: null, next_retry_at: 0 },
       ]);
       await runSync();
       // Should not throw even with items in queue

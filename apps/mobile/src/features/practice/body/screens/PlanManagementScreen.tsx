@@ -173,7 +173,7 @@ export default function PlanManagementScreen() {
                           return '';
                         };
                         return (
-                          <View key={task.weekday} style={{ width: 'calc((100% - 24px) / 4)', minWidth: 72, borderRadius: 10, borderWidth: 1, borderColor: isRest ? TH.border : '#f59e0b30', backgroundColor: isRest ? TH.bg : '#f59e0b08', padding: 8 }}>
+                          <View key={task.weekday} style={{ width: 'calc((100% - 24px) / 4)' as unknown as import('react-native').DimensionValue, minWidth: 72, borderRadius: 10, borderWidth: 1, borderColor: isRest ? TH.border : '#f59e0b30', backgroundColor: isRest ? TH.bg : '#f59e0b08', padding: 8 }}>
                             <View style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: isRest ? TH.border : '#f59e0b', alignItems: 'center', justifyContent: 'center', marginBottom: 6 }}>
                               <Text style={{ fontSize: 10, color: isRest ? TH.sub : '#fff', fontWeight: '700' }}>{WEEKDAY_LABELS[task.weekday - 1]}</Text>
                             </View>
@@ -209,7 +209,7 @@ export default function PlanManagementScreen() {
                       <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600' }}>{T('bodyPlanActivate')}</Text>
                     </TouchableOpacity>
                   )}
-                  <TouchableOpacity onPress={() => nav.navigate('BodyPlanEditor' as never, { planId: plan.id } as never)} style={[styles.actionBtn, { backgroundColor: '#f59e0b20' }]}>
+                  <TouchableOpacity onPress={() => nav.navigate('BodyPlanEditor', { planId: plan.id })} style={[styles.actionBtn, { backgroundColor: '#f59e0b20' }]}>
                     <Pencil size={14} color="#f59e0b" />
                     <Text style={{ fontSize: FONT_SMALL(), color: '#f59e0b', fontWeight: '600' }}>{T('bodyPlanEdit')}</Text>
                   </TouchableOpacity>

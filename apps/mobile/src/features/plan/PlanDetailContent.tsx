@@ -549,7 +549,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId: _a
                     return (
                       <TouchableOpacity
                         key={plan.visionId}
-                        onPress={() => nav.navigate('Vow')}
+                        onPress={() => nav.navigate('Vow' as never)}
                         style={[styles.relatedItemCard, { backgroundColor: `${TH.card}80`, borderColor: TH.border, flexDirection: 'row', alignItems: 'center', gap: 8 }]}
                       >
                         <Text style={{ fontSize: 18 }}>🎯</Text>
@@ -1019,6 +1019,7 @@ const styles = StyleSheet.create({
   textBodySemiBold: { fontSize: FONT_BODY(), fontWeight: '600', flex: 1 },
   textBodyBold: { fontSize: FONT_BODY(), fontWeight: '700' },
   textBodyMedium: { fontSize: FONT_BODY(), fontWeight: '500' },
+  textDim: { fontSize: FONT_BODY() },
   textBodyDim: { fontSize: FONT_BODY() },
   textSubDim: { fontSize: FONT_SUB() },
   textSubDimMb6: { fontSize: FONT_SUB(), marginBottom: 6 },

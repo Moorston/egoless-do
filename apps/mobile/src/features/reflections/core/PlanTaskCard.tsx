@@ -3,6 +3,7 @@ import type { PlanItem, PlanItemCheckin } from '@egoless-do/core';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { Trash2, Network } from 'lucide-react-native';
+import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';
@@ -14,6 +15,8 @@ interface PlanTaskCardProps {
   checkins: PlanItemCheckin[];
   onPress: () => void;
   onDelete: () => void;
+  /** Legacy prop kept for backward-compat callers; not rendered. */
+  _checkins?: PlanItemCheckin[];
 }
 
 const PRIORITY_COLORS = { high: '#EF4444', medium: '#F59E0B', low: '#10B981' };

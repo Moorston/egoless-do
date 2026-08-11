@@ -8,7 +8,7 @@ export interface ExerciseLayoutProps {
   experienceType: SportExperienceType;
   sportType: SportType;
   bg: string;
-  currentExercise?: import('@egoless-do/core').ExerciseDef;
+  currentExercise?: import('@egoless-do/core').ExerciseDef | null;
 
   // Timer
   sec: number;

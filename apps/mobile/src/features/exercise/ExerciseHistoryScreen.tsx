@@ -499,7 +499,7 @@ export default function ExerciseHistoryScreen() {
               ))}
             </View>
           )}
-          {isExpanded && <DetailCard e={e} TH={TH} P={P} T={T} MapView={MapView} Polyline={Polyline} />}
+          {isExpanded && <DetailCard e={e} TH={TH} P={P} T={T} MapView={MapView!} Polyline={Polyline!} />}
         </TouchableOpacity>
       </View>
     );

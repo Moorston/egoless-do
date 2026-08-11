@@ -3,7 +3,7 @@ import {
   createLogger, ApiError, KickedOutError,
   ALL_ENTITY_TABLES,
 } from '@egoless-do/core';
-import type { SyncEntity, SyncPushResult, SyncPullResult } from '@egoless-do/core';
+import type { SyncEntity, SyncPushResult, SyncPullResult, SyncChange } from '@egoless-do/core';
 
 import { openDatabase, getState, setState, withDbLock } from '../../db/schema';
 import { isValidSqlName } from '../../db/sqlHelper';
@@ -330,13 +330,13 @@ export class SyncEngine {
       pushedAnything = true;
       pushedItemCount += items.length;
 
-      const changes: Array<{ entity: SyncEntity; entityId: string; payload: Record<string, unknown>; operation: 'upsert' | 'delete'; changedFields?: string[] }> = [];
+      const changes: SyncChange[] = [];
       for (const item of items) {
         try {
           const parsed = JSON.parse(item.payload) as Record<string, unknown> & { _changedFields?: string[] };
           const changedFields = parsed._changedFields;
           if (changedFields) delete parsed._changedFields;
-          changes.push({ entity: item.entity as SyncEntity, entityId: item.entity_id, payload: parsed, operation: item.operation === 'delete' ? 'delete' : 'upsert', changedFields });
+          changes.push({ entity: item.entity as SyncEntity, entityId: item.entity_id, payload: parsed, op: item.operation === 'delete' ? 'delete' : 'upsert', changedFields } as SyncChange);
         } catch {
           await this._markQueueItemFailed(item.id, 'Corrupt payload');
         }
@@ -872,7 +872,7 @@ export class SyncEngine {
     for (const storeKey of Object.values(ENTITY_STORE_KEY)) {
       emptyPatch[storeKey] = [];
     }
-    useAppStore.setState(emptyPatch as Parameters<typeof useAppStore.setState>[0]);
+    useAppStore.setState(emptyPatch as unknown as Parameters<typeof useAppStore.setState>[0]);
     return this.runSync();
   }
 

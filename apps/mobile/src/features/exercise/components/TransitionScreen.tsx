@@ -18,7 +18,7 @@ interface Props {
   onNext: () => void;
   onFinishAll: () => void;
   TH: Theme;
-  T: (key: string) => string;
+  T: (key: string, params?: Record<string, string | number>) => string;
 }
 
 export default function TransitionScreen({

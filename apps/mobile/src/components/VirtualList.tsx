@@ -31,11 +31,10 @@ export default function VirtualList<T>({
 
   return (
     <FlashList
+      {...rest}
       data={items}
       renderItem={({ item, index }) => renderItem(item, index)}
       keyExtractor={(item, index) => keyExtractor(item, index)}
-      estimatedItemSize={estimatedItemSize ?? 80}
-      {...rest}
     />
   );
 }

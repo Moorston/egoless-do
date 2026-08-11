@@ -80,7 +80,7 @@ export async function loadUserTracks(): Promise<MusicTrack[]> {
 
     return valid;
   } catch (e) {
-    log.error('加载用户音乐失败:', e);
+    log.error(e, { message: '加载用户音乐失败' });
     return [];
   }
 }
@@ -143,7 +143,7 @@ export async function loadFavorites(): Promise<string[]> {
     const raw = await readJsonFile<string[]>('favorites.json');
     return raw || [];
   } catch (e) {
-    log.error('加载收藏失败:', e);
+    log.error(e, { message: '加载收藏失败' });
     return [];
   }
 }

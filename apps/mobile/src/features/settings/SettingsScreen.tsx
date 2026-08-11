@@ -25,6 +25,7 @@ import {
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useShallowStore } from '../../store/useAppStore';
+import { useCheckinStreak } from '../../store/selectors';
 import {
   requestNotificationPermission, scheduleDailyReminder, cancelAllReminders,
 } from '../notifications/NotificationService';
@@ -38,7 +39,7 @@ export default function SettingsScreen() {
   const P     = TH.primary;
   const {
     theme, setTheme, language, setLanguage,
-    auth, userProfile, streak,
+    auth, userProfile,
     remindEnabled, remindTime, setRemindEnabled, setRemindTime,
   } = useShallowStore(s => ({
     theme: s.theme,
@@ -47,12 +48,12 @@ export default function SettingsScreen() {
     setLanguage: s.setLanguage,
     auth: s.auth,
     userProfile: s.userProfile,
-    streak: s.streak,
     remindEnabled: s.remindEnabled,
     remindTime: s.remindTime,
     setRemindEnabled: s.setRemindEnabled,
     setRemindTime: s.setRemindTime,
   }));
+  const streak = useCheckinStreak();
   const nav   = useRootNavigation();
 
   const healthSyncEnabled = useShallowStore(s => s.healthSyncEnabled);
@@ -124,7 +125,7 @@ export default function SettingsScreen() {
     void runSync();
   };
 
-  const sections: Array<{ title: string; rows: SettingRow[] }> = [
+  const sections = [
     {
       title: T('settingsRemind'),
       rows: [
@@ -254,15 +255,11 @@ export default function SettingsScreen() {
           label: T('analyticsDataSharing', { default: '分析数据共享' }),
           sub: T('analyticsDataSharingDesc', { default: '发送匿名使用数据帮助改进产品' }),
           icon: <BarChart2 size={20} color={P} />,
-          right: <Toggle on={analyticsConsent === 'anonymous'} onChange={async (enabled) => {
-            const newConsent = enabled ? 'anonymous' : 'necessary';
-            try {
-              await setAnalyticsConsent(newConsent);
-              setAnalyticsConsentState(newConsent);
-              if (enabled) await optIn(); else await optOut();
-            } catch {
-              // 静默失败
-            }
+          right: <Toggle on={analyticsConsent === 'anonymous'} onChange={() => {
+            const newConsent = analyticsConsent === 'anonymous' ? 'necessary' : 'anonymous';
+            setAnalyticsConsent(newConsent).catch(() => {});
+            setAnalyticsConsentState(newConsent);
+            if (newConsent === 'anonymous') optIn().catch(() => {}); else optOut().catch(() => {});
           }} />,
           last: true,
         },
@@ -458,7 +455,7 @@ export default function SettingsScreen() {
               <View style={{ paddingHorizontal: 16 }}>
                 {rows.map((r, i) => (
                   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access -- daemon resolves SettingRow to error type; cold run + HEAD version are clean
-                  <RowItem key={r.label} {...r} last={r.last ?? i === rows.length - 1} />
+                  <RowItem key={r.label} {...r} last={(r as { last?: boolean }).last ?? i === rows.length - 1} />
                 ))}
               </View>
             </Card>

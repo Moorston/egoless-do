@@ -30,7 +30,7 @@ export default function Banner({
 
   return (
     <LinearGradient
-      colors={bannerGrad}
+      colors={bannerGrad as [string, string, ...string[]]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={{ borderRadius: 16, padding: 18, marginBottom: 12 }}

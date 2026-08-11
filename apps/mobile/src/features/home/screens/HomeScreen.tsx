@@ -132,14 +132,6 @@ export default function HomeScreen() {
 
   const weightUnit = useShallowStore(s => s.weightUnit);
 
-  // ── 性能优化：streak 懒加载 ──
-  useEffect(() => {
-    const state = useAppStore.getState();
-    if (state.streak === undefined || state.streak === null) {
-      state.calculateStreak();
-    }
-  }, []);
-
   // ═══════════════════════════════════════════════════════════════
   // Section 2: Derived Data & Status
   // ═══════════════════════════════════════════════════════════════

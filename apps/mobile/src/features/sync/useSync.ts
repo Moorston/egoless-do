@@ -168,7 +168,9 @@ export function useSync() {
 
     // Retry once with refreshed token if auth fails
     registerPushToken(token, Platform.OS as 'ios' | 'android', getExpoPushToken).catch(() => {
-      const { refreshToken, refreshAuth } = useAppStore.getState();
+      const state = useAppStore.getState();
+      const { refreshToken } = state.auth;
+      const { refreshAuth } = state;
       if (refreshToken) {
         refreshAuth().then(() => {
           const freshToken = useAppStore.getState().auth.token;

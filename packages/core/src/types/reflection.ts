@@ -9,6 +9,7 @@ export interface MindReflection extends Syncable {
   mood: Mood;
   link?: string;
   linkedPlanItemId?: string;  // 关联的计划任务 ID
+  linkedHabitId?: string;     // 关联的习惯 ID
   thoughtTrailIds?: string[]; // 所属思维脉络 ID 列表
   cardTheme?: string;
   colors: readonly [string, string];

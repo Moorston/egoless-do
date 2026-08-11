@@ -10,8 +10,8 @@ export function useAmapComponents() {
     if (_amapLoaded) { setReady(true); return; }
     let mounted = true;
     import('react-native-amap3d').then(m => {
-      _MapView = m.MapView;
-      _Polyline = m.Polyline;
+      _MapView = m.MapView as unknown as ComponentType<Record<string, unknown>>;
+      _Polyline = m.Polyline as unknown as ComponentType<Record<string, unknown>>;
       _amapLoaded = true;
       if (mounted) setReady(true);
     }).catch(() => {});

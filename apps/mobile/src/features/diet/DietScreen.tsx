@@ -228,7 +228,7 @@ export default function DietScreen() {
         {/* SVG五边形雷达图 */}
         <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 24, marginBottom: 12, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
           <Text style={{ fontWeight: '700', fontSize: FONT_BODY(), color: TH.text, marginBottom: 16 }}>{T('dietWuxingRadar')}</Text>
-          <WuxingRadarChart stats={wuxingStats as Record<string, number>} size={240} />
+          <WuxingRadarChart stats={wuxingStats as unknown as Record<string, number>} size={240} />
           {/* 偏性解读 */}
           <View style={{ marginTop: 16, alignSelf: 'stretch' }}>
             <Text style={[dietStyles.subTextLineHeight, { color: TH.sub }]}>

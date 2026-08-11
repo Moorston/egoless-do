@@ -116,7 +116,7 @@ class MusicDownloadService {
       status.error = error instanceof Error ? error.message : '下载失败';
       this.notifyProgress(trackId, status);
 
-      log.error('下载失败:', error);
+      log.error(error, { message: '下载失败' });
       throw error;
     } finally {
       // 清理监听器

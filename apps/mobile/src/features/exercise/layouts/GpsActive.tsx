@@ -8,8 +8,8 @@ import MeditationMusicBar from '../../../components/MeditationMusicBar';
 
 
 interface GpsActiveProps {
-  MapView: React.ComponentType<Record<string, unknown>>;
-  Polyline: React.ComponentType<Record<string, unknown>>;
+  MapView: React.ComponentType<Record<string, unknown>> | null;
+  Polyline: React.ComponentType<Record<string, unknown>> | null;
   amapReady: boolean;
   mapRef: React.RefObject<unknown>;
   initialPos: { latitude: number; longitude: number };
@@ -40,7 +40,7 @@ export default function GpsActive({
       <View style={{ flex: 4 }}>
         {amapReady && MapView ? (
           <MapView ref={mapRef} style={{ flex: 1 }} initialCameraPosition={{ target: initialPos, zoom: 16 }} myLocationEnabled>
-            {coords.length > 1 && <Polyline points={coords} color={color} width={4} />}
+            {coords.length > 1 && Polyline && <Polyline points={coords} color={color} width={4} />}
           </MapView>
         ) : (
           <View style={{ flex: 1, backgroundColor: '#1a1a2e' }} />

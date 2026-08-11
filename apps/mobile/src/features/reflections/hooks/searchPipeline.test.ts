@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- test mocks use any for partial API payloads */
-import type { MindReflection, TrailFilters } from '@egoless-do/core';
+import type { MindReflection, ReflectionIndex, ScoredReflection, TrailFilters } from '@egoless-do/core';
 import {
   parseSmartQuery, computeCandidatePool, buildIndex,
   retrieveTopK, semanticSearchReflections,
@@ -35,6 +35,29 @@ function makeReflection(id: string, overrides: Partial<MindReflection> = {}): Mi
     deleted: false,
     ...overrides,
   } as MindReflection;
+}
+
+/** A valid, empty TrailFilters value — runAIPhase2 requires all three fields. */
+const DEFAULT_FILTERS: TrailFilters = { timeRange: 'all', tags: [], moods: [] };
+
+/** Build a full ReflectionIndex (all required fields) for retrieveTopK mocks. */
+function makeIndex(id: string): ReflectionIndex {
+  return {
+    id,
+    content: '',
+    contentLower: '',
+    keywords: [],
+    mood: '',
+    moodLower: '',
+    tags: [],
+    tagsLower: [],
+    timestamp: 0,
+  };
+}
+
+/** Build a valid ScoredReflection for retrieveTopK mocks. */
+function makeScoredReflection(index: ReflectionIndex, score: number): ScoredReflection {
+  return { index, score };
 }
 
 describe('searchPipeline', () => {
@@ -111,7 +134,7 @@ describe('searchPipeline', () => {
         topic: '', filters: {}, question: 'What do you mean?',
       } as any);
 
-      const result = await runAIPhase2(reflections, 'test', {}, [], new Set(), []);
+      const result = await runAIPhase2(reflections, 'test', DEFAULT_FILTERS, [], new Set(), []);
 
       expect(result).toEqual({
         smartResult: { topic: '', filters: {}, question: 'What do you mean?' },
@@ -126,7 +149,7 @@ describe('searchPipeline', () => {
       } as any);
 
       const result = await runAIPhase2(
-        reflections, 'test', {}, [], new Set(), ['a', 'b', 'c'],
+        reflections, 'test', DEFAULT_FILTERS, [], new Set(), ['a', 'b', 'c'],
       );
 
       // question path skipped, no topic/filters either → returns null
@@ -142,16 +165,16 @@ describe('searchPipeline', () => {
         topic: 'meditation', filters: {}, question: '',
       } as any);
       vi.mocked(computeCandidatePool).mockReturnValue([r1, r2]);
-      vi.mocked(buildIndex).mockReturnValue({ id: 'idx' });
+      vi.mocked(buildIndex).mockReturnValue([]);
       vi.mocked(retrieveTopK).mockReturnValue([
-        { index: { id: 'r1' }, score: 0.9 },
-        { index: { id: 'r2' }, score: 0.7 },
+        makeScoredReflection(makeIndex('r1'), 0.9),
+        makeScoredReflection(makeIndex('r2'), 0.7),
       ]);
 
       const allResults: SearchResult[] = [];
       const existingIds = new Set<string>();
       const result = await runAIPhase2(
-        reflections, 'meditation', {}, allResults, existingIds, [],
+        reflections, 'meditation', DEFAULT_FILTERS, allResults, existingIds, [],
       );
 
       expect(computeCandidatePool).toHaveBeenCalled();
@@ -169,14 +192,14 @@ describe('searchPipeline', () => {
         topic: '', filters: { tags: ['yoga'] }, question: '',
       } as any);
       vi.mocked(computeCandidatePool).mockReturnValue([r1]);
-      vi.mocked(buildIndex).mockReturnValue({ id: 'idx' });
+      vi.mocked(buildIndex).mockReturnValue([]);
       vi.mocked(retrieveTopK).mockReturnValue([
-        { index: { id: 'r1' }, score: 0.8 },
+        makeScoredReflection(makeIndex('r1'), 0.8),
       ]);
 
       const allResults: SearchResult[] = [];
       const result = await runAIPhase2(
-        [r1], 'yoga', { tags: ['old'] }, allResults, new Set(), [],
+        [r1], 'yoga', { timeRange: 'all', tags: ['old'], moods: [] }, allResults, new Set(), [],
       );
 
       expect(computeCandidatePool).toHaveBeenCalledWith(
@@ -193,7 +216,7 @@ describe('searchPipeline', () => {
         topic: '', filters: { tags: [], moods: [] }, question: '',
       } as any);
       vi.mocked(computeCandidatePool).mockReturnValue([r1]);
-      vi.mocked(buildIndex).mockReturnValue({ id: 'idx' });
+      vi.mocked(buildIndex).mockReturnValue([]);
       vi.mocked(retrieveTopK).mockReturnValue([]);
 
       const currentFilters: TrailFilters = { tags: ['meditation'], moods: ['calm'], timeRange: 'week' };
@@ -218,16 +241,16 @@ describe('searchPipeline', () => {
         topic: 'mindfulness', filters: {}, question: '',
       } as any);
       vi.mocked(computeCandidatePool).mockReturnValue([r1, r2]);
-      vi.mocked(buildIndex).mockReturnValue({ id: 'idx' });
+      vi.mocked(buildIndex).mockReturnValue([]);
       vi.mocked(retrieveTopK).mockReturnValue([
-        { index: { id: 'r1' }, score: 0.9 },
-        { index: { id: 'r2' }, score: 0.7 },
+        makeScoredReflection(makeIndex('r1'), 0.9),
+        makeScoredReflection(makeIndex('r2'), 0.7),
       ]);
 
       const allResults: SearchResult[] = [];
       const existingIds = new Set(['r1']); // r1 already seen
       await runAIPhase2(
-        [r1, r2], 'mindfulness', {}, allResults, existingIds, [],
+        [r1, r2], 'mindfulness', DEFAULT_FILTERS, allResults, existingIds, [],
       );
 
       // only r2 should be added
@@ -241,7 +264,7 @@ describe('searchPipeline', () => {
       } as any);
 
       const result = await runAIPhase2(
-        [], 'query', {}, [], new Set(), [],
+        [], 'query', DEFAULT_FILTERS, [], new Set(), [],
       );
 
       expect(result.smartResult).toBeNull();
@@ -252,7 +275,7 @@ describe('searchPipeline', () => {
       vi.mocked(parseSmartQuery).mockRejectedValue(new Error('AI down'));
 
       const result = await runAIPhase2(
-        [makeReflection('r1')], 'test', {}, [], new Set(), [],
+        [makeReflection('r1')], 'test', DEFAULT_FILTERS, [], new Set(), [],
       );
 
       expect(result.smartResult).toBeNull();

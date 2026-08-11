@@ -174,7 +174,7 @@ export class RealtimeAgent {
     for (const evt of pbEvents) {
       (es as unknown as EventTarget).addEventListener(evt, (event: Event) => {
         const msgEvent = event as unknown as { type: string; data: unknown };
-        this._handleEvent(msgEvent.type, msgEvent.data);
+        this._handleEvent(msgEvent.type, msgEvent.data as string | null);
       });
     }
 

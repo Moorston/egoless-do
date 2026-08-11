@@ -69,7 +69,7 @@ export default function ExerciseCard({ exercise, TH, T, onRemove, onUpdate }: Pr
           <Text style={styles.icon}>{exercise.icon}</Text>
           <View style={styles.nameCol}>
             <Text style={[styles.name, { color: TH.text }]} numberOfLines={1}>
-              {exercise.nameZh || exercise.name}
+              {exercise.nameZh}
             </Text>
 
             {!editing && (

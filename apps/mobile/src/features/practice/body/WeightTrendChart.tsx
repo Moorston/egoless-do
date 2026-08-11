@@ -36,7 +36,7 @@ export default function WeightTrendChart({ TH, T, checkins }: Props) {
     }
     const result: MonthData[] = [];
     for (const [month, records] of map) {
-      const weights = records.map(r => r.weight);
+      const weights = records.map(r => r.weight!).filter((w): w is number => w != null);
       const [year, mon] = month.split('-');
       result.push({
         month,
@@ -64,8 +64,8 @@ export default function WeightTrendChart({ TH, T, checkins }: Props) {
   }
 
   // Trend direction (global)
-  const first = validRecords[0].weight;
-  const last = validRecords[validRecords.length - 1].weight;
+  const first = validRecords[0]!.weight!;
+  const last = validRecords[validRecords.length - 1]!.weight!;
   const diff = last - first;
   const TrendIcon = diff > 0.1 ? TrendingUp : diff < -0.1 ? TrendingDown : Minus;
   const trendColor = diff > 0.1 ? '#ef4444' : diff < -0.1 ? '#10b981' : TH.sub;
@@ -97,7 +97,7 @@ export default function WeightTrendChart({ TH, T, checkins }: Props) {
     // Calculate point positions
     const points = item.records.map((r, i) => ({
       x: i * pointSpacing,
-      y: CHART_HEIGHT - ((r.weight - item.minW) / range) * (CHART_HEIGHT - CHART_PADDING) - CHART_PADDING / 2,
+      y: CHART_HEIGHT - ((r.weight! - item.minW) / range) * (CHART_HEIGHT - CHART_PADDING) - CHART_PADDING / 2,
       weight: r.weight,
       date: r.date,
     }));

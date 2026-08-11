@@ -11,6 +11,8 @@ interface Props {
   thisWeekPracticeDays: number;
   thisMonthPracticeDays: number;
   longestStreak: number;
+  /** Legacy prop kept for backward-compat callers; not rendered. */
+  _TH?: Theme;
 }
 
 export default function ProgressOverview({ _TH, T, thisWeekPracticeDays, thisMonthPracticeDays, longestStreak }: Props) {

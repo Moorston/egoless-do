@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { ZodSafeParseSuccess } from 'zod';
+import { z, type ZodSafeParseSuccess } from 'zod';
 
 // @ts-expect-error — React Native global not available in test env
 globalThis.__DEV__ = false;

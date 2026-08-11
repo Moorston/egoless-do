@@ -21,6 +21,7 @@ const ENTITY_ICONS: Record<RecycleBinEntityType, React.ComponentType<{ size?: nu
   food: Utensils,
   exercise: Dumbbell,
   plan: ClipboardList,
+  planItem: ClipboardList,
   breath: Wind,
 };
 
@@ -30,6 +31,7 @@ const ENTITY_COLORS: Record<RecycleBinEntityType, string> = {
   food: COLORS.ORANGE,
   exercise: COLORS.BLUE,
   plan: '#E11D48',
+  planItem: '#E11D48',
   breath: '#0EA5E9',
 };
 

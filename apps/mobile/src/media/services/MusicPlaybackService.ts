@@ -14,6 +14,7 @@ export interface PlaybackState {
   queue: MusicTrack[];
   queueIndex: number;
   playMode: PlayMode;
+  loop: boolean;
   error: string | null;
 }
 

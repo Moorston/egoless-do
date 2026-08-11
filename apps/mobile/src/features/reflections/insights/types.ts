@@ -122,6 +122,7 @@ export const NODE_ICONS: Record<NodeType, string> = {
   habit: '🌱',
   trail: '🧵',
   planItem: '📌',
+  vision: '🎯',
 };
 
 export const EDGE_STYLES: Record<EdgeStyleType, EdgeStyle> = {
