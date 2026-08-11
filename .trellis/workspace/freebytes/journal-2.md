@@ -918,3 +918,36 @@ HomeScreen 用 useCheckinStreak() selector 始终正确，AppHeader/SimpleHeader
 ### Next Steps
 
 - None - task complete
+
+
+## Session 81: 修复 6 个预存测试失败 — packages/core 模块解析路径错误
+
+**Date**: 2026-08-11
+**Task**: 修复 6 个预存测试失败 — packages/core 模块解析路径错误
+**Branch**: `master`
+
+### Summary
+
+修复 3 个核心测试文件的模块解析路径错误（含 node_modules 副本共 6 个失败）。createCheckinSlice.test 改路径为 ../utils，selectors.test 同样，performance.test 纠正相对路径。额外为 calculateCheckinStreak 添加 null 保护，并修正测试从 store.get() 读取 checkinHistory。155 测试文件全部通过，1937 测试全部通过。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `71dcec90` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
