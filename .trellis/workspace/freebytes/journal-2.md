@@ -851,3 +851,36 @@ HomeScreen 用 useCheckinStreak() selector 始终正确，AppHeader/SimpleHeader
 - 修改文件 lint 零问题
 - 测试：1901 passed（6 个失败为既有模块解析问题，与本次无关）
 - type-check：修复了 2 个 streak 类型错误，零新增错误
+
+
+## Session 79: 音乐模块服务提取重构 — Phase 3 完成
+
+**Date**: 2026-08-11
+**Task**: 音乐模块服务提取重构 — Phase 3 完成
+**Branch**: `master`
+
+### Summary
+
+音乐模块服务提取重构完成。将 useMusicStore 的播放队列/persist/定时器逻辑提取到 3 个独立服务(MusicPlaybackService/MusicStorageService/MusicTimerService)，通过回调模式与 store 解耦。修复了块状函数体缺 brace 的 TS1005 语法错误和 sleepTimerRef 孤儿引用。类型检查通过，ESLint 0 错误，1901 测试通过。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `440a3fa0` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
