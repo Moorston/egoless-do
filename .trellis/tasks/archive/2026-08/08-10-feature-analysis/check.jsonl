@@ -1,0 +1,5 @@
+{"file": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md", "reason": "验证代码符合全局规范 — 类型安全、日志、导入顺序"}
+{"file": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md", "reason": "验证架构约束 — 包依赖方向正确，无禁止模式"}
+{"file": ".trellis/spec/mobile/frontend/quality-guidelines.md", "reason": "验证移动端质量 — 代码标准、性能、错误处理"}
+{"file": ".trellis/spec/mobile/frontend/type-safety.md", "reason": "验证类型安全 — 无 any 类型、接口定义正确"}
+{"file": ".trellis/spec/mobile/frontend/state-management.md", "reason": "验证 store 契约 — 服务提取后 store 行为一致"}

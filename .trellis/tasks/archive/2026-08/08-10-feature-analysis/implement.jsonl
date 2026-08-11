@@ -1,0 +1,7 @@
+{"file": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md", "reason": "全局代码规范 — 类型安全、副作用管控、日志规范、导入规范等，service extraction 必须遵守"}
+{"file": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md", "reason": "架构约束 — 包依赖方向、层间边界、Store 契约，确保 service 不破坏架构边界"}
+{"file": ".trellis/spec/mobile/frontend/state-management.md", "reason": "Zustand 状态管理规范 — 服务提取时要遵循的 store 模式"}
+{"file": ".trellis/spec/mobile/frontend/quality-guidelines.md", "reason": "移动端质量规范 — 代码标准、禁止模式、性能要求"}
+{"file": ".trellis/spec/mobile/frontend/type-safety.md", "reason": "类型安全规范 — 确保提取的 service 类型定义正确"}
+{"file": ".trellis/spec/mobile/frontend/directory-structure.md", "reason": "目录结构规范 — 新 service 文件的放置位置和命名"}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "代码复用思考指南 — 识别重复模式，指导 service extraction 策略"}

@@ -123,12 +123,47 @@ Rules:
 
 ---
 
+## Service Extraction (side-effect-heavy stores)
+
+Stores with heavy I/O (audio, storage, timers) can delegate to dedicated service classes in `apps/mobile/src/<feature>/services/`. The service holds the side-effect logic; the store only orchestrates. This keeps the store readable and the services unit-testable.
+
+Pattern (adopted by the music module, `apps/mobile/src/media/`):
+
+```
+useMusicStore (Zustand)
+   ├──→ MusicPlaybackService   ← play/pause/queue/mode
+   ├──→ MusicStorageService    ← persistence CRUD (File/Directory)
+   └──→ MusicTimerService      ← sleep timer
+```
+
+Rules:
+- **Service is instantiated at module level**, wired to the store via two callbacks: `updateState(partial)` and `getState()`. Services never `import` the store directly — they call the injected callbacks (`useMusicStore.setState` / `useMusicStore.getState`).
+- **Decoupling direction**: service → callback → store. This avoids circular imports and keeps services framework-free and testable.
+- **Side-effect services belong in `services/`**, not in `features/shared/` or `utils/`.
+- **External API stays compatible**: re-export symbols the old store exposed (e.g. `setMusicSyncCallback`, `PlayMode` type) for backward compatibility.
+- **Pure derived selectors** (e.g. `computeTracksByCategory`, `computeCategoryMeta`) stay as exported pure functions in the store module for memoization.
+
+Example wire-up:
+
+```ts
+const playbackService = new MusicPlaybackService(
+  (partial) => useMusicStore.setState(partial),   // updateState
+  () => ({ /* slice of store state */ }),          // getState
+);
+```
+
+When extracting, watch for orphaned module-level refs: if the old store had a module-level `let sleepTimerRef` and you move timer logic into a service, delete the old ref and delegate the store action to the service — otherwise you get `Cannot find name` TS errors.
+
+---
+
 ## Forbidden Patterns
 
 - ❌ Direct SQLite access outside `apps/mobile/src/db/` and slices
 - ❌ Bypassing slices to mutate state via `setState` in a screen
 - ❌ Storing entity data in AsyncStorage — all entities belong in SQLite
 - ❌ Hardcoded token keys — all auth tokens flow through `secureAuth.ts`
+- ❌ Services importing the store directly — use injected callbacks (avoids circular imports)
+- ❌ Keeping side-effect logic inline in a large store — extract to `services/`
 
 ---
 
