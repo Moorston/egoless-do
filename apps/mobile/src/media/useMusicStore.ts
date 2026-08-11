@@ -1,31 +1,23 @@
 import { BUILTIN_TRACKS, createLogger } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
-import { File, Directory, Paths } from 'expo-file-system';
 import { create } from 'zustand';
 
-const log = createLogger('Music');
+import { MusicPlaybackService } from './services/MusicPlaybackService';
+import {
+  loadUserTracks as loadUserTracksFromStorage,
+  saveUserTracks,
+  addUserTrack as addUserTrackToStorage,
+  removeUserTrack as removeUserTrackFromStorage,
+  loadFavorites as loadFavoritesFromStorage,
+  toggleFavorite as toggleFavoriteInStorage,
+  loadVolume as loadVolumeFromStorage,
+  saveVolume as saveVolumeToStorage,
+  savePlayMode as savePlayModeToStorage,
+  type PlayMode,
+} from './services/MusicStorageService';
+import { MusicTimerService } from './services/MusicTimerService';
 
-// ── File-based JSON storage (replaces AsyncStorage) ─────────────────
-const musicDataDir = new Directory(Paths.document, 'music-data');
-async function ensureMusicDataDir() {
-  if (!musicDataDir.exists) musicDataDir.create({ intermediates: true });
-}
-async function writeJsonFile(filename: string, data: unknown): Promise<void> {
-  try {
-    void ensureMusicDataDir();
-    const file = new File(musicDataDir, filename);
-    file.write(JSON.stringify(data), { encoding: 'utf8' });
-  } catch (e) { log.warn(`Failed to write ${filename}:`, (e as Error)?.message); }
-}
-async function readJsonFile<T>(filename: string): Promise<T | null> {
-  try {
-    void ensureMusicDataDir();
-    const file = new File(musicDataDir, filename);
-    if (!file.exists) return null;
-    const raw = await file.text();
-    return JSON.parse(raw) as T;
-  } catch { return null; }
-}
+const log = createLogger('Music');
 
 // 内置音乐文件映射（require 必须在模块顶层静态声明）
 const BUILTIN_FILES: Record<string, number> = {
@@ -68,16 +60,9 @@ const LIBRARY: MusicTrack[] = BUILTIN_TRACKS.map(t => ({
   file: BUILTIN_FILES[t.id] ?? 0,
 }));
 
-const userMusicDir = new Directory(Paths.document, 'user-music');
-
-// Module-level timer ref (non-serializable, not in store)
-let sleepTimerRef: ReturnType<typeof setInterval> | null = null;
-
-// Sync callback — set by useAppStore to trigger profile persistence
-let _onMusicChange: (() => void) | null = null;
-export function setMusicSyncCallback(fn: () => void) { _onMusicChange = fn; }
-
-export type PlayMode = 'sequential' | 'shuffle' | 'repeat-one' | 'repeat-all';
+// Re-export for backward compatibility
+export { setMusicSyncCallback } from './services/MusicStorageService';
+export type { PlayMode } from './services/MusicStorageService';
 
 interface MusicState {
   library: MusicTrack[];
@@ -159,71 +144,87 @@ export function computeCategoryMeta(library: MusicTrack[], userTracks: MusicTrac
   ];
 }
 
-export const useMusicStore = create<MusicState>((set, get) => ({
-  library: LIBRARY,
-  userTracks: [],
-  favorites: [],
-  currentTrack: null,
-  isPlaying: false,
-  volume: 0.3,
-  loop: true,
-
-  // Playback status
-  currentTime: 0,
-  duration: 0,
-
-  // Play queue
-  queue: [],
-  queueIndex: -1,
-  playMode: 'sequential' as PlayMode,
-
-  // Sleep timer
-  sleepTimerMinutes: null,
-  sleepTimerRemaining: 0,
-
-  // Error
-  error: null,
-
-  play: (track) => set({ currentTrack: track, isPlaying: true, error: null }),
-  pause: () => set({ isPlaying: false }),
-  resume: () => set({ isPlaying: true }),
-  stop: () => set({ currentTrack: null, isPlaying: false, currentTime: 0, duration: 0 }),
-  setVolume: (v) => {
-    set({ volume: v });
-    void writeJsonFile('volume.json', v);
-    _onMusicChange?.();
+// 创建播放服务实例
+const playbackService = new MusicPlaybackService(
+  (partial) => {
+    // 使用 store 的 set 方法更新状态
+    useMusicStore.setState(partial);
   },
-  toggleLoop: () => set(s => {
-    const newLoop = !s.loop;
-    return { loop: newLoop, playMode: newLoop ? 'repeat-one' : 'sequential' };
-  }),
-  setIsPlaying: (v) => set({ isPlaying: v }),
-  setPlaybackStatus: (currentTime, duration) => set({ currentTime, duration }),
-  setError: (e) => set({ error: e }),
+  () => {
+    const s = useMusicStore.getState();
+    return {
+      currentTrack: s.currentTrack,
+      isPlaying: s.isPlaying,
+      currentTime: s.currentTime,
+      duration: s.duration,
+      queue: s.queue,
+      queueIndex: s.queueIndex,
+      playMode: s.playMode,
+      error: s.error,
+    };
+  }
+);
+
+// 创建定时器服务实例
+const timerService = new MusicTimerService(
+  (partial) => {
+    useMusicStore.setState(partial);
+  }
+);
+timerService.onTimeUp = () => {
+  useMusicStore.getState().pause();
+};
+
+export const useMusicStore = create<MusicState>((set, get) => {
+  // 构建带 loop 的额外状态
+  const stateWithLoop = {
+    library: LIBRARY,
+    userTracks: [],
+    favorites: [],
+    currentTrack: null,
+    isPlaying: false,
+    volume: 0.3,
+    loop: false,
+
+    // Playback status
+    currentTime: 0,
+    duration: 0,
+
+    // Play queue
+    queue: [],
+    queueIndex: -1,
+    playMode: 'sequential' as PlayMode,
+
+    // Sleep timer
+    sleepTimerMinutes: null,
+    sleepTimerRemaining: 0,
+
+    // Error
+    error: null,
+  };
+
+  return {
+    ...stateWithLoop,
+
+    play: (track) => playbackService.play(track),
+    pause: () => playbackService.pause(),
+    resume: () => playbackService.resume(),
+    stop: () => playbackService.stop(),
+    setVolume: (v) => {
+      set({ volume: v });
+      void saveVolumeToStorage(v);
+    },
+    toggleLoop: () => playbackService.toggleLoop(),
+    setIsPlaying: (v) => set({ isPlaying: v }),
+    setPlaybackStatus: (currentTime, duration) => set({ currentTime, duration }),
+    setError: (e) => set({ error: e }),
 
   addUserTrack: async (name, uri) => {
     try {
-      // 确保目录存在
-      if (!userMusicDir.exists) userMusicDir.create({ intermediates: true });
-      // 生成唯一文件名
-      const parts = name.split('.');
-      const ext = parts.length > 1 ? parts[parts.length - 1] : 'mp3';
-      const id = `user_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-      const destFile = new File(userMusicDir, `${id}.${ext}`);
-      new File(uri).copy(destFile);
-
-      const track: MusicTrack = {
-        id,
-        name: name.replace(/\.[^.]+$/, ''),
-        nameEn: name.replace(/\.[^.]+$/, ''),
-        category: 'user',
-        uri: destFile.uri,
-      };
-
+      const track = await addUserTrackToStorage(name, uri);
       const updated = [...get().userTracks, track];
       set({ userTracks: updated });
-      await writeJsonFile('user_tracks.json', updated);
-      _onMusicChange?.();
+      await saveUserTracks(updated);
     } catch (e) {
       log.error(e, { message: '添加用户音乐失败' });
     }
@@ -233,14 +234,12 @@ export const useMusicStore = create<MusicState>((set, get) => ({
     try {
       const currentTracks = get().userTracks;
       const track = currentTracks.find(t => t.id === id);
-      if (track?.uri) {
-        const file = new File(track.uri);
-        if (file.exists) file.delete();
+      if (track) {
+        await removeUserTrackFromStorage(track);
       }
       const updated = currentTracks.filter(t => t.id !== id);
       set({ userTracks: updated });
-      await writeJsonFile('user_tracks.json', updated);
-      _onMusicChange?.();
+      await saveUserTracks(updated);
       // 如果删除的是当前播放曲目，停止播放
       if (get().currentTrack?.id === id) {
         set({ currentTrack: null, isPlaying: false });
@@ -252,39 +251,18 @@ export const useMusicStore = create<MusicState>((set, get) => ({
 
   loadUserTracks: async () => {
     try {
-      const raw = await readJsonFile<MusicTrack[]>('user_tracks.json');
-      if (raw) {
-        const tracks = raw;
-        // 验证文件仍存在
-        const valid: MusicTrack[] = [];
-        for (const t of tracks) {
-          try {
-            if (t.uri) {
-              if (new File(t.uri).exists) valid.push(t);
-            } else {
-              valid.push(t);
-            }
-          } catch {
-            // Skip tracks that fail validation
-          }
-        }
-        set({ userTracks: valid });
-        if (valid.length !== tracks.length) {
-          await writeJsonFile('user_tracks.json', valid);
-        }
-      }
-    } catch (e) { log.error(e, { message: '加载用户音乐失败' }); }
+      const tracks = await loadUserTracksFromStorage();
+      set({ userTracks: tracks });
+    } catch (e) {
+      log.error(e, { message: '加载用户音乐失败' });
+    }
   },
 
   toggleFavorite: async (id) => {
     try {
       const { favorites } = get();
-      const updated = favorites.includes(id)
-        ? favorites.filter(fid => fid !== id)
-        : [...favorites, id];
+      const updated = await toggleFavoriteInStorage(favorites, id);
       set({ favorites: updated });
-      await writeJsonFile('favorites.json', updated);
-      _onMusicChange?.();
     } catch (e) {
       log.error(e, { message: '切换收藏失败' });
     }
@@ -292,11 +270,11 @@ export const useMusicStore = create<MusicState>((set, get) => ({
 
   loadFavorites: async () => {
     try {
-      const raw = await readJsonFile<string[]>('favorites.json');
-      if (raw) {
-        set({ favorites: raw });
-      }
-    } catch (e) { log.error(e, { message: '加载收藏失败' }); }
+      const favorites = await loadFavoritesFromStorage();
+      set({ favorites });
+    } catch (e) {
+      log.error(e, { message: '加载收藏失败' });
+    }
   },
 
   getTracksByCategory: (cat) => {
@@ -311,99 +289,33 @@ export const useMusicStore = create<MusicState>((set, get) => ({
 
   loadVolume: async () => {
     try {
-      const raw = await readJsonFile<number>('volume.json');
-      if (raw !== null && typeof raw === 'number' && raw >= 0 && raw <= 1) set({ volume: raw });
+      const volume = await loadVolumeFromStorage();
+      set({ volume });
     } catch { /* ignore */ }
   },
 
   // ── Queue & mode ──
 
   setQueue: (tracks, startIndex = 0) => {
-    set({ queue: tracks, queueIndex: startIndex });
+    playbackService.setQueue(tracks, startIndex);
   },
 
   playNext: () => {
-    const { queue, queueIndex, playMode, currentTrack } = get();
-    if (queue.length === 0) return;
-
-    let nextIndex: number;
-    if (playMode === 'repeat-one') {
-      // Replay current track
-      if (currentTrack) set({ isPlaying: true });
-      return;
-    }
-
-    if (playMode === 'shuffle') {
-      // Pick random index different from current
-      if (queue.length === 1) {
-        nextIndex = 0;
-      } else {
-        do { nextIndex = Math.floor(Math.random() * queue.length); }
-        while (nextIndex === queueIndex);
-      }
-    } else {
-      // sequential / repeat-all
-      nextIndex = queueIndex + 1;
-      if (nextIndex >= queue.length) {
-        if (playMode === 'repeat-all') {
-          nextIndex = 0;
-        } else {
-          // sequential: stop at end
-          set({ isPlaying: false });
-          return;
-        }
-      }
-    }
-
-    set({ queueIndex: nextIndex, currentTrack: queue[nextIndex], isPlaying: true, error: null });
+    playbackService.playNext();
   },
 
   playPrevious: () => {
-    const { queue, queueIndex, currentTime } = get();
-    if (queue.length === 0) return;
-
-    // If more than 3 seconds into the track, restart it
-    if (currentTime > 3) {
-      set({ currentTime: 0 });
-      // seekTo will be handled by AudioEngineProvider
-      return;
-    }
-
-    const prevIndex = queueIndex > 0 ? queueIndex - 1 : queue.length - 1;
-    set({ queueIndex: prevIndex, currentTrack: queue[prevIndex], isPlaying: true, error: null });
+    playbackService.playPrevious();
   },
 
   setPlayMode: (mode) => {
-    set({ playMode: mode, loop: mode === 'repeat-one' });
-    void writeJsonFile('play_mode.json', mode);
-    _onMusicChange?.();
+    playbackService.setPlayMode(mode);
+    void savePlayModeToStorage(mode);
   },
 
   // ── Sleep timer ──
 
   setSleepTimer: (minutes) => {
-    if (sleepTimerRef) {
-      clearInterval(sleepTimerRef);
-      sleepTimerRef = null;
-    }
-
-    if (minutes === null) {
-      set({ sleepTimerMinutes: null, sleepTimerRemaining: 0 });
-      return;
-    }
-
-    const endTime = Date.now() + minutes * 60 * 1000;
-    sleepTimerRef = setInterval(() => {
-      const remaining = Math.max(0, Math.round((endTime - Date.now()) / 1000));
-      if (remaining <= 0) {
-        if (sleepTimerRef) { clearInterval(sleepTimerRef); sleepTimerRef = null; }
-        get().pause();
-        set({ sleepTimerMinutes: null, sleepTimerRemaining: 0 });
-      } else {
-        set({ sleepTimerRemaining: remaining });
-      }
-    }, 1000);
-
-    set({ sleepTimerMinutes: minutes, sleepTimerRemaining: minutes * 60 });
+    timerService.setSleepTimer(minutes);
   },
-}));
+}});
