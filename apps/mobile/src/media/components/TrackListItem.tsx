@@ -20,9 +20,10 @@ interface Props {
   onToggleFavorite: () => void;
   primaryColor: string;
   showFavorite?: boolean;
+  onLongPress?: () => void;
 }
 
-function TrackListItem({ track, isCurrent, isPlaying, isFavorite, onPlay, onToggleFavorite, primaryColor, showFavorite = true }: Props) {
+function TrackListItem({ track, isCurrent, isPlaying, isFavorite, onPlay, onToggleFavorite, primaryColor, showFavorite = true, onLongPress }: Props) {
   const TH = useTheme();
   const T = useT();
 
@@ -50,7 +51,7 @@ function TrackListItem({ track, isCurrent, isPlaying, isFavorite, onPlay, onTogg
   }, [track.id, removeUserTrack, T]);
 
   return (
-    <TouchableOpacity onPress={onPlay} activeOpacity={0.7} style={{ paddingVertical: 14, paddingHorizontal: 16 }}>
+    <TouchableOpacity onPress={onPlay} onLongPress={onLongPress} activeOpacity={0.7} style={{ paddingVertical: 14, paddingHorizontal: 16 }}>
       {/* Main row */}
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
         {/* Left: track info */}

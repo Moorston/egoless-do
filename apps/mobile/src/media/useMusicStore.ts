@@ -13,6 +13,8 @@ import {
   loadVolume as loadVolumeFromStorage,
   saveVolume as saveVolumeToStorage,
   savePlayMode as savePlayModeToStorage,
+  loadRecentlyPlayed as loadRecentlyPlayedFromStorage,
+  saveRecentlyPlayed,
   type PlayMode,
 } from './services/MusicStorageService';
 import { MusicTimerService } from './services/MusicTimerService';
@@ -89,6 +91,9 @@ interface MusicState {
   // Error state
   error: string | null;
 
+  // Recently played
+  recentlyPlayed: string[];
+
   play: (track: MusicTrack) => void;
   pause: () => void;
   resume: () => void;
@@ -103,6 +108,7 @@ interface MusicState {
   toggleFavorite: (id: string) => Promise<void>;
   loadFavorites: () => Promise<void>;
   loadVolume: () => Promise<void>;
+  loadRecentlyPlayed: () => Promise<void>;
   getTracksByCategory: (cat: string) => MusicTrack[];
   getCategoryMeta: () => { key: string; name: string; icon: string; count: number; isFavorite?: boolean }[];
 
@@ -111,6 +117,7 @@ interface MusicState {
   playNext: () => void;
   playPrevious: () => void;
   setPlayMode: (mode: PlayMode) => void;
+  removeFromQueue: (index: number) => void;
 
   // Sleep timer
   setSleepTimer: (minutes: number | null) => void;
@@ -202,12 +209,22 @@ export const useMusicStore = create<MusicState>((set, get) => {
 
     // Error
     error: null,
+
+    // Recently played
+    recentlyPlayed: [],
   };
 
   return {
     ...stateWithLoop,
 
-    play: (track) => playbackService.play(track),
+    play: (track) => {
+      playbackService.play(track);
+      // 记录最近播放（去重、插入头部、截断 20）
+      const { recentlyPlayed } = get();
+      const next = [track.id, ...recentlyPlayed.filter(id => id !== track.id)].slice(0, 20);
+      set({ recentlyPlayed: next });
+      void saveRecentlyPlayed(next);
+    },
     pause: () => playbackService.pause(),
     resume: () => playbackService.resume(),
     stop: () => playbackService.stop(),
@@ -278,6 +295,15 @@ export const useMusicStore = create<MusicState>((set, get) => {
     }
   },
 
+  loadRecentlyPlayed: async () => {
+    try {
+      const recentlyPlayed = await loadRecentlyPlayedFromStorage();
+      set({ recentlyPlayed });
+    } catch (e) {
+      log.error(e, { message: '加载最近播放失败' });
+    }
+  },
+
   getTracksByCategory: (cat) => {
     const { library, userTracks, favorites } = get();
     return computeTracksByCategory(library, userTracks, favorites, cat);
@@ -312,6 +338,16 @@ export const useMusicStore = create<MusicState>((set, get) => {
   setPlayMode: (mode) => {
     playbackService.setPlayMode(mode);
     void savePlayModeToStorage(mode);
+  },
+
+  removeFromQueue: (index) => {
+    const { queue, queueIndex } = get();
+    if (index < 0 || index >= queue.length) return;
+    const next = [...queue];
+    next.splice(index, 1);
+    // 调整 queueIndex：删除的在前则索引减一，删除的是当前则保持当前
+    const nextIndex = index < queueIndex ? queueIndex - 1 : queueIndex;
+    set({ queue: next, queueIndex: nextIndex });
   },
 
   // ── Sleep timer ──

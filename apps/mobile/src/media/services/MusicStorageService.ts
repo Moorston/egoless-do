@@ -222,3 +222,26 @@ export async function savePlayMode(mode: PlayMode): Promise<void> {
   await writeJsonFile('play_mode.json', mode);
   _onMusicChange?.();
 }
+
+// ─── 最近播放管理 ──────────────────────────────────────────────────
+
+/**
+ * 加载最近播放的曲目 id 列表（最多 20 条）
+ */
+export async function loadRecentlyPlayed(): Promise<string[]> {
+  try {
+    const raw = await readJsonFile<string[]>('recently_played.json');
+    if (Array.isArray(raw)) return raw.slice(0, 20);
+    return [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * 保存最近播放的曲目 id 列表
+ */
+export async function saveRecentlyPlayed(ids: string[]): Promise<void> {
+  await writeJsonFile('recently_played.json', ids.slice(0, 20));
+  _onMusicChange?.();
+}

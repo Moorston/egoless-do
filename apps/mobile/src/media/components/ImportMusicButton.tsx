@@ -42,7 +42,9 @@ export default function ImportMusicButton({ T, primaryColor }: Props) {
     <TouchableOpacity onPress={handleImport} disabled={importing}
       style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, opacity: importing ? 0.5 : 1 }}>
       <Upload size={14} color={primaryColor} />
-      <Text style={{ fontSize: FONT_BODY(), color: primaryColor }}>{T('musicImport')}</Text>
+      <Text style={{ fontSize: FONT_BODY(), color: primaryColor }}>
+        {importing ? (T('musicImporting') || '导入中...') : T('musicImport')}
+      </Text>
     </TouchableOpacity>
   );
 }

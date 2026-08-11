@@ -1,5 +1,5 @@
 import { FONT_BODY, FONT_SUB } from '@egoless-do/core';
-import { Repeat, Repeat1, Shuffle, SkipBack, SkipForward, Volume2, VolumeX, Clock } from 'lucide-react-native';
+import { Repeat, Repeat1, Shuffle, SkipBack, SkipForward, Volume2, VolumeX, Clock, List } from 'lucide-react-native';
 import React, { useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Modal } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
@@ -10,6 +10,8 @@ import { audioPlayerRef } from '../services/audioPlayerRef';
 import { useMusicStore } from '../useMusicStore';
 import type { PlayMode } from '../useMusicStore';
 
+import FullPlayerScreen from './FullPlayerScreen';
+import QueueModal from './QueueModal';
 import WaveformBar from './WaveformBar';
 
 const SLEEP_PRESETS = [15, 30, 45, 60, 90];
@@ -60,6 +62,8 @@ export default function PlayerBar({ primaryColor, _category }: Props) {
   const setError = useMusicStore(s => s.setError);
 
   const [showSleepModal, setShowSleepModal] = useState(false);
+const [showQueueModal, setShowQueueModal] = useState(false);
+const [showFullPlayer, setShowFullPlayer] = useState(false);
 
   const progress = duration > 0 ? currentTime / duration : 0;
   const currentTimeStr = formatTime(currentTime);
@@ -72,9 +76,16 @@ export default function PlayerBar({ primaryColor, _category }: Props) {
     { mode: 'shuffle', icon: Shuffle, labelKey: 'musicPlayModeShuffle' },
   ];
 
+  const [dragProgress, setDragProgress] = useState<number | null>(null);
+
   const handleSeek = useCallback((ratio: number) => {
     try { void audioPlayerRef.current?.seekTo(ratio * duration); } catch {}
+    setDragProgress(null);
   }, [duration]);
+
+  const handleSeekDrag = useCallback((ratio: number) => {
+    setDragProgress(ratio);
+  }, []);
 
   const handleTogglePlay = useCallback(() => {
     isPlaying ? pause() : resume();
@@ -121,14 +132,14 @@ export default function PlayerBar({ primaryColor, _category }: Props) {
 
         {/* Track info + controls */}
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 }}>
-          <View style={{ flex: 1 }}>
+          <TouchableOpacity style={{ flex: 1 }} onPress={() => setShowFullPlayer(true)} activeOpacity={0.7}>
             <Text style={{ fontSize: FONT_BODY(), color: TH.text, fontWeight: '600' }} numberOfLines={1}>
               {currentTrack.name}
             </Text>
             <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 2 }}>
               {currentTimeStr} / {durationStr}
             </Text>
-          </View>
+          </TouchableOpacity>
 
           {/* Sleep timer */}
           {sleepTimerMinutes && (
@@ -140,6 +151,11 @@ export default function PlayerBar({ primaryColor, _category }: Props) {
           )}
           <TouchableOpacity onPress={() => setShowSleepModal(true)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} style={{ padding: 8 }}>
             <Clock size={18} color={sleepTimerMinutes ? primaryColor : TH.sub} />
+          </TouchableOpacity>
+
+          {/* Queue */}
+          <TouchableOpacity onPress={() => setShowQueueModal(true)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} style={{ padding: 8 }}>
+            <List size={18} color={TH.sub} />
           </TouchableOpacity>
 
           {/* Volume */}
@@ -175,13 +191,20 @@ export default function PlayerBar({ primaryColor, _category }: Props) {
         {/* Waveform progress bar */}
         <WaveformBar
           trackId={currentTrack.id}
-          progress={progress}
+          progress={dragProgress ?? progress}
           primaryColor={primaryColor}
           inactiveColor={TH.border}
           barCount={50}
           height={26}
           onPress={handleSeek}
+          onSeek={handleSeekDrag}
+          onSeekEnd={handleSeek}
         />
+        {dragProgress != null && (
+          <Text style={{ color: primaryColor, fontSize: FONT_SUB(), textAlign: 'center', marginTop: 2 }}>
+            {formatTime(dragProgress * duration)}
+          </Text>
+        )}
       </View>
 
       {/* Sleep Timer Modal */}
@@ -209,6 +232,12 @@ export default function PlayerBar({ primaryColor, _category }: Props) {
           </View>
         </View>
       </Modal>
+
+      {/* Queue Modal */}
+      <QueueModal visible={showQueueModal} onClose={() => setShowQueueModal(false)} primaryColor={primaryColor} />
+
+      {/* Full Player Screen */}
+      <FullPlayerScreen visible={showFullPlayer} onClose={() => setShowFullPlayer(false)} primaryColor={primaryColor} />
     </>
   );
 }

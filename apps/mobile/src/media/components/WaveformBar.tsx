@@ -1,5 +1,5 @@
-import React, { useMemo, useCallback } from 'react';
-import { View, Pressable } from 'react-native';
+import React, { useMemo, useCallback, useRef } from 'react';
+import { View, Pressable, PanResponder, type LayoutChangeEvent } from 'react-native';
 
 // Predefined waveform profiles per category for more natural look
 const WAVEFORM_PROFILES: Record<string, number[]> = {
@@ -48,22 +48,51 @@ interface Props {
   barCount?: number;
   height?: number;
   onPress?: (progress: number) => void;
+  /** 拖动时回调（用于实时预览） */
+  onSeek?: (progress: number) => void;
+  /** 拖动结束回调（用于确认 seek） */
+  onSeekEnd?: (progress: number) => void;
 }
 
-export default function WaveformBar({ trackId, progress, primaryColor, inactiveColor = 'rgba(255,255,255,.15)', barCount = 40, height = 28, onPress }: Props) {
+export default function WaveformBar({ trackId, progress, primaryColor, inactiveColor = 'rgba(255,255,255,.15)', barCount = 40, height = 28, onPress, onSeek, onSeekEnd }: Props) {
   const bars = useMemo(() => generateWaveform(trackId, barCount), [trackId, barCount]);
   const barWidth = 3;
   const gap = 2;
+  const widthRef = useRef(0);
+
+  const handleLayout = useCallback((e: LayoutChangeEvent) => {
+    widthRef.current = e.nativeEvent.layout.width;
+  }, []);
+
+  const ratioFromX = useCallback((x: number) => {
+    const w = widthRef.current || barCount * (barWidth + gap);
+    return Math.max(0, Math.min(1, x / w));
+  }, [barCount, barWidth, gap]);
 
   const handlePress = useCallback((e: { nativeEvent: { locationX: number } }) => {
-    if (!onPress) return;
-    const totalWidth = barCount * (barWidth + gap);
-    const ratio = Math.max(0, Math.min(1, e.nativeEvent.locationX / totalWidth));
-    onPress(ratio);
-  }, [onPress, barCount]);
+    const ratio = ratioFromX(e.nativeEvent.locationX);
+    if (onPress) onPress(ratio);
+    else if (onSeek) onSeek(ratio);
+  }, [ratioFromX, onPress, onSeek]);
+
+  const panResponder = useMemo(() => PanResponder.create({
+    onStartShouldSetPanResponder: () => !!onSeek,
+    onMoveShouldSetPanResponder: () => !!onSeek,
+    onPanResponderGrant: (e) => onSeek?.(ratioFromX(e.nativeEvent.locationX)),
+    onPanResponderMove: (e) => onSeek?.(ratioFromX(e.nativeEvent.locationX)),
+    onPanResponderRelease: (e) => {
+      const ratio = ratioFromX(e.nativeEvent.locationX);
+      onSeekEnd?.(ratio);
+    },
+  }), [onSeek, onSeekEnd, ratioFromX]);
 
   return (
-    <Pressable onPress={handlePress} style={{ flexDirection: 'row', alignItems: 'center', height }}>
+    <Pressable
+      onPress={handlePress}
+      onLayout={handleLayout}
+      {...panResponder.panHandlers}
+      style={{ flexDirection: 'row', alignItems: 'center', height }}
+    >
       {bars.map((h, i) => {
         const ratio = i / barCount;
         const filled = ratio <= progress;
