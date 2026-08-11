@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md", "reason": "验证修复符合全局规范 — 类型安全、无 any、错误处理"}
+{"file": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md", "reason": "验证架构约束 — 无禁止模式、无架构违规"}
+{"file": ".trellis/spec/mobile/frontend/type-safety.md", "reason": "验证类型安全 — 修复后无 any、接口定义正确"}
+{"file": ".trellis/spec/mobile/frontend/quality-guidelines.md", "reason": "验证移动端质量 — 代码标准、性能、错误处理"}
