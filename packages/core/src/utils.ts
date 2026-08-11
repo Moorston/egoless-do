@@ -131,8 +131,8 @@ export function calculateStreakFromCheckins(checkins: Array<{ date: string; done
 }
 
 /** Calculate streak from checkin history (allows 1-day gap for reference date) */
-export const calculateCheckinStreak = (history: Array<{ date: string; done: boolean; deleted?: boolean }>, refDate?: string): number => {
-  if (!history.length) return 0;
+export const calculateCheckinStreak = (history: Array<{ date: string; done: boolean; deleted?: boolean }> | null | undefined, refDate?: string): number => {
+  if (!history || !history.length) return 0;
   const ref = refDate ?? dateStr();
   const sorted = [...history]
     .filter(e => e.done && !e.deleted && e.date <= ref)

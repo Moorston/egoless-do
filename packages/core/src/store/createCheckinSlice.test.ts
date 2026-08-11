@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createCheckinSlice } from './createCheckinSlice';
-import { calculateStreakFromCheckins } from './selectors';
+import { calculateStreakFromCheckins } from '../utils';
 import { dateStr } from '../utils';
 import type { CheckinEntry } from '../types';
 
@@ -88,9 +88,9 @@ describe('createCheckinSlice', () => {
 
       slice.submitCheckin(true, '', today);
 
-      // streak 已改为派生状态，通过 selector 计算
-      
-      const streak = calculateStreakFromCheckins(slice.checkinHistory);
+      // streak 已改为派生状态，从 state 中读取 checkinHistory
+      const state = store.get();
+      const streak = calculateStreakFromCheckins(state.checkinHistory as CheckinEntry[]);
       expect(streak).toBeGreaterThanOrEqual(1);
     });
   });
@@ -107,9 +107,9 @@ describe('createCheckinSlice', () => {
       });
       const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
-      // streak 已改为派生状态
-      
-      const streak = calculateStreakFromCheckins(slice.checkinHistory);
+      // streak 已改为派生状态，从 state 中读取 checkinHistory
+      const state = store.get();
+      const streak = calculateStreakFromCheckins(state.checkinHistory as CheckinEntry[]);
       expect(streak).toBe(2);
     });
 
@@ -121,8 +121,8 @@ describe('createCheckinSlice', () => {
       });
       const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
-      
-      const streak = calculateStreakFromCheckins(slice.checkinHistory);
+      const state = store.get();
+      const streak = calculateStreakFromCheckins(state.checkinHistory as CheckinEntry[]);
       expect(streak).toBe(0);
     });
   });

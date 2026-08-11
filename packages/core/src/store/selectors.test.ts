@@ -1,12 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  calculateStreakFromCheckins,
-  useCheckinStreak,
-  useTotalMedMinutes,
-  useHabitProgress,
-  useActiveHabits,
-  useTodayCheckins,
-} from '@egoless-do/core/store/selectors';
+import { calculateStreakFromCheckins } from '../utils';
 
 describe('store/selectors', () => {
   describe('calculateStreakFromCheckins', () => {

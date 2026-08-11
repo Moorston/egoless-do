@@ -3,8 +3,8 @@
  * 验证端侧 AI 推理延迟目标（<50ms）
  */
 import { describe, it, expect } from 'vitest';
-import { HybridEngine } from '../../packages/core/src/ai/local-engine/hybrid-engine';
-import { ModelManager } from '../../packages/core/src/ai/local-engine/model-manager';
+import { HybridEngine } from './hybrid-engine';
+import { ModelManager } from './model-manager';
 
 describe('Performance Benchmarks', () => {
   describe('HybridEngine', () => {
