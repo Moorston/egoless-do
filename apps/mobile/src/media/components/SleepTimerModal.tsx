@@ -1,6 +1,6 @@
 // ─── 睡眠定时器 Modal（共享组件） ───────────────────────────────
 
-import { FONT_BODY } from '@egoless-do/core';
+import { COLORS, FONT_BODY } from '@egoless-do/core';
 import React, { useCallback } from 'react';
 import { View, Text, TouchableOpacity, Modal } from 'react-native';
 
@@ -41,7 +41,7 @@ export default function SleepTimerModal({ visible, onClose, primaryColor }: Prop
             {sleepTimerMinutes && (
               <TouchableOpacity onPress={() => handleSelect(null)}
                 style={{ paddingHorizontal: 20, paddingVertical: 12, borderRadius: 12, backgroundColor: 'rgba(239,68,68,.15)', width: '100%', alignItems: 'center' }}>
-                <Text style={{ color: '#EF4444', fontWeight: '600', fontSize: FONT_BODY() }}>{T('musicSleepTimerOff')}</Text>
+                <Text style={{ color: COLORS.RED, fontWeight: '600', fontSize: FONT_BODY() }}>{T('musicSleepTimerOff')}</Text>
               </TouchableOpacity>
             )}
           </View>

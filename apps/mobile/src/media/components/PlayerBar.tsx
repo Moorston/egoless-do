@@ -1,4 +1,4 @@
-import { FONT_BODY, FONT_SUB } from '@egoless-do/core';
+import { COLORS, FONT_BODY, FONT_SUB } from '@egoless-do/core';
 import { SkipBack, SkipForward, Volume2, VolumeX, Clock, List } from 'lucide-react-native';
 import React, { useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
@@ -106,7 +106,7 @@ export default function PlayerBar({ primaryColor }: Props) {
         {/* Error banner */}
         {error && (
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'rgba(239,68,68,.2)', borderRadius: 8, padding: 8, marginBottom: 8 }}>
-            <Text style={{ color: '#EF4444', fontSize: FONT_SUB(), flex: 1 }}>{T('musicPlayFailed')}</Text>
+            <Text style={{ color: COLORS.RED, fontSize: FONT_SUB(), flex: 1 }}>{T('musicPlayFailed')}</Text>
             <TouchableOpacity onPress={() => { setError(null); play(currentTrack); }} accessibilityLabel={T('musicRetry')}>
               <Text style={{ color: primaryColor, fontSize: FONT_SUB(), fontWeight: '600' }}>{T('musicRetry')}</Text>
             </TouchableOpacity>

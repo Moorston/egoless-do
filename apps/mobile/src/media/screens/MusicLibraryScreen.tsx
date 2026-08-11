@@ -1,7 +1,7 @@
 // ─── 音乐库页面 ──────────────────────────────────────────────────
 // 浏览、搜索、预览、下载音乐
 
-import { FONT_TITLE, FONT_BODY, FONT_SUB } from '@egoless-do/core';
+import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB } from '@egoless-do/core';
 import { ArrowLeft, Search, Download, Play, Pause, Square, Check } from 'lucide-react-native';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, ActivityIndicator, StyleSheet, Alert, type DimensionValue } from 'react-native';
@@ -251,8 +251,8 @@ export default function MusicLibraryScreen() {
           </TouchableOpacity>
 
           {isDownloaded ? (
-            <View style={[styles.actionButton, { backgroundColor: '#10b98120' }]}>
-              <Check size={16} color="#10b981" />
+            <View style={[styles.actionButton, { backgroundColor: COLORS.GREEN + '20' }]}>
+              <Check size={16} color={COLORS.GREEN} />
             </View>
           ) : isDownloading ? (
             <View style={[styles.actionButton, { backgroundColor: `${P}20` }]}>

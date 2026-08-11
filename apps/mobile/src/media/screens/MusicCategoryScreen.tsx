@@ -1,4 +1,4 @@
-import {FONT_TITLE, FONT_BODY, MUSIC_CATEGORY_META} from '@egoless-do/core';
+import {COLORS, FONT_TITLE, FONT_BODY, MUSIC_CATEGORY_META} from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { ArrowLeft, Music, Heart, Trash2, X } from 'lucide-react-native';
@@ -163,7 +163,7 @@ export default function MusicCategoryScreen() {
             </Text>
             {selectedIds.size > 0 && (
               <TouchableOpacity onPress={handleBatchDelete} style={{ padding: 8, backgroundColor: 'rgba(239,68,68,.15)', borderRadius: 8 }}>
-                <Trash2 size={18} color="#EF4444" />
+                <Trash2 size={18} color={COLORS.RED} />
               </TouchableOpacity>
             )}
           </>
