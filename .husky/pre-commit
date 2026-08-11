@@ -1,5 +1,4 @@
-{
-  "hooks": {
-    "pre-commit": "lint-staged"
-  }
-}
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/h"
+
+npx lint-staged
