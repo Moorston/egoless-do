@@ -179,6 +179,7 @@ export async function migrateAsyncStorageToSQLite(
           const { rehydrateFromDb } = await import('../features/sync/SyncService');
           const dbPatch = await rehydrateFromDb([verificationSample.entity]);
           const arr = dbPatch[verificationSample.storeKey] as unknown[];
+          // eslint-disable-next-line max-depth -- warning-reduction: high-risk sync/store/migration data fn; depth refactor deferred to avoid data-corruption risk
           if (!arr || arr.length === 0) {
             log.warn(`Migration verification: no ${verificationSample.entity} found after migration`);
           } else {

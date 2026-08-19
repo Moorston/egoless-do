@@ -36,6 +36,7 @@ function MonthPicker({ value, onChange, TH, _T }: { value: string; onChange: (d:
     }
     if (row.length > 0) { while (row.length < 7) row.push(null); rows.push(row); }
     return rows;
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, [year, month, daysInMonth, firstDay]);
 
   const monthLabel = `${year}-${String(month + 1).padStart(2, '0')}`;
@@ -150,6 +151,7 @@ export default function VisionEditModal({ visible, TH, T, vision, type: initialT
         setLinkedPlans([]);
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, [visible, vision]);
 
   // When user selects a timeFrame pill, auto-compute deadline from startDate

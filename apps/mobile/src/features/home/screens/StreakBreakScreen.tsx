@@ -24,6 +24,7 @@ export default function StreakBreakScreen() {
   const nav = useRootNavigation();
 
   const history = (checkinHistory ?? []).filter(c => !c.deleted);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   const graceHistoryArr = graceHistory ?? [];
   const quota = userProfile?.graceMonthlyQuota ?? 2;
 

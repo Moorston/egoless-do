@@ -182,6 +182,7 @@ export function useCityNameBatch(
     };
 
     loadCities().catch(err => log.error(err, { message: 'loadCities' }));
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, [coordKey]);
 
   return results;

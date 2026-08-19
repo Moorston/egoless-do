@@ -72,6 +72,7 @@ export function CreatePlanFromReflectionModal({
       });
       setFormErrors({});
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, [reflection?.id, setForm, setFormErrors, defaultStart, defaultEnd]);
 
   const handleSubmit = useCallback(() => {

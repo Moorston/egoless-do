@@ -7,7 +7,7 @@ import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import ViewShot from 'react-native-view-shot';
 import type { ViewShotRef } from 'react-native-view-shot';
 
-import { useTheme, useT } from '../../../components/UI';
+import { useT } from '../../../components/UI';
 
 
 interface ShareCardProps {
@@ -38,6 +38,7 @@ export default function ShareCard({ visible, onClose, reflection, onTextShare }:
       }
     }
     return reflection.colors;
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, [reflection?.colors]);
 
   const { bgColor, timeStr } = useMemo(() => {

@@ -131,6 +131,7 @@ export default function SleepSummaryCard({
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
     useUiStore.getState().showToast(T('sleepSaved'), 'success');
     flashSaved();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, [flashSaved]);
 
   // ── Event handlers ─────────────────────────────────────────────

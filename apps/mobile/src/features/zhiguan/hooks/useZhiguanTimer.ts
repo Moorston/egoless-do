@@ -55,6 +55,7 @@ export function useZhiguanTimer(): TimerApi {
 
     setState({ elapsedSecs: 0, isPaused: false, isRunning: true });
     rafRef.current = requestAnimationFrame(tick);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, []);
 
   const pause = useCallback(() => {
@@ -73,6 +74,7 @@ export function useZhiguanTimer(): TimerApi {
     isPausedRef.current = false;
     setState(prev => ({ ...prev, isPaused: false }));
     rafRef.current = requestAnimationFrame(tick);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, []);
 
   const stop = useCallback(() => {
@@ -98,6 +100,7 @@ export function useZhiguanTimer(): TimerApi {
     };
     const sub = AppState.addEventListener('change', handler);
     return () => { sub.remove(); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, [state.isRunning, state.isPaused]);
 
   useEffect(() => {

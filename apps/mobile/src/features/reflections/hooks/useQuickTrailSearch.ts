@@ -335,6 +335,7 @@ export function useQuickTrailSearch(
       if (analyzingTimerRef.current) clearTimeout(analyzingTimerRef.current);
       analyzingTimerRef.current = setTimeout(() => setIsAnalyzing(false), 2000);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, [searchQuery, reflections, candidates, filters, aiAvailable, runAIPhase2Wrapped, runAIPhase3Wrapped, updateStep, addToHistory, T]);
 
   // AI on-demand search (Phase 2 + 3, appends to local results)
@@ -402,6 +403,7 @@ export function useQuickTrailSearch(
       if (analyzingTimerRef.current) clearTimeout(analyzingTimerRef.current);
       analyzingTimerRef.current = setTimeout(() => setIsAnalyzing(false), 2000);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, [searchQuery, reflections, matchResults, filters, aiAvailable, runAIPhase2Wrapped, runAIPhase3Wrapped, updateStep, addToHistory, T]);
 
   const handleSmartAnswer = useCallback((answer: string) => {

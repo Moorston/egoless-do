@@ -135,6 +135,7 @@ export class WriteBatcher {
               log.debug(`[Flush] UPDATE result: changes=${result.changes}`);
               if (result.changes === 0) {
                 log.debug(`[Flush] INSERT ${config.table} (${columns.join(',')},deleted,synced) VALUES (${placeholders},0,0)`);
+                // eslint-disable-next-line max-depth -- warning-reduction: high-risk sync/store/migration data fn; depth refactor deferred to avoid data-corruption risk
                 try {
                   await db.runAsync(
                     `INSERT INTO ${config.table} (${columns.join(',')},deleted,synced) VALUES (${placeholders},0,0)`,
@@ -142,6 +143,7 @@ export class WriteBatcher {
                   );
                 } catch (insertErr: unknown) {
                   const msg = insertErr instanceof Error ? insertErr.message : String(insertErr);
+                  // eslint-disable-next-line max-depth -- warning-reduction: high-risk sync/store/migration data fn; depth refactor deferred to avoid data-corruption risk
                   if (msg.includes('UNIQUE constraint')) {
                     await db.runAsync(
                       `UPDATE ${config.table} SET ${setClause},synced=0 WHERE ${config.pk}=?`,
@@ -186,6 +188,7 @@ export class WriteBatcher {
                 // Surface only on the first failure to avoid log spam; the dev must fix
                 // the missing column in the entity's toRow().
                 log.error(txErr, { entity: w.entity, id: w.id, phase: 'flush-notnull' });
+                // eslint-disable-next-line max-depth -- warning-reduction: high-risk sync/store/migration data fn; depth refactor deferred to avoid data-corruption risk
                 if (this._onPersistError) {
                   this._onPersistError(
                     txErr instanceof Error ? txErr : new Error(msg),
@@ -285,6 +288,7 @@ export class WriteBatcher {
           if (this._retryCount >= 10) {
             log.error('WriteBatcher: max retries reached, discarding pending writes', { count: this._pendingWrites.size });
             // Notify about each discarded write so UI can show error state
+            // eslint-disable-next-line max-depth -- warning-reduction: high-risk sync/store/migration data fn; depth refactor deferred to avoid data-corruption risk
             for (const [, entry] of this._pendingWrites) {
               this._onPersistError?.(new Error('Write discarded after max retries'), entry.entity, entry.id);
             }

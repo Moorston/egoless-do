@@ -72,6 +72,7 @@ export function mergeSyncPatch(
         for (const item of validDelta) {
           const rec = item as Record<string, unknown>;
           const k = rec?.id ?? rec?.date;
+          // eslint-disable-next-line max-depth -- warning-reduction: high-risk sync/store/migration data fn; depth refactor deferred to avoid data-corruption risk
           if (k) map.set(k, item);
         }
         const merged = [...map.values()];

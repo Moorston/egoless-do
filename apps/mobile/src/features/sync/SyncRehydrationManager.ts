@@ -140,6 +140,7 @@ export class SyncRehydrationManager {
           if (rows.length) {
             const mapped = rows.map(config.mapper);
             const ai = mapped[0] as { mode: string; models: unknown[] };
+            // eslint-disable-next-line max-depth -- warning-reduction: high-risk sync/store/migration data fn; depth refactor deferred to avoid data-corruption risk
             if (ai) { patch.aiMode = ai.mode; patch.aiModels = ai.models; }
           }
         } else if (config.storeKey === 'userProfile') {

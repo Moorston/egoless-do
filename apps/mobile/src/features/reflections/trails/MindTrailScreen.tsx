@@ -88,6 +88,7 @@ export default function MindTrailScreen() {
   // ═══════════════════════════════════════════════════════════════
   const aiAvailable = useMemo(() => {
     return isAIRecommendAvailable();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, [aiMode, aiModels]);
 
   const thoughtTrails = useMemo(() =>

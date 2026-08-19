@@ -413,6 +413,21 @@ const mockAdapter = {
 
 测试文件中的 `any` 会降低测试价值，尽量使用具体类型或 `vi.fn<...>()`。
 
+### 7.4 性能基准测试阈值
+
+> [🟡 SHOULD] [👁 Manual]
+> 适用范围: ALL
+
+性能基准测试（`performance.test.ts`）的阈值必须足够宽松以通过 CI 环境（较慢的机器/容器）。经验法则：将预期时间设为本地开发环境实测值的 3-5 倍。`10ms` 级别的紧阈值在 CI 上会频繁不稳定（`76ms > 10ms`），应设为 `100ms` 或更高。
+
+```typescript
+// ❌ 脆弱 — CI 上不稳定
+expect(elapsed).toBeLessThan(10);
+
+// ✅ 稳健 — 给 CI 环境留余量
+expect(elapsed).toBeLessThan(100);
+```
+
 ---
 
 ## 8. 国际化规范

@@ -37,10 +37,9 @@ export async function runAIPhase2(
       const topic = result.topic || trimmed;
       const newScored = retrieveTopK(topic, newIndex, 20);
       for (const s of newScored) {
-        if (!existingIds.has(s.index.id)) {
-          const ref = newCandidates.find(r => r.id === s.index.id);
-          if (ref) { allResults.push({ ref, score: s.score, source: 'direct' }); existingIds.add(ref.id); }
-        }
+        if (existingIds.has(s.index.id)) continue;
+        const ref = newCandidates.find(r => r.id === s.index.id);
+        if (ref) { allResults.push({ ref, score: s.score, source: 'direct' }); existingIds.add(ref.id); }
       }
       return { smartResult: result, shouldReturn: false };
     }

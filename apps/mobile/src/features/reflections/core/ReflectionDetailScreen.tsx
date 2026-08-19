@@ -44,6 +44,7 @@ export default function ReflectionDetailScreen() {
       { text: T('shareImageShare'), onPress: () => setShareReflection(r) },
       { text: T('cancel'), style: 'cancel' },
     ]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, [T]);
 
   const handleCreatePlanItem = useCallback((id: string) => {

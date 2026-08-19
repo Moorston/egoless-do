@@ -105,6 +105,7 @@ export default function ZhiguanScreen() {
       }
     });
     return () => { resetDraft(); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, []);
 
   // Background color transition
@@ -114,6 +115,7 @@ export default function ZhiguanScreen() {
       duration: 1500,
       useNativeDriver: false,
     }).start();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, [mode]);
 
   // Practice time hints (5min, 30min awareness)

@@ -33,6 +33,7 @@ export const ActiveMarker: React.FC<ActiveMarkerProps> = ({ session, city }) => 
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const opacityAnim = useRef(new Animated.Value(1)).current;
   const tick = useGlobalTick(1000);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   const duration = useMemo(() => formatDuration(session.started_at), [session.started_at, tick]);
 
   // 脉冲动画

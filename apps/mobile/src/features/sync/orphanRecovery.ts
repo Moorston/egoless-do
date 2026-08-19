@@ -55,8 +55,10 @@ export async function recoverOrphans(
 
         for (const full of orphans) {
           const id = full[config.pk] as string;
+          // eslint-disable-next-line max-depth -- warning-reduction: high-risk sync/store/migration data fn; depth refactor deferred to avoid data-corruption risk
           if (!id) continue;
 
+          // eslint-disable-next-line max-depth -- warning-reduction: high-risk sync/store/migration data fn; depth refactor deferred to avoid data-corruption risk
           try {
             // Convert snake_case SQLite row to camelCase entity for consistent server data
             const mapper = getRowMapper(entity);

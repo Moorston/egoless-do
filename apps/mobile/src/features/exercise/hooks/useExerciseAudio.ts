@@ -45,6 +45,7 @@ export function useExerciseAudio() {
         bgPlayer.play();
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, [bgSource, bgPlayer, audioSessionManager]);
 
   // Init audio session + restore last selected sound

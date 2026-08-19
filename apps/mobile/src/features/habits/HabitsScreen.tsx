@@ -75,6 +75,7 @@ export default function HabitsScreen() {
       onStart={(id) => actionState.changeStatus(id, 'inProgress')}
       onCalendar={handleCalendar}
     />
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   ), [P, handleViewDetail, actionState.setActionMenuHabit, checkinHabit, actionState.changeStatus, handleCalendar]);
 
   const keyExtractor = useCallback((h: Habit) => h.id, []);

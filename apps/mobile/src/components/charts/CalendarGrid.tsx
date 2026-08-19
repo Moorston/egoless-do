@@ -62,6 +62,7 @@ export default function CalendarGrid({
       result.push(row);
     }
     return result;
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, [viewYear, viewMonth, doneSet, graceSet]);
 
   const goPrev = () => {

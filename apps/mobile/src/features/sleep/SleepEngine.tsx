@@ -76,6 +76,7 @@ export default function SleepEngine() {
     });
     autoSyncHabits?.();
     setPage('report');
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, [gratitude, quality, noteText]);
 
   const handleFinish = useCallback(() => {

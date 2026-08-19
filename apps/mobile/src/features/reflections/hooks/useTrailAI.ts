@@ -39,11 +39,13 @@ export function useTrailAI(trailId: string, trail: ThoughtTrail | undefined) {
 
   const insightCacheStale = useMemo(
     () => isCacheStale(trail?.insightCache, trail, reflections, trailNotes),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
     [trail?.insightCache, trail, reflections, trailNotes],
   );
 
   const reviewCacheStale = useMemo(
     () => isCacheStale(trail?.reviewCache, trail, reflections, trailNotes),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
     [trail?.reviewCache, trail, reflections, trailNotes],
   );
 

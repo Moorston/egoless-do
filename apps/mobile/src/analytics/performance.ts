@@ -50,8 +50,8 @@ export function trackAIUsage(feature: string, latencyMs: number, model: string):
 
 function getPlatform(): string {
   try {
-    const { Platform } = require('react-native');
-    return Platform.OS;
+    const rn = require('react-native') as { Platform: { OS: string } };
+    return rn.Platform.OS;
   } catch {
     return 'unknown';
   }

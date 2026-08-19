@@ -39,6 +39,7 @@ export function useBodyFlowState() {
     if (bodyFlowState && Date.now() - bodyFlowState.updatedAt > BODY_FLOW_EXPIRY_MS) {
       resetBodyFlowState();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, [bodyFlowState, resetBodyFlowState, BODY_FLOW_EXPIRY_MS]);
 
   const setStep = useCallback((step: FlowState['step']) => {

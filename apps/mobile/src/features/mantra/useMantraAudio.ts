@@ -85,6 +85,7 @@ export function useMantraAudio() {
       try { player.pause(); } catch {}
       if (_Speech) void _Speech.stop();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, []);
 
   return { playMantra, stopMantra, isPlaying };

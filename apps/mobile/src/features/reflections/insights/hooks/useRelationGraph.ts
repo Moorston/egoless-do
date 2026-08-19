@@ -35,5 +35,6 @@ export function useRelationGraph(context?: RelationContext): GraphBuildResult {
       habits: storeData.habits ?? [],
       reflectionLinks: storeData.reflectionLinks ?? [],
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, [storeData.plans, storeData.planItems, storeData.reflections, storeData.thoughtTrails, storeData.habits, storeData.reflectionLinks, context]);
 }

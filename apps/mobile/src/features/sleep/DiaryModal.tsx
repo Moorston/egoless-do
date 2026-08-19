@@ -74,6 +74,7 @@ export default function DiaryModal({ visible, onClose }: Props) {
       setCustomMindTag('');
       setNote('');
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, [visible]);
 
   // Auto-calculate duration

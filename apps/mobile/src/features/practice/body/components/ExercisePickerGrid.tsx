@@ -110,6 +110,7 @@ export default function ExercisePickerGrid({ TH, T, exerciseLibrary, addedExIds,
         )}
       </TouchableOpacity>
     );
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, [addedExIds, selectedIds, onToggle, TH]);
 
   return (

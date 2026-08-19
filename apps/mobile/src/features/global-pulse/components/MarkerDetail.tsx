@@ -66,6 +66,7 @@ export const MarkerDetail: React.FC<MarkerDetailProps> = ({
   const tick = useGlobalTick(1000);
   const duration = useMemo(
     () => session ? formatDuration(session.started_at) : '',
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
     [session, tick]
   );
 

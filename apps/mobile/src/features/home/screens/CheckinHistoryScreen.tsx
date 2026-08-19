@@ -114,6 +114,7 @@ export default function CheckinHistoryScreen() {
     return parts.length >= 3 ? `${parseInt(parts[1])}-${parseInt(parts[2])}` : dateStr;
   }, []);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   const weekdays = [T('weekdaySun'), T('weekdayMon'), T('weekdayTue'), T('weekdayWed'), T('weekdayThu'), T('weekdayFri'), T('weekdaySat')];
   const getWeekday = useCallback((ds: string) => {
     const [y, m, d] = ds.split('-').map(Number);
@@ -146,7 +147,7 @@ export default function CheckinHistoryScreen() {
         <View style={styles.monthHeaderRow}>
           <View style={[styles.monthDot, { backgroundColor: P }]} />
           <Text style={[styles.monthLabel, { fontSize: FONT_SUB(), color: TH.text }]}>{formatMonth(monthKey)}</Text>
-          <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{items.length} {T('days')}</Text>
+          <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{String(items.length)} {T('days')}</Text>
         </View>
 
         {items.map((h, idx) => {

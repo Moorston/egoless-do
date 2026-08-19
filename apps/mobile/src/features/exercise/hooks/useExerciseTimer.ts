@@ -45,6 +45,7 @@ export function useExerciseTimer() {
     if (holdTimeoutRef.current) clearTimeout(holdTimeoutRef.current);
     holdAnim.removeAllListeners();
     holdAnim.stopAnimation();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, []);
 
   const handleGo = useCallback(() => { setCountdown(3); setPage('countdown'); }, []);

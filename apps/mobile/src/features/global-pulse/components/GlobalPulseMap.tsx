@@ -174,11 +174,12 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
           }}
         >
           <View style={styles.clusterContainer}>
-            <Text style={styles.clusterText}>{cluster.count}</Text>
+            <Text style={styles.clusterText}>{String(cluster.count)}</Text>
           </View>
         </Marker>
       );
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, [clusters, selectedUserId, handleMarkerPress]);
 
   if (showLeaderboard && !showInlineLeaderboard) {

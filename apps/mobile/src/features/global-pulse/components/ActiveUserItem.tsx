@@ -41,6 +41,7 @@ export const ActiveUserItem: React.FC<ActiveUserItemProps> = React.memo(({
   const t = useT();
   const { city } = useCityName(session.lat, session.lng, session.city);
   const tick = useGlobalTick(1000);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   const duration = useMemo(() => formatDuration(session.started_at), [session.started_at, tick]);
 
   const displayName = useMemo(

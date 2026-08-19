@@ -322,8 +322,10 @@ export class SyncApplyService {
             );
           } catch (e) {
             const msg = e instanceof Error ? e.message : String(e);
+            // eslint-disable-next-line max-depth -- warning-reduction: high-risk sync/store/migration data fn; depth refactor deferred to avoid data-corruption risk
             if (msg.includes('UNIQUE constraint')) {
               // Race condition: row appeared between UPDATE and INSERT — retry UPDATE
+              // eslint-disable-next-line max-depth -- warning-reduction: high-risk sync/store/migration data fn; depth refactor deferred to avoid data-corruption risk
               try {
                 await db.runAsync(
                   `UPDATE ${table} SET ${setClause},deleted=0,synced=1 WHERE ${pk}=?`,

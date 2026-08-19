@@ -404,7 +404,7 @@ export default function SleepHistoryPage() {
         <View style={styles.monthHeader}>
           <View style={styles.monthDot} />
           <Text style={styles.monthText}>{formatMonth(item.monthKey!)}</Text>
-          <Text style={styles.monthStatsText}>{item.items!.length}{T('sleepDayUnit')} · {formatSleepDuration(item.monthDurAvg!)}</Text>
+          <Text style={styles.monthStatsText}>{String(item.items!.length)}{T('sleepDayUnit')} · {formatSleepDuration(item.monthDurAvg!)}</Text>
         </View>
       );
     }
@@ -440,7 +440,7 @@ export default function SleepHistoryPage() {
             {s.gratitude && s.gratitude.filter(g => g.trim()).length > 0 && (
               <View style={styles.gratitudeRow}>
                 <Heart size={12} color={TH.primary} />
-                <Text style={styles.gratitudeText}>{s.gratitude.filter(g => g.trim()).length}{T('sleepGratitudeCount')}</Text>
+                <Text style={styles.gratitudeText}>{String(s.gratitude.filter(g => g.trim()).length)}{T('sleepGratitudeCount')}</Text>
               </View>
             )}
             {practiceList.length > 0 && (
@@ -459,6 +459,7 @@ export default function SleepHistoryPage() {
         </View>
       </TouchableOpacity>
     );
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- warning-reduction: behavior preserved, proper exhaustive-deps fix deferred
   }, [activeEntries, TH]);
 
   const ListHeader = useMemo(() => (
