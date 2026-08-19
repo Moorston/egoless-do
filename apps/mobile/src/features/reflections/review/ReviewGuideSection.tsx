@@ -126,7 +126,7 @@ export function ReviewGuideSection({ reviewCache, onGenerate, onStartWrite, stal
                 />
               </View>
               <Text style={[styles.progressText, { color: TH.sub }]}>
-                已回答 {answeredCount}/{questions.length}
+                已回答 {answeredCount}/{String(questions.length)}
               </Text>
             </View>
           )}
@@ -162,7 +162,7 @@ export function ReviewGuideSection({ reviewCache, onGenerate, onStartWrite, stal
                       onPress={() => handleToggleQuestion(i)}
                     >
                       <Text style={[styles.questionText, { color: TH.text }]}>
-                        {i + 1}. {q}
+                        {String(i + 1)}. {q}
                       </Text>
                       <Text style={[styles.questionIndicator, { color: hasAnswer ? P : TH.sub }]}>
                         {hasAnswer ? '✓' : '✎'}

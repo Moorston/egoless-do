@@ -57,15 +57,6 @@ export default function PlanEditModal({ visible, TH, T, plans, onClose, onSave }
     return m;
   }, [T]);
 
-  // Build key-to-label map for display
-  const keyToLabel = useMemo(() => {
-    const m = new Map<string, string>();
-    for (const cat of EXERCISE_CATEGORIES) {
-      m.set(cat.key, T(cat.i18nKey));
-    }
-    return m;
-  }, [T]);
-
   // Resolve the current plan part to a category key (handles both old strings and new keys)
   const getSelectedKey = (plan: BodyPlan): string => {
     // If part is already a key from EXERCISE_CATEGORIES

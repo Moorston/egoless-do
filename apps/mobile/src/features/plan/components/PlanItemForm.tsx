@@ -61,8 +61,8 @@ export function PlanItemForm({
   const [name, setName] = useState(initialValues?.name ?? '');
   const [description, setDescription] = useState(initialValues?.description ?? '');
   const [targetMetric, setTargetMetric] = useState(initialValues?.targetMetric ?? '');
-  const [startDate, setStartDate] = useState(initialValues?.startDate ?? today);
-  const [endDate, setEndDate] = useState(initialValues?.endDate ?? defaultEnd);
+  const [startDate] = useState(initialValues?.startDate ?? today);
+  const [endDate] = useState(initialValues?.endDate ?? defaultEnd);
   const [priority, setPriority] = useState<PlanItemPriority>(initialValues?.priority ?? 'medium');
   const [frequency, setFrequency] = useState<CheckinFrequency>(initialValues?.frequency ?? { mode: 'daily' });
   const [draftInputs, setDraftInputs] = useState<Record<string, string>>({});

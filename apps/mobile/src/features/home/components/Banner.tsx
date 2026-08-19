@@ -4,7 +4,7 @@ import { Check, Pencil, Target, BarChart3, Shield } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 
-import { useTheme, useT } from '../../../components/UI';
+import { useT } from '../../../components/UI';
 
 
 interface Props {

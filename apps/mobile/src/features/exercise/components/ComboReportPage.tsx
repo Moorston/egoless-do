@@ -53,7 +53,7 @@ export default function ComboReportPage({ totalDurationSec, totalCalories, exerc
           <View style={[styles.summaryFooter, { borderTopWidth: 1, borderTopColor: TH.border }]}>
             <List size={16} color={TH.sub} />
             <Text style={[styles.summaryFooterText, { color: TH.sub }]}>
-              {exercises.length} {T('bodyPlanUnitExercise')}
+              {String(exercises.length)} {T('bodyPlanUnitExercise')}
             </Text>
           </View>
         </View>
@@ -75,7 +75,7 @@ export default function ComboReportPage({ totalDurationSec, totalCalories, exerc
                   </Text>
                   {ex.reps > 0 && (
                     <Text style={[styles.exerciseMeta, { color: TH.sub }]}>
-                      {ex.reps} {T('bodyPlanUnitReps') || 'reps'}
+                      {String(ex.reps)} {T('bodyPlanUnitReps') || 'reps'}
                     </Text>
                   )}
                 </View>
@@ -85,7 +85,7 @@ export default function ComboReportPage({ totalDurationSec, totalCalories, exerc
                   {exMin}:{exSec.toString().padStart(2, '0')}
                 </Text>
                 <Text style={[styles.exerciseCal, { color: TH.sub }]}>
-                  {ex.calories} kcal
+                  {String(ex.calories)} kcal
                 </Text>
               </View>
             </View>

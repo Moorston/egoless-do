@@ -142,7 +142,7 @@ export default function TrainingCalendar({ TH, T, exerciseLog, plans }: Props) {
           <Text style={[styles.statLabel, { color: TH.sub }]}>{T('bodyDayCompleted')}</Text>
         </View>
         <View style={styles.statItem}>
-          <Text style={[styles.statValue, { color: '#f59e0b' }]}>{Math.round(monthStats.totalMin / 60)}h</Text>
+          <Text style={[styles.statValue, { color: '#f59e0b' }]}>{String(Math.round(monthStats.totalMin / 60))}h</Text>
           <Text style={[styles.statLabel, { color: TH.sub }]}>{T('exerciseMin')}</Text>
         </View>
         <View style={styles.statItem}>

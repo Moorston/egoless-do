@@ -95,7 +95,7 @@ export default function MantraStartPage(props: Props) {
           <View style={{ alignItems: 'center', marginBottom: 24 }}>
             {downloading === mantra.id ? (
               <View style={{ paddingVertical: 12, paddingHorizontal: 24, borderRadius: 14, backgroundColor: `${TH.primary}15`, borderWidth: 1, borderColor: `${TH.primary}30`, minWidth: 200, alignItems: 'center' }}>
-                <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.primary }}>{T('chantingDownloadProgress')} {Math.round(dlProgress * 100)}%</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.primary }}>{T('chantingDownloadProgress')} {`${Math.round(dlProgress * 100)}%`}</Text>
                 <View style={{ height: 4, width: '100%', backgroundColor: `${TH.border}60`, borderRadius: 2, marginTop: 8 }}>
                   <View style={{ height: 4, width: `${dlProgress * 100}%`, backgroundColor: TH.primary, borderRadius: 2 }} />
                 </View>

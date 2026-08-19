@@ -127,7 +127,7 @@ export default function StrategyLibrary() {
           <View style={styles.sectionHeader}>
             <Lightbulb size={18} color={P} />
             <Text style={[styles.sectionTitle, { color: TH.text }]}>
-              {effectiveStrategies.length > 0 ? '其他策略' : '我的策略'} ({otherStrategies.length})
+              {effectiveStrategies.length > 0 ? '其他策略' : '我的策略'} ({String(otherStrategies.length)})
             </Text>
           </View>
 

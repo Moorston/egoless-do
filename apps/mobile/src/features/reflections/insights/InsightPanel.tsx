@@ -105,7 +105,7 @@ export default function InsightPanel({
               >
                 <Text style={{ fontSize: FONT_SMALL(), fontWeight: '600', color: TH.text }}>{tag.tag}</Text>
                 <Text style={{ fontSize: FONT_TINY(), color: trendColor(tag.trend), marginLeft: 4 }}>{trendIcon(tag.trend)}</Text>
-                <Text style={{ fontSize: FONT_TINY(), color: TH.sub, marginLeft: 4 }}>{tag.count}次</Text>
+                <Text style={{ fontSize: FONT_TINY(), color: TH.sub, marginLeft: 4 }}>{String(tag.count)}次</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -133,7 +133,7 @@ export default function InsightPanel({
                 <Text style={{ fontSize: FONT_SMALL() }}>{entry.icon}</Text>
                 <Text style={{ fontSize: FONT_SMALL(), fontWeight: '600', color: TH.text, marginLeft: 4 }}>{entry.mood}</Text>
                 <Text style={{ fontSize: FONT_TINY(), color: TH.sub, marginLeft: 4 }}>{entry.percentage}%</Text>
-                <Text style={{ fontSize: FONT_TINY(), color: TH.sub, marginLeft: 4 }}>{entry.count}次</Text>
+                <Text style={{ fontSize: FONT_TINY(), color: TH.sub, marginLeft: 4 }}>{String(entry.count)}次</Text>
               </TouchableOpacity>
             ))}
           </View>

@@ -19,7 +19,7 @@ interface CountdownTime {
 type CountdownType = 'start' | 'end' | 'overdue' | 'none';
 
 function getCountdownType(plan: Plan, now: Date): CountdownType {
-  const { status, startDate, endDate } = plan;
+  const { status, endDate } = plan;
   
   // 不显示倒计时的状态
   if (status === 'paused' || status === 'completed' || status === 'cancelled') {

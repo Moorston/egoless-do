@@ -1,14 +1,14 @@
 import { dateStr } from '@egoless-do/core';
 import React, { act, type ReactElement } from 'react';
 import { create as createTestRenderer } from 'react-test-renderer';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+import { useDateNavigation } from './useDateNavigation';
 
 /** Typed wrapper around react-test-renderer create (no installed types for the package). */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createTestRoot = (element: ReactElement): TestRenderer =>
   (createTestRenderer as (el: ReactElement) => TestRenderer)(element);
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-
-import { useDateNavigation } from './useDateNavigation';
 
 /** Minimal react-test-renderer handle (no installed types for react-test-renderer). */
 interface TestRenderer {

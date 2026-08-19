@@ -222,7 +222,7 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
               ? <ChevronDown size={14} color={TH.sub} />
               : <ChevronRight size={14} color={TH.sub} />}
             <Text style={{ fontSize: FONT_SUB(), color: TH.sub, fontWeight: '600' }}>
-              {T('vowLinkedPlans')} ({linkedPlans.length})
+              {T('vowLinkedPlans')} ({String(linkedPlans.length)})
             </Text>
           </TouchableOpacity>
 
@@ -311,7 +311,7 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
                           <View style={{ marginLeft: 22 }}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2 }}>
                               <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>{prog.doneCount}/{prog.expectedDays}</Text>
-                              <Text style={{ fontSize: FONT_TINY(), color: st.color, fontWeight: '500' }}>{prog.progress}%</Text>
+                              <Text style={{ fontSize: FONT_TINY(), color: st.color, fontWeight: '500' }}>{`${prog.progress}%`}</Text>
                             </View>
                             <View style={{ height: 4, borderRadius: 2, backgroundColor: TH.border, overflow: 'hidden' }}>
                               <View style={{ height: 4, borderRadius: 2, width: `${prog.progress}%`, backgroundColor: st.color }} />

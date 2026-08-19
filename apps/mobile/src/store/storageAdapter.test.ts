@@ -1,10 +1,9 @@
 // ─── StorageAdapter unit tests ──────────────────────────────────
+import * as SQLite from 'expo-sqlite';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // @ts-expect-error — React Native global not available in test env
 globalThis.__DEV__ = false;
-
-import * as SQLite from 'expo-sqlite';
 
 // In-memory store shared across mock DB calls for a single test
 let memoryStore = new Map<string, string>();

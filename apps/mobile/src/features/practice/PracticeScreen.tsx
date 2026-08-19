@@ -154,7 +154,7 @@ export default function PracticeScreen() {
             ].map((s, i) => (
               <View key={i} style={styles.summaryItem}>
                 <s.Icon size={18} color={s.color} />
-                <Text style={[styles.summaryValue, { color: s.color }]}>{s.value}</Text>
+                <Text style={[styles.summaryValue, { color: s.color }]}>{String(s.value)}</Text>
                 <Text style={[styles.summaryUnit, { color: TH.sub }]}>{s.unit}</Text>
               </View>
             ))}

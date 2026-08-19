@@ -37,7 +37,6 @@ function ReflectionCardComponent({
   onPress,
   onLongPress,
   onNavigateToPlan,
-  index = 0,
 }: Props) {
   const TH = useTheme();
   const language = useAppStore(useShallow((s: MobileStore) => s.language));

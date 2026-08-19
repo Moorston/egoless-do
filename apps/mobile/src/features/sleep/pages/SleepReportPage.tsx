@@ -117,7 +117,7 @@ export default function SleepReportPage(props: Props) {
               <Heart size={16} color={TH.sub} />
               <Text style={[styles.reportLabel, { color: TH.sub }]}>{T('sleepGratitude')}</Text>
               <Text style={[styles.reportValue, { color: TH.text }]}>
-                {validGratitude.length}{T('sleepCompleted')}
+                {String(validGratitude.length)}{T('sleepCompleted')}
               </Text>
             </View>
           )}

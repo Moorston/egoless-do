@@ -68,7 +68,7 @@ export default function ZhiguanSettingsSheet({ settings, onSave, onClose }: Prop
                   <Text style={[styles.optionText, localSettings.breathPattern === opt.key && styles.optionTextActive]}>
                     {T(opt.labelKey)}
                   </Text>
-                  <Text style={styles.optionValue}>{opt.value}</Text>
+                  <Text style={styles.optionValue}>{String(opt.value)}</Text>
                 </Pressable>
               ))}
             </View>

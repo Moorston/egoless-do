@@ -136,14 +136,14 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
               return (
                 <View key={idx} style={[s.setHistoryCard, plannedReps > 0 && setItem.reps >= plannedReps && s.setHistoryCardDone]}>
                   <Text style={s.setHistoryText}>
-                    {T('exerciseSet').replace('{n}', String(idx + 1))}: {setItem.reps}
+                    {T('exerciseSet').replace('{n}', String(idx + 1))}: {String(setItem.reps)}
                   </Text>
                 </View>
               );
             })}
             {sets.length > 4 && (
               <View style={s.setHistoryOverflowCard}>
-                <Text style={s.setHistoryOverflowText}>+{sets.length - 4}</Text>
+                <Text style={s.setHistoryOverflowText}>+{String(sets.length - 4)}</Text>
               </View>
             )}
           </View>
@@ -178,7 +178,7 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
       <View style={s.bottomBar}>
         <View style={s.bottomStat}>
           <Text style={s.durationValue}>
-            {Math.floor(sec / 60)}:{String(sec % 60).padStart(2, '0')}
+            {String(Math.floor(sec / 60))}:{String(sec % 60).padStart(2, '0')}
           </Text>
           <Text style={s.durationLabel}>{T('exerciseDuration')}</Text>
         </View>

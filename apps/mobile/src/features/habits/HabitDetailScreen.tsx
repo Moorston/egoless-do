@@ -94,7 +94,7 @@ export default function HabitDetailScreen() {
           </View>
           <View style={styles.progressContainer}>
             <ProgressBar pct={pct} color={P} />
-            <Text style={[styles.progressText, { color: TH.sub }]}>{Math.round(pct)}%</Text>
+            <Text style={[styles.progressText, { color: TH.sub }]}>{`${Math.round(pct)}%`}</Text>
           </View>
         </View>
 

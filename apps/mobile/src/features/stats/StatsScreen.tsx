@@ -13,8 +13,8 @@ import BarChart from '../../components/charts/BarChart';
 import CalendarGrid from '../../components/charts/CalendarGrid';
 import LineChart from '../../components/charts/LineChart';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useShallowStore } from '../../store/useAppStore';
 import { useCheckinStreak } from '../../store/selectors';
+import { useShallowStore } from '../../store/useAppStore';
 
 
 const CHART_W = Dimensions.get('window').width - 64;

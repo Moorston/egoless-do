@@ -61,7 +61,7 @@ function DayGroupComponent({
           <View style={styles.dateDetails}>
             <Text style={[styles.dateText, { color: TH.sub }]}>{date}</Text>
             <Text style={[styles.weekdayText, { color: TH.sub }]}>· {weekday}</Text>
-            <Text style={[styles.countText, { color: TH.sub }]}>· {reflections.length}条</Text>
+            <Text style={[styles.countText, { color: TH.sub }]}>· {String(reflections.length)}条</Text>
           </View>
           <View style={[styles.divider, { backgroundColor: TH.border }]} />
         </View>

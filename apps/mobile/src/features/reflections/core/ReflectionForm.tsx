@@ -102,7 +102,7 @@ export default function ReflectionForm({
             { color: content.length > 200 ? COLORS.RED : TH.sub },
           ]}
         >
-          {content.length}/200
+          {String(content.length)}/200
         </Text>
       </View>
 

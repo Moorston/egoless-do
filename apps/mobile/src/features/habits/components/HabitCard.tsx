@@ -111,7 +111,7 @@ function HabitCard({
           <View style={{ marginBottom: 10 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
               <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>{h.doneDays}/{h.targetDays} {T('habitDays')}</Text>
-              <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>{Math.round(h.doneDays / Math.max(h.targetDays, 1) * 100)}%</Text>
+              <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>{`${Math.round(h.doneDays / Math.max(h.targetDays, 1) * 100)}%`}</Text>
             </View>
             <ProgressBar pct={h.doneDays / Math.max(h.targetDays, 1) * 100} color={P} />
           </View>

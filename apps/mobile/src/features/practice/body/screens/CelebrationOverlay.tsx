@@ -3,7 +3,7 @@ import {Trophy} from 'lucide-react-native';
 import React, { useEffect, useRef } from 'react';
 import { View, Text, Animated, Dimensions, TouchableWithoutFeedback, StyleSheet } from 'react-native';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 interface CelebrationData {
   planName: string;

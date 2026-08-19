@@ -60,7 +60,7 @@ export default function GpsActive({
             <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.7)', marginTop: 4 }}>km</Text>
           </View>
           <View style={{ alignItems: 'center', flex: 1 }}>
-            <Text style={{ fontSize: FONT_HERO(), fontWeight: '900', color: '#fff', fontVariant: ['tabular-nums'] }}>{Math.floor(sec / 60)}:{String(sec % 60).padStart(2, '0')}</Text>
+            <Text style={{ fontSize: FONT_HERO(), fontWeight: '900', color: '#fff', fontVariant: ['tabular-nums'] }}>{String(Math.floor(sec / 60))}:{String(sec % 60).padStart(2, '0')}</Text>
             <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.7)', marginTop: 4 }}>{T('exerciseTime')}</Text>
           </View>
           <View style={{ alignItems: 'center', flex: 1 }}>

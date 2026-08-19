@@ -1,7 +1,7 @@
 // ─── BreathPreparePage — Pre-session preparation UI ─────────────
 // Shows preset info, phase diagram, distress scale, audio toggles.
 
-import {createLogger, phaseLabelKey, getDescKey, getTipsKey} from '@egoless-do/core';
+import {phaseLabelKey, getDescKey, getTipsKey} from '@egoless-do/core';
 import type { BreathingPreset, GuideStyle } from '@egoless-do/core';
 import { X, Volume2, VolumeX } from 'lucide-react-native';
 import React from 'react';

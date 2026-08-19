@@ -76,7 +76,7 @@ export default function WuxingCalendar({ dayElementMap, dayIntensityMap = {}, on
           <ChevronLeft size={20} color="#888" />
         </TouchableOpacity>
         <Text style={{ fontSize: FONT_LABEL(), fontWeight: '700', color: '#fff' }}>
-          {year}年{month + 1}月
+          {year}年{String(month + 1)}月
         </Text>
         <TouchableOpacity onPress={handleNext} style={{ padding: 4 }}>
           <ChevronRight size={20} color={monthOffset < 0 ? '#888' : '#444'} />
@@ -112,7 +112,7 @@ export default function WuxingCalendar({ dayElementMap, dayIntensityMap = {}, on
                   color: day.element ? '#fff' : day.isFuture ? '#555' : '#aaa',
                   fontWeight: day.isToday ? '700' : '400',
                 }}>
-                  {parseInt(day.date.split('-')[2])}
+                  {String(parseInt(day.date.split('-')[2]))}
                 </Text>
               </View>
             ) : (

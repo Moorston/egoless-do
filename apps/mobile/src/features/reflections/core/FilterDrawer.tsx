@@ -4,7 +4,7 @@ import React, { useState, useCallback } from 'react';
 import {View, Text, TouchableOpacity, ScrollView, StyleSheet} from 'react-native';
 
 import DateRangePickerModal from '../../../components/DateRangePickerModal';
-import {useTheme, useT, PillSelector} from '../../../components/UI';
+import {useTheme} from '../../../components/UI';
 
 interface Props {
   visible: boolean;

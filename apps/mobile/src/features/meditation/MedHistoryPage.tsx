@@ -327,7 +327,7 @@ export default function MedHistoryPage() {
         <View style={styles.monthHeaderRow}>
           <View style={[styles.timelineDot, { backgroundColor: TH.primary }]} />
           <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>{formatMonth(item.monthKey!)}</Text>
-          <Text style={[styles.badgeFont, { color: TH.sub }]}>{item.items!.length}次 · {item.monthMin}min</Text>
+          <Text style={[styles.badgeFont, { color: TH.sub }]}>{String(item.items!.length)}次 · {item.monthMin}min</Text>
         </View>
       );
     }

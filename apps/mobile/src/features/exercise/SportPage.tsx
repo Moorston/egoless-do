@@ -1,4 +1,4 @@
-import { SPORT_BG_COLORS, COLORS, getSportType, TARGET_PRESETS, estimateCalories, MET_MAP, getSportExperienceType, createLogger, EXERCISE_CATEGORIES, COMBO_WORKOUT_SPORT_KEY, buildExerciseLibrary, type I18nKeys, type ExerciseDef } from '@egoless-do/core';
+import { SPORT_BG_COLORS, COLORS, getSportType, TARGET_PRESETS, estimateCalories, MET_MAP, getSportExperienceType, createLogger, EXERCISE_CATEGORIES, COMBO_WORKOUT_SPORT_KEY, buildExerciseLibrary, type ExerciseDef } from '@egoless-do/core';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useKeepAwake } from 'expo-keep-awake';
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';

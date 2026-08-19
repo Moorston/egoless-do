@@ -83,7 +83,7 @@ export default function TransitionScreen({
             {currentExercise.nameI18nKey ? T(currentExercise.nameI18nKey) : currentExercise.nameZh}
           </Text>
           <Text style={[styles.summaryTime, { color: TH.sub }]}>
-            {Math.floor(currentDuration / 60)}:{String(currentDuration % 60).padStart(2, '0')}
+            {String(Math.floor(currentDuration / 60))}:{String(currentDuration % 60).padStart(2, '0')}
           </Text>
         </View>
       </View>

@@ -3,7 +3,7 @@ import {Trash2, Pin, PinOff, Tag, X, CheckSquare, Square} from 'lucide-react-nat
 import React, { useCallback } from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Alert} from 'react-native';
 
-import {useTheme, useT} from '../../../components/UI';
+import {useTheme} from '../../../components/UI';
 
 interface Props {
   selectedCount: number;

@@ -4,7 +4,7 @@ import { X } from 'lucide-react-native';
 import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 
-import {useTheme, useT} from '../../../components/UI';
+import {useTheme} from '../../../components/UI';
 import { SmartQueryBubble } from '../insights/SmartQueryBubble';
 
 
@@ -63,7 +63,7 @@ export default function SmartQueryPanel({
       {!isSmartParsing && queryResults.length > 0 && (
         <View style={{ marginTop: 8 }}>
           <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 8 }}>
-            找到 {queryResults.length} 条相关感念
+            找到 {String(queryResults.length)} 条相关感念
           </Text>
           <TouchableOpacity
             onPress={() => {

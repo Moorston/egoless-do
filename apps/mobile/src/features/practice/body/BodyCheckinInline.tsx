@@ -77,7 +77,7 @@ function BodyCheckinInline({ TH, T, plan, durationSec, onSave, onSkip }: Props) 
           </Text>
           {durationSec != null && durationSec > 0 && (
             <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 4 }}>
-              {Math.floor(durationSec / 60)}:{String(durationSec % 60).padStart(2, '0')}
+              {String(Math.floor(durationSec / 60))}:{String(durationSec % 60).padStart(2, '0')}
             </Text>
           )}
         </View>

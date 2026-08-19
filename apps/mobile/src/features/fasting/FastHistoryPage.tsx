@@ -174,7 +174,7 @@ export function FastCalendarScreen() {
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 20, backgroundColor: TH.card, borderRadius: 12, padding: 16 }}>
           <View style={styles.calendarStatItem}><Text style={styles.calendarStatValue}>{fastDays}/{daysInMonth}</Text><Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>本月</Text></View>
-          <View style={styles.calendarStatItem}><Text style={styles.calendarStatValue}>{entries.length}</Text><Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>累计次数</Text></View>
+          <View style={styles.calendarStatItem}><Text style={styles.calendarStatValue}>{String(entries.length)}</Text><Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>累计次数</Text></View>
           <View style={styles.calendarStatItem}><Text style={styles.calendarStatValue}>{streak}</Text><Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>连续天数</Text></View>
         </View>
       </ScrollView>
@@ -217,7 +217,7 @@ function DetailModal({ entry, TH, onClose, onDelete }: { entry: FastingSession |
             <View style={{ height: 6, width: `${completionRate}%`, backgroundColor: completionRate >= 100 ? '#10b981' : '#8446FF', borderRadius: 3 }} />
           </View>
           <View style={styles.modalCalRow}>
-            <View style={styles.modalCalItem}><Flame size={16} color={COLORS.ORANGE} /><Text style={{ fontSize: FONT_BODY(), color: TH.text }}>~{entry.estimatedKcal ?? 0} kcal</Text></View>
+            <View style={styles.modalCalItem}><Flame size={16} color={COLORS.ORANGE} /><Text style={{ fontSize: FONT_BODY(), color: TH.text }}>~{String(entry.estimatedKcal ?? 0)} kcal</Text></View>
           </View>
           {entry.insight ? <Text style={{ fontSize: FONT_BODY(), color: TH.sub, fontStyle: 'italic', marginBottom: 12 }}>「{entry.insight}」</Text> : null}
           <View style={styles.noteContainer}>
@@ -312,7 +312,7 @@ export default function FastHistoryPage() {
         <View style={styles.monthHeaderRow}>
           <View style={styles.monthHeaderDot} />
           <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>{formatMonth(item.monthKey!)}</Text>
-          <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{item.items!.length}次 · {item.monthKcal}kcal</Text>
+          <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{String(item.items!.length)}次 · {item.monthKcal}kcal</Text>
         </View>
       );
     }
@@ -344,7 +344,7 @@ export default function FastHistoryPage() {
               <Text style={{ fontSize: FONT_BADGE(), color: completionRate >= 100 ? '#10b981' : '#8446FF', fontWeight: '600' }}>{completionRate}%</Text>
             </View>
             <View style={styles.entryKcalRow}>
-              <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>🔥 ~{f.estimatedKcal ?? 0} kcal</Text>
+              <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>🔥 ~{String(f.estimatedKcal ?? 0)} kcal</Text>
             </View>
             {notePreview ? <Text style={{ fontSize: FONT_BADGE(), color: TH.sub, marginTop: 2 }}>「{notePreview}」</Text> : null}
           </View>

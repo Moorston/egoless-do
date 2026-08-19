@@ -98,7 +98,7 @@ export default function ComboProgressHeader({ exercises, currentIndex, results, 
               </Text>
               {result ? (
                 <Text style={[styles.chipMeta, { color: COLORS.textSecondary }]}>
-                  {Math.floor(result.durationSec / 60)}:{(result.durationSec % 60).toString().padStart(2, '0')}
+                  {String(Math.floor(result.durationSec / 60))}:{(result.durationSec % 60).toString().padStart(2, '0')}
                 </Text>
               ) : (
                 <Text style={[styles.chipMeta, { color: COLORS.textSecondary }]} numberOfLines={1}>

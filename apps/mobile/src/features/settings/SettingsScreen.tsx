@@ -24,8 +24,8 @@ import {
 } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useShallowStore } from '../../store/useAppStore';
 import { useCheckinStreak } from '../../store/selectors';
+import { useShallowStore } from '../../store/useAppStore';
 import {
   requestNotificationPermission, scheduleDailyReminder, cancelAllReminders,
 } from '../notifications/NotificationService';

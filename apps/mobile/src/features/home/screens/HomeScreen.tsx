@@ -83,7 +83,7 @@ export default function HomeScreen() {
   const P     = TH.primary;
   const {
     checkinHistory, plans, planItemCheckins, planItems, dailyCustomTodos,
-    foodLog, habits, waterMl, waterGoal, calGoal,
+    foodLog, waterMl, waterGoal, calGoal,
     healthSyncEnabled, todaySteps, userProfile, graceHistory,
     setWeightUnit, submitCheckin, checkinHabit, addWater,
     setWaterGoal, setCalGoal, checkAutoStatus, autoSyncPlanItems,

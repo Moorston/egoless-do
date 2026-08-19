@@ -7,8 +7,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../../components/UI';
 import CalendarGrid from '../../../components/charts/CalendarGrid';
-import { useShallowStore } from '../../../store/useAppStore';
 import { useCheckinStreak } from '../../../store/selectors';
+import { useShallowStore } from '../../../store/useAppStore';
 
 
 interface CheckinStatsModalProps {

@@ -308,7 +308,7 @@ export default function BedtimeReminderModal({
             style={[styles.cancelBtn, { borderColor: `${sub}50` }]}
           >
             <Text style={[styles.cancelText, { color: `${sub}DD` }]}>{T('sleepRemindLater')}</Text>
-            <Text style={[styles.snoozeHint, { color: `${sub}77` }]}>{T('sleepRemaining')} {3 - snoozeCount} {T('sleepTimes')}</Text>
+            <Text style={[styles.snoozeHint, { color: `${sub}77` }]}>{T('sleepRemaining')} {String(3 - snoozeCount)} {T('sleepTimes')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {

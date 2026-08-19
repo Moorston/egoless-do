@@ -18,7 +18,6 @@ export default function VirtualList<T>({
   keyExtractor,
   emptyMessage,
   emptyStyle,
-  estimatedItemSize,
   ...rest
 }: VirtualListProps<T>) {
   if (items.length === 0 && emptyMessage) {

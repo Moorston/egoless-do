@@ -133,7 +133,7 @@ export default function DedicationTab({ TH, T, onNavigateToWrite }: Props) {
         <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>
           {T('vowDedHistory')}
         </Text>
-        <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{filteredDedications.length}</Text>
+        <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{String(filteredDedications.length)}</Text>
       </View>
 
       {filteredDedications.length === 0 ? (

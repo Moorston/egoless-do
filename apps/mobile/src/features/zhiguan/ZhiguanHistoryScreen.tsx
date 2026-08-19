@@ -100,7 +100,7 @@ export default function ZhiguanHistoryScreen() {
               <View style={{ flex: 1 }}>
                 <Text style={styles.dateLabel}>{new Date(s.startTs).toLocaleDateString()}</Text>
                 <Text style={styles.subLabel}>
-                  {getMethodLabel(s.chosenMethod)} · {s.status} · {Math.round(((s.endTs ?? s.startTs) - s.startTs) / 60000)}min
+                  {getMethodLabel(s.chosenMethod)} · {s.status} · {String(Math.round(((s.endTs ?? s.startTs) - s.startTs) / 60000))}min
                 </Text>
               </View>
               <Pressable onPress={() => handleDelete(s.id)} style={styles.delBtn}>

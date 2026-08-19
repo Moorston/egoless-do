@@ -58,7 +58,7 @@ export default function ReviewHistoryScreen() {
           {formatMonth(monthKey)}
         </Text>
         <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>
-          {items.length} {activeTab === 'week' ? '周' : '月'}
+          {String(items.length)} {activeTab === 'week' ? '周' : '月'}
         </Text>
       </View>
 

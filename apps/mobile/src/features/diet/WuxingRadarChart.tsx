@@ -153,7 +153,7 @@ export default function WuxingRadarChart({ stats, size = 240, colors = DEFAULT_C
         {ELEMENTS.map(e => (
           <View key={e} style={{ alignItems: 'center' }}>
             <Text style={{ fontSize: FONT_SMALL(), fontWeight: '700', color: colors[e] }}>
-              {stats[e] ?? 0}%
+              {String(stats[e] ?? 0)}%
             </Text>
             <Text style={{ fontSize: FONT_SMALL(), color: '#888' }}>
               {WUXING_ELEMENT_CONFIG[e]?.label ?? e}

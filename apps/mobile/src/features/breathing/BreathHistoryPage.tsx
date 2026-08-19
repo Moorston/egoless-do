@@ -143,7 +143,7 @@ export default function BreathHistoryPage() {
               { value: `${stats.distressImprove}%`, label: T('breathDistressImprove'), color: '#10B981' },
             ].map((s, i) => (
               <View key={i} style={{ alignItems: 'center', gap: 2 }}>
-                <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: s.color }}>{s.value}</Text>
+                <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: s.color }}>{String(s.value)}</Text>
                 <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{s.label}</Text>
               </View>
             ))}

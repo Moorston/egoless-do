@@ -27,13 +27,6 @@ function formatDate(dateString: string): string {
   return `${y}/${m}/${d}`;
 }
 
-// 计算已进行天数
-function daysSince(dateString: string): number {
-  const start = new Date(dateString);
-  const now = new Date();
-  return Math.max(0, Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)));
-}
-
 export const LeaderboardItem: React.FC<LeaderboardItemProps> = React.memo(({
   entry,
   rank,
@@ -92,7 +85,7 @@ export const LeaderboardItem: React.FC<LeaderboardItemProps> = React.memo(({
         <View style={styles.detailRow}>
           <View style={styles.detailItem}>
             <Text style={[styles.detailLabel, { color: theme.sub }]}>🔥 {t('globalPulse.currentStreak')}</Text>
-            <Text style={[styles.detailValue, { color: theme.text }]}>{entry.streak}{t('globalPulse.days')}</Text>
+            <Text style={[styles.detailValue, { color: theme.text }]}>{String(entry.streak)}{t('globalPulse.days')}</Text>
           </View>
           <View style={styles.detailItem}>
             <Text style={[styles.detailLabel, { color: theme.sub }]}>📅 {t('globalPulse.totalDays')}</Text>

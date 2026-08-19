@@ -49,7 +49,7 @@ export default function VipassanaPanel({ visible, onClose, T }: Props) {
           <ScrollView style={styles.content}>
             {currentGuide?.lines.map((lineKey, idx) => (
               <View key={idx} style={styles.lineRow}>
-                <Text style={styles.lineNum}>{idx + 1}.</Text>
+                <Text style={styles.lineNum}>{String(idx + 1)}.</Text>
                 <Text style={styles.lineText}>{T(lineKey)}</Text>
               </View>
             ))}

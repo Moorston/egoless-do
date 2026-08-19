@@ -37,7 +37,7 @@ export default function WeightTrendChart({ TH, T, checkins }: Props) {
     const result: MonthData[] = [];
     for (const [month, records] of map) {
       const weights = records.map(r => r.weight!).filter((w): w is number => w != null);
-      const [year, mon] = month.split('-');
+      const [, mon] = month.split('-');
       result.push({
         month,
         label: `${parseInt(mon)}月`,

@@ -62,7 +62,7 @@ interface Props {
  *   with a dark (#0a0a1a) background.
  */
 export default function SleepBarrierPage(props: Props) {
-  const { currentPeriod, remainingSec, barrierDuration, glowAnim, completedPractice, awayMin,
+  const { currentPeriod, remainingSec, glowAnim, completedPractice, awayMin,
     onChoosePractice, onSkipToGratitude } = props;
   const T = useT();
 

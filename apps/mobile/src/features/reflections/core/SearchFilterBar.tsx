@@ -3,7 +3,7 @@ import { X, BarChart3 } from 'lucide-react-native';
 import React from 'react';
 import {View, Text, ScrollView, TouchableOpacity, TextInput} from 'react-native';
 
-import {useTheme, useT} from '../../../components/UI';
+import {useTheme} from '../../../components/UI';
 
 
 interface FilterItem {

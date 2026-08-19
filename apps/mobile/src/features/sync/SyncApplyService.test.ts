@@ -75,6 +75,7 @@ vi.mock('../../store/rowMappers', () => {
 vi.mock('@egoless-do/core', () => ({
   SCHEMAS: MOCK_SCHEMAS,
   buildServerPayloadToRow: () => (row: Record<string, unknown>) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- intentional rest-sibling: strip collection before returning
     const { collection: _c, ...rest } = row as Record<string, unknown> & { collection?: unknown };
     return rest;
   },

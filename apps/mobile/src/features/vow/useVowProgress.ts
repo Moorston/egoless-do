@@ -76,12 +76,6 @@ export function useVowProgress(): VowProgressData {
       }
     }
 
-    // Plan progress comes from plan.progress field
-    for (const _p of activePlans) {
-      // Plans don't have daily checkins in the same way; track by progress changes
-      // We'll count any plan with progress > 0 as active
-    }
-
     // This week practice days
     const thisWeekPracticeDays = weekDates.filter(d => {
       const h = dateToHabits.get(d);

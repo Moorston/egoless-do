@@ -2,7 +2,7 @@ import {FONT_BODY, FONT_SMALL, FONT_HERO} from '@egoless-do/core';
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 
-import {useTheme, useT} from './UI';
+import {useTheme} from './UI';
 
 interface Props {
   icon?: string;

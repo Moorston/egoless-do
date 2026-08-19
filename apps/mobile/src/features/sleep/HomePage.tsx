@@ -39,7 +39,7 @@ interface HomePageProps {
 // eslint-disable-next-line max-lines-per-function -- large screen component; splitting into sub-components is a separate refactor
 export default function HomePage(props: HomePageProps) {
   const { todaySleep, sleepGoal, sleepStreak, showBedtimeModal, showDiary,
-    onStartBarrier, onQuickGratitude, onSetShowDiary, onDismissBedtimeModal, onStartBarrierFromModal, onSaveQuickDiary, onSetSleepGoal, onSnooze, onSkipTonight } = props;
+    onStartBarrier, onQuickGratitude, onSetShowDiary, onDismissBedtimeModal, onSaveQuickDiary, onSetSleepGoal, onSnooze, onSkipTonight } = props;
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();

@@ -44,7 +44,7 @@ export default function PlanTodoList({
           {todayItems.length > 0 && (
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 8, paddingHorizontal: 12 }}>
               <ClipboardList size={14} color={P} />
-              <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text }}>{T('planTodoList')} ({todayItems.length})</Text>
+              <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text }}>{T('planTodoList')} ({String(todayItems.length)})</Text>
             </View>
           )}
           {todayItems.map((item, i, arr) => {
@@ -91,7 +91,7 @@ export default function PlanTodoList({
           {dailyCustomTodos.length > 0 && (
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 8, paddingHorizontal: 12, borderTopWidth: todayItems.length > 0 ? 1 : 0, borderTopColor: TH.border }}>
               <Pencil size={14} color={P} />
-              <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text }}>{T('planDailyCustomTodos')} ({dailyCustomTodos.length})</Text>
+              <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text }}>{T('planDailyCustomTodos')} ({String(dailyCustomTodos.length)})</Text>
             </View>
           )}
           {/* Custom todos */}

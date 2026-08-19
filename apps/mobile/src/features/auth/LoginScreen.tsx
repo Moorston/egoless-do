@@ -1,4 +1,4 @@
-import {FONT_TITLE, FONT_SUB, FONT_ERROR, createLogger, MFARequiredError} from '@egoless-do/core';
+import {FONT_TITLE, FONT_SUB, FONT_ERROR, MFARequiredError} from '@egoless-do/core';
 import { Image } from 'expo-image';
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, ImageRequireSource } from 'react-native';

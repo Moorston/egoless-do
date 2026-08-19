@@ -126,7 +126,7 @@ export default function ExerciseScreen() {
                 </View>
                 <View style={styles.divider} />
                 <View style={styles.statColumn}>
-                  <Text style={styles.statValue}>{Math.round(weeklyStats.weekDuration / 60)}</Text>
+                  <Text style={styles.statValue}>{String(Math.round(weeklyStats.weekDuration / 60))}</Text>
                   <Text style={styles.statSub}>{T('exerciseMin')}</Text>
                   <Text style={styles.statLabel}>{T('exerciseWeekTime')}</Text>
                 </View>

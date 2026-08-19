@@ -1,6 +1,6 @@
 // ─── Shared UI primitives ─────────────────────────────────────────
 import {THEMES, t, FONT_BUTTON, FONT_BACK, FONT_LABEL, FONT_SUB, FONT_STAT_CARD, FONT_BODY, FONT_HERO, FONT_SMALL} from '@egoless-do/core';
-import type { I18nKey, Theme, ThemeName } from '@egoless-do/core';
+import type { Theme, ThemeName } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ChevronLeft, Check } from 'lucide-react-native';
 import React from 'react';

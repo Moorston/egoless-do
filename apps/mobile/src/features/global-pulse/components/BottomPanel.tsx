@@ -8,8 +8,8 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';
-import {useShallowStore} from '../../../store/useAppStore';
 import { useCheckinStreak } from '../../../store/selectors';
+import {useShallowStore} from '../../../store/useAppStore';
 
 import { ActiveUsersList } from './ActiveUsersList';
 import { Leaderboard } from './Leaderboard';
@@ -175,7 +175,7 @@ export const BottomPanel: React.FC<BottomPanelProps> = ({
                     <Text style={[styles.myStatLabel, { color: theme.sub }]}>{t('globalPulse.exceedPercent')}</Text>
                   </View>
                   <View style={styles.myStatItem}>
-                    <Text style={[styles.myStatValue, { color: theme.sub }]}>{myRankInfo.total}</Text>
+                    <Text style={[styles.myStatValue, { color: theme.sub }]}>{String(myRankInfo.total)}</Text>
                     <Text style={[styles.myStatLabel, { color: theme.sub }]}>{t('globalPulse.totalUsers')}</Text>
                   </View>
                 </View>

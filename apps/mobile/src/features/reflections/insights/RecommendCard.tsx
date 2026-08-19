@@ -70,7 +70,7 @@ function RecommendCard({ rec, onOneClickCreate, onCustomCreate, onNotInterested 
         {/* Stats row */}
         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 6, gap: 8 }}>
           <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
-            {rec.reflectionIds.length}{T('quickTrailReflections')}
+            {String(rec.reflectionIds.length)}{T('quickTrailReflections')}
           </Text>
           {rec.primaryTag ? (
             <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
