@@ -172,14 +172,61 @@ describe('createFastingSlice', () => {
     });
   });
 
-  describe('deleteFastingRecord', () => {
-    it('is not implemented as a separate method on the fasting slice', () => {
-      const store = makeTestStore();
+  describe('updateFastingNote', () => {
+    it('updates the note of an existing entry and persists it', () => {
+      const existing = { id: 'fast-1', startedAt: 1000, targetHours: 16, note: 'old', updatedAt: 1, deleted: false };
+      const store = makeTestStore({ fastingHistory: [existing] });
       const slice = createFastingSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
-      // deleteFastingRecord does not exist — the CheckinSlice
-      // only exposes startFasting and stopFasting for the fasting feature.
-      expect((slice as any).deleteFastingRecord).toBeUndefined();
+      slice.updateFastingNote('fast-1', 'new insight');
+
+      const updated = (store.state().fastingHistory as any[]).find(e => e.id === 'fast-1');
+      expect(updated.note).toBe('new insight');
+      expect(updated.updatedAt).toBeGreaterThan(1);
+      expect(mockAdapter.persistChange).toHaveBeenCalledWith(
+        'fasting',
+        'fast-1',
+        expect.objectContaining({ id: 'fast-1', note: 'new insight' }),
+      );
+    });
+
+    it('does not persist when the entry does not exist', () => {
+      const store = makeTestStore({ fastingHistory: [{ id: 'fast-1', startedAt: 1000, targetHours: 16, updatedAt: 1, deleted: false }] });
+      const slice = createFastingSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+
+      slice.updateFastingNote('nonexistent', 'note');
+
+      expect(mockAdapter.persistChange).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('deleteFastingEntry', () => {
+    it('removes the entry from fastingHistory', () => {
+      const existing = { id: 'fast-1', startedAt: 1000, targetHours: 16, updatedAt: 1, deleted: false };
+      const store = makeTestStore({ fastingHistory: [existing] });
+      const slice = createFastingSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+
+      slice.deleteFastingEntry('fast-1');
+
+      expect((store.state().fastingHistory as any[])).toHaveLength(0);
+    });
+
+    it('marks the entry as deleted via the adapter', () => {
+      const store = makeTestStore({ fastingHistory: [{ id: 'fast-1', startedAt: 1000, targetHours: 16, updatedAt: 1, deleted: false }] });
+      const slice = createFastingSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+
+      slice.deleteFastingEntry('fast-1');
+
+      expect(mockAdapter.markDeleted).toHaveBeenCalledWith('fasting', 'fast-1');
+    });
+
+    it('calls onSync after deleting', () => {
+      const store = makeTestStore({ fastingHistory: [{ id: 'fast-1', startedAt: 1000, targetHours: 16, updatedAt: 1, deleted: false }] });
+      const slice = createFastingSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+
+      slice.deleteFastingEntry('fast-1');
+
+      expect(mockSync).toHaveBeenCalled();
     });
   });
 
