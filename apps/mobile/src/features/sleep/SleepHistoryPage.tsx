@@ -196,10 +196,7 @@ function DetailModal({ entry, TH, T, onClose, onDelete }: { entry: SleepEntry | 
 
   const startEdit = () => { setNoteText(entry.note ?? ''); setEditingNote(true); };
   const saveNote = () => {
-    const updated = { ...entry, note: noteText, updatedAt: Date.now() };
-    const newHist = (useAppStore.getState().sleepHistory ?? []).map(e => e.id === entry.id ? updated : e);
-    useAppStore.setState({ sleepHistory: newHist });
-    void import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites());
+    useAppStore.getState().updateSleepNote(entry.id, noteText);
     setEditingNote(false);
   };
 
@@ -390,10 +387,7 @@ export default function SleepHistoryPage() {
   }, [activeEntries, grouped]);
 
   const handleDelete = useCallback((id: string) => {
-    const s = useAppStore.getState();
-    const newHist = (s.sleepHistory ?? []).map(e => e.id === id ? { ...e, deleted: true, updatedAt: Date.now() } : e);
-    useAppStore.setState({ sleepHistory: newHist });
-    void import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites());
+    useAppStore.getState().deleteSleepEntry(id);
   }, []);
 
   const renderItem = useCallback(({ item }: { item: FlatItem }) => {

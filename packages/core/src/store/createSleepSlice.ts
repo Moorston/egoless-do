@@ -80,5 +80,25 @@ export function createSleepSlice(
       set({ sleepGoal: goal });
       adapter.persistSettings('sleepGoal', goal).catch(e => log.error(e));
     },
+
+    updateSleepNote(id: string, note: string) {
+      let updated: SleepEntry | undefined;
+      set(s => {
+        const newHist = (s.sleepHistory ?? []).map(e =>
+          e.id === id ? { ...e, note, updatedAt: Date.now() } : e
+        );
+        updated = newHist.find(e => e.id === id);
+        return { sleepHistory: newHist };
+      });
+      if (updated) adapter.persistChange('sleep', id, updated).catch(e => log.error(e));
+    },
+
+    deleteSleepEntry(id: string) {
+      set(s => ({
+        sleepHistory: (s.sleepHistory ?? []).filter(e => e.id !== id),
+      }));
+      adapter.markDeleted('sleep', id).catch(e => log.error(e));
+      onSync?.();
+    },
   });
 }

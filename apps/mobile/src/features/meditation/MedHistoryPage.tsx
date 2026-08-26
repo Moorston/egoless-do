@@ -203,11 +203,7 @@ function DetailModal({ entry, TH, onClose, onDelete }: { entry: MedHistoryEntry 
 
   const startEdit = () => { setNoteText(entry.note ?? ''); setEditingNote(true); };
   const saveNote = () => {
-    const updated = { ...entry, note: noteText, updatedAt: Date.now() };
-    const newHist = (useAppStore.getState().medHistory ?? []).map((e: MedHistoryEntry) => e.date === entry.date ? updated : e);
-    const newTotal = newHist.filter((e: MedHistoryEntry) => !e.deleted).reduce((s, e) => s + (e.durMin || 0), 0);
-    useAppStore.setState({ medHistory: newHist, totalMedMinutes: newTotal });
-    import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites()).catch(err => console.error('meditation saveNote flush', err));
+    useAppStore.getState().updateMeditationNote(entry.date, noteText);
     setEditingNote(false);
   };
 
@@ -313,10 +309,7 @@ export default function MedHistoryPage() {
   }, [activeEntries, grouped]);
 
   const handleDelete = useCallback((date: string) => {
-    const s = useAppStore.getState();
-    const newHist = (s.medHistory ?? []).map((e: MedHistoryEntry) => e.date === date ? { ...e, deleted: true, updatedAt: Date.now() } : e);
-    useAppStore.setState({ medHistory: newHist, totalMedMinutes: newHist.filter((e: MedHistoryEntry) => !e.deleted).reduce((sum, e) => sum + (e.durMin || 0), 0) });
-    import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites()).catch(err => console.error('meditation delete flush', err));
+    useAppStore.getState().deleteMeditationEntry(date);
   }, []);
 
   const renderItem = useCallback(({ item }: { item: FlatItem }) => {
