@@ -97,6 +97,8 @@ Slice action → adapter.persistChange(entity, id, data)
 - ❌ Throwing exceptions — catch and log
 - ❌ Mutating state without calling `adapter.persistChange`
 
+> ⚠️ **`flushWrites()` trap** — Mutating store state directly via `setState` without `persistChange`, then calling `flushWrites()`, does NOT persist. `flushWrites()` only drains the batcher's pending `persistChange` queue; a `setState` with no `persistChange` leaves the batcher empty, so data exists only in memory and is lost on restart. Screens must route every entity mutation through a slice action. See mobile spec → "Persistence Anti-patterns — the `flushWrites()` trap" for the full template.
+
 ---
 
 ## Examples

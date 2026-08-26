@@ -84,6 +84,72 @@ Rules:
 
 ---
 
+## Persistence Anti-patterns — the `flushWrites()` trap
+
+> **History**: 3 early-built history pages (FastHistoryPage / MedHistoryPage / SleepHistoryPage, pre-unified-storage) wrote notes and deletes via `useAppStore.setState({ xxxHistory: newHist })` + `flushWrites()`. This caused 6 ghost-data bugs — edits and deletes survived in memory but **vanished after restart** because SQLite never received them. Fixed in `08-26-history-pages-persist-fix` by migrating to slice actions.
+
+### Why `flushWrites()` does NOT persist
+
+`flushWrites()` only flushes the WriteBatcher's in-flight batch — the batch of pending `persistChange` calls. If you mutate the Store directly via `setState` **without** calling `adapter.persistChange`, the batcher is empty, so `flushWrites()` is a no-op. The data exists only in the in-memory Zustand state and is lost on next app launch (entity data is not in `partialize`).
+
+```
+setState({ history: newHist })  ← in-memory only
+flushWrites()                  ← flushes an empty batcher → no SQLite write
+                               ← restart → rehydrateFromDb → data gone (ghost data)
+```
+
+### Correct slice-action template
+
+Every mutation follows: **precompute → `set(() => patch)` → `adapter.persistChange`/`markDeleted` → `onSync?.()`**.
+
+```ts
+// update: persist the whole patched record
+updateNote(id, note) {
+  const hist = get().xxxHistory;
+  const idx = hist.findIndex(e => e.id === id);
+  if (idx === -1) return;                    // not found → no persist
+  const updated = { ...hist[idx], note, updatedAt: Date.now() };
+  set(() => ({ xxxHistory: [...hist.slice(0, idx), updated, ...hist.slice(idx + 1)] }));
+  adapter.persistChange('entity', id, updated).catch(e => log.error(e));
+  onSync?.();
+}
+
+// delete: soft-delete via adapter.markDeleted + remove from in-memory history
+deleteEntry(id) {
+  const hist = get().xxxHistory;
+  set(() => ({ xxxHistory: hist.filter(e => e.id !== id) }));
+  adapter.markDeleted('entity', id).catch(e => log.error(e));   // registers {deleted:true, updatedAt:now}
+  onSync?.();
+}
+```
+
+### Delete semantics — filter-remove vs soft-delete
+
+Slice actions use **filter-remove from in-memory history** + **`markDeleted` to register the sync-side deletion**. This is NOT a contradiction: the history list shown to the user is already `activeOnly`/`.filter(!deleted)` filtered everywhere it's read, so filter-remove and soft-delete produce identical UI. `markDeleted` ensures the deletion propagates to SQLite and PocketBase. Don't "soft-delete in memory" (set `deleted:true` and leave it in the array) — that leaves stale filtered-out records consuming memory.
+
+### Aggregates (e.g. `totalMedMinutes`)
+
+When a delete changes a derived aggregate, recompute it in the same `set` call:
+
+```ts
+const newHist = hist.filter(e => e.date !== id);
+const newTotal = activeOnly(newHist).reduce((sum, m) => sum + (m.durMin || 0), 0);
+set(() => ({ medHistory: newHist, totalMedMinutes: newTotal }));
+```
+
+### id type caveat
+
+Entity ids differ: `fasting`/`sleep` use uuid (`entry.id`), `meditation` uses a date string (`entry.date`). Match by the correct key in `findIndex`/`filter` and pass it as the id to `persistChange`/`markDeleted`.
+
+Rules:
+- ❌ Never `useAppStore.setState(...)` + `flushWrites()` to persist entity data — it doesn't persist
+- ✅ Always route through a slice action that calls `adapter.persistChange` (writes/updates) or `adapter.markDeleted` (deletes)
+- ✅ Precompute the new state, then call `set` once with the patch — never `set` inside a loop
+- ✅ Recompute aggregates in the same `set` patch as the delete
+- ✅ For records not found, skip persistence (no-op) rather than persisting a phantom record
+
+---
+
 ## Persistence Configuration
 
 The Zustand `partialize` is selective — only settings/auth/UI survive restart. Entity data lives **solely** in SQLite (rehydrated on launch), never in JSON-storage:
