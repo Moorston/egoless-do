@@ -1017,3 +1017,39 @@ HomeScreen 用 useCheckinStreak() selector 始终正确，AppHeader/SimpleHeader
 ### Next Steps
 
 - None - task complete
+
+
+## Session 84: 子任务 A 完成 — 历史页 persistChange 契约迁移
+
+**Date**: 2026-08-26
+**Task**: 子任务 A 完成 — 历史页 persistChange 契约迁移
+**Branch**: `fix/history-pages-persist-contract`
+
+### Summary
+
+修复 3 个历史页 (FastHistoryPage/MedHistoryPage/SleepHistoryPage) 的 6 个幽灵数据 bug。根因：flushWrites() 语义误解 — 只刷新 WriteBatcher 队列，不持久化 Store 状态；直接 setState 不调 persistChange 导致内存有数据但 SQLite 没有，重启丢失。修复：为 3 个 slice 补 6 个 action (updateNote/deleteEntry)，遵循预计算→set→persistChange/markDeleted→onSync 范式；迁移 6 个调用点；补 16 个单元测试；spec 记录 flushWrites 陷阱。子任务 B (split-quick-trail-search) 规划就绪待启动。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `f7e619b7` | (see git log) |
+| `d7bf8670` | (see git log) |
+| `43660c97` | (see git log) |
+| `844f3477` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-2.md`
-- **Total Sessions**: 83
-- **Last Active**: 2026-08-11
+- **Total Sessions**: 84
+- **Last Active**: 2026-08-26
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~1019 | Active |
+| `journal-2.md` | ~1055 | Active |
 | `journal-1.md` | ~1971 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 84 | 2026-08-26 | 子任务 A 完成 — 历史页 persistChange 契约迁移 | `f7e619b7`, `d7bf8670`, `43660c97`, `844f3477` | `fix/history-pages-persist-contract` |
 | 83 | 2026-08-11 | 音乐模块代码质量提升 — 共享代码提取 + ESLint 清零 + 可访问性 | `ca712d88` | `master` |
 | 82 | 2026-08-11 | 音乐模块功能与界面优化 | `3ddecfba` | `master` |
 | 81 | 2026-08-11 | 修复 6 个预存测试失败 — packages/core 模块解析路径错误 | `71dcec90` | `master` |
