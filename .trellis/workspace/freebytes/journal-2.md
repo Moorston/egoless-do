@@ -1053,3 +1053,36 @@ HomeScreen 用 useCheckinStreak() selector 始终正确，AppHeader/SimpleHeader
 ### Next Steps
 
 - None - task complete
+
+
+## Session 85: 拆分 useQuickTrailSearch — 436 行单体 hook 降复杂度
+
+**Date**: 2026-08-26
+**Task**: 拆分 useQuickTrailSearch — 436 行单体 hook 降复杂度
+**Branch**: `fix/history-pages-persist-contract`
+
+### Summary
+
+将 436 行、复杂度≈19 的单体 hook useQuickTrailSearch 拆分为 115 行组合根 + 4 个单一职责子 hook (useTrailFilters/useTrailResults/useTrailAIAnalysis/useTrailSelection)，保持 25 字段返回契约不变，消费方 QuickCreateTrailScreen 零改动。关键设计：useSearchHistory 提升到组合根解循环依赖；ResultSetters 接口打包跨层 setter 注入 AI 层；跨层协调 handler 在组合根组合调用。useTrailAIAnalysis 303 行超 120 预算但系忠实搬运三阶段 AI 管线无法压缩。验证：type-check 0 错误、ESLint 0 warning、1967 测试全通过。spec 更新 hook-guidelines.md 补充单体 hook 拆分模式。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `5e8ba09a` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
