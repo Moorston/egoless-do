@@ -87,6 +87,36 @@ export function useRootNavigation() {
 - Feature hooks own their sub-deps (Expo SDK state) and expose only what the screen needs
 - Never call a hook from `@egoless-do/core` that isn't part of the public core API surface
 
+### Splitting a monolithic hook (>300 lines, complexity >15)
+
+When a single hook grows too large, split it into a **composition root** + **single-responsibility sub-hooks**. The composition root stays thin (≤120 lines) and preserves the original return contract so consumers need zero changes.
+
+**Pattern** (see `features/reflections/hooks/useQuickTrailSearch.ts`):
+
+```tsx
+// Composition root — orchestrates sub-hooks, preserves return contract
+export function useBigHook(reflections, initialText, T, aiConfig?) {
+  // 1. Hoist shared deps that would cause circular calls (e.g. useSearchHistory)
+  const { searchHistory, addToHistory } = useSearchHistory();
+  // 2. Layer sub-hooks in dependency order (state flows down, setters flow up)
+  const f = useFilters(reflections, initialText);
+  const r = useResults(f.candidates, f.searchQuery, addToHistory);
+  const s = useSelection(f.reflectionsMap);           // before AI — setPage injected below
+  const ai = useAIAnalysis(reflections, ..., { setPage: s.setPage, ... });
+  // 3. Cross-layer coordination (handlers touching >1 layer)
+  const handleClear = useCallback(() => { f.resetQuery(); r.reset(); ai.resetAI(); s.resetPage(); }, []);
+  return { /* original fields, re-exported from sub-hooks */ };
+}
+```
+
+**Rules**:
+- Barrel (`hooks/index.ts`) exports only the composition root — sub-hooks stay internal
+- Shared state that two sub-hooks both need → hoist to composition root, inject as arg
+- Cross-layer setters → pack into an interface, inject into the sub-hook that drives them
+- Sub-hook ordering matters when one injects setters into another — declare the provider before the consumer
+- Each sub-hook ≤120 lines (exception: faithfully-ported complex pipelines like AI search may exceed)
+- Preserve the full return contract even if some fields are unused by current consumers (forward compat)
+
 ---
 
 ## Error Handling in Hooks
@@ -112,3 +142,4 @@ export function useRootNavigation() {
 - `features/breathing/useBreathAudio.ts` — Expo SDK + refs + cleanup
 - `navigation/hooks.ts` — typed navigation hook
 - `store/useAppStore.ts` (persistence patterns — see `state-management.md`)
+- `features/reflections/hooks/useQuickTrailSearch.ts` — monolith split: 436→115-line composition root + 4 sub-hooks (filters/results/ai-analysis/selection)
