@@ -74,6 +74,17 @@ log.warn('recoverable issue', data);
 log.error(err, { message: 'failure context' });
 ```
 
+### Complexity Thresholds (ESLint `complexity` ≤15)
+
+Project ESLint config does not enforce `complexity` by default — it only triggers when explicitly configured (e.g. `--rule '{"complexity": ["warn", 1]}'`). The team convention is:
+
+- **Screen/feature components**: target complexity ≤15 for the main exported function
+- **When exceeded**: extract sub-components via move-only (see component-guidelines "Splitting a monolithic screen component")
+- **Presentational sub-components** MAY exceed 15 (inherent conditional rendering) — annotate with `// eslint-disable-next-line max-lines-per-function` if also >300 lines
+- **Custom hooks**: same ≤15 target; when exceeded, split into composition root + sub-hooks (see hook-guidelines "Splitting a monolithic hook")
+
+> When lint is clean under default config but a function is known to exceed 15, it is NOT a pass — run the explicit `--rule` check during refactoring tasks to verify the target is met.
+
 ---
 
 ## Testing
