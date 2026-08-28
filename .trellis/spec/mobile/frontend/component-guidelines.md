@@ -341,6 +341,47 @@ export function DetailTabContent({ plan, items, sortedItems, renderItemRow, ... 
 
 **Extraction order** (when multiple sub-components): extract one at a time, verify (lint + tsc + tests) after each, commit as checkpoint. Extract from the bottom of the JSX tree upward so earlier line numbers don't shift.
 
+### Module-level pure functions to shed residual complexity (after sub-component extraction)
+
+When sub-component extraction is exhausted but the parent's main function **still** exceeds complexity ≤15, the residual cost is almost always **nested ternaries and logical expressions sitting directly in the function body or JSX** (`?:`, `?.`, `&&`, `||`). Each is a branch point ESLint counts against the enclosing function. Move these derivations into **module-level pure functions** outside the component — their internal branches count toward the helper's complexity, not the parent's.
+
+**Pattern** (see `features/home/screens/HomeScreen.tsx` — complexity 49 → 15):
+
+```tsx
+// Module level, above the component — branches live here, not in HomeScreen
+type CheckinStatus = 'draft' | 'done' | 'editing';
+
+function computeCheckinStatus(record: CheckinEntry | undefined): CheckinStatus {
+  return record ? (record.done ? 'done' : 'editing') : 'draft';   // 2 branches, counted here
+}
+
+function computeIsReadOnly(isToday: boolean, isLocked: boolean): boolean {
+  return !isToday || isLocked;                                     // || counted here
+}
+
+function computeCardTitle(status: CheckinStatus, isReadOnly: boolean,
+  isToday: boolean, viewDateLabel: string, T: (k: string) => string): string {
+  if (isReadOnly) return isToday && status === 'done' ? '今日目标已达成 👍' : viewDateLabel;
+  return isToday ? T('checkinDoneToday') : viewDateLabel;
+}
+
+export default function HomeScreen() {
+  // ...hooks/memo/state stay...
+  const status = computeCheckinStatus(todayRecord);       // was: inline nested ternary
+  const isReadOnly = computeIsReadOnly(isToday, isLocked); // was: !isToday || isLocked
+  const cardTitle = computeCardTitle(status, isReadOnly, isToday, viewDateLabel, T);
+  // JSX now references cardTitle / bannerStatusText / bannerTimeText — no inline ?:
+  return (<Text>{cardTitle}</Text> ...);
+}
+```
+
+**Rules**:
+- Helpers are **module-level `function`s** (not `useCallback`/`useMemo` — those wrap in the component body and their branches still count toward the parent). Pure functions at module scope have their own complexity budget.
+- Move only the **derivation** — the inputs (`todayRecord`, `isToday`, `T`, …) stay computed in the component; the helper receives them as args. No store reads inside the helper.
+- Optional chaining `a?.b` in JSX counts as a branch — wrap the whole expression in a helper (`computeBannerTimeText(record, language)` beats `record?.timestamp ? formatTime(...) : ''` inline).
+- This is **complementary** to sub-component extraction, not a replacement: extract JSX into components first, then shed the residual ternary complexity with module-level functions. Each step verified independently.
+- Helpers that the parent already had (`parseWeight`, `formatTime`) are reused — don't re-wrap them.
+
 ---
 
 ## Logging
