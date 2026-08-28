@@ -1,0 +1,5 @@
+{"file": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md", "reason": "拆分必须遵守架构约束：Feature 自治、Store 契约"}
+{"file": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md", "reason": "全局规范：禁止 any/console.log、导入规范"}
+{"file": ".trellis/spec/mobile/frontend/component-guidelines.md", "reason": "WeightCard/WaterCard 子组件提取——纯展示模式"}
+{"file": ".trellis/spec/mobile/frontend/hook-guidelines.md", "reason": "回调通过 props 传入子组件的传递模式"}
+{"file": ".trellis/spec/mobile/frontend/state-management.md", "reason": "setTimeout 保存链不触碰——但需理解 useShallowStore 选择器"}
