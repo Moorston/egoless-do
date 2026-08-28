@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-2.md`
-- **Total Sessions**: 85
-- **Last Active**: 2026-08-26
+- **Total Sessions**: 87
+- **Last Active**: 2026-08-29
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~1088 | Active |
+| `journal-2.md` | ~1188 | Active |
 | `journal-1.md` | ~1971 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +30,8 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 87 | 2026-08-29 | 拆分 HomeScreen — 复杂度 49→15 | `07bafd89`, `f2cfc5af` | `refactor/split-home-screen` |
+| 86 | 2026-08-28 | R3 split-plan-detail-content 完成 | `18c4b48f` | `fix/history-pages-persist-contract` |
 | 85 | 2026-08-26 | 拆分 useQuickTrailSearch — 436 行单体 hook 降复杂度 | `5e8ba09a` | `fix/history-pages-persist-contract` |
 | 84 | 2026-08-26 | 子任务 A 完成 — 历史页 persistChange 契约迁移 | `f7e619b7`, `d7bf8670`, `43660c97`, `844f3477` | `fix/history-pages-persist-contract` |
 | 83 | 2026-08-11 | 音乐模块代码质量提升 — 共享代码提取 + ESLint 清零 + 可访问性 | `ca712d88` | `master` |

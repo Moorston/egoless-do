@@ -1,0 +1,32 @@
+{
+  "id": "complexity-hotspot-split",
+  "name": "complexity-hotspot-split",
+  "title": "复杂度热点拆分 — BodyDashboard/migrateDatabase/PlanDetailContent",
+  "description": "",
+  "status": "planning",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P2",
+  "creator": "freebytes",
+  "assignee": "freebytes",
+  "createdAt": "2026-08-26",
+  "completedAt": null,
+  "branch": null,
+  "base_branch": "fix/history-pages-persist-contract",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [
+    "08-27-split-plan-detail-content",
+    "08-27-split-body-dashboard",
+    "08-27-split-home-screen",
+    "08-27-split-sport-page",
+    "08-27-split-migrate-database"
+  ],
+  "parent": null,
+  "relatedFiles": [],
+  "notes": "",
+  "meta": {}
+}

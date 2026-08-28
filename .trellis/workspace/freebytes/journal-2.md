@@ -1086,3 +1086,103 @@ HomeScreen 用 useCheckinStreak() selector 始终正确，AppHeader/SimpleHeader
 ### Next Steps
 
 - None - task complete
+
+---
+
+## 2026-08-28 — R3 split-plan-detail-content 完成
+
+### Task
+`.trellis/tasks/08-27-split-plan-detail-content` — 拆分 PlanDetailContent (CC 58→13)
+
+### What changed
+- 提取 3 子组件 + 共享 styles.ts，主文件 798→69 行编排层
+- move-only：JSX 逐行搬移，计算逻辑（createDateChangeDetector/AppState/useDailyTodo/memo/sortedItems/renderItemRow）全留主文件
+- 子组件通过 props 接收预计算数据
+
+### Verification (6 AC 全通过)
+- AC1: 主函数复杂度 13 ≤ 15 ✅
+- AC2: lint 0 error 0 warning（5 文件）✅
+- AC3: type-check plan 目录零错误 ✅
+- AC4: 1967 passed ✅
+- AC5: 消费方零改动（PlanDetailScreen/PlanScreen）✅
+- AC6: 无新增 any/console.log ✅
+
+### Commit
+`18c4b48f` refactor(plan): 拆分 PlanDetailContent — 798→69 行编排层 + 3 子组件 + 共享样式
+
+### Spec updates
+- component-guidelines.md — 新增"大组件拆分模式"（move-only 提取契约）
+- quality-guidelines.md — 新增"复杂度阈值约定"（complexity ≤15 + eslint-disable 规则）
+
+### Known limitations
+- DetailTabContent (CC 19) / TodoTabContent (CC 22) 超标，但展示性子组件允许 + eslint-disable，AC1 仅要求主函数 ≤15
+
+### Next
+- R3 完成，下一步启动 R1 split-home-screen（按风险递增顺序 R1→R4→R5→R2）
+
+
+## Session 86: R3 split-plan-detail-content 完成
+
+**Date**: 2026-08-28
+**Task**: R3 split-plan-detail-content 完成
+**Branch**: `fix/history-pages-persist-contract`
+
+### Summary
+
+拆分 PlanDetailContent CC58→13，提取 DetailTabContent+TodoTabContent+PlanActionBar+styles.ts，move-only 重构，6 AC 全通过，spec 更新 component-guidelines+quality-guidelines
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `18c4b48f` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
+
+
+## Session 87: 拆分 HomeScreen — 复杂度 49→15
+
+**Date**: 2026-08-29
+**Task**: 拆分 HomeScreen — 复杂度 49→15
+**Branch**: `refactor/split-home-screen`
+
+### Summary
+
+Move-only 重构 HomeScreen：提取 7 个展示子组件（WeightCard/WaterCard/WaterGoalModal/ReasonModal/StatusButton/ReflectionCard/EmptyRecordState）+ 共享 styles.ts；再提取 7 个模块级纯函数（computeCheckinStatus/computeIsReadOnly/computeBannerGrad/formatViewDateLabel/computeBannerStatusText/computeCardTitle/computeBannerTimeText）转移 JSX 嵌套三元分支计数，ESLint complexity 49→15。危险区（setTimeout/buildNote/saveField/submitCheckin）diff 为空，消费方零改动。7 个 AC 全验证通过：complexity 0 error、lint 0 warning、home 模块 0 类型错误、1967 测试全过、无新增 any/console。spec 补充模块级纯函数转移复杂度模式小节。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `07bafd89` | (see git log) |
+| `f2cfc5af` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
