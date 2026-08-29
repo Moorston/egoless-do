@@ -26,6 +26,7 @@ export { createSleepSlice } from './createSleepSlice';
 export { createThoughtTrailSlice } from './createThoughtTrailSlice';
 export { createReviewSlice } from './createReviewSlice';
 export { createBodySlice, BODY_FLOW_EXPIRY_MS } from './createBodySlice';
+export type { BodyFlowPersistedState } from './createBodySlice';
 export { createDietSlice } from './createDietSlice';
 export { createPracticeSlice } from './createPracticeSlice';
 export { createMindSlice } from './createMindSlice';
