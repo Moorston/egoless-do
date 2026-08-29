@@ -1186,3 +1186,36 @@ Move-only 重构 HomeScreen：提取 7 个展示子组件（WeightCard/WaterCard
 ### Next Steps
 
 - None - task complete
+
+
+## Session 88: 拆分 BodyDashboard — 85→≤15 复杂度 + 11 banner/hook 子组件
+
+**Date**: 2026-08-29
+**Task**: 拆分 BodyDashboard — 85→≤15 复杂度 + 11 banner/hook 子组件
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+将 BodyDashboard.tsx 从 1017 行单体组件重写为 200 行编排层，ESLint complexity 从 85 降至 0 错误。通过 move-only 提取 4 banner + 4 card + 3 flow 子组件 + 2 聚合 hook，FlowSteps 进一步拆为 Step1/Step2/Step3 模块级函数。消费者 BodyScreen 零改动，6 个 AC 全部通过（complexity≤15/lint 0/tsc 0/测试 1967/消费者零改动/无 any-console）。spec 判断无需更新——本次是对现有两条 component-guidelines 条目的纯实践。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4c618aff` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
