@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md", "reason": "验证：未违反禁止模式、Feature 自治边界"}
+{"file": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md", "reason": "验证：无新增 any/console.log/raw 字符串"}
+{"file": ".trellis/spec/mobile/frontend/component-guidelines.md", "reason": "验证：Banner 子组件 props 契约合规"}
+{"file": ".trellis/spec/mobile/frontend/hook-guidelines.md", "reason": "验证：聚合 hook 依赖数组正确"}
