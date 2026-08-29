@@ -1219,3 +1219,36 @@ Move-only 重构 HomeScreen：提取 7 个展示子组件（WeightCard/WaterCard
 ### Next Steps
 
 - None - task complete
+
+
+## Session 89: R5 split-migrate-database — migrateDatabase CC67→≤40
+
+**Date**: 2026-08-30
+**Task**: R5 split-migrate-database — migrateDatabase CC67→≤40
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+将 schema.ts migrateDatabase 圈复杂度从 67 降至 ≤40，提取 6 个非平凡迁移为命名函数（sync_queue/meditation_history/daily_custom_todos/daily_todo_history/fasting_sessions/checkin_reviews）。Move-only 重构，迁移执行顺序和事务边界零变更。验证：complexity error 消除、type-check 0 错误、1967 测试全通过、代码层 diff 确认逐字节一致。spec 更新 database-guidelines.md 记录 migrateDatabase 拆分结构。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `b3365ea3` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-2.md`
-- **Total Sessions**: 88
-- **Last Active**: 2026-08-29
+- **Total Sessions**: 89
+- **Last Active**: 2026-08-30
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~1221 | Active |
+| `journal-2.md` | ~1254 | Active |
 | `journal-1.md` | ~1971 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 89 | 2026-08-30 | R5 split-migrate-database — migrateDatabase CC67→≤40 | `b3365ea3` | `refactor/split-body-dashboard` |
 | 88 | 2026-08-29 | 拆分 BodyDashboard — 85→≤15 复杂度 + 11 banner/hook 子组件 | `4c618aff` | `refactor/split-body-dashboard` |
 | 87 | 2026-08-29 | 拆分 HomeScreen — 复杂度 49→15 | `07bafd89`, `f2cfc5af` | `refactor/split-home-screen` |
 | 86 | 2026-08-28 | R3 split-plan-detail-content 完成 | `18c4b48f` | `fix/history-pages-persist-contract` |
