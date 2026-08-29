@@ -671,6 +671,155 @@ export async function initDatabase(db: SQLite.SQLiteDatabase): Promise<void> {
   await db.execAsync(SCHEMA_SQL);
 }
 
+async function migrateSyncQueueColumns(db: SQLite.SQLiteDatabase): Promise<void> {
+  // Migrate existing sync_queue: check each column by pragma before adding
+  const sqCols = await db.getAllAsync<{ name: string }>(
+    "PRAGMA table_info(sync_queue)"
+  );
+  const sqColNames = new Set(sqCols.map(c => c.name));
+  if (!sqColNames.has('retry_count')) {
+    await db.execAsync("ALTER TABLE sync_queue ADD COLUMN retry_count INTEGER NOT NULL DEFAULT 0");
+  }
+  if (!sqColNames.has('last_error')) {
+    await db.execAsync("ALTER TABLE sync_queue ADD COLUMN last_error TEXT");
+  }
+  if (!sqColNames.has('status')) {
+    await db.execAsync("ALTER TABLE sync_queue ADD COLUMN status TEXT NOT NULL DEFAULT 'pending'");
+  }
+  if (!sqColNames.has('next_retry_at')) {
+    await db.execAsync("ALTER TABLE sync_queue ADD COLUMN next_retry_at INTEGER NOT NULL DEFAULT 0");
+  }
+  try {
+    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_sync_queue_status ON sync_queue(status)');
+  } catch (e) { const msg = String(e instanceof Error ? e.message : e ?? ''); if (!msg.includes('already exists')) log.warn('[DB] index failed:', msg); }
+  try {
+    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_sync_queue_drain ON sync_queue(status, next_retry_at, id)');
+  } catch (e) { const msg = String(e instanceof Error ? e.message : e ?? ''); if (!msg.includes('already exists')) log.warn('[DB] index failed:', msg); }
+  // Migrate entity index to UNIQUE for UPSERT support
+  try {
+    // Remove duplicate entries before creating unique index
+    await db.runAsync(`DELETE FROM sync_queue WHERE id NOT IN (
+      SELECT MIN(id) FROM sync_queue GROUP BY entity, entity_id
+    )`);
+    await db.execAsync('DROP INDEX IF EXISTS idx_sync_queue_entity');
+    await db.execAsync('CREATE UNIQUE INDEX idx_sync_queue_entity ON sync_queue(entity, entity_id)');
+  } catch (e) {
+    log.warn('[DB] sync_queue unique index migration:', e);
+  }
+}
+
+async function migrateMeditationHistory(db: SQLite.SQLiteDatabase): Promise<void> {
+  // Migrate old columns: add dur_min, track_id, note if missing
+  const medCols = await db.getAllAsync<{ name: string }>("PRAGMA table_info(meditation_history)");
+  const medColNames = new Set(medCols.map(c => c.name));
+  if (!medColNames.has('dur_min')) {
+    await db.execAsync('ALTER TABLE meditation_history ADD COLUMN dur_min INTEGER NOT NULL DEFAULT 0');
+    // Migrate dur string to dur_min number
+    await db.runAsync("UPDATE meditation_history SET dur_min = CAST(REPLACE(dur, 'min', '') AS INTEGER) WHERE dur IS NOT NULL");
+  }
+  if (!medColNames.has('track_id')) {
+    await db.execAsync("ALTER TABLE meditation_history ADD COLUMN track_id TEXT NOT NULL DEFAULT ''");
+  }
+  if (!medColNames.has('note')) {
+    await db.execAsync("ALTER TABLE meditation_history ADD COLUMN note TEXT NOT NULL DEFAULT ''");
+  }
+  // Drop old dur column (replaced by dur_min) to avoid NOT NULL constraint on INSERT
+  if (medColNames.has('dur')) {
+    await db.execAsync('ALTER TABLE meditation_history DROP COLUMN dur');
+  }
+}
+
+async function migrateDailyCustomTodosNullable(db: SQLite.SQLiteDatabase): Promise<void> {
+  // Relax plan_id constraint (server data may have null plan_id for standalone todos)
+  // Only run if plan_id still has NOT NULL (migration not yet applied)
+  const planIdCol = await db.getFirstAsync<{ notnull: number }>(
+    'SELECT "notnull" FROM pragma_table_info(\'daily_custom_todos\') WHERE name = \'plan_id\''
+  );
+  const planIdNotNull = planIdCol?.notnull ?? 1;
+  if (planIdNotNull === 1) {
+    // Wrapped in explicit transaction so DROP+RENAME is atomic
+    try {
+      await db.execAsync('BEGIN TRANSACTION');
+      await db.execAsync(`CREATE TABLE IF NOT EXISTS daily_custom_todos_new (
+        id TEXT PRIMARY KEY, plan_id TEXT, date TEXT NOT NULL,
+        name TEXT NOT NULL, done INTEGER NOT NULL DEFAULT 0,
+        todo_order INTEGER NOT NULL DEFAULT 0, recurring INTEGER NOT NULL DEFAULT 0,
+        updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+      )`);
+      await db.execAsync(`INSERT OR IGNORE INTO daily_custom_todos_new SELECT * FROM daily_custom_todos`);
+      await db.execAsync(`DROP TABLE daily_custom_todos`);
+      await db.execAsync(`ALTER TABLE daily_custom_todos_new RENAME TO daily_custom_todos`);
+      await db.execAsync('COMMIT');
+    } catch (e) {
+      try { await db.execAsync('ROLLBACK'); } catch { /* best effort rollback */ }
+      log.warn('[DB] daily_custom_todos migration transaction failed:', e);
+    }
+  }
+}
+
+async function migrateDailyTodoHistoryNullable(db: SQLite.SQLiteDatabase): Promise<void> {
+  // Migrate daily_todo_history: make plan_id nullable for existing databases
+  try {
+    const colInfo = await db.getAllAsync<{ name: string; notnull: number }>(
+      "PRAGMA table_info(daily_todo_history)"
+    );
+    const planIdCol = colInfo.find(c => c.name === 'plan_id');
+    if (planIdCol && planIdCol.notnull === 1) {
+      await db.execAsync('BEGIN TRANSACTION');
+      await db.execAsync(`CREATE TABLE IF NOT EXISTS daily_todo_history_new (
+        id TEXT PRIMARY KEY, plan_id TEXT, date TEXT NOT NULL,
+        plan_items TEXT NOT NULL DEFAULT '[]', custom_todos TEXT NOT NULL DEFAULT '[]',
+        updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+      )`);
+      await db.execAsync(`INSERT OR IGNORE INTO daily_todo_history_new SELECT * FROM daily_todo_history`);
+      await db.execAsync(`DROP TABLE daily_todo_history`);
+      await db.execAsync(`ALTER TABLE daily_todo_history_new RENAME TO daily_todo_history`);
+      await db.execAsync('COMMIT');
+    }
+  } catch (e) {
+    try { await db.execAsync('ROLLBACK'); } catch { /* best effort rollback */ }
+    log.warn('[DB] daily_todo_history plan_id nullable migration failed:', e);
+  }
+}
+
+async function migrateFastingSessionsCheck(db: SQLite.SQLiteDatabase): Promise<void> {
+  // Remove CHECK(length(insight) <= 20) constraint from fasting_sessions
+  // by recreating the table (SQLite doesn't support ALTER TABLE DROP CHECK)
+  // Wrapped in explicit transaction so INSERT+DROP+RENAME is atomic
+  const hasInsightCheck = await db.getFirstAsync<{ sql: string }>(
+    "SELECT sql FROM sqlite_master WHERE type='table' AND name='fasting_sessions'"
+  );
+  if (hasInsightCheck?.sql?.includes('CHECK(length(insight)')) {
+    try {
+      await db.execAsync('BEGIN TRANSACTION');
+      await db.execAsync(`CREATE TABLE fasting_sessions_new (
+        id TEXT PRIMARY KEY, target_hours REAL NOT NULL, started_at INTEGER NOT NULL,
+        ended_at INTEGER, estimated_kcal INTEGER, insight TEXT, note TEXT NOT NULL DEFAULT '',
+        updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+      )`);
+      await db.execAsync(`INSERT INTO fasting_sessions_new SELECT * FROM fasting_sessions`);
+      await db.execAsync(`DROP TABLE fasting_sessions`);
+      await db.execAsync(`ALTER TABLE fasting_sessions_new RENAME TO fasting_sessions`);
+      await db.execAsync('COMMIT');
+    } catch (e) {
+      try { await db.execAsync('ROLLBACK'); } catch { /* best effort rollback */ }
+      log.warn('[DB] fasting_sessions CHECK removal transaction failed:', e);
+    }
+  }
+}
+
+async function migrateCheckinReviewsUniqueIndex(db: SQLite.SQLiteDatabase): Promise<void> {
+  // Migrate checkin_reviews: add UNIQUE index on review_id for UPSERT support
+  try {
+    await db.runAsync(`DELETE FROM checkin_reviews WHERE rowid NOT IN (
+      SELECT MIN(rowid) FROM checkin_reviews GROUP BY review_id
+    )`);
+    await db.execAsync('CREATE UNIQUE INDEX IF NOT EXISTS idx_checkin_reviews_review_id ON checkin_reviews(review_id)');
+  } catch (e) {
+    log.warn('[DB] checkin_reviews unique index migration:', e);
+  }
+}
+
 export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> {
   // Outer guard: a failure in any single migration block must NOT abort the
   // entire openDatabase() chain — otherwise one bad migration bricks the app
@@ -728,40 +877,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
     await db.execAsync('CREATE UNIQUE INDEX IF NOT EXISTS idx_sync_queue_entity ON sync_queue(entity, entity_id)');
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_sync_queue_status ON sync_queue(status)');
   } else {
-    // Migrate existing sync_queue: check each column by pragma before adding
-    const sqCols = await db.getAllAsync<{ name: string }>(
-      "PRAGMA table_info(sync_queue)"
-    );
-    const sqColNames = new Set(sqCols.map(c => c.name));
-    if (!sqColNames.has('retry_count')) {
-      await db.execAsync("ALTER TABLE sync_queue ADD COLUMN retry_count INTEGER NOT NULL DEFAULT 0");
-    }
-    if (!sqColNames.has('last_error')) {
-      await db.execAsync("ALTER TABLE sync_queue ADD COLUMN last_error TEXT");
-    }
-    if (!sqColNames.has('status')) {
-      await db.execAsync("ALTER TABLE sync_queue ADD COLUMN status TEXT NOT NULL DEFAULT 'pending'");
-    }
-    if (!sqColNames.has('next_retry_at')) {
-      await db.execAsync("ALTER TABLE sync_queue ADD COLUMN next_retry_at INTEGER NOT NULL DEFAULT 0");
-    }
-    try {
-      await db.execAsync('CREATE INDEX IF NOT EXISTS idx_sync_queue_status ON sync_queue(status)');
-    } catch (e) { const msg = String(e instanceof Error ? e.message : e ?? ''); if (!msg.includes('already exists')) log.warn('[DB] index failed:', msg); }
-    try {
-      await db.execAsync('CREATE INDEX IF NOT EXISTS idx_sync_queue_drain ON sync_queue(status, next_retry_at, id)');
-    } catch (e) { const msg = String(e instanceof Error ? e.message : e ?? ''); if (!msg.includes('already exists')) log.warn('[DB] index failed:', msg); }
-    // Migrate entity index to UNIQUE for UPSERT support
-    try {
-      // Remove duplicate entries before creating unique index
-      await db.runAsync(`DELETE FROM sync_queue WHERE id NOT IN (
-        SELECT MIN(id) FROM sync_queue GROUP BY entity, entity_id
-      )`);
-      await db.execAsync('DROP INDEX IF EXISTS idx_sync_queue_entity');
-      await db.execAsync('CREATE UNIQUE INDEX idx_sync_queue_entity ON sync_queue(entity, entity_id)');
-    } catch (e) {
-      log.warn('[DB] sync_queue unique index migration:', e);
-    }
+    await migrateSyncQueueColumns(db);
   }
 
   // Ensure sync_metadata table exists
@@ -801,24 +917,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
       synced INTEGER NOT NULL DEFAULT 0
     )`);
   } else {
-    // Migrate old columns: add dur_min, track_id, note if missing
-    const medCols = await db.getAllAsync<{ name: string }>("PRAGMA table_info(meditation_history)");
-    const medColNames = new Set(medCols.map(c => c.name));
-    if (!medColNames.has('dur_min')) {
-      await db.execAsync('ALTER TABLE meditation_history ADD COLUMN dur_min INTEGER NOT NULL DEFAULT 0');
-      // Migrate dur string to dur_min number
-      await db.runAsync("UPDATE meditation_history SET dur_min = CAST(REPLACE(dur, 'min', '') AS INTEGER) WHERE dur IS NOT NULL");
-    }
-    if (!medColNames.has('track_id')) {
-      await db.execAsync("ALTER TABLE meditation_history ADD COLUMN track_id TEXT NOT NULL DEFAULT ''");
-    }
-    if (!medColNames.has('note')) {
-      await db.execAsync("ALTER TABLE meditation_history ADD COLUMN note TEXT NOT NULL DEFAULT ''");
-    }
-    // Drop old dur column (replaced by dur_min) to avoid NOT NULL constraint on INSERT
-    if (medColNames.has('dur')) {
-      await db.execAsync('ALTER TABLE meditation_history DROP COLUMN dur');
-    }
+    await migrateMeditationHistory(db);
   }
 
   // Ensure user_profiles table exists
@@ -1015,31 +1114,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
     )`);
   }
 
-  // Relax plan_id constraint (server data may have null plan_id for standalone todos)
-  // Only run if plan_id still has NOT NULL (migration not yet applied)
-  const planIdCol = await db.getFirstAsync<{ notnull: number }>(
-    'SELECT "notnull" FROM pragma_table_info(\'daily_custom_todos\') WHERE name = \'plan_id\''
-  );
-  const planIdNotNull = planIdCol?.notnull ?? 1;
-  if (planIdNotNull === 1) {
-    // Wrapped in explicit transaction so DROP+RENAME is atomic
-    try {
-      await db.execAsync('BEGIN TRANSACTION');
-      await db.execAsync(`CREATE TABLE IF NOT EXISTS daily_custom_todos_new (
-        id TEXT PRIMARY KEY, plan_id TEXT, date TEXT NOT NULL,
-        name TEXT NOT NULL, done INTEGER NOT NULL DEFAULT 0,
-        todo_order INTEGER NOT NULL DEFAULT 0, recurring INTEGER NOT NULL DEFAULT 0,
-        updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-      )`);
-      await db.execAsync(`INSERT OR IGNORE INTO daily_custom_todos_new SELECT * FROM daily_custom_todos`);
-      await db.execAsync(`DROP TABLE daily_custom_todos`);
-      await db.execAsync(`ALTER TABLE daily_custom_todos_new RENAME TO daily_custom_todos`);
-      await db.execAsync('COMMIT');
-    } catch (e) {
-      try { await db.execAsync('ROLLBACK'); } catch { /* best effort rollback */ }
-      log.warn('[DB] daily_custom_todos migration transaction failed:', e);
-    }
-  }
+  await migrateDailyCustomTodosNullable(db);
 
   // Ensure daily_todo_history table exists
   const dailyTodoHistoryTableCheck = await db.getFirstAsync<{ name: string }>(
@@ -1053,28 +1128,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
     )`);
   }
 
-  // Migrate daily_todo_history: make plan_id nullable for existing databases
-  try {
-    const colInfo = await db.getAllAsync<{ name: string; notnull: number }>(
-      "PRAGMA table_info(daily_todo_history)"
-    );
-    const planIdCol = colInfo.find(c => c.name === 'plan_id');
-    if (planIdCol && planIdCol.notnull === 1) {
-      await db.execAsync('BEGIN TRANSACTION');
-      await db.execAsync(`CREATE TABLE IF NOT EXISTS daily_todo_history_new (
-        id TEXT PRIMARY KEY, plan_id TEXT, date TEXT NOT NULL,
-        plan_items TEXT NOT NULL DEFAULT '[]', custom_todos TEXT NOT NULL DEFAULT '[]',
-        updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-      )`);
-      await db.execAsync(`INSERT OR IGNORE INTO daily_todo_history_new SELECT * FROM daily_todo_history`);
-      await db.execAsync(`DROP TABLE daily_todo_history`);
-      await db.execAsync(`ALTER TABLE daily_todo_history_new RENAME TO daily_todo_history`);
-      await db.execAsync('COMMIT');
-    }
-  } catch (e) {
-    try { await db.execAsync('ROLLBACK'); } catch { /* best effort rollback */ }
-    log.warn('[DB] daily_todo_history plan_id nullable migration failed:', e);
-  }
+  await migrateDailyTodoHistoryNullable(db);
 
   if (!planTableCheck) {
     await db.execAsync(`CREATE TABLE IF NOT EXISTS plans (
@@ -1100,29 +1154,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
     )`);
   }
 
-  // Remove CHECK(length(insight) <= 20) constraint from fasting_sessions
-  // by recreating the table (SQLite doesn't support ALTER TABLE DROP CHECK)
-  // Wrapped in explicit transaction so INSERT+DROP+RENAME is atomic
-  const hasInsightCheck = await db.getFirstAsync<{ sql: string }>(
-    "SELECT sql FROM sqlite_master WHERE type='table' AND name='fasting_sessions'"
-  );
-  if (hasInsightCheck?.sql?.includes('CHECK(length(insight)')) {
-    try {
-      await db.execAsync('BEGIN TRANSACTION');
-      await db.execAsync(`CREATE TABLE fasting_sessions_new (
-        id TEXT PRIMARY KEY, target_hours REAL NOT NULL, started_at INTEGER NOT NULL,
-        ended_at INTEGER, estimated_kcal INTEGER, insight TEXT, note TEXT NOT NULL DEFAULT '',
-        updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-      )`);
-      await db.execAsync(`INSERT INTO fasting_sessions_new SELECT * FROM fasting_sessions`);
-      await db.execAsync(`DROP TABLE fasting_sessions`);
-      await db.execAsync(`ALTER TABLE fasting_sessions_new RENAME TO fasting_sessions`);
-      await db.execAsync('COMMIT');
-    } catch (e) {
-      try { await db.execAsync('ROLLBACK'); } catch { /* best effort rollback */ }
-      log.warn('[DB] fasting_sessions CHECK removal transaction failed:', e);
-    }
-  }
+  await migrateFastingSessionsCheck(db);
 
   // Add note column to fasting_sessions if missing
   const fastingCols = await db.getAllAsync<{ name: string }>("PRAGMA table_info(fasting_sessions)");
@@ -1151,14 +1183,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   await db.execAsync('CREATE INDEX IF NOT EXISTS idx_body_checkins_date ON body_checkins(date)');
 
   // Migrate checkin_reviews: add UNIQUE index on review_id for UPSERT support
-  try {
-    await db.runAsync(`DELETE FROM checkin_reviews WHERE rowid NOT IN (
-      SELECT MIN(rowid) FROM checkin_reviews GROUP BY review_id
-    )`);
-    await db.execAsync('CREATE UNIQUE INDEX IF NOT EXISTS idx_checkin_reviews_review_id ON checkin_reviews(review_id)');
-  } catch (e) {
-    log.warn('[DB] checkin_reviews unique index migration:', e);
-  }
+  await migrateCheckinReviewsUniqueIndex(db);
 
   // Ensure body_goals table exists
   const bodyGoalsCheck = await db.getFirstAsync<{ name: string }>(
