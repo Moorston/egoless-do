@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md", "reason": "拆分必须遵守架构约束：Feature 自治、effect 链不变"}
+{"file": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md", "reason": "全局规范：禁止 any/console.log、导入规范"}
+{"file": ".trellis/spec/mobile/frontend/component-guidelines.md", "reason": "SportPage 已有子页面模式——复用规范"}
+{"file": ".trellis/spec/mobile/frontend/hook-guidelines.md", "reason": "useComboSession hook 提取——ref 传递模式、依赖管理"}
