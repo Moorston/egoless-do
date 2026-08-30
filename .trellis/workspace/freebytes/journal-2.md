@@ -1252,3 +1252,36 @@ Move-only 重构 HomeScreen：提取 7 个展示子组件（WeightCard/WaterCard
 ### Next Steps
 
 - None - task complete
+
+
+## Session 90: R2 split-sport-page: SportPage CC 44→14, handleSave 拆分
+
+**Date**: 2026-08-30
+**Task**: R2 split-sport-page: SportPage CC 44→14, handleSave 拆分
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+拆分 SportPage：提取 useComboSession + useBreathingGuide 两个 hook，handleSave 拆为 saveSingleSport/saveComboExercise，8 个模块级纯函数降主函数 CC 至 14。9 个 AC 全通过（lint/type/test 1967/消费方 diff 空/effect 顺序/comboState ref 模式）。shouldShowComboHeader 用 type predicate 恢复 && 短路收窄。move-only 零行为变更。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `1b64b6d6` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
