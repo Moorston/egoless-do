@@ -25,6 +25,70 @@ import {
 const log = createLogger('Rehydration');
 const DEVICE_SYNCED_KEY = 'device_initial_synced';
 
+// ── Rehydration config ────────────────────────────────────────────────
+// Module-scope so the initial-sync entity lists below can be DERIVED from it.
+// A rehydratable entity missing from initial sync is never downloaded after
+// install: later pulls filter updated_at > lastSyncAt, so the hole is permanent.
+interface RehydrateConfig {
+  table: string;
+  query: string;
+  mapper: (r: Record<string, unknown>) => unknown;
+  storeKey: string;
+}
+
+const REHYDRATE_MAP: Record<string, RehydrateConfig> = {
+  habit: { table: 'habits', query: 'SELECT * FROM habits WHERE deleted = 0', mapper: rowToHabit, storeKey: 'habits' },
+  food: { table: 'food_entries', query: '', mapper: rowToFood, storeKey: 'foodLog' },
+  reflection: { table: 'mind_reflections', query: 'SELECT * FROM mind_reflections WHERE deleted = 0', mapper: rowToReflection, storeKey: 'reflections' },
+  fasting: { table: 'fasting_sessions', query: 'SELECT * FROM fasting_sessions WHERE deleted = 0', mapper: rowToFasting, storeKey: 'fastingHistory' },
+  checkin: { table: 'checkin_records', query: 'SELECT * FROM checkin_records WHERE deleted = 0', mapper: rowToCheckin, storeKey: 'checkinHistory' },
+  exercise: { table: 'exercise_entries', query: 'SELECT * FROM exercise_entries WHERE deleted = 0', mapper: rowToExercise, storeKey: 'exerciseLog' },
+  meditation: { table: 'meditation_history', query: 'SELECT * FROM meditation_history WHERE deleted = 0', mapper: rowToMeditation, storeKey: 'medHistory' },
+  profile: { table: 'user_profiles', query: 'SELECT * FROM user_profiles WHERE deleted = 0', mapper: rowToProfile, storeKey: 'userProfile' },
+  plan: { table: 'plans', query: 'SELECT * FROM plans WHERE deleted = 0', mapper: rowToPlan, storeKey: 'plans' },
+  planItem: { table: 'plan_items', query: 'SELECT * FROM plan_items WHERE deleted = 0', mapper: rowToPlanItem, storeKey: 'planItems' },
+  planItemCheckin: { table: 'plan_item_checkins', query: 'SELECT * FROM plan_item_checkins WHERE deleted = 0', mapper: rowToPlanItemCheckin, storeKey: 'planItemCheckins' },
+  grace: { table: 'grace_history', query: 'SELECT * FROM grace_history WHERE deleted = 0', mapper: rowToGrace, storeKey: 'graceHistory' },
+  dailyCustomTodo: { table: 'daily_custom_todos', query: 'SELECT * FROM daily_custom_todos WHERE deleted = 0', mapper: rowToDailyCustomTodo, storeKey: 'dailyCustomTodos' },
+  dailyTodoHistory: { table: 'daily_todo_history', query: 'SELECT * FROM daily_todo_history WHERE deleted = 0', mapper: rowToDailyTodoHistory, storeKey: 'dailyTodoHistory' },
+  thoughtTrail: { table: 'thought_trails', query: 'SELECT * FROM thought_trails WHERE deleted = 0', mapper: rowToThoughtTrail, storeKey: 'thoughtTrails' },
+  trailNote: { table: 'trail_notes', query: 'SELECT * FROM trail_notes WHERE deleted = 0', mapper: rowToTrailNote, storeKey: 'trailNotes' },
+  reflectionLink: { table: 'reflection_links', query: 'SELECT * FROM reflection_links WHERE deleted = 0', mapper: rowToReflectionLink, storeKey: 'reflectionLinks' },
+  aiConfig: { table: 'ai_configs', query: "SELECT * FROM ai_configs WHERE config_id='self' AND deleted=0", mapper: rowToAIConfig, storeKey: '_aiConfig' },
+  checkinReview: { table: 'checkin_reviews', query: 'SELECT * FROM checkin_reviews WHERE deleted = 0', mapper: rowToCheckinReview, storeKey: 'checkinReviews' },
+  bodyGoal: { table: 'body_goals', query: 'SELECT * FROM body_goals WHERE deleted = 0', mapper: rowToBodyGoal, storeKey: 'bodyGoals' },
+  bodyPlan: { table: 'body_plans', query: 'SELECT * FROM body_plans WHERE deleted = 0', mapper: rowToBodyPlan, storeKey: 'bodyPlans' },
+  weightRecord: { table: 'body_weight_records', query: 'SELECT * FROM body_weight_records WHERE deleted = 0', mapper: rowToWeightRecord, storeKey: 'weightRecords' },
+  bodyCheckin: { table: 'body_checkins', query: 'SELECT * FROM body_checkins WHERE deleted = 0', mapper: rowToBodyCheckin, storeKey: 'bodyCheckins' },
+  bodyTrainingPlan: { table: 'body_training_plans', query: 'SELECT * FROM body_training_plans WHERE deleted = 0', mapper: rowToBodyTrainingPlan, storeKey: 'bodyTrainingPlans' },
+  sleep: { table: 'sleep_records', query: 'SELECT * FROM sleep_records WHERE deleted = 0', mapper: rowToSleep, storeKey: 'sleepHistory' },
+  give: { table: 'give_entries', query: 'SELECT * FROM give_entries WHERE deleted = 0', mapper: rowToGive, storeKey: 'giveHistory' },
+  motivationEntry: { table: 'eating_motivations', query: 'SELECT * FROM eating_motivations WHERE deleted = 0', mapper: rowToMotivationEntry, storeKey: 'motivationLog' },
+  customWuxing: { table: 'custom_wuxing_maps', query: 'SELECT * FROM custom_wuxing_maps WHERE deleted = 0', mapper: rowToCustomWuxing, storeKey: 'customWuxingMaps' },
+  vision: { table: 'visions', query: 'SELECT * FROM visions WHERE deleted = 0', mapper: rowToVision, storeKey: 'visions' },
+  visionPractice: { table: 'vision_practices', query: 'SELECT * FROM vision_practices WHERE deleted = 0', mapper: rowToVisionPractice, storeKey: 'visionPractices' },
+  mantraDef: { table: 'mantra_defs', query: 'SELECT * FROM mantra_defs WHERE deleted = 0', mapper: rowToMantraDef, storeKey: 'mantraDefs' },
+  mantraSession: { table: 'mantra_sessions', query: 'SELECT * FROM mantra_sessions WHERE deleted = 0', mapper: rowToMantraSession, storeKey: 'mantraSessions' },
+  foodPreset: { table: 'custom_food_presets', query: 'SELECT * FROM custom_food_presets WHERE deleted = 0', mapper: rowToFoodPreset, storeKey: 'customFoodPresets' },
+  dedication: { table: 'dedications', query: 'SELECT * FROM dedications WHERE deleted = 0', mapper: rowToDedication, storeKey: 'dedications' },
+  fearEntry: { table: 'fear_entries', query: 'SELECT * FROM fear_entries WHERE deleted = 0', mapper: rowToFearEntry, storeKey: 'fearEntries' },
+  courageEntry: { table: 'courage_entries', query: 'SELECT * FROM courage_entries WHERE deleted = 0', mapper: rowToCourageEntry, storeKey: 'courageEntries' },
+  fearAchievement: { table: 'fear_achievements', query: 'SELECT * FROM fear_achievements WHERE deleted = 0', mapper: rowToFearAchievement, storeKey: 'achievements' },
+  sutraReading: { table: 'sutra_reading_sessions', query: 'SELECT * FROM sutra_reading_sessions WHERE deleted = 0', mapper: rowToSutraReading, storeKey: 'readingSessions' },
+  breath: { table: 'breath_records', query: 'SELECT * FROM breath_records WHERE deleted = 0', mapper: rowToBreath, storeKey: 'breathHistory' },
+  zhiguanSession: { table: 'zhiguan_sessions', query: 'SELECT * FROM zhiguan_sessions WHERE deleted = 0', mapper: rowToZhiguanSession, storeKey: 'sessions' },
+};
+
+/** Phase 1: priority entities pulled first so critical data reaches the user ASAP. */
+const PHASE_1_ENTITIES: SyncEntity[] = ['profile', 'checkin', 'habit', 'grace'];
+
+/** Phase 2: every remaining rehydratable entity — derived, cannot drift from REHYDRATE_MAP. */
+const PHASE_2_ENTITIES: SyncEntity[] = (Object.keys(REHYDRATE_MAP) as SyncEntity[])
+  .filter((e) => !PHASE_1_ENTITIES.includes(e));
+
+/** Full ordered entity list for initial sync + resume (40 = SYNC_ENTITIES). */
+const ALL_INITIAL_ENTITIES: SyncEntity[] = [...PHASE_1_ENTITIES, ...PHASE_2_ENTITIES];
+
 export class SyncRehydrationManager {
   /** Check if device has been synced before */
   async isDeviceSyncedBefore(): Promise<boolean> {
@@ -40,8 +104,7 @@ export class SyncRehydrationManager {
   private async queryEntity(
     db: Awaited<ReturnType<typeof openDatabase>>,
     entity: string,
-    REHYDRATE_MAP: Record<string, { table: string; query: string; mapper: (r: Record<string, unknown>) => unknown; storeKey: string }>,
-  ): Promise<{ entity: string; data?: unknown[]; rows?: Record<string, unknown>[]; config?: NonNullable<typeof REHYDRATE_MAP[string]>; storeKey?: string } | null> {
+  ): Promise<{ entity: string; data?: unknown[]; rows?: Record<string, unknown>[]; config?: RehydrateConfig; storeKey?: string } | null> {
     try {
       if (entity === 'food') {
         const rows = await dbGetAllFoodEntries(db) as unknown as Record<string, unknown>[];
@@ -64,59 +127,17 @@ export class SyncRehydrationManager {
   async rehydrateFromDb(entities?: string[]): Promise<Record<string, unknown>> {
     const db = await openDatabase();
     const patch: Record<string, unknown> = {};
-    const REHYDRATE_MAP: Record<string, { table: string; query: string; mapper: (r: Record<string, unknown>) => unknown; storeKey: string }> = {
-      habit: { table: 'habits', query: 'SELECT * FROM habits WHERE deleted = 0', mapper: rowToHabit, storeKey: 'habits' },
-      food: { table: 'food_entries', query: '', mapper: rowToFood, storeKey: 'foodLog' },
-      reflection: { table: 'mind_reflections', query: 'SELECT * FROM mind_reflections WHERE deleted = 0', mapper: rowToReflection, storeKey: 'reflections' },
-      fasting: { table: 'fasting_sessions', query: 'SELECT * FROM fasting_sessions WHERE deleted = 0', mapper: rowToFasting, storeKey: 'fastingHistory' },
-      checkin: { table: 'checkin_records', query: 'SELECT * FROM checkin_records WHERE deleted = 0', mapper: rowToCheckin, storeKey: 'checkinHistory' },
-      exercise: { table: 'exercise_entries', query: 'SELECT * FROM exercise_entries WHERE deleted = 0', mapper: rowToExercise, storeKey: 'exerciseLog' },
-      meditation: { table: 'meditation_history', query: 'SELECT * FROM meditation_history WHERE deleted = 0', mapper: rowToMeditation, storeKey: 'medHistory' },
-      profile: { table: 'user_profiles', query: 'SELECT * FROM user_profiles WHERE deleted = 0', mapper: rowToProfile, storeKey: 'userProfile' },
-      plan: { table: 'plans', query: 'SELECT * FROM plans WHERE deleted = 0', mapper: rowToPlan, storeKey: 'plans' },
-      planItem: { table: 'plan_items', query: 'SELECT * FROM plan_items WHERE deleted = 0', mapper: rowToPlanItem, storeKey: 'planItems' },
-      planItemCheckin: { table: 'plan_item_checkins', query: 'SELECT * FROM plan_item_checkins WHERE deleted = 0', mapper: rowToPlanItemCheckin, storeKey: 'planItemCheckins' },
-      grace: { table: 'grace_history', query: 'SELECT * FROM grace_history WHERE deleted = 0', mapper: rowToGrace, storeKey: 'graceHistory' },
-      dailyCustomTodo: { table: 'daily_custom_todos', query: 'SELECT * FROM daily_custom_todos WHERE deleted = 0', mapper: rowToDailyCustomTodo, storeKey: 'dailyCustomTodos' },
-      dailyTodoHistory: { table: 'daily_todo_history', query: 'SELECT * FROM daily_todo_history WHERE deleted = 0', mapper: rowToDailyTodoHistory, storeKey: 'dailyTodoHistory' },
-      thoughtTrail: { table: 'thought_trails', query: 'SELECT * FROM thought_trails WHERE deleted = 0', mapper: rowToThoughtTrail, storeKey: 'thoughtTrails' },
-      trailNote: { table: 'trail_notes', query: 'SELECT * FROM trail_notes WHERE deleted = 0', mapper: rowToTrailNote, storeKey: 'trailNotes' },
-      reflectionLink: { table: 'reflection_links', query: 'SELECT * FROM reflection_links WHERE deleted = 0', mapper: rowToReflectionLink, storeKey: 'reflectionLinks' },
-      aiConfig: { table: 'ai_configs', query: "SELECT * FROM ai_configs WHERE config_id='self' AND deleted=0", mapper: rowToAIConfig, storeKey: '_aiConfig' },
-      checkinReview: { table: 'checkin_reviews', query: 'SELECT * FROM checkin_reviews WHERE deleted = 0', mapper: rowToCheckinReview, storeKey: 'checkinReviews' },
-      bodyGoal: { table: 'body_goals', query: 'SELECT * FROM body_goals WHERE deleted = 0', mapper: rowToBodyGoal, storeKey: 'bodyGoals' },
-      bodyPlan: { table: 'body_plans', query: 'SELECT * FROM body_plans WHERE deleted = 0', mapper: rowToBodyPlan, storeKey: 'bodyPlans' },
-      weightRecord: { table: 'body_weight_records', query: 'SELECT * FROM body_weight_records WHERE deleted = 0', mapper: rowToWeightRecord, storeKey: 'weightRecords' },
-      bodyCheckin: { table: 'body_checkins', query: 'SELECT * FROM body_checkins WHERE deleted = 0', mapper: rowToBodyCheckin, storeKey: 'bodyCheckins' },
-      bodyTrainingPlan: { table: 'body_training_plans', query: 'SELECT * FROM body_training_plans WHERE deleted = 0', mapper: rowToBodyTrainingPlan, storeKey: 'bodyTrainingPlans' },
-      sleep: { table: 'sleep_records', query: 'SELECT * FROM sleep_records WHERE deleted = 0', mapper: rowToSleep, storeKey: 'sleepHistory' },
-      give: { table: 'give_entries', query: 'SELECT * FROM give_entries WHERE deleted = 0', mapper: rowToGive, storeKey: 'giveHistory' },
-      motivationEntry: { table: 'eating_motivations', query: 'SELECT * FROM eating_motivations WHERE deleted = 0', mapper: rowToMotivationEntry, storeKey: 'motivationLog' },
-      customWuxing: { table: 'custom_wuxing_maps', query: 'SELECT * FROM custom_wuxing_maps WHERE deleted = 0', mapper: rowToCustomWuxing, storeKey: 'customWuxingMaps' },
-      vision: { table: 'visions', query: 'SELECT * FROM visions WHERE deleted = 0', mapper: rowToVision, storeKey: 'visions' },
-      visionPractice: { table: 'vision_practices', query: 'SELECT * FROM vision_practices WHERE deleted = 0', mapper: rowToVisionPractice, storeKey: 'visionPractices' },
-      mantraDef: { table: 'mantra_defs', query: 'SELECT * FROM mantra_defs WHERE deleted = 0', mapper: rowToMantraDef, storeKey: 'mantraDefs' },
-      mantraSession: { table: 'mantra_sessions', query: 'SELECT * FROM mantra_sessions WHERE deleted = 0', mapper: rowToMantraSession, storeKey: 'mantraSessions' },
-      foodPreset: { table: 'custom_food_presets', query: 'SELECT * FROM custom_food_presets WHERE deleted = 0', mapper: rowToFoodPreset, storeKey: 'customFoodPresets' },
-      dedication: { table: 'dedications', query: 'SELECT * FROM dedications WHERE deleted = 0', mapper: rowToDedication, storeKey: 'dedications' },
-      fearEntry: { table: 'fear_entries', query: 'SELECT * FROM fear_entries WHERE deleted = 0', mapper: rowToFearEntry, storeKey: 'fearEntries' },
-      courageEntry: { table: 'courage_entries', query: 'SELECT * FROM courage_entries WHERE deleted = 0', mapper: rowToCourageEntry, storeKey: 'courageEntries' },
-      fearAchievement: { table: 'fear_achievements', query: 'SELECT * FROM fear_achievements WHERE deleted = 0', mapper: rowToFearAchievement, storeKey: 'achievements' },
-      sutraReading: { table: 'sutra_reading_sessions', query: 'SELECT * FROM sutra_reading_sessions WHERE deleted = 0', mapper: rowToSutraReading, storeKey: 'readingSessions' },
-      breath: { table: 'breath_records', query: 'SELECT * FROM breath_records WHERE deleted = 0', mapper: rowToBreath, storeKey: 'breathHistory' },
-      zhiguanSession: { table: 'zhiguan_sessions', query: 'SELECT * FROM zhiguan_sessions WHERE deleted = 0', mapper: rowToZhiguanSession, storeKey: 'sessions' },
-    };
 
     const targets = entities ?? Object.keys(REHYDRATE_MAP);
     log.debug(`[rehydrateFromDb] Rehydrating ${targets.length} entities: ${targets.join(', ')}`);
 
     // Batched parallel rehydration — process in groups of 8 to reduce peak memory
-    // and SQLite contention on low-end devices (39 entities → 5 batches of ~8)
+    // and SQLite contention on low-end devices (40 entities → 5 batches of ~8)
     const BATCH_SIZE = 8;
     const results: Array<Awaited<ReturnType<typeof this.queryEntity>> | null> = [];
     for (let i = 0; i < targets.length; i += BATCH_SIZE) {
       const batch = targets.slice(i, i + BATCH_SIZE);
-      const batchResults = await Promise.all(batch.map((entity) => this.queryEntity(db, entity, REHYDRATE_MAP)));
+      const batchResults = await Promise.all(batch.map((entity) => this.queryEntity(db, entity)));
       results.push(...batchResults);
     }
 
@@ -134,7 +155,7 @@ export class SyncRehydrationManager {
           if (result.storeKey) patch[result.storeKey] = result.data;
           continue;
         }
-        const { rows, config } = result as { entity: string; rows: Record<string, unknown>[]; config: NonNullable<typeof REHYDRATE_MAP[string]> };
+        const { rows, config } = result as { entity: string; rows: Record<string, unknown>[]; config: RehydrateConfig };
         if (!rows || !config) continue;
         if (config.storeKey === '_aiConfig') {
           if (rows.length) {
@@ -221,15 +242,25 @@ export class SyncRehydrationManager {
 
     onInitialSyncingChange?.(true);
     try {
-      const PHASE_1: SyncEntity[] = ['profile', 'checkin', 'habit', 'grace'];
-
-      await this.pullEntitiesParallel(PHASE_1, 1, 1, token, userId, applyServerChanges, isKickedOut);
+      const phase1Failures = await this.pullEntitiesParallel(PHASE_1_ENTITIES, 1, 1, token, userId, applyServerChanges, isKickedOut);
+      if (phase1Failures.length > 0) {
+        // Phase-1 data must be reliable before marking the device synced.
+        // initialSyncDone stays unset → resumeInitialSync retries on next foreground.
+        log.warn(`[initialSync] Phase 1 incomplete (failed: ${phase1Failures.join(', ')}) — will retry on resume`);
+        return 'partial';
+      }
       await setState(db, 'initialSyncPhase', '2');
       await setState(db, DEVICE_SYNCED_KEY, '1');
 
       // Also pull remaining entities so rehydrateFromDb has all data
-      const allEntities: SyncEntity[] = ['reflection', 'fasting', 'food', 'exercise', 'meditation', 'plan', 'planItem', 'planItemCheckin', 'dailyCustomTodo', 'dailyTodoHistory', 'thoughtTrail', 'trailNote', 'reflectionLink', 'aiConfig', 'checkinReview', 'bodyGoal', 'bodyPlan', 'weightRecord', 'bodyCheckin', 'sleep', 'give', 'motivationEntry', 'customWuxing', 'vision', 'visionPractice', 'dedication', 'mantraDef', 'mantraSession', 'sutraReading', 'fearEntry', 'courageEntry', 'fearAchievement', 'zhiguanSession', 'breath'];
-      await this.pullEntitiesParallel(allEntities, 1, 2, token, userId, applyServerChanges, isKickedOut);
+      const phase2Failures = await this.pullEntitiesParallel(PHASE_2_ENTITIES, 1, 2, token, userId, applyServerChanges, isKickedOut);
+      if (phase2Failures.length > 0) {
+        // A hole here would be permanent: incremental pulls filter
+        // updated_at > lastSyncAt, so failed entities MUST be retried by
+        // resumeInitialSync — never mark initialSyncDone while any failed.
+        log.warn(`[initialSync] Phase 2 incomplete (failed: ${phase2Failures.join(', ')}) — initialSyncDone NOT set`);
+        return 'partial';
+      }
       await setState(db, 'initialSyncDone', 'true');
       await setState(db, 'initialSyncPhase', 'done');
 
@@ -255,13 +286,25 @@ export class SyncRehydrationManager {
   ): Promise<void> {
     const db = await openDatabase();
     if ((await getState(db, 'initialSyncDone')) === 'true') return;
-    const allEntities: SyncEntity[] = ['profile', 'checkin', 'habit', 'grace', 'reflection', 'fasting', 'food', 'exercise', 'meditation', 'plan', 'planItem', 'planItemCheckin', 'dailyCustomTodo', 'dailyTodoHistory', 'thoughtTrail', 'trailNote', 'reflectionLink', 'aiConfig', 'checkinReview', 'bodyGoal', 'bodyPlan', 'weightRecord', 'bodyCheckin', 'sleep', 'give', 'motivationEntry', 'customWuxing', 'vision', 'visionPractice', 'dedication', 'mantraDef', 'mantraSession', 'sutraReading', 'fearEntry', 'courageEntry', 'fearAchievement', 'zhiguanSession', 'breath'];
 
-    for (const entity of allEntities) {
+    const failures: SyncEntity[] = [];
+    for (const entity of ALL_INITIAL_ENTITIES) {
       const p = await getSyncProgress(entity);
       if (p?.status === 'done') continue;
-      const phase = p?.phase ?? (['profile','checkin','habit','grace'].includes(entity) ? 1 : ['reflection','fasting','food','exercise','meditation'].includes(entity) ? 2 : 3);
-      await this.pullEntityWithRetry(entity, phase, token, userId, applyServerChanges, isKickedOut);
+      const phase = p?.phase ?? (PHASE_1_ENTITIES.includes(entity) ? 1 : ['reflection','fasting','food','exercise','meditation'].includes(entity) ? 2 : 3);
+      try {
+        await this.pullEntityWithRetry(entity, phase, token, userId, applyServerChanges, isKickedOut);
+      } catch (err: unknown) {
+        if (isKickedOut(err)) throw err;
+        failures.push(entity);
+        log.error(err, { phase: 'resumeInitialSync', entity });
+      }
+    }
+    if (failures.length > 0) {
+      // Keep initialSyncDone unset so the next foreground sync retries —
+      // only the failed entities are re-pulled (done ones are skipped above).
+      log.warn(`[resumeInitialSync] ${failures.length} entity/entities failed (${failures.join(', ')}) — will retry on next sync`);
+      return;
     }
     await setState(db, 'initialSyncDone', 'true');
     await setState(db, 'initialSyncPhase', 'done');
@@ -288,6 +331,13 @@ export class SyncRehydrationManager {
         const result = await apiSyncPullEntity(token, entity, page, 200, userId);
         log.debug(`[pullEntityWithRetry] ${entity}: page=${page}, data.length=${result.data.length}, hasMore=${result.hasMore}, total=${result.total}`);
         if (result.data.length === 0) {
+          if (result.hasMore) {
+            // Server omits the entity key when a page filters down to zero
+            // records (e.g. shared body_plans type filter) — an empty page with
+            // hasMore means "no matching rows here", not "no more data".
+            page++;
+            continue;
+          }
           await updateSyncProgress(entity, { status: 'done' });
           return;
         }
@@ -312,13 +362,19 @@ export class SyncRehydrationManager {
         }
         if (attempt >= 5) {
           await updateSyncProgress(entity, { status: 'failed', last_error: (err as Error).message, retry_count: attempt });
-          return;
+          // Throw so the caller records this entity as a failure and leaves
+          // initialSyncDone unset (was: silent return → permanent data hole).
+          throw err;
         }
         const delay = Math.min(Math.pow(2, attempt) * 1000, 60000);
         await updateSyncProgress(entity, { retry_count: attempt, next_retry_at: Date.now() + delay });
         await new Promise<void>(resolve => setTimeout(resolve, delay));
       }
     }
+    // Fell through MAX_PAGES while the server still reported more data —
+    // mark failed and throw so this entity is never recorded as done.
+    await updateSyncProgress(entity, { status: 'failed', last_error: `Pagination limit ${MAX_PAGES} reached` });
+    throw new Error(`pullEntityWithRetry: ${entity} exceeded MAX_PAGES=${MAX_PAGES}`);
   }
 
   private async pullEntitiesParallel(
@@ -329,8 +385,9 @@ export class SyncRehydrationManager {
     userId: string | undefined,
     applyServerChanges: (data: Record<string, unknown[]>, deletedIds?: Set<string>) => Promise<Record<string, unknown>>,
     isKickedOut: (err: unknown) => boolean,
-  ): Promise<void> {
+  ): Promise<SyncEntity[]> {
     const queue = [...entities];
+    const failures: SyncEntity[] = [];
     const workers: Promise<void>[] = [];
     for (let i = 0; i < concurrency; i++) {
       workers.push((async () => {
@@ -339,10 +396,20 @@ export class SyncRehydrationManager {
           if (!entity) break;
           const existing = await getSyncProgress(entity);
           if (existing?.status === 'done') continue;
-          await this.pullEntityWithRetry(entity, phase, token, userId, applyServerChanges, isKickedOut);
+          try {
+            await this.pullEntityWithRetry(entity, phase, token, userId, applyServerChanges, isKickedOut);
+          } catch (err: unknown) {
+            // One entity's failure must not abort the others — collect and
+            // keep pulling so a single bad collection can't block the sync.
+            // Kick-out still aborts immediately (session is gone regardless).
+            if (isKickedOut(err)) throw err;
+            failures.push(entity);
+            log.error(err, { phase: 'pullEntitiesParallel', entity });
+          }
         }
       })());
     }
     await Promise.all(workers);
+    return failures;
   }
 }
