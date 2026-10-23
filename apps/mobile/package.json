@@ -57,7 +57,7 @@
     "@babel/runtime": "^7.24.0",
     "@types/react": "~19.1.10",
     "babel-preset-expo": "~54.0.10",
-    "expo-dev-client": "~6.0.21",
+    "expo-dev-client": "~57.0.9",
     "patch-package": "^8.0.1"
   }
 }
