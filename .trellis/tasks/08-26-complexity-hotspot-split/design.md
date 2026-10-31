@@ -92,13 +92,16 @@ migrateDatabase（高复杂度）
 所有子任务 archive 后，父任务执行最终集成验证：
 
 ```bash
-# 1. ESLint complexity 复测（5 个热点均 ≤15）
+# 1. ESLint complexity 复测（4 个热点 ≤15；migrateDatabase ≤40 高风险例外）
+#    BodyDashboard / PlanDetailContent / HomeScreen / SportPage — complexity ≤15
+#    schema.ts migrateDatabase — complexity ≤40（表驱动重构另立任务）
 npx eslint apps/mobile/src/features/practice/body/BodyDashboard.tsx \
   apps/mobile/src/db/schema.ts \
   apps/mobile/src/features/plan/PlanDetailContent.tsx \
   apps/mobile/src/features/home/screens/HomeScreen.tsx \
   apps/mobile/src/features/exercise/SportPage.tsx \
   --rule '{"complexity": ["error", 15]}' --no-eslintrc
+# 注：schema.ts 会报 migrateDatabase complexity 38，属已接受的 ≤40 例外
 
 # 2. 全量 lint
 pnpm run lint

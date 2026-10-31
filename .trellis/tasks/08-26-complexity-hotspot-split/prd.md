@@ -2,7 +2,7 @@
 
 ## Goal
 
-降低 5 个最高复杂度热点的 cyclomatic complexity，使其通过 ESLint `complexity ≤ 15` 阈值（当前 44~85），同时**不引入运行时回归**。每个热点的拆分必须保持原有行为契约和消费方零改动。
+降低 5 个最高复杂度热点的 cyclomatic complexity：4 个降至 ESLint `complexity ≤ 15`，migrateDatabase 因最高风险（零测试 + 冷启动执行 + 表重建可能永久丢数据）降至 ≤40、表驱动重构另立任务。当前复杂度 44~85。同时**不引入运行时回归**，每个热点的拆分必须保持原有行为契约和消费方零改动。
 
 ## Background
 
@@ -81,7 +81,7 @@
 
 ## Acceptance Criteria
 
-- [ ] AC1：5 个热点的 ESLint `complexity` 均降至 ≤15（`max-lines-per-function` 可保留 disable 注释，本次不强制行数）
+- [ ] AC1：4 个热点（BodyDashboard / PlanDetailContent / HomeScreen / SportPage）ESLint `complexity` 降至 ≤15；migrateDatabase 降至 ≤40（高风险例外，见表驱动重构已移入 Out of Scope）。`max-lines-per-function` 可保留 disable 注释，本次不强制行数
 - [ ] AC2：`pnpm run lint` 0 error 0 warning（不新增 disable）
 - [ ] AC3：`pnpm run type-check` 0 错误
 - [ ] AC4：`pnpm run test` 全量通过（当前基线 1967 测试）
@@ -110,3 +110,4 @@
 - **执行顺序**：按风险递增——R3(低) → R1(低) → R4(中高) → R5(中高) → R2(高)。非依赖，节奏控制。
 - **R3 修正**：`useDailyTodo` hook 已存在，R3 实际只提取 `TodoTabContent` + `PlanActionBar`。
 - **R5 修正**：`handleSave`（第 511 行）是第二个复杂度热点（CC 21），纳入 R5 范围；SportPage 已有子页面/hooks 拆分，复用现有。
+- **migrateDatabase ≤40 例外（2026-10-31 确认）**：实际拆分后 migrateDatabase 复杂度为 38，达 R2/design 模式 B 的 ≤40 目标，未达原 AC1 的 ≤15。压到 ≤15 需要已被判为 Out of Scope 的表驱动重构（零测试 + 冷启动执行 + 表重建可能永久丢数据）。用户确认接受 ≤40 例外，AC1 已据此修正。表驱动重构另立独立任务，前置条件为先补 migrateDatabase 测试基线。
