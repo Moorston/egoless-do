@@ -1285,3 +1285,36 @@ Move-only 重构 HomeScreen：提取 7 个展示子组件（WeightCard/WaterCard
 ### Next Steps
 
 - None - task complete
+
+
+## Session 91: 复杂度热点拆分父任务集成验证收尾
+
+**Date**: 2026-10-31
+**Task**: 复杂度热点拆分父任务集成验证收尾
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+5 个子任务（BodyDashboard/PlanDetailContent/HomeScreen/SportPage/migrateDatabase）已全部归档。父任务集成门禁通过：4 热点 complexity ≤15，migrateDatabase 38（≤40 高风险例外）；lint 0 error（14 warning 为 sync 测试文件既有基线）；type-check exit 0；test 1974 通过。PRD 收敛消解 AC1 与 R2 的 ≤15/≤40 矛盾，按用户决策接受 ≤40 例外，表驱动重构另立独立任务。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `765557a0` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
