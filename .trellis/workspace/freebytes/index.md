@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-2.md`
-- **Total Sessions**: 91
-- **Last Active**: 2026-10-31
+- **Total Sessions**: 92
+- **Last Active**: 2026-11-01
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~1320 | Active |
+| `journal-2.md` | ~1354 | Active |
 | `journal-1.md` | ~1971 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 92 | 2026-11-01 | migrateDatabase 表驱动重构 — CC 38→≤15 + 表征测试基线 | `0687784a`, `b874dade` | `refactor/split-body-dashboard` |
 | 91 | 2026-10-31 | 复杂度热点拆分父任务集成验证收尾 | `765557a0` | `refactor/split-body-dashboard` |
 | 90 | 2026-08-30 | R2 split-sport-page: SportPage CC 44→14, handleSave 拆分 | `1b64b6d6` | `refactor/split-body-dashboard` |
 | 89 | 2026-08-30 | R5 split-migrate-database — migrateDatabase CC67→≤40 | `b3365ea3` | `refactor/split-body-dashboard` |

@@ -1318,3 +1318,37 @@ Move-only 重构 HomeScreen：提取 7 个展示子组件（WeightCard/WaterCard
 ### Next Steps
 
 - None - task complete
+
+
+## Session 92: migrateDatabase 表驱动重构 — CC 38→≤15 + 表征测试基线
+
+**Date**: 2026-11-01
+**Task**: migrateDatabase 表驱动重构 — CC 38→≤15 + 表征测试基线
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+将 migrateDatabase（schema.ts，CC 38）重写为表驱动：MigrationStep discriminated union（8 种 kind）+ 有序 MIGRATION_STEPS 数组 + runMigrationStep 分发。提取模块级 helpers（tableExists/tryAddCol/ensureColumn/cleanupPresetMantras）。6 个 migrateXxx 函数体不动。planTableCheck early-fetch-late-use 异常用 checkTable + ensureTablesChecked 拆两步保 byte-identical。前置建立 schemaMigrate.test.ts 表征测试基线（FakeSqliteDb + S1 fresh / S2 upgrade 双快照）锁定 emitted SQL 序列。验证：complexity ≤15、快照 byte-identical、lint 0 error、type-check 0、全量 1976 passed。更新 database-guidelines spec。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `0687784a` | (see git log) |
+| `b874dade` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
