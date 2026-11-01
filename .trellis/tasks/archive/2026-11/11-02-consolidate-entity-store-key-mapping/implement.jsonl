@@ -1,0 +1,7 @@
+{"file": "openspec/changes/consolidate-entity-store-key-mapping/proposal.md", "reason": "权威需求来源 — WHY/WHAT/Impact，exploration 深挖发现的双份定义与漏映射实证"}
+{"file": "openspec/changes/consolidate-entity-store-key-mapping/design.md", "reason": "权威技术设计 — 5 Decisions + 38 实体 transcription 表 + 风险/回滚 + Open Questions"}
+{"file": "openspec/changes/consolidate-entity-store-key-mapping/specs/sync-entity-mapping/spec.md", "reason": "4 条 ADDED Requirements 带 Scenario — 实施须逐条满足（SCHEMAS 唯一真理源 / 无 fallback / 强制校验 / forceFullSync 覆盖）"}
+{"file": "openspec/changes/consolidate-entity-store-key-mapping/tasks.md", "reason": "OpenSpec 工作项清单 — Trellis implement.md 派生自此"}
+{"file": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md", "reason": "禁止 console.warn/console.log/any，新增 validateEntityMappings 与 SyncApplyService:63 修复须用 createLogger 合规"}
+{"file": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md", "reason": "包依赖方向 core←mobile 不反向；re-export core 派生版须符合此约束"}
+{"file": ".trellis/spec/core/backend/database-guidelines.md", "reason": "DB/sync 层规范 — migrateDatabase 表驱动结构已记录于此，sync 实体映射收敛须遵守 DB 层约定"}

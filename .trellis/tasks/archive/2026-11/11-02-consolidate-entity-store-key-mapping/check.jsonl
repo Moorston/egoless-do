@@ -1,0 +1,4 @@
+{"file": "openspec/changes/consolidate-entity-store-key-mapping/specs/sync-entity-mapping/spec.md", "reason": "检查阶段逐条验证 4 条 Requirement 满足：SCHEMAS 唯一真理源 / 派生无 fallback / 校验非 DEV-gated / forceFullSync 覆盖全实体"}
+{"file": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md", "reason": "验证无新增 console.warn/any/eslint-disable，SyncApplyService:63 已转 createLogger"}
+{"file": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md", "reason": "验证包依赖方向不变（core←mobile），mobile re-export core 不反向依赖"}
+{"file": ".trellis/spec/core/backend/database-guidelines.md", "reason": "验证 sync 实体映射收敛未违反 DB/sync 层规范，迁移顺序与 slice key 不变"}
