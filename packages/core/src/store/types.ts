@@ -91,6 +91,8 @@ export interface SleepSlice {
   completeBarrier: (opts: { barrierMin: number; awayMin: number; practice?: string[] }) => void;
   saveSleepDiary: (entry: Partial<SleepEntry>) => void;
   setSleepGoal: (goal: SleepGoal) => void;
+  updateSleepNote: (id: string, note: string) => void;
+  deleteSleepEntry: (id: string) => void;
 }
 
 // GiveSlice removed — functionality now lives in PracticeSlice

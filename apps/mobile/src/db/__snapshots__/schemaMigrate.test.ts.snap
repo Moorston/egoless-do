@@ -1,0 +1,393 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`migrateDatabase — SQL sequence snapshot > S1 fresh install: empty DB → CREATE all tables + tryAddCol ALTERs > fresh-install 1`] = `
+[
+  "ALTER TABLE habits ADD COLUMN synced INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE mind_reflections ADD COLUMN linked_plan_id TEXT",
+  "ALTER TABLE mind_reflections ADD COLUMN linked_plan_item_id TEXT",
+  "ALTER TABLE food_entries ADD COLUMN synced INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE checkin_records ADD COLUMN timestamp INTEGER",
+  "ALTER TABLE checkin_records ADD COLUMN weight REAL",
+  "ALTER TABLE checkin_records ADD COLUMN grace INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE checkin_records ADD COLUMN total_days INTEGER",
+  "CREATE TABLE IF NOT EXISTS exercise_entries (
+      id TEXT PRIMARY KEY, sport_key TEXT NOT NULL, sport_icon TEXT NOT NULL DEFAULT '',
+      duration_sec INTEGER NOT NULL DEFAULT 0, distance_km REAL DEFAULT 0,
+      calories INTEGER DEFAULT 0, avg_pace REAL DEFAULT 0,
+      track_points TEXT DEFAULT '[]', is_gps_sport INTEGER NOT NULL DEFAULT 0,
+      ts INTEGER NOT NULL, synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "ALTER TABLE exercise_entries ADD COLUMN health_synced INTEGER NOT NULL DEFAULT 0",
+  "CREATE TABLE IF NOT EXISTS sync_queue (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, entity TEXT NOT NULL, entity_id TEXT NOT NULL,
+      operation TEXT NOT NULL CHECK(operation IN ('upsert','delete')),
+      payload TEXT NOT NULL, created_at INTEGER NOT NULL,
+      retry_count INTEGER NOT NULL DEFAULT 0, last_error TEXT,
+      status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','syncing','failed','conflict')),
+      next_retry_at INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE UNIQUE INDEX IF NOT EXISTS idx_sync_queue_entity ON sync_queue(entity, entity_id)",
+  "CREATE INDEX IF NOT EXISTS idx_sync_queue_status ON sync_queue(status)",
+  "CREATE TABLE IF NOT EXISTS sync_metadata (
+      entity TEXT PRIMARY KEY, last_sync_timestamp TEXT NOT NULL DEFAULT '1970-01-01T00:00:00.000Z',
+      last_sync_status TEXT DEFAULT 'success', updated_at TEXT DEFAULT (datetime('now'))
+    )",
+  "CREATE TABLE IF NOT EXISTS sync_progress (
+      entity TEXT PRIMARY KEY, phase INTEGER NOT NULL,
+      status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','downloading','done','failed')),
+      pulled_count INTEGER NOT NULL DEFAULT 0, total_count INTEGER NOT NULL DEFAULT 0,
+      last_page INTEGER NOT NULL DEFAULT 0, last_error TEXT,
+      retry_count INTEGER NOT NULL DEFAULT 0, next_retry_at INTEGER NOT NULL DEFAULT 0,
+      updated_at INTEGER
+    )",
+  "CREATE TABLE IF NOT EXISTS meditation_history (
+      date TEXT PRIMARY KEY, dur_min INTEGER NOT NULL DEFAULT 0, track_id TEXT NOT NULL DEFAULT '',
+      note TEXT NOT NULL DEFAULT '', updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0,
+      synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE TABLE IF NOT EXISTS user_profiles (
+      profile_id TEXT PRIMARY KEY, data TEXT NOT NULL DEFAULT '{}', synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "ALTER TABLE habits ADD COLUMN updated_at INTEGER",
+  "ALTER TABLE mind_reflections ADD COLUMN updated_at INTEGER",
+  "ALTER TABLE fasting_sessions ADD COLUMN updated_at INTEGER",
+  "ALTER TABLE food_entries ADD COLUMN updated_at INTEGER",
+  "ALTER TABLE checkin_records ADD COLUMN updated_at INTEGER",
+  "ALTER TABLE exercise_entries ADD COLUMN updated_at INTEGER",
+  "ALTER TABLE meditation_history ADD COLUMN updated_at INTEGER",
+  "ALTER TABLE user_profiles ADD COLUMN updated_at INTEGER",
+  "ALTER TABLE habits ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE mind_reflections ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE fasting_sessions ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE food_entries ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE checkin_records ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE exercise_entries ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE meditation_history ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE user_profiles ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE plan_items ADD COLUMN priority TEXT NOT NULL DEFAULT 'medium'",
+  "ALTER TABLE plan_items ADD COLUMN target_metric TEXT NOT NULL DEFAULT ''",
+  "ALTER TABLE plan_items ADD COLUMN reflection_id TEXT",
+  "ALTER TABLE plan_items ADD COLUMN frequency TEXT",
+  "ALTER TABLE mind_reflections ADD COLUMN colors TEXT",
+  "ALTER TABLE mind_reflections ADD COLUMN link TEXT",
+  "ALTER TABLE plans ADD COLUMN last_delayed_notify_at INTEGER",
+  "CREATE TABLE IF NOT EXISTS thought_trails (
+      id TEXT PRIMARY KEY, name TEXT NOT NULL, description TEXT DEFAULT '',
+      reflection_ids TEXT NOT NULL DEFAULT '[]', linked_plan_item_ids TEXT,
+      source TEXT DEFAULT 'manual', insight_summary TEXT,
+      created_at INTEGER NOT NULL, updated_at INTEGER,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "ALTER TABLE thought_trails ADD COLUMN note_ids TEXT NOT NULL DEFAULT '[]'",
+  "ALTER TABLE thought_trails ADD COLUMN insight_cache TEXT",
+  "ALTER TABLE thought_trails ADD COLUMN review_cache TEXT",
+  "ALTER TABLE habits ADD COLUMN alarm_enabled INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE habits ADD COLUMN alarm_hour INTEGER NOT NULL DEFAULT 8",
+  "ALTER TABLE habits ADD COLUMN alarm_minute INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE habits ADD COLUMN link TEXT NOT NULL DEFAULT 'none'",
+  "ALTER TABLE habits ADD COLUMN link_config TEXT",
+  "ALTER TABLE habits ADD COLUMN vision_id TEXT DEFAULT ''",
+  "ALTER TABLE mind_reflections ADD COLUMN thought_trail_ids TEXT",
+  "ALTER TABLE plans ADD COLUMN complete_reason TEXT",
+  "ALTER TABLE plans ADD COLUMN vision_id TEXT",
+  "ALTER TABLE ai_configs ADD COLUMN local_engine_enabled INTEGER NOT NULL DEFAULT 1",
+  "ALTER TABLE exercise_entries ADD COLUMN mode TEXT DEFAULT 'free'",
+  "ALTER TABLE exercise_entries ADD COLUMN target TEXT",
+  "ALTER TABLE exercise_entries ADD COLUMN segment_paces TEXT",
+  "ALTER TABLE exercise_entries ADD COLUMN elevation_gain REAL",
+  "ALTER TABLE exercise_entries ADD COLUMN paused_duration INTEGER",
+  "ALTER TABLE exercise_entries ADD COLUMN reps INTEGER",
+  "ALTER TABLE exercise_entries ADD COLUMN sets TEXT",
+  "ALTER TABLE exercise_entries ADD COLUMN met REAL",
+  "ALTER TABLE exercise_entries ADD COLUMN combo_exercises TEXT",
+  "ALTER TABLE plan_items ADD COLUMN trail_id TEXT",
+  "ALTER TABLE plan_items ADD COLUMN tags TEXT",
+  "CREATE TABLE IF NOT EXISTS trail_notes (
+      id TEXT PRIMARY KEY, trail_id TEXT NOT NULL, content TEXT NOT NULL,
+      tags TEXT NOT NULL DEFAULT '[]', mood TEXT, source TEXT NOT NULL DEFAULT 'free',
+      guided_question TEXT, note_order INTEGER NOT NULL DEFAULT 0,
+      created_at INTEGER NOT NULL, updated_at INTEGER,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE INDEX IF NOT EXISTS idx_trail_notes_trail ON trail_notes(trail_id)",
+  "CREATE TABLE IF NOT EXISTS reflection_links (
+      link_id TEXT PRIMARY KEY, from_id TEXT NOT NULL, to_id TEXT NOT NULL,
+      link_type TEXT NOT NULL, note TEXT, created_at INTEGER NOT NULL,
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE INDEX IF NOT EXISTS idx_reflection_links_from ON reflection_links(from_id)",
+  "CREATE INDEX IF NOT EXISTS idx_reflection_links_to   ON reflection_links(to_id)",
+  "CREATE TABLE IF NOT EXISTS ai_configs (
+      config_id TEXT PRIMARY KEY, mode TEXT NOT NULL DEFAULT 'hybrid',
+      models TEXT NOT NULL DEFAULT '[]', updated_at INTEGER,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE TABLE IF NOT EXISTS checkin_reviews (
+      id TEXT PRIMARY KEY, user_id TEXT NOT NULL DEFAULT 'self',
+      review_id TEXT NOT NULL, period TEXT NOT NULL DEFAULT 'week',
+      start_date TEXT NOT NULL, end_date TEXT NOT NULL,
+      review_data TEXT NOT NULL DEFAULT '{}',
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0,
+      synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE INDEX IF NOT EXISTS idx_checkin_reviews_period ON checkin_reviews(period, start_date)",
+  "CREATE TABLE IF NOT EXISTS grace_history (
+      date TEXT PRIMARY KEY, restored_at INTEGER NOT NULL,
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0,
+      synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE TABLE IF NOT EXISTS daily_custom_todos (
+      id TEXT PRIMARY KEY, plan_id TEXT, date TEXT NOT NULL,
+      name TEXT NOT NULL, done INTEGER NOT NULL DEFAULT 0,
+      todo_order INTEGER NOT NULL DEFAULT 0, recurring INTEGER NOT NULL DEFAULT 0,
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE TABLE IF NOT EXISTS daily_todo_history (
+      id TEXT PRIMARY KEY, plan_id TEXT, date TEXT NOT NULL,
+      plan_items TEXT NOT NULL DEFAULT '[]', custom_todos TEXT NOT NULL DEFAULT '[]',
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE TABLE IF NOT EXISTS plans (
+      id TEXT PRIMARY KEY, name TEXT NOT NULL, goal TEXT NOT NULL DEFAULT '', slogan TEXT NOT NULL DEFAULT '',
+      start_date TEXT NOT NULL, end_date TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'not_started',
+      progress INTEGER NOT NULL DEFAULT 0, updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0,
+      synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE TABLE IF NOT EXISTS plan_items (
+      id TEXT PRIMARY KEY, plan_id TEXT NOT NULL, name TEXT NOT NULL, description TEXT NOT NULL DEFAULT '',
+      start_date TEXT NOT NULL, end_date TEXT NOT NULL, content_url TEXT NOT NULL DEFAULT '',
+      total_checkin_days INTEGER NOT NULL DEFAULT 0, status TEXT NOT NULL DEFAULT 'not_started',
+      progress INTEGER NOT NULL DEFAULT 0, link TEXT NOT NULL DEFAULT 'manual',
+      priority TEXT NOT NULL DEFAULT 'medium', target_metric TEXT NOT NULL DEFAULT '',
+      link_config TEXT NOT NULL DEFAULT '{}', item_order INTEGER NOT NULL DEFAULT 0,
+      frequency TEXT,
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE TABLE IF NOT EXISTS plan_item_checkins (
+      id TEXT PRIMARY KEY, plan_item_id TEXT NOT NULL, date TEXT NOT NULL,
+      done INTEGER NOT NULL DEFAULT 0, note TEXT DEFAULT '', linked_module TEXT DEFAULT '',
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "ALTER TABLE fasting_sessions ADD COLUMN note TEXT NOT NULL DEFAULT ''",
+  "ALTER TABLE mantra_defs ADD COLUMN audio_url TEXT",
+  "ALTER TABLE mantra_defs ADD COLUMN audio_attribution TEXT",
+  "ALTER TABLE mantra_defs ADD COLUMN preset INTEGER",
+  "ALTER TABLE mantra_defs ADD COLUMN pronunciation TEXT",
+  "ALTER TABLE mantra_defs ADD COLUMN meaning TEXT",
+  "ALTER TABLE mantra_defs ADD COLUMN full_text TEXT",
+  "ALTER TABLE mantra_defs ADD COLUMN page_count INTEGER",
+  "CREATE INDEX IF NOT EXISTS idx_food_entry_date ON food_entries(entry_date)",
+  "CREATE INDEX IF NOT EXISTS idx_exercise_ts ON exercise_entries(ts)",
+  "CREATE INDEX IF NOT EXISTS idx_plan_items_plan_id ON plan_items(plan_id)",
+  "CREATE INDEX IF NOT EXISTS idx_plan_item_checkins_lookup ON plan_item_checkins(plan_item_id, date)",
+  "CREATE INDEX IF NOT EXISTS idx_daily_custom_todos_lookup ON daily_custom_todos(plan_id, date)",
+  "CREATE INDEX IF NOT EXISTS idx_fasting_started ON fasting_sessions(started_at)",
+  "CREATE INDEX IF NOT EXISTS idx_body_weight_date ON body_weight_records(date)",
+  "CREATE INDEX IF NOT EXISTS idx_body_checkins_date ON body_checkins(date)",
+  "DELETE FROM checkin_reviews WHERE rowid NOT IN (
+      SELECT MIN(rowid) FROM checkin_reviews GROUP BY review_id
+    )",
+  "CREATE UNIQUE INDEX IF NOT EXISTS idx_checkin_reviews_review_id ON checkin_reviews(review_id)",
+  "CREATE TABLE IF NOT EXISTS body_goals (
+      id TEXT PRIMARY KEY, target_weight REAL, target_body_fat REAL,
+      target_date TEXT, strategy TEXT, note TEXT,
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE TABLE IF NOT EXISTS body_plans (
+      id TEXT PRIMARY KEY, type TEXT NOT NULL DEFAULT 'weekly',
+      goal_id TEXT, weekday INTEGER NOT NULL,
+      part TEXT NOT NULL, sport_key TEXT, note TEXT,
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE INDEX IF NOT EXISTS idx_body_plans_weekday ON body_plans(weekday)",
+  "CREATE TABLE IF NOT EXISTS body_training_plans (
+      id TEXT PRIMARY KEY, type TEXT NOT NULL DEFAULT 'training',
+      name TEXT NOT NULL, start_date TEXT NOT NULL,
+      end_date TEXT NOT NULL, strategy TEXT, target_weight REAL,
+      target_body_fat REAL, goal_note TEXT, tasks TEXT NOT NULL DEFAULT '[]',
+      overrides TEXT,
+      status TEXT NOT NULL DEFAULT 'active',
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE TABLE IF NOT EXISTS body_weight_records (
+      id TEXT PRIMARY KEY, date TEXT NOT NULL, weight REAL NOT NULL,
+      body_fat REAL, updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0,
+      synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE TABLE IF NOT EXISTS body_checkins (
+      id TEXT PRIMARY KEY, date TEXT NOT NULL UNIQUE, energy INTEGER NOT NULL,
+      pain INTEGER NOT NULL, comfort INTEGER NOT NULL, sleep INTEGER NOT NULL,
+      tags TEXT, note TEXT, updated_at INTEGER,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE TABLE IF NOT EXISTS visions (
+      id TEXT PRIMARY KEY, type TEXT NOT NULL, text TEXT NOT NULL,
+      time_frame TEXT, start_date TEXT, deadline TEXT, status TEXT NOT NULL DEFAULT 'active',
+      achieved_at INTEGER, sort_order INTEGER NOT NULL DEFAULT 0,
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE TABLE IF NOT EXISTS vision_practices (
+      id TEXT PRIMARY KEY, vision_id TEXT NOT NULL, ref_type TEXT NOT NULL,
+      ref_id TEXT NOT NULL, updated_at INTEGER,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE TABLE IF NOT EXISTS dedications (
+      id TEXT PRIMARY KEY, date TEXT NOT NULL, period_label TEXT NOT NULL,
+      type TEXT NOT NULL, practice_days INTEGER NOT NULL, total_days INTEGER NOT NULL,
+      habit_stats TEXT, plan_progress TEXT, vision_progress TEXT,
+      insight TEXT, adjustment TEXT, updated_at INTEGER,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE TABLE IF NOT EXISTS mantra_defs (
+      id TEXT PRIMARY KEY, name TEXT NOT NULL, subtitle TEXT,
+      category TEXT NOT NULL DEFAULT 'custom', sort_order INTEGER NOT NULL DEFAULT 0,
+      target_count INTEGER, updated_at INTEGER,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE TABLE IF NOT EXISTS mantra_sessions (
+      id TEXT PRIMARY KEY, mantra_id TEXT NOT NULL, date TEXT NOT NULL,
+      count INTEGER NOT NULL, rounds INTEGER NOT NULL, duration_sec INTEGER NOT NULL,
+      started_at INTEGER NOT NULL, completed_at INTEGER NOT NULL,
+      target_rounds INTEGER, dedication TEXT, updated_at INTEGER,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE TABLE IF NOT EXISTS zhiguan_sessions (
+      id TEXT PRIMARY KEY, user_id TEXT, status TEXT NOT NULL DEFAULT 'completed',
+      start_ts INTEGER NOT NULL, end_ts INTEGER, sankalpa TEXT,
+      preliminary_level TEXT, chosen_method TEXT,
+      samatha_ratio_avg REAL, vipassana_ratio_avg REAL,
+      total_breaths INTEGER, closing_notes TEXT,
+      self_reported_stage TEXT, self_reported_stage_text TEXT,
+      dedication_id TEXT, five_hindrances TEXT, eight_tactile TEXT, meta TEXT,
+      updated_at INTEGER,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE TABLE IF NOT EXISTS breath_records (
+      id TEXT PRIMARY KEY, date TEXT NOT NULL, preset_key TEXT NOT NULL DEFAULT '',
+      duration_sec INTEGER NOT NULL DEFAULT 0, cycles INTEGER NOT NULL DEFAULT 0,
+      pre_distress INTEGER NOT NULL DEFAULT 5, post_distress INTEGER NOT NULL DEFAULT 5,
+      reflection TEXT NOT NULL DEFAULT '', guide_style TEXT NOT NULL DEFAULT 'scientific',
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )",
+  "CREATE INDEX IF NOT EXISTS idx_breath_records_date ON breath_records(date)",
+]
+`;
+
+exports[`migrateDatabase — SQL sequence snapshot > S2 upgrade: all ensured tables exist (columns empty) → migrateXxx + tryAddCol > upgrade-all-tables-exist 1`] = `
+[
+  "ALTER TABLE habits ADD COLUMN synced INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE mind_reflections ADD COLUMN linked_plan_id TEXT",
+  "ALTER TABLE mind_reflections ADD COLUMN linked_plan_item_id TEXT",
+  "ALTER TABLE food_entries ADD COLUMN synced INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE checkin_records ADD COLUMN timestamp INTEGER",
+  "ALTER TABLE checkin_records ADD COLUMN weight REAL",
+  "ALTER TABLE checkin_records ADD COLUMN grace INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE checkin_records ADD COLUMN total_days INTEGER",
+  "ALTER TABLE exercise_entries ADD COLUMN health_synced INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE sync_queue ADD COLUMN retry_count INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE sync_queue ADD COLUMN last_error TEXT",
+  "ALTER TABLE sync_queue ADD COLUMN status TEXT NOT NULL DEFAULT 'pending'",
+  "ALTER TABLE sync_queue ADD COLUMN next_retry_at INTEGER NOT NULL DEFAULT 0",
+  "CREATE INDEX IF NOT EXISTS idx_sync_queue_status ON sync_queue(status)",
+  "CREATE INDEX IF NOT EXISTS idx_sync_queue_drain ON sync_queue(status, next_retry_at, id)",
+  "DELETE FROM sync_queue WHERE id NOT IN (
+      SELECT MIN(id) FROM sync_queue GROUP BY entity, entity_id
+    )",
+  "DROP INDEX IF EXISTS idx_sync_queue_entity",
+  "CREATE UNIQUE INDEX idx_sync_queue_entity ON sync_queue(entity, entity_id)",
+  "ALTER TABLE meditation_history ADD COLUMN dur_min INTEGER NOT NULL DEFAULT 0",
+  "UPDATE meditation_history SET dur_min = CAST(REPLACE(dur, 'min', '') AS INTEGER) WHERE dur IS NOT NULL",
+  "ALTER TABLE meditation_history ADD COLUMN track_id TEXT NOT NULL DEFAULT ''",
+  "ALTER TABLE meditation_history ADD COLUMN note TEXT NOT NULL DEFAULT ''",
+  "ALTER TABLE habits ADD COLUMN updated_at INTEGER",
+  "ALTER TABLE mind_reflections ADD COLUMN updated_at INTEGER",
+  "ALTER TABLE fasting_sessions ADD COLUMN updated_at INTEGER",
+  "ALTER TABLE food_entries ADD COLUMN updated_at INTEGER",
+  "ALTER TABLE checkin_records ADD COLUMN updated_at INTEGER",
+  "ALTER TABLE exercise_entries ADD COLUMN updated_at INTEGER",
+  "ALTER TABLE meditation_history ADD COLUMN updated_at INTEGER",
+  "ALTER TABLE user_profiles ADD COLUMN updated_at INTEGER",
+  "ALTER TABLE habits ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE mind_reflections ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE fasting_sessions ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE food_entries ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE checkin_records ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE exercise_entries ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE meditation_history ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE user_profiles ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE plan_items ADD COLUMN priority TEXT NOT NULL DEFAULT 'medium'",
+  "ALTER TABLE plan_items ADD COLUMN target_metric TEXT NOT NULL DEFAULT ''",
+  "ALTER TABLE plan_items ADD COLUMN reflection_id TEXT",
+  "ALTER TABLE plan_items ADD COLUMN frequency TEXT",
+  "ALTER TABLE mind_reflections ADD COLUMN colors TEXT",
+  "ALTER TABLE mind_reflections ADD COLUMN link TEXT",
+  "ALTER TABLE plans ADD COLUMN last_delayed_notify_at INTEGER",
+  "ALTER TABLE thought_trails ADD COLUMN source TEXT DEFAULT 'manual'",
+  "ALTER TABLE thought_trails ADD COLUMN insight_summary TEXT",
+  "ALTER TABLE thought_trails ADD COLUMN note_ids TEXT NOT NULL DEFAULT '[]'",
+  "ALTER TABLE thought_trails ADD COLUMN insight_cache TEXT",
+  "ALTER TABLE thought_trails ADD COLUMN review_cache TEXT",
+  "ALTER TABLE thought_trails ADD COLUMN linked_plan_item_ids TEXT",
+  "ALTER TABLE habits ADD COLUMN alarm_enabled INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE habits ADD COLUMN alarm_hour INTEGER NOT NULL DEFAULT 8",
+  "ALTER TABLE habits ADD COLUMN alarm_minute INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE habits ADD COLUMN link TEXT NOT NULL DEFAULT 'none'",
+  "ALTER TABLE habits ADD COLUMN link_config TEXT",
+  "ALTER TABLE habits ADD COLUMN vision_id TEXT DEFAULT ''",
+  "ALTER TABLE mind_reflections ADD COLUMN thought_trail_ids TEXT",
+  "ALTER TABLE plans ADD COLUMN complete_reason TEXT",
+  "ALTER TABLE plans ADD COLUMN vision_id TEXT",
+  "ALTER TABLE ai_configs ADD COLUMN local_engine_enabled INTEGER NOT NULL DEFAULT 1",
+  "ALTER TABLE exercise_entries ADD COLUMN mode TEXT DEFAULT 'free'",
+  "ALTER TABLE exercise_entries ADD COLUMN target TEXT",
+  "ALTER TABLE exercise_entries ADD COLUMN segment_paces TEXT",
+  "ALTER TABLE exercise_entries ADD COLUMN elevation_gain REAL",
+  "ALTER TABLE exercise_entries ADD COLUMN paused_duration INTEGER",
+  "ALTER TABLE exercise_entries ADD COLUMN reps INTEGER",
+  "ALTER TABLE exercise_entries ADD COLUMN sets TEXT",
+  "ALTER TABLE exercise_entries ADD COLUMN met REAL",
+  "ALTER TABLE exercise_entries ADD COLUMN combo_exercises TEXT",
+  "ALTER TABLE plan_items ADD COLUMN trail_id TEXT",
+  "ALTER TABLE plan_items ADD COLUMN tags TEXT",
+  "BEGIN TRANSACTION",
+  "CREATE TABLE IF NOT EXISTS daily_custom_todos_new (
+        id TEXT PRIMARY KEY, plan_id TEXT, date TEXT NOT NULL,
+        name TEXT NOT NULL, done INTEGER NOT NULL DEFAULT 0,
+        todo_order INTEGER NOT NULL DEFAULT 0, recurring INTEGER NOT NULL DEFAULT 0,
+        updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+      )",
+  "INSERT OR IGNORE INTO daily_custom_todos_new SELECT * FROM daily_custom_todos",
+  "DROP TABLE daily_custom_todos",
+  "ALTER TABLE daily_custom_todos_new RENAME TO daily_custom_todos",
+  "COMMIT",
+  "ALTER TABLE fasting_sessions ADD COLUMN note TEXT NOT NULL DEFAULT ''",
+  "ALTER TABLE mantra_defs ADD COLUMN audio_url TEXT",
+  "ALTER TABLE mantra_defs ADD COLUMN audio_attribution TEXT",
+  "ALTER TABLE mantra_defs ADD COLUMN preset INTEGER",
+  "ALTER TABLE mantra_defs ADD COLUMN pronunciation TEXT",
+  "ALTER TABLE mantra_defs ADD COLUMN meaning TEXT",
+  "ALTER TABLE mantra_defs ADD COLUMN full_text TEXT",
+  "ALTER TABLE mantra_defs ADD COLUMN page_count INTEGER",
+  "CREATE INDEX IF NOT EXISTS idx_food_entry_date ON food_entries(entry_date)",
+  "CREATE INDEX IF NOT EXISTS idx_exercise_ts ON exercise_entries(ts)",
+  "CREATE INDEX IF NOT EXISTS idx_plan_items_plan_id ON plan_items(plan_id)",
+  "CREATE INDEX IF NOT EXISTS idx_plan_item_checkins_lookup ON plan_item_checkins(plan_item_id, date)",
+  "CREATE INDEX IF NOT EXISTS idx_daily_custom_todos_lookup ON daily_custom_todos(plan_id, date)",
+  "CREATE INDEX IF NOT EXISTS idx_fasting_started ON fasting_sessions(started_at)",
+  "CREATE INDEX IF NOT EXISTS idx_body_weight_date ON body_weight_records(date)",
+  "CREATE INDEX IF NOT EXISTS idx_body_checkins_date ON body_checkins(date)",
+  "DELETE FROM checkin_reviews WHERE rowid NOT IN (
+      SELECT MIN(rowid) FROM checkin_reviews GROUP BY review_id
+    )",
+  "CREATE UNIQUE INDEX IF NOT EXISTS idx_checkin_reviews_review_id ON checkin_reviews(review_id)",
+  "ALTER TABLE body_plans ADD COLUMN type TEXT NOT NULL DEFAULT 'weekly'",
+  "ALTER TABLE body_training_plans ADD COLUMN overrides TEXT",
+  "ALTER TABLE body_training_plans ADD COLUMN type TEXT NOT NULL DEFAULT 'training'",
+  "ALTER TABLE visions ADD COLUMN start_date TEXT",
+  "ALTER TABLE zhiguan_sessions ADD COLUMN end_ts INTEGER",
+  "ALTER TABLE zhiguan_sessions ADD COLUMN five_hindrances TEXT",
+  "ALTER TABLE zhiguan_sessions ADD COLUMN eight_tactile TEXT",
+  "ALTER TABLE zhiguan_sessions ADD COLUMN meta TEXT",
+  "ALTER TABLE breath_records ADD COLUMN synced INTEGER NOT NULL DEFAULT 0",
+]
+`;

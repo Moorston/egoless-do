@@ -1,0 +1,5 @@
+{"file": ".trellis/spec/mobile/database-guidelines.md", "reason": "DB 层规范——schema/migration 提取必须遵守 mobile 数据库层约定"}
+{"file": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md", "reason": "重构不得违反禁止模式、包依赖方向（schema.ts 在 apps/mobile，不反向依赖 core）"}
+{"file": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md", "reason": "禁止 any/console.log、导入规范、ESLint 联动——新增 helpers/测试必须合规"}
+{"file": ".trellis/spec/mobile/error-handling.md", "reason": "migrateDatabase 外层 try-catch 安全网 + migrateXxx 事务 ROLLBACK 模式必须保留"}
+{"file": ".trellis/spec/mobile/logging-guidelines.md", "reason": "log.error/log.warn 用法——重构后保留原有非致命日志语义"}

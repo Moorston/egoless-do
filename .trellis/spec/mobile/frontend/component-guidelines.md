@@ -280,6 +280,108 @@ const comboState = useRef({
 - 批量分配后 500ms debounce 自动保存，无需确认步骤
 - 已存在动作的天显示 dimmed checkbox + snackbar 提示跳过数量
 
+### Splitting a monolithic screen component (complexity >15, >300 lines)
+
+When a single screen/feature component exceeds ESLint `complexity` ≤15 or grows beyond ~300 lines, split it into **tab/section sub-components** via **move-only extraction**. The parent stays as a thin orchestration layer; sub-components receive pre-computed data via props and render JSX.
+
+**Pattern** (see `features/plan/PlanDetailContent.tsx` → `components/DetailTabContent.tsx` + `TodoTabContent.tsx` + `PlanActionBar.tsx`):
+
+```tsx
+// Parent — orchestration only (hooks, memo, state, early return)
+export default function BigScreen({ id, onClose }: Props) {
+  const TH = useTheme();
+  // 1. All hooks stay in parent (useState, useMemo, useEffect, custom hooks)
+  const plan = useMemo(() => findPlan(...), [plans, id]);
+  const items = useMemo(() => getPlanItems(...), [planItems, id]);
+  const { todayItems, toggleItem, ... } = useDailyTodo(plan, today);
+  // 2. Pre-compute everything sub-components need
+  const sortedItems = useMemo(() => sortItems(items, getItemEffectiveStatus), [...]);
+  // 3. Early return AFTER all hooks
+  if (!plan) return <Card><Text>{T('notFound')}</Text></Card>;
+  // 4. Render sub-components — pass pre-computed results as props
+  return (
+    <ScrollView>
+      {tab === 'detail' ? (
+        <DetailTabContent plan={plan} items={items} sortedItems={sortedItems}
+          renderItemRow={renderItemRow} showHeatmap={showHeatmap} ... />
+      ) : (
+        <TodoTabContent todayItems={todayItems} toggleItem={toggleItem} ... />
+      )}
+      <PlanActionBar plan={plan} editable={editable} ... />
+    </ScrollView>
+  );
+}
+
+// Sub-component — presentational only, receives data via props
+export function DetailTabContent({ plan, items, sortedItems, renderItemRow, ... }: DetailTabContentProps) {
+  const TH = useTheme();
+  const T = useT();
+  // ✅ No hooks beyond useTheme/useT — no useState/useMemo for business logic
+  // ✅ Derived values that depend only on props are fine:
+  const totalDays = Math.round((new Date(plan.endDate).getTime() - new Date(plan.startDate).getTime()) / MS_PER_DAY) + 1;
+  return (<>... JSX moved verbatim from parent ...</>);
+}
+```
+
+**Move-only rules** (strict):
+- **JSX 逐行搬移**：sub-component JSX is copied character-for-character from the parent — no rewrites, no "improvements"
+- **计算留在父组件**：all `useMemo`/`useCallback`/custom hooks stay in the parent; results pass down as props
+- **子组件不复制逻辑**：sub-components receive pre-computed data; they do NOT re-derive it from raw store state
+- **Props 契约稳定**：sub-component props interface is typed explicitly (`export interface XxxTabContentProps`)
+- **消费方零改动**：the parent's export signature and call sites are unchanged
+- **共享样式提取**：`StyleSheet.create` definitions move to a shared `styles.ts`; all sub-components import from it
+
+**Rules**:
+- Sub-components go in a `components/` sub-directory within the feature (e.g. `features/plan/components/`)
+- Parent function complexity must drop to ≤15 after extraction
+- Sub-components MAY exceed complexity 15 (conditional rendering is inherent to presentational components) — annotate with `// eslint-disable-next-line max-lines-per-function` if also >300 lines
+- `renderItemRow` and similar callback props pass through as-is — do not re-wrap
+- Toggle/expand state (`showHeatmap`, `showRelated`) lives in parent; setter passed as prop
+- Sub-component files import types from `@egoless-do/core` directly (not re-exported via parent)
+
+**Extraction order** (when multiple sub-components): extract one at a time, verify (lint + tsc + tests) after each, commit as checkpoint. Extract from the bottom of the JSX tree upward so earlier line numbers don't shift.
+
+### Module-level pure functions to shed residual complexity (after sub-component extraction)
+
+When sub-component extraction is exhausted but the parent's main function **still** exceeds complexity ≤15, the residual cost is almost always **nested ternaries and logical expressions sitting directly in the function body or JSX** (`?:`, `?.`, `&&`, `||`). Each is a branch point ESLint counts against the enclosing function. Move these derivations into **module-level pure functions** outside the component — their internal branches count toward the helper's complexity, not the parent's.
+
+**Pattern** (see `features/home/screens/HomeScreen.tsx` — complexity 49 → 15):
+
+```tsx
+// Module level, above the component — branches live here, not in HomeScreen
+type CheckinStatus = 'draft' | 'done' | 'editing';
+
+function computeCheckinStatus(record: CheckinEntry | undefined): CheckinStatus {
+  return record ? (record.done ? 'done' : 'editing') : 'draft';   // 2 branches, counted here
+}
+
+function computeIsReadOnly(isToday: boolean, isLocked: boolean): boolean {
+  return !isToday || isLocked;                                     // || counted here
+}
+
+function computeCardTitle(status: CheckinStatus, isReadOnly: boolean,
+  isToday: boolean, viewDateLabel: string, T: (k: string) => string): string {
+  if (isReadOnly) return isToday && status === 'done' ? '今日目标已达成 👍' : viewDateLabel;
+  return isToday ? T('checkinDoneToday') : viewDateLabel;
+}
+
+export default function HomeScreen() {
+  // ...hooks/memo/state stay...
+  const status = computeCheckinStatus(todayRecord);       // was: inline nested ternary
+  const isReadOnly = computeIsReadOnly(isToday, isLocked); // was: !isToday || isLocked
+  const cardTitle = computeCardTitle(status, isReadOnly, isToday, viewDateLabel, T);
+  // JSX now references cardTitle / bannerStatusText / bannerTimeText — no inline ?:
+  return (<Text>{cardTitle}</Text> ...);
+}
+```
+
+**Rules**:
+- Helpers are **module-level `function`s** (not `useCallback`/`useMemo` — those wrap in the component body and their branches still count toward the parent). Pure functions at module scope have their own complexity budget.
+- Move only the **derivation** — the inputs (`todayRecord`, `isToday`, `T`, …) stay computed in the component; the helper receives them as args. No store reads inside the helper.
+- Optional chaining `a?.b` in JSX counts as a branch — wrap the whole expression in a helper (`computeBannerTimeText(record, language)` beats `record?.timestamp ? formatTime(...) : ''` inline).
+- This is **complementary** to sub-component extraction, not a replacement: extract JSX into components first, then shed the residual ternary complexity with module-level functions. Each step verified independently.
+- Helpers that the parent already had (`parseWeight`, `formatTime`) are reused — don't re-wrap them.
+
 ---
 
 ## Logging
@@ -301,3 +403,5 @@ log.error(err, { message: 'sqlite error' }); // unrecoverable
 - `components/UI.tsx` — shared primitives + theme/i18n hooks
 - `features/breathing/BreathingScreen.tsx` — screen + rAF animation
 - `features/breathing/useBreathAudio.ts` — audio hook pattern
+- `features/plan/PlanDetailContent.tsx` — monolithic screen split into tab sub-components (move-only extraction)
+- `features/plan/components/DetailTabContent.tsx` — presentational sub-component receiving pre-computed props

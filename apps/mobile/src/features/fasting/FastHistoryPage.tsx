@@ -196,10 +196,7 @@ function DetailModal({ entry, TH, onClose, onDelete }: { entry: FastingSession |
 
   const startEdit = () => { setNoteText(entry.note ?? ''); setEditingNote(true); };
   const saveNote = () => {
-    const updated = { ...entry, note: noteText, updatedAt: Date.now() };
-    const newHist = (useAppStore.getState().fastingHistory ?? []).map((e: FastingSession) => e.id === entry.id ? updated : e);
-    useAppStore.setState({ fastingHistory: newHist });
-    import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites()).catch(err => console.error('fasting saveNote flush', err));
+    useAppStore.getState().updateFastingNote(entry.id, noteText);
     setEditingNote(false);
   };
 
@@ -299,9 +296,7 @@ export default function FastHistoryPage() {
   }, [activeEntries, grouped]);
 
   const handleDelete = useCallback((id: string) => {
-    const newHist = (useAppStore.getState().fastingHistory ?? []).map((f: FastingSession) => f.id === id ? { ...f, deleted: true, updatedAt: Date.now() } : f);
-    useAppStore.setState({ fastingHistory: newHist });
-    import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites()).catch(err => console.error('fasting delete flush', err));
+    useAppStore.getState().deleteFastingEntry(id);
   }, []);
 
   const renderItem = useCallback(({ item }: { item: FlatItem }) => {

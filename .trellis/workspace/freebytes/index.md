@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-2.md`
-- **Total Sessions**: 83
-- **Last Active**: 2026-08-11
+- **Total Sessions**: 92
+- **Last Active**: 2026-11-01
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~1019 | Active |
+| `journal-2.md` | ~1354 | Active |
 | `journal-1.md` | ~1971 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +30,15 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 92 | 2026-11-01 | migrateDatabase 表驱动重构 — CC 38→≤15 + 表征测试基线 | `0687784a`, `b874dade` | `refactor/split-body-dashboard` |
+| 91 | 2026-10-31 | 复杂度热点拆分父任务集成验证收尾 | `765557a0` | `refactor/split-body-dashboard` |
+| 90 | 2026-08-30 | R2 split-sport-page: SportPage CC 44→14, handleSave 拆分 | `1b64b6d6` | `refactor/split-body-dashboard` |
+| 89 | 2026-08-30 | R5 split-migrate-database — migrateDatabase CC67→≤40 | `b3365ea3` | `refactor/split-body-dashboard` |
+| 88 | 2026-08-29 | 拆分 BodyDashboard — 85→≤15 复杂度 + 11 banner/hook 子组件 | `4c618aff` | `refactor/split-body-dashboard` |
+| 87 | 2026-08-29 | 拆分 HomeScreen — 复杂度 49→15 | `07bafd89`, `f2cfc5af` | `refactor/split-home-screen` |
+| 86 | 2026-08-28 | R3 split-plan-detail-content 完成 | `18c4b48f` | `fix/history-pages-persist-contract` |
+| 85 | 2026-08-26 | 拆分 useQuickTrailSearch — 436 行单体 hook 降复杂度 | `5e8ba09a` | `fix/history-pages-persist-contract` |
+| 84 | 2026-08-26 | 子任务 A 完成 — 历史页 persistChange 契约迁移 | `f7e619b7`, `d7bf8670`, `43660c97`, `844f3477` | `fix/history-pages-persist-contract` |
 | 83 | 2026-08-11 | 音乐模块代码质量提升 — 共享代码提取 + ESLint 清零 + 可访问性 | `ca712d88` | `master` |
 | 82 | 2026-08-11 | 音乐模块功能与界面优化 | `3ddecfba` | `master` |
 | 81 | 2026-08-11 | 修复 6 个预存测试失败 — packages/core 模块解析路径错误 | `71dcec90` | `master` |

@@ -12,6 +12,8 @@ export interface FastingSlice {
   fastingHistory: FastingSession[];
   startFasting: (hours: number) => void;
   stopFasting: (opts?: StopFastingOpts & { note?: string }) => void;
+  updateFastingNote: (id: string, note: string) => void;
+  deleteFastingEntry: (id: string) => void;
 }
 
 export function createFastingSlice(
@@ -38,6 +40,24 @@ export function createFastingSlice(
         fastingHistory: [result, ...(s.fastingHistory ?? [])],
       }));
       adapter.persistChange('fasting', result.id, result).catch(e => log.error(e));
+      onSync?.();
+    },
+    updateFastingNote(id: string, note: string) {
+      let updated: FastingSession | undefined;
+      set(s => {
+        const newHist = (s.fastingHistory ?? []).map(e =>
+          e.id === id ? { ...e, note, updatedAt: Date.now() } : e
+        );
+        updated = newHist.find(e => e.id === id);
+        return { fastingHistory: newHist };
+      });
+      if (updated) adapter.persistChange('fasting', id, updated).catch(e => log.error(e));
+    },
+    deleteFastingEntry(id: string) {
+      set(s => ({
+        fastingHistory: (s.fastingHistory ?? []).filter(e => e.id !== id),
+      }));
+      adapter.markDeleted('fasting', id).catch(e => log.error(e));
       onSync?.();
     },
   });

@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/mobile/database-guidelines.md", "reason": "检查阶段验证：migration 提取未违反 DB 层规范，迁移顺序不变"}
+{"file": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md", "reason": "检查阶段验证：无新增 any/console.log/raw 字符串，无新增 eslint-disable"}
+{"file": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md", "reason": "检查阶段验证：未违反禁止模式、包依赖方向不变"}
+{"file": ".trellis/spec/mobile/error-handling.md", "reason": "检查阶段验证：try-catch 安全网 + 事务 ROLLBACK 保留"}

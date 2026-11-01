@@ -1,0 +1,52 @@
+# Baseline Schema Record — split-migrate-database
+
+## Baseline Complexity
+- migrateDatabase 圈复杂度：**67**（阈值 ≤40）
+- max-lines-per-function：578（阈值 300）
+- 验证命令：`npx eslint apps/mobile/src/db/schema.ts --rule '{"complexity": ["error", 40]}'`
+
+## Schema 快照对比（验证 B）— 降级声明
+
+### 降级原因
+按 design.md 预先批准的退路："如果 export_schema.mjs 因 SQLite 驱动依赖
+RN 运行时无法在 Node 跑，降级为验证 A 为主"。
+
+已尝试 3 种 schema 快照方法，均不可行：
+1. **better-sqlite3**：全局安装但 NODE_MODULE_VERSION 不兼容（127 vs 147）
+2. **sqlite3 CLI**：无法复现 migrateDatabase 的条件迁移逻辑
+   （PRAGMA table_info 检查列存在性 → 不存在才 ALTER）；
+   无脑执行全部 SQL 会报 "duplicate column name"、"no such column: dur"、
+   "cannot rollback - no transaction is active" 等错误
+3. **expo-sqlite**：依赖 React Native 运行时，无法在 Node 直接调用
+
+### 降级后的验证策略
+**以验证 A（代码层 diff 逐行审查）为充分证明**：
+
+move-only 重构的本质——函数体逐字节搬入命名函数，调用处替换为
+`await migrateXxx(db)`。如果 git diff 确认：
+1. 每个提取的函数体与原位置代码逐字节一致（无字符修改）
+2. 调用处顺序与原迁移块顺序一致
+3. tryAddCol / CREATE TABLE / for 循环未被改动
+4. 事务边界（BEGIN TRANSACTION...COMMIT + try-catch ROLLBACK）随函数体搬移
+
+那么运行时行为必然完全相同——相同的 SQL 语句以相同的顺序、相同的
+条件执行。schema 快照对比作为补充验证退化为可选。
+
+## 6 个迁移块提取边界（实际行号）
+
+| # | 函数名 | 行号 | 结构 | 提取安全点 |
+|---|---|---|---|---|
+| 1 | migrateSyncQueueColumns | 730-765 | if/else 的 else 分支 | else 块整体替换 |
+| 2 | migrateMeditationHistory | 803-822 | if/else 的 else 分支 | else 块整体替换 |
+| 3 | migrateDailyCustomTodosNullable | 1018-1042 | if(planIdNotNull===1){try...catch} | 整块替换 |
+| 4 | migrateDailyTodoHistoryNullable | 1056-1077 | try{...if...}catch | 整块替换 |
+| 5 | migrateFastingSessionsCheck | 1103-1125 | const...;if(...){try...catch} | 整块替换 |
+| 6 | migrateCheckinReviewsUniqueIndex | 1153-1161 | try{...}catch | 整块替换 |
+
+## 提取顺序（从下往上，避免行号偏移）
+1. migrateCheckinReviewsUniqueIndex (1153-1161)
+2. migrateFastingSessionsCheck (1103-1125)
+3. migrateDailyTodoHistoryNullable (1056-1077)
+4. migrateDailyCustomTodosNullable (1018-1042)
+5. migrateMeditationHistory (803-822)
+6. migrateSyncQueueColumns (730-765)

@@ -1,0 +1,3 @@
+{"file": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md", "reason": "数据写入层约束：migrateDatabase 在 apps/mobile/src/db/，不触碰 packages/core"}
+{"file": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md", "reason": "全局规范：禁止 any/console.log、导入规范"}
+{"file": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md", "reason": "迁移执行顺序不变——命名函数提取是 move-only，不改变调用序列"}

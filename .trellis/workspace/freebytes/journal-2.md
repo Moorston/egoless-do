@@ -1017,3 +1017,338 @@ HomeScreen 用 useCheckinStreak() selector 始终正确，AppHeader/SimpleHeader
 ### Next Steps
 
 - None - task complete
+
+
+## Session 84: 子任务 A 完成 — 历史页 persistChange 契约迁移
+
+**Date**: 2026-08-26
+**Task**: 子任务 A 完成 — 历史页 persistChange 契约迁移
+**Branch**: `fix/history-pages-persist-contract`
+
+### Summary
+
+修复 3 个历史页 (FastHistoryPage/MedHistoryPage/SleepHistoryPage) 的 6 个幽灵数据 bug。根因：flushWrites() 语义误解 — 只刷新 WriteBatcher 队列，不持久化 Store 状态；直接 setState 不调 persistChange 导致内存有数据但 SQLite 没有，重启丢失。修复：为 3 个 slice 补 6 个 action (updateNote/deleteEntry)，遵循预计算→set→persistChange/markDeleted→onSync 范式；迁移 6 个调用点；补 16 个单元测试；spec 记录 flushWrites 陷阱。子任务 B (split-quick-trail-search) 规划就绪待启动。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `f7e619b7` | (see git log) |
+| `d7bf8670` | (see git log) |
+| `43660c97` | (see git log) |
+| `844f3477` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
+
+
+## Session 85: 拆分 useQuickTrailSearch — 436 行单体 hook 降复杂度
+
+**Date**: 2026-08-26
+**Task**: 拆分 useQuickTrailSearch — 436 行单体 hook 降复杂度
+**Branch**: `fix/history-pages-persist-contract`
+
+### Summary
+
+将 436 行、复杂度≈19 的单体 hook useQuickTrailSearch 拆分为 115 行组合根 + 4 个单一职责子 hook (useTrailFilters/useTrailResults/useTrailAIAnalysis/useTrailSelection)，保持 25 字段返回契约不变，消费方 QuickCreateTrailScreen 零改动。关键设计：useSearchHistory 提升到组合根解循环依赖；ResultSetters 接口打包跨层 setter 注入 AI 层；跨层协调 handler 在组合根组合调用。useTrailAIAnalysis 303 行超 120 预算但系忠实搬运三阶段 AI 管线无法压缩。验证：type-check 0 错误、ESLint 0 warning、1967 测试全通过。spec 更新 hook-guidelines.md 补充单体 hook 拆分模式。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `5e8ba09a` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
+
+---
+
+## 2026-08-28 — R3 split-plan-detail-content 完成
+
+### Task
+`.trellis/tasks/08-27-split-plan-detail-content` — 拆分 PlanDetailContent (CC 58→13)
+
+### What changed
+- 提取 3 子组件 + 共享 styles.ts，主文件 798→69 行编排层
+- move-only：JSX 逐行搬移，计算逻辑（createDateChangeDetector/AppState/useDailyTodo/memo/sortedItems/renderItemRow）全留主文件
+- 子组件通过 props 接收预计算数据
+
+### Verification (6 AC 全通过)
+- AC1: 主函数复杂度 13 ≤ 15 ✅
+- AC2: lint 0 error 0 warning（5 文件）✅
+- AC3: type-check plan 目录零错误 ✅
+- AC4: 1967 passed ✅
+- AC5: 消费方零改动（PlanDetailScreen/PlanScreen）✅
+- AC6: 无新增 any/console.log ✅
+
+### Commit
+`18c4b48f` refactor(plan): 拆分 PlanDetailContent — 798→69 行编排层 + 3 子组件 + 共享样式
+
+### Spec updates
+- component-guidelines.md — 新增"大组件拆分模式"（move-only 提取契约）
+- quality-guidelines.md — 新增"复杂度阈值约定"（complexity ≤15 + eslint-disable 规则）
+
+### Known limitations
+- DetailTabContent (CC 19) / TodoTabContent (CC 22) 超标，但展示性子组件允许 + eslint-disable，AC1 仅要求主函数 ≤15
+
+### Next
+- R3 完成，下一步启动 R1 split-home-screen（按风险递增顺序 R1→R4→R5→R2）
+
+
+## Session 86: R3 split-plan-detail-content 完成
+
+**Date**: 2026-08-28
+**Task**: R3 split-plan-detail-content 完成
+**Branch**: `fix/history-pages-persist-contract`
+
+### Summary
+
+拆分 PlanDetailContent CC58→13，提取 DetailTabContent+TodoTabContent+PlanActionBar+styles.ts，move-only 重构，6 AC 全通过，spec 更新 component-guidelines+quality-guidelines
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `18c4b48f` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
+
+
+## Session 87: 拆分 HomeScreen — 复杂度 49→15
+
+**Date**: 2026-08-29
+**Task**: 拆分 HomeScreen — 复杂度 49→15
+**Branch**: `refactor/split-home-screen`
+
+### Summary
+
+Move-only 重构 HomeScreen：提取 7 个展示子组件（WeightCard/WaterCard/WaterGoalModal/ReasonModal/StatusButton/ReflectionCard/EmptyRecordState）+ 共享 styles.ts；再提取 7 个模块级纯函数（computeCheckinStatus/computeIsReadOnly/computeBannerGrad/formatViewDateLabel/computeBannerStatusText/computeCardTitle/computeBannerTimeText）转移 JSX 嵌套三元分支计数，ESLint complexity 49→15。危险区（setTimeout/buildNote/saveField/submitCheckin）diff 为空，消费方零改动。7 个 AC 全验证通过：complexity 0 error、lint 0 warning、home 模块 0 类型错误、1967 测试全过、无新增 any/console。spec 补充模块级纯函数转移复杂度模式小节。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `07bafd89` | (see git log) |
+| `f2cfc5af` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
+
+
+## Session 88: 拆分 BodyDashboard — 85→≤15 复杂度 + 11 banner/hook 子组件
+
+**Date**: 2026-08-29
+**Task**: 拆分 BodyDashboard — 85→≤15 复杂度 + 11 banner/hook 子组件
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+将 BodyDashboard.tsx 从 1017 行单体组件重写为 200 行编排层，ESLint complexity 从 85 降至 0 错误。通过 move-only 提取 4 banner + 4 card + 3 flow 子组件 + 2 聚合 hook，FlowSteps 进一步拆为 Step1/Step2/Step3 模块级函数。消费者 BodyScreen 零改动，6 个 AC 全部通过（complexity≤15/lint 0/tsc 0/测试 1967/消费者零改动/无 any-console）。spec 判断无需更新——本次是对现有两条 component-guidelines 条目的纯实践。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4c618aff` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
+
+
+## Session 89: R5 split-migrate-database — migrateDatabase CC67→≤40
+
+**Date**: 2026-08-30
+**Task**: R5 split-migrate-database — migrateDatabase CC67→≤40
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+将 schema.ts migrateDatabase 圈复杂度从 67 降至 ≤40，提取 6 个非平凡迁移为命名函数（sync_queue/meditation_history/daily_custom_todos/daily_todo_history/fasting_sessions/checkin_reviews）。Move-only 重构，迁移执行顺序和事务边界零变更。验证：complexity error 消除、type-check 0 错误、1967 测试全通过、代码层 diff 确认逐字节一致。spec 更新 database-guidelines.md 记录 migrateDatabase 拆分结构。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `b3365ea3` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
+
+
+## Session 90: R2 split-sport-page: SportPage CC 44→14, handleSave 拆分
+
+**Date**: 2026-08-30
+**Task**: R2 split-sport-page: SportPage CC 44→14, handleSave 拆分
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+拆分 SportPage：提取 useComboSession + useBreathingGuide 两个 hook，handleSave 拆为 saveSingleSport/saveComboExercise，8 个模块级纯函数降主函数 CC 至 14。9 个 AC 全通过（lint/type/test 1967/消费方 diff 空/effect 顺序/comboState ref 模式）。shouldShowComboHeader 用 type predicate 恢复 && 短路收窄。move-only 零行为变更。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `1b64b6d6` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
+
+
+## Session 91: 复杂度热点拆分父任务集成验证收尾
+
+**Date**: 2026-10-31
+**Task**: 复杂度热点拆分父任务集成验证收尾
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+5 个子任务（BodyDashboard/PlanDetailContent/HomeScreen/SportPage/migrateDatabase）已全部归档。父任务集成门禁通过：4 热点 complexity ≤15，migrateDatabase 38（≤40 高风险例外）；lint 0 error（14 warning 为 sync 测试文件既有基线）；type-check exit 0；test 1974 通过。PRD 收敛消解 AC1 与 R2 的 ≤15/≤40 矛盾，按用户决策接受 ≤40 例外，表驱动重构另立独立任务。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `765557a0` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
+
+
+## Session 92: migrateDatabase 表驱动重构 — CC 38→≤15 + 表征测试基线
+
+**Date**: 2026-11-01
+**Task**: migrateDatabase 表驱动重构 — CC 38→≤15 + 表征测试基线
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+将 migrateDatabase（schema.ts，CC 38）重写为表驱动：MigrationStep discriminated union（8 种 kind）+ 有序 MIGRATION_STEPS 数组 + runMigrationStep 分发。提取模块级 helpers（tableExists/tryAddCol/ensureColumn/cleanupPresetMantras）。6 个 migrateXxx 函数体不动。planTableCheck early-fetch-late-use 异常用 checkTable + ensureTablesChecked 拆两步保 byte-identical。前置建立 schemaMigrate.test.ts 表征测试基线（FakeSqliteDb + S1 fresh / S2 upgrade 双快照）锁定 emitted SQL 序列。验证：complexity ≤15、快照 byte-identical、lint 0 error、type-check 0、全量 1976 passed。更新 database-guidelines spec。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `0687784a` | (see git log) |
+| `b874dade` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

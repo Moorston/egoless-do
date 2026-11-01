@@ -1,0 +1,29 @@
+{
+  "id": "code-quality-history-pages",
+  "name": "code-quality-history-pages",
+  "title": "代码质量 — 历史页数据流修复 + 复杂度热点拆分",
+  "description": "",
+  "status": "completed",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P2",
+  "creator": "freebytes",
+  "assignee": "freebytes",
+  "createdAt": "2026-08-26",
+  "completedAt": "2026-08-26",
+  "branch": null,
+  "base_branch": "master",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [
+    "08-26-history-pages-persist-fix",
+    "08-26-split-quick-trail-search"
+  ],
+  "parent": null,
+  "relatedFiles": [],
+  "notes": "",
+  "meta": {}
+}

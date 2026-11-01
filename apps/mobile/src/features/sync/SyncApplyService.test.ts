@@ -59,6 +59,7 @@ vi.mock('../../store/rowMappers', () => {
     rowToTrailNote: identity, rowToReflectionLink: identity,
     rowToAIConfig: identity, rowToCheckinReview: identity,
     rowToBodyGoal: identity, rowToBodyPlan: identity,
+    rowToBodyTrainingPlan: identity,
     rowToWeightRecord: identity, rowToBodyCheckin: identity,
     rowToSleep: identity, rowToGive: identity,
     rowToMotivationEntry: identity, rowToCustomWuxing: identity,

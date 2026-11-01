@@ -1,0 +1,5 @@
+{"file": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md", "reason": "拆分必须遵守架构约束：Feature 自治、禁止跨 feature 引用"}
+{"file": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md", "reason": "全局规范：禁止 any/console.log、导入规范"}
+{"file": ".trellis/spec/mobile/frontend/component-guidelines.md", "reason": "4 个 Banner 子组件提取的 props 契约模式"}
+{"file": ".trellis/spec/mobile/frontend/hook-guidelines.md", "reason": "useBodyDashboardData/useBodyOverrides hook 提取模式"}
+{"file": ".trellis/spec/mobile/frontend/state-management.md", "reason": "useShallowStore 选择器规范——聚合 hook 必须遵守"}

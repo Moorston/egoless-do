@@ -432,6 +432,56 @@ describe('SyncRehydrationManager', () => {
       expect(onSyncingChange).toHaveBeenCalledWith(false);
     });
 
+    it('pulls every SYNC_ENTITIES entity (guards against entity-list drift)', async () => {
+      const { SYNC_ENTITIES } = await import('@egoless-do/core');
+
+      await mgr.initialSync(token, userId, applyServerChanges, isKickedOut);
+
+      const pulled = new Set(mockApiSyncPullEntity.mock.calls.map(c => c[1] as string));
+      const missing = SYNC_ENTITIES.filter(e => !pulled.has(e));
+      expect(missing).toEqual([]);
+    });
+
+    it('returns "partial" and does NOT set initialSyncDone when a phase-2 pull fails', async () => {
+      vi.useFakeTimers();
+      mockApiSyncPullEntity.mockImplementation(async (_token: string, entity: string) => {
+        if (entity === 'reflection') throw new Error('server down');
+        return pullResult([]);
+      });
+
+      const promise = mgr.initialSync(token, userId, applyServerChanges, isKickedOut);
+      // Phase-2 backoff: 2+4+8+16s = 30s total for the failing entity
+      for (let i = 0; i < 20; i++) {
+        await vi.advanceTimersByTimeAsync(10000);
+      }
+      const result = await promise;
+
+      expect(result).toBe('partial');
+      expect(mockStateStore.setState).not.toHaveBeenCalledWith(mockDb, 'initialSyncDone', 'true');
+      // Phase flags are set after phase-1 success (only done flags are gated)
+      expect(mockStateStore.setState).toHaveBeenCalledWith(mockDb, 'initialSyncPhase', '2');
+      expect(mockStateStore.setState).toHaveBeenCalledWith(mockDb, 'device_initial_synced', '1');
+    });
+
+    it('returns "partial" without phase flags when a phase-1 pull fails', async () => {
+      vi.useFakeTimers();
+      mockApiSyncPullEntity.mockImplementation(async (_token: string, entity: string) => {
+        if (entity === 'profile') throw new Error('server down');
+        return pullResult([]);
+      });
+
+      const promise = mgr.initialSync(token, userId, applyServerChanges, isKickedOut);
+      // Phase-1 backoff: 1+2s = 3s total for the failing entity
+      for (let i = 0; i < 10; i++) {
+        await vi.advanceTimersByTimeAsync(10000);
+      }
+      const result = await promise;
+
+      expect(result).toBe('partial');
+      expect(mockStateStore.setState).not.toHaveBeenCalledWith(mockDb, 'initialSyncPhase', '2');
+      expect(mockStateStore.setState).not.toHaveBeenCalledWith(mockDb, 'initialSyncDone', 'true');
+    });
+
     it('re-throws when isKickedOut returns true', async () => {
       mockApiSyncPullEntity.mockRejectedValue(new Error('kicked'));
       isKickedOut.mockReturnValue(true);
@@ -497,6 +547,25 @@ describe('SyncRehydrationManager', () => {
       expect(mockStateStore.setState).toHaveBeenCalledWith(mockDb, 'initialSyncPhase', 'done');
       expect(mockStateStore.setState).toHaveBeenCalledWith(mockDb, 'device_initial_synced', '1');
     });
+
+    it('does NOT set initialSyncDone when an entity keeps failing', async () => {
+      vi.useFakeTimers();
+      mockSyncProgress._setProgress('habit', { status: 'failed' });
+      mockApiSyncPullEntity.mockImplementation(async (_token: string, entity: string) => {
+        if (entity === 'habit') throw new Error('server down');
+        return pullResult([]);
+      });
+
+      const promise = mgr.resumeInitialSync(token, userId, applyServerChanges, isKickedOut);
+      // habit has no saved phase → inferred phase 1 → 1s+2s backoff = 3s
+      for (let i = 0; i < 10; i++) {
+        await vi.advanceTimersByTimeAsync(10000);
+      }
+      await promise;
+
+      expect(mockStateStore.setState).not.toHaveBeenCalledWith(mockDb, 'initialSyncDone', 'true');
+      expect(mockStateStore.setState).not.toHaveBeenCalledWith(mockDb, 'device_initial_synced', '1');
+    });
   });
 
   // ─────────────────────────────────────────────────────────────────
@@ -547,16 +616,46 @@ describe('SyncRehydrationManager', () => {
       expect(progress).toMatchObject({ status: 'done' });
     });
 
-    it('respects MAX_PAGES=50 safety limit', async () => {
+    it('throws (never marks done) when MAX_PAGES=50 safety limit is exceeded', async () => {
       mockApiSyncPullEntity.mockResolvedValue(pullResult([{ id: 'x' }], true, 10000));
 
-      const p = pull('reflection', 2);
-      for (let i = 0; i < 50; i++) {
+      const assertion = expect(pull('reflection', 2)).rejects.toThrow(/MAX_PAGES/);
+      for (let i = 0; i < 55; i++) {
         await vi.advanceTimersByTimeAsync(0);
       }
-      await p;
+      await assertion;
 
       expect(mockApiSyncPullEntity).toHaveBeenCalledTimes(50);
+      expect(await mockSyncProgress.getSyncProgress('reflection')).toMatchObject({ status: 'failed' });
+    });
+
+    it('continues paginating when a page is empty but hasMore=true', async () => {
+      mockApiSyncPullEntity
+        .mockResolvedValueOnce(pullResult([], true, 400))
+        .mockResolvedValueOnce(pullResult([{ id: '1' }], false, 400));
+
+      const p = pull('bodyPlan', 2);
+      await vi.advanceTimersByTimeAsync(0);
+      await p;
+
+      expect(mockApiSyncPullEntity).toHaveBeenCalledTimes(2);
+      expect(await mockSyncProgress.getSyncProgress('bodyPlan')).toMatchObject({ status: 'done' });
+    });
+
+    it('phase-2+: throws after exhausting retries instead of silently failing', async () => {
+      mockApiSyncPullEntity.mockRejectedValue(new Error('server down'));
+
+      const assertion = expect(pull('reflection', 2)).rejects.toThrow('server down');
+      // Exponential backoff: attempt=1→2s, attempt=2→4s, attempt=3→8s, attempt=4→16s
+      for (let i = 1; i <= 4; i++) {
+        await vi.advanceTimersByTimeAsync(0);
+        await vi.advanceTimersByTimeAsync(Math.pow(2, i) * 1000);
+      }
+      await vi.advanceTimersByTimeAsync(0);
+      await assertion;
+
+      expect(mockApiSyncPullEntity).toHaveBeenCalledTimes(5);
+      expect(await mockSyncProgress.getSyncProgress('reflection')).toMatchObject({ status: 'failed' });
     });
 
     it('phase-1: retries up to 2 times with linear backoff', async () => {
@@ -631,7 +730,7 @@ describe('SyncRehydrationManager', () => {
     const isKickedOut = vi.fn().mockReturnValue(false);
 
     function pullParallel(entities: string[], concurrency: number, phase: number) {
-      return (mgr as unknown as Record<string, (...args: unknown[]) => Promise<void>>)
+      return (mgr as unknown as Record<string, (...args: unknown[]) => Promise<string[]>>)
         .pullEntitiesParallel(entities, concurrency, phase, token, userId, applyServerChanges, isKickedOut);
     }
 
@@ -698,6 +797,25 @@ describe('SyncRehydrationManager', () => {
       await p;
 
       expect(consumed.sort()).toEqual(['checkin', 'grace', 'habit', 'profile']);
+    });
+
+    it('returns failed entities and keeps pulling the rest', async () => {
+      mockApiSyncPullEntity.mockImplementation(async (_token: string, entity: string) => {
+        if (entity === 'checkin') throw new Error('boom');
+        return pullResult([]);
+      });
+
+      const p = pullParallel(['profile', 'checkin', 'habit'], 1, 1);
+      // phase-1 retry backoff for checkin: 1s+2s = 3s
+      for (let i = 0; i < 10; i++) {
+        await vi.advanceTimersByTimeAsync(10000);
+      }
+      const failures = await p;
+
+      expect(failures).toEqual(['checkin']);
+      const pulledEntities = mockApiSyncPullEntity.mock.calls.map(c => c[1]);
+      expect(pulledEntities).toContain('profile');
+      expect(pulledEntities).toContain('habit');
     });
   });
 });
