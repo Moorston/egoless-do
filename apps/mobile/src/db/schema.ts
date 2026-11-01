@@ -820,556 +820,33 @@ async function migrateCheckinReviewsUniqueIndex(db: SQLite.SQLiteDatabase): Prom
   }
 }
 
-export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> {
-  // Outer guard: a failure in any single migration block must NOT abort the
-  // entire openDatabase() chain — otherwise one bad migration bricks the app
-  // on next cold start. Each block also has its own inner try-catch; this is
-  // a last-resort safety net so the DB still opens and the app remains usable.
-  try {
-  const tryAddCol = async (table: string, column: string, type: string) => {
-    // Check if column already exists using PRAGMA (robust across SQLite versions)
-    const existing = await db.getFirstAsync<{ name: string }>(
-      `SELECT name FROM pragma_table_info('${table}') WHERE name = '${column}'`
-    );
-    if (existing) return; // Column already exists, skip
+// ── Migration helpers ──────────────────────────────────────────────
+// 提取自 migrateDatabase 内联逻辑，行为逐字节一致（AC6）。
+
+async function tableExists(db: SQLite.SQLiteDatabase, name: string): Promise<boolean> {
+  const row = await db.getFirstAsync<{ name: string }>(
+    `SELECT name FROM sqlite_master WHERE type='table' AND name='${name}'`
+  );
+  return !!row;
+}
+
+async function tryAddCol(db: SQLite.SQLiteDatabase, table: string, column: string, type: string): Promise<void> {
+  // Check if column already exists using PRAGMA (robust across SQLite versions)
+  const existing = await db.getFirstAsync<{ name: string }>(
+    `SELECT name FROM pragma_table_info('${table}') WHERE name = '${column}'`
+  );
+  if (existing) return; // Column already exists, skip
+  await db.execAsync(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
+}
+
+async function ensureColumn(db: SQLite.SQLiteDatabase, table: string, column: string, type: string): Promise<void> {
+  const cols = await db.getAllAsync<{ name: string }>(`PRAGMA table_info(${table})`);
+  if (!cols.some(c => c.name === column)) {
     await db.execAsync(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
-  };
-
-  await tryAddCol('habits', 'synced', 'INTEGER NOT NULL DEFAULT 0');
-  await tryAddCol('mind_reflections', 'linked_plan_id', 'TEXT');
-  await tryAddCol('mind_reflections', 'linked_plan_item_id', 'TEXT');
-  await tryAddCol('food_entries', 'synced', 'INTEGER NOT NULL DEFAULT 0');
-  await tryAddCol('checkin_records', 'timestamp', 'INTEGER');
-  await tryAddCol('checkin_records', 'weight', 'REAL');
-  await tryAddCol('checkin_records', 'grace', 'INTEGER NOT NULL DEFAULT 0');
-  await tryAddCol('checkin_records', 'total_days', 'INTEGER');
-
-  // Ensure exercise_entries table exists
-  const exerciseTableCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='exercise_entries'"
-  );
-  if (!exerciseTableCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS exercise_entries (
-      id TEXT PRIMARY KEY, sport_key TEXT NOT NULL, sport_icon TEXT NOT NULL DEFAULT '',
-      duration_sec INTEGER NOT NULL DEFAULT 0, distance_km REAL DEFAULT 0,
-      calories INTEGER DEFAULT 0, avg_pace REAL DEFAULT 0,
-      track_points TEXT DEFAULT '[]', is_gps_sport INTEGER NOT NULL DEFAULT 0,
-      ts INTEGER NOT NULL, synced INTEGER NOT NULL DEFAULT 0
-    )`);
   }
+}
 
-  // Add health_synced column to exercise_entries for HealthKit/Health Connect tracking
-  await tryAddCol('exercise_entries', 'health_synced', 'INTEGER NOT NULL DEFAULT 0');
-
-  // Ensure sync_queue table exists with retry/status fields
-  const syncQueueCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='sync_queue'"
-  );
-  if (!syncQueueCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS sync_queue (
-      id INTEGER PRIMARY KEY AUTOINCREMENT, entity TEXT NOT NULL, entity_id TEXT NOT NULL,
-      operation TEXT NOT NULL CHECK(operation IN ('upsert','delete')),
-      payload TEXT NOT NULL, created_at INTEGER NOT NULL,
-      retry_count INTEGER NOT NULL DEFAULT 0, last_error TEXT,
-      status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','syncing','failed','conflict')),
-      next_retry_at INTEGER NOT NULL DEFAULT 0
-    )`);
-    await db.execAsync('CREATE UNIQUE INDEX IF NOT EXISTS idx_sync_queue_entity ON sync_queue(entity, entity_id)');
-    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_sync_queue_status ON sync_queue(status)');
-  } else {
-    await migrateSyncQueueColumns(db);
-  }
-
-  // Ensure sync_metadata table exists
-  const syncMetaCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='sync_metadata'"
-  );
-  if (!syncMetaCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS sync_metadata (
-      entity TEXT PRIMARY KEY, last_sync_timestamp TEXT NOT NULL DEFAULT '1970-01-01T00:00:00.000Z',
-      last_sync_status TEXT DEFAULT 'success', updated_at TEXT DEFAULT (datetime('now'))
-    )`);
-  }
-
-  // Ensure sync_progress table exists
-  const syncProgressCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='sync_progress'"
-  );
-  if (!syncProgressCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS sync_progress (
-      entity TEXT PRIMARY KEY, phase INTEGER NOT NULL,
-      status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','downloading','done','failed')),
-      pulled_count INTEGER NOT NULL DEFAULT 0, total_count INTEGER NOT NULL DEFAULT 0,
-      last_page INTEGER NOT NULL DEFAULT 0, last_error TEXT,
-      retry_count INTEGER NOT NULL DEFAULT 0, next_retry_at INTEGER NOT NULL DEFAULT 0,
-      updated_at INTEGER
-    )`);
-  }
-
-  // Ensure meditation_history table exists with new schema
-  const medTableCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='meditation_history'"
-  );
-  if (!medTableCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS meditation_history (
-      date TEXT PRIMARY KEY, dur_min INTEGER NOT NULL DEFAULT 0, track_id TEXT NOT NULL DEFAULT '',
-      note TEXT NOT NULL DEFAULT '', updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0,
-      synced INTEGER NOT NULL DEFAULT 0
-    )`);
-  } else {
-    await migrateMeditationHistory(db);
-  }
-
-  // Ensure user_profiles table exists
-  const profileTableCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='user_profiles'"
-  );
-  if (!profileTableCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS user_profiles (
-      profile_id TEXT PRIMARY KEY, data TEXT NOT NULL DEFAULT '{}', synced INTEGER NOT NULL DEFAULT 0
-    )`);
-  }
-
-  // Add updated_at column to tables that lack it (for sync conflict resolution)
-  const tablesNeedingUpdatedAt = [
-    'habits', 'mind_reflections', 'fasting_sessions', 'food_entries',
-    'checkin_records', 'exercise_entries', 'meditation_history', 'user_profiles',
-  ];
-  for (const table of tablesNeedingUpdatedAt) {
-    try {
-      await db.execAsync(`ALTER TABLE ${table} ADD COLUMN updated_at INTEGER`);
-    } catch {
-      // Column already exists — ignore
-    }
-  }
-
-  // Add deleted column to tables that lack it (for soft delete)
-  const tablesNeedingDeleted = [
-    'habits', 'mind_reflections', 'fasting_sessions', 'food_entries',
-    'checkin_records', 'exercise_entries', 'meditation_history', 'user_profiles',
-  ];
-  for (const table of tablesNeedingDeleted) {
-    try {
-      await db.execAsync(`ALTER TABLE ${table} ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0`);
-    } catch {
-      // Column already exists — ignore
-    }
-  }
-
-  // Add columns to plan_items if missing
-  await tryAddCol('plan_items', 'priority', "TEXT NOT NULL DEFAULT 'medium'");
-  await tryAddCol('plan_items', 'target_metric', "TEXT NOT NULL DEFAULT ''");
-  await tryAddCol('plan_items', 'reflection_id', 'TEXT');
-  await tryAddCol('plan_items', 'frequency', 'TEXT');
-
-  // Ensure mind_reflections.colors column exists
-  await tryAddCol('mind_reflections', 'colors', 'TEXT');
-
-  // Ensure mind_reflections.link column exists
-  await tryAddCol('mind_reflections', 'link', 'TEXT');
-
-  // Ensure plans.last_delayed_notify_at column exists
-  await tryAddCol('plans', 'last_delayed_notify_at', 'INTEGER');
-
-  // Ensure thought_trails table exists
-  const thoughtTrailTableCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='thought_trails'"
-  );
-  if (!thoughtTrailTableCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS thought_trails (
-      id TEXT PRIMARY KEY, name TEXT NOT NULL, description TEXT DEFAULT '',
-      reflection_ids TEXT NOT NULL DEFAULT '[]', linked_plan_item_ids TEXT,
-      source TEXT DEFAULT 'manual', insight_summary TEXT,
-      created_at INTEGER NOT NULL, updated_at INTEGER,
-      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-    )`);
-  }
-
-  // Add source and insight_summary columns to thought_trails if missing
-  await tryAddCol('thought_trails', 'source', "TEXT DEFAULT 'manual'");
-  await tryAddCol('thought_trails', 'insight_summary', 'TEXT');
-  await tryAddCol('thought_trails', 'note_ids', "TEXT NOT NULL DEFAULT '[]'");
-  await tryAddCol('thought_trails', 'insight_cache', 'TEXT');
-  await tryAddCol('thought_trails', 'review_cache', 'TEXT');
-  await tryAddCol('thought_trails', 'linked_plan_item_ids', 'TEXT');
-
-  // Add alarm columns to habits if missing
-  await tryAddCol('habits', 'alarm_enabled', 'INTEGER NOT NULL DEFAULT 0');
-  await tryAddCol('habits', 'alarm_hour', 'INTEGER NOT NULL DEFAULT 8');
-  await tryAddCol('habits', 'alarm_minute', 'INTEGER NOT NULL DEFAULT 0');
-  await tryAddCol('habits', 'link', "TEXT NOT NULL DEFAULT 'none'");
-  await tryAddCol('habits', 'link_config', "TEXT");
-  await tryAddCol('habits', 'vision_id', "TEXT DEFAULT ''");
-
-  // Add thought_trail_ids to mind_reflections
-  await tryAddCol('mind_reflections', 'thought_trail_ids', 'TEXT');
-
-  // Add complete_reason to plans
-  await tryAddCol('plans', 'complete_reason', 'TEXT');
-  await tryAddCol('plans', 'vision_id', 'TEXT');
-
-  // Add local_engine_enabled to ai_configs
-  await tryAddCol('ai_configs', 'local_engine_enabled', 'INTEGER NOT NULL DEFAULT 1');
-
-  // Add exercise metadata columns if missing
-  await tryAddCol('exercise_entries', 'mode', "TEXT DEFAULT 'free'");
-  await tryAddCol('exercise_entries', 'target', 'TEXT');
-  await tryAddCol('exercise_entries', 'segment_paces', 'TEXT');
-  await tryAddCol('exercise_entries', 'elevation_gain', 'REAL');
-  await tryAddCol('exercise_entries', 'paused_duration', 'INTEGER');
-  await tryAddCol('exercise_entries', 'reps', 'INTEGER');
-  await tryAddCol('exercise_entries', 'sets', 'TEXT');
-  await tryAddCol('exercise_entries', 'met', 'REAL');
-  await tryAddCol('exercise_entries', 'combo_exercises', 'TEXT');
-
-  // Add trail_id column to plan_items if missing
-  await tryAddCol('plan_items', 'trail_id', 'TEXT');
-
-  // Add tags column to plan_items if missing
-  await tryAddCol('plan_items', 'tags', 'TEXT');
-
-  // Ensure trail_notes table exists
-  const trailNotesTableCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='trail_notes'"
-  );
-  if (!trailNotesTableCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS trail_notes (
-      id TEXT PRIMARY KEY, trail_id TEXT NOT NULL, content TEXT NOT NULL,
-      tags TEXT NOT NULL DEFAULT '[]', mood TEXT, source TEXT NOT NULL DEFAULT 'free',
-      guided_question TEXT, note_order INTEGER NOT NULL DEFAULT 0,
-      created_at INTEGER NOT NULL, updated_at INTEGER,
-      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-    )`);
-    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_trail_notes_trail ON trail_notes(trail_id)');
-  }
-
-  // Ensure reflection_links table exists
-  const reflectionLinksTableCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='reflection_links'"
-  );
-  if (!reflectionLinksTableCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS reflection_links (
-      link_id TEXT PRIMARY KEY, from_id TEXT NOT NULL, to_id TEXT NOT NULL,
-      link_type TEXT NOT NULL, note TEXT, created_at INTEGER NOT NULL,
-      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-    )`);
-    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_reflection_links_from ON reflection_links(from_id)');
-    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_reflection_links_to   ON reflection_links(to_id)');
-  }
-
-  // Ensure ai_configs table exists
-  const aiConfigsTableCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='ai_configs'"
-  );
-  if (!aiConfigsTableCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS ai_configs (
-      config_id TEXT PRIMARY KEY, mode TEXT NOT NULL DEFAULT 'hybrid',
-      models TEXT NOT NULL DEFAULT '[]', updated_at INTEGER,
-      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-    )`);
-  }
-
-  // Ensure checkin_reviews table exists
-  const checkinReviewsTableCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='checkin_reviews'"
-  );
-  if (!checkinReviewsTableCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS checkin_reviews (
-      id TEXT PRIMARY KEY, user_id TEXT NOT NULL DEFAULT 'self',
-      review_id TEXT NOT NULL, period TEXT NOT NULL DEFAULT 'week',
-      start_date TEXT NOT NULL, end_date TEXT NOT NULL,
-      review_data TEXT NOT NULL DEFAULT '{}',
-      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0,
-      synced INTEGER NOT NULL DEFAULT 0
-    )`);
-    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_checkin_reviews_period ON checkin_reviews(period, start_date)');
-  }
-
-  // Ensure plan tables exist
-  const planTableCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='plans'"
-  );
-  // Ensure grace_history table exists
-  const graceTableCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='grace_history'"
-  );
-  if (!graceTableCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS grace_history (
-      date TEXT PRIMARY KEY, restored_at INTEGER NOT NULL,
-      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0,
-      synced INTEGER NOT NULL DEFAULT 0
-    )`);
-  }
-
-  // Ensure daily_custom_todos table exists
-  const dailyCustomTodoTableCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='daily_custom_todos'"
-  );
-  if (!dailyCustomTodoTableCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS daily_custom_todos (
-      id TEXT PRIMARY KEY, plan_id TEXT, date TEXT NOT NULL,
-      name TEXT NOT NULL, done INTEGER NOT NULL DEFAULT 0,
-      todo_order INTEGER NOT NULL DEFAULT 0, recurring INTEGER NOT NULL DEFAULT 0,
-      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-    )`);
-  }
-
-  await migrateDailyCustomTodosNullable(db);
-
-  // Ensure daily_todo_history table exists
-  const dailyTodoHistoryTableCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='daily_todo_history'"
-  );
-  if (!dailyTodoHistoryTableCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS daily_todo_history (
-      id TEXT PRIMARY KEY, plan_id TEXT, date TEXT NOT NULL,
-      plan_items TEXT NOT NULL DEFAULT '[]', custom_todos TEXT NOT NULL DEFAULT '[]',
-      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-    )`);
-  }
-
-  await migrateDailyTodoHistoryNullable(db);
-
-  if (!planTableCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS plans (
-      id TEXT PRIMARY KEY, name TEXT NOT NULL, goal TEXT NOT NULL DEFAULT '', slogan TEXT NOT NULL DEFAULT '',
-      start_date TEXT NOT NULL, end_date TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'not_started',
-      progress INTEGER NOT NULL DEFAULT 0, updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0,
-      synced INTEGER NOT NULL DEFAULT 0
-    )`);
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS plan_items (
-      id TEXT PRIMARY KEY, plan_id TEXT NOT NULL, name TEXT NOT NULL, description TEXT NOT NULL DEFAULT '',
-      start_date TEXT NOT NULL, end_date TEXT NOT NULL, content_url TEXT NOT NULL DEFAULT '',
-      total_checkin_days INTEGER NOT NULL DEFAULT 0, status TEXT NOT NULL DEFAULT 'not_started',
-      progress INTEGER NOT NULL DEFAULT 0, link TEXT NOT NULL DEFAULT 'manual',
-      priority TEXT NOT NULL DEFAULT 'medium', target_metric TEXT NOT NULL DEFAULT '',
-      link_config TEXT NOT NULL DEFAULT '{}', item_order INTEGER NOT NULL DEFAULT 0,
-      frequency TEXT,
-      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-    )`);
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS plan_item_checkins (
-      id TEXT PRIMARY KEY, plan_item_id TEXT NOT NULL, date TEXT NOT NULL,
-      done INTEGER NOT NULL DEFAULT 0, note TEXT DEFAULT '', linked_module TEXT DEFAULT '',
-      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-    )`);
-  }
-
-  await migrateFastingSessionsCheck(db);
-
-  // Add note column to fasting_sessions if missing
-  const fastingCols = await db.getAllAsync<{ name: string }>("PRAGMA table_info(fasting_sessions)");
-  if (!fastingCols.some(c => c.name === 'note')) {
-    await db.execAsync("ALTER TABLE fasting_sessions ADD COLUMN note TEXT NOT NULL DEFAULT ''");
-  }
-
-  // Add audio columns to mantra_defs
-  await tryAddCol('mantra_defs', 'audio_url', 'TEXT');
-  await tryAddCol('mantra_defs', 'audio_attribution', 'TEXT');
-  // Add missing mantra fields for full sync support
-  await tryAddCol('mantra_defs', 'preset', 'INTEGER');
-  await tryAddCol('mantra_defs', 'pronunciation', 'TEXT');
-  await tryAddCol('mantra_defs', 'meaning', 'TEXT');
-  await tryAddCol('mantra_defs', 'full_text', 'TEXT');
-  await tryAddCol('mantra_defs', 'page_count', 'INTEGER');
-
-  // Add missing indexes for frequently queried columns
-  await db.execAsync('CREATE INDEX IF NOT EXISTS idx_food_entry_date ON food_entries(entry_date)');
-  await db.execAsync('CREATE INDEX IF NOT EXISTS idx_exercise_ts ON exercise_entries(ts)');
-  await db.execAsync('CREATE INDEX IF NOT EXISTS idx_plan_items_plan_id ON plan_items(plan_id)');
-  await db.execAsync('CREATE INDEX IF NOT EXISTS idx_plan_item_checkins_lookup ON plan_item_checkins(plan_item_id, date)');
-  await db.execAsync('CREATE INDEX IF NOT EXISTS idx_daily_custom_todos_lookup ON daily_custom_todos(plan_id, date)');
-  await db.execAsync('CREATE INDEX IF NOT EXISTS idx_fasting_started ON fasting_sessions(started_at)');
-  await db.execAsync('CREATE INDEX IF NOT EXISTS idx_body_weight_date ON body_weight_records(date)');
-  await db.execAsync('CREATE INDEX IF NOT EXISTS idx_body_checkins_date ON body_checkins(date)');
-
-  // Migrate checkin_reviews: add UNIQUE index on review_id for UPSERT support
-  await migrateCheckinReviewsUniqueIndex(db);
-
-  // Ensure body_goals table exists
-  const bodyGoalsCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='body_goals'"
-  );
-  if (!bodyGoalsCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS body_goals (
-      id TEXT PRIMARY KEY, target_weight REAL, target_body_fat REAL,
-      target_date TEXT, strategy TEXT, note TEXT,
-      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-    )`);
-  }
-
-  // Ensure body_plans table exists
-  const bodyPlansCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='body_plans'"
-  );
-  if (!bodyPlansCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS body_plans (
-      id TEXT PRIMARY KEY, type TEXT NOT NULL DEFAULT 'weekly',
-      goal_id TEXT, weekday INTEGER NOT NULL,
-      part TEXT NOT NULL, sport_key TEXT, note TEXT,
-      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-    )`);
-    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_body_plans_weekday ON body_plans(weekday)');
-  } else {
-    // Add type column if missing (P0-4 migration)
-    await tryAddCol('body_plans', 'type', 'TEXT NOT NULL DEFAULT \'weekly\'');
-  }
-
-  // Ensure body_training_plans table exists
-  const trainingPlanCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='body_training_plans'"
-  );
-  if (!trainingPlanCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS body_training_plans (
-      id TEXT PRIMARY KEY, type TEXT NOT NULL DEFAULT 'training',
-      name TEXT NOT NULL, start_date TEXT NOT NULL,
-      end_date TEXT NOT NULL, strategy TEXT, target_weight REAL,
-      target_body_fat REAL, goal_note TEXT, tasks TEXT NOT NULL DEFAULT '[]',
-      overrides TEXT,
-      status TEXT NOT NULL DEFAULT 'active',
-      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-    )`);
-  } else {
-    // Add overrides column if missing (migration)
-    await tryAddCol('body_training_plans', 'overrides', 'TEXT');
-    // Add type column if missing (P0-4 migration)
-    await tryAddCol('body_training_plans', 'type', 'TEXT NOT NULL DEFAULT \'training\'');
-  }
-
-  // Ensure body_weight_records table exists
-  const bodyWeightCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='body_weight_records'"
-  );
-  if (!bodyWeightCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS body_weight_records (
-      id TEXT PRIMARY KEY, date TEXT NOT NULL, weight REAL NOT NULL,
-      body_fat REAL, updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0,
-      synced INTEGER NOT NULL DEFAULT 0
-    )`);
-  }
-
-  // Ensure body_checkins table exists
-  const bodyCheckinsCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='body_checkins'"
-  );
-  if (!bodyCheckinsCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS body_checkins (
-      id TEXT PRIMARY KEY, date TEXT NOT NULL UNIQUE, energy INTEGER NOT NULL,
-      pain INTEGER NOT NULL, comfort INTEGER NOT NULL, sleep INTEGER NOT NULL,
-      tags TEXT, note TEXT, updated_at INTEGER,
-      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-    )`);
-  }
-
-  // Ensure visions table exists
-  const visionsCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='visions'"
-  );
-  if (!visionsCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS visions (
-      id TEXT PRIMARY KEY, type TEXT NOT NULL, text TEXT NOT NULL,
-      time_frame TEXT, start_date TEXT, deadline TEXT, status TEXT NOT NULL DEFAULT 'active',
-      achieved_at INTEGER, sort_order INTEGER NOT NULL DEFAULT 0,
-      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-    )`);
-  }
-
-  // Add start_date column to visions if missing
-  await tryAddCol('visions', 'start_date', 'TEXT');
-
-  // Ensure vision_practices table exists
-  const visionPracticesCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='vision_practices'"
-  );
-  if (!visionPracticesCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS vision_practices (
-      id TEXT PRIMARY KEY, vision_id TEXT NOT NULL, ref_type TEXT NOT NULL,
-      ref_id TEXT NOT NULL, updated_at INTEGER,
-      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-    )`);
-  }
-
-  // Ensure dedications table exists
-  const dedicationsCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='dedications'"
-  );
-  if (!dedicationsCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS dedications (
-      id TEXT PRIMARY KEY, date TEXT NOT NULL, period_label TEXT NOT NULL,
-      type TEXT NOT NULL, practice_days INTEGER NOT NULL, total_days INTEGER NOT NULL,
-      habit_stats TEXT, plan_progress TEXT, vision_progress TEXT,
-      insight TEXT, adjustment TEXT, updated_at INTEGER,
-      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-    )`);
-  }
-
-  // Ensure mantra_defs table exists
-  const mantraDefsCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='mantra_defs'"
-  );
-  if (!mantraDefsCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS mantra_defs (
-      id TEXT PRIMARY KEY, name TEXT NOT NULL, subtitle TEXT,
-      category TEXT NOT NULL DEFAULT 'custom', sort_order INTEGER NOT NULL DEFAULT 0,
-      target_count INTEGER, updated_at INTEGER,
-      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-    )`);
-  }
-
-  // Ensure mantra_sessions table exists
-  const mantraSessionsCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='mantra_sessions'"
-  );
-  if (!mantraSessionsCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS mantra_sessions (
-      id TEXT PRIMARY KEY, mantra_id TEXT NOT NULL, date TEXT NOT NULL,
-      count INTEGER NOT NULL, rounds INTEGER NOT NULL, duration_sec INTEGER NOT NULL,
-      started_at INTEGER NOT NULL, completed_at INTEGER NOT NULL,
-      target_rounds INTEGER, dedication TEXT, updated_at INTEGER,
-      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-    )`);
-  }
-
-  // Ensure zhiguan_sessions table exists
-  const zhiguanSessionsCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='zhiguan_sessions'"
-  );
-  if (!zhiguanSessionsCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS zhiguan_sessions (
-      id TEXT PRIMARY KEY, user_id TEXT, status TEXT NOT NULL DEFAULT 'completed',
-      start_ts INTEGER NOT NULL, end_ts INTEGER, sankalpa TEXT,
-      preliminary_level TEXT, chosen_method TEXT,
-      samatha_ratio_avg REAL, vipassana_ratio_avg REAL,
-      total_breaths INTEGER, closing_notes TEXT,
-      self_reported_stage TEXT, self_reported_stage_text TEXT,
-      dedication_id TEXT, five_hindrances TEXT, eight_tactile TEXT, meta TEXT,
-      updated_at INTEGER,
-      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-    )`);
-  }
-
-  // Add missing zhiguan_sessions columns
-  await tryAddCol('zhiguan_sessions', 'end_ts', 'INTEGER');
-  await tryAddCol('zhiguan_sessions', 'five_hindrances', 'TEXT');
-  await tryAddCol('zhiguan_sessions', 'eight_tactile', 'TEXT');
-  await tryAddCol('zhiguan_sessions', 'meta', 'TEXT');
-
-  // Ensure breath_records table exists
-  const breathRecordsCheck = await db.getFirstAsync<{ name: string }>(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name='breath_records'"
-  );
-  if (!breathRecordsCheck) {
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS breath_records (
-      id TEXT PRIMARY KEY, date TEXT NOT NULL, preset_key TEXT NOT NULL DEFAULT '',
-      duration_sec INTEGER NOT NULL DEFAULT 0, cycles INTEGER NOT NULL DEFAULT 0,
-      pre_distress INTEGER NOT NULL DEFAULT 5, post_distress INTEGER NOT NULL DEFAULT 5,
-      reflection TEXT NOT NULL DEFAULT '', guide_style TEXT NOT NULL DEFAULT 'scientific',
-      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-    )`);
-    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_breath_records_date ON breath_records(date)');
-  }
-  // Ensure synced column exists (for devices that had breath_records before synced was added)
-  await tryAddCol('breath_records', 'synced', 'INTEGER NOT NULL DEFAULT 0');
-
+async function cleanupPresetMantras(db: SQLite.SQLiteDatabase): Promise<void> {
   // Cleanup: remove auto-added preset mantras from old versions (before auto-init was removed)
   // Only delete presets that have NO associated sessions (user never actually used them)
   const PRESET_NAMES = [
@@ -1398,6 +875,428 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   } catch (e) {
     log.warn('[DB] Preset cleanup migration failed:', e);
   }
+}
+
+// ── Table-driven migration step model ──────────────────────────────
+// MIGRATION_STEPS 是一个有序数组，逐项对应重构前 migrateDatabase 的执行顺序。
+// 重构前后 emitted SQL 序列逐字节一致（AC6）——由 schemaMigrate.test.ts 双快照强制。
+
+type MigrateFn = (db: SQLite.SQLiteDatabase) => Promise<void>;
+
+type MigrationStep =
+  | { kind: 'checkTable'; key: string; name: string }
+  | { kind: 'ensureTable'; name: string; createSql: string; indexes?: string[]; elseAction?: MigrateFn; afterAction?: MigrateFn }
+  | { kind: 'ensureTablesChecked'; key: string; createSqls: string[] }
+  | { kind: 'addCol'; table: string; column: string; type: string }
+  | { kind: 'ensureColumn'; table: string; column: string; type: string }
+  | { kind: 'migrate'; fn: MigrateFn }
+  | { kind: 'forAddCol'; tables: string[]; column: string; type: string }
+  | { kind: 'createIndex'; sqls: string[] }
+  | { kind: 'cleanupPresets' };
+
+const SYNC_TABLES = [
+  'habits', 'mind_reflections', 'fasting_sessions', 'food_entries',
+  'checkin_records', 'exercise_entries', 'meditation_history', 'user_profiles',
+];
+
+const MIGRATION_STEPS: MigrationStep[] = [
+  { kind: 'addCol', table: 'habits', column: 'synced', type: 'INTEGER NOT NULL DEFAULT 0' },
+  { kind: 'addCol', table: 'mind_reflections', column: 'linked_plan_id', type: 'TEXT' },
+  { kind: 'addCol', table: 'mind_reflections', column: 'linked_plan_item_id', type: 'TEXT' },
+  { kind: 'addCol', table: 'food_entries', column: 'synced', type: 'INTEGER NOT NULL DEFAULT 0' },
+  { kind: 'addCol', table: 'checkin_records', column: 'timestamp', type: 'INTEGER' },
+  { kind: 'addCol', table: 'checkin_records', column: 'weight', type: 'REAL' },
+  { kind: 'addCol', table: 'checkin_records', column: 'grace', type: 'INTEGER NOT NULL DEFAULT 0' },
+  { kind: 'addCol', table: 'checkin_records', column: 'total_days', type: 'INTEGER' },
+
+  { kind: 'ensureTable', name: 'exercise_entries', createSql: `CREATE TABLE IF NOT EXISTS exercise_entries (
+      id TEXT PRIMARY KEY, sport_key TEXT NOT NULL, sport_icon TEXT NOT NULL DEFAULT '',
+      duration_sec INTEGER NOT NULL DEFAULT 0, distance_km REAL DEFAULT 0,
+      calories INTEGER DEFAULT 0, avg_pace REAL DEFAULT 0,
+      track_points TEXT DEFAULT '[]', is_gps_sport INTEGER NOT NULL DEFAULT 0,
+      ts INTEGER NOT NULL, synced INTEGER NOT NULL DEFAULT 0
+    )` },
+  { kind: 'addCol', table: 'exercise_entries', column: 'health_synced', type: 'INTEGER NOT NULL DEFAULT 0' },
+
+  { kind: 'ensureTable', name: 'sync_queue', createSql: `CREATE TABLE IF NOT EXISTS sync_queue (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, entity TEXT NOT NULL, entity_id TEXT NOT NULL,
+      operation TEXT NOT NULL CHECK(operation IN ('upsert','delete')),
+      payload TEXT NOT NULL, created_at INTEGER NOT NULL,
+      retry_count INTEGER NOT NULL DEFAULT 0, last_error TEXT,
+      status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','syncing','failed','conflict')),
+      next_retry_at INTEGER NOT NULL DEFAULT 0
+    )`, indexes: [
+      'CREATE UNIQUE INDEX IF NOT EXISTS idx_sync_queue_entity ON sync_queue(entity, entity_id)',
+      'CREATE INDEX IF NOT EXISTS idx_sync_queue_status ON sync_queue(status)',
+    ], elseAction: migrateSyncQueueColumns },
+
+  { kind: 'ensureTable', name: 'sync_metadata', createSql: `CREATE TABLE IF NOT EXISTS sync_metadata (
+      entity TEXT PRIMARY KEY, last_sync_timestamp TEXT NOT NULL DEFAULT '1970-01-01T00:00:00.000Z',
+      last_sync_status TEXT DEFAULT 'success', updated_at TEXT DEFAULT (datetime('now'))
+    )` },
+
+  { kind: 'ensureTable', name: 'sync_progress', createSql: `CREATE TABLE IF NOT EXISTS sync_progress (
+      entity TEXT PRIMARY KEY, phase INTEGER NOT NULL,
+      status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','downloading','done','failed')),
+      pulled_count INTEGER NOT NULL DEFAULT 0, total_count INTEGER NOT NULL DEFAULT 0,
+      last_page INTEGER NOT NULL DEFAULT 0, last_error TEXT,
+      retry_count INTEGER NOT NULL DEFAULT 0, next_retry_at INTEGER NOT NULL DEFAULT 0,
+      updated_at INTEGER
+    )` },
+
+  { kind: 'ensureTable', name: 'meditation_history', createSql: `CREATE TABLE IF NOT EXISTS meditation_history (
+      date TEXT PRIMARY KEY, dur_min INTEGER NOT NULL DEFAULT 0, track_id TEXT NOT NULL DEFAULT '',
+      note TEXT NOT NULL DEFAULT '', updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0,
+      synced INTEGER NOT NULL DEFAULT 0
+    )`, elseAction: migrateMeditationHistory },
+
+  { kind: 'ensureTable', name: 'user_profiles', createSql: `CREATE TABLE IF NOT EXISTS user_profiles (
+      profile_id TEXT PRIMARY KEY, data TEXT NOT NULL DEFAULT '{}', synced INTEGER NOT NULL DEFAULT 0
+    )` },
+
+  { kind: 'forAddCol', tables: SYNC_TABLES, column: 'updated_at', type: 'INTEGER' },
+  { kind: 'forAddCol', tables: SYNC_TABLES, column: 'deleted', type: 'INTEGER NOT NULL DEFAULT 0' },
+
+  { kind: 'addCol', table: 'plan_items', column: 'priority', type: "TEXT NOT NULL DEFAULT 'medium'" },
+  { kind: 'addCol', table: 'plan_items', column: 'target_metric', type: "TEXT NOT NULL DEFAULT ''" },
+  { kind: 'addCol', table: 'plan_items', column: 'reflection_id', type: 'TEXT' },
+  { kind: 'addCol', table: 'plan_items', column: 'frequency', type: 'TEXT' },
+  { kind: 'addCol', table: 'mind_reflections', column: 'colors', type: 'TEXT' },
+  { kind: 'addCol', table: 'mind_reflections', column: 'link', type: 'TEXT' },
+  { kind: 'addCol', table: 'plans', column: 'last_delayed_notify_at', type: 'INTEGER' },
+
+  { kind: 'ensureTable', name: 'thought_trails', createSql: `CREATE TABLE IF NOT EXISTS thought_trails (
+      id TEXT PRIMARY KEY, name TEXT NOT NULL, description TEXT DEFAULT '',
+      reflection_ids TEXT NOT NULL DEFAULT '[]', linked_plan_item_ids TEXT,
+      source TEXT DEFAULT 'manual', insight_summary TEXT,
+      created_at INTEGER NOT NULL, updated_at INTEGER,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )` },
+
+  { kind: 'addCol', table: 'thought_trails', column: 'source', type: "TEXT DEFAULT 'manual'" },
+  { kind: 'addCol', table: 'thought_trails', column: 'insight_summary', type: 'TEXT' },
+  { kind: 'addCol', table: 'thought_trails', column: 'note_ids', type: "TEXT NOT NULL DEFAULT '[]'" },
+  { kind: 'addCol', table: 'thought_trails', column: 'insight_cache', type: 'TEXT' },
+  { kind: 'addCol', table: 'thought_trails', column: 'review_cache', type: 'TEXT' },
+  { kind: 'addCol', table: 'thought_trails', column: 'linked_plan_item_ids', type: 'TEXT' },
+
+  { kind: 'addCol', table: 'habits', column: 'alarm_enabled', type: 'INTEGER NOT NULL DEFAULT 0' },
+  { kind: 'addCol', table: 'habits', column: 'alarm_hour', type: 'INTEGER NOT NULL DEFAULT 8' },
+  { kind: 'addCol', table: 'habits', column: 'alarm_minute', type: 'INTEGER NOT NULL DEFAULT 0' },
+  { kind: 'addCol', table: 'habits', column: 'link', type: "TEXT NOT NULL DEFAULT 'none'" },
+  { kind: 'addCol', table: 'habits', column: 'link_config', type: "TEXT" },
+  { kind: 'addCol', table: 'habits', column: 'vision_id', type: "TEXT DEFAULT ''" },
+  { kind: 'addCol', table: 'mind_reflections', column: 'thought_trail_ids', type: 'TEXT' },
+  { kind: 'addCol', table: 'plans', column: 'complete_reason', type: 'TEXT' },
+  { kind: 'addCol', table: 'plans', column: 'vision_id', type: 'TEXT' },
+  { kind: 'addCol', table: 'ai_configs', column: 'local_engine_enabled', type: 'INTEGER NOT NULL DEFAULT 1' },
+
+  { kind: 'addCol', table: 'exercise_entries', column: 'mode', type: "TEXT DEFAULT 'free'" },
+  { kind: 'addCol', table: 'exercise_entries', column: 'target', type: 'TEXT' },
+  { kind: 'addCol', table: 'exercise_entries', column: 'segment_paces', type: 'TEXT' },
+  { kind: 'addCol', table: 'exercise_entries', column: 'elevation_gain', type: 'REAL' },
+  { kind: 'addCol', table: 'exercise_entries', column: 'paused_duration', type: 'INTEGER' },
+  { kind: 'addCol', table: 'exercise_entries', column: 'reps', type: 'INTEGER' },
+  { kind: 'addCol', table: 'exercise_entries', column: 'sets', type: 'TEXT' },
+  { kind: 'addCol', table: 'exercise_entries', column: 'met', type: 'REAL' },
+  { kind: 'addCol', table: 'exercise_entries', column: 'combo_exercises', type: 'TEXT' },
+
+  { kind: 'addCol', table: 'plan_items', column: 'trail_id', type: 'TEXT' },
+  { kind: 'addCol', table: 'plan_items', column: 'tags', type: 'TEXT' },
+
+  { kind: 'ensureTable', name: 'trail_notes', createSql: `CREATE TABLE IF NOT EXISTS trail_notes (
+      id TEXT PRIMARY KEY, trail_id TEXT NOT NULL, content TEXT NOT NULL,
+      tags TEXT NOT NULL DEFAULT '[]', mood TEXT, source TEXT NOT NULL DEFAULT 'free',
+      guided_question TEXT, note_order INTEGER NOT NULL DEFAULT 0,
+      created_at INTEGER NOT NULL, updated_at INTEGER,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`, indexes: ['CREATE INDEX IF NOT EXISTS idx_trail_notes_trail ON trail_notes(trail_id)'] },
+
+  { kind: 'ensureTable', name: 'reflection_links', createSql: `CREATE TABLE IF NOT EXISTS reflection_links (
+      link_id TEXT PRIMARY KEY, from_id TEXT NOT NULL, to_id TEXT NOT NULL,
+      link_type TEXT NOT NULL, note TEXT, created_at INTEGER NOT NULL,
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`, indexes: [
+      'CREATE INDEX IF NOT EXISTS idx_reflection_links_from ON reflection_links(from_id)',
+      'CREATE INDEX IF NOT EXISTS idx_reflection_links_to   ON reflection_links(to_id)',
+    ] },
+
+  { kind: 'ensureTable', name: 'ai_configs', createSql: `CREATE TABLE IF NOT EXISTS ai_configs (
+      config_id TEXT PRIMARY KEY, mode TEXT NOT NULL DEFAULT 'hybrid',
+      models TEXT NOT NULL DEFAULT '[]', updated_at INTEGER,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )` },
+
+  { kind: 'ensureTable', name: 'checkin_reviews', createSql: `CREATE TABLE IF NOT EXISTS checkin_reviews (
+      id TEXT PRIMARY KEY, user_id TEXT NOT NULL DEFAULT 'self',
+      review_id TEXT NOT NULL, period TEXT NOT NULL DEFAULT 'week',
+      start_date TEXT NOT NULL, end_date TEXT NOT NULL,
+      review_data TEXT NOT NULL DEFAULT '{}',
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0,
+      synced INTEGER NOT NULL DEFAULT 0
+    )`, indexes: ['CREATE INDEX IF NOT EXISTS idx_checkin_reviews_period ON checkin_reviews(period, start_date)'] },
+
+  // planTableCheck 在原代码中提前 fetch（原 1089 行），延后到原 1133 行使用——
+  // 中间夹着 grace_history / daily_custom_todos / daily_todo_history。
+  // 用 checkTable + ensureTablesChecked 拆成两步，保持 byte-identical 顺序。
+  { kind: 'checkTable', key: 'plans', name: 'plans' },
+
+  { kind: 'ensureTable', name: 'grace_history', createSql: `CREATE TABLE IF NOT EXISTS grace_history (
+      date TEXT PRIMARY KEY, restored_at INTEGER NOT NULL,
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0,
+      synced INTEGER NOT NULL DEFAULT 0
+    )` },
+
+  { kind: 'ensureTable', name: 'daily_custom_todos', createSql: `CREATE TABLE IF NOT EXISTS daily_custom_todos (
+      id TEXT PRIMARY KEY, plan_id TEXT, date TEXT NOT NULL,
+      name TEXT NOT NULL, done INTEGER NOT NULL DEFAULT 0,
+      todo_order INTEGER NOT NULL DEFAULT 0, recurring INTEGER NOT NULL DEFAULT 0,
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`, afterAction: migrateDailyCustomTodosNullable },
+
+  { kind: 'ensureTable', name: 'daily_todo_history', createSql: `CREATE TABLE IF NOT EXISTS daily_todo_history (
+      id TEXT PRIMARY KEY, plan_id TEXT, date TEXT NOT NULL,
+      plan_items TEXT NOT NULL DEFAULT '[]', custom_todos TEXT NOT NULL DEFAULT '[]',
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`, afterAction: migrateDailyTodoHistoryNullable },
+
+  { kind: 'ensureTablesChecked', key: 'plans', createSqls: [
+    `CREATE TABLE IF NOT EXISTS plans (
+      id TEXT PRIMARY KEY, name TEXT NOT NULL, goal TEXT NOT NULL DEFAULT '', slogan TEXT NOT NULL DEFAULT '',
+      start_date TEXT NOT NULL, end_date TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'not_started',
+      progress INTEGER NOT NULL DEFAULT 0, updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0,
+      synced INTEGER NOT NULL DEFAULT 0
+    )`,
+    `CREATE TABLE IF NOT EXISTS plan_items (
+      id TEXT PRIMARY KEY, plan_id TEXT NOT NULL, name TEXT NOT NULL, description TEXT NOT NULL DEFAULT '',
+      start_date TEXT NOT NULL, end_date TEXT NOT NULL, content_url TEXT NOT NULL DEFAULT '',
+      total_checkin_days INTEGER NOT NULL DEFAULT 0, status TEXT NOT NULL DEFAULT 'not_started',
+      progress INTEGER NOT NULL DEFAULT 0, link TEXT NOT NULL DEFAULT 'manual',
+      priority TEXT NOT NULL DEFAULT 'medium', target_metric TEXT NOT NULL DEFAULT '',
+      link_config TEXT NOT NULL DEFAULT '{}', item_order INTEGER NOT NULL DEFAULT 0,
+      frequency TEXT,
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`,
+    `CREATE TABLE IF NOT EXISTS plan_item_checkins (
+      id TEXT PRIMARY KEY, plan_item_id TEXT NOT NULL, date TEXT NOT NULL,
+      done INTEGER NOT NULL DEFAULT 0, note TEXT DEFAULT '', linked_module TEXT DEFAULT '',
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`,
+  ] },
+
+  { kind: 'migrate', fn: migrateFastingSessionsCheck },
+
+  { kind: 'ensureColumn', table: 'fasting_sessions', column: 'note', type: "TEXT NOT NULL DEFAULT ''" },
+
+  { kind: 'addCol', table: 'mantra_defs', column: 'audio_url', type: 'TEXT' },
+  { kind: 'addCol', table: 'mantra_defs', column: 'audio_attribution', type: 'TEXT' },
+  { kind: 'addCol', table: 'mantra_defs', column: 'preset', type: 'INTEGER' },
+  { kind: 'addCol', table: 'mantra_defs', column: 'pronunciation', type: 'TEXT' },
+  { kind: 'addCol', table: 'mantra_defs', column: 'meaning', type: 'TEXT' },
+  { kind: 'addCol', table: 'mantra_defs', column: 'full_text', type: 'TEXT' },
+  { kind: 'addCol', table: 'mantra_defs', column: 'page_count', type: 'INTEGER' },
+
+  { kind: 'createIndex', sqls: [
+    'CREATE INDEX IF NOT EXISTS idx_food_entry_date ON food_entries(entry_date)',
+    'CREATE INDEX IF NOT EXISTS idx_exercise_ts ON exercise_entries(ts)',
+    'CREATE INDEX IF NOT EXISTS idx_plan_items_plan_id ON plan_items(plan_id)',
+    'CREATE INDEX IF NOT EXISTS idx_plan_item_checkins_lookup ON plan_item_checkins(plan_item_id, date)',
+    'CREATE INDEX IF NOT EXISTS idx_daily_custom_todos_lookup ON daily_custom_todos(plan_id, date)',
+    'CREATE INDEX IF NOT EXISTS idx_fasting_started ON fasting_sessions(started_at)',
+    'CREATE INDEX IF NOT EXISTS idx_body_weight_date ON body_weight_records(date)',
+    'CREATE INDEX IF NOT EXISTS idx_body_checkins_date ON body_checkins(date)',
+  ] },
+
+  { kind: 'migrate', fn: migrateCheckinReviewsUniqueIndex },
+
+  { kind: 'ensureTable', name: 'body_goals', createSql: `CREATE TABLE IF NOT EXISTS body_goals (
+      id TEXT PRIMARY KEY, target_weight REAL, target_body_fat REAL,
+      target_date TEXT, strategy TEXT, note TEXT,
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )` },
+
+  { kind: 'ensureTable', name: 'body_plans', createSql: `CREATE TABLE IF NOT EXISTS body_plans (
+      id TEXT PRIMARY KEY, type TEXT NOT NULL DEFAULT 'weekly',
+      goal_id TEXT, weekday INTEGER NOT NULL,
+      part TEXT NOT NULL, sport_key TEXT, note TEXT,
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`, indexes: ['CREATE INDEX IF NOT EXISTS idx_body_plans_weekday ON body_plans(weekday)'],
+    elseAction: (db) => tryAddCol(db, 'body_plans', 'type', "TEXT NOT NULL DEFAULT 'weekly'") },
+
+  { kind: 'ensureTable', name: 'body_training_plans', createSql: `CREATE TABLE IF NOT EXISTS body_training_plans (
+      id TEXT PRIMARY KEY, type TEXT NOT NULL DEFAULT 'training',
+      name TEXT NOT NULL, start_date TEXT NOT NULL,
+      end_date TEXT NOT NULL, strategy TEXT, target_weight REAL,
+      target_body_fat REAL, goal_note TEXT, tasks TEXT NOT NULL DEFAULT '[]',
+      overrides TEXT,
+      status TEXT NOT NULL DEFAULT 'active',
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`, elseAction: async (db) => {
+      await tryAddCol(db, 'body_training_plans', 'overrides', 'TEXT');
+      await tryAddCol(db, 'body_training_plans', 'type', "TEXT NOT NULL DEFAULT 'training'");
+    } },
+
+  { kind: 'ensureTable', name: 'body_weight_records', createSql: `CREATE TABLE IF NOT EXISTS body_weight_records (
+      id TEXT PRIMARY KEY, date TEXT NOT NULL, weight REAL NOT NULL,
+      body_fat REAL, updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0,
+      synced INTEGER NOT NULL DEFAULT 0
+    )` },
+
+  { kind: 'ensureTable', name: 'body_checkins', createSql: `CREATE TABLE IF NOT EXISTS body_checkins (
+      id TEXT PRIMARY KEY, date TEXT NOT NULL UNIQUE, energy INTEGER NOT NULL,
+      pain INTEGER NOT NULL, comfort INTEGER NOT NULL, sleep INTEGER NOT NULL,
+      tags TEXT, note TEXT, updated_at INTEGER,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )` },
+
+  { kind: 'ensureTable', name: 'visions', createSql: `CREATE TABLE IF NOT EXISTS visions (
+      id TEXT PRIMARY KEY, type TEXT NOT NULL, text TEXT NOT NULL,
+      time_frame TEXT, start_date TEXT, deadline TEXT, status TEXT NOT NULL DEFAULT 'active',
+      achieved_at INTEGER, sort_order INTEGER NOT NULL DEFAULT 0,
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )` },
+  { kind: 'addCol', table: 'visions', column: 'start_date', type: 'TEXT' },
+
+  { kind: 'ensureTable', name: 'vision_practices', createSql: `CREATE TABLE IF NOT EXISTS vision_practices (
+      id TEXT PRIMARY KEY, vision_id TEXT NOT NULL, ref_type TEXT NOT NULL,
+      ref_id TEXT NOT NULL, updated_at INTEGER,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )` },
+
+  { kind: 'ensureTable', name: 'dedications', createSql: `CREATE TABLE IF NOT EXISTS dedications (
+      id TEXT PRIMARY KEY, date TEXT NOT NULL, period_label TEXT NOT NULL,
+      type TEXT NOT NULL, practice_days INTEGER NOT NULL, total_days INTEGER NOT NULL,
+      habit_stats TEXT, plan_progress TEXT, vision_progress TEXT,
+      insight TEXT, adjustment TEXT, updated_at INTEGER,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )` },
+
+  { kind: 'ensureTable', name: 'mantra_defs', createSql: `CREATE TABLE IF NOT EXISTS mantra_defs (
+      id TEXT PRIMARY KEY, name TEXT NOT NULL, subtitle TEXT,
+      category TEXT NOT NULL DEFAULT 'custom', sort_order INTEGER NOT NULL DEFAULT 0,
+      target_count INTEGER, updated_at INTEGER,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )` },
+
+  { kind: 'ensureTable', name: 'mantra_sessions', createSql: `CREATE TABLE IF NOT EXISTS mantra_sessions (
+      id TEXT PRIMARY KEY, mantra_id TEXT NOT NULL, date TEXT NOT NULL,
+      count INTEGER NOT NULL, rounds INTEGER NOT NULL, duration_sec INTEGER NOT NULL,
+      started_at INTEGER NOT NULL, completed_at INTEGER NOT NULL,
+      target_rounds INTEGER, dedication TEXT, updated_at INTEGER,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )` },
+
+  { kind: 'ensureTable', name: 'zhiguan_sessions', createSql: `CREATE TABLE IF NOT EXISTS zhiguan_sessions (
+      id TEXT PRIMARY KEY, user_id TEXT, status TEXT NOT NULL DEFAULT 'completed',
+      start_ts INTEGER NOT NULL, end_ts INTEGER, sankalpa TEXT,
+      preliminary_level TEXT, chosen_method TEXT,
+      samatha_ratio_avg REAL, vipassana_ratio_avg REAL,
+      total_breaths INTEGER, closing_notes TEXT,
+      self_reported_stage TEXT, self_reported_stage_text TEXT,
+      dedication_id TEXT, five_hindrances TEXT, eight_tactile TEXT, meta TEXT,
+      updated_at INTEGER,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )` },
+
+  { kind: 'addCol', table: 'zhiguan_sessions', column: 'end_ts', type: 'INTEGER' },
+  { kind: 'addCol', table: 'zhiguan_sessions', column: 'five_hindrances', type: 'TEXT' },
+  { kind: 'addCol', table: 'zhiguan_sessions', column: 'eight_tactile', type: 'TEXT' },
+  { kind: 'addCol', table: 'zhiguan_sessions', column: 'meta', type: 'TEXT' },
+
+  { kind: 'ensureTable', name: 'breath_records', createSql: `CREATE TABLE IF NOT EXISTS breath_records (
+      id TEXT PRIMARY KEY, date TEXT NOT NULL, preset_key TEXT NOT NULL DEFAULT '',
+      duration_sec INTEGER NOT NULL DEFAULT 0, cycles INTEGER NOT NULL DEFAULT 0,
+      pre_distress INTEGER NOT NULL DEFAULT 5, post_distress INTEGER NOT NULL DEFAULT 5,
+      reflection TEXT NOT NULL DEFAULT '', guide_style TEXT NOT NULL DEFAULT 'scientific',
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`, indexes: ['CREATE INDEX IF NOT EXISTS idx_breath_records_date ON breath_records(date)'] },
+  { kind: 'addCol', table: 'breath_records', column: 'synced', type: 'INTEGER NOT NULL DEFAULT 0' },
+
+  { kind: 'cleanupPresets' },
+];
+
+// ensureTable 分支体抽出为独立函数，避免 dispatcher switch 内的决策点堆积。
+async function handleEnsureTable(db: SQLite.SQLiteDatabase, step: Extract<MigrationStep, { kind: 'ensureTable' }>): Promise<void> {
+  const existed = await tableExists(db, step.name);
+  if (!existed) {
+    await db.execAsync(step.createSql);
+    for (const idx of step.indexes ?? []) {
+      await db.execAsync(idx);
+    }
+  } else if (step.elseAction) {
+    await step.elseAction(db);
+  }
+  if (step.afterAction) {
+    await step.afterAction(db);
+  }
+}
+
+async function handleEnsureTablesChecked(db: SQLite.SQLiteDatabase, step: Extract<MigrationStep, { kind: 'ensureTablesChecked' }>, checks: Record<string, boolean>): Promise<void> {
+  if (!checks[step.key]) {
+    for (const sql of step.createSqls) {
+      await db.execAsync(sql);
+    }
+  }
+}
+
+async function handleForAddCol(db: SQLite.SQLiteDatabase, step: Extract<MigrationStep, { kind: 'forAddCol' }>): Promise<void> {
+  for (const table of step.tables) {
+    try {
+      await db.execAsync(`ALTER TABLE ${table} ADD COLUMN ${step.column} ${step.type}`);
+    } catch {
+      // Column already exists — ignore
+    }
+  }
+}
+
+async function handleCreateIndex(db: SQLite.SQLiteDatabase, step: Extract<MigrationStep, { kind: 'createIndex' }>): Promise<void> {
+  for (const sql of step.sqls) {
+    await db.execAsync(sql);
+  }
+}
+
+async function runMigrationStep(db: SQLite.SQLiteDatabase, step: MigrationStep, checks: Record<string, boolean>): Promise<void> {
+  switch (step.kind) {
+    case 'checkTable':
+      checks[step.key] = await tableExists(db, step.name);
+      return;
+    case 'ensureTable':
+      await handleEnsureTable(db, step);
+      return;
+    case 'ensureTablesChecked':
+      await handleEnsureTablesChecked(db, step, checks);
+      return;
+    case 'addCol':
+      await tryAddCol(db, step.table, step.column, step.type);
+      return;
+    case 'ensureColumn':
+      await ensureColumn(db, step.table, step.column, step.type);
+      return;
+    case 'migrate':
+      await step.fn(db);
+      return;
+    case 'forAddCol':
+      await handleForAddCol(db, step);
+      return;
+    case 'createIndex':
+      await handleCreateIndex(db, step);
+      return;
+    case 'cleanupPresets':
+      await cleanupPresetMantras(db);
+      return;
+  }
+}
+
+export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> {
+  // Outer guard: a failure in any single migration block must NOT abort the
+  // entire openDatabase() chain — otherwise one bad migration bricks the app
+  // on next cold start. Each block also has its own inner try-catch; this is
+  // a last-resort safety net so the DB still opens and the app remains usable.
+  try {
+    const checks: Record<string, boolean> = {};
+    for (const step of MIGRATION_STEPS) {
+      await runMigrationStep(db, step, checks);
+    }
   } catch (e) {
     // Migration failed — log and continue. The DB is still usable; missing
     // columns/tables are handled by rehydrateFromDb's per-entity try-catch.
