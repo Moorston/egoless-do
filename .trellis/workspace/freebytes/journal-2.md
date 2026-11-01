@@ -1352,3 +1352,37 @@ Move-only 重构 HomeScreen：提取 7 个展示子组件（WeightCard/WaterCard
 ### Next Steps
 
 - None - task complete
+
+
+## Session 93: 同步实体映射单一真理源 — SCHEMAS storeKey + mobile 收敛 + 表征测试
+
+**Date**: 2026-11-02
+**Task**: 同步实体映射单一真理源 — SCHEMAS storeKey + mobile 收敛 + 表征测试
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+消除 ENTITY_STORE_KEY 双份定义：给 SCHEMAS 38 实体（除 aiConfig 标 noStore）显式设 storeKey，core 派生版成为唯一权威；mobile 删手写 Record 改 re-export core；_specialEntities 从 noStore 派生；console.warn→log.warn。新增 validateEntityMappings() + entities.test.ts（45 表征测试，硬编码期望+快照双保险），漏映射检测从 __DEV__ 升级为标准测试流水线硬失败。重构前后 38 实体映射值逐字节一致（AC4）。trellis-check 0 issues。源自 explore 模式深挖同步引擎发现的双份定义+漏映射实证（c34c8ab8 bodyTrainingPlan）。OpenSpec change consolidate-entity-store-key-mapping 已建（openspec 在 gitignore，本地思考产物）。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `aa301720` | (see git log) |
+| `732ba7b6` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
