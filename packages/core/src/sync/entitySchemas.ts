@@ -31,8 +31,10 @@ export interface FieldMapping {
 export interface EntitySchema {
   sqlite: { table: string; pk: string };
   pocketbase: { collection: string; serverIdField: string };
-  /** Optional override for Zustand store key (defaults to `${entity}s`) */
+  /** Zustand store slice key for this entity. Required unless `noStore` is set. */
   storeKey?: string;
+  /** If true, this entity has no Zustand store slice (handled via special apply logic). Excluded from ENTITY_STORE_KEY. */
+  noStore?: boolean;
   fields: FieldMapping[];
   /** Custom toRow override — takes precedence over generated version */
   customToRow?: (data: Record<string, unknown>) => Record<string, unknown>;
@@ -224,6 +226,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   habit: {
     sqlite: { table: 'habits', pk: 'id' },
     pocketbase: { collection: 'habits', serverIdField: 'habit_id' },
+    storeKey: 'habits',
     fields: [
       { entity: 'id',            col: 'id',             server: 'id',          fallback: null },
       { entity: 'name',          col: 'name',           server: 'name',        fallback: 'Untitled', required: true },
@@ -253,6 +256,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   reflection: {
     sqlite: { table: 'mind_reflections', pk: 'id' },
     pocketbase: { collection: 'reflections', serverIdField: 'reflection_id' },
+    storeKey: 'reflections',
     fields: [
       { entity: 'id',              col: 'id',              server: 'id',            fallback: null },
       { entity: 'timestamp',       col: 'created_at',      server: 'timestamp',     fallback: () => Date.now() },
@@ -275,6 +279,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   fasting: {
     sqlite: { table: 'fasting_sessions', pk: 'id' },
     pocketbase: { collection: 'fasting_sessions', serverIdField: 'session_id' },
+    storeKey: 'fastingHistory',
     fields: [
       { entity: 'id',            col: 'id',             server: 'id',          fallback: null },
       { entity: 'targetHours',   col: 'target_hours',   server: 'targetHours', type: 'num' },
@@ -291,6 +296,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   food: {
     sqlite: { table: 'food_entries', pk: 'id' },
     pocketbase: { collection: 'food_entries', serverIdField: 'food_id' },
+    storeKey: 'foodLog',
     customToRow: (d) => ({
       id: d.id, name: d.name, cal: num(d.calories), note: d.note ?? '',
       entry_date: d.timestamp ? localDate(d.timestamp as number) : '', ts: d.timestamp,
@@ -329,6 +335,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   checkin: {
     sqlite: { table: 'checkin_records', pk: 'date' },
     pocketbase: { collection: 'checkin_records', serverIdField: 'date' },
+    storeKey: 'checkinHistory',
     fields: [
       { entity: 'date',      col: 'date',       server: 'date',     fallback: null },
       { entity: 'done',      col: 'done',       server: 'done',     type: 'bool' },
@@ -346,6 +353,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   exercise: {
     sqlite: { table: 'exercise_entries', pk: 'id' },
     pocketbase: { collection: 'exercise_entries', serverIdField: 'exercise_id' },
+    storeKey: 'exerciseLog',
     customToRow: (d) => ({
       id: d.id, sport_key: d.sportKey ?? '', sport_icon: d.sportIcon ?? '',
       duration_sec: num(d.durationSec), distance_km: d.distanceKm ?? 0,
@@ -393,6 +401,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   meditation: {
     sqlite: { table: 'meditation_history', pk: 'date' },
     pocketbase: { collection: 'meditation_history', serverIdField: 'date' },
+    storeKey: 'medHistory',
     fields: [
       { entity: 'date',      col: 'date',       server: 'date',     fallback: null },
       { entity: 'durMin',    col: 'dur_min',    server: 'durMin',   type: 'num', fallback: 0 },
@@ -406,6 +415,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   profile: {
     sqlite: { table: 'user_profiles', pk: 'profile_id' },
     pocketbase: { collection: 'user_profiles', serverIdField: 'profile_id' },
+    storeKey: 'userProfile',
     customToRow: (d) => {
       const { profileId, updatedAt, data, ...rest } = d as Record<string, unknown>;
       return {
@@ -444,6 +454,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   plan: {
     sqlite: { table: 'plans', pk: 'id' },
     pocketbase: { collection: 'plans', serverIdField: 'plan_id' },
+    storeKey: 'plans',
     fields: [
       { entity: 'id',                col: 'id',                    server: 'id',                fallback: null },
       { entity: 'name',              col: 'name',                  server: 'name',              fallback: '' },
@@ -464,6 +475,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   planItem: {
     sqlite: { table: 'plan_items', pk: 'id' },
     pocketbase: { collection: 'plan_items', serverIdField: 'plan_item_id' },
+    storeKey: 'planItems',
     customToRow: (d) => {
       const row: Record<string, unknown> = {
         id: d.id, plan_id: d.planId, name: d.name, description: d.description ?? '',
@@ -519,6 +531,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   planItemCheckin: {
     sqlite: { table: 'plan_item_checkins', pk: 'id' },
     pocketbase: { collection: 'plan_item_checkins', serverIdField: 'checkin_id' },
+    storeKey: 'planItemCheckins',
     fields: [
       { entity: 'id',           col: 'id',            server: 'id',          fallback: null },
       { entity: 'planItemId',   col: 'plan_item_id',  server: 'planItemId',  fallback: '' },
@@ -534,6 +547,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   grace: {
     sqlite: { table: 'grace_history', pk: 'date' },
     pocketbase: { collection: 'grace_history', serverIdField: 'date' },
+    storeKey: 'graceHistory',
     fields: [
       { entity: 'date',       col: 'date',        server: 'date',       fallback: null },
       { entity: 'restoredAt', col: 'restored_at', server: 'restoredAt', fallback: () => Date.now() },
@@ -545,6 +559,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   dailyCustomTodo: {
     sqlite: { table: 'daily_custom_todos', pk: 'id' },
     pocketbase: { collection: 'daily_custom_todos', serverIdField: 'todo_id' },
+    storeKey: 'dailyCustomTodos',
     fields: [
       { entity: 'id',        col: 'id',         server: 'id',        fallback: null },
       { entity: 'planId',    col: 'plan_id',    server: 'planId' },
@@ -561,6 +576,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   dailyTodoHistory: {
     sqlite: { table: 'daily_todo_history', pk: 'id' },
     pocketbase: { collection: 'daily_todo_history', serverIdField: 'history_id' },
+    storeKey: 'dailyTodoHistory',
     fields: [
       { entity: 'id',          col: 'id',            server: 'id',          fallback: null },
       { entity: 'planId',      col: 'plan_id',       server: 'planId',      fallback: '' },
@@ -575,6 +591,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   thoughtTrail: {
     sqlite: { table: 'thought_trails', pk: 'id' },
     pocketbase: { collection: 'thought_trails', serverIdField: 'trail_id' },
+    storeKey: 'thoughtTrails',
     fields: [
       { entity: 'id',                col: 'id',                    server: 'id',                fallback: null },
       { entity: 'name',              col: 'name',                  server: 'name',                required: true },
@@ -598,6 +615,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   trailNote: {
     sqlite: { table: 'trail_notes', pk: 'id' },
     pocketbase: { collection: 'trail_notes', serverIdField: 'note_id' },
+    storeKey: 'trailNotes',
     fields: [
       { entity: 'id',              col: 'id',               server: 'id',              fallback: null },
       { entity: 'trailId',         col: 'trail_id',         server: 'trailId' },
@@ -616,6 +634,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   reflectionLink: {
     sqlite: { table: 'reflection_links', pk: 'link_id' },
     pocketbase: { collection: 'reflection_links', serverIdField: 'link_id' },
+    storeKey: 'reflectionLinks',
     customToRow: (d) => ({
       link_id: d.id, from_id: d.fromId, to_id: d.toId,
       link_type: d.type, note: d.note ?? null,
@@ -640,6 +659,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   aiConfig: {
     sqlite: { table: 'ai_configs', pk: 'config_id' },
     pocketbase: { collection: 'ai_configs', serverIdField: 'config_id' },
+    noStore: true,
     customToRow: (d) => ({
       config_id: d.config_id ?? 'self',
       mode: d.mode ?? 'hybrid',
@@ -667,6 +687,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   checkinReview: {
     sqlite: { table: 'checkin_reviews', pk: 'id' },
     pocketbase: { collection: 'checkin_reviews', serverIdField: 'review_id' },
+    storeKey: 'checkinReviews',
     customToRow: (d) => ({
       id: d.id,
       user_id: d.userId ?? 'self',
@@ -748,6 +769,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   bodyGoal: {
     sqlite: { table: 'body_goals', pk: 'id' },
     pocketbase: { collection: 'body_goals', serverIdField: 'goal_id' },
+    storeKey: 'bodyGoals',
     fields: [
       { entity: 'id',           col: 'id',            server: 'id',           fallback: null },
       { entity: 'targetWeight', col: 'target_weight',  server: 'targetWeight', type: 'num', optional: true },
@@ -763,6 +785,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   bodyPlan: {
     sqlite: { table: 'body_plans', pk: 'id' },
     pocketbase: { collection: 'body_plans', serverIdField: 'plan_id' },
+    storeKey: 'bodyPlans',
     fields: [
       { entity: 'id',        col: 'id',         server: 'id',        fallback: null },
       { entity: 'type',      col: 'type',       server: 'type',      fallback: 'weekly' },
@@ -779,6 +802,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   bodyTrainingPlan: {
     sqlite: { table: 'body_training_plans', pk: 'id' },
     pocketbase: { collection: 'body_plans', serverIdField: 'plan_id' },
+    storeKey: 'bodyTrainingPlans',
     fields: [
       { entity: 'id',          col: 'id',           server: 'id',           fallback: null },
       { entity: 'type',        col: 'type',         server: 'type',         fallback: 'training' },
@@ -800,6 +824,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   weightRecord: {
     sqlite: { table: 'body_weight_records', pk: 'id' },
     pocketbase: { collection: 'weight_records', serverIdField: 'weight_id' },
+    storeKey: 'weightRecords',
     fields: [
       { entity: 'id',        col: 'id',         server: 'id',        fallback: null },
       { entity: 'date',      col: 'date',       server: 'date',      fallback: '' },
@@ -813,6 +838,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   bodyCheckin: {
     sqlite: { table: 'body_checkins', pk: 'id' },
     pocketbase: { collection: 'body_checkins', serverIdField: 'checkin_id' },
+    storeKey: 'bodyCheckins',
     fields: [
       { entity: 'id',        col: 'id',         server: 'id',        fallback: null },
       { entity: 'date',      col: 'date',       server: 'date',      fallback: '' },
@@ -831,6 +857,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   breath: {
     sqlite: { table: 'breath_records', pk: 'id' },
     pocketbase: { collection: 'breath_records', serverIdField: 'breath_id' },
+    storeKey: 'breathHistory',
     fields: [
       { entity: 'id',           col: 'id',             server: 'id',           fallback: null },
       { entity: 'date',         col: 'date',           server: 'date',         fallback: '' },
@@ -850,6 +877,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   sleep: {
     sqlite: { table: 'sleep_records', pk: 'id' },
     pocketbase: { collection: 'sleep_records', serverIdField: 'sleep_id' },
+    storeKey: 'sleepHistory',
     customToRow: (d) => ({
       id: d.id,
       date: d.date ?? '',
@@ -913,6 +941,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   give: {
     sqlite: { table: 'give_entries', pk: 'id' },
     pocketbase: { collection: 'give_entries', serverIdField: 'give_id' },
+    storeKey: 'giveHistory',
     customToRow: (d) => ({
       id: d.id,
       ts: d.timestamp ?? Date.now(),
@@ -955,6 +984,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   motivationEntry: {
     sqlite: { table: 'eating_motivations', pk: 'id' },
     pocketbase: { collection: 'eating_motivations', serverIdField: 'motivation_id' },
+    storeKey: 'motivationLog',
     fields: [
       { entity: 'id',           col: 'id',            server: 'id',           fallback: null },
       { entity: 'foodId',       col: 'food_id',       server: 'foodId',       fallback: '' },
@@ -969,6 +999,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   customWuxing: {
     sqlite: { table: 'custom_wuxing_maps', pk: 'id' },
     pocketbase: { collection: 'custom_wuxing_maps', serverIdField: 'wuxing_id' },
+    storeKey: 'customWuxingMaps',
     fields: [
       { entity: 'id',        col: 'id',         server: 'id',        fallback: null },
       { entity: 'foodName',  col: 'food_name',  server: 'foodName',  fallback: '' },
@@ -982,6 +1013,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   vision: {
     sqlite: { table: 'visions', pk: 'id' },
     pocketbase: { collection: 'visions', serverIdField: 'vision_id' },
+    storeKey: 'visions',
     fields: [
       { entity: 'id',         col: 'id',          server: 'id',         fallback: null },
       { entity: 'type',       col: 'type',        server: 'type',       fallback: '' },
@@ -1000,6 +1032,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   visionPractice: {
     sqlite: { table: 'vision_practices', pk: 'id' },
     pocketbase: { collection: 'vision_practices', serverIdField: 'practice_id' },
+    storeKey: 'visionPractices',
     fields: [
       { entity: 'id',        col: 'id',         server: 'id',        fallback: null },
       { entity: 'visionId',  col: 'vision_id',  server: 'visionId',  fallback: '' },
@@ -1013,6 +1046,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   dedication: {
     sqlite: { table: 'dedications', pk: 'id' },
     pocketbase: { collection: 'dedications', serverIdField: 'dedication_id' },
+    storeKey: 'dedications',
     fields: [
       { entity: 'id',             col: 'id',              server: 'id',             fallback: null },
       { entity: 'date',           col: 'date',            server: 'date',           fallback: '' },
@@ -1033,6 +1067,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   fearEntry: {
     sqlite: { table: 'fear_entries', pk: 'id' },
     pocketbase: { collection: 'fear_entries', serverIdField: 'fear_id' },
+    storeKey: 'fearEntries',
     customToRow: (d) => ({
       id: d.id, date: d.date ?? '', timestamp: d.timestamp ?? 0,
       content: d.content ?? '', trigger_context: d.trigger ?? '', category: d.category ?? 'unknown',
@@ -1071,6 +1106,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   courageEntry: {
     sqlite: { table: 'courage_entries', pk: 'id' },
     pocketbase: { collection: 'courage_entries', serverIdField: 'courage_id' },
+    storeKey: 'courageEntries',
     customToRow: (d) => ({
       id: d.id, date: d.date ?? '', timestamp: d.timestamp ?? 0,
       fear_id: d.fearId ?? '', action: d.action ?? '',
@@ -1100,6 +1136,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   fearAchievement: {
     sqlite: { table: 'fear_achievements', pk: 'id' },
     pocketbase: { collection: 'fear_achievements', serverIdField: 'achievement_id' },
+    storeKey: 'achievements',
     fields: [
       { entity: 'id',         col: 'id',          server: 'id',         fallback: null },
       { entity: 'type',       col: 'type',        server: 'type',       fallback: 'brave' },
@@ -1112,6 +1149,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   mantraDef: {
     sqlite: { table: 'mantra_defs', pk: 'id' },
     pocketbase: { collection: 'mantra_defs', serverIdField: 'mantra_id' },
+    storeKey: 'mantraDefs',
     fields: [
       { entity: 'id',          col: 'id',          server: 'id',          fallback: null },
       { entity: 'name',        col: 'name',        server: 'name',        fallback: '' },
@@ -1134,6 +1172,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   mantraSession: {
     sqlite: { table: 'mantra_sessions', pk: 'id' },
     pocketbase: { collection: 'mantra_sessions', serverIdField: 'session_id' },
+    storeKey: 'mantraSessions',
     fields: [
       { entity: 'id',           col: 'id',           server: 'id',           fallback: null },
       { entity: 'mantraId',     col: 'mantra_id',    server: 'mantraId',     fallback: '' },
@@ -1153,6 +1192,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   sutraReading: {
     sqlite: { table: 'sutra_reading_sessions', pk: 'id' },
     pocketbase: { collection: 'sutra_reading_sessions', serverIdField: 'reading_id' },
+    storeKey: 'readingSessions',
     fields: [
       { entity: 'id',          col: 'id',           server: 'id',          fallback: null },
       { entity: 'mantraId',    col: 'mantra_id',    server: 'mantraId',    fallback: '' },
@@ -1168,6 +1208,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   zhiguanSession: {
     sqlite: { table: 'zhiguan_sessions', pk: 'id' },
     pocketbase: { collection: 'zhiguan_sessions', serverIdField: 'zhiguan_id' },
+    storeKey: 'sessions',
     fields: [
       { entity: 'id',              col: 'id',                server: 'id',              fallback: null },
       { entity: 'userId',          col: 'user_id',           server: 'userId',          fallback: '' },
