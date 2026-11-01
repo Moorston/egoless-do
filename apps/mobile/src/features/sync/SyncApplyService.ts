@@ -3,7 +3,7 @@
 // Handles applying server changes to local SQLite and generating store patches.
 
 import type { SyncEntity } from '@egoless-do/core';
-import { SCHEMAS, buildServerPayloadToRow, pbField, createLogger } from '@egoless-do/core';
+import { SCHEMAS, buildServerPayloadToRow, pbField, createLogger, ENTITY_STORE_KEY } from '@egoless-do/core';
 
 import { openDatabase, withDbLock } from '../../db/schema';
 import { isValidSqlName } from '../../db/sqlHelper';
@@ -30,37 +30,26 @@ export const ENTITY_CONFIG: Record<string, { table: string; pk: string }> = Obje
 );
 
 // ── Constants: Entity → Store key mapping ───────────────────────────
-export const ENTITY_STORE_KEY: Record<string, string> = {
-  habit: 'habits', reflection: 'reflections', fasting: 'fastingHistory',
-  food: 'foodLog', checkin: 'checkinHistory', exercise: 'exerciseLog',
-  meditation: 'medHistory', profile: 'userProfile',
-  plan: 'plans', planItem: 'planItems', planItemCheckin: 'planItemCheckins',
-  grace: 'graceHistory', dailyCustomTodo: 'dailyCustomTodos', dailyTodoHistory: 'dailyTodoHistory',
-  thoughtTrail: 'thoughtTrails', trailNote: 'trailNotes',
-  reflectionLink: 'reflectionLinks', checkinReview: 'checkinReviews',
-  bodyGoal: 'bodyGoals', bodyPlan: 'bodyPlans', bodyTrainingPlan: 'bodyTrainingPlans',
-  weightRecord: 'weightRecords', bodyCheckin: 'bodyCheckins',
-  sleep: 'sleepHistory',
-  give: 'giveHistory',
-  motivationEntry: 'motivationLog', customWuxing: 'customWuxingMaps',
-  vision: 'visions', visionPractice: 'visionPractices', dedication: 'dedications',
-  mantraDef: 'mantraDefs', mantraSession: 'mantraSessions',
-  sutraReading: 'readingSessions',
-  fearEntry: 'fearEntries', courageEntry: 'courageEntries', fearAchievement: 'achievements',
-  breath: 'breathHistory', zhiguanSession: 'sessions',
-  foodPreset: 'customFoodPresets',
-};
+// SCHEMAS is the single source of truth (see packages/core/src/sync/entities.ts).
+// Re-export the derived mapping so existing consumers (mergeSyncPatch, SyncEngine)
+// keep their import paths unchanged.
+export { ENTITY_STORE_KEY };
 
-// Entities that intentionally have no store key (handled via special logic in applyEntityToTable)
-const _specialEntities = new Set(['aiConfig']);
+// Entities that intentionally have no store slice (handled via special logic in
+// applyEntityToTable). Derived from SCHEMAS[entity].noStore — no hand-maintained list.
+const _specialEntities: Set<string> = new Set(
+  (Object.keys(SCHEMAS) as SyncEntity[]).filter(k => SCHEMAS[k].noStore)
+);
 
-// DEV-only validation: ensure all SCHEMAS entities have a store key mapping
+// DEV-only validation: ensure all SCHEMAS entities have a store key mapping.
+// Authoritative coverage check lives in packages/core/src/sync/entities.test.ts
+// (validateEntityMappings) and runs in the standard test pipeline, not just __DEV__.
 if (__DEV__) {
   const registeredEntities = new Set(Object.keys(SCHEMAS));
   const mappedEntities = new Set(Object.keys(ENTITY_STORE_KEY));
   for (const entity of registeredEntities) {
     if (!mappedEntities.has(entity) && !_specialEntities.has(entity)) {
-      console.warn(`[SyncApply] Entity "${entity}" found in SCHEMAS but missing from ENTITY_STORE_KEY`);
+      log.warn(`[SyncApply] Entity "${entity}" found in SCHEMAS but missing from ENTITY_STORE_KEY`);
     }
   }
 }

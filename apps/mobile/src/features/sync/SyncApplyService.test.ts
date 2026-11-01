@@ -10,7 +10,7 @@ class TestDOMException extends Error {
 }
 
 // ── Known entity keys (mirrors entities in SyncApplyService) ─────────
-const { MOCK_SCHEMAS } = vi.hoisted(() => {
+const { MOCK_SCHEMAS, MOCK_ENTITY_STORE_KEY } = vi.hoisted(() => {
   const keys = [
     'habit', 'reflection', 'fasting', 'food', 'checkin', 'exercise',
     'meditation', 'profile', 'plan', 'planItem', 'planItemCheckin',
@@ -22,10 +22,39 @@ const { MOCK_SCHEMAS } = vi.hoisted(() => {
     'fearEntry', 'courageEntry', 'fearAchievement', 'breath', 'zhiguanSession',
     'foodPreset',
   ];
-  const schemas: Record<string, { sqlite: { table: string; pk: string } }> = Object.fromEntries(
-    keys.map(k => [k, { sqlite: { table: `${k}_table`, pk: 'id' } }]),
+  // storeKey values mirror the real SCHEMAS-derived mapping (single source of truth).
+  const storeKeys: Record<string, string | undefined> = {
+    habit: 'habits', reflection: 'reflections', fasting: 'fastingHistory',
+    food: 'foodLog', checkin: 'checkinHistory', exercise: 'exerciseLog',
+    meditation: 'medHistory', profile: 'userProfile',
+    plan: 'plans', planItem: 'planItems', planItemCheckin: 'planItemCheckins',
+    grace: 'graceHistory', dailyCustomTodo: 'dailyCustomTodos', dailyTodoHistory: 'dailyTodoHistory',
+    thoughtTrail: 'thoughtTrails', trailNote: 'trailNotes',
+    reflectionLink: 'reflectionLinks', checkinReview: 'checkinReviews',
+    bodyGoal: 'bodyGoals', bodyPlan: 'bodyPlans', weightRecord: 'weightRecords',
+    bodyCheckin: 'bodyCheckins', sleep: 'sleepHistory', give: 'giveHistory',
+    motivationEntry: 'motivationLog', customWuxing: 'customWuxingMaps',
+    vision: 'visions', visionPractice: 'visionPractices', dedication: 'dedications',
+    mantraDef: 'mantraDefs', mantraSession: 'mantraSessions',
+    sutraReading: 'readingSessions',
+    fearEntry: 'fearEntries', courageEntry: 'courageEntries', fearAchievement: 'achievements',
+    breath: 'breathHistory', zhiguanSession: 'sessions',
+    foodPreset: 'customFoodPresets',
+    aiConfig: undefined,
+  };
+  const schemas: Record<string, { sqlite: { table: string; pk: string }; storeKey?: string; noStore?: boolean }> =
+    Object.fromEntries(
+      keys.map(k => [k, {
+        sqlite: { table: `${k}_table`, pk: 'id' },
+        ...(storeKeys[k] ? { storeKey: storeKeys[k] } : {}),
+        ...(k === 'aiConfig' ? { noStore: true } : {}),
+      }]),
+    );
+  // Derive ENTITY_STORE_KEY the same way core does: exclude noStore entities.
+  const entityStoreKey: Record<string, string> = Object.fromEntries(
+    keys.filter(k => !schemas[k].noStore).map(k => [k, schemas[k].storeKey ?? `${k}s`])
   );
-  return { MOCK_SCHEMAS: schemas };
+  return { MOCK_SCHEMAS: schemas, MOCK_ENTITY_STORE_KEY: entityStoreKey };
 });
 
 // ── Mock DB (hoisted so vi.mock can reference it) ────────────────────
@@ -75,6 +104,7 @@ vi.mock('../../store/rowMappers', () => {
 
 vi.mock('@egoless-do/core', () => ({
   SCHEMAS: MOCK_SCHEMAS,
+  ENTITY_STORE_KEY: MOCK_ENTITY_STORE_KEY,
   buildServerPayloadToRow: () => (row: Record<string, unknown>) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars -- intentional rest-sibling: strip collection before returning
     const { collection: _c, ...rest } = row as Record<string, unknown> & { collection?: unknown };
