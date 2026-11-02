@@ -78,7 +78,31 @@ vi.mock('../../db/schema', () => ({
 
 vi.mock('../../store/rowMappers', () => {
   const identity = <T>(row: T) => row;
+  // entity-keyed map (the canonical export SyncApplyService now imports)
+  const rowToEntityMap: Record<string, (row: unknown) => unknown> = {
+    habit: identity, reflection: identity, fasting: identity,
+    food: identity, checkin: identity, exercise: identity,
+    meditation: identity, profile: identity, plan: identity,
+    planItem: identity, planItemCheckin: identity,
+    grace: identity, dailyCustomTodo: identity,
+    dailyTodoHistory: identity, thoughtTrail: identity,
+    trailNote: identity, reflectionLink: identity,
+    aiConfig: identity, checkinReview: identity,
+    bodyGoal: identity, bodyPlan: identity,
+    bodyTrainingPlan: identity,
+    weightRecord: identity, bodyCheckin: identity,
+    sleep: identity, give: identity,
+    motivationEntry: identity, customWuxing: identity,
+    vision: identity, visionPractice: identity, dedication: identity,
+    mantraDef: identity, mantraSession: identity,
+    sutraReading: identity, fearEntry: identity,
+    courageEntry: identity, fearAchievement: identity,
+    breath: identity, zhiguanSession: identity,
+    foodPreset: identity,
+  };
   return {
+    rowToEntityMap,
+    // keep individual exports available for any other consumer
     rowToHabit: identity, rowToReflection: identity, rowToFasting: identity,
     rowToFood: identity, rowToCheckin: identity, rowToExercise: identity,
     rowToMeditation: identity, rowToProfile: identity, rowToPlan: identity,

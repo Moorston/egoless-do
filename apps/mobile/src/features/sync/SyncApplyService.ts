@@ -7,18 +7,7 @@ import { SCHEMAS, buildServerPayloadToRow, pbField, createLogger, ENTITY_STORE_K
 
 import { openDatabase, withDbLock } from '../../db/schema';
 import { isValidSqlName } from '../../db/sqlHelper';
-import {
-  rowToHabit, rowToReflection, rowToFasting, rowToFood, rowToCheckin,
-  rowToExercise, rowToMeditation, rowToProfile, rowToPlan, rowToPlanItem,
-  rowToPlanItemCheckin, rowToGrace, rowToDailyCustomTodo, rowToDailyTodoHistory,
-  rowToThoughtTrail, rowToTrailNote, rowToReflectionLink, rowToAIConfig, rowToCheckinReview,
-  rowToBodyGoal, rowToBodyPlan, rowToBodyTrainingPlan, rowToWeightRecord, rowToBodyCheckin, rowToSleep, rowToGive,
-  rowToMotivationEntry, rowToCustomWuxing,
-  rowToVision, rowToVisionPractice, rowToDedication, rowToMantraDef, rowToMantraSession,
-  rowToFearEntry, rowToCourageEntry, rowToFearAchievement,
-  rowToSutraReading,
-  rowToBreath, rowToZhiguanSession, rowToFoodPreset,
-} from '../../store/rowMappers';
+import { rowToEntityMap } from '../../store/rowMappers';
 
 import type { RowMapper } from './orphanRecovery';
 
@@ -73,28 +62,10 @@ for (const [pbColl, entity] of Object.entries(PB_COLLECTION_OVERRIDES)) {
 }
 
 // ── Row mappers: Entity → Mapper function ───────────────────────────
-const _rowToEntityMap: Record<string, (row: Record<string, unknown>) => unknown> = {
-  habit: rowToHabit, reflection: rowToReflection, fasting: rowToFasting,
-  food: rowToFood, checkin: rowToCheckin, exercise: rowToExercise,
-  meditation: rowToMeditation, profile: rowToProfile, plan: rowToPlan,
-  planItem: rowToPlanItem, planItemCheckin: rowToPlanItemCheckin,
-  grace: rowToGrace, dailyCustomTodo: rowToDailyCustomTodo,
-  dailyTodoHistory: rowToDailyTodoHistory, thoughtTrail: rowToThoughtTrail,
-  trailNote: rowToTrailNote, reflectionLink: rowToReflectionLink,
-  aiConfig: rowToAIConfig, checkinReview: rowToCheckinReview,
-  bodyGoal: rowToBodyGoal, bodyPlan: rowToBodyPlan,
-  bodyTrainingPlan: rowToBodyTrainingPlan,
-  weightRecord: rowToWeightRecord, bodyCheckin: rowToBodyCheckin,
-  sleep: rowToSleep,
-  give: rowToGive,
-  motivationEntry: rowToMotivationEntry, customWuxing: rowToCustomWuxing,
-  vision: rowToVision, visionPractice: rowToVisionPractice, dedication: rowToDedication,
-  mantraDef: rowToMantraDef, mantraSession: rowToMantraSession,
-  sutraReading: rowToSutraReading,
-  fearEntry: rowToFearEntry, courageEntry: rowToCourageEntry, fearAchievement: rowToFearAchievement,
-  breath: rowToBreath, zhiguanSession: rowToZhiguanSession,
-  foodPreset: rowToFoodPreset,
-};
+// rowToEntityMap is the single source (derived from SCHEMAS in store/rowMappers.ts).
+// Do NOT re-assemble a parallel Record here — see sync-row-mapper spec.
+// Authoritative coverage check (Object.keys(rowToEntityMap) ≡ Object.keys(SCHEMAS))
+// lives in rowMappers.test.ts and runs in the standard test pipeline.
 
 // ── Server payload → Row converters ─────────────────────────────────
 const _serverPayloadToRowFns = Object.fromEntries(
@@ -235,7 +206,7 @@ export class SyncApplyService {
     const dead = records.filter(r => r && r.deleted);
     const applied: unknown[] = [];
     const storeMapped: unknown[] = [];
-    const mapper = _rowToEntityMap[entity];
+    const mapper = rowToEntityMap[entity];
 
     // Build local metadata lookup for alive records
     const allIds = [...alive, ...dead].map(r => this.resolveEntityId(r, pk, entity === 'profile' ? 'self' : undefined)).filter((id): id is string => id !== undefined && id !== '') as string[];
@@ -407,6 +378,6 @@ export class SyncApplyService {
 
   /** Get row mapper for an entity */
   getRowMapper(entity: string): RowMapper | undefined {
-    return _rowToEntityMap[entity] as RowMapper | undefined;
+    return rowToEntityMap[entity] as RowMapper | undefined;
   }
 }

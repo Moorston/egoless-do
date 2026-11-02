@@ -1,4 +1,5 @@
 // ─── rowMappers tests ───────────────────────────────────────────
+import { SCHEMAS } from '@egoless-do/core';
 import { describe, it, expect } from 'vitest';
 
 import {
@@ -1017,6 +1018,13 @@ describe('rowToEntityMap', () => {
       expect(rowToEntityMap).toHaveProperty(key);
       expect(typeof rowToEntityMap[key]).toBe('function');
     }
+  });
+
+  it('covers every SCHEMAS entity (no missing mapper)', () => {
+    // Authoritative coverage check — runs in standard `pnpm run test`, not __DEV__-gated.
+    // Adding a new SCHEMAS entity without a rowToEntityMap entry fails here.
+    const missing = Object.keys(SCHEMAS).filter(k => !(k in rowToEntityMap));
+    expect(missing, `entities missing from rowToEntityMap: ${missing.join(', ')}`).toEqual([]);
   });
 
   it('habit mapper in map produces same result as rowToHabit', () => {
