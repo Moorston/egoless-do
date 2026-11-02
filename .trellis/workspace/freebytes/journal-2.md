@@ -1386,3 +1386,36 @@ Move-only 重构 HomeScreen：提取 7 个展示子组件（WeightCard/WaterCard
 ### Next Steps
 
 - None - task complete
+
+
+## Session 94: dedupe-row-to-entity-map：消除 SyncApplyService 重复 rowToEntity map
+
+**Date**: 2026-11-02
+**Task**: dedupe-row-to-entity-map：消除 SyncApplyService 重复 rowToEntity map
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+explore 深挖纠正了上一 change design D5 的错误判断——rowMappers.ts 早已用 buildRowToEntity(SCHEMAS.xxx) 派生 38 实体 rowToEntityMap。SyncApplyService._rowToEntityMap 是纯重复包装。删 38 个单体 import + 私有 Record，改直接 import rowToEntityMap；消费点 :209/:381 改名。rowMappers.test.ts 增覆盖校验（Object.keys(rowToEntityMap) ≡ Object.keys(SCHEMAS)）。SyncApplyService.test.ts mock 补 rowToEntityMap。2067 测试通过，lint 0 error（改动文件 0 新增 warning），core type-check 0 错误。后续探索候选：rowMappers.ts:65 breath 类型 hack。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `0b343a9c` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

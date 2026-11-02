@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-2.md`
-- **Total Sessions**: 93
+- **Total Sessions**: 94
 - **Last Active**: 2026-11-02
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~1388 | Active |
+| `journal-2.md` | ~1421 | Active |
 | `journal-1.md` | ~1971 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 94 | 2026-11-02 | dedupe-row-to-entity-map：消除 SyncApplyService 重复 rowToEntity map | `0b343a9c` | `refactor/split-body-dashboard` |
 | 93 | 2026-11-02 | 同步实体映射单一真理源 — SCHEMAS storeKey + mobile 收敛 + 表征测试 | `aa301720`, `732ba7b6` | `refactor/split-body-dashboard` |
 | 92 | 2026-11-01 | migrateDatabase 表驱动重构 — CC 38→≤15 + 表征测试基线 | `0687784a`, `b874dade` | `refactor/split-body-dashboard` |
 | 91 | 2026-10-31 | 复杂度热点拆分父任务集成验证收尾 | `765557a0` | `refactor/split-body-dashboard` |
