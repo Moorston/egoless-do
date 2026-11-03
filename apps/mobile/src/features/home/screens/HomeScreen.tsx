@@ -32,6 +32,8 @@ import { WeightCard } from '../components/WeightCard';
 import { useDateNavigation } from '../hooks/useDateNavigation';
 import { styles } from '../styles';
 
+import { buildCheckinNote } from './buildCheckinNote';
+
 const log = createLogger('Home');
 
 type CheckinStatus = 'draft' | 'done' | 'editing';
@@ -291,36 +293,13 @@ export default function HomeScreen() {
   }, [todayRecord]);
 
   // ── Build JSON note ──
-  const buildNote = useCallback(() => {
-    const s = useAppStore.getState();
-    const noteData: Record<string, unknown> = {};
-    if (note) noteData.note = note;
-    if (s.waterMl > 0) noteData.water = s.waterMl;
-    const checkedHabits = (s.habits ?? [])
-      .filter(h => !h.deleted && h.status === 'inProgress' && h.checkedDates?.includes(viewDate))
-      .map(h => h.name);
-    if (checkedHabits.length) noteData.habits = checkedHabits;
-    // 每日自定义待办 — read directly from store to avoid stale closure
-    const currentPlan = getActivePlan(s.plans ?? []);
-    const freshCustomTodos = currentPlan
-      ? getTodayCustomTodos(s.dailyCustomTodos ?? [], currentPlan.id, viewDate)
-      : [];
-    const doneCustomTodos = freshCustomTodos
-      .filter(t => t.done)
-      .map(t => t.name);
-    if (doneCustomTodos.length) noteData.customs = doneCustomTodos;
-    // 计划事项 — read directly from store to avoid stale closure
-    const freshPlanCheckins = (s.planItemCheckins ?? []).filter(c => !c.deleted);
-    const freshTodayPlanItems = currentPlan
-      ? getTodayItems(s.planItems ?? [], currentPlan, viewDate, freshPlanCheckins)
-      : [];
-    const donePlanItems = freshTodayPlanItems
-      .filter(item => freshPlanCheckins.some(c => c.planItemId === item.id && c.date === viewDate && c.done))
-      .map(item => item.name);
-    if (donePlanItems.length) noteData.planItems = donePlanItems;
-    if (totalCal > 0) noteData.food = totalCal;
-    return JSON.stringify(noteData);
-  }, [note, totalCal, viewDate]);
+  // Domain logic extracted to buildCheckinNote (./buildCheckinNote) for unit
+  // testability — see openspec/changes/dedupe-home-realtime-save/design.md (D2).
+  // Reads store fresh via getState() so no setTimeout delay is needed.
+  const buildNote = useCallback(
+    () => buildCheckinNote(useAppStore.getState(), { note, totalCal, viewDate }),
+    [note, totalCal, viewDate],
+  );
 
   // ── Real-time save ──
   // ═══════════════════════════════════════════════════════════════
@@ -337,27 +316,19 @@ export default function HomeScreen() {
   const toggleHabit = useCallback((id: string) => {
     if (isReadOnly) return;
     checkinHabit(id, viewDate);
-    setTimeout(() => saveField(), 0);
+    saveField();
   }, [isReadOnly, checkinHabit, viewDate, saveField]);
 
   const addWaterCb = useCallback((ml: number) => {
     if (!isToday) return;
     addWater(ml);
     // 无论打卡状态如何，都更新饮水数据
-    setTimeout(() => {
-      const s = useAppStore.getState();
-      const weightNum = weightRef.current ? parseWeight(weightRef.current) : undefined;
-      s.submitCheckin(localDoneRef.current ?? false, buildNote(), undefined, weightNum);
-    }, 0);
-  }, [addWater, buildNote, isToday]);
+    saveField();
+  }, [addWater, isToday, saveField]);
 
   const handleFoodChanged = useCallback(() => {
-    setTimeout(() => {
-      const s = useAppStore.getState();
-      const weightNum = weightRef.current ? parseWeight(weightRef.current) : undefined;
-      s.submitCheckin(localDoneRef.current ?? false, buildNote(), undefined, weightNum);
-    }, 0);
-  }, [buildNote]);
+    saveField();
+  }, [saveField]);
 
   const saveWeight = useCallback((val: string) => {
     setWeight(val);
@@ -420,13 +391,13 @@ export default function HomeScreen() {
     } else {
       checkinPlanItem(itemId);
     }
-    setTimeout(() => saveField(), 0);
+    saveField();
   }, [isReadOnly, planCheckins, viewDate, uncheckinPlanItem, checkinPlanItem, saveField]);
 
   const toggleCustomTodo = useCallback((id: string) => {
     if (isReadOnly) return;
     toggleDailyCustomTodo(id);
-    setTimeout(() => saveField(), 0);
+    saveField();
   }, [isReadOnly, toggleDailyCustomTodo, saveField]);
 
   // ── Extracted inline arrow functions ──
