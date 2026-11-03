@@ -1419,3 +1419,36 @@ explore 深挖纠正了上一 change design D5 的错误判断——rowMappers.t
 ### Next Steps
 
 - None - task complete
+
+
+## Session 95: dedupe-home-realtime-save：删 HomeScreen 多余 setTimeout(0) + 提取 buildCheckinNote
+
+**Date**: 2026-11-03
+**Task**: dedupe-home-realtime-save：删 HomeScreen 多余 setTimeout(0) + 提取 buildCheckinNote
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+explore HomeScreen real-time save 流水线，确认四层防陈旧闭包补丁中 setTimeout(0) 静态冗余（buildNote 已用 getState() 同步读 store，note/weight 来自 ref 未变）。探索推翻 saveWeight 守卫洞假设（WeightCard 组件层 isReadOnly 隐藏 TextInput 已堵）和 DateBar 注释错误假设（注释准确）。提取 buildNote 闭包为模块级 buildCheckinNote(state,view) 纯函数 + 7 表征测试锁定同步新鲜不变量。删 5 处 setTimeout 包装改直接 saveField()。2082 测试通过，lint 0 error 改动文件 0 warning，core type-check 0 错误。未覆盖时序假设（React 18 batching × Zustand set）记此。动机 tech-debt 非修 bug。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `0efacd63` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
