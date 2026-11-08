@@ -1452,3 +1452,37 @@ explore HomeScreen real-time save 流水线，确认四层防陈旧闭包补丁�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 96: fix(sync): 软删除复活防护 + spec 不变量记录
+
+**Date**: 2026-11-09
+**Task**: fix(sync): 软删除复活防护 + spec 不变量记录
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+修复 mergeById 软删除复活 bug：本地 deleted 记录被服务端较新非删除版本覆盖复活。在 resolveConflict 之前加守卫 existing.deleted && !item.deleted 时 continue，保留待推送 tombstone。新增 4 个软删除保留测试，并在 database-guidelines spec 记录 sticky soft-delete 不变量。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `e45e7743` | (see git log) |
+| `fd61d1e7` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
