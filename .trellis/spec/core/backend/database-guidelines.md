@@ -47,6 +47,12 @@ Core owns the sync protocol logic:
 - Conflict resolution must remain **pure** (testable, no side effects)
 - Entity validation happens at the sync boundary (before applying server delta)
 
+> **Invariant: local soft-deletes are sticky (no resurrection)**
+>
+> In `mergeById`, a locally soft-deleted record (`deleted=true`) must **never** be resurrected by an incoming non-deleted server record, even when `serverUpdated > clientUpdated`. The pending delete is still queued for push and will win on the server side eventually; letting a newer server version overwrite the tombstone would resurrect the row. Implementation: a guard `if (existing.deleted && !item.deleted) continue;` short-circuits **before** `resolveConflict` is called, because `resolveConflict` is purely timestamp-driven and would otherwise hand the win to a newer server record.
+>
+> This is a **policy decision at the merge layer**, not a `resolveConflict` rule — `resolveConflict` stays pure-timestamp by design. Other paths are unaffected: a server-side delete still propagates onto a live local record (`existing` not deleted → guard skipped → `resolveConflict` applies).
+
 ---
 
 ## Entity Registry
