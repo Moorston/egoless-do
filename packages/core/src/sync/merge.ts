@@ -21,6 +21,12 @@ export function mergeById<T extends Record<string, any>>(
       // New from server — skip soft-deleted
       if (!item.deleted) map.set(key, item);
     } else {
+      // Preserve local soft-deletions: a locally deleted record must not be
+      // resurrected by an incoming (non-deleted) server record. The pending
+      // delete is still queued for push, so keep the local tombstone.
+      if (existing.deleted && !item.deleted) {
+        continue;
+      }
       const result = resolveConflict({
         clientUpdated: (existing.updatedAt as number) ?? 0,
         serverUpdated: (item.updatedAt as number) ?? 0,
