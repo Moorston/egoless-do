@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-2.md`
-- **Total Sessions**: 96
+- **Total Sessions**: 97
 - **Last Active**: 2026-11-09
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~1488 | Active |
+| `journal-2.md` | ~1522 | Active |
 | `journal-1.md` | ~1971 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 97 | 2026-11-09 | fix(sync): deletedIds entity 限定修复 date-pk 跨实体碰撞 | `715ad9a4`, `f8e25f7b` | `refactor/split-body-dashboard` |
 | 96 | 2026-11-09 | fix(sync): 软删除复活防护 + spec 不变量记录 | `e45e7743`, `fd61d1e7` | `refactor/split-body-dashboard` |
 | 95 | 2026-11-03 | dedupe-home-realtime-save：删 HomeScreen 多余 setTimeout(0) + 提取 buildCheckinNote | `0efacd63` | `refactor/split-body-dashboard` |
 | 94 | 2026-11-02 | dedupe-row-to-entity-map：消除 SyncApplyService 重复 rowToEntity map | `0b343a9c` | `refactor/split-body-dashboard` |

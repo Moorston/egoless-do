@@ -1486,3 +1486,37 @@ explore HomeScreen real-time save 流水线，确认四层防陈旧闭包补丁�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 97: fix(sync): deletedIds entity 限定修复 date-pk 跨实体碰撞
+
+**Date**: 2026-11-09
+**Task**: fix(sync): deletedIds entity 限定修复 date-pk 跨实体碰撞
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+deletedIds 复活防护此前是扁平 id Set，applyEntityToTable 跨实体匹配。checkin/meditation/grace 三个 date-pk 实体日期碰撞时，删除一个会导致另两个同日期的服务端记录被静默丢弃。修复：键改为 ${entity}:${id} 复合键（复用 _locallyDeleted 约定），useSync provider 生成 ${entityType}:${id}，consumer 按当前 entity 查询。新增跨实体同 id 回归测试。spec 补充两条复活防护机制的键约定。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `715ad9a4` | (see git log) |
+| `f8e25f7b` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
