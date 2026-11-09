@@ -46,6 +46,7 @@ Core owns the sync protocol logic:
 **Rules**:
 - Conflict resolution must remain **pure** (testable, no side effects)
 - Entity validation happens at the sync boundary (before applying server delta)
+- `createAuthSlice.pullServerData` is **delegate-only**. The legacy web merge path (`buildMergePatch`/`ENTITY_MERGE_MAP` in `store/mergeEngine.ts`) was removed — web is archived and every consumer injects `onPullServerData`. With no delegate, `pullServerData` is a no-op (do not re-add a fallback merge that silently drops unmapped entities).
 
 > **Invariant: local soft-deletes are sticky (no resurrection)**
 >
