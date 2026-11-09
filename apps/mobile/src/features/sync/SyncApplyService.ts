@@ -230,7 +230,10 @@ export class SyncApplyService {
       if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
       const id = this.resolveEntityId(r, pk, entity === 'profile' ? 'self' : undefined);
       if (!id) continue;
-      if (deletedIds?.has(id)) continue;
+      // deletedIds keys are entity-qualified (`${entity}:${id}`) to avoid
+      // cross-entity ID collisions — date-pk entities (checkin/meditation/grace)
+      // share date strings, so a flat id set would skip unrelated entities.
+      if (deletedIds?.has(`${entity}:${id}`)) continue;
       if (this._locallyDeleted.has(`${entity}:${id}`)) continue;
 
       const row = this.serverPayloadToRow(entity, r);

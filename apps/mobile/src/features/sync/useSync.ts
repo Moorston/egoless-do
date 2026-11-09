@@ -125,10 +125,13 @@ export function useSync() {
         log.error(callbackErr, { msg: '_onChanges callback error' });
       }
     });
-    // Provide recycle bin IDs so sync can skip locally deleted items
+    // Provide recycle bin IDs so sync can skip locally deleted items.
+    // Keys are entity-qualified (`${entityType}:${id}`) to match the consumer
+    // in SyncApplyService.applyEntityToTable and avoid cross-entity ID collisions
+    // (date-pk entities checkin/meditation/grace share date strings).
     setDeletedIdsProvider(() => {
       const recycleBin = useAppStore.getState().recycleBin ?? [];
-      return new Set(recycleBin.map((r: RecycleBinItem) => r.id as string));
+      return new Set(recycleBin.map((r: RecycleBinItem) => `${r.entityType}:${r.id}`));
     });
   }, []);
 

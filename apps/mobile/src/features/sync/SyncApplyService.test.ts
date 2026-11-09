@@ -378,17 +378,38 @@ describe('SyncApplyService', () => {
       expect((result.habits as unknown[]).length).toBe(1);
     });
 
-    it('skips records present in deletedIds (recycle bin)', async () => {
+    it('skips records present in deletedIds (recycle bin, entity-qualified key)', async () => {
       mockDb.runAsync.mockResolvedValue({ changes: 1 });
 
       const data = {
         habit: [{ id: 'h1', title: 'Recycled Habit' }],
       };
-      const deletedIds = new Set(['h1']);
+      // Keys are entity-qualified (`${entity}:${id}`) — see useSync deletedIdsProvider.
+      const deletedIds = new Set(['habit:h1']);
 
       const result = await svc.applyServerChanges(data, deletedIds);
 
       expect(result.habits).toBeUndefined();
+    });
+
+    it('does NOT skip a different entity that shares the same id (date-pk collision guard)', async () => {
+      // Regression: deletedIds must be entity-qualified. Two entities sharing an id
+      // (e.g. checkin/grace/meditation share date pks) must not cross-skip each other.
+      mockDb.runAsync.mockResolvedValue({ changes: 1 });
+
+      const data = {
+        checkin: [{ id: 'shared-1', name: 'Checkin' }],
+        grace: [{ id: 'shared-1', name: 'Grace' }],
+      };
+      // Only checkin:shared-1 is in the recycle bin.
+      const deletedIds = new Set(['checkin:shared-1']);
+
+      const result = await svc.applyServerChanges(data, deletedIds);
+
+      // checkin skipped (locally deleted)
+      expect(result.checkinHistory).toBeUndefined();
+      // grace MUST be applied despite sharing id 'shared-1'
+      expect(result.graceHistory).toHaveLength(1);
     });
 
     it('falls back to INSERT when UPDATE returns 0 changes', async () => {
