@@ -1655,3 +1655,37 @@ mergeEngine.ts 的 ENTITY_MERGE_MAP 硬编码 23 实体缺 14 个，唯一消费
 ### Next Steps
 
 - None - task complete
+
+
+## Session 102: fix(store): 清理 _notNullAttempts 残留计数器
+
+**Date**: 2026-11-09
+**Task**: fix(store): 清理 _notNullAttempts 残留计数器
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+WriteBatcher NOT NULL 重试的 _notNullAttempts 计数器只在 giveup 时删除，记录失败后最终成功 flush 时未清理，残留计数导致同 key 后续 NOT NULL 失败过早 giveup 丢数据。修复：成功移除循环同步清理计数器。新增回归测试验证失败→成功→再失败从 0 起算。审查 WriteBatcher+持久化模块：整体质量高（事务原子性、WAL checkpoint、幂等回退、bg flush），另发现 changedFields 死特性/并发 flush 冗余/测试覆盖薄等 P3 项。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `c075a4f4` | (see git log) |
+| `83c79a36` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-2.md`
-- **Total Sessions**: 101
+- **Total Sessions**: 102
 - **Last Active**: 2026-11-09
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~1657 | Active |
+| `journal-2.md` | ~1691 | Active |
 | `journal-1.md` | ~1971 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 102 | 2026-11-09 | fix(store): 清理 _notNullAttempts 残留计数器 | `c075a4f4`, `83c79a36` | `refactor/split-body-dashboard` |
 | 101 | 2026-11-09 | docs(sync): 修正 _locallyDeleted 注释，描述复活防护三层链 | `760af269` | `refactor/split-body-dashboard` |
 | 100 | 2026-11-09 | refactor(sync): 删除孤立的 conflict.ts 纯工具 | `4558eaf2`, `e0b15422` | `refactor/split-body-dashboard` |
 | 99 | 2026-11-09 | refactor(sync): 删除孤立的 mergeById 工具 | `da8300e0`, `d3c40cc5` | `refactor/split-body-dashboard` |
