@@ -58,13 +58,16 @@ Core owns the sync protocol logic:
 
 > **Resurrection guards on the apply path (mobile) — keys MUST be entity-qualified**
 >
-> `SyncApplyService.applyEntityToTable` has two resurrection guards, both keyed `${entity}:${id}`:
-> - `_locallyDeleted` — in-memory `Set<string>`, 60s window after a local delete (lost on app restart; orphan recovery backstops).
-> - `deletedIds` — `Set<string>` from `useSync`'s `deletedIdsProvider`, built from `recycleBin` as `${r.entityType}:${r.id}`. Persistent across sessions (7-day bin).
+> `SyncApplyService.applyEntityToTable` guards against resurrecting locally-deleted records via a three-layer chain:
+> 1. **WriteBatcher window (sub-100ms):** `_locallyDeleted` — in-memory `Set<string>` of `${entity}:${id}`, 60s timer. Bridges the gap between the in-memory delete and the WriteBatcher flushing `deleted=1` to SQLite (during which `localMeta` still reads `deleted=0`). This is its real purpose; it is NOT a cross-restart guard.
+> 2. **Post-flush (persistent, restart-safe):** `localMeta` (queried with no `deleted=0` filter) returns the `deleted=1` row → `if (local && (local.deleted === 1 || serverIsOlder)) continue;` skips the incoming record. SQLite is the rehydrate source of truth, so this survives restart.
+> 3. **recycleBin entities:** `deletedIds` — `Set<string>` from `useSync`'s `deletedIdsProvider`, built as `${r.entityType}:${r.id}`. Persistent across sessions (7-day bin).
 >
-> **Why entity-qualified:** `checkin` / `meditation` / `grace` all use `date` as their SQLite pk, so a flat id-only set would cross-skip unrelated entities sharing the same date (deleting a checkin would drop an incoming meditation/grace for that date). Both guards use the same `${entity}:${id}` composite-key convention.
+> **Why entity-qualified:** `checkin` / `meditation` / `grace` all use `date` as their SQLite pk, so a flat id-only set would cross-skip unrelated entities sharing the same date (deleting a checkin would drop an incoming meditation/grace for that date). `_locallyDeleted` and `deletedIds` both use the `${entity}:${id}` composite-key convention.
 >
 > `RecycleBinEntityType` values (`habit`/`reflection`/`food`/`exercise`/`plan`/`breath`/`planItem`) are a subset of `SyncEntity` and name-identical, so `entityType` is used directly as the key prefix without a mapping table.
+>
+> **Residual edge case:** `hardDelete` (physical row DELETE, only on recycleBin permanent clearing) leaves no local row, so guard #2 cannot fire. Risk is narrow because the server delete was already pushed at soft-delete time (when the item entered the bin).
 
 ---
 

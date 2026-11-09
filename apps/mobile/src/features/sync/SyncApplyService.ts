@@ -100,13 +100,31 @@ export interface ApplyResult extends Record<string, unknown> {
 
 export class SyncApplyService {
   /**
-   * In-memory set of recently deleted entity IDs (entity:id format) — prevents sync resurrection.
+   * In-memory set of recently deleted entity IDs (`${entity}:${id}` format) that bridges
+   * the WriteBatcher debounce window — the sub-100ms gap between a delete landing in the
+   * in-memory store and the WriteBatcher flushing `deleted=1` to SQLite.
    *
-   * Limitation: The 60-second window is lost on app restart. If the app is killed and
-   * restarted within 60 seconds of a delete, the server delete may be applied back to
-   * local state before the local delete re-propagates. This is acceptable because the
-   * orphan recovery mechanism in SyncEngine handles cross-session consistency by detecting
-   * and re-deleting items that were locally deleted but not yet synced.
+   * Why this exists: during that window `localMeta` (queried in `applyEntityToTable`) still
+   * reads `deleted=0` from SQLite, so the `local.deleted === 1` resurrection guard (line 256)
+   * would NOT yet fire. `_locallyDeleted` covers that gap. Once the WriteBatcher flushes,
+   * the persistent SQLite-level guard takes over.
+   *
+   * Resurrection protection chain on the apply path:
+   *   1. WriteBatcher window (sub-100ms): `_locallyDeleted` (this Set, 60s timer — longer
+   *      than the 100ms debounce, harmless).
+   *   2. Post-flush: `localMeta` query (no `deleted=0` filter) returns the `deleted=1` row →
+   *      `applyEntityToTable` line 256 `if (local && (local.deleted === 1 || ...)) continue;`.
+   *      Persistent across restarts (SQLite is the rehydrate source of truth).
+   *   3. recycleBin entities: `deletedIds` (`${entity}:${id}` composite keys, 7-day, persistent).
+   *
+   * The 60s timer is NOT relevant across app restart: if the WriteBatcher flushed before
+   * kill, SQLite already has `deleted=1` and guard #2 applies; if it did NOT flush, the
+   * delete never landed in SQLite at all, so there is nothing to resurrect (the server's
+   * alive record is the correct state — a general write-durability tradeoff, not a sync bug).
+   *
+   * Residual edge case: `hardDelete` (physical row DELETE, only on recycleBin permanent
+   * clearing) leaves no local row, so guard #2 cannot fire. Risk is narrow because by then
+   * the server delete was already pushed at soft-delete time (when the item entered the bin).
    */
   private _locallyDeleted = new Set<string>();
   private _locallyDeletedTimers = new Map<string, ReturnType<typeof setTimeout>>();
