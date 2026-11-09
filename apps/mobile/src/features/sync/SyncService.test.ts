@@ -42,9 +42,6 @@ vi.mock('@egoless-do/core', () => {
     SCHEMAS: new Proxy({}, { get: () => ({ sqlite: { table: 'test', pk: 'id' }, pocketbase: { collection: 'test', serverIdField: 'id' }, fields: [] }) }),
     buildServerPayloadToRow: vi.fn().mockReturnValue(() => null),
     buildRowToEntity: vi.fn().mockReturnValue(() => null),
-    resolveConflict: vi.fn().mockImplementation(({ clientUpdated, serverUpdated }) => ({
-      winner: (clientUpdated ?? 0) >= (serverUpdated ?? 0) ? 'client' : 'server',
-    })),
     ApiError: class ApiError extends Error {
       constructor(public status: number, public code: string, message: string) { super(message); }
     },
