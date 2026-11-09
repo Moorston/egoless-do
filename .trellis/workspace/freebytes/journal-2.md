@@ -1520,3 +1520,37 @@ deletedIds 复活防护此前是扁平 id Set，applyEntityToTable 跨实体匹�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 98: refactor(sync): 删除 buildMergePatch web 死代码路径
+
+**Date**: 2026-11-09
+**Task**: refactor(sync): 删除 buildMergePatch web 死代码路径
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+mergeEngine.ts 的 ENTITY_MERGE_MAP 硬编码 23 实体缺 14 个，唯一消费者 createAuthSlice.pullServerData 的 web 回退分支在生产和测试中都不可达（web 已归档、mobile 总注入 onPullServerData delegate）。删除 mergeEngine.ts、web 回退分支、store/index.ts 导出，pullServerData 改 delegate-only。附带发现：mergeById(sync/merge.ts) 失去唯一生产消费者，仅剩自身测试，待后续决定是否一并清理。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `185060d8` | (see git log) |
+| `591df73e` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
