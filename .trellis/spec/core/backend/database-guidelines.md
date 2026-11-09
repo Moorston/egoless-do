@@ -53,6 +53,16 @@ Core owns the sync protocol logic:
 >
 > This is a **policy decision at the merge layer**, not a `resolveConflict` rule — `resolveConflict` stays pure-timestamp by design. Other paths are unaffected: a server-side delete still propagates onto a live local record (`existing` not deleted → guard skipped → `resolveConflict` applies).
 
+> **Resurrection guards on the apply path (mobile) — keys MUST be entity-qualified**
+>
+> `SyncApplyService.applyEntityToTable` has two resurrection guards, both keyed `${entity}:${id}`:
+> - `_locallyDeleted` — in-memory `Set<string>`, 60s window after a local delete (lost on app restart; orphan recovery backstops).
+> - `deletedIds` — `Set<string>` from `useSync`'s `deletedIdsProvider`, built from `recycleBin` as `${r.entityType}:${r.id}`. Persistent across sessions (7-day bin).
+>
+> **Why entity-qualified:** `checkin` / `meditation` / `grace` all use `date` as their SQLite pk, so a flat id-only set would cross-skip unrelated entities sharing the same date (deleting a checkin would drop an incoming meditation/grace for that date). Both guards use the same `${entity}:${id}` composite-key convention.
+>
+> `RecycleBinEntityType` values (`habit`/`reflection`/`food`/`exercise`/`plan`/`breath`/`planItem`) are a subset of `SyncEntity` and name-identical, so `entityType` is used directly as the key prefix without a mapping table.
+
 ---
 
 ## Entity Registry
