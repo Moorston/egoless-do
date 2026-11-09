@@ -30,6 +30,10 @@ export interface StorageAdapter {
 
 **Rule**: Slices call `adapter.persistChange(...)` after every entity mutation. The platform handles the actual write (SQLite, IndexedDB, etc.).
 
+> **WriteBatcher NOT NULL retry — counter MUST be cleared on eventual success**
+>
+> `WriteBatcher._flush` keeps a per-key `_notNullAttempts` counter so a record whose `toRow()` omits a required column is retried (report → keep → giveup at `NOT_NULL_MAX_ATTEMPTS`) rather than silently dropped on the first failure. When a record that previously failed NOT NULL is **eventually flushed successfully**, its `_notNullAttempts` entry MUST be deleted alongside the pending entry — otherwise the stale counter accumulates, and the same `${entity}:${id}` failing NOT NULL again later would hit `giveup` prematurely (fewer than the real max attempts → silent data loss). The success removal loop in `_flush` clears both `_pendingWrites` and `_notNullAttempts` together.
+
 ---
 
 ## Sync Protocol (core side)
