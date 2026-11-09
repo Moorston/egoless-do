@@ -1622,3 +1622,36 @@ mergeEngine.ts 的 ENTITY_MERGE_MAP 硬编码 23 实体缺 14 个，唯一消费
 ### Next Steps
 
 - None - task complete
+
+
+## Session 101: docs(sync): 修正 _locallyDeleted 注释，描述复活防护三层链
+
+**Date**: 2026-11-09
+**Task**: docs(sync): 修正 _locallyDeleted 注释，描述复活防护三层链
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+调查发现 _locallyDeleted 重启缺口是伪命题：applyEntityToTable 的 localMeta 查询不过滤 deleted，local.deleted===1 守卫已持久化拦截重启复活。_locallyDeleted 真实用途是桥接 WriteBatcher 100ms 窗口。重写注释+spec 为三层保护链，记录 hardDelete 残余边缘 case。纯文档变更。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `760af269` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
