@@ -53,6 +53,16 @@ export const mobileStorageAdapter: StorageAdapter = {
   async persistChange<K extends SyncEntity>(entity: K, id: string, data: SyncDataMap[K]): Promise<void> {
     // 性能优化：移除立即 flushNow + saveDataToFile
     // 文件备份改为 AppState background 时批量（见 initApp.ts）
+    //
+    // changedFields (field-level delta): NOT passed here, so the full entity
+    // snapshot is written and the server applies a full-merge. The field-level
+    // delta pipeline IS wired end-to-end (WriteBatcher.write → _changedFields in
+    // sync_queue payload → SyncEngine reads it → server api/sync.ts merges only
+    // the listed fields when _changedFields is present), but no slice currently
+    // computes/passes changedFields, so it stays inactive (undefined → full merge).
+    // To activate: slices compute the changed field names and pass them here as a
+    // 4th arg, threaded through to _batcher.write. Valuable for shared collections
+    // (e.g. body_plans) where multiple clients edit different fields.
     _batcher.write(entity, id, data as Record<string, unknown>);
   },
 

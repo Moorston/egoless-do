@@ -34,6 +34,11 @@ export interface StorageAdapter {
 >
 > `WriteBatcher._flush` keeps a per-key `_notNullAttempts` counter so a record whose `toRow()` omits a required column is retried (report → keep → giveup at `NOT_NULL_MAX_ATTEMPTS`) rather than silently dropped on the first failure. When a record that previously failed NOT NULL is **eventually flushed successfully**, its `_notNullAttempts` entry MUST be deleted alongside the pending entry — otherwise the stale counter accumulates, and the same `${entity}:${id}` failing NOT NULL again later would hit `giveup` prematurely (fewer than the real max attempts → silent data loss). The success removal loop in `_flush` clears both `_pendingWrites` and `_notNullAttempts` together.
 
+> **`changedFields` field-level delta — wired end-to-end but NOT activated**
+>
+> The `changedFields` field-level delta pipeline is fully wired but currently inactive:
+> `WriteBatcher.write(entity, id, data, changedFields?)` → payload `{...data, _changedFields}` → sync_queue → `SyncEngine` reads `_changedFields` into `SyncChange.changedFields` → server `api/sync.ts` merges only the listed fields when `_changedFields` is present (else full-payload merge). No slice passes `changedFields` to `adapter.persistChange`, so it is always `undefined` and the server applies full merge. Runtime cost: zero. To activate, slices compute the changed field names and pass them as the 4th arg to `persistChange` (threaded through to `write`). Valuable for shared collections (e.g. `body_plans`) where multiple clients edit different fields and full-payload merge would overwrite siblings' changes. Do NOT remove the pipeline — it is staged infrastructure, not dead code.
+
 ---
 
 ## Sync Protocol (core side)

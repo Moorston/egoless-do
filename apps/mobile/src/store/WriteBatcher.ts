@@ -34,6 +34,13 @@ export class WriteBatcher {
     this._onPersistError = onPersistError ?? null;
   }
 
+  /**
+   * Queue an upsert. `changedFields` (when provided) threads a field-level delta
+   * through the sync pipeline: it lands in the sync_queue payload as `_changedFields`,
+   * SyncEngine forwards it, and the server (api/sync.ts) merges only those fields
+   * instead of the full payload. Currently no caller passes `changedFields`
+   * (see storageAdapter.persistChange), so the feature is wired but inactive.
+   */
   write(entity: SyncEntity, id: string, data: Record<string, unknown>, changedFields?: string[]) {
     const key = `${entity}:${id}`;
     const existing = this._pendingWrites.get(key);
