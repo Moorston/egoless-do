@@ -33,4 +33,3 @@ export { createMindSlice } from './createMindSlice';
 export { createMantraSlice } from './createMantraSlice';
 export { createZhiguanSlice } from './createZhiguanSlice';
 export { createSliceErrorSlice } from './createSliceErrorSlice';
-export { buildMergePatch, ENTITY_MERGE_MAP } from './mergeEngine';

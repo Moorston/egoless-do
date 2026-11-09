@@ -67,7 +67,6 @@ vi.mock('../auth', () => {
     apiRegister: vi.fn(),
     apiLogout: vi.fn().mockResolvedValue(undefined),
     apiRefreshToken: vi.fn(),
-    apiSyncPull: vi.fn(),
     apiVerifyMFALogin: vi.fn(),
     MFARequiredError,
   };

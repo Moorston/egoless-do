@@ -1,11 +1,10 @@
 import { resetAIService } from '../ai/ai-service';
 import { clearAICaches } from '../ai/trail-recommender';
-import { apiLogin, apiRegister, apiLogout, apiRefreshToken, apiSyncPull, apiVerifyMFALogin, MFARequiredError } from '../auth';
+import { apiLogin, apiRegister, apiLogout, apiRefreshToken, apiVerifyMFALogin, MFARequiredError } from '../auth';
 import { NetworkError } from '../fetch';
 import { createLogger } from '../logger';
 import { defaultAuthState } from '../types';
 
-import { buildMergePatch } from './mergeEngine';
 import type { SliceCreator } from './sliceHelper';
 import type { AuthSlice, StorageAdapter } from './types';
 
@@ -245,7 +244,10 @@ export function createAuthSlice(
       if (!token) return;
       const userId = get().auth.user?.id;
 
-      // Delegate to platform-specific handler if provided (mobile: SQLite path)
+      // Delegate to platform-specific handler (mobile: SQLite path via SyncApplyService).
+      // The legacy web merge path (buildMergePatch) was removed — web is archived and
+      // every consumer injects this delegate. If no delegate is provided, this is a no-op
+      // (safer than a broken merge that silently dropped unmapped entities).
       if (onPullServerData) {
         try {
           await onPullServerData(token, userId);
@@ -253,23 +255,6 @@ export function createAuthSlice(
           log.error(err, { context: 'pullServerData delegate' });
         }
         return;
-      }
-
-      // Default: merge directly into store (web path)
-      try {
-        const result = await apiSyncPull(token, userId);
-        if (!result.data) return;
-        // Use functional set() to merge with the latest state, avoiding stale-overwrite
-        set(s => {
-          const patch = buildMergePatch(result.data, s as unknown as Record<string, unknown>);
-          if (patch.checkinHistory) {
-            // Defer streak calculation to after set completes
-            setTimeout(() => get().calculateStreak(), 0);
-          }
-          return patch;
-        });
-      } catch (err) {
-        log.error(err, { context: 'pullServerData' });
       }
     },
   });
