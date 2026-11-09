@@ -1689,3 +1689,36 @@ WriteBatcher NOT NULL 重试的 _notNullAttempts 计数器只在 giveup 时删�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 103: changedFields 字段级 delta 管线标注为未激活
+
+**Date**: 2026-11-09
+**Task**: changedFields 字段级 delta 管线标注为未激活
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+审查 WriteBatcher 时初判 changedFields 为死特性，核查发现是端到端接好但未激活的优化特性（WriteBatcher.write → _changedFields → SyncEngine → 服务端 api/sync.ts 字段级 merge）。唯一缺口是 slice 不传 persistChange 第 4 参，始终 undefined 走全量 merge，运行时零成本。在 storageAdapter.persistChange 和 WriteBatcher.write 入口加注释保留基础设施，spec 记录未激活状态。零行为变更，回归测试全绿。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `72bac461` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
