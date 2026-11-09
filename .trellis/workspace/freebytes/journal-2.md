@@ -1554,3 +1554,37 @@ mergeEngine.ts 的 ENTITY_MERGE_MAP 硬编码 23 实体缺 14 个，唯一消费
 ### Next Steps
 
 - None - task complete
+
+
+## Session 99: refactor(sync): 删除孤立的 mergeById 工具
+
+**Date**: 2026-11-09
+**Task**: refactor(sync): 删除孤立的 mergeById 工具
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+删除 mergeEngine.ts 后 mergeById 失去唯一生产消费者，仅剩自身测试。删除 sync/merge.ts + merge.test.ts，sync/index.ts 移除导出。连带发现：resolveConflict(conflict.ts) 也失去唯一消费者，标注为 orphaned 待后续决定。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `da8300e0` | (see git log) |
+| `d3c40cc5` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

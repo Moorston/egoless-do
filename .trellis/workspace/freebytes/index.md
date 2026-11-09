@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-2.md`
-- **Total Sessions**: 98
+- **Total Sessions**: 99
 - **Last Active**: 2026-11-09
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~1556 | Active |
+| `journal-2.md` | ~1590 | Active |
 | `journal-1.md` | ~1971 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 99 | 2026-11-09 | refactor(sync): 删除孤立的 mergeById 工具 | `da8300e0`, `d3c40cc5` | `refactor/split-body-dashboard` |
 | 98 | 2026-11-09 | refactor(sync): 删除 buildMergePatch web 死代码路径 | `185060d8`, `591df73e` | `refactor/split-body-dashboard` |
 | 97 | 2026-11-09 | fix(sync): deletedIds entity 限定修复 date-pk 跨实体碰撞 | `715ad9a4`, `f8e25f7b` | `refactor/split-body-dashboard` |
 | 96 | 2026-11-09 | fix(sync): 软删除复活防护 + spec 不变量记录 | `e45e7743`, `fd61d1e7` | `refactor/split-body-dashboard` |
