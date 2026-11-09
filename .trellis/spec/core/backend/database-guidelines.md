@@ -38,8 +38,7 @@ Core owns the sync protocol logic:
 
 | Module | Responsibility |
 |--------|---------------|
-| `sync/conflict.ts` | Pure conflict resolution (`resolveConflict` — server authority, last-write-wins with tie to server) |
-| `sync/merge.ts` | Three-way merge logic |
+| `sync/conflict.ts` | Pure conflict resolution (`resolveConflict` — server authority, last-write-wins with tie to server). **Status: orphaned** — sole consumer (`mergeById`) was removed; mobile apply path uses inline timestamp comparison. Kept as exported pure utility pending a reuse decision. |
 | `sync/entitySchemas.ts` | Zod schemas for entity validation at boundaries |
 | `sync/types.ts` | SyncEntity enum, SyncDelta, SyncResult types |
 
