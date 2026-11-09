@@ -38,9 +38,12 @@ Core owns the sync protocol logic:
 
 | Module | Responsibility |
 |--------|---------------|
-| `sync/conflict.ts` | Pure conflict resolution (`resolveConflict` — server authority, last-write-wins with tie to server). **Status: orphaned** — sole consumer (`mergeById`) was removed; mobile apply path uses inline timestamp comparison. Kept as exported pure utility pending a reuse decision. |
 | `sync/entitySchemas.ts` | Zod schemas for entity validation at boundaries |
 | `sync/types.ts` | SyncEntity enum, SyncDelta, SyncResult types |
+
+> **Removed: `sync/conflict.ts` + `sync/merge.ts` (dead-code cleanup)**
+>
+> The pure merge utilities (`resolveConflict`, `mergeById`) were the legacy web-path toolbox. After `apps/web` was archived and the mobile apply path moved to `SyncApplyService` (inline timestamp comparison + SQL upsert), these had no production consumers. Removed in order: `store/mergeEngine.ts` (`buildMergePatch`) → `sync/merge.ts` (`mergeById`) → `sync/conflict.ts` (`resolveConflict`). Conflict resolution on the live mobile path is inline in `SyncApplyService.applyEntityToTable`, not a shared pure function.
 
 **Rules**:
 - Conflict resolution must remain **pure** (testable, no side effects)
