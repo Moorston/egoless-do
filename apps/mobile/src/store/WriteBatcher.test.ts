@@ -158,4 +158,34 @@ describe('WriteBatcher NOT NULL retry', () => {
     expect(onPersistError).not.toHaveBeenCalled();
     expect(wb.pendingCount).toBe(0);
   });
+
+  it('clears the NOT NULL attempt counter on eventual success (no premature giveup)', async () => {
+    // Regression: a record that failed NOT NULL, then succeeded, must start fresh
+    // on a future NOT NULL failure — otherwise the stale counter could trigger an
+    // early 'giveup' and silently drop the record before the real max attempts.
+    const onPersistError = vi.fn();
+    const wb = new WriteBatcher(0, undefined, onPersistError);
+
+    // 1) First flush: NOT NULL failure → reported once, kept pending, counter = 1.
+    simulateNotNull();
+    wb.write(ENTITY, 'rec-3', { id: 'rec-3', content: 'hello' });
+    await wb.flushNow();
+    expect(onPersistError).toHaveBeenCalledTimes(1);
+    expect(wb.pendingCount).toBe(1);
+
+    // 2) Second flush: success (e.g. a later write merged in the missing column).
+    simulateSuccess();
+    await wb.flushNow();
+    expect(wb.pendingCount).toBe(0);
+
+    // 3) Re-introduce the same key and fail NOT NULL again. The counter must have
+    //    been reset, so this is treated as a FIRST failure (reported again), not a
+    //    continuation. With NOT_NULL_MAX_ATTEMPTS=10, a single fresh failure must
+    //    NOT give up — the record stays pending.
+    simulateNotNull();
+    wb.write(ENTITY, 'rec-3', { id: 'rec-3', content: 'hello again' });
+    await wb.flushNow();
+    expect(onPersistError).toHaveBeenCalledTimes(2); // reported again = fresh start
+    expect(wb.pendingCount).toBe(1); // kept pending, NOT dropped
+  });
 });

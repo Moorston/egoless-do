@@ -218,7 +218,13 @@ export class WriteBatcher {
       // NOT NULL keys are intentionally retained so they are retried next flush.
       for (const k of keys) {
         if (this._pendingWrites.get(k) === snapRefs.get(k) || failedKeys.has(k)) {
-          if (!notNullKeys.has(k)) this._pendingWrites.delete(k);
+          if (!notNullKeys.has(k)) {
+            this._pendingWrites.delete(k);
+            // Clean the NOT NULL attempt counter so a record that previously failed,
+            // then succeeded, starts fresh on any FUTURE NOT NULL failure — otherwise
+            // the stale counter could trigger a premature 'giveup' (data loss).
+            this._notNullAttempts.delete(k);
+          }
         }
       }
       this._retryCount = 0;
