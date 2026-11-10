@@ -130,7 +130,7 @@ export default function App() {
 
   useEffect(() => {
     import('react-native-amap3d').then(({ AMapSdk }) => {
-      try { AMapSdk?.init?.(AMAP_KEY); } catch {}
+      try { if (AMAP_KEY) AMapSdk?.init?.(AMAP_KEY); } catch {}
     }).catch(() => {});
   }, []);
 

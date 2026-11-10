@@ -545,7 +545,7 @@ const { T } = useTheme();  // 或从 UI hook 解构
 
 > 以下规则已配置在 `packages/config/eslint.base.js` 中，与本规范同步。
 >
-> **CI 覆盖**：`turbo run lint` 现已覆盖 `packages/core` 与 `apps/mobile`（core 通过 `tsconfig.lint.json` 纳入测试文件做 type-aware linting，0 error）。
+> **CI 覆盖**：`turbo run lint` 与 `turbo run type-check` 现已覆盖 `packages/core` 与 `apps/mobile`（core 通过 `tsconfig.lint.json` 纳入测试文件做 type-aware linting；mobile 通过本地 `react-native-amap3d` 类型 shim 规避第三方库 React 19 类型不兼容，两者均 0 error）。
 |---------|------------|------|
 | 1.1 any 禁止 | `@typescript-eslint/no-explicit-any: error` | ✅ 已配置 |
 | 1.3 @ts-* 管理 | `@typescript-eslint/ban-ts-comment` | ✅ 已配置（core 已清理 @ts-ignore → @ts-expect-error） |

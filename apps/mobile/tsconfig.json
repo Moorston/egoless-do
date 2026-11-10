@@ -6,7 +6,8 @@
     "types": ["vitest/globals"],
     "paths": {
       "@egoless-do/core": ["../../packages/core/src/index.ts"],
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "react-native-amap3d": ["./src/types/react-native-amap3d.d.ts"]
     }
   },
   "include": ["src", "App.tsx", "app.json"],

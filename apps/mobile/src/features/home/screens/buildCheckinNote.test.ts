@@ -14,7 +14,8 @@ function habit(overrides: Partial<Habit> = {}): Habit {
   return {
     id: 'h1', name: '冥想', startDate: VIEW_DATE, targetDays: 30, goal: '', insight: '',
     createTag: false, doneDays: 0, streak: 0, interrupted: 0, status: 'inProgress',
-    checkedDates: [], pauseReason: '', updatedAt: 0, deleted: false, ...overrides,
+    checkedDates: [], pauseReason: '', abandonReason: '', alarmEnabled: false, alarmHour: 7,
+    alarmMinute: 0, link: 'none', updatedAt: 0, deleted: false, ...overrides,
   };
 }
 

@@ -9,6 +9,7 @@
     "build": "eas build",
     "submit": "eas submit",
     "lint": "eslint src --ext .ts,.tsx",
+    "type-check": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"
   },
