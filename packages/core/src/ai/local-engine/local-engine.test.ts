@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
-import { OnnxEngine } from './onnx-engine';
+
 import { CoreMLEngine } from './coreml-engine';
+import { OnnxEngine } from './onnx-engine';
 
 describe('LocalAIEngine', () => {
   describe('OnnxEngine (placeholder)', () => {

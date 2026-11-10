@@ -1,6 +1,6 @@
 // ─── Reflection business logic (pure functions) ────────────────
-import type { MindReflection, PlanItem, ReflectionFilters } from '../types';
 import { createReflection } from '../defaults';
+import type { MindReflection, PlanItem, ReflectionFilters } from '../types';
 import { formatDate } from '../utils';
 
 export type CreateReflectionParams = Parameters<typeof createReflection>[0];

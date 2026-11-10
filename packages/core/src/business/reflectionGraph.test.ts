@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
+
 import type { GraphBuildInput } from '../types/reflectionGraph';
+
 import {
   buildRelationGraph,
   generateInsights,

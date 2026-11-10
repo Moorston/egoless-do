@@ -1,4 +1,5 @@
 // ─── Plan business logic (pure functions) ─────────────────────
+import { COLORS } from '../constants';
 import type {
   Plan, PlanStatus, PlanItem, PlanItemStatus, PlanItemCheckin, PlanItemLink, PlanItemPriority,
   Habit, FastingSession, MedHistoryEntry, ExerciseEntry, CheckinEntry, DailyCustomTodo, DailyTodoHistory,
@@ -6,7 +7,7 @@ import type {
   PlanItemSource, UnifiedPlanItemForm,
 } from '../types';
 import { uid, dateStr, activeOnly, parseDateParts, addDays } from '../utils';
-import { COLORS } from '../constants';
+
 import { computeMaxFastingHours, computeMaxExerciseMinutes } from './module-state';
 
 // ── Constants ─────────────────────────────────────────────────

@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
+
 import type { CheckinEntry } from '../types';
+
 import { submitCheckinEntry, computeLongestStreakFromHistory as computeLongestStreak } from './checkin';
 
 describe('submitCheckinEntry', () => {

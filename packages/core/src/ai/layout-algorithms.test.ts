@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+
 import { applyForceLayout } from './layout-algorithms';
 import type { LayoutNode, LayoutEdge } from './layout-algorithms';
 

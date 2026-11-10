@@ -7,6 +7,8 @@ export type KnownMood =
   | '满足' | '释然' | '淡定';
 
 /** Mood string — prefer KnownMood values for new code */
+// `string & {}` 是 TS 的保留字面量自动补全惯用法，非「any non-nullish」语义，故禁用 ban-types。
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type Mood = KnownMood | (string & {});
 export type HabitStatus = 'notStarted' | 'inProgress' | 'paused' | 'abandoned' | 'completed';
 export type ThemeName = 'dark' | 'light' | 'ocean' | 'rose' | 'cosmos';

@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
+
 import type { FoodEntry } from '../types';
+
 import { deleteFoodFromList } from './food';
 
 const makeFood = (overrides: Partial<FoodEntry> = {}): FoodEntry => ({

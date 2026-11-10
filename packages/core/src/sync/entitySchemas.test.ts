@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { SCHEMAS, SCHEMA_REGISTRY, SCHEMA_COLLECTION, SCHEMA_ID_FIELD, buildToRow, buildServerPayloadToRow, buildRowToEntity } from './entitySchemas';
+
 import { SYNC_ENTITIES } from './entities';
+import { SCHEMAS, SCHEMA_REGISTRY, SCHEMA_COLLECTION, SCHEMA_ID_FIELD, buildToRow, buildServerPayloadToRow, buildRowToEntity } from './entitySchemas';
 
 describe('entitySchemas', () => {
   const entities = Object.keys(SCHEMAS) as Array<keyof typeof SCHEMAS>;

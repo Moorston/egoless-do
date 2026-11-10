@@ -5,8 +5,8 @@
 
 import { describe, it, expect } from 'vitest';
 
-import { SCHEMAS } from './entitySchemas';
 import { ENTITY_STORE_KEY, validateEntityMappings, SYNC_ENTITIES } from './entities';
+import { SCHEMAS } from './entitySchemas';
 
 /**
  * Expected storeKey for every entity — transcribed verbatim from the

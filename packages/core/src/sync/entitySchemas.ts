@@ -2,8 +2,9 @@
 // Single source of truth for all entity mappings.
 // Generates toRow, serverPayloadToRow, and rowToEntity from one definition.
 
-import type { SyncEntity } from './entities';
 import type { EntityMeta } from '../data/entityRegistry';
+
+import type { SyncEntity } from './entities';
 
 // ── Types ───────────────────────────────────────────────────────
 

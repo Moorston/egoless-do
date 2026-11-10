@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { calcBMI, calcBMR, calcGoalProgress, recommendStrategy, createBodyGoal, getDayOverview } from './body';
+
 import type { BodyTrainingPlan } from '../types';
+
+import { calcBMI, calcBMR, calcGoalProgress, recommendStrategy, createBodyGoal, getDayOverview } from './body';
 
 // ─── calcBMI ──────────────────────────────────────────────────
 describe('calcBMI', () => {

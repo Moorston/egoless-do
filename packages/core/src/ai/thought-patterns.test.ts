@@ -1,11 +1,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
+import type { MindReflection } from '../types';
+
 import {
   detectMoodSequencePatterns,
   detectTagPatterns,
   detectKeywordPatterns,
   getAllThoughtPatterns,
 } from './thought-patterns';
-import type { MindReflection } from '../types';
 
 beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(new Date('2026-07-07T12:00:00')); });
 afterEach(() => { vi.useRealTimers(); });

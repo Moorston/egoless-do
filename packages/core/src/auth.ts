@@ -1,8 +1,8 @@
 // ─── Auth API client (shared across all platforms) ─────────────────
-import type { AuthUser } from './types';
-import type { SyncPushResult, SyncCheckResult, SyncPullPostBody, SyncPullResult, SyncChange, SyncPushResponseItem } from './sync/types';
 import { buildHeaders, fetchWithTimeout, handleJsonResponse, SYNC_REQUEST_TIMEOUT } from './fetch';
 import { createLogger } from './logger';
+import type { SyncPushResult, SyncCheckResult, SyncPullPostBody, SyncPullResult, SyncChange, SyncPushResponseItem } from './sync/types';
+import type { AuthUser } from './types';
 
 const log = createLogger('Auth');
 

@@ -1,6 +1,6 @@
+import type { FoodEntry } from '../types';
 import { activeOnly } from '../utils';
 // ─── Food business logic (pure functions) ──────────────────────
-import type { FoodEntry } from '../types';
 
 export function deleteFoodFromList(foodLog: FoodEntry[], id: string): FoodEntry[] {
   const now = Date.now();

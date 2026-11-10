@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { computeLocalInsights } from './insight-profile';
+
 import type { MindReflection } from '../types/reflection';
+
+import { computeLocalInsights } from './insight-profile';
 
 beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(new Date('2026-07-07T12:00:00')); });
 afterEach(() => { vi.useRealTimers(); });

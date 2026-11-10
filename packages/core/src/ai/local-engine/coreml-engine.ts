@@ -1,7 +1,10 @@
 // ─── CoreMLEngine（iOS）──────────────────────────────────────────
 // 占位实现：待模型量化后替换为真实 Core ML 调用
 
+import { createLogger } from '../../logger';
 import { LocalAIEngine, AIResult } from './types';
+
+const logger = createLogger('CoreMLEngine');
 
 export class CoreMLEngine implements LocalAIEngine {
   readonly modelName: string;
@@ -14,7 +17,7 @@ export class CoreMLEngine implements LocalAIEngine {
 
   async initialize(): Promise<boolean> {
     // TODO: 加载 Core ML 模型
-    console.log(`[CoreMLEngine] Placeholder init for ${this.modelName}`);
+    logger.info(`Placeholder init for ${this.modelName}`);
     this.ready = false;
     return this.ready;
   }

@@ -1,6 +1,6 @@
 // ─── Fasting business logic (pure functions) ───────────────────
-import type { FastingSession } from '../types';
 import { createFastingSession } from '../defaults';
+import type { FastingSession } from '../types';
 import { estimateFastingKcal } from '../utils';
 
 export function startFastingSession(activeFasting: FastingSession | null, hours: number): FastingSession | null {

@@ -1,4 +1,7 @@
 import { describe, it, expect } from 'vitest';
+
+import type { PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory } from '../types';
+
 import {
   getTodoItemStatus,
   getTodoItemStatusMap,
@@ -6,7 +9,6 @@ import {
   computeHistorySummary,
   mergeHistoryItems,
 } from './planTodo';
-import type { PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory } from '../types';
 
 const makeItem = (id: string, link: string = 'manual'): PlanItem => ({
   id, planId: 'p1', name: `Task ${id}`, description: '',

@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { addMedMinutesToList } from './meditation';
+
 import type { MedHistoryEntry } from '../types';
+
+import { addMedMinutesToList } from './meditation';
 
 // Freeze date so tests are deterministic
 beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(new Date('2026-07-07T12:00:00')); });

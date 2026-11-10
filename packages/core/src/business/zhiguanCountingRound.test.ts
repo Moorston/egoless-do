@@ -1,5 +1,6 @@
 // ─── 数息轮纯逻辑测试 ────────────────────────────────────────────
 import { describe, it, expect } from 'vitest';
+
 import { notifyBreath, computeRounds, initialRoundState } from '../index';
 
 describe('notifyBreath() 数息轮', () => {

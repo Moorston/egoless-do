@@ -1,10 +1,12 @@
 import { describe, it, expect } from 'vitest';
+
 import type { Habit } from '../types';
+import { dateStr, yesterday } from '../utils';
+
 import {
   addHabitToList, updateHabitInList, deleteHabitFromList,
   checkinHabitInList, changeHabitStatusInList, checkAutoStatus,
 } from './habits';
-import { dateStr, yesterday } from '../utils';
 
 const makeHabit = (overrides: Partial<Habit> = {}): Habit => ({
   id: 'h1', name: 'Test', startDate: '2026-01-01', targetDays: 30,

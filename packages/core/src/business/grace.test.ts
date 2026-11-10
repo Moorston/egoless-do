@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { getMonthGraceCount, getRemainingGrace, isGraceAvailable } from './grace';
+
 import type { GraceHistoryEntry } from '../types';
+
+import { getMonthGraceCount, getRemainingGrace, isGraceAvailable } from './grace';
 
 function makeGrace(overrides: Partial<GraceHistoryEntry> = {}): GraceHistoryEntry {
   return { id: 'g1', date: '2026-07-01', updatedAt: Date.now(), deleted: false, ...overrides };

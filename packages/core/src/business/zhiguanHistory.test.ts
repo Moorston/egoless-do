@@ -1,5 +1,6 @@
 // ─── 连续天数计算测试 ────────────────────────────────────────────
 import { describe, it, expect } from 'vitest';
+
 import { computeStreakDays, dateStr } from '../index';
 
 describe('computeStreakDays()', () => {

@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { aggregateMarkers, shouldCluster, getClusterStyle } from './markerAggregation';
+
 import type { GlobalCheckin } from '../types/globalPulse';
+
+import { aggregateMarkers, shouldCluster, getClusterStyle } from './markerAggregation';
 
 function makeCheckin(overrides: Partial<GlobalCheckin> = {}): GlobalCheckin {
   return {

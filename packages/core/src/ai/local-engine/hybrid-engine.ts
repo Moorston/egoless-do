@@ -20,12 +20,12 @@ export class HybridEngine {
       if (this.localEngine) {
         const ready = await this.localEngine.initialize();
         if (!ready) {
-          console.log('[HybridEngine] Local AI unavailable, using cloud only');
+          console.warn('[HybridEngine] Local AI unavailable, using cloud only');
           this.localEngine = null;
         }
       }
     } catch {
-      console.log('[HybridEngine] Local AI init failed, using cloud only');
+      console.warn('[HybridEngine] Local AI init failed, using cloud only');
       this.localEngine = null;
     }
 

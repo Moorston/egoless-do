@@ -1,6 +1,6 @@
 // ─── Slice-level error tracking slice ─────────────────────────
-import type { SliceError, SliceErrorState } from './types';
 import type { SliceCreator } from './sliceHelper';
+import type { SliceError, SliceErrorState } from './types';
 
 const MAX_SLICE_ERRORS = 20;
 

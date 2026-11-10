@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { expandTerms, retrieveTopK, SYNONYM_MAP } from './retriever';
+
 import type { ReflectionIndex } from './indexer';
+import { expandTerms, retrieveTopK, SYNONYM_MAP } from './retriever';
 
 // ─── Test helpers ───────────────────────────────────────────
 function makeIndex(overrides: Partial<ReflectionIndex> = {}): ReflectionIndex {

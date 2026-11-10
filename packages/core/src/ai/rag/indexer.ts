@@ -1,6 +1,6 @@
+import type { MindReflection } from '../../types/reflection';
 import { activeOnly } from '../../utils';
 // ─── 感念索引构建 ──────────────────────────────────────────────
-import type { MindReflection } from '../../types/reflection';
 
 export interface ReflectionIndex {
   id: string;

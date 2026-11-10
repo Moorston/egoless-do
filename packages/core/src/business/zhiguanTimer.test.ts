@@ -1,5 +1,6 @@
 // ─── 计时器纯函数测试 ────────────────────────────────────────────
 import { describe, it, expect } from 'vitest';
+
 import { calcElapsed, accumulatePause, formatSec, isInClosingCountdown } from '../index';
 
 describe('calcElapsed()', () => {

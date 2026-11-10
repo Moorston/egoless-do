@@ -1,6 +1,6 @@
+import type { PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory, PlanItemLink } from '../types';
 import { activeOnly } from '../utils';
 // ─── Daily Todo shared logic (used by both Mobile & Web) ──────
-import type { PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory, PlanItemLink } from '../types';
 
 export interface TodoItemStatus {
   done: boolean;

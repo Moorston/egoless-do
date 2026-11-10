@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createCheckinSlice } from './createCheckinSlice';
-import { calculateStreakFromCheckins } from '../utils';
-import { dateStr } from '../utils';
+
 import type { CheckinEntry } from '../types';
+import { calculateStreakFromCheckins , dateStr } from '../utils';
+
+import { createCheckinSlice } from './createCheckinSlice';
 
 function makeTestStore(initialState: Record<string, unknown> = {}) {
   let state: Record<string, unknown> = {

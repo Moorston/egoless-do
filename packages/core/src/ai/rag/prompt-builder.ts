@@ -1,6 +1,7 @@
 // ─── RAG Prompt 构建器 ─────────────────────────────────────────
-import type { ReflectionIndex } from './indexer';
 import { formatDate } from '../../utils';
+
+import type { ReflectionIndex } from './indexer';
 
 const MAX_PROMPT_LENGTH = 800;
 const MAX_CONTENT_LENGTH = 60;

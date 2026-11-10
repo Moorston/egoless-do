@@ -1,9 +1,11 @@
 // @deprecated — Superseded by createHabitSlice.test.ts. Remove after verifying coverage.
 // ─── Habit slice tests ──────────────────────────────────────────
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+import type { CreateHabitForm } from '../business/habits';
+
 import { createHabitSlice } from './createHabitSlice';
 import type { StorageAdapter, HabitSlice } from './types';
-import type { CreateHabitForm } from '../business/habits';
 
 // Mock logger
 vi.mock('../logger', () => ({

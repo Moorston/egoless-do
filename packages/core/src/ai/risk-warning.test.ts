@@ -1,11 +1,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
+import type { Habit, Plan, MindReflection } from '../types';
+
 import {
   detectHabitAbandonRisk,
   detectPlanDelayRisk,
   detectMoodDeclineRisk,
   getAllRiskWarnings,
 } from './risk-warning';
-import type { Habit, Plan, MindReflection } from '../types';
 
 // Freeze date: 2026-07-07
 beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(new Date('2026-07-07T21:00:00')); });

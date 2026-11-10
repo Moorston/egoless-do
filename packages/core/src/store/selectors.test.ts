@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+
 import { calculateStreakFromCheckins } from '../utils';
 
 describe('store/selectors', () => {

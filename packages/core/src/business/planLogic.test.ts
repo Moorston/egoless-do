@@ -1,11 +1,13 @@
 // ─── Plan business logic tests ─────────────────────────────────
 import { describe, it, expect } from 'vitest';
+
+import type { Plan, PlanItem, PlanItemCheckin } from '../types';
+
 import {
   getActivePlan, addPlan, canDeletePlan, canEditPlan,
   isPlanActive, isPlanDelayed, startPlan, computePlanProgress,
   statusToI18nKey,
 } from './plan';
-import type { Plan, PlanItem, PlanItemCheckin } from '../types';
 
 const mkPlan = (overrides: Partial<Plan> = {}): Plan => ({
   id: 'p1', name: 'Test', status: 'draft', deleted: false,

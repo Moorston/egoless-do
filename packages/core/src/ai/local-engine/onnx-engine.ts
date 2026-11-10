@@ -1,7 +1,10 @@
 // ─── OnnxEngine（Android）────────────────────────────────────────
 // 占位实现：待模型量化后替换为真实 ONNX Runtime 调用
 
+import { createLogger } from '../../logger';
 import { LocalAIEngine, AIResult } from './types';
+
+const logger = createLogger('OnnxEngine');
 
 export class OnnxEngine implements LocalAIEngine {
   readonly modelName: string;
@@ -14,7 +17,7 @@ export class OnnxEngine implements LocalAIEngine {
 
   async initialize(): Promise<boolean> {
     // TODO: 加载 ONNX 模型
-    console.log(`[OnnxEngine] Placeholder init for ${this.modelName}`);
+    logger.info(`Placeholder init for ${this.modelName}`);
     this.ready = false; // 模型未量化前不可用
     return this.ready;
   }

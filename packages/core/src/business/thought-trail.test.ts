@@ -1,7 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import type { ThoughtTrail } from '../types/thought-trail';
+
 import type { MindReflection } from '../types/reflection';
+import type { ThoughtTrail } from '../types/thought-trail';
 import type { TrailNote } from '../types/trail-note';
+
 import { getTrailOverview, getRelatedTrails, getTrailTimelineItems } from './thought-trail';
 
 const makeTrail = (overrides: Partial<ThoughtTrail> = {}): ThoughtTrail => ({

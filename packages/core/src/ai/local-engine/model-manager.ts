@@ -1,7 +1,10 @@
 // ─── ModelManager（模型 OTA 更新）────────────────────────────────
 // 管理端侧 AI 模型的下载、验证、版本控制。
 
+import { createLogger } from '../../logger';
 import { LocalAIEngine } from './types';
+
+const logger = createLogger('ModelManager');
 
 export interface ModelInfo {
   name: string;
@@ -100,7 +103,7 @@ export class ModelManager {
 
   private async saveModel(path: string, blob: Blob): Promise<void> {
     // TODO: 使用 expo-file-system 保存
-    console.log(`[ModelManager] Saving model to ${path} (${blob.size} bytes)`);
+    logger.info(`Saving model to ${path} (${blob.size} bytes)`);
   }
 
   private async calculateChecksum(path: string): Promise<string> {

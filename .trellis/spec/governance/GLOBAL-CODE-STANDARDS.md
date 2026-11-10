@@ -544,11 +544,11 @@ const { T } = useTheme();  // 或从 UI hook 解构
 ## 9. ESLint 配置联动
 
 > 以下规则已配置在 `packages/config/eslint.base.js` 中，与本规范同步。
-
-| 规范条目 | ESLint 规则 | 状态 |
+>
+> **CI 覆盖**：`turbo run lint` 现已覆盖 `packages/core` 与 `apps/mobile`（core 通过 `tsconfig.lint.json` 纳入测试文件做 type-aware linting，0 error）。
 |---------|------------|------|
 | 1.1 any 禁止 | `@typescript-eslint/no-explicit-any: error` | ✅ 已配置 |
-| 1.3 @ts-* 管理 | `@typescript-eslint/ban-ts-comment` | 🟡 需确认 |
+| 1.3 @ts-* 管理 | `@typescript-eslint/ban-ts-comment` | ✅ 已配置（core 已清理 @ts-ignore → @ts-expect-error） |
 | 4.1 导入顺序 | `import/order` | ✅ 已配置 |
 | 4.2 禁止 core→app | `no-restricted-imports` | ✅ 已配置（packages/core override） |
 | 4.3 禁止 core→React | `no-restricted-imports` | ✅ 已配置（packages/core override） |
@@ -566,7 +566,7 @@ const { T } = useTheme();  // 或从 UI hook 解构
 |--------|------|------|
 | **P0** | ~~`no-restricted-imports`~~ | ~~阻止 core→app 和 core→react 的非法跨层导入~~ ✅ 已配置 |
 | **P0** | ~~`react-hooks/exhaustive-deps`~~ | ~~确保 useEffect 等 hooks 的依赖数组完整~~ ✅ 已配置（mobile） |
-| **P1** | `no-console` (error) | 强制使用 createLogger，禁止 console.* |
+| **P1** | ~~`no-console` (error)~~ | ~~强制使用 createLogger，禁止 console.\*~~ ✅ 已配置（`no-console: [error, {allow:[warn,error]}]`，core 已清理 console.log） |
 | **P1** | `import/no-restricted-paths` | 补充 no-restricted-imports 的路径级限制 |
 | **P1** | `@typescript-eslint/prefer-nullish-coalescing` | 统一使用 `??` 而非 `\|\|` 处理 null/undefined |
 | **P2** | `@typescript-eslint/no-unnecessary-condition` | 捕获多余 null 检查 |

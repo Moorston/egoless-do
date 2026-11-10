@@ -1,7 +1,9 @@
-import type { UserProfile } from '../types';
-import type { StorageAdapter, ProfileSlice } from './types';
-import type { SliceCreator } from './sliceHelper';
 import { createLogger } from '../logger';
+import type { UserProfile } from '../types';
+
+import type { SliceCreator } from './sliceHelper';
+import type { StorageAdapter, ProfileSlice } from './types';
+
 const log = createLogger('Store');
 
 export function createProfileSlice(adapter: StorageAdapter): SliceCreator<ProfileSlice> {

@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
+
 import {
   fmt, fmtMS, dateStr, yesterday, tomorrow, daysInMonth,
   uid, computeStreak, estimateFastingKcal,

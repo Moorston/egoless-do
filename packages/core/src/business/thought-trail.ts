@@ -1,6 +1,6 @@
 // ─── ThoughtTrail business logic (pure functions) ────────────────
-import type { ThoughtTrail } from '../types/thought-trail';
 import type { MindReflection } from '../types/reflection';
+import type { ThoughtTrail } from '../types/thought-trail';
 import type { TrailNote } from '../types/trail-note';
 import { dateStr, activeOnly } from '../utils';
 

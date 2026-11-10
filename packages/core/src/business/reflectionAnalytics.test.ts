@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
+
 import type { MindReflection } from '../types/reflection';
+
 import {
   computeMoodScore,
   computeMoodTrend,

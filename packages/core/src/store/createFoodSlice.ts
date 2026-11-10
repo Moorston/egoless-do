@@ -1,7 +1,7 @@
 // Backward-compatible re-export. Food is now part of DietSlice.
 import { createDietSlice } from './createDietSlice';
-import type { DietSlice, StorageAdapter } from './types';
 import type { SliceCreator } from './sliceHelper';
+import type { DietSlice, StorageAdapter } from './types';
 
 /**
  * Shim that delegates to createDietSlice.

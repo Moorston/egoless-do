@@ -1,7 +1,8 @@
 // ─── Habit business logic (pure functions) ─────────────────────
-import type { Habit, HabitStatus, HabitLink, FastingSession, MedHistoryEntry, ExerciseEntry, SleepEntry } from '../types';
 import { createHabitFromForm } from '../defaults';
+import type { Habit, HabitStatus, HabitLink, FastingSession, MedHistoryEntry, ExerciseEntry, SleepEntry } from '../types';
 import { computeStreak, dateStr } from '../utils';
+
 import { computeMaxFastingHours, computeMaxExerciseMinutes } from './module-state';
 
 export type CreateHabitForm = Parameters<typeof createHabitFromForm>[0];

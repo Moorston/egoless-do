@@ -3,9 +3,9 @@ export { zh } from './zh';
 export { en } from './en';
 export { zhHant } from './zh-Hant';
 
+import { en } from './en';
 import type { I18nKeys, I18nKey } from './types';
 import { zh } from './zh';
-import { en } from './en';
 import { zhHant } from './zh-Hant';
 
 export const translations: Record<string, I18nKeys> = {

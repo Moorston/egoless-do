@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+
 import { formatDateBar, WEEKDAYS } from './dateUtils';
 
 describe('formatDateBar', () => {

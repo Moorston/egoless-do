@@ -1,6 +1,7 @@
 // ─── Cloud AI Providers ────────────────────────────────────────
-import type { ModelConfig, GenerateOptions } from './types';
 import { createLogger } from '../logger';
+
+import type { ModelConfig, GenerateOptions } from './types';
 
 const log = createLogger('AI');
 

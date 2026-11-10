@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
+
 import type { ExerciseEntry } from '../types';
+
 import { deleteExerciseFromList } from './exercise';
 
 const makeExercise = (overrides: Partial<ExerciseEntry> = {}): ExerciseEntry => ({

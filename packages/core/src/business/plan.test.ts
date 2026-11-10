@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { addPlanItem, updatePlanItem, computeExpectedDays, shouldShowToday, computeItemProgress } from './plan';
+
 import type { Plan, PlanItem, PlanItemPriority, PlanItemCheckin, CheckinFrequency } from '../types';
+
+import { addPlanItem, updatePlanItem, computeExpectedDays, shouldShowToday, computeItemProgress } from './plan';
 
 describe('addPlanItem', () => {
   it('should save priority and targetMetric', () => {

@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+
 import { ModelManager } from './model-manager';
 
 describe('ModelManager', () => {
@@ -28,7 +29,7 @@ describe('ModelManager', () => {
   });
 
   it('should compare versions correctly', async () => {
-    // @ts-ignore - 访问私有方法进行测试
+    // @ts-expect-error - 访问私有方法进行测试
     const compare = manager.compareVersions.bind(manager);
     expect(compare('1.2.3', '1.2.3')).toBe(0);
     expect(compare('1.2.4', '1.2.3')).toBeGreaterThan(0);

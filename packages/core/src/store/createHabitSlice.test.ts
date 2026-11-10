@@ -1,6 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
-import { createHabitSlice } from './createHabitSlice';
+
 import type { Habit } from '../types';
+
+import { createHabitSlice } from './createHabitSlice';
 
 function makeTestStore(initialState: Record<string, unknown> = {}) {
   let state: Record<string, unknown> = {

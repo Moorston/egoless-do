@@ -1,7 +1,9 @@
 import { describe, it, expect } from 'vitest';
+
+import type { ThoughtTrail } from '../types/thought-trail';
+
 import { createThoughtTrailSlice } from './createThoughtTrailSlice';
 import type { StorageAdapter } from './types';
-import type { ThoughtTrail } from '../types/thought-trail';
 
 /** No-op adapter for unit tests — all persistence calls are silently ignored. */
 const noopAdapter: StorageAdapter = {

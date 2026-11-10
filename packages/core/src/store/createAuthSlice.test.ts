@@ -3,8 +3,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 // @ts-expect-error — React Native global not available in test env
 globalThis.__DEV__ = false;
 
-import { createAuthSlice } from './createAuthSlice';
+import { apiLogin, apiRegister, apiLogout, apiRefreshToken, apiVerifyMFALogin, MFARequiredError } from '../auth';
 import { defaultAuthState } from '../types';
+
+import { createAuthSlice } from './createAuthSlice';
 
 function makeTestStore(initialState: Record<string, unknown> = {}) {
   let state: Record<string, unknown> = {
@@ -80,7 +82,6 @@ vi.mock('../ai/trail-recommender', () => ({
   clearAICaches: vi.fn(),
 }));
 
-import { apiLogin, apiRegister, apiLogout, apiRefreshToken, apiVerifyMFALogin, MFARequiredError } from '../auth';
 
 describe('createAuthSlice', () => {
   beforeEach(() => {

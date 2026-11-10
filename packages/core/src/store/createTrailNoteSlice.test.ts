@@ -1,7 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
+
+import type { ThoughtTrail } from '../types/thought-trail';
+
 import { createThoughtTrailSlice } from './createThoughtTrailSlice';
 import type { StorageAdapter } from './types';
-import type { ThoughtTrail } from '../types/thought-trail';
 
 const noopAdapter: StorageAdapter = {
   persistChange: async () => {},

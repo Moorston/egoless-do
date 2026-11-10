@@ -67,10 +67,15 @@ let _uidCounter = 0;
 function _randHex(): string {
   try {
     const buf = new Uint8Array(8);
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const cryptoModule = typeof globalThis.crypto !== 'undefined'
-      ? globalThis.crypto
-      : (require('crypto') as { webcrypto: Crypto }).webcrypto;
+    let cryptoModule: Crypto;
+    if (typeof globalThis.crypto !== 'undefined') {
+      cryptoModule = globalThis.crypto;
+    } else {
+      // Node 环境回退：webcrypto 不在 globalThis 上时从 'crypto' 模块取。
+      // 不能静态 import（会破坏 RN 端打包），动态 require 是合规出口。
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      cryptoModule = (require('crypto') as { webcrypto: Crypto }).webcrypto;
+    }
     cryptoModule.getRandomValues(buf);
     return Array.from(buf, b => b.toString(16).padStart(2, '0')).join('');
   } catch { return Math.random().toString(36).slice(2, 10); }

@@ -269,7 +269,7 @@ export function generateSuggestions(
     .sort((a, b) => b.timestamp - a.timestamp);
 
   let consecutiveDays = 0;
-  let checkDate = new Date(now);
+  const checkDate = new Date(now);
   for (let i = 0; i < 30; i++) {
     const dateStr = checkDate.toISOString().slice(0, 10);
     const hasExercise = recentLogs.some(e => new Date(e.timestamp).toISOString().slice(0, 10) === dateStr);

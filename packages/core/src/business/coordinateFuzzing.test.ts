@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+
 import { fuzzCoordinate, isValidCoordinate, calculateDistance } from './coordinateFuzzing';
 
 // ─── isValidCoordinate ───────────────────────────────────────

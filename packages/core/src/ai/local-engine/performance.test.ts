@@ -3,6 +3,7 @@
  * 验证端侧 AI 推理延迟目标（<50ms）
  */
 import { describe, it, expect } from 'vitest';
+
 import { HybridEngine } from './hybrid-engine';
 import { ModelManager } from './model-manager';
 
@@ -46,7 +47,7 @@ describe('Performance Benchmarks', () => {
 
       const t0 = performance.now();
       for (let i = 0; i < 1000; i++) {
-        // @ts-ignore
+        // @ts-expect-error - 访问私有方法进行测试
         manager.compareVersions('1.2.3', '1.2.4');
       }
       const elapsed = performance.now() - t0;

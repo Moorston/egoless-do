@@ -268,7 +268,7 @@ export function highlightSearchMatch(text: string, query: string): HighlightSegm
   const ranges: [number, number][] = [];
   for (const kw of keywords) {
     let start = 0;
-    while (true) {
+    for (;;) {
       const idx = lowerText.indexOf(kw, start);
       if (idx < 0) break;
       ranges.push([idx, idx + kw.length]);

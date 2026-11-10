@@ -1,5 +1,8 @@
 // ─── Review business logic tests ───────────────────────────────
 import { describe, it, expect } from 'vitest';
+
+import type { CheckinEntry, Habit, Plan, PlanItem, FoodEntry, ExerciseEntry, FastingSession, MedHistoryEntry, GraceHistoryEntry } from '../types';
+
 import { 
   getWeekRange, 
   getMonthRange, 
@@ -7,7 +10,6 @@ import {
   buildReviewPrompt,
   parseReviewAIResponse 
 } from './review';
-import type { CheckinEntry, Habit, Plan, PlanItem, FoodEntry, ExerciseEntry, FastingSession, MedHistoryEntry, GraceHistoryEntry } from '../types';
 
 describe('getWeekRange', () => {
   it('should return Monday to Sunday for a Wednesday', () => {
