@@ -30,6 +30,8 @@ scripts/config.json
 
 # Analysis / intermediate files
 .ua/
+lint_final.json
+meta-all.mjs
 
 # Generated docs
 docs/technical-improvement-plan.html
