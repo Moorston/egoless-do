@@ -8,7 +8,7 @@
     "ios": "node --max-old-space-size=8192 ../../node_modules/expo/bin/cli start --ios",
     "build": "eas build",
     "submit": "eas submit",
-    "lint": "eslint src --ext .ts,.tsx",
+    "lint": "eslint src --ext .ts,.tsx --max-warnings 13",
     "type-check": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"

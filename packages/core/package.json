@@ -7,7 +7,7 @@
     "build": "tsc",
     "type-check": "tsc --noEmit",
     "dev": "tsc --watch",
-    "lint": "eslint src --ext .ts,.tsx",
+    "lint": "eslint src --ext .ts,.tsx --max-warnings 530",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "test": "vitest run",
     "test:watch": "vitest"
