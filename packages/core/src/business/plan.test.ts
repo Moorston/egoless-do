@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import type { Plan, PlanItem, PlanItemPriority, PlanItemCheckin, CheckinFrequency } from '../types';
+import type { PlanItem, PlanItemCheckin, CheckinFrequency } from '../types';
 
 import { addPlanItem, updatePlanItem, computeExpectedDays, shouldShowToday, computeItemProgress } from './plan';
 

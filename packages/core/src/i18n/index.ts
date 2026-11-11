@@ -4,7 +4,7 @@ export { en } from './en';
 export { zhHant } from './zh-Hant';
 
 import { en } from './en';
-import type { I18nKeys, I18nKey } from './types';
+import type { I18nKeys } from './types';
 import { zh } from './zh';
 import { zhHant } from './zh-Hant';
 

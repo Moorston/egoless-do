@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
 import type { Habit } from '../types';
-import { dateStr, yesterday } from '../utils';
 
 import {
   addHabitToList, updateHabitInList, deleteHabitFromList,

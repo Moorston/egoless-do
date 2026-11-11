@@ -134,21 +134,25 @@ export class LocalAIEngine {
     };
   }
   
+  private findKeywordSentence(content: string, keyword: string): string | null {
+    const sentences = content.split(/[。！？.!?]/);
+    for (const sentence of sentences) {
+      if (sentence.includes(keyword) && sentence.length > 5) {
+        return sentence.trim();
+      }
+    }
+    return null;
+  }
+
   private extractKeyPoints(contents: string[]): string[] {
     const keyPoints: string[] = [];
-    
+
     for (const content of contents) {
       for (const keywords of Object.values(KEYWORD_PATTERNS)) {
         for (const keyword of keywords) {
-          if (content.includes(keyword)) {
-            const sentences = content.split(/[。！？.!?]/);
-            for (const sentence of sentences) {
-              if (sentence.includes(keyword) && sentence.length > 5) {
-                keyPoints.push(sentence.trim());
-                break;
-              }
-            }
-          }
+          if (!content.includes(keyword)) continue;
+          const sentence = this.findKeywordSentence(content, keyword);
+          if (sentence) keyPoints.push(sentence);
         }
       }
     }

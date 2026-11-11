@@ -53,17 +53,20 @@ for (const [main, synonyms] of Object.entries(SYNONYM_MAP)) {
 // ─── 预构建子串索引（消除 expandTerms 中的 O(n²) 循环）────────
 // 将每个主词/同义词的所有 ≥2 字符子串映射到其主词
 const SUBSTRING_TO_MAINS = new Map<string, Set<string>>();
+function registerSubstrings(word: string, main: string): void {
+  for (let len = 2; len <= word.length; len++) {
+    for (let start = 0; start <= word.length - len; start++) {
+      const sub = word.substring(start, start + len);
+      let set = SUBSTRING_TO_MAINS.get(sub);
+      if (!set) { set = new Set(); SUBSTRING_TO_MAINS.set(sub, set); }
+      set.add(main);
+    }
+  }
+}
 for (const [main, synonyms] of Object.entries(SYNONYM_MAP)) {
   const allWords = [main, ...synonyms];
   for (const word of allWords) {
-    for (let len = 2; len <= word.length; len++) {
-      for (let start = 0; start <= word.length - len; start++) {
-        const sub = word.substring(start, start + len);
-        let set = SUBSTRING_TO_MAINS.get(sub);
-        if (!set) { set = new Set(); SUBSTRING_TO_MAINS.set(sub, set); }
-        set.add(main);
-      }
-    }
+    registerSubstrings(word, main);
   }
 }
 
@@ -74,6 +77,14 @@ function findSubstringMains(term: string): Set<string> | undefined {
   // term 包含更长的词（反向：某个词是 term 的子串）
   // 对于中文短查询词（2-4字），SUBSTRING_TO_MAINS 已覆盖主要场景
   return direct;
+}
+
+/** 将匹配到的主词及其同义词全部加入 expanded 集合 */
+function addMatchedMains(matchedMains: Set<string>, expanded: Set<string>): void {
+  for (const m of matchedMains) {
+    expanded.add(m);
+    for (const syn of SYNONYM_MAP[m]) expanded.add(syn);
+  }
 }
 
 /**
@@ -96,10 +107,7 @@ export function expandTerms(terms: string[]): string[] {
     if (term.length >= 2) {
       const matchedMains = findSubstringMains(term);
       if (matchedMains) {
-        for (const m of matchedMains) {
-          expanded.add(m);
-          for (const syn of SYNONYM_MAP[m]) expanded.add(syn);
-        }
+        addMatchedMains(matchedMains, expanded);
       }
     }
   }

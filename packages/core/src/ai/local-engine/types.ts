@@ -34,12 +34,12 @@ export interface LocalAIEngine {
 // ── 工厂函数 ──
 export async function createLocalEngine(modelName: string): Promise<LocalAIEngine | null> {
   try {
-    const { Platform } = require('react-native');
+    const { Platform } = require('react-native') as { Platform: { OS: string } };
     if (Platform.OS === 'android') {
-      const { OnnxEngine } = require('./onnx-engine');
+      const { OnnxEngine } = require('./onnx-engine') as { OnnxEngine: new (modelName: string) => LocalAIEngine };
       return new OnnxEngine(modelName);
     } else if (Platform.OS === 'ios') {
-      const { CoreMLEngine } = require('./coreml-engine');
+      const { CoreMLEngine } = require('./coreml-engine') as { CoreMLEngine: new (modelName: string) => LocalAIEngine };
       return new CoreMLEngine(modelName);
     }
   } catch {

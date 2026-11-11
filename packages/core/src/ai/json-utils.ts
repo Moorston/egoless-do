@@ -1,7 +1,4 @@
 // ─── Shared AI utilities ──────────────────────────────────────────
-import { createLogger } from '../logger';
-
-const log = createLogger('AI:utils');
 
 /**
  * Extract JSON from AI response text. Handles:
@@ -23,6 +20,16 @@ export function extractJSON(raw: string): string {
   return raw.trim();
 }
 
+/** Try to parse a candidate string as JSON; return it if valid, null otherwise. */
+function tryParseJSON(candidate: string): string | null {
+  try {
+    JSON.parse(candidate);
+    return candidate;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Find the last balanced JSON structure by scanning right-to-left.
  * Handles thinking/reasoning text that may precede the actual JSON.
@@ -41,15 +48,11 @@ export function findLastBalancedJSON(text: string, open: string, close: string):
         if (inString) continue;
         if (ch === close) depth++;
         if (ch === open) depth--;
-        if (depth === 0) {
-          const candidate = text.slice(j, i + 1);
-          try {
-            JSON.parse(candidate);
-            return candidate;
-          } catch {
-            break;
-          }
-        }
+        if (depth !== 0) continue;
+        const candidate = text.slice(j, i + 1);
+        const parsed = tryParseJSON(candidate);
+        if (parsed !== null) return parsed;
+        break;
       }
     }
   }

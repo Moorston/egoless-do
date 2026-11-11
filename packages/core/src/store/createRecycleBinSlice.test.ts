@@ -51,12 +51,6 @@ const sampleHabit = {
   data: { id: 'h1', name: 'test', deleted: true },
 };
 
-const samplePlan = {
-  id: 'p1',
-  entityType: 'plan' as const,
-  data: { id: 'p1', title: 'my plan', deleted: true },
-};
-
 describe('createRecycleBinSlice', () => {
   beforeEach(() => {
     vi.clearAllMocks();

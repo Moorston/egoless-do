@@ -53,7 +53,7 @@ describe('detectMoodSequencePatterns', () => {
 // ─── detectTagPatterns ────────────────────────────────────────
 describe('detectTagPatterns', () => {
   it('returns empty for too few reflections', () => {
-    const r = Array.from({ length: 3 }, (_, i) => makeReflection({ tags: ['工作'] }));
+    const r = Array.from({ length: 3 }, (_, _i) => makeReflection({ tags: ['工作'] }));
     expect(detectTagPatterns(r)).toEqual([]);
   });
 

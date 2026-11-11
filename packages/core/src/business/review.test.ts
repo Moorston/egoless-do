@@ -1,7 +1,7 @@
 // ─── Review business logic tests ───────────────────────────────
 import { describe, it, expect } from 'vitest';
 
-import type { CheckinEntry, Habit, Plan, PlanItem, FoodEntry, ExerciseEntry, FastingSession, MedHistoryEntry, GraceHistoryEntry } from '../types';
+import type { CheckinEntry, Habit, Plan, PlanItem } from '../types';
 
 import { 
   getWeekRange, 

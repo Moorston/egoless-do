@@ -293,9 +293,6 @@ const GPS_SPORTS = ['行走', '跑步', '骑行', '户外骑行', '室内跑步'
 // Repetition sports: count reps (push-ups, pull-ups, squats, etc.)
 const REP_SPORTS = ['俯卧撑', '引体向上', '深蹲', '波比跳', '跳绳'];
 
-// Timed sports: only track time (yoga, tai chi, plank, etc.)
-const TIMED_SPORTS = ['太极', '八卦', '形意', '铁牛', '太阳摸经', '平板支撑', '瑜伽', '放松运动', '热身运动', '游泳', '爬楼梯', '划船机', '舞蹈', '拳击', '下犬式', '鸽子式', '眼镜蛇式', '排球', '八段锦', '五禽戏', '站桩', '经络拍打', '散步行禅', '椭圆机', '动感单车', '橄榄球', '高尔夫', '婴儿式', '脊柱扭转', '冲浪'];
-
 export function getSportType(sportKey: string, isGps: boolean): SportType {
   if (isGps || GPS_SPORTS.includes(sportKey)) return 'gps';
   if (REP_SPORTS.includes(sportKey)) return 'repetition';
@@ -399,7 +396,7 @@ const MEDITATIVE_SPORTS = ['太极', '八卦', '形意', '铁牛', '太阳摸经
 const ENDURANCE_SPORTS = ['游泳', '爬楼梯', '平板支撑'];
 const INTERVAL_SPORTS = ['波比跳', '开合跳', '高抬腿'];
 
-export function getSportExperienceType(sportKey: string, sportType: SportType): SportExperienceType {
+export function getSportExperienceType(sportKey: string, _sportType: SportType): SportExperienceType {
   if (MEDITATIVE_SPORTS.includes(sportKey)) return 'meditative';
   if (INTERVAL_SPORTS.includes(sportKey)) return 'interval';
   if (ENDURANCE_SPORTS.includes(sportKey)) return 'endurance';
@@ -555,12 +552,6 @@ const SPORT_TO_CATEGORY: Record<string, ExerciseCategoryKey> = {
   '开合跳': 'hiit', '登山者': 'hiit', '冲刺跑': 'hiit', '跳绳HIIT': 'hiit',
   '椭圆机': 'cardio', '动感单车': 'cardio', '橄榄球': 'full_body', '高尔夫': 'full_body',
   '婴儿式': 'yoga', '脊柱扭转': 'yoga',
-};
-
-// 中文名 → ExerciseCategoryKey 映射（用于去重判断 SPORTS 是否与 CATEGORIES 重叠）
-const ZH_NAME_TO_CATEGORY_KEY: Record<string, ExerciseCategoryKey> = {
-  '太极': 'taiji', '瑜伽': 'yoga', '跑步': 'cardio', '骑行': 'cardio',
-  '游泳': 'cardio', '跳绳': 'cardio',
 };
 
 export function buildExerciseLibrary(): ExerciseDef[] {

@@ -261,7 +261,6 @@ export function generateSuggestions(
 ): TrainingSuggestion[] {
   const suggestions: TrainingSuggestion[] = [];
   const DAY = 86400000;
-  const today = new Date(now).toISOString().slice(0, 10);
 
   // 规则 1: 连续训练天数
   const recentLogs = exerciseLog

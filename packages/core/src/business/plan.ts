@@ -6,7 +6,7 @@ import type {
   MindReflection, CheckinFrequency,
   PlanItemSource, UnifiedPlanItemForm,
 } from '../types';
-import { uid, dateStr, activeOnly, parseDateParts, addDays } from '../utils';
+import { uid, dateStr, parseDateParts, addDays } from '../utils';
 
 import { computeMaxFastingHours, computeMaxExerciseMinutes } from './module-state';
 

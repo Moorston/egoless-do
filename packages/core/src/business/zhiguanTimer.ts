@@ -16,7 +16,7 @@ export function formatSec(totalSec: number): string {
 }
 
 /** 检测出定倒计时状态 */
-export function isInClosingCountdown(elapsedSecs: number, totalTargetSecs = 600): 'active-5min' | 'active-30min' | 'active-60min' | null {
+export function isInClosingCountdown(elapsedSecs: number, _totalTargetSecs = 600): 'active-5min' | 'active-30min' | 'active-60min' | null {
   if (elapsedSecs === 300) return 'active-5min';
   if (elapsedSecs === 1800) return 'active-30min';
   if (elapsedSecs === 3600) return 'active-60min';

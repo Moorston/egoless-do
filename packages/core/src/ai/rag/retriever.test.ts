@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 import type { ReflectionIndex } from './indexer';
-import { expandTerms, retrieveTopK, SYNONYM_MAP } from './retriever';
+import { expandTerms, retrieveTopK } from './retriever';
 
 // ─── Test helpers ───────────────────────────────────────────
 function makeIndex(overrides: Partial<ReflectionIndex> = {}): ReflectionIndex {
@@ -44,7 +44,6 @@ describe('expandTerms', () => {
 
   it('expands via substring matching (≥2 chars)', () => {
     // '焦' alone (< 2 chars) should NOT trigger substring match
-    const short = expandTerms(['焦']);
     // '焦虑' is a main term, so '焦' alone won't match via substring
     // but '虑' is 1 char, also won't match
 

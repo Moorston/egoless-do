@@ -32,13 +32,6 @@ const DEFAULT_CONFIG: LayoutConfig = {
   maxIterations: 100,
 };
 
-// 计算两点距离
-function distance(a: LayoutNode, b: LayoutNode): number {
-  const dx = a.x - b.x;
-  const dy = a.y - b.y;
-  return Math.sqrt(dx * dx + dy * dy) || 1;
-}
-
 // 应用力导向布局
 export function applyForceLayout(
   nodes: LayoutNode[],

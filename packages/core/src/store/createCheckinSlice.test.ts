@@ -106,7 +106,7 @@ describe('createCheckinSlice', () => {
           makeCheckin({ date: yesterday, done: true }),
         ],
       });
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       // streak 已改为派生状态，从 state 中读取 checkinHistory
       const state = store.get();
@@ -120,7 +120,7 @@ describe('createCheckinSlice', () => {
           makeCheckin({ date: '2026-06-25', done: true, deleted: true }),
         ],
       });
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       const state = store.get();
       const streak = calculateStreakFromCheckins(state.checkinHistory as CheckinEntry[]);

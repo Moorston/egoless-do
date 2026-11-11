@@ -2,7 +2,6 @@
 // 管理端侧 AI 模型的下载、验证、版本控制。
 
 import { createLogger } from '../../logger';
-import { LocalAIEngine } from './types';
 
 const logger = createLogger('ModelManager');
 
@@ -91,12 +90,12 @@ export class ModelManager {
 
   // ── Private Methods ──
 
-  private async fetchLatestModelInfo(modelName: string): Promise<ModelInfo | null> {
+  private async fetchLatestModelInfo(_modelName: string): Promise<ModelInfo | null> {
     // TODO: 从 PocketBase 获取
     return null;
   }
 
-  private async fetchModelInfo(modelName: string, version: string): Promise<ModelInfo | null> {
+  private async fetchModelInfo(_modelName: string, _version: string): Promise<ModelInfo | null> {
     // TODO: 从 PocketBase 获取
     return null;
   }
@@ -106,7 +105,7 @@ export class ModelManager {
     logger.info(`Saving model to ${path} (${blob.size} bytes)`);
   }
 
-  private async calculateChecksum(path: string): Promise<string> {
+  private async calculateChecksum(_path: string): Promise<string> {
     // TODO: 计算 SHA-256
     return 'placeholder-checksum';
   }

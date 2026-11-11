@@ -2,7 +2,6 @@
 import type { AIMode, ModelConfig } from './ai/types';
 import { MIND_COLORS_EXTENDED } from './constants';
 import type { MindReflection, Habit, FoodEntry, CheckinEntry, MedHistoryEntry, UserProfile, AppState, FastingSession, ExerciseEntry, CustomFoodPreset, Plan, PlanItem, PlanItemCheckin, RecycleBinItem, GraceHistoryEntry, DailyCustomTodo, DailyTodoHistory, ThoughtTrail, TrailNote, ReflectionLink, CheckinReview } from './types';
-import { defaultAuthState } from './types';
 import { uid, dateStr } from './utils';
 
 // ── Initial seed data ─────────────────────────────────────────────

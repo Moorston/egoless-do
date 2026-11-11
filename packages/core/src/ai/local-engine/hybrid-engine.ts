@@ -15,7 +15,7 @@ export class HybridEngine {
   async initialize(): Promise<void> {
     // 1. 尝试初始化端侧引擎
     try {
-      const { createLocalEngine } = require('./types');
+      const { createLocalEngine } = require('./types') as { createLocalEngine: (modelName: string) => Promise<LocalAIEngine | null> };
       this.localEngine = await createLocalEngine('meditation-suggestion');
       if (this.localEngine) {
         const ready = await this.localEngine.initialize();
@@ -67,7 +67,7 @@ export class HybridEngine {
     this.useLocal = true;
     if (!this.localEngine) {
       try {
-        const { createLocalEngine } = require('./types');
+        const { createLocalEngine } = require('./types') as { createLocalEngine: (modelName: string) => Promise<LocalAIEngine | null> };
         this.localEngine = await createLocalEngine('meditation-suggestion');
         if (this.localEngine) {
           await this.localEngine.initialize();

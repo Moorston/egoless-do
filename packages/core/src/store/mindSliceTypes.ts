@@ -1,8 +1,8 @@
 // ─── Mind slice interface ─────────────────────────────────────
 // Extracted from store/types.ts to break circular import
 import type {
-  FearEntry, CourageEntry, FearAchievement, FearCategory,
-  FearStats, CourageStats, BodyHeatmap,
+  FearEntry, CourageEntry, FearAchievement,
+  FearStats, BodyHeatmap,
   FearInsight, FearTimeSlot, DominantFearType, AchievementType,
 } from '../types';
 

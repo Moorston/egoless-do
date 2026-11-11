@@ -2,6 +2,7 @@
 // 占位实现：待模型量化后替换为真实 ONNX Runtime 调用
 
 import { createLogger } from '../../logger';
+
 import { LocalAIEngine, AIResult } from './types';
 
 const logger = createLogger('OnnxEngine');
@@ -26,11 +27,11 @@ export class OnnxEngine implements LocalAIEngine {
     return this.ready;
   }
 
-  async predict(input: string): Promise<AIResult> {
+  async predict(_input: string): Promise<AIResult> {
     throw new Error('OnnxEngine not implemented - model not quantized yet');
   }
 
-  async batchPredict(inputs: string[]): Promise<AIResult[]> {
+  async batchPredict(_inputs: string[]): Promise<AIResult[]> {
     throw new Error('OnnxEngine not implemented - model not quantized yet');
   }
 
@@ -38,7 +39,7 @@ export class OnnxEngine implements LocalAIEngine {
     return null;
   }
 
-  async downloadModel(version: string): Promise<boolean> {
+  async downloadModel(_version: string): Promise<boolean> {
     return false;
   }
 

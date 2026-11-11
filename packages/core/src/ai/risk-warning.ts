@@ -1,6 +1,6 @@
 // ─── Risk Warning System ────────────────────────────────────────
 import type { Habit, Plan, CheckinEntry, MindReflection } from '../types';
-import { dateStr, activeOnly } from '../utils';
+import { dateStr } from '../utils';
 
 export interface RiskWarning {
   id: string;
@@ -124,12 +124,8 @@ export function detectPlanDelayRisk(plans: Plan[]): RiskWarning[] {
 export function detectStreakBreakRisk(checkinHistory: CheckinEntry[]): RiskWarning[] {
   const warnings: RiskWarning[] = [];
   const today = dateStr();
-  const yesterdayDate = new Date();
-  yesterdayDate.setDate(yesterdayDate.getDate() - 1);
-  const yesterday = dateStr(yesterdayDate);
 
   const todayCheckin = checkinHistory.find(c => c.date === today && !c.deleted);
-  const yesterdayCheckin = checkinHistory.find(c => c.date === yesterday && !c.deleted);
 
   // 计算连续天数（只计已完成的打卡，从最近一次打卡往前数）
   let streak = 0;

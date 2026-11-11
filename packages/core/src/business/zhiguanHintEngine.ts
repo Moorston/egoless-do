@@ -6,7 +6,6 @@ import type {
   ZhiguanRecommendation,
   ZhiguanMethod,
 } from '../types';
-import { ZHIGUAN_METHOD_DEFS } from '../types';
 
 // ─── 规则表（优先级由高到低）───────────────────────────────────
 
@@ -61,12 +60,11 @@ export function recommendMethod(radar: FiveHindranceRadar): ZhiguanRecommendatio
   // 找出最重的一盖
   const entries = Object.entries(radar) as [FiveHindranceKey, number][];
   const maxEntry = entries.reduce((a, b) => a[1] >= b[1] ? a : b);
-  const [topHindrance, topScore] = maxEntry;
+  const [topHindrance] = maxEntry;
 
   // 按优先级匹配规则
   for (const rule of RULES) {
     if (radar[rule.hindrance] >= rule.threshold) {
-      const def = ZHIGUAN_METHOD_DEFS.find(d => d.key === rule.primaryMethod);
       return {
         primaryMethod: rule.primaryMethod,
         secondaryMethod: rule.secondaryMethod,

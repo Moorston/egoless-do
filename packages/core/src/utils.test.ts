@@ -1,7 +1,7 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 import {
-  fmt, fmtMS, dateStr, yesterday, tomorrow, daysInMonth,
+  fmt, fmtMS, dateStr, yesterday, daysInMonth,
   uid, computeStreak, estimateFastingKcal,
   calculateCheckinStreak, buildHeatmapGrid,
 } from './utils';

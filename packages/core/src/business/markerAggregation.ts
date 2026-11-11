@@ -5,9 +5,6 @@
 
 import { GlobalCheckin, ClusterMarker } from '../types/globalPulse';
 
-// 聚合阈值（像素）
-const CLUSTER_THRESHOLD_PX = 20;
-
 // 缩放级别与网格大小的映射
 const ZOOM_GRID_SIZE: Record<number, number> = {
   1: 100,   // 100km
@@ -134,7 +131,7 @@ export function shouldCluster(
   marker1: { lat: number; lng: number },
   marker2: { lat: number; lng: number },
   zoom: number,
-  screenWidth: number
+  _screenWidth: number
 ): boolean {
   const gridSize = getGridSize(zoom);
   const grid1 = getGridId(marker1.lat, marker1.lng, gridSize);

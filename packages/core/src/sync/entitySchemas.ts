@@ -106,19 +106,6 @@ function applyType(value: unknown, type?: FieldType): unknown {
   }
 }
 
-function applyReadType(value: unknown, type?: FieldType): unknown {
-  switch (type) {
-    case 'bool': return boolRead(value);
-    case 'json': {
-      if (typeof value === 'string') return value;
-      const s = parseBytes(value);
-      if (s !== null) return s;
-      return JSON.stringify(value ?? []);
-    }
-    default: return value;
-  }
-}
-
 /**
  * Resolve a field value from a PB record, supporting nested `data` format.
  * PB hook returns { id, habit_id, user_id, data: { name, startDate, ... } }.

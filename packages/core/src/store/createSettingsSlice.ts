@@ -30,7 +30,7 @@ export function createSettingsSlice(
   onSettingChange?: () => void,
   onAIPersist?: () => void,
 ): SliceCreator<SettingsSlice> {
-  return (set, get) => ({
+  return (set, _get) => ({
     // ── Theme / Language / Remind ───────────────────────────────────────
     theme: 'light' as ThemeName,
     language: 'zh',

@@ -1,8 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-// @ts-expect-error — React Native global not available in test env
-globalThis.__DEV__ = false;
-
+// eslint-disable-next-line import/order
 import {
   validatePassword,
   apiLogin,
@@ -23,6 +21,9 @@ import {
   setSyncApiBase,
   getSyncUrl,
 } from './auth';
+
+// @ts-expect-error — React Native global not available in test env
+globalThis.__DEV__ = false;
 
 // Mock the fetch module
 vi.mock('./fetch', () => {

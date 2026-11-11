@@ -233,7 +233,7 @@ describe('createFastingSlice', () => {
   describe('state keys', () => {
     it('has activeFasting initialized to null', () => {
       const store = makeTestStore();
-      const slice = createFastingSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      createFastingSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       expect(store.state()).toHaveProperty('activeFasting');
       expect(store.state().activeFasting).toBeNull();
@@ -241,7 +241,7 @@ describe('createFastingSlice', () => {
 
     it('has fastingHistory initialized to empty array', () => {
       const store = makeTestStore();
-      const slice = createFastingSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      createFastingSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       expect(store.state()).toHaveProperty('fastingHistory');
       expect(store.state().fastingHistory).toEqual([]);

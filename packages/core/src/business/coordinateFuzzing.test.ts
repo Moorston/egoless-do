@@ -74,7 +74,7 @@ describe('fuzzCoordinate', () => {
 
   it('clamps coordinates to valid range', () => {
     // Near the poles
-    const [lat, lng] = fuzzCoordinate(89.99, 0, 'test');
+    const [lat] = fuzzCoordinate(89.99, 0, 'test');
     expect(lat).toBeLessThanOrEqual(90);
     expect(lat).toBeGreaterThanOrEqual(-90);
   });

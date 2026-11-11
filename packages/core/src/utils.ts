@@ -290,7 +290,6 @@ export const buildHeatmapGrid = (
 
   const grid: { date: string; done: boolean; grace: boolean; isToday: boolean }[][] = [];
   // Build from oldest week to newest
-  const totalDays = weeks * 7;
   const startDate = new Date(todayDate);
   startDate.setDate(startDate.getDate() - mondayOffset - (weeks - 1) * 7);
 

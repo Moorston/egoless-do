@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 import { CoreMLEngine } from './coreml-engine';
 import { OnnxEngine } from './onnx-engine';
