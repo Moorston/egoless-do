@@ -244,6 +244,7 @@ Read context: `prd.md` -> `design.md if present` -> `implement.md if present`, p
 - 3.2 Debug retrospective `[on demand]`
 - 3.3 Spec update `[required · once]`
 - 3.4 Commit changes `[required · once]`
+- 3.4.5 OpenSpec archive `[required · once, if task has an OpenSpec change]`
 - 3.5 Wrap-up reminder
 
 > Note: step 3.1 was folded into 2.2 (last-iteration full-scope check) and 3.4 (commit preamble). Numbering kept stable to avoid breaking external references.
@@ -637,9 +638,24 @@ The AI drives a batched commit of this task's code changes so `/finish-work` can
 - If the user wants different message wording but accepts the file grouping, edit the message and re-confirm once — but if they reject the grouping, exit to manual mode.
 - The batched plan is one prompt; do not prompt per commit.
 
+#### 3.4.5 OpenSpec archive `[required · once, if task has an OpenSpec change]`
+
+If this task implements an OpenSpec change (a directory under `openspec/changes/<name>/`), the change MUST be archived after its work commits land (3.4) and before `/trellis:finish-work` (3.5). Archiving closes the loop: it merges the change's specs into `openspec/specs/` (main specs) and moves the change into `openspec/changes/archive/`.
+
+**Step-by-step**:
+1. `openspec status --change <name>` — confirm 4/4 artifacts exist. Note: "All artifacts complete!" only means files are present, NOT that the change is closed.
+2. Verify spec↔code consistency: read `openspec/changes/<name>/specs/**/*.md`, confirm the spec contracts match the implemented code (git log shows the work landed). If the implementation drifted from the spec, fix the spec first — `openspec archive` writes the spec into main specs, so archiving a stale spec freezes the wrong contract.
+3. Mark `openspec/changes/<name>/tasks.md` all `[x]` (or annotate deferred items — never leave `[ ]` for done work).
+4. `openspec archive <name> -y` — merges specs into main specs + moves to `openspec/changes/archive/<date>-<name>/`.
+5. Verify: `openspec list` no longer shows the change as in-progress.
+
+**Order relative to Trellis**: Trellis task archive (via `/trellis:finish-work`) and OpenSpec change archive are two independent closes. Do OpenSpec archive first (it touches `openspec/` specs), then `/trellis:finish-work` archives the Trellis task. Both are bookkeeping commits, landing after work commits.
+
+**Guardrail**: `openspec status` reporting "4/4 artifacts complete" is a file-presence check, not a completion signal. The authoritative completion signal is: change no longer in `openspec list` (it's in `archive/`) AND main specs contain its spec.
+
 #### 3.5 Wrap-up reminder
 
-After the above, remind the user they can run `/finish-work` to wrap up (archive the task, record the session).
+After the above, remind the user they can run `/finish-work` to wrap up (archive the task, record the session). If the task had an OpenSpec change, confirm 3.4.5 ran before `/finish-work`.
 
 ---
 
