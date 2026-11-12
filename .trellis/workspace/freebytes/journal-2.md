@@ -1760,3 +1760,36 @@ WriteBatcher NOT NULL 重试的 _notNullAttempts 计数器只在 giveup 时删�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 105: sync 复活防护 Layer 1/2 回归测试
+
+**Date**: 2026-11-12
+**Task**: sync 复活防护 Layer 1/2 回归测试
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+补复活防护三层链缺失的 Layer 1/2 回归测试(3个:Layer2 deleted:1+server newer skip / Layer1 registerLocalDelete 窗口期 skip / Layer1 60s timer 过期放行)，锁 e45e7743 最危险不变量。纯加测试不改生产代码，34测试全绿，lint ratchet 13 不破。OpenSpec change archive，sync-resurrection-invariants spec(2 requirements)进 main specs。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `8f514a8d` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

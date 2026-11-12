@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-2.md`
-- **Total Sessions**: 104
+- **Total Sessions**: 105
 - **Last Active**: 2026-11-12
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~1762 | Active |
+| `journal-2.md` | ~1795 | Active |
 | `journal-1.md` | ~1971 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 105 | 2026-11-12 | sync 复活防护 Layer 1/2 回归测试 | `8f514a8d` | `refactor/split-body-dashboard` |
 | 104 | 2026-11-12 | 代码库质量分析 + CI 基线建立 + OpenSpec 生命周期治理 | `c21b9be`, `c5da7d8`, `bb40f644`, `0b009ed3`, `6430985f`, `280180fc` | `refactor/split-body-dashboard` |
 | 103 | 2026-11-09 | changedFields 字段级 delta 管线标注为未激活 | `72bac461` | `refactor/split-body-dashboard` |
 | 102 | 2026-11-09 | fix(store): 清理 _notNullAttempts 残留计数器 | `c075a4f4`, `83c79a36` | `refactor/split-body-dashboard` |
