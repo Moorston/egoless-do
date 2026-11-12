@@ -318,6 +318,64 @@ describe('SyncApplyService', () => {
       expect(result.habits).toBeUndefined();
     });
 
+    it('does NOT resurrect a locally soft-deleted record even when server is newer', async () => {
+      // Regression for e45e7743 — Layer 2 of the resurrection chain:
+      // local.deleted === 1 MUST block resurrection regardless of server updated_at.
+      // Previously only `serverIsOlder` guarded, so a server push with a newer
+      // timestamp revived soft-deleted records.
+      // See .trellis/spec/core/backend/database-guidelines.md "three-layer chain" Layer 2.
+      mockDb.getAllAsync.mockResolvedValueOnce([
+        { id: 'h1', updated_at: 100, deleted: 1 },
+      ]);
+      mockDb.runAsync.mockResolvedValue({ changes: 1 });
+
+      const data = { habit: [{ id: 'h1', title: 'Resurrect Attempt', updated_at: 9999 }] };
+      const result = await svc.applyServerChanges(data);
+
+      // Soft-deleted record stays deleted — server record NOT applied even though newer
+      expect(result.habits).toBeUndefined();
+      expect(mockDb.runAsync).not.toHaveBeenCalled();
+    });
+
+    it('skips records registered via registerLocalDelete (WriteBatcher window guard)', async () => {
+      // Layer 1 of the resurrection chain: _locallyDeleted bridges the sub-100ms
+      // WriteBatcher window before `deleted=1` flushes to SQLite. During that
+      // window localMeta reads deleted=0, so Layer 2 cannot fire yet.
+      // See database-guidelines.md "three-layer chain" Layer 1.
+      mockDb.getAllAsync.mockResolvedValueOnce([]);
+      mockDb.runAsync.mockResolvedValue({ changes: 1 });
+
+      svc.registerLocalDelete('habit', 'h1');
+
+      const data = { habit: [{ id: 'h1', title: 'Incoming' }] };
+      const result = await svc.applyServerChanges(data);
+
+      // In-memory guard blocks the incoming record during the WriteBatcher window
+      expect(result.habits).toBeUndefined();
+    });
+
+    it('re-applies records after the _locallyDeleted 60s timer expires', async () => {
+      // After the 60s timer clears the in-memory guard, the persistent SQLite
+      // guard (Layer 2) takes over. With no local row present (delete never
+      // flushed or row gone), the incoming record applies normally.
+      vi.useFakeTimers();
+      try {
+        mockDb.getAllAsync.mockResolvedValue([]);
+        mockDb.runAsync.mockResolvedValue({ changes: 1 });
+
+        svc.registerLocalDelete('habit', 'h1');
+        vi.advanceTimersByTime(60_000);
+
+        const data = { habit: [{ id: 'h1', title: 'Incoming After Expiry' }] };
+        const result = await svc.applyServerChanges(data);
+
+        expect(result.habits).toBeDefined();
+        expect((result.habits as unknown[]).length).toBe(1);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
     it('respects clockOffset sign when comparing local vs server updated_at', async () => {
       // clockOffset = serverTime - Date.now(). Device clock is behind server by 100ms.
       // local.updated_at (1000, device frame) == 1100 in server frame.
