@@ -89,6 +89,14 @@ Focus testing on:
 - Conflict resolution determinism
 - Slice state transitions (complex ones)
 
+### Slice unit tests — use the typed harness
+
+Slice tests (`store/*.test.ts`) MUST use the shared typed test harness (`store/test-utils/storeHarness.ts`): `createTestStore<Slice>` + `createMockStorageAdapter` + `bindSlice`. Never hand-roll `makeTestStore` / `mockAdapter as any` — that pattern was the source of ~246 `no-explicit-any` warnings and their `no-unsafe-*` cascade. See `state-management.md` → "Slice Unit Testing" for the `bindSlice` vs FullStore-direct decision rule and forbidden patterns.
+
+### Lint ratchet
+
+`packages/core/package.json` lint script enforces `--max-warnings 23` (ratcheted down from 530 on 2026-11-16 via the typed test harness migration). The threshold equals the measured warning count — any new warning fails CI. Do not raise it without a recorded reason; lower it when warnings are eliminated. Residual 23 = non-store test noise (~20) + 2 vitest `expect.any`/`expect.arrayContaining` artifacts + 1 sealed harness boundary cast.
+
 ---
 
 ## Code Review Checklist
