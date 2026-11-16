@@ -1793,3 +1793,38 @@ WriteBatcher NOT NULL 重试的 _notNullAttempts 计数器只在 giveup 时删�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 106: core typed test harness 抽取 + 18 slice 测试迁移，lint ratchet 530→23
+
+**Date**: 2026-11-16
+**Task**: core typed test harness 抽取 + 18 slice 测试迁移，lint ratchet 530→23
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+抽取 store/test-utils/storeHarness.ts（createTestStore + createMockStorageAdapter + bindSlice），把 SliceCreator 绑定 FullStore 的类型摩擦封在 harness 内部。迁移 18 个 slice 测试到 harness，删手写 makeTestStore/mockAdapter as any，移除全部 as any。累计 warning 530→23（97% 消除），812 测试全绿，type-check 0 error。ratchet --max-warnings 530→23。spec 更新 state-management.md + quality-guidelines.md。OpenSpec change archive。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `bd18c0b9` | (see git log) |
+| `7d0302df` | (see git log) |
+| `9951d32d` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
