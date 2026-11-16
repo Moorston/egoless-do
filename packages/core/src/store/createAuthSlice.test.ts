@@ -1,53 +1,23 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// @ts-expect-error — React Native global not available in test env
+// __DEV__ is globally declared via src/logger.ts; ensure test env has it set.
 globalThis.__DEV__ = false;
 
 import { apiLogin, apiRegister, apiLogout, apiRefreshToken, apiVerifyMFALogin, MFARequiredError } from '../auth';
+import type { AuthResponse, MFARequiredResponse, RefreshResponse } from '../auth';
 import { defaultAuthState } from '../types';
 
 import { createAuthSlice } from './createAuthSlice';
+import { createTestStore, createMockStorageAdapter, bindSlice } from './test-utils/storeHarness';
+import type { AuthSlice } from './types';
 
-function makeTestStore(initialState: Record<string, unknown> = {}) {
-  let state: Record<string, unknown> = {
-    auth: defaultAuthState,
-    habits: [],
-    reflections: [],
-    fastingHistory: [],
-    foodLog: [],
-    checkinHistory: [],
-    exerciseLog: [],
-    medHistory: [],
-    plans: [],
-    planItems: [],
-    planItemCheckins: [],
-    dailyCustomTodos: [],
-    dailyTodoHistory: [],
-    graceHistory: [],
-    thoughtTrails: [],
-    trailNotes: [],
-    reflectionLinks: [],
-    checkinReviews: [],
-    userProfile: {},
-    ...initialState,
-  };
-  const set = (fn: unknown) => {
-    const patch = typeof fn === 'function' ? (fn as (s: typeof state) => typeof state)(state) : fn;
-    state = { ...state, ...(patch as Record<string, unknown>) };
-  };
-  const get = () => state;
-  const api = { setState: set, getState: get, getInitialState: () => state, subscribe: () => () => {}, destroy: () => {} } as any;
-  return { state: () => state, set, get: get as any, api };
+// createAuthSlice reads only `auth` (and its own methods) via get() — no cross-slice
+// state. So the isolated store is typed AuthSlice and seeded with just auth.
+function makeTestStore(overrides: Partial<AuthSlice> = {}) {
+  return createTestStore<AuthSlice>({ auth: defaultAuthState, ...overrides });
 }
 
-const mockAdapter = {
-  persistChange: vi.fn().mockResolvedValue(undefined),
-  markDeleted: vi.fn().mockResolvedValue(undefined),
-  batchDelete: vi.fn().mockResolvedValue(undefined),
-  persistSettings: vi.fn().mockResolvedValue(undefined),
-  getSettings: vi.fn().mockResolvedValue(null),
-  transaction: vi.fn().mockImplementation(async (fn: () => Promise<unknown>) => fn()),
-};
+const adapter = createMockStorageAdapter();
 
 const mockOnSync = vi.fn();
 const mockOnLogout = vi.fn();
@@ -96,11 +66,11 @@ describe('createAuthSlice', () => {
         token: 'token123',
         refreshToken: 'refresh123',
         expiresAt: Date.now() + 3600000,
-      } as any);
+      } as AuthResponse);
 
       const store = makeTestStore();
-      const slice = createAuthSlice(
-        mockAdapter as any, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
+      const slice = bindSlice(createAuthSlice)(
+        adapter, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
       )(store.set, store.get, store.api);
       Object.assign(store.api.getState(), slice);
 
@@ -115,12 +85,12 @@ describe('createAuthSlice', () => {
     });
 
     it('sets isLoading to true during login', async () => {
-      let resolveLogin: (v: any) => void;
-      vi.mocked(apiLogin).mockReturnValue(new Promise(r => { resolveLogin = r; }) as any);
+      let resolveLogin: (v: AuthResponse) => void;
+      vi.mocked(apiLogin).mockReturnValue(new Promise<AuthResponse>(r => { resolveLogin = r; }));
 
       const store = makeTestStore();
-      const slice = createAuthSlice(
-        mockAdapter as any, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
+      const slice = bindSlice(createAuthSlice)(
+        adapter, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
       )(store.set, store.get, store.api);
       Object.assign(store.api.getState(), slice);
 
@@ -140,8 +110,8 @@ describe('createAuthSlice', () => {
       vi.mocked(apiLogin).mockRejectedValue(new Error('Invalid credentials'));
 
       const store = makeTestStore();
-      const slice = createAuthSlice(
-        mockAdapter as any, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
+      const slice = bindSlice(createAuthSlice)(
+        adapter, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
       )(store.set, store.get, store.api);
 
       await expect(slice.login('test@test.com', 'wrong')).rejects.toThrow('Invalid credentials');
@@ -156,11 +126,11 @@ describe('createAuthSlice', () => {
         mfaRequired: true,
         mfaToken: 'challenge-token',
         expiresAt: Date.now() + 5 * 60 * 1000,
-      } as any);
+      } as MFARequiredResponse);
 
       const store = makeTestStore();
-      const slice = createAuthSlice(
-        mockAdapter as any, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
+      const slice = bindSlice(createAuthSlice)(
+        adapter, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
       )(store.set, store.get, store.api);
       Object.assign(store.api.getState(), slice);
 
@@ -182,11 +152,11 @@ describe('createAuthSlice', () => {
         token: 'real-token',
         refreshToken: 'real-refresh',
         expiresAt: Date.now() + 3600000,
-      } as any);
+      } as AuthResponse);
 
       const store = makeTestStore();
-      const slice = createAuthSlice(
-        mockAdapter as any, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
+      const slice = bindSlice(createAuthSlice)(
+        adapter, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
       )(store.set, store.get, store.api);
       Object.assign(store.api.getState(), slice);
 
@@ -208,11 +178,11 @@ describe('createAuthSlice', () => {
         token: 'token123',
         refreshToken: 'refresh123',
         expiresAt: Date.now() + 3600000,
-      } as any);
+      } as AuthResponse);
 
       const store = makeTestStore();
-      const slice = createAuthSlice(
-        mockAdapter as any, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
+      const slice = bindSlice(createAuthSlice)(
+        adapter, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
       )(store.set, store.get, store.api);
       // Attach slice to store so get().pullServerData works
       Object.assign(store.api.getState(), slice);
@@ -228,8 +198,8 @@ describe('createAuthSlice', () => {
       vi.mocked(apiRegister).mockRejectedValue(new Error('Email exists'));
 
       const store = makeTestStore();
-      const slice = createAuthSlice(
-        mockAdapter as any, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
+      const slice = bindSlice(createAuthSlice)(
+        adapter, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
       )(store.set, store.get, store.api);
       Object.assign(store.api.getState(), slice);
 
@@ -243,8 +213,8 @@ describe('createAuthSlice', () => {
       const store = makeTestStore({
         auth: { ...defaultAuthState, isSignedIn: true, token: 't', refreshToken: 'r' },
       });
-      const slice = createAuthSlice(
-        mockAdapter as any, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
+      const slice = bindSlice(createAuthSlice)(
+        adapter, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
       )(store.set, store.get, store.api);
 
       await slice.logout();
@@ -257,8 +227,8 @@ describe('createAuthSlice', () => {
       const store = makeTestStore({
         auth: { ...defaultAuthState, isSignedIn: true, token: 't', refreshToken: 'r' },
       });
-      const slice = createAuthSlice(
-        mockAdapter as any, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
+      const slice = bindSlice(createAuthSlice)(
+        adapter, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
       )(store.set, store.get, store.api);
 
       await slice.logout();
@@ -273,7 +243,7 @@ describe('createAuthSlice', () => {
         token: 'newToken',
         refreshToken: 'newRefresh',
         expiresAt: Date.now() + 3600000,
-      } as any);
+      } as RefreshResponse);
 
       const store = makeTestStore({
         auth: {
@@ -284,8 +254,8 @@ describe('createAuthSlice', () => {
           expiresAt: Date.now() - 1000, // expired
         },
       });
-      const slice = createAuthSlice(
-        mockAdapter as any, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
+      const slice = bindSlice(createAuthSlice)(
+        adapter, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
       )(store.set, store.get, store.api);
 
       await slice.refreshAuth();
@@ -304,8 +274,8 @@ describe('createAuthSlice', () => {
           expiresAt: Date.now() + 3600000, // not expired
         },
       });
-      const slice = createAuthSlice(
-        mockAdapter as any, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
+      const slice = bindSlice(createAuthSlice)(
+        adapter, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
       )(store.set, store.get, store.api);
 
       await slice.refreshAuth();
@@ -317,8 +287,8 @@ describe('createAuthSlice', () => {
       const store = makeTestStore({
         auth: { ...defaultAuthState, isSignedIn: true, token: 't' },
       });
-      const slice = createAuthSlice(
-        mockAdapter as any, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
+      const slice = bindSlice(createAuthSlice)(
+        adapter, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
       )(store.set, store.get, store.api);
 
       await slice.refreshAuth();
@@ -330,10 +300,10 @@ describe('createAuthSlice', () => {
   describe('pullServerData', () => {
     it('delegates to onPullServerData when provided', async () => {
       const store = makeTestStore({
-        auth: { ...defaultAuthState, token: 't', user: { id: 'u1' } },
+        auth: { ...defaultAuthState, token: 't', user: { id: 'u1', name: 'Test' } },
       });
-      const slice = createAuthSlice(
-        mockAdapter as any, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
+      const slice = bindSlice(createAuthSlice)(
+        adapter, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
       )(store.set, store.get, store.api);
 
       await slice.pullServerData();
@@ -343,8 +313,8 @@ describe('createAuthSlice', () => {
 
     it('does nothing when no token', async () => {
       const store = makeTestStore({ auth: defaultAuthState });
-      const slice = createAuthSlice(
-        mockAdapter as any, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
+      const slice = bindSlice(createAuthSlice)(
+        adapter, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
       )(store.set, store.get, store.api);
 
       await slice.pullServerData();

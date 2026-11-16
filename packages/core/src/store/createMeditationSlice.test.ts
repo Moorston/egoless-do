@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// @ts-expect-error — React Native global not available in test env
+// __DEV__ is globally declared via src/logger.ts; ensure test env has it set.
 globalThis.__DEV__ = false;
 
 vi.mock('../logger', () => ({
@@ -13,30 +13,17 @@ vi.mock('../logger', () => ({
 }));
 
 import { createMeditationSlice } from './createMeditationSlice';
+import type { MeditationSlice } from './createMeditationSlice';
+import { createTestStore, createMockStorageAdapter, bindSlice } from './test-utils/storeHarness';
 
-function makeTestStore(initialState: Record<string, unknown> = {}) {
-  let state: Record<string, unknown> = {
-    totalMedMinutes: 0,
-    medHistory: [],
-    ...initialState,
-  };
-  const set = (fn: unknown) => {
-    const patch = typeof fn === 'function' ? (fn as (s: typeof state) => typeof state)(state) : fn;
-    state = { ...state, ...(patch as Record<string, unknown>) };
-  };
-  const get = () => state;
-  const api = { setState: set, getState: get, getInitialState: () => state, subscribe: () => () => {}, destroy: () => {} } as any;
-  return { state: () => state, set, get: get as any, api };
+// createMeditationSlice reads only its own fields (medHistory, totalMedMinutes)
+// via get()/set() — no cross-slice state. So the isolated store is typed
+// MeditationSlice and bindSlice narrows the factory's FullStore binding.
+function makeTestStore(overrides: Partial<MeditationSlice> = {}) {
+  return createTestStore<MeditationSlice>({ totalMedMinutes: 0, medHistory: [], ...overrides });
 }
 
-const mockAdapter = {
-  persistChange: vi.fn().mockResolvedValue(undefined),
-  markDeleted: vi.fn().mockResolvedValue(undefined),
-  batchDelete: vi.fn().mockResolvedValue(undefined),
-  persistSettings: vi.fn().mockResolvedValue(undefined),
-  getSettings: vi.fn().mockResolvedValue(null),
-  transaction: vi.fn().mockResolvedValue(undefined),
-};
+const adapter = createMockStorageAdapter();
 
 const mockSync = vi.fn();
 
@@ -50,14 +37,14 @@ describe('createMeditationSlice', () => {
       // meditation id is the date string
       const existing = { date: '2026-08-01', durMin: 20, note: 'old', updatedAt: 1, deleted: false };
       const store = makeTestStore({ medHistory: [existing] });
-      const slice = createMeditationSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = bindSlice(createMeditationSlice)(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.updateMeditationNote('2026-08-01', 'new insight');
 
-      const updated = (store.state().medHistory as any[]).find(e => e.date === '2026-08-01');
-      expect(updated.note).toBe('new insight');
-      expect(updated.updatedAt).toBeGreaterThan(1);
-      expect(mockAdapter.persistChange).toHaveBeenCalledWith(
+      const updated = store.state().medHistory.find(e => e.date === '2026-08-01');
+      expect(updated?.note).toBe('new insight');
+      expect(updated?.updatedAt).toBeGreaterThan(1);
+      expect(adapter.persistChange).toHaveBeenCalledWith(
         'meditation',
         '2026-08-01',
         expect.objectContaining({ date: '2026-08-01', note: 'new insight' }),
@@ -66,11 +53,11 @@ describe('createMeditationSlice', () => {
 
     it('does not persist when the entry does not exist', () => {
       const store = makeTestStore({ medHistory: [{ date: '2026-08-01', durMin: 20, updatedAt: 1, deleted: false }] });
-      const slice = createMeditationSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = bindSlice(createMeditationSlice)(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.updateMeditationNote('nonexistent', 'note');
 
-      expect(mockAdapter.persistChange).not.toHaveBeenCalled();
+      expect(adapter.persistChange).not.toHaveBeenCalled();
     });
   });
 
@@ -78,11 +65,11 @@ describe('createMeditationSlice', () => {
     it('removes the entry from medHistory', () => {
       const existing = { date: '2026-08-01', durMin: 20, updatedAt: 1, deleted: false };
       const store = makeTestStore({ medHistory: [existing], totalMedMinutes: 20 });
-      const slice = createMeditationSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = bindSlice(createMeditationSlice)(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.deleteMeditationEntry('2026-08-01');
 
-      expect((store.state().medHistory as any[])).toHaveLength(0);
+      expect(store.state().medHistory).toHaveLength(0);
     });
 
     it('reconciles totalMedMinutes after delete', () => {
@@ -91,7 +78,7 @@ describe('createMeditationSlice', () => {
         { date: '2026-08-02', durMin: 15, updatedAt: 1, deleted: false },
       ];
       const store = makeTestStore({ medHistory: entries, totalMedMinutes: 35 });
-      const slice = createMeditationSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = bindSlice(createMeditationSlice)(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.deleteMeditationEntry('2026-08-01');
 
@@ -100,16 +87,16 @@ describe('createMeditationSlice', () => {
 
     it('marks the entry as deleted via the adapter', () => {
       const store = makeTestStore({ medHistory: [{ date: '2026-08-01', durMin: 20, updatedAt: 1, deleted: false }] });
-      const slice = createMeditationSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = bindSlice(createMeditationSlice)(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.deleteMeditationEntry('2026-08-01');
 
-      expect(mockAdapter.markDeleted).toHaveBeenCalledWith('meditation', '2026-08-01');
+      expect(adapter.markDeleted).toHaveBeenCalledWith('meditation', '2026-08-01');
     });
 
     it('calls onSync after deleting', () => {
       const store = makeTestStore({ medHistory: [{ date: '2026-08-01', durMin: 20, updatedAt: 1, deleted: false }] });
-      const slice = createMeditationSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = bindSlice(createMeditationSlice)(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.deleteMeditationEntry('2026-08-01');
 

@@ -1,32 +1,26 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// @ts-expect-error — React Native global not available in test env
+// __DEV__ is globally declared via src/logger.ts; ensure test env has it set.
 globalThis.__DEV__ = false;
 
 import { createDietSlice } from './createDietSlice';
+import { createTestStore, createMockStorageAdapter } from './test-utils/storeHarness';
+import type { FullStore } from './types';
 
-function makeTestStore(initialState: Record<string, unknown> = {}) {
-  let state: Record<string, unknown> = {
+// createDietSlice writes cross-slice state (recycleBin on deleteFood) via
+// set(), so the isolated store is typed FullStore and the factory is invoked
+// directly — its SliceCreator<DietSlice> expects FullStore-typed set/get/api.
+function makeTestStore(initialState: Partial<FullStore> = {}) {
+  return createTestStore<FullStore>({
     foodLog: [],
     calGoal: 2000,
     customFoodPresets: [],
     recycleBin: [],
     ...initialState,
-  };
-  const set = (fn: unknown) => {
-    const patch = typeof fn === 'function' ? (fn as (s: typeof state) => typeof state)(state) : fn;
-    state = { ...state, ...(patch as Record<string, unknown>) };
-  };
-  const get = () => state;
-  const api = { setState: set, getState: get, getInitialState: () => state, subscribe: () => () => {}, destroy: () => {} } as any;
-  return { state: () => state, set, get: get as any, api };
+  });
 }
 
-const mockAdapter = {
-  persistChange: vi.fn().mockResolvedValue(undefined),
-  markDeleted: vi.fn().mockResolvedValue(undefined),
-  batchDelete: vi.fn().mockResolvedValue(undefined),
-};
+const adapter = createMockStorageAdapter();
 
 const mockSync = vi.fn();
 
@@ -51,20 +45,20 @@ describe('createDietSlice', () => {
   describe('addFood', () => {
     it('adds a food entry to foodLog', () => {
       const store = makeTestStore();
-      const slice = createDietSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createDietSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.addFood({ name: '米饭', cal: 200, unit: '碗', date: '2026-07-06', time: '12:00', category: 'staple' });
 
       expect(store.state().foodLog).toHaveLength(1);
       expect(store.state().foodLog[0].name).toBe('米饭');
       expect(store.state().foodLog[0].cal).toBe(200);
-      expect(mockAdapter.persistChange).toHaveBeenCalledWith('food', expect.any(String), expect.objectContaining({ name: '米饭' }));
+      expect(adapter.persistChange).toHaveBeenCalledWith('food', expect.any(String), expect.objectContaining({ name: '米饭' }));
       expect(mockSync).toHaveBeenCalled();
     });
 
     it('generates unique id for each entry', () => {
       const store = makeTestStore();
-      const slice = createDietSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createDietSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.addFood({ name: '米饭', cal: 200, unit: '碗', date: '2026-07-06', time: '12:00', category: 'staple' });
       slice.addFood({ name: '面条', cal: 250, unit: '碗', date: '2026-07-06', time: '18:00', category: 'staple' });
@@ -77,18 +71,18 @@ describe('createDietSlice', () => {
   describe('deleteFood', () => {
     it('soft-deletes a food entry', () => {
       const store = makeTestStore({ foodLog: [makeFood()] });
-      const slice = createDietSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createDietSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.deleteFood('food-1');
 
       expect(store.state().foodLog[0].deleted).toBe(true);
-      expect(mockAdapter.markDeleted).toHaveBeenCalledWith('food', 'food-1');
+      expect(adapter.markDeleted).toHaveBeenCalledWith('food', 'food-1');
       expect(mockSync).toHaveBeenCalled();
     });
 
     it('adds deleted food to recycleBin', () => {
       const store = makeTestStore({ foodLog: [makeFood()] });
-      const slice = createDietSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createDietSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.deleteFood('food-1');
 
@@ -100,7 +94,7 @@ describe('createDietSlice', () => {
   describe('setCalGoal', () => {
     it('sets calorie goal', () => {
       const store = makeTestStore();
-      const slice = createDietSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createDietSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.setCalGoal(2500);
 
@@ -109,7 +103,7 @@ describe('createDietSlice', () => {
 
     it('enforces minimum of 100', () => {
       const store = makeTestStore();
-      const slice = createDietSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createDietSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.setCalGoal(50);
 

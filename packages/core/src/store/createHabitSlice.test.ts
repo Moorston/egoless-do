@@ -1,11 +1,16 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import type { Habit } from '../types';
 
 import { createHabitSlice } from './createHabitSlice';
+import { createTestStore, createMockStorageAdapter } from './test-utils/storeHarness';
+import type { FullStore } from './types';
 
-function makeTestStore(initialState: Record<string, unknown> = {}) {
-  let state: Record<string, unknown> = {
+// createHabitSlice reads/writes cross-slice state (planItems, recycleBin via set/get),
+// so the isolated store is typed FullStore and the factory is invoked directly — its
+// SliceCreator<HabitSlice> already expects FullStore-typed set/get/api.
+function makeTestStore(initialState: Partial<FullStore> = {}) {
+  return createTestStore<FullStore>({
     habits: [],
     planItems: [],
     recycleBin: [],
@@ -14,21 +19,10 @@ function makeTestStore(initialState: Record<string, unknown> = {}) {
     medHistory: [],
     exerciseLog: [],
     ...initialState,
-  };
-  const set = (fn: unknown) => {
-    const patch = typeof fn === 'function' ? (fn as (s: typeof state) => typeof state)(state) : fn;
-    state = { ...state, ...(patch as Record<string, unknown>) };
-  };
-  const get = () => state;
-  const api = { setState: set, getState: get, getInitialState: () => state, subscribe: () => () => {}, destroy: () => {} } as any;
-  return { state: () => state, set, get: get as any, api };
+  });
 }
 
-const mockAdapter = {
-  persistChange: vi.fn().mockResolvedValue(undefined),
-  markDeleted: vi.fn().mockResolvedValue(undefined),
-  batchDelete: vi.fn().mockResolvedValue(undefined),
-};
+const adapter = createMockStorageAdapter();
 
 const mockSync = vi.fn();
 
@@ -64,11 +58,11 @@ describe('createHabitSlice', () => {
   describe('addHabit', () => {
     it('adds a new habit to the list', () => {
       const store = makeTestStore();
-      const slice = createHabitSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createHabitSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.addHabit({ name: 'Exercise', goal: 'Stay fit', targetDays: 30, link: 'none' });
 
-      const habits = store.state().habits as Habit[];
+      const habits = store.state().habits;
       expect(habits).toHaveLength(1);
       expect(habits[0].name).toBe('Exercise');
       expect(habits[0].deleted).toBe(false);
@@ -76,11 +70,11 @@ describe('createHabitSlice', () => {
 
     it('calls adapter.persistChange', () => {
       const store = makeTestStore();
-      const slice = createHabitSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createHabitSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.addHabit({ name: 'Exercise', goal: '', targetDays: 30, link: 'none' });
 
-      expect(mockAdapter.persistChange).toHaveBeenCalledWith(
+      expect(adapter.persistChange).toHaveBeenCalledWith(
         'habit',
         expect.any(String),
         expect.objectContaining({ name: 'Exercise' }),
@@ -91,22 +85,22 @@ describe('createHabitSlice', () => {
   describe('updateHabit', () => {
     it('updates habit fields', () => {
       const store = makeTestStore({ habits: [makeHabit()] });
-      const slice = createHabitSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createHabitSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.updateHabit('h1', { name: 'Updated Name', goal: 'New goal' });
 
-      const habits = store.state().habits as Habit[];
+      const habits = store.state().habits;
       expect(habits[0].name).toBe('Updated Name');
       expect(habits[0].goal).toBe('New goal');
     });
 
     it('persists the updated habit', () => {
       const store = makeTestStore({ habits: [makeHabit()] });
-      const slice = createHabitSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createHabitSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.updateHabit('h1', { name: 'Updated' });
 
-      expect(mockAdapter.persistChange).toHaveBeenCalledWith(
+      expect(adapter.persistChange).toHaveBeenCalledWith(
         'habit',
         'h1',
         expect.objectContaining({ name: 'Updated' }),
@@ -117,21 +111,21 @@ describe('createHabitSlice', () => {
   describe('deleteHabit', () => {
     it('soft-deletes the habit', () => {
       const store = makeTestStore({ habits: [makeHabit()] });
-      const slice = createHabitSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createHabitSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.deleteHabit('h1');
 
-      const habits = store.state().habits as Habit[];
+      const habits = store.state().habits;
       expect(habits[0].deleted).toBe(true);
     });
 
     it('adds to recycle bin', () => {
       const store = makeTestStore({ habits: [makeHabit()] });
-      const slice = createHabitSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createHabitSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.deleteHabit('h1');
 
-      const recycleBin = store.state().recycleBin as Array<{ id: string; entityType: string }>;
+      const recycleBin = store.state().recycleBin;
       expect(recycleBin).toHaveLength(1);
       expect(recycleBin[0].id).toBe('h1');
       expect(recycleBin[0].entityType).toBe('habit');
@@ -139,16 +133,16 @@ describe('createHabitSlice', () => {
 
     it('calls adapter.markDeleted', () => {
       const store = makeTestStore({ habits: [makeHabit()] });
-      const slice = createHabitSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createHabitSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.deleteHabit('h1');
 
-      expect(mockAdapter.markDeleted).toHaveBeenCalledWith('habit', 'h1');
+      expect(adapter.markDeleted).toHaveBeenCalledWith('habit', 'h1');
     });
 
     it('triggers sync callback', () => {
       const store = makeTestStore({ habits: [makeHabit()] });
-      const slice = createHabitSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createHabitSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.deleteHabit('h1');
 
@@ -157,32 +151,32 @@ describe('createHabitSlice', () => {
 
     it('does nothing for non-existent habit', () => {
       const store = makeTestStore({ habits: [] });
-      const slice = createHabitSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createHabitSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.deleteHabit('nonexistent');
 
-      expect(mockAdapter.markDeleted).not.toHaveBeenCalled();
+      expect(adapter.markDeleted).not.toHaveBeenCalled();
     });
   });
 
   describe('checkinHabit', () => {
     it('marks the habit as checked for the date', () => {
       const store = makeTestStore({ habits: [makeHabit({ status: 'inProgress' })] });
-      const slice = createHabitSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createHabitSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.checkinHabit('h1', '2026-06-25');
 
-      const habits = store.state().habits as Habit[];
+      const habits = store.state().habits;
       expect(habits[0].checkedDates).toContain('2026-06-25');
     });
 
     it('persists the updated habit', () => {
       const store = makeTestStore({ habits: [makeHabit({ status: 'inProgress' })] });
-      const slice = createHabitSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createHabitSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.checkinHabit('h1', '2026-06-25');
 
-      expect(mockAdapter.persistChange).toHaveBeenCalledWith(
+      expect(adapter.persistChange).toHaveBeenCalledWith(
         'habit',
         'h1',
         expect.objectContaining({ checkedDates: expect.arrayContaining(['2026-06-25']) }),
@@ -193,11 +187,11 @@ describe('createHabitSlice', () => {
   describe('changeHabitStatus', () => {
     it('changes habit status', () => {
       const store = makeTestStore({ habits: [makeHabit({ status: 'notStarted' })] });
-      const slice = createHabitSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createHabitSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.changeHabitStatus('h1', 'paused', 'Taking a break');
 
-      const habits = store.state().habits as Habit[];
+      const habits = store.state().habits;
       expect(habits[0].status).toBe('paused');
       expect(habits[0].pauseReason).toBe('Taking a break');
     });

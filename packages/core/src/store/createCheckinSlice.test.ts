@@ -1,31 +1,20 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import type { CheckinEntry } from '../types';
-import { calculateStreakFromCheckins , dateStr } from '../utils';
+import { calculateStreakFromCheckins, dateStr } from '../utils';
 
 import { createCheckinSlice } from './createCheckinSlice';
+import { createTestStore, createMockStorageAdapter, bindSlice } from './test-utils/storeHarness';
+import type { CheckinSlice } from './types';
 
-function makeTestStore(initialState: Record<string, unknown> = {}) {
-  let state: Record<string, unknown> = {
-    checkinHistory: [],
-    streak: 0,
-    graceHistory: [],
-    ...initialState,
-  };
-  const set = (fn: unknown) => {
-    const patch = typeof fn === 'function' ? (fn as (s: typeof state) => typeof state)(state) : fn;
-    state = { ...state, ...(patch as Record<string, unknown>) };
-  };
-  const get = () => state;
-  const api = { setState: set, getState: get, getInitialState: () => state, subscribe: () => () => {}, destroy: () => {} } as any;
-  return { state: () => state, set, get: get as any, api };
+// createCheckinSlice reads only its own fields (checkinHistory, graceHistory)
+// via get()/set() — no cross-slice state. So the isolated store is typed
+// CheckinSlice and bindSlice narrows the factory's FullStore binding.
+function makeTestStore(overrides: Partial<CheckinSlice> = {}) {
+  return createTestStore<CheckinSlice>({ checkinHistory: [], graceHistory: [], ...overrides });
 }
 
-const mockAdapter = {
-  persistChange: vi.fn().mockResolvedValue(undefined),
-  markDeleted: vi.fn().mockResolvedValue(undefined),
-  batchDelete: vi.fn().mockResolvedValue(undefined),
-};
+const adapter = createMockStorageAdapter();
 
 const mockSync = vi.fn();
 
@@ -47,11 +36,11 @@ describe('createCheckinSlice', () => {
   describe('submitCheckin', () => {
     it('adds a new checkin entry', () => {
       const store = makeTestStore();
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = bindSlice(createCheckinSlice)(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.submitCheckin(true, 'test note', '2026-06-25');
 
-      const history = store.state().checkinHistory as CheckinEntry[];
+      const history = store.state().checkinHistory;
       expect(history).toHaveLength(1);
       expect(history[0].date).toBe('2026-06-25');
       expect(history[0].done).toBe(true);
@@ -60,11 +49,11 @@ describe('createCheckinSlice', () => {
 
     it('calls adapter.persistChange', () => {
       const store = makeTestStore();
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = bindSlice(createCheckinSlice)(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.submitCheckin(true, '', '2026-06-25');
 
-      expect(mockAdapter.persistChange).toHaveBeenCalledWith(
+      expect(adapter.persistChange).toHaveBeenCalledWith(
         'checkin',
         '2026-06-25',
         expect.objectContaining({ date: '2026-06-25', done: true }),
@@ -73,7 +62,7 @@ describe('createCheckinSlice', () => {
 
     it('triggers sync callback', () => {
       const store = makeTestStore();
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = bindSlice(createCheckinSlice)(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.submitCheckin(true, '', '2026-06-25');
 
@@ -85,13 +74,13 @@ describe('createCheckinSlice', () => {
       const store = makeTestStore({
         checkinHistory: [makeCheckin({ date: today, done: true })],
       });
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = bindSlice(createCheckinSlice)(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.submitCheckin(true, '', today);
 
       // streak 已改为派生状态，从 state 中读取 checkinHistory
       const state = store.get();
-      const streak = calculateStreakFromCheckins(state.checkinHistory as CheckinEntry[]);
+      const streak = calculateStreakFromCheckins(state.checkinHistory);
       expect(streak).toBeGreaterThanOrEqual(1);
     });
   });
@@ -106,11 +95,11 @@ describe('createCheckinSlice', () => {
           makeCheckin({ date: yesterday, done: true }),
         ],
       });
-      createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      bindSlice(createCheckinSlice)(adapter, mockSync)(store.set, store.get, store.api);
 
       // streak 已改为派生状态，从 state 中读取 checkinHistory
       const state = store.get();
-      const streak = calculateStreakFromCheckins(state.checkinHistory as CheckinEntry[]);
+      const streak = calculateStreakFromCheckins(state.checkinHistory);
       expect(streak).toBe(2);
     });
 
@@ -120,10 +109,10 @@ describe('createCheckinSlice', () => {
           makeCheckin({ date: '2026-06-25', done: true, deleted: true }),
         ],
       });
-      createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      bindSlice(createCheckinSlice)(adapter, mockSync)(store.set, store.get, store.api);
 
       const state = store.get();
-      const streak = calculateStreakFromCheckins(state.checkinHistory as CheckinEntry[]);
+      const streak = calculateStreakFromCheckins(state.checkinHistory);
       expect(streak).toBe(0);
     });
   });
@@ -131,11 +120,11 @@ describe('createCheckinSlice', () => {
   describe('addGraceRecord', () => {
     it('adds a grace record', () => {
       const store = makeTestStore();
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = bindSlice(createCheckinSlice)(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.addGraceRecord('2026-06-25');
 
-      const grace = store.state().graceHistory as Array<{ date: string; deleted: boolean }>;
+      const grace = store.state().graceHistory;
       expect(grace).toHaveLength(1);
       expect(grace[0].date).toBe('2026-06-25');
       expect(grace[0].deleted).toBe(false);
@@ -145,21 +134,21 @@ describe('createCheckinSlice', () => {
       const store = makeTestStore({
         graceHistory: [{ date: '2026-06-25', restoredAt: 1000, updatedAt: 1000, deleted: false }],
       });
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = bindSlice(createCheckinSlice)(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.addGraceRecord('2026-06-25');
 
-      const grace = store.state().graceHistory as Array<{ date: string }>;
+      const grace = store.state().graceHistory;
       expect(grace).toHaveLength(1);
     });
 
     it('calls adapter.persistChange for grace', () => {
       const store = makeTestStore();
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = bindSlice(createCheckinSlice)(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.addGraceRecord('2026-06-25');
 
-      expect(mockAdapter.persistChange).toHaveBeenCalledWith(
+      expect(adapter.persistChange).toHaveBeenCalledWith(
         'grace',
         '2026-06-25',
         expect.objectContaining({ date: '2026-06-25' }),

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// @ts-expect-error — React Native global not available in test env
+// __DEV__ is globally declared via src/logger.ts; ensure test env has it set.
 globalThis.__DEV__ = false;
 
 vi.mock('../logger', () => ({
@@ -8,11 +8,18 @@ vi.mock('../logger', () => ({
 }));
 
 import { createRecycleBinSlice } from './createRecycleBinSlice';
+import { createTestStore, createMockStorageAdapter } from './test-utils/storeHarness';
+import type { FullStore } from './types';
 
 const MS_PER_WEEK = 7 * 24 * 60 * 60 * 1000;
 
-function makeTestStore(initialState: Record<string, unknown> = {}) {
-  let state: Record<string, unknown> = {
+// createRecycleBinSlice reads/writes many cross-slice arrays (habits, reflections,
+// foodLog, exerciseLog, plans, breathHistory, planItems, planItemCheckins,
+// dailyCustomTodos, dailyTodoHistory) via get()/set(), so the isolated store is
+// typed FullStore and the factory is invoked directly (no bindSlice) — its
+// SliceCreator<RecycleBinSlice> already expects FullStore-typed set/get/api.
+function makeTestStore(overrides: Partial<FullStore> = {}) {
+  return createTestStore<FullStore>({
     recycleBin: [],
     habits: [],
     reflections: [],
@@ -24,26 +31,11 @@ function makeTestStore(initialState: Record<string, unknown> = {}) {
     planItemCheckins: [],
     dailyCustomTodos: [],
     dailyTodoHistory: [],
-    ...initialState,
-  };
-  const set = (fn: unknown) => {
-    const patch = typeof fn === 'function' ? (fn as (s: typeof state) => typeof state)(state) : fn;
-    state = { ...state, ...(patch as Record<string, unknown>) };
-  };
-  const get = () => state;
-  const api = { setState: set, getState: get, getInitialState: () => state, subscribe: () => () => {}, destroy: () => {} } as any;
-  return { state: () => state, set, get: get as any, api };
+    ...overrides,
+  });
 }
 
-const mockAdapter = {
-  persistChange: vi.fn().mockResolvedValue(undefined),
-  markDeleted: vi.fn().mockResolvedValue(undefined),
-  batchDelete: vi.fn().mockResolvedValue(undefined),
-  hardDelete: vi.fn().mockResolvedValue(undefined),
-  persistSettings: vi.fn().mockResolvedValue(undefined),
-  getSettings: vi.fn().mockResolvedValue(undefined),
-  transaction: vi.fn().mockResolvedValue(undefined),
-};
+const adapter = createMockStorageAdapter();
 
 const sampleHabit = {
   id: 'h1',
@@ -59,7 +51,7 @@ describe('createRecycleBinSlice', () => {
   describe('addToRecycleBin', () => {
     it('adds an item with deletedAt timestamp', () => {
       const store = makeTestStore();
-      const slice = createRecycleBinSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createRecycleBinSlice(adapter)(store.set, store.get, store.api);
 
       slice.addToRecycleBin(sampleHabit);
 
@@ -72,16 +64,16 @@ describe('createRecycleBinSlice', () => {
 
     it('persists recycleBin via adapter', () => {
       const store = makeTestStore();
-      const slice = createRecycleBinSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createRecycleBinSlice(adapter)(store.set, store.get, store.api);
 
       slice.addToRecycleBin(sampleHabit);
 
-      expect(mockAdapter.persistSettings).toHaveBeenCalledWith('recycleBin', expect.arrayContaining([expect.objectContaining({ id: 'h1' })]));
+      expect(adapter.persistSettings).toHaveBeenCalledWith('recycleBin', expect.arrayContaining([expect.objectContaining({ id: 'h1' })]));
     });
 
     it('prepends new items to the recycleBin', () => {
       const store = makeTestStore({ recycleBin: [{ id: 'old', entityType: 'food', data: { id: 'old' }, deletedAt: 100 }] });
-      const slice = createRecycleBinSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createRecycleBinSlice(adapter)(store.set, store.get, store.api);
 
       slice.addToRecycleBin(sampleHabit);
 
@@ -96,7 +88,7 @@ describe('createRecycleBinSlice', () => {
       const store = makeTestStore({
         recycleBin: [{ id: 'h1', entityType: 'habit', data: { id: 'h1', name: 'test', deleted: true }, deletedAt: Date.now() }],
       });
-      const slice = createRecycleBinSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createRecycleBinSlice(adapter)(store.set, store.get, store.api);
 
       slice.restoreFromRecycleBin('h1');
 
@@ -110,7 +102,7 @@ describe('createRecycleBinSlice', () => {
       const store = makeTestStore({
         recycleBin: [{ id: 'r1', entityType: 'reflection', data: { id: 'r1', content: 'test', deleted: true }, deletedAt: Date.now() }],
       });
-      const slice = createRecycleBinSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createRecycleBinSlice(adapter)(store.set, store.get, store.api);
 
       slice.restoreFromRecycleBin('r1');
 
@@ -122,7 +114,7 @@ describe('createRecycleBinSlice', () => {
       const store = makeTestStore({
         recycleBin: [{ id: 'f1', entityType: 'food', data: { id: 'f1', name: 'rice', deleted: true }, deletedAt: Date.now() }],
       });
-      const slice = createRecycleBinSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createRecycleBinSlice(adapter)(store.set, store.get, store.api);
 
       slice.restoreFromRecycleBin('f1');
 
@@ -134,7 +126,7 @@ describe('createRecycleBinSlice', () => {
       const store = makeTestStore({
         recycleBin: [{ id: 'e1', entityType: 'exercise', data: { id: 'e1', name: 'run', deleted: true }, deletedAt: Date.now() }],
       });
-      const slice = createRecycleBinSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createRecycleBinSlice(adapter)(store.set, store.get, store.api);
 
       slice.restoreFromRecycleBin('e1');
 
@@ -146,7 +138,7 @@ describe('createRecycleBinSlice', () => {
       const store = makeTestStore({
         recycleBin: [{ id: 'b1', entityType: 'breath', data: { id: 'b1', type: 'box', deleted: true }, deletedAt: Date.now() }],
       });
-      const slice = createRecycleBinSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createRecycleBinSlice(adapter)(store.set, store.get, store.api);
 
       slice.restoreFromRecycleBin('b1');
 
@@ -156,7 +148,7 @@ describe('createRecycleBinSlice', () => {
 
     it('does nothing if the id is not found', () => {
       const store = makeTestStore();
-      const slice = createRecycleBinSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createRecycleBinSlice(adapter)(store.set, store.get, store.api);
 
       slice.restoreFromRecycleBin('nonexistent');
 
@@ -168,22 +160,22 @@ describe('createRecycleBinSlice', () => {
       const store = makeTestStore({
         recycleBin: [{ id: 'h1', entityType: 'habit', data: { id: 'h1', name: 'test', deleted: true }, deletedAt: Date.now() }],
       });
-      const slice = createRecycleBinSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createRecycleBinSlice(adapter)(store.set, store.get, store.api);
 
       slice.restoreFromRecycleBin('h1');
 
-      expect(mockAdapter.persistChange).toHaveBeenCalledWith('habit', 'h1', expect.objectContaining({ deleted: false }));
+      expect(adapter.persistChange).toHaveBeenCalledWith('habit', 'h1', expect.objectContaining({ deleted: false }));
     });
 
     it('persists updated recycleBin after restore', () => {
       const store = makeTestStore({
         recycleBin: [{ id: 'h1', entityType: 'habit', data: { id: 'h1', name: 'test', deleted: true }, deletedAt: Date.now() }],
       });
-      const slice = createRecycleBinSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createRecycleBinSlice(adapter)(store.set, store.get, store.api);
 
       slice.restoreFromRecycleBin('h1');
 
-      expect(mockAdapter.persistSettings).toHaveBeenCalledWith('recycleBin', expect.any(Array));
+      expect(adapter.persistSettings).toHaveBeenCalledWith('recycleBin', expect.any(Array));
     });
 
     it('restores plan child items (planItems, planItemCheckins, dailyCustomTodos, dailyTodoHistory)', () => {
@@ -207,7 +199,7 @@ describe('createRecycleBinSlice', () => {
           { id: 'dth2', planId: 'other', deleted: true, updatedAt: 100 },
         ],
       });
-      const slice = createRecycleBinSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createRecycleBinSlice(adapter)(store.set, store.get, store.api);
 
       slice.restoreFromRecycleBin('p1');
 
@@ -235,14 +227,14 @@ describe('createRecycleBinSlice', () => {
         dailyCustomTodos: [{ id: 'dt1', planId: 'p1', title: 'todo 1', deleted: true, updatedAt: 100 }],
         dailyTodoHistory: [{ id: 'dth1', planId: 'p1', deleted: true, updatedAt: 100 }],
       });
-      const slice = createRecycleBinSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createRecycleBinSlice(adapter)(store.set, store.get, store.api);
 
       slice.restoreFromRecycleBin('p1');
 
-      expect(mockAdapter.persistChange).toHaveBeenCalledWith('planItem', 'pi1', expect.objectContaining({ deleted: false }));
-      expect(mockAdapter.persistChange).toHaveBeenCalledWith('planItemCheckin', 'pic1', expect.objectContaining({ deleted: false }));
-      expect(mockAdapter.persistChange).toHaveBeenCalledWith('dailyCustomTodo', 'dt1', expect.objectContaining({ deleted: false }));
-      expect(mockAdapter.persistChange).toHaveBeenCalledWith('dailyTodoHistory', 'dth1', expect.objectContaining({ deleted: false }));
+      expect(adapter.persistChange).toHaveBeenCalledWith('planItem', 'pi1', expect.objectContaining({ deleted: false }));
+      expect(adapter.persistChange).toHaveBeenCalledWith('planItemCheckin', 'pic1', expect.objectContaining({ deleted: false }));
+      expect(adapter.persistChange).toHaveBeenCalledWith('dailyCustomTodo', 'dt1', expect.objectContaining({ deleted: false }));
+      expect(adapter.persistChange).toHaveBeenCalledWith('dailyTodoHistory', 'dth1', expect.objectContaining({ deleted: false }));
     });
   });
 
@@ -254,7 +246,7 @@ describe('createRecycleBinSlice', () => {
           { id: 'f1', entityType: 'food', data: { id: 'f1' }, deletedAt: 200 },
         ],
       });
-      const slice = createRecycleBinSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createRecycleBinSlice(adapter)(store.set, store.get, store.api);
 
       slice.removeFromRecycleBin('h1');
 
@@ -266,18 +258,18 @@ describe('createRecycleBinSlice', () => {
       const store = makeTestStore({
         recycleBin: [{ id: 'h1', entityType: 'habit', data: { id: 'h1' }, deletedAt: 100 }],
       });
-      const slice = createRecycleBinSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createRecycleBinSlice(adapter)(store.set, store.get, store.api);
 
       slice.removeFromRecycleBin('h1');
 
-      expect(mockAdapter.persistSettings).toHaveBeenCalledWith('recycleBin', []);
+      expect(adapter.persistSettings).toHaveBeenCalledWith('recycleBin', []);
     });
 
     it('does nothing if id not found', () => {
       const store = makeTestStore({
         recycleBin: [{ id: 'h1', entityType: 'habit', data: { id: 'h1' }, deletedAt: 100 }],
       });
-      const slice = createRecycleBinSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createRecycleBinSlice(adapter)(store.set, store.get, store.api);
 
       slice.removeFromRecycleBin('nonexistent');
 
@@ -293,7 +285,7 @@ describe('createRecycleBinSlice', () => {
           { id: 'f1', entityType: 'food', data: { id: 'f1' }, deletedAt: 200 },
         ],
       });
-      const slice = createRecycleBinSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createRecycleBinSlice(adapter)(store.set, store.get, store.api);
 
       slice.emptyRecycleBin();
 
@@ -304,16 +296,16 @@ describe('createRecycleBinSlice', () => {
       const store = makeTestStore({
         recycleBin: [{ id: 'h1', entityType: 'habit', data: { id: 'h1' }, deletedAt: 100 }],
       });
-      const slice = createRecycleBinSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createRecycleBinSlice(adapter)(store.set, store.get, store.api);
 
       slice.emptyRecycleBin();
 
-      expect(mockAdapter.persistSettings).toHaveBeenCalledWith('recycleBin', []);
+      expect(adapter.persistSettings).toHaveBeenCalledWith('recycleBin', []);
     });
 
     it('works on already empty recycleBin', () => {
       const store = makeTestStore();
-      const slice = createRecycleBinSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createRecycleBinSlice(adapter)(store.set, store.get, store.api);
 
       slice.emptyRecycleBin();
 
@@ -330,7 +322,7 @@ describe('createRecycleBinSlice', () => {
           { id: 'recent', entityType: 'food', data: { id: 'recent' }, deletedAt: Date.now() },
         ],
       });
-      const slice = createRecycleBinSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createRecycleBinSlice(adapter)(store.set, store.get, store.api);
 
       slice.cleanupRecycleBin();
 
@@ -343,11 +335,11 @@ describe('createRecycleBinSlice', () => {
       const store = makeTestStore({
         recycleBin: [{ id: 'old', entityType: 'habit', data: { id: 'old' }, deletedAt: twoWeeksAgo }],
       });
-      const slice = createRecycleBinSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createRecycleBinSlice(adapter)(store.set, store.get, store.api);
 
       slice.cleanupRecycleBin();
 
-      expect(mockAdapter.persistSettings).toHaveBeenCalledWith('recycleBin', []);
+      expect(adapter.persistSettings).toHaveBeenCalledWith('recycleBin', []);
     });
 
     it('keeps items within the week window', () => {
@@ -355,7 +347,7 @@ describe('createRecycleBinSlice', () => {
       const store = makeTestStore({
         recycleBin: [{ id: 'ok', entityType: 'habit', data: { id: 'ok' }, deletedAt: threeDaysAgo }],
       });
-      const slice = createRecycleBinSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createRecycleBinSlice(adapter)(store.set, store.get, store.api);
 
       slice.cleanupRecycleBin();
 

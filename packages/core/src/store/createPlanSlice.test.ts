@@ -1,12 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// @ts-expect-error — React Native global not available in test env
+// __DEV__ is globally declared via src/logger.ts; ensure test env has it set.
 globalThis.__DEV__ = false;
 
 import { createPlanSlice } from './createPlanSlice';
+import { createTestStore, createMockStorageAdapter } from './test-utils/storeHarness';
+import type { FullStore } from './types';
 
-function makeTestStore(initialState: Record<string, unknown> = {}) {
-  let state: Record<string, unknown> = {
+// createPlanSlice reads/writes cross-slice state (recycleBin, reflections,
+// reflectionLinks, planItems) via get()/set(), so the isolated store is typed
+// FullStore and the factory is invoked directly — its SliceCreator<PlanSlice>
+// already expects FullStore-typed set/get/api.
+function makeTestStore(initialState: Partial<FullStore> = {}) {
+  return createTestStore<FullStore>({
     plans: [],
     planItems: [],
     planItemCheckins: [],
@@ -16,21 +22,10 @@ function makeTestStore(initialState: Record<string, unknown> = {}) {
     reflections: [],
     reflectionLinks: [],
     ...initialState,
-  };
-  const set = (fn: unknown) => {
-    const patch = typeof fn === 'function' ? (fn as (s: typeof state) => typeof state)(state) : fn;
-    state = { ...state, ...(patch as Record<string, unknown>) };
-  };
-  const get = () => state;
-  const api = { setState: set, getState: get, getInitialState: () => state, subscribe: () => () => {}, destroy: () => {} } as any;
-  return { state: () => state, set, get: get as any, api };
+  });
 }
 
-const mockAdapter = {
-  persistChange: vi.fn().mockResolvedValue(undefined),
-  markDeleted: vi.fn().mockResolvedValue(undefined),
-  batchDelete: vi.fn().mockResolvedValue(undefined),
-};
+const adapter = createMockStorageAdapter();
 
 const makePlan = (overrides: Record<string, unknown> = {}) => ({
   id: 'plan-1',
@@ -68,45 +63,45 @@ describe('createPlanSlice', () => {
   describe('addPlan', () => {
     it('adds a new plan', () => {
       const store = makeTestStore();
-      const slice = createPlanSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createPlanSlice(adapter)(store.set, store.get, store.api);
 
       const planId = slice.addPlan({ name: '新计划', startDate: '2026-07-01', endDate: '2026-07-31', priority: 'medium' });
 
       expect(planId).toBeTruthy();
       expect(store.state().plans).toHaveLength(1);
       expect(store.state().plans[0].name).toBe('新计划');
-      expect(mockAdapter.persistChange).toHaveBeenCalled();
+      expect(adapter.persistChange).toHaveBeenCalled();
     });
   });
 
   describe('updatePlan', () => {
     it('updates an existing plan', () => {
       const store = makeTestStore({ plans: [makePlan()] });
-      const slice = createPlanSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createPlanSlice(adapter)(store.set, store.get, store.api);
 
       slice.updatePlan('plan-1', { name: '更新后的计划' });
 
       expect(store.state().plans[0].name).toBe('更新后的计划');
-      expect(mockAdapter.persistChange).toHaveBeenCalled();
+      expect(adapter.persistChange).toHaveBeenCalled();
     });
   });
 
   describe('deletePlan', () => {
     it('soft-deletes a plan when status allows', () => {
       const store = makeTestStore({ plans: [makePlan({ status: 'not_started' })] });
-      const slice = createPlanSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createPlanSlice(adapter)(store.set, store.get, store.api);
 
       slice.deletePlan('plan-1');
 
       // Plan should be deleted (moved to recycleBin)
-      expect(store.state().plans.find((p: any) => p.id === 'plan-1' && !p.deleted)).toBeUndefined();
+      expect(store.state().plans.find(p => p.id === 'plan-1' && !p.deleted)).toBeUndefined();
     });
   });
 
   describe('startPlan', () => {
     it('changes plan status to in_progress', () => {
       const store = makeTestStore({ plans: [makePlan()] });
-      const slice = createPlanSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createPlanSlice(adapter)(store.set, store.get, store.api);
 
       slice.startPlan('plan-1');
 
@@ -117,12 +112,12 @@ describe('createPlanSlice', () => {
   describe('addPlanItem', () => {
     it('adds a plan item', () => {
       const store = makeTestStore({ plans: [makePlan({ status: 'in_progress' })] });
-      const slice = createPlanSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createPlanSlice(adapter)(store.set, store.get, store.api);
 
       slice.addPlanItem({ planId: 'plan-1', name: '新任务' });
 
       expect(store.state().planItems).toHaveLength(1);
-      expect(mockAdapter.persistChange).toHaveBeenCalled();
+      expect(adapter.persistChange).toHaveBeenCalled();
     });
   });
 
@@ -132,18 +127,18 @@ describe('createPlanSlice', () => {
         plans: [makePlan({ status: 'in_progress' })],
         planItems: [makePlanItem()],
       });
-      const slice = createPlanSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createPlanSlice(adapter)(store.set, store.get, store.api);
 
       slice.deletePlanItem('item-1');
 
-      expect(store.state().planItems.find((i: any) => i.id === 'item-1' && !i.deleted)).toBeUndefined();
+      expect(store.state().planItems.find(i => i.id === 'item-1' && !i.deleted)).toBeUndefined();
     });
   });
 
   describe('addDailyCustomTodo', () => {
     it('adds a custom todo', () => {
       const store = makeTestStore({ plans: [makePlan({ status: 'in_progress' })] });
-      const slice = createPlanSlice(mockAdapter as any)(store.set, store.get, store.api);
+      const slice = createPlanSlice(adapter)(store.set, store.get, store.api);
 
       slice.addDailyCustomTodo({ name: '自定义任务', planId: 'plan-1' });
 

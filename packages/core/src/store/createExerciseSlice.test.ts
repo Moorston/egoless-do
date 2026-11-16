@@ -1,35 +1,22 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// @ts-expect-error — React Native global not available in test env
+// __DEV__ is globally declared via src/logger.ts; ensure test env has it set.
 globalThis.__DEV__ = false;
 
 vi.mock('../logger', () => ({ createLogger: () => ({ error: vi.fn(), warn: vi.fn(), info: vi.fn(), debug: vi.fn() }) }));
 
 import { createExerciseSlice } from './createExerciseSlice';
+import { createTestStore, createMockStorageAdapter } from './test-utils/storeHarness';
+import type { FullStore } from './types';
 
-function makeTestStore(initialState: Record<string, unknown> = {}) {
-  let state: Record<string, unknown> = {
-    exerciseLog: [],
-    recycleBin: [],
-    ...initialState,
-  };
-  const set = (fn: unknown) => {
-    const patch = typeof fn === 'function' ? (fn as (s: typeof state) => typeof state)(state) : fn;
-    state = { ...state, ...(patch as Record<string, unknown>) };
-  };
-  const get = () => state;
-  const api = { setState: set, getState: get, getInitialState: () => state, subscribe: () => () => {}, destroy: () => {} } as any;
-  return { state: () => state, set, get: get as any, api };
+// createExerciseSlice writes cross-slice state (recycleBin on delete) via
+// set(), so the isolated store is typed FullStore and the factory is invoked
+// directly — its SliceCreator<ExerciseSlice> expects FullStore-typed set/get/api.
+function makeTestStore(initialState: Partial<FullStore> = {}) {
+  return createTestStore<FullStore>({ exerciseLog: [], recycleBin: [], ...initialState });
 }
 
-const mockAdapter = {
-  persistChange: vi.fn().mockResolvedValue(undefined),
-  markDeleted: vi.fn().mockResolvedValue(undefined),
-  batchDelete: vi.fn().mockResolvedValue(undefined),
-  persistSettings: vi.fn().mockResolvedValue(undefined),
-  getSettings: vi.fn().mockResolvedValue(null),
-  transaction: vi.fn().mockImplementation(async (fn: () => Promise<void> | void) => { await fn(); }),
-};
+const adapter = createMockStorageAdapter();
 
 const mockSync = vi.fn();
 
@@ -61,7 +48,7 @@ describe('createExerciseSlice', () => {
   describe('addExercise', () => {
     it('adds an exercise entry to exerciseLog', () => {
       const store = makeTestStore();
-      const slice = createExerciseSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createExerciseSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.addExercise(sampleEntry);
 
@@ -69,13 +56,13 @@ describe('createExerciseSlice', () => {
       expect(store.state().exerciseLog[0].sportKey).toBe('running');
       expect(store.state().exerciseLog[0].durationSec).toBe(1800);
       expect(store.state().exerciseLog[0].calories).toBe(200);
-      expect(mockAdapter.persistChange).toHaveBeenCalledWith('exercise', expect.any(String), expect.objectContaining({ sportKey: 'running' }));
+      expect(adapter.persistChange).toHaveBeenCalledWith('exercise', expect.any(String), expect.objectContaining({ sportKey: 'running' }));
       expect(mockSync).toHaveBeenCalled();
     });
 
     it('generates unique id for each entry', () => {
       const store = makeTestStore();
-      const slice = createExerciseSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createExerciseSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.addExercise(sampleEntry);
       slice.addExercise({ ...sampleEntry, sportKey: 'cycling' });
@@ -86,7 +73,7 @@ describe('createExerciseSlice', () => {
 
     it('sets deleted to false and generates updatedAt', () => {
       const store = makeTestStore();
-      const slice = createExerciseSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createExerciseSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.addExercise(sampleEntry);
 
@@ -96,12 +83,12 @@ describe('createExerciseSlice', () => {
 
     it('does nothing when sportKey is empty', () => {
       const store = makeTestStore();
-      const slice = createExerciseSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createExerciseSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.addExercise({ ...sampleEntry, sportKey: '' });
 
       expect(store.state().exerciseLog).toHaveLength(0);
-      expect(mockAdapter.persistChange).not.toHaveBeenCalled();
+      expect(adapter.persistChange).not.toHaveBeenCalled();
       expect(mockSync).not.toHaveBeenCalled();
     });
   });
@@ -109,18 +96,18 @@ describe('createExerciseSlice', () => {
   describe('deleteExercise', () => {
     it('soft-deletes an exercise entry', () => {
       const store = makeTestStore({ exerciseLog: [makeExercise()] });
-      const slice = createExerciseSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createExerciseSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.deleteExercise('exercise-1');
 
       expect(store.state().exerciseLog[0].deleted).toBe(true);
-      expect(mockAdapter.markDeleted).toHaveBeenCalledWith('exercise', 'exercise-1');
+      expect(adapter.markDeleted).toHaveBeenCalledWith('exercise', 'exercise-1');
       expect(mockSync).toHaveBeenCalled();
     });
 
     it('adds deleted exercise to recycleBin with entityType exercise', () => {
       const store = makeTestStore({ exerciseLog: [makeExercise()] });
-      const slice = createExerciseSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createExerciseSlice(adapter, mockSync)(store.set, store.get, store.api);
 
       slice.deleteExercise('exercise-1');
 
