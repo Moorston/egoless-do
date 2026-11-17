@@ -1828,3 +1828,37 @@ WriteBatcher NOT NULL 重试的 _notNullAttempts 计数器只在 giveup 时删�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 107: core 非 store 测试 any 清理，lint ratchet 23→5
+
+**Date**: 2026-11-17
+**Task**: core 非 store 测试 any 清理，lint ratchet 23→5
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+清理 6 个非 store 测试文件的 18 个 any warning（dailyReset mockDeps satisfies DailyResetDeps、performance/hybrid-engine satisfies CloudAIEngine、planTodo any[]→索引类型+PlanItemLink、selectors/grace null as any→null）。2 处生产签名放宽（calculateStreakFromCheckins/getMonthGraceCount 加 | null | undefined，运行时已 null-safe，零行为变化）。core lint ratchet 23→5，812 测试绿，type-check 0 error。模式：satisfies Interface 替代 as any mock cast。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `6f05fc46` | (see git log) |
+| `5e798709` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

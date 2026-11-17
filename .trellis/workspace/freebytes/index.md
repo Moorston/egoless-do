@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-2.md`
-- **Total Sessions**: 106
-- **Last Active**: 2026-11-16
+- **Total Sessions**: 107
+- **Last Active**: 2026-11-17
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~1830 | Active |
+| `journal-2.md` | ~1864 | Active |
 | `journal-1.md` | ~1971 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 107 | 2026-11-17 | core 非 store 测试 any 清理，lint ratchet 23→5 | `6f05fc46`, `5e798709` | `refactor/split-body-dashboard` |
 | 106 | 2026-11-16 | core typed test harness 抽取 + 18 slice 测试迁移，lint ratchet 530→23 | `bd18c0b9`, `7d0302df`, `9951d32d` | `refactor/split-body-dashboard` |
 | 105 | 2026-11-12 | sync 复活防护 Layer 1/2 回归测试 | `8f514a8d` | `refactor/split-body-dashboard` |
 | 104 | 2026-11-12 | 代码库质量分析 + CI 基线建立 + OpenSpec 生命周期治理 | `c21b9be`, `c5da7d8`, `bb40f644`, `0b009ed3`, `6430985f`, `280180fc` | `refactor/split-body-dashboard` |
