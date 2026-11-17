@@ -547,7 +547,7 @@ const { T } = useTheme();  // 或从 UI hook 解构
 >
 > **CI 覆盖**：`turbo run lint` 与 `turbo run type-check` 现已覆盖 `packages/core` 与 `apps/mobile`（core 通过 `tsconfig.lint.json` 纳入测试文件做 type-aware linting；mobile 通过本地 `react-native-amap3d` 类型 shim 规避第三方库 React 19 类型不兼容，两者均 0 error）。
 >
-> **Warning ratchet 门禁**：core/mobile 的 lint 脚本带 `--max-warnings`（core=530、mobile=13，阈值=当前存量），warning 超出即 CI 失败。新增 warning 必须同时下调预算或先消除等量旧 warning；消除 warning 后应下调阈值逐步收敛。
+> **Warning ratchet 门禁**：core/mobile 的 lint 脚本带 `--max-warnings`（core=5、mobile=13，阈值=当前存量），warning 超出即 CI 失败。新增 warning 必须同时下调预算或先消除等量旧 warning；消除 warning 后应下调阈值逐步收敛。core ratchet 历史：530→23（2026-11-16 typed harness）→5（2026-11-17 非 store 测试 any 清理）。
 |---------|------------|------|
 | 1.1 any 禁止 | `@typescript-eslint/no-explicit-any: error` | ✅ 已配置 |
 | 1.3 @ts-* 管理 | `@typescript-eslint/ban-ts-comment` | ✅ 已配置（core 已清理 @ts-ignore → @ts-expect-error） |

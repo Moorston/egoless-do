@@ -95,7 +95,7 @@ Slice tests (`store/*.test.ts`) MUST use the shared typed test harness (`store/t
 
 ### Lint ratchet
 
-`packages/core/package.json` lint script enforces `--max-warnings 23` (ratcheted down from 530 on 2026-11-16 via the typed test harness migration). The threshold equals the measured warning count — any new warning fails CI. Do not raise it without a recorded reason; lower it when warnings are eliminated. Residual 23 = non-store test noise (~20) + 2 vitest `expect.any`/`expect.arrayContaining` artifacts + 1 sealed harness boundary cast.
+`packages/core/package.json` lint script enforces `--max-warnings 5` (ratcheted down: 530 → 23 on 2026-11-16 via the typed test harness migration; 23 → 5 on 2026-11-17 via non-store test `any` cleanup + 2 production signature widenings). The threshold equals the measured warning count — any new warning fails CI. Do not raise it without a recorded reason; lower it when warnings are eliminated. Residual 5 = 4 vitest `expect.objectContaining`/`expect.any`/`expect.arrayContaining` nested-match artifacts (auth/fetch/createFastingSlice/createHabitSlice) + 1 sealed harness boundary cast (`storeHarness.ts`) — all uncleanable without restructuring test assertions (low value, high risk).
 
 ---
 
