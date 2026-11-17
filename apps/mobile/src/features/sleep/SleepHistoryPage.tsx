@@ -495,6 +495,7 @@ export default function SleepHistoryPage() {
   );
 }
 
+// eslint-disable-next-line max-lines-per-function -- StyleSheet flat definitions, splitting yields no readability gain
 function mkStyles(TH: Theme) {
   return StyleSheet.create({
     // ── StatsCard ──

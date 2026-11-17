@@ -164,14 +164,13 @@ function resetMockDb() {
 }
 
 // ── Tests ────────────────────────────────────────────────────────────
-describe('SyncApplyService', () => {
-  let svc: SyncApplyService;
+let svc: SyncApplyService;
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-    resetMockDb();
-    svc = new SyncApplyService();
-  });
+beforeEach(() => {
+  vi.clearAllMocks();
+  resetMockDb();
+  svc = new SyncApplyService();
+});
 
   // ── Pure method tests (4) ──────────────────────────────────────────
   describe('serverPayloadToRow', () => {
@@ -661,4 +660,3 @@ describe('SyncApplyService', () => {
       ).rejects.toThrow('DB write failed');
     });
   });
-});

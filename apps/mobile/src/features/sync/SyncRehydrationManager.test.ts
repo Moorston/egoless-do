@@ -130,40 +130,39 @@ function pullResult(data: Record<string, unknown>[], hasMore = false, total?: nu
   return { data, hasMore, total: total ?? data.length };
 }
 
-describe('SyncRehydrationManager', () => {
-  let mgr: SyncRehydrationManager;
+let mgr: SyncRehydrationManager;
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-    // Restore store-backed implementations after clearAllMocks
-    mockSyncProgress.updateSyncProgress.mockImplementation(async (entity: string, updates: Record<string, unknown>) => {
-      const store = (mockSyncProgress as unknown as { _store: Map<string, Record<string, unknown>> })._store;
-      const existing = store.get(entity) ?? {};
-      store.set(entity, { ...existing, ...updates });
-    });
-    mockSyncProgress.getSyncProgress.mockImplementation(async (entity: string) => {
-      const store = (mockSyncProgress as unknown as { _store: Map<string, Record<string, unknown>> })._store;
-      return store.get(entity) ?? null;
-    });
-    mockStateStore.getState.mockImplementation(async (_db: unknown, key: string) => {
-      const store = (mockStateStore as unknown as { _store: Map<string, string> })._store;
-      return store.get(key) ?? null;
-    });
-    mockStateStore.setState.mockImplementation(async (_db: unknown, key: string, value: string) => {
-      const store = (mockStateStore as unknown as { _store: Map<string, string> })._store;
-      store.set(key, value);
-    });
-    mockStateStore._clear();
-    mockSyncProgress._clear();
-    mockDb.getAllAsync.mockResolvedValue([]);
-    mockDbGetAllFoodEntries.mockResolvedValue([]);
-    mockApiSyncPullEntity.mockResolvedValue(pullResult([]));
-    mgr = new SyncRehydrationManager();
+beforeEach(() => {
+  vi.clearAllMocks();
+  // Restore store-backed implementations after clearAllMocks
+  mockSyncProgress.updateSyncProgress.mockImplementation(async (entity: string, updates: Record<string, unknown>) => {
+    const store = (mockSyncProgress as unknown as { _store: Map<string, Record<string, unknown>> })._store;
+    const existing = store.get(entity) ?? {};
+    store.set(entity, { ...existing, ...updates });
   });
+  mockSyncProgress.getSyncProgress.mockImplementation(async (entity: string) => {
+    const store = (mockSyncProgress as unknown as { _store: Map<string, Record<string, unknown>> })._store;
+    return store.get(entity) ?? null;
+  });
+  mockStateStore.getState.mockImplementation(async (_db: unknown, key: string) => {
+    const store = (mockStateStore as unknown as { _store: Map<string, string> })._store;
+    return store.get(key) ?? null;
+  });
+  mockStateStore.setState.mockImplementation(async (_db: unknown, key: string, value: string) => {
+    const store = (mockStateStore as unknown as { _store: Map<string, string> })._store;
+    store.set(key, value);
+  });
+  mockStateStore._clear();
+  mockSyncProgress._clear();
+  mockDb.getAllAsync.mockResolvedValue([]);
+  mockDbGetAllFoodEntries.mockResolvedValue([]);
+  mockApiSyncPullEntity.mockResolvedValue(pullResult([]));
+  mgr = new SyncRehydrationManager();
+});
 
-  afterEach(() => {
-    vi.useRealTimers();
-  });
+afterEach(() => {
+  vi.useRealTimers();
+});
 
   // ─────────────────────────────────────────────────────────────────
   // isDeviceSyncedBefore (3 tests)
@@ -818,4 +817,3 @@ describe('SyncRehydrationManager', () => {
       expect(pulledEntities).toContain('habit');
     });
   });
-});

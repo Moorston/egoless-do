@@ -240,30 +240,29 @@ function makeQueueItem(id: number, entity: string, entityId: string, op = 'upser
 
 // ── Tests ─────────────────────────────────────────────────────────
 
-describe('SyncEngine', () => {
-  let engine: SyncEngine;
+let engine: SyncEngine;
 
-  beforeEach(() => {
-    vi.clearAllMocks();
+beforeEach(() => {
+  vi.clearAllMocks();
 
-    // Default DB mock
-    mockOpenDatabase.mockResolvedValue(mockDb);
-    mockDb.runAsync.mockResolvedValue({ changes: 1 });
+  // Default DB mock
+  mockOpenDatabase.mockResolvedValue(mockDb);
+  mockDb.runAsync.mockResolvedValue({ changes: 1 });
 
-    // Default apply service mock
-    mockApplyService.applyServerChanges.mockResolvedValue({});
-    mockApplyService.serverPayloadToRow.mockReturnValue(null);
+  // Default apply service mock
+  mockApplyService.applyServerChanges.mockResolvedValue({});
+  mockApplyService.serverPayloadToRow.mockReturnValue(null);
 
-    // Default app store mock
-    mockAppStore._auth = { token: null, refreshToken: null, user: null };
-    mockAppStore.getState.mockReturnValue(mockAppStore);
+  // Default app store mock
+  mockAppStore._auth = { token: null, refreshToken: null, user: null };
+  mockAppStore.getState.mockReturnValue(mockAppStore);
 
-    engine = makeEngine();
-  });
+  engine = makeEngine();
+});
 
-  afterEach(() => {
-    vi.useRealTimers();
-  });
+afterEach(() => {
+  vi.useRealTimers();
+});
 
   // ================================================================
   // Configuration & State
@@ -895,4 +894,3 @@ describe('SyncEngine', () => {
       expect(engine.getMigrationDone()).toBe(true);
     });
   });
-});
