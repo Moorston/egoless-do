@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { HybridEngine } from './hybrid-engine';
+import type { CloudAIEngine } from './types';
 
 // ── Mocks ──
 const mockCloudPredict = vi.fn().mockResolvedValue({
@@ -13,14 +14,14 @@ const mockCloudPredict = vi.fn().mockResolvedValue({
 const mockCloudEngine = {
   initialize: vi.fn().mockResolvedValue(undefined),
   predict: mockCloudPredict,
-};
+} satisfies CloudAIEngine;
 
 describe('HybridEngine', () => {
   let engine: HybridEngine;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    engine = new HybridEngine(mockCloudEngine as any);
+    engine = new HybridEngine(mockCloudEngine);
   });
 
   it('should initialize with cloud engine', async () => {

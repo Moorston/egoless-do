@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { getDailyResetPatch, msUntilMidnight, getTodayFoodLog, getTodayMedMinutes, DailyResetManager } from './dailyReset';
+import type { DailyResetDeps } from './dailyReset';
+import type { CheckinEntry } from './types';
 import { dateStr } from './utils';
 
 describe('getDailyResetPatch', () => {
@@ -56,20 +58,24 @@ describe('getTodayMedMinutes', () => {
 });
 
 describe('DailyResetManager', () => {
-  let mockDeps: any;
+  const mockDeps = {
+    getLastReset: vi.fn<() => Promise<string | null>>().mockResolvedValue(null),
+    setLastReset: vi.fn<(date: string) => void>(),
+    getCheckinHistory: vi.fn<() => CheckinEntry[]>().mockReturnValue([]),
+    applyPatch: vi.fn<(patch: Record<string, unknown>) => void>(),
+    persistProfile: vi.fn<(data: Record<string, unknown>) => void>(),
+    getProfile: vi.fn<() => Record<string, unknown>>().mockReturnValue({}),
+    getWaterGoal: vi.fn<() => number>().mockReturnValue(2000),
+    onPlanDailyReset: vi.fn<(previousDate: string) => void>(),
+    onHabitDailyReset: vi.fn<() => void>(),
+  } satisfies DailyResetDeps;
 
   beforeEach(() => {
-    mockDeps = {
-      getLastReset: vi.fn().mockResolvedValue(null),
-      setLastReset: vi.fn(),
-      getCheckinHistory: vi.fn().mockReturnValue([]),
-      applyPatch: vi.fn(),
-      persistProfile: vi.fn(),
-      getProfile: vi.fn().mockReturnValue({}),
-      getWaterGoal: vi.fn().mockReturnValue(2000),
-      onPlanDailyReset: vi.fn(),
-      onHabitDailyReset: vi.fn(),
-    };
+    vi.clearAllMocks();
+    mockDeps.getLastReset.mockResolvedValue(null);
+    mockDeps.getCheckinHistory.mockReturnValue([]);
+    mockDeps.getProfile.mockReturnValue({});
+    mockDeps.getWaterGoal.mockReturnValue(2000);
   });
 
   it('performs reset when lastReset is null', async () => {

@@ -130,7 +130,7 @@ export function parseLocalDate(s: string): Date {
 }
 
 /** Calculate streak from checkins (dedupes, allows yesterday grace period) */
-export function calculateStreakFromCheckins(checkins: Array<{ date: string; done: boolean; deleted?: boolean }>): number {
+export function calculateStreakFromCheckins(checkins: Array<{ date: string; done: boolean; deleted?: boolean }> | null | undefined): number {
   // 复用 calculateCheckinStreak 逻辑（无 refDate 时使用今天）
   return calculateCheckinStreak(checkins);
 }

@@ -48,8 +48,8 @@ describe('store/selectors', () => {
   // 以下测试需要 React 环境，仅测试纯函数
   describe('pure functions', () => {
     it('calculateStreakFromCheckins 应处理边界情况', () => {
-      expect(calculateStreakFromCheckins(null as any)).toBe(0);
-      expect(calculateStreakFromCheckins(undefined as any)).toBe(0);
+      expect(calculateStreakFromCheckins(null)).toBe(0);
+      expect(calculateStreakFromCheckins(undefined)).toBe(0);
     });
   });
 });

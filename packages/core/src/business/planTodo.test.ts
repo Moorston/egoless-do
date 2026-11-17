@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import type { PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory } from '../types';
+import type { PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory, PlanItemLink } from '../types';
 
 import {
   getTodoItemStatus,
@@ -10,11 +10,11 @@ import {
   mergeHistoryItems,
 } from './planTodo';
 
-const makeItem = (id: string, link: string = 'manual'): PlanItem => ({
+const makeItem = (id: string, link: PlanItemLink = 'manual'): PlanItem => ({
   id, planId: 'p1', name: `Task ${id}`, description: '',
   startDate: '2026-01-01', endDate: '2026-01-31',
   contentUrl: '', totalCheckinDays: 0, status: 'in_progress',
-  progress: 0, link: link as any, priority: 'medium', targetMetric: '', order: 0,
+  progress: 0, link, priority: 'medium', targetMetric: '', order: 0,
   updatedAt: 0, deleted: false,
 });
 
@@ -28,7 +28,11 @@ const makeCustomTodo = (id: string, done: boolean): DailyCustomTodo => ({
   updatedAt: 0, deleted: false,
 });
 
-const makeHistory = (date: string, planItems: any[], customTodos: any[]): DailyTodoHistory => ({
+const makeHistory = (
+  date: string,
+  planItems: DailyTodoHistory['planItems'],
+  customTodos: DailyTodoHistory['customTodos'],
+): DailyTodoHistory => ({
   id: `h-${date}`, planId: 'p1', date, planItems, customTodos,
   updatedAt: 0, deleted: false,
 });
@@ -100,8 +104,8 @@ describe('computeDailyTodoStats', () => {
 describe('computeHistorySummary', () => {
   it('sums done items across history groups', () => {
     const history = [
-      makeHistory('2026-01-13', [{ done: true }, { done: false }], [{ done: true }]),
-      makeHistory('2026-01-14', [{ done: true }], [{ done: false }]),
+      makeHistory('2026-01-13', [{ id: 'i1', name: 'T1', link: 'manual', done: true }, { id: 'i2', name: 'T2', link: 'manual', done: false }], [{ id: 't1', name: 'Todo 1', done: true }]),
+      makeHistory('2026-01-14', [{ id: 'i3', name: 'T3', link: 'manual', done: true }], [{ id: 't2', name: 'Todo 2', done: false }]),
     ];
     const summary = computeHistorySummary(history);
     expect(summary.totalDays).toBe(2);

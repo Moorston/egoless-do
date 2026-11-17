@@ -6,6 +6,7 @@ import { describe, it, expect } from 'vitest';
 
 import { HybridEngine } from './hybrid-engine';
 import { ModelManager } from './model-manager';
+import type { CloudAIEngine } from './types';
 
 describe('Performance Benchmarks', () => {
   describe('HybridEngine', () => {
@@ -18,9 +19,9 @@ describe('Performance Benchmarks', () => {
           latencyMs: 50,
           modelVersion: 'cloud-v1',
         }),
-      };
+      } satisfies CloudAIEngine;
 
-      const engine = new HybridEngine(mockCloud as any);
+      const engine = new HybridEngine(mockCloud);
       await engine.initialize();
 
       const t0 = performance.now();

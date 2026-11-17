@@ -32,7 +32,7 @@ describe('getMonthGraceCount', () => {
   });
 
   it('handles null/undefined history', () => {
-    expect(getMonthGraceCount(null as any, '2026-07')).toBe(0);
+    expect(getMonthGraceCount(null, '2026-07')).toBe(0);
   });
 });
 

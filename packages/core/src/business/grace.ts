@@ -3,7 +3,7 @@ import type { GraceHistoryEntry } from '../types';
 
 /** Count grace records in a given month (YYYY-MM) */
 export function getMonthGraceCount(
-  graceHistory: GraceHistoryEntry[],
+  graceHistory: GraceHistoryEntry[] | null | undefined,
   yearMonth: string,
 ): number {
   return (graceHistory ?? []).filter(
