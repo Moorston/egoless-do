@@ -85,6 +85,20 @@ Project ESLint config does not enforce `complexity` by default — it only trigg
 
 > When lint is clean under default config but a function is known to exceed 15, it is NOT a pass — run the explicit `--rule` check during refactoring tasks to verify the target is met.
 
+### Lint Ratchet（`apps/mobile/package.json` lint 脚本）
+
+`--max-warnings` ratchet 当前为 **0**（2026-11-18 下调，实测值）。历史：13（11-17）→ 0。13 个 warning 的清除分两步：child 1（sync 测试 describe 平铺 + SleepHistoryPage mkStyles + import/order，13→8）、child 2（8 个无测试 screen 保守拆分 max-lines-per-function 8→0）。
+
+### 无测试 Screen 保守拆分模式（策略 C，2026-11-18）
+
+8 个无 co-located 测试的 screen（324-673 行）按此模式收敛到 max-lines-per-function ≤300，零行为变更：
+
+1. **优先级**：inline style/StyleSheet 提取到模块级 → 大 JSX 块抽同文件模块级子组件 → handler 提升为具名函数/useCallback
+2. **统一类型别名**：`type ThemeTokens = ReturnType<typeof useTheme>; type TranslateFn = ReturnType<typeof useT>;`（子组件 props 用）
+3. **子组件 TH/T/P 经 props 传递**；受控输入传 value + setter props；跨多状态 handler 留在主组件，子组件只收 callback
+4. **大块拆两层**：~300 行的列表项块拆为 Card（header + wrapper + delete）+ Editor（fields），避免子组件自身贴 300 上限
+5. **禁止** eslint-disable carve-out 代替拆分；拆不动即停（设计降级条款留给人工决策）
+
 ---
 
 ## Testing
