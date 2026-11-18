@@ -1862,3 +1862,37 @@ WriteBatcher NOT NULL 重试的 _notNullAttempts 计数器只在 giveup 时删�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 108: mobile 8 屏保守拆分 — max-lines warning 8→0 + ratchet 13→0
+
+**Date**: 2026-11-18
+**Task**: mobile 8 屏保守拆分 — max-lines warning 8→0 + ratchet 13→0
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+完成 11-17-mobile-complexity-cleanup parent 及 child2：8 个无测试 screen（PlanCreateScreen 673/ProfileScreen 568/PreceptScreen 473/BodyPlanEditorScreen 392/DayCheckinScreen 368/DiaryModal 336/RelationMapView 326/ReviewAIPanel 324）按策略 C 保守拆分至 max-lines-per-function ≤300，统一 ThemeTokens/TranslateFn 别名 + 同文件模块级子组件模式，TH/T/P 经 props，零行为变更零 carve-out。mobile lint warning 8→0，ratchet --max-warnings 13→0，type-check 0 error，1243 tests 全绿。spec：quality-guidelines 新增保守拆分模式章节，GLOBAL-CODE-STANDARDS 补 mobile ratchet 历史。经验：agent 分发 8 次中 5 次因 429/400 失败——重屏（读取+抽取 token 大）易触发 rpm 限流，agent 失败后检查文件修改状态（部分 agent 已完成写入），剩余内联补做。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `bf96a9d0` | (see git log) |
+| `a798d1f4` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
