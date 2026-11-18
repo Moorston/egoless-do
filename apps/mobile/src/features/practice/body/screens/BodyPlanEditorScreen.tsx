@@ -18,6 +18,235 @@ import TemplatePickerModal from '../modals/TemplatePickerModal';
 const P = '#f59e0b';
 type EditorRoute = RouteProp<RootStackParamList, 'BodyPlanEditor'>;
 
+type ThemeTokens = ReturnType<typeof useTheme>;
+type TranslateFn = ReturnType<typeof useT>;
+
+// ── Goal Section (collapsible card) ──
+interface GoalSectionProps {
+  TH: ThemeTokens;
+  T: TranslateFn;
+  strategy: BodyStrategy | '';
+  setStrategy: (v: BodyStrategy | '') => void;
+  targetWeight: string;
+  setTargetWeight: (v: string) => void;
+  targetBodyFat: string;
+  setTargetBodyFat: (v: string) => void;
+  goalNote: string;
+  setGoalNote: (v: string) => void;
+}
+
+function GoalSection({ TH, T, strategy, setStrategy, targetWeight, setTargetWeight, targetBodyFat, setTargetBodyFat, goalNote, setGoalNote }: GoalSectionProps) {
+  return (
+    <View style={[styles.card, { backgroundColor: TH.card, marginTop: -8 }]}>
+      <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 8 }}>{T('bodyStrategyLabel')}</Text>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
+        {BODY_STRATEGIES.map(s => (
+          <TouchableOpacity key={s.key} onPress={() => setStrategy(strategy === s.key ? '' : s.key)}
+            style={[styles.chip, { borderColor: strategy === s.key ? P : TH.border, backgroundColor: strategy === s.key ? `${P}18` : 'transparent' }]}>
+            <Text style={{ fontSize: FONT_SMALL(), color: strategy === s.key ? P : TH.text }}>{T(s.nameKey)}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+      <View style={{ flexDirection: 'row', gap: 12, marginBottom: 12 }}>
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 4 }}>{T('bodyTargetWeight')}</Text>
+          <TextInput value={targetWeight} onChangeText={setTargetWeight} keyboardType="numeric" placeholder="—" placeholderTextColor={TH.sub}
+            style={[styles.smallInput, { backgroundColor: TH.bg, color: TH.text, borderColor: TH.border, textAlign: 'center' }]} />
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 4 }}>{T('bodyTargetBodyFat')}</Text>
+          <TextInput value={targetBodyFat} onChangeText={setTargetBodyFat} keyboardType="numeric" placeholder="—" placeholderTextColor={TH.sub}
+            style={[styles.smallInput, { backgroundColor: TH.bg, color: TH.text, borderColor: TH.border, textAlign: 'center' }]} />
+        </View>
+      </View>
+      <TextInput value={goalNote} onChangeText={setGoalNote} placeholder={T('bodyGoalNotePlaceholder')} placeholderTextColor={TH.sub} multiline
+        style={{ backgroundColor: TH.bg, borderRadius: 10, padding: 10, color: TH.text, fontSize: FONT_BODY(), borderWidth: 1, borderColor: TH.border, minHeight: 56, textAlignVertical: 'top' }} />
+    </View>
+  );
+}
+
+// ── Plan Name + Duration card ──
+interface PlanNameCardProps {
+  TH: ThemeTokens;
+  T: TranslateFn;
+  name: string;
+  setName: (v: string) => void;
+  startDate: string;
+  endDate: string;
+  setPickingDate: (v: 'start' | 'end' | null) => void;
+  durationWeeks: number;
+}
+
+function PlanNameCard({ TH, T, name, setName, startDate, endDate, setPickingDate, durationWeeks }: PlanNameCardProps) {
+  return (
+    <View style={[styles.card, { backgroundColor: TH.card }]}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
+        <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, fontWeight: '600' }}>{T('bodyPlanName')}</Text>
+        <Text style={{ color: '#ef4444', fontSize: FONT_LABEL(), marginLeft: 2 }}>*</Text>
+      </View>
+      <TextInput value={name} onChangeText={setName} placeholder={T('bodyPlanNamePlaceholder')} placeholderTextColor={TH.sub}
+        style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginBottom: name.trim() ? 12 : 4 }} />
+      {!name.trim() && (
+        <Text style={{ color: '#ef4444', fontSize: FONT_SMALL(), marginBottom: 8 }}>{T('bodyPlanNameRequired')}</Text>
+      )}
+      <View style={{ flexDirection: 'row', gap: 12 }}>
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 4 }}>{T('bodyPlanStart')}</Text>
+          <TouchableOpacity onPress={() => setPickingDate('start')} style={[styles.dateInput, { backgroundColor: TH.bg, borderColor: TH.border, justifyContent: 'center' }]}>
+            <Text style={{ color: TH.text, fontSize: FONT_BODY() }}>{startDate}</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 4 }}>{T('bodyPlanEnd')}</Text>
+          <TouchableOpacity onPress={() => setPickingDate('end')} style={[styles.dateInput, { backgroundColor: TH.bg, borderColor: TH.border, justifyContent: 'center' }]}>
+            <Text style={{ color: TH.text, fontSize: FONT_BODY() }}>{endDate}</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 6, textAlign: 'center' }}>{`${T('bodyPlanApprox')} ${durationWeeks} ${T('bodyPlanWeeks')}`}</Text>
+    </View>
+  );
+}
+
+// ── Weekly Plan section ──
+interface WeeklyPlanProps {
+  TH: ThemeTokens;
+  T: TranslateFn;
+  dayOverviews: ReturnType<typeof getDayOverview>;
+  activeDay: number | null;
+  setActiveDay: (v: number | null) => void;
+  exerciseLibrary: ExerciseDef[];
+  dayTasksMap: Map<number, ExerciseDef[]>;
+  selectedExIds: Set<string>;
+  selectedDays: Set<number>;
+  onExerciseToggle: (exId: string) => void;
+  onDayChooserChange: (days: Set<number>) => void;
+  onBatchAddToDays: () => void;
+  tasks: BodyPlanTask[];
+  onStartDayTraining: (weekday: number) => void;
+  onUpdateTask: (weekday: number, updates: Partial<BodyPlanTask>) => void;
+  onShowSnackbar: (message: string, undoFn: () => void) => void;
+}
+
+function WeeklyPlanSection({ TH, T, dayOverviews, activeDay, setActiveDay, exerciseLibrary, dayTasksMap, selectedExIds, selectedDays, onExerciseToggle, onDayChooserChange, onBatchAddToDays, tasks, onStartDayTraining, onUpdateTask, onShowSnackbar }: WeeklyPlanProps) {
+  return (
+    <View style={[styles.card, { backgroundColor: TH.card }]}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+        <ClipboardList size={18} color={P} />
+        <Text style={{ fontWeight: '600', fontSize: FONT_BODY(), color: TH.text }}>{T('bodyWeeklyPlan')}</Text>
+      </View>
+
+      <MiniWeekCalendar
+        days={dayOverviews}
+        activeWeekday={activeDay}
+        onPressDay={setActiveDay}
+        TH={TH}
+        T={T}
+      />
+
+      <View style={[styles.unifiedPoolContainer, { backgroundColor: TH.bg, borderColor: TH.border }]}>
+        <Text style={[styles.unifiedPoolTitle, { color: TH.text }]}>
+          {T('bodyPlanExercisePool')}
+        </Text>
+        <UnifiedExercisePool
+          TH={TH}
+          T={T}
+          exerciseLibrary={exerciseLibrary}
+          dayTasks={dayTasksMap}
+          activeDay={activeDay}
+          selectedExIds={selectedExIds}
+          selectedDays={selectedDays}
+          onExerciseToggle={onExerciseToggle}
+          onDayChooserChange={onDayChooserChange}
+          onBatchAddToDays={onBatchAddToDays}
+        />
+      </View>
+
+      {tasks.map((task) => (
+        <DayPlanCard
+          key={task.weekday}
+          TH={TH}
+          T={T}
+          task={task}
+          onStartTraining={onStartDayTraining}
+          onUpdateTask={onUpdateTask}
+          onShowSnackbar={onShowSnackbar}
+        />
+      ))}
+    </View>
+  );
+}
+
+// ── Footer CTA Bar ──
+interface FooterBarProps {
+  TH: ThemeTokens;
+  T: TranslateFn;
+  name: string;
+  onSave: () => void;
+  onStartTraining: () => void;
+}
+
+function FooterBar({ TH, T, name, onSave, onStartTraining }: FooterBarProps) {
+  return (
+    <View style={[styles.footer, { backgroundColor: TH.bg, borderTopColor: TH.border }]}>
+      <TouchableOpacity onPress={onSave} disabled={!name.trim()}
+        style={[styles.saveBtn, { backgroundColor: name.trim() ? `${P}80` : TH.border }]}>
+        <Save size={16} color="#fff" />
+        <Text style={{ color: '#fff', fontWeight: '600', fontSize: FONT_SMALL() }}>{T('bodyPlanSave')}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={onStartTraining}
+        disabled={!name.trim()}
+        style={[styles.startBtn, { backgroundColor: name.trim() ? P : TH.border }]}
+        accessibilityRole="button"
+        accessibilityLabel={T('bodyStartTraining')}
+      >
+        <Play size={18} color="#fff" />
+        <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON() }}>{T('bodyStartTraining')}</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+// ── Bottom Modals (TemplatePicker + DatePicker) ──
+interface BottomModalsProps {
+  TH: ThemeTokens;
+  T: TranslateFn;
+  showTemplatePicker: boolean;
+  setShowTemplatePicker: (v: boolean) => void;
+  onSelectTemplate: (template: PlanTemplate) => void;
+  pickingDate: 'start' | 'end' | null;
+  startDate: string;
+  endDate: string;
+  setStartDate: (v: string) => void;
+  setEndDate: (v: string) => void;
+  setPickingDate: (v: 'start' | 'end' | null) => void;
+}
+
+function BottomModals({ TH, T, showTemplatePicker, setShowTemplatePicker, onSelectTemplate, pickingDate, startDate, endDate, setStartDate, setEndDate, setPickingDate }: BottomModalsProps) {
+  return (
+    <>
+      <TemplatePickerModal
+        visible={showTemplatePicker}
+        TH={TH} T={T}
+        onClose={() => setShowTemplatePicker(false)}
+        onSelect={onSelectTemplate}
+      />
+      <DatePickerModal
+        visible={pickingDate !== null}
+        value={pickingDate === 'start' ? startDate : endDate}
+        onConfirm={(date) => {
+          if (pickingDate === 'start') setStartDate(date);
+          else setEndDate(date);
+          setPickingDate(null);
+        }}
+        onClose={() => setPickingDate(null)}
+        minDate={pickingDate === 'end' ? startDate : dateStr()}
+      />
+    </>
+  );
+}
+
 export default function BodyPlanEditorScreen() {
   const TH = useTheme();
   const T = useT();
@@ -286,34 +515,6 @@ export default function BodyPlanEditorScreen() {
     return Math.max(1, Math.round((e.getTime() - s.getTime()) / 604800000));
   }, [startDate, endDate]);
 
-  const renderGoalSection = () => (
-    <View style={[styles.card, { backgroundColor: TH.card, marginTop: -8 }]}>
-      <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 8 }}>{T('bodyStrategyLabel')}</Text>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
-        {BODY_STRATEGIES.map(s => (
-          <TouchableOpacity key={s.key} onPress={() => setStrategy(strategy === s.key ? '' : s.key)}
-            style={[styles.chip, { borderColor: strategy === s.key ? P : TH.border, backgroundColor: strategy === s.key ? `${P}18` : 'transparent' }]}>
-            <Text style={{ fontSize: FONT_SMALL(), color: strategy === s.key ? P : TH.text }}>{T(s.nameKey)}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-      <View style={{ flexDirection: 'row', gap: 12, marginBottom: 12 }}>
-        <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 4 }}>{T('bodyTargetWeight')}</Text>
-          <TextInput value={targetWeight} onChangeText={setTargetWeight} keyboardType="numeric" placeholder="—" placeholderTextColor={TH.sub}
-            style={[styles.smallInput, { backgroundColor: TH.bg, color: TH.text, borderColor: TH.border, textAlign: 'center' }]} />
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 4 }}>{T('bodyTargetBodyFat')}</Text>
-          <TextInput value={targetBodyFat} onChangeText={setTargetBodyFat} keyboardType="numeric" placeholder="—" placeholderTextColor={TH.sub}
-            style={[styles.smallInput, { backgroundColor: TH.bg, color: TH.text, borderColor: TH.border, textAlign: 'center' }]} />
-        </View>
-      </View>
-      <TextInput value={goalNote} onChangeText={setGoalNote} placeholder={T('bodyGoalNotePlaceholder')} placeholderTextColor={TH.sub} multiline
-        style={{ backgroundColor: TH.bg, borderRadius: 10, padding: 10, color: TH.text, fontSize: FONT_BODY(), borderWidth: 1, borderColor: TH.border, minHeight: 56, textAlignVertical: 'top' }} />
-    </View>
-  );
-
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
       <SafeAreaView style={{ flex: 1, backgroundColor: TH.bg }}>
@@ -330,33 +531,7 @@ export default function BodyPlanEditorScreen() {
         </View>
 
         <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 24 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
-          {/* ── Plan Name + Duration ── */}
-          <View style={[styles.card, { backgroundColor: TH.card }]}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
-              <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, fontWeight: '600' }}>{T('bodyPlanName')}</Text>
-              <Text style={{ color: '#ef4444', fontSize: FONT_LABEL(), marginLeft: 2 }}>*</Text>
-            </View>
-            <TextInput value={name} onChangeText={setName} placeholder={T('bodyPlanNamePlaceholder')} placeholderTextColor={TH.sub}
-              style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginBottom: name.trim() ? 12 : 4 }} />
-            {!name.trim() && (
-              <Text style={{ color: '#ef4444', fontSize: FONT_SMALL(), marginBottom: 8 }}>{T('bodyPlanNameRequired')}</Text>
-            )}
-            <View style={{ flexDirection: 'row', gap: 12 }}>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 4 }}>{T('bodyPlanStart')}</Text>
-                <TouchableOpacity onPress={() => setPickingDate('start')} style={[styles.dateInput, { backgroundColor: TH.bg, borderColor: TH.border, justifyContent: 'center' }]}>
-                  <Text style={{ color: TH.text, fontSize: FONT_BODY() }}>{startDate}</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 4 }}>{T('bodyPlanEnd')}</Text>
-                <TouchableOpacity onPress={() => setPickingDate('end')} style={[styles.dateInput, { backgroundColor: TH.bg, borderColor: TH.border, justifyContent: 'center' }]}>
-                  <Text style={{ color: TH.text, fontSize: FONT_BODY() }}>{endDate}</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 6, textAlign: 'center' }}>{`${T('bodyPlanApprox')} ${durationWeeks} ${T('bodyPlanWeeks')}`}</Text>
-          </View>
+          <PlanNameCard TH={TH} T={T} name={name} setName={setName} startDate={startDate} endDate={endDate} setPickingDate={setPickingDate} durationWeeks={durationWeeks} />
 
           {/* ── Goal (collapsible) ── */}
           <TouchableOpacity onPress={() => setShowGoal(!showGoal)} style={[styles.card, { backgroundColor: TH.card, flexDirection: 'row', alignItems: 'center' }]}>
@@ -364,102 +539,18 @@ export default function BodyPlanEditorScreen() {
             <Text style={{ fontWeight: '600', fontSize: FONT_BODY(), color: TH.text, marginLeft: 8, flex: 1 }}>{T('bodyGoal')}</Text>
             {showGoal ? <ChevronUp size={18} color={TH.sub} /> : <ChevronDown size={18} color={TH.sub} />}
           </TouchableOpacity>
-          {showGoal && renderGoalSection()}
+          {showGoal && (
+            <GoalSection TH={TH} T={T} strategy={strategy} setStrategy={setStrategy} targetWeight={targetWeight} setTargetWeight={setTargetWeight} targetBodyFat={targetBodyFat} setTargetBodyFat={setTargetBodyFat} goalNote={goalNote} setGoalNote={setGoalNote} />
+          )}
 
-          {/* ── Weekly Plan ── */}
-          <View style={[styles.card, { backgroundColor: TH.card }]}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-              <ClipboardList size={18} color={P} />
-              <Text style={{ fontWeight: '600', fontSize: FONT_BODY(), color: TH.text }}>{T('bodyWeeklyPlan')}</Text>
-            </View>
-
-            <MiniWeekCalendar
-              days={dayOverviews}
-              activeWeekday={activeDay}
-              onPressDay={setActiveDay}
-              TH={TH}
-              T={T}
-            />
-
-            {/* Unified Exercise Pool — screen-level, replaces per-day ExercisePickerGrid */}
-            <View style={[styles.unifiedPoolContainer, { backgroundColor: TH.bg, borderColor: TH.border }]}>
-              <Text style={[styles.unifiedPoolTitle, { color: TH.text }]}>
-                {T('bodyPlanExercisePool')}
-              </Text>
-              <UnifiedExercisePool
-                TH={TH}
-                T={T}
-                exerciseLibrary={exerciseLibrary}
-                dayTasks={dayTasksMap}
-                activeDay={activeDay}
-                selectedExIds={selectedExIds}
-                selectedDays={selectedDays}
-                onExerciseToggle={handleExerciseToggle}
-                onDayChooserChange={handleDayChooserChange}
-                onBatchAddToDays={handleBatchAddToDays}
-              />
-            </View>
-
-            {tasks.map((task) => (
-              <DayPlanCard
-                key={task.weekday}
-                TH={TH}
-                T={T}
-                task={task}
-                onStartTraining={handleStartDayTraining}
-                onUpdateTask={updateTask}
-                onShowSnackbar={showSnackbar}
-              />
-            ))}
-          </View>
+          <WeeklyPlanSection TH={TH} T={T} dayOverviews={dayOverviews} activeDay={activeDay} setActiveDay={setActiveDay} exerciseLibrary={exerciseLibrary} dayTasksMap={dayTasksMap} selectedExIds={selectedExIds} selectedDays={selectedDays} onExerciseToggle={handleExerciseToggle} onDayChooserChange={handleDayChooserChange} onBatchAddToDays={handleBatchAddToDays} tasks={tasks} onStartDayTraining={handleStartDayTraining} onUpdateTask={updateTask} onShowSnackbar={showSnackbar} />
         </ScrollView>
 
-        <SnackbarHost
-          TH={TH}
-          T={T}
-          visible={snackbar.visible}
-          message={snackbar.message}
-          onUndo={handleUndo}
-          onDismiss={dismissSnackbar}
-        />
+        <SnackbarHost TH={TH} T={T} visible={snackbar.visible} message={snackbar.message} onUndo={handleUndo} onDismiss={dismissSnackbar} />
 
-        {/* ── Bottom CTA Bar ── */}
-        <View style={[styles.footer, { backgroundColor: TH.bg, borderTopColor: TH.border }]}>
-          <TouchableOpacity onPress={handleSave} disabled={!name.trim()}
-            style={[styles.saveBtn, { backgroundColor: name.trim() ? `${P}80` : TH.border }]}>
-            <Save size={16} color="#fff" />
-            <Text style={{ color: '#fff', fontWeight: '600', fontSize: FONT_SMALL() }}>{T('bodyPlanSave')}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={handleStartTraining}
-            disabled={!name.trim()}
-            style={[styles.startBtn, { backgroundColor: name.trim() ? P : TH.border }]}
-            accessibilityRole="button"
-            accessibilityLabel={T('bodyStartTraining')}
-          >
-            <Play size={18} color="#fff" />
-            <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON() }}>{T('bodyStartTraining')}</Text>
-          </TouchableOpacity>
-        </View>
+        <FooterBar TH={TH} T={T} name={name} onSave={handleSave} onStartTraining={handleStartTraining} />
 
-        <TemplatePickerModal
-          visible={showTemplatePicker}
-          TH={TH} T={T}
-          onClose={() => setShowTemplatePicker(false)}
-          onSelect={handleSelectTemplate}
-        />
-
-        <DatePickerModal
-          visible={pickingDate !== null}
-          value={pickingDate === 'start' ? startDate : endDate}
-          onConfirm={(date) => {
-            if (pickingDate === 'start') setStartDate(date);
-            else setEndDate(date);
-            setPickingDate(null);
-          }}
-          onClose={() => setPickingDate(null)}
-          minDate={pickingDate === 'end' ? startDate : dateStr()}
-        />
+        <BottomModals TH={TH} T={T} showTemplatePicker={showTemplatePicker} setShowTemplatePicker={setShowTemplatePicker} onSelectTemplate={handleSelectTemplate} pickingDate={pickingDate} startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} setPickingDate={setPickingDate} />
       </SafeAreaView>
     </KeyboardAvoidingView>
   );

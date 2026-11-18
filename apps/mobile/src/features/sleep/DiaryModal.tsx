@@ -28,6 +28,85 @@ const WORK_STATES: { key: WorkState; labelKey: string }[] = [
   { key: 'exhausted', labelKey: 'sleepWorkExhausted' },
 ];
 
+type ThemeTokens = ReturnType<typeof useTheme>;
+type TranslateFn = ReturnType<typeof useT>;
+
+function MultiSelectCard({
+  icon, text, presets, selectedTags, customTag,
+  TH, P, T,
+  onToggleTag, onAddCustomTag, onSetCustomTag,
+}: {
+  icon: React.ReactNode;
+  text: string;
+  presets: string[];
+  selectedTags: string[];
+  customTag: string;
+  TH: ThemeTokens; P: string; T: TranslateFn;
+  onToggleTag: (tag: string) => void;
+  onAddCustomTag: () => void;
+  onSetCustomTag: (text: string) => void;
+}) {
+  return (
+    <View style={[s.card, { borderColor: `${P}30` }]}>
+      <View style={s.sectionLabel}>
+        {icon}
+        <Text style={[s.sectionLabelText, { color: TH.text }]}>{text}</Text>
+      </View>
+      <View style={s.chipRow}>
+        {presets.map(tag => {
+          const selected = selectedTags.includes(tag);
+          return (
+            <TouchableOpacity
+              key={tag}
+              onPress={() => onToggleTag(tag)}
+              style={[
+                s.chip,
+                {
+                  borderColor: selected ? P : TH.border,
+                  backgroundColor: selected ? `${P}20` : 'transparent',
+                },
+              ]}
+            >
+              <Text style={[s.chipText, { color: selected ? P : TH.text }]}>{tag}</Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+      <View style={s.customTagRow}>
+        <TextInput
+          value={customTag}
+          onChangeText={onSetCustomTag}
+          placeholder={T('sleepCustomTag')}
+          placeholderTextColor={TH.sub}
+          style={[s.customTagInput, { color: TH.text, borderColor: TH.border, backgroundColor: TH.card }]}
+          onSubmitEditing={onAddCustomTag}
+        />
+        <TouchableOpacity
+          onPress={onAddCustomTag}
+          style={[s.addTagBtn, { backgroundColor: P }]}
+        >
+          <Text style={s.addTagBtnText}>{T('sleepAddTag')}</Text>
+        </TouchableOpacity>
+      </View>
+      {/* Show custom tags that are not in presets */}
+      {selectedTags.filter(t => !presets.includes(t)).length > 0 && (
+        <View style={[s.chipRow, { marginTop: 8 }]}>
+          {selectedTags.filter(t => !presets.includes(t)).map(tag => (
+            <TouchableOpacity
+              key={tag}
+              onPress={() => onToggleTag(tag)}
+              style={[s.chip, { borderColor: P, backgroundColor: `${P}20` }]}
+            >
+              <Text style={[s.chipText, { color: P }]}>{tag}</Text>
+              <X size={12} color={P} style={{ marginLeft: 4 }} />
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+    </View>
+  );
+}
+
 export default function DiaryModal({ visible, onClose }: Props) {
   const TH    = useTheme();
   const T     = useT();
@@ -249,115 +328,30 @@ export default function DiaryModal({ visible, onClose }: Props) {
             </View>
 
             {/* ── 4. Body State (multi-select) ── */}
-            <View style={[s.card, { borderColor: `${P}30` }]}>
-              <SectionLabel icon={<Text style={{ fontSize: FONT_LABEL() }}>🏃</Text>} text={T('sleepBodyState')} />
-              <View style={s.chipRow}>
-                {BODY_STATE_PRESETS.map(tag => {
-                  const selected = bodyState.includes(tag);
-                  return (
-                    <TouchableOpacity
-                      key={tag}
-                      onPress={() => toggleTag(bodyState, setBodyState, tag)}
-                      style={[
-                        s.chip,
-                        {
-                          borderColor: selected ? P : TH.border,
-                          backgroundColor: selected ? `${P}20` : 'transparent',
-                        },
-                      ]}
-                    >
-                      <Text style={[s.chipText, { color: selected ? P : TH.text }]}>{tag}</Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-              <View style={s.customTagRow}>
-                <TextInput
-                  value={customBodyTag}
-                  onChangeText={setCustomBodyTag}
-                  placeholder={T('sleepCustomTag')}
-                  placeholderTextColor={TH.sub}
-                  style={[s.customTagInput, { color: TH.text, borderColor: TH.border, backgroundColor: TH.card }]}
-                  onSubmitEditing={() => addCustomTag(customBodyTag, bodyState, setBodyState, () => setCustomBodyTag(''))}
-                />
-                <TouchableOpacity
-                  onPress={() => addCustomTag(customBodyTag, bodyState, setBodyState, () => setCustomBodyTag(''))}
-                  style={[s.addTagBtn, { backgroundColor: P }]}
-                >
-                  <Text style={s.addTagBtnText}>{T('sleepAddTag')}</Text>
-                </TouchableOpacity>
-              </View>
-              {/* Show custom tags that are not in presets */}
-              {bodyState.filter(t => !BODY_STATE_PRESETS.includes(t)).length > 0 && (
-                <View style={[s.chipRow, { marginTop: 8 }]}>
-                  {bodyState.filter(t => !BODY_STATE_PRESETS.includes(t)).map(tag => (
-                    <TouchableOpacity
-                      key={tag}
-                      onPress={() => toggleTag(bodyState, setBodyState, tag)}
-                      style={[s.chip, { borderColor: P, backgroundColor: `${P}20` }]}
-                    >
-                      <Text style={[s.chipText, { color: P }]}>{tag}</Text>
-                      <X size={12} color={P} style={{ marginLeft: 4 }} />
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              )}
-            </View>
+            <MultiSelectCard
+              icon={<Text style={{ fontSize: FONT_LABEL() }}>🏃</Text>}
+              text={T('sleepBodyState')}
+              presets={BODY_STATE_PRESETS}
+              selectedTags={bodyState}
+              customTag={customBodyTag}
+              TH={TH} P={P} T={T}
+              onToggleTag={(tag) => toggleTag(bodyState, setBodyState, tag)}
+              onAddCustomTag={() => addCustomTag(customBodyTag, bodyState, setBodyState, () => setCustomBodyTag(''))}
+              onSetCustomTag={setCustomBodyTag}
+            />
 
             {/* ── 5. Mind State (multi-select) ── */}
-            <View style={[s.card, { borderColor: `${P}30` }]}>
-              <SectionLabel icon={<Text style={{ fontSize: FONT_LABEL() }}>🧠</Text>} text={T('sleepMindState')} />
-              <View style={s.chipRow}>
-                {MIND_STATE_PRESETS.map(tag => {
-                  const selected = mindState.includes(tag);
-                  return (
-                    <TouchableOpacity
-                      key={tag}
-                      onPress={() => toggleTag(mindState, setMindState, tag)}
-                      style={[
-                        s.chip,
-                        {
-                          borderColor: selected ? P : TH.border,
-                          backgroundColor: selected ? `${P}20` : 'transparent',
-                        },
-                      ]}
-                    >
-                      <Text style={[s.chipText, { color: selected ? P : TH.text }]}>{tag}</Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-              <View style={s.customTagRow}>
-                <TextInput
-                  value={customMindTag}
-                  onChangeText={setCustomMindTag}
-                  placeholder={T('sleepCustomTag')}
-                  placeholderTextColor={TH.sub}
-                  style={[s.customTagInput, { color: TH.text, borderColor: TH.border, backgroundColor: TH.card }]}
-                  onSubmitEditing={() => addCustomTag(customMindTag, mindState, setMindState, () => setCustomMindTag(''))}
-                />
-                <TouchableOpacity
-                  onPress={() => addCustomTag(customMindTag, mindState, setMindState, () => setCustomMindTag(''))}
-                  style={[s.addTagBtn, { backgroundColor: P }]}
-                >
-                  <Text style={s.addTagBtnText}>{T('sleepAddTag')}</Text>
-                </TouchableOpacity>
-              </View>
-              {mindState.filter(t => !MIND_STATE_PRESETS.includes(t)).length > 0 && (
-                <View style={[s.chipRow, { marginTop: 8 }]}>
-                  {mindState.filter(t => !MIND_STATE_PRESETS.includes(t)).map(tag => (
-                    <TouchableOpacity
-                      key={tag}
-                      onPress={() => toggleTag(mindState, setMindState, tag)}
-                      style={[s.chip, { borderColor: P, backgroundColor: `${P}20` }]}
-                    >
-                      <Text style={[s.chipText, { color: P }]}>{tag}</Text>
-                      <X size={12} color={P} style={{ marginLeft: 4 }} />
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              )}
-            </View>
+            <MultiSelectCard
+              icon={<Text style={{ fontSize: FONT_LABEL() }}>🧠</Text>}
+              text={T('sleepMindState')}
+              presets={MIND_STATE_PRESETS}
+              selectedTags={mindState}
+              customTag={customMindTag}
+              TH={TH} P={P} T={T}
+              onToggleTag={(tag) => toggleTag(mindState, setMindState, tag)}
+              onAddCustomTag={() => addCustomTag(customMindTag, mindState, setMindState, () => setCustomMindTag(''))}
+              onSetCustomTag={setCustomMindTag}
+            />
 
             {/* ── 6. Note ── */}
             <View style={[s.card, { borderColor: `${P}30` }]}>

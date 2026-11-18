@@ -33,6 +33,85 @@ const DASH_PATTERNS: Record<string, string> = {
   dotted: '2,4',
 };
 
+type ThemeTokens = ReturnType<typeof useTheme>;
+
+function GraphLayer({
+  edges, nodes, contextNode, selectedNode, TH, panOffset, zoom, onNodeTap,
+}: {
+  edges: RelationEdge[];
+  nodes: RelationNode[];
+  contextNode: RelationNode | null | undefined;
+  selectedNode: string | null;
+  TH: ThemeTokens;
+  panOffset: { x: number; y: number };
+  zoom: number;
+  onNodeTap: (nodeId: string) => void;
+}) {
+  return (
+    <G transform={`translate(${panOffset.x}, ${panOffset.y}) scale(${zoom})`}>
+      {/* Edges */}
+      {edges.map((edge, idx) => {
+        const fromNode = nodes.find(n => n.id === edge.from);
+        const toNode = nodes.find(n => n.id === edge.to);
+        if (!fromNode || !toNode) return null;
+        const edgeStyle = EDGE_STYLES[edge.type as EdgeStyleType] ?? EDGE_STYLES.related;
+        const midX = (fromNode.x + toNode.x) / 2;
+        const midY = (fromNode.y + toNode.y) / 2;
+        return (
+          <React.Fragment key={`edge-${idx}`}>
+            <Line
+              x1={fromNode.x} y1={fromNode.y}
+              x2={toNode.x} y2={toNode.y}
+              stroke={edgeStyle.color}
+              strokeWidth={edgeStyle.thickness}
+              strokeDasharray={DASH_PATTERNS[edgeStyle.lineStyle]}
+            />
+            {edgeStyle.label && (
+              <>
+                <Rect x={midX - 16} y={midY - 8} width={32} height={14} rx={3} fill="rgba(0,0,0,0.6)" />
+                <SvgText x={midX} y={midY + 3} textAnchor="middle" fill={edgeStyle.color} fontSize={9} fontWeight="500">
+                  {edgeStyle.label}
+                </SvgText>
+              </>
+            )}
+          </React.Fragment>
+        );
+      })}
+
+      {/* Nodes */}
+      {nodes.map(node => {
+        const isContext = contextNode && node.id === contextNode.id;
+        const isSelected = selectedNode === node.id;
+        const r = isContext ? node.size * 0.6 : node.size / 2;
+        const hitR = r + 20;
+        const truncatedLabel = node.label.length > 8 ? node.label.slice(0, 8) + '..' : node.label;
+        return (
+          <React.Fragment key={node.id}>
+            <Circle
+              cx={node.x} cy={node.y} r={hitR}
+              fill="transparent"
+              onPress={() => onNodeTap(node.id)}
+            />
+            <Circle
+              cx={node.x} cy={node.y} r={r}
+              fill={node.color}
+              stroke={isContext ? '#fff' : isSelected ? '#fff' : 'transparent'}
+              strokeWidth={isContext ? 4 : isSelected ? 3 : 0}
+              onPress={() => onNodeTap(node.id)}
+            />
+            <SvgText x={node.x} y={node.y + 5} textAnchor="middle" fontSize={isContext ? 16 : 14}>
+              {NODE_ICONS[node.type]}
+            </SvgText>
+            <SvgText x={node.x} y={node.y + r + 14} textAnchor="middle" fill={TH.text} fontSize={10} fontWeight="500">
+              {truncatedLabel}
+            </SvgText>
+          </React.Fragment>
+        );
+      })}
+    </G>
+  );
+}
+
 export default function RelationMapView() {
   const TH = useTheme();
   const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -303,67 +382,16 @@ export default function RelationMapView() {
           preserveAspectRatio="xMidYMid meet"
           pointerEvents="box-none"
         >
-          <G transform={`translate(${panOffset.x}, ${panOffset.y}) scale(${zoom})`}>
-            {/* Edges */}
-            {edges.map((edge, idx) => {
-              const fromNode = nodeMapRef.current.get(edge.from);
-              const toNode = nodeMapRef.current.get(edge.to);
-              if (!fromNode || !toNode) return null;
-              const edgeStyle = EDGE_STYLES[edge.type as EdgeStyleType] ?? EDGE_STYLES.related;
-              const midX = (fromNode.x + toNode.x) / 2;
-              const midY = (fromNode.y + toNode.y) / 2;
-              return (
-                <React.Fragment key={`edge-${idx}`}>
-                  <Line
-                    x1={fromNode.x} y1={fromNode.y}
-                    x2={toNode.x} y2={toNode.y}
-                    stroke={edgeStyle.color}
-                    strokeWidth={edgeStyle.thickness}
-                    strokeDasharray={DASH_PATTERNS[edgeStyle.lineStyle]}
-                  />
-                  {edgeStyle.label && (
-                    <>
-                      <Rect x={midX - 16} y={midY - 8} width={32} height={14} rx={3} fill="rgba(0,0,0,0.6)" />
-                      <SvgText x={midX} y={midY + 3} textAnchor="middle" fill={edgeStyle.color} fontSize={9} fontWeight="500">
-                        {edgeStyle.label}
-                      </SvgText>
-                    </>
-                  )}
-                </React.Fragment>
-              );
-            })}
-
-            {/* Nodes */}
-            {nodes.map(node => {
-              const isContext = contextNode && node.id === contextNode.id;
-              const isSelected = selectedNode === node.id;
-              const r = isContext ? node.size * 0.6 : node.size / 2;
-              const hitR = r + 20;
-              const truncatedLabel = node.label.length > 8 ? node.label.slice(0, 8) + '..' : node.label;
-              return (
-                <React.Fragment key={node.id}>
-                  <Circle
-                    cx={node.x} cy={node.y} r={hitR}
-                    fill="transparent"
-                    onPress={() => handleNodeTap(node.id)}
-                  />
-                  <Circle
-                    cx={node.x} cy={node.y} r={r}
-                    fill={node.color}
-                    stroke={isContext ? '#fff' : isSelected ? '#fff' : 'transparent'}
-                    strokeWidth={isContext ? 4 : isSelected ? 3 : 0}
-                    onPress={() => handleNodeTap(node.id)}
-                  />
-                  <SvgText x={node.x} y={node.y + 5} textAnchor="middle" fontSize={isContext ? 16 : 14}>
-                    {NODE_ICONS[node.type]}
-                  </SvgText>
-                  <SvgText x={node.x} y={node.y + r + 14} textAnchor="middle" fill={TH.text} fontSize={10} fontWeight="500">
-                    {truncatedLabel}
-                  </SvgText>
-                </React.Fragment>
-              );
-            })}
-          </G>
+          <GraphLayer
+            edges={edges}
+            nodes={nodes}
+            contextNode={contextNode}
+            selectedNode={selectedNode}
+            TH={TH}
+            panOffset={panOffset}
+            zoom={zoom}
+            onNodeTap={handleNodeTap}
+          />
         </Svg>
 
         {/* Zoom controls */}

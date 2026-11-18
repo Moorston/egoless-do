@@ -8,6 +8,112 @@ import { useTheme, useT } from '../../../components/UI';
 import { SegmentBar } from '../shared/SegmentBar';
 
 
+type ThemeTokens = ReturnType<typeof useTheme>;
+type TranslateFn = ReturnType<typeof useT>;
+
+function EmptyState({
+  TH, P, T,
+  onGenerateInsight, onGenerateReview,
+  loadingInsight, loadingReview,
+}: {
+  TH: ThemeTokens; P: string; T: TranslateFn;
+  onGenerateInsight: () => void; onGenerateReview: () => void;
+  loadingInsight: boolean; loadingReview: boolean;
+}) {
+  return (
+    <View style={[styles.container, { backgroundColor: TH.card, borderColor: TH.border }]}>
+      <View style={styles.emptyHeader}>
+        <Brain size={18} color={P} />
+        <Text style={[styles.title, { color: TH.text }]}>AI 分析</Text>
+      </View>
+      <View style={styles.emptyButtons}>
+        <TouchableOpacity
+          style={[styles.generateButton, { backgroundColor: P }]}
+          onPress={onGenerateInsight}
+          disabled={loadingInsight}
+        >
+          {loadingInsight ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.generateButtonText}>{T('trailInsightGenerate')}</Text>
+          )}
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.generateButton, { backgroundColor: P }]}
+          onPress={onGenerateReview}
+          disabled={loadingReview}
+        >
+          {loadingReview ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.generateButtonText}>{T('trailReviewGenerate')}</Text>
+          )}
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+}
+
+
+function PanelFooter({
+  subTab, insightCache, reviewCache,
+  TH, P, T,
+  onStartWrite, onRegenerateInsight, onRegenerateReview,
+  loadingInsight, loadingReview,
+}: {
+  subTab: number;
+  insightCache?: TrailInsightCache;
+  reviewCache?: TrailReviewCache;
+  TH: ThemeTokens; P: string; T: TranslateFn;
+  onStartWrite: (question?: string) => void;
+  onRegenerateInsight: () => void;
+  onRegenerateReview: () => void;
+  loadingInsight: boolean;
+  loadingReview: boolean;
+}) {
+  return (
+    <View style={styles.footerRow}>
+      {subTab === 0 && insightCache && (
+        <>
+          <TouchableOpacity
+            style={[styles.writeButton, { backgroundColor: P }]}
+            onPress={() => onStartWrite()}
+          >
+            <Text style={styles.writeButtonText}>
+              {T('trailReviewStart')}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onRegenerateInsight} disabled={loadingInsight}>
+            <Text style={[styles.actionText, { color: P }]}>
+              {T('trailInsightRegenerate')}
+            </Text>
+          </TouchableOpacity>
+          <Text style={[styles.timeText, { color: TH.sub }]}>
+            {new Date(insightCache.generatedAt).toLocaleString()}
+          </Text>
+        </>
+      )}
+      {subTab === 1 && reviewCache && (
+        <>
+          <TouchableOpacity
+            style={[styles.writeButton, { backgroundColor: P }]}
+            onPress={() => onStartWrite()}
+          >
+            <Text style={styles.writeButtonText}>
+              {T('trailReviewStart')}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onRegenerateReview} disabled={loadingReview}>
+            <Text style={[styles.actionText, { color: P }]}>
+              {T('trailReviewRegenerate')}
+            </Text>
+          </TouchableOpacity>
+        </>
+      )}
+    </View>
+  );
+}
+
 interface ReviewAIPanelProps {
   insightCache?: TrailInsightCache;
   reviewCache?: TrailReviewCache;
@@ -83,36 +189,13 @@ export function ReviewAIPanel({
   // 空状态：两个都不存在
   if (!hasAny) {
     return (
-      <View style={[styles.container, { backgroundColor: TH.card, borderColor: TH.border }]}>
-        <View style={styles.emptyHeader}>
-          <Brain size={18} color={P} />
-          <Text style={[styles.title, { color: TH.text }]}>AI 分析</Text>
-        </View>
-        <View style={styles.emptyButtons}>
-          <TouchableOpacity
-            style={[styles.generateButton, { backgroundColor: P }]}
-            onPress={handleGenerateInsight}
-            disabled={loadingInsight}
-          >
-            {loadingInsight ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <Text style={styles.generateButtonText}>{T('trailInsightGenerate')}</Text>
-            )}
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.generateButton, { backgroundColor: P }]}
-            onPress={handleGenerateReview}
-            disabled={loadingReview}
-          >
-            {loadingReview ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <Text style={styles.generateButtonText}>{T('trailReviewGenerate')}</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-      </View>
+      <EmptyState
+        TH={TH} P={P} T={T}
+        onGenerateInsight={handleGenerateInsight}
+        onGenerateReview={handleGenerateReview}
+        loadingInsight={loadingInsight}
+        loadingReview={loadingReview}
+      />
     );
   }
 
@@ -321,45 +404,17 @@ export function ReviewAIPanel({
           </ScrollView>
 
           {/* Fixed footer */}
-          <View style={styles.footerRow}>
-            {subTab === 0 && insightCache && (
-              <>
-                <TouchableOpacity
-                  style={[styles.writeButton, { backgroundColor: P }]}
-                  onPress={() => onStartWrite()}
-                >
-                  <Text style={styles.writeButtonText}>
-                    {T('trailReviewStart')}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleGenerateInsight} disabled={loadingInsight}>
-                  <Text style={[styles.actionText, { color: P }]}>
-                    {T('trailInsightRegenerate')}
-                  </Text>
-                </TouchableOpacity>
-                <Text style={[styles.timeText, { color: TH.sub }]}>
-                  {new Date(insightCache.generatedAt).toLocaleString()}
-                </Text>
-              </>
-            )}
-            {subTab === 1 && reviewCache && (
-              <>
-                <TouchableOpacity
-                  style={[styles.writeButton, { backgroundColor: P }]}
-                  onPress={() => onStartWrite()}
-                >
-                  <Text style={styles.writeButtonText}>
-                    {T('trailReviewStart')}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleGenerateReview} disabled={loadingReview}>
-                  <Text style={[styles.actionText, { color: P }]}>
-                    {T('trailReviewRegenerate')}
-                  </Text>
-                </TouchableOpacity>
-              </>
-            )}
-          </View>
+          <PanelFooter
+            subTab={subTab}
+            insightCache={insightCache}
+            reviewCache={reviewCache}
+            TH={TH} P={P} T={T}
+            onStartWrite={onStartWrite}
+            onRegenerateInsight={handleGenerateInsight}
+            onRegenerateReview={handleGenerateReview}
+            loadingInsight={loadingInsight}
+            loadingReview={loadingReview}
+          />
         </View>
       )}
     </View>

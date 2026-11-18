@@ -27,6 +27,119 @@ function parseWeight(raw: string | undefined): number | undefined {
 
 type DayCheckinRoute = RouteProp<RootStackParamList, 'DayCheckin'>;
 
+type ThemeTokens = ReturnType<typeof useTheme>;
+type TranslateFn = ReturnType<typeof useT>;
+
+function DataCard({
+  TH, P, T,
+  weight, onSetWeight, weightUnit,
+  waterInput, onSetWater,
+  totalCal,
+  showFoodAdd, onToggleFoodAdd,
+  foodName, onSetFoodName,
+  foodCal, onSetFoodCal,
+  onConfirmAddFood, onCancelFoodAdd,
+}: {
+  TH: ThemeTokens; P: string; T: TranslateFn;
+  weight: string; onSetWeight: (v: string) => void; weightUnit: string;
+  waterInput: string; onSetWater: (v: string) => void;
+  totalCal: number;
+  showFoodAdd: boolean; onToggleFoodAdd: () => void;
+  foodName: string; onSetFoodName: (v: string) => void;
+  foodCal: string; onSetFoodCal: (v: string) => void;
+  onConfirmAddFood: () => void; onCancelFoodAdd: () => void;
+}) {
+  return (
+    <View style={{ backgroundColor:TH.card, borderRadius:16, padding:14, marginBottom:12 }}>
+      <View style={{ flexDirection:'row', alignItems:'center', gap:8, marginBottom:14 }}>
+        <Scale size={18} color={P} />
+        <Text style={{ fontWeight:'600', fontSize:FONT_BODY(), color:TH.text }}>
+          {T('todayWeight')} / {T('water')} / {T('checkinFood')}
+        </Text>
+      </View>
+
+      {/* Weight */}
+      <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingVertical:10, borderBottomWidth:1, borderBottomColor:TH.border }}>
+        <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
+          <Scale size={16} color={P} />
+          <Text style={{ color:TH.text, fontSize:FONT_BODY() }}>{T('todayWeight')}</Text>
+        </View>
+        <View style={{ flexDirection:'row', alignItems:'center', gap:6 }}>
+          <TextInput
+            value={weight}
+            onChangeText={onSetWeight}
+            placeholder="..."
+            placeholderTextColor={TH.sub}
+            keyboardType="numeric"
+            accessibilityLabel={T('todayWeight')}
+            style={{ width:60, textAlign:'center', borderWidth:1, borderColor:TH.border, borderRadius:8, paddingVertical:6, color:TH.text, fontWeight:'600', fontSize:FONT_BODY(), backgroundColor:TH.card }}
+          />
+          <Text style={{ color:TH.sub, fontSize:FONT_SUB() }}>{weightUnit === 'kg' ? T('checkinKg') : T('checkinLb')}</Text>
+        </View>
+      </View>
+
+      {/* Water */}
+      <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingVertical:10, borderBottomWidth:1, borderBottomColor:TH.border }}>
+        <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
+          <Droplets size={16} color={P} />
+          <Text style={{ color:TH.text, fontSize:FONT_BODY() }}>{T('water')}</Text>
+        </View>
+        <View style={{ flexDirection:'row', alignItems:'center', gap:6 }}>
+          <TextInput
+            value={waterInput}
+            onChangeText={onSetWater}
+            placeholder="0"
+            placeholderTextColor={TH.sub}
+            keyboardType="numeric"
+            accessibilityLabel={T('water')}
+            style={{ width:60, textAlign:'center', borderWidth:1, borderColor:TH.border, borderRadius:8, paddingVertical:6, color:TH.text, fontWeight:'600', fontSize:FONT_BODY(), backgroundColor:TH.card }}
+          />
+          <Text style={{ color:TH.sub, fontSize:FONT_SUB() }}>ml</Text>
+        </View>
+      </View>
+
+      {/* Food */}
+      <View style={{ paddingVertical:10 }}>
+        <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between' }}>
+          <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
+            <Utensils size={16} color={P} />
+            <Text style={{ color:TH.text, fontSize:FONT_BODY() }}>{T('checkinFood')}</Text>
+          </View>
+          <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
+            <Text style={{ fontSize:FONT_TITLE(), fontWeight:'600', color:P }}>{String(totalCal)}</Text>
+            <Text style={{ color:TH.sub, fontSize:FONT_SUB() }}>kcal</Text>
+            <TouchableOpacity onPress={onToggleFoodAdd}
+              accessibilityLabel={T('addFood')}
+              style={{ width:24, height:24, borderRadius:12, backgroundColor:P, alignItems:'center', justifyContent:'center' }}>
+              <Plus size={14} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        </View>
+        {showFoodAdd && (
+          <View style={{ marginTop:10, padding:10, backgroundColor:TH.cardSolid, borderRadius:10, borderWidth:1, borderColor:TH.border }}>
+            <View style={{ flexDirection:'row', gap:8, marginBottom:8 }}>
+              <ThemedInput value={foodName} onChangeText={onSetFoodName} placeholder={T('foodName')} accessibilityLabel={T('foodName')} style={{ flex:2, padding:7 }} />
+              <ThemedInput value={foodCal} onChangeText={onSetFoodCal} placeholder={T('calories2')} keyboardType="numeric" accessibilityLabel={T('calories2')} style={{ flex:1, padding:7 }} />
+            </View>
+            <View style={{ flexDirection:'row', gap:8 }}>
+              <TouchableOpacity onPress={onConfirmAddFood}
+                accessibilityLabel={T('confirm')}
+                style={{ flex:1, padding:8, borderRadius:8, backgroundColor:P, alignItems:'center' }}>
+                <Text style={{ color:'#fff', fontWeight:'600', fontSize:FONT_BUTTON() }}>{T('confirm')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={onCancelFoodAdd}
+                accessibilityLabel={T('commonCancel')}
+                style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor:TH.border, alignItems:'center' }}>
+                <Text style={{ color:TH.sub, fontSize:FONT_BUTTON() }}>{T('commonCancel')}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+      </View>
+    </View>
+  );
+}
+
 export default function DayCheckinScreen() {
   const TH    = useTheme();
   const T     = useT();
@@ -314,100 +427,24 @@ export default function DayCheckinScreen() {
           </View>
 
           {/* ── Data card: Weight + Water + Food ── */}
-          <View style={{ backgroundColor:TH.card, borderRadius:16, padding:14, marginBottom:12 }}>
-            <View style={{ flexDirection:'row', alignItems:'center', gap:8, marginBottom:14 }}>
-              <Scale size={18} color={P} />
-              <Text style={{ fontWeight:'600', fontSize:FONT_BODY(), color:TH.text }}>
-                {T('todayWeight')} / {T('water')} / {T('checkinFood')}
-              </Text>
-            </View>
-
-            {/* Weight */}
-            <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingVertical:10, borderBottomWidth:1, borderBottomColor:TH.border }}>
-              <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
-                <Scale size={16} color={P} />
-                <Text style={{ color:TH.text, fontSize:FONT_BODY() }}>{T('todayWeight')}</Text>
-              </View>
-              <View style={{ flexDirection:'row', alignItems:'center', gap:6 }}>
-                <TextInput
-                  value={weight}
-                  onChangeText={setWeight}
-                  placeholder="..."
-                  placeholderTextColor={TH.sub}
-                  keyboardType="numeric"
-                  accessibilityLabel={T('todayWeight')}
-                  style={{ width:60, textAlign:'center', borderWidth:1, borderColor:TH.border, borderRadius:8, paddingVertical:6, color:TH.text, fontWeight:'600', fontSize:FONT_BODY(), backgroundColor:TH.card }}
-                />
-                <Text style={{ color:TH.sub, fontSize:FONT_SUB() }}>{store.weightUnit === 'kg' ? T('checkinKg') : T('checkinLb')}</Text>
-              </View>
-            </View>
-
-            {/* Water */}
-            <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingVertical:10, borderBottomWidth:1, borderBottomColor:TH.border }}>
-              <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
-                <Droplets size={16} color={P} />
-                <Text style={{ color:TH.text, fontSize:FONT_BODY() }}>{T('water')}</Text>
-              </View>
-              <View style={{ flexDirection:'row', alignItems:'center', gap:6 }}>
-                <TextInput
-                  value={waterInput}
-                  onChangeText={setWaterInput}
-                  placeholder="0"
-                  placeholderTextColor={TH.sub}
-                  keyboardType="numeric"
-                  accessibilityLabel={T('water')}
-                  style={{ width:60, textAlign:'center', borderWidth:1, borderColor:TH.border, borderRadius:8, paddingVertical:6, color:TH.text, fontWeight:'600', fontSize:FONT_BODY(), backgroundColor:TH.card }}
-                />
-                <Text style={{ color:TH.sub, fontSize:FONT_SUB() }}>ml</Text>
-              </View>
-            </View>
-
-            {/* Food */}
-            <View style={{ paddingVertical:10 }}>
-              <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between' }}>
-                <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
-                  <Utensils size={16} color={P} />
-                  <Text style={{ color:TH.text, fontSize:FONT_BODY() }}>{T('checkinFood')}</Text>
-                </View>
-                <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
-                  <Text style={{ fontSize:FONT_TITLE(), fontWeight:'600', color:P }}>{String(totalCal)}</Text>
-                  <Text style={{ color:TH.sub, fontSize:FONT_SUB() }}>kcal</Text>
-                  <TouchableOpacity onPress={() => setShowFoodAdd(!showFoodAdd)}
-                    accessibilityLabel={T('addFood')}
-                    style={{ width:24, height:24, borderRadius:12, backgroundColor:P, alignItems:'center', justifyContent:'center' }}>
-                    <Plus size={14} color="#fff" />
-                  </TouchableOpacity>
-                </View>
-              </View>
-              {showFoodAdd && (
-                <View style={{ marginTop:10, padding:10, backgroundColor:TH.cardSolid, borderRadius:10, borderWidth:1, borderColor:TH.border }}>
-                  <View style={{ flexDirection:'row', gap:8, marginBottom:8 }}>
-                    <ThemedInput value={foodName} onChangeText={setFoodName} placeholder={T('foodName')} accessibilityLabel={T('foodName')} style={{ flex:2, padding:7 }} />
-                    <ThemedInput value={foodCal} onChangeText={setFoodCal} placeholder={T('calories2')} keyboardType="numeric" accessibilityLabel={T('calories2')} style={{ flex:1, padding:7 }} />
-                  </View>
-                  <View style={{ flexDirection:'row', gap:8 }}>
-                    <TouchableOpacity onPress={() => {
-                      if (foodName.trim()) {
-                        store.addFood({ name: foodName, calories: +foodCal || 0, note: '', timestamp: dateTimestamp });
-                        setFoodName('');
-                        setFoodCal('');
-                        setShowFoodAdd(false);
-                      }
-                    }}
-                      accessibilityLabel={T('confirm')}
-                      style={{ flex:1, padding:8, borderRadius:8, backgroundColor:P, alignItems:'center' }}>
-                      <Text style={{ color:'#fff', fontWeight:'600', fontSize:FONT_BUTTON() }}>{T('confirm')}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => { setShowFoodAdd(false); setFoodName(''); setFoodCal(''); }}
-                      accessibilityLabel={T('commonCancel')}
-                      style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor:TH.border, alignItems:'center' }}>
-                      <Text style={{ color:TH.sub, fontSize:FONT_BUTTON() }}>{T('commonCancel')}</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              )}
-            </View>
-          </View>
+          <DataCard
+            TH={TH} P={P} T={T}
+            weight={weight} onSetWeight={setWeight} weightUnit={store.weightUnit}
+            waterInput={waterInput} onSetWater={setWaterInput}
+            totalCal={totalCal}
+            showFoodAdd={showFoodAdd} onToggleFoodAdd={() => setShowFoodAdd(!showFoodAdd)}
+            foodName={foodName} onSetFoodName={setFoodName}
+            foodCal={foodCal} onSetFoodCal={setFoodCal}
+            onConfirmAddFood={() => {
+              if (foodName.trim()) {
+                store.addFood({ name: foodName, calories: +foodCal || 0, note: '', timestamp: dateTimestamp });
+                setFoodName('');
+                setFoodCal('');
+                setShowFoodAdd(false);
+              }
+            }}
+            onCancelFoodAdd={() => { setShowFoodAdd(false); setFoodName(''); setFoodCal(''); }}
+          />
 
           {/* ── Note card ── */}
           <View style={{ backgroundColor:TH.card, borderRadius:16, padding:14, marginBottom:12 }}>
