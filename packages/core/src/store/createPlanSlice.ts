@@ -34,6 +34,87 @@ const log = createLogger('Store');
 // Section 1: Shared Helpers
 // ═══════════════════════════════════════════════════════════════════
 
+/**
+ * Run the daily-reset business once per missed day, chaining each day's result
+ * into the next call so a multi-day gap saves history for every skipped day.
+ * Pure with respect to the store — only calls the business function.
+ */
+function runDailyResetChain(
+  s: Pick<FullStore, 'plans' | 'planItems' | 'planItemCheckins' | 'dailyCustomTodos' | 'dailyTodoHistory'>,
+  previousDate: string,
+  dayCount: number,
+): ReturnType<typeof performDailyResetBiz> {
+  let prevDate = previousDate;
+  let result!: ReturnType<typeof performDailyResetBiz>;
+
+  for (let i = 0; i < dayCount; i++) {
+    const baseDate = new Date(previousDate);
+    baseDate.setDate(baseDate.getDate() + i + 1);
+    const dayStr = dateStr(baseDate);
+    result = performDailyResetBiz(
+      result?.plans ?? s.plans ?? [],
+      result?.planItems ?? s.planItems ?? [],
+      s.planItemCheckins ?? [],
+      result?.dailyCustomTodos ?? s.dailyCustomTodos ?? [],
+      result?.dailyTodoHistory ?? s.dailyTodoHistory ?? [],
+      prevDate,
+      dayStr,
+    );
+    prevDate = dayStr;
+  }
+
+  return result;
+}
+
+/**
+ * Persist the daily-reset result by diffing it against the pre-reset state.
+ * Per-type strategies (extracted verbatim from performDailyReset):
+ * - plans / planItems: re-persist only rows whose updatedAt changed
+ * - dailyCustomTodos: persist only NEW rows (id absent in orig)
+ * - dailyTodoHistory: persist new OR updatedAt-changed rows
+ * Only side effect: adapter.persistChange calls (fire-and-forget).
+ */
+function persistDailyResetChanges(
+  result: ReturnType<typeof performDailyResetBiz>,
+  orig: {
+    plans: Plan[];
+    planItems: PlanItem[];
+    dailyCustomTodos: DailyCustomTodo[];
+    dailyTodoHistory: DailyTodoHistory[];
+  },
+  adapter: Pick<StorageAdapter, 'persistChange'>,
+): void {
+  // Pre-build maps for O(1) lookup
+  const origPlanMap = new Map<string, Plan>(orig.plans.map((p: Plan) => [p.id, p]));
+  const origItemMap = new Map<string, PlanItem>(orig.planItems.map((i: PlanItem) => [i.id, i]));
+  const origTodoMap = new Map<string, DailyCustomTodo>(orig.dailyCustomTodos.map((t: DailyCustomTodo) => [t.id, t]));
+  const origHistMap = new Map<string, DailyTodoHistory>(orig.dailyTodoHistory.map((h: DailyTodoHistory) => [h.id, h]));
+  for (const p of result.plans) {
+    const before = origPlanMap.get(p.id);
+    if (before && before.updatedAt !== p.updatedAt) {
+      adapter.persistChange('plan', p.id, p).catch(e => log.error(e));
+    }
+  }
+  for (const item of result.planItems) {
+    const before = origItemMap.get(item.id);
+    if (before && before.updatedAt !== item.updatedAt) {
+      adapter.persistChange('planItem', item.id, item).catch(e => log.error(e));
+    }
+  }
+  for (const t of result.dailyCustomTodos) {
+    if (!origTodoMap.has(t.id)) {
+      adapter.persistChange('dailyCustomTodo', t.id, t).catch(e => log.error(e));
+    }
+  }
+  for (const h of result.dailyTodoHistory) {
+    const before = origHistMap.get(h.id);
+    if (!before || before.updatedAt !== h.updatedAt) {
+      adapter.persistChange('dailyTodoHistory', h.id, h).catch(e => log.error(e));
+    }
+  }
+}
+
+
 // Shared toggle logic for checkin/uncheckin deduplication
 type SetState = (fn: (s: FullStore) => Partial<FullStore>) => void;
 type GetState = () => FullStore;
@@ -123,6 +204,14 @@ async function persistCascade(adapter: StorageAdapter, batchOps: Array<{ entity:
 export function createPlanSlice(
   adapter: StorageAdapter,
 ): SliceCreator<PlanSlice> {
+  // In-flight dedup for delayed-plan notifications. lastDelayedNotifyAt alone
+  // cannot prevent duplicates: it is written only AFTER `await notifyDelayedPlan`
+  // resolves, so a synchronous burst of fire-and-forget calls all pass the
+  // check. This Set lives in the factory closure — it follows the store
+  // instance lifecycle (no cross-instance leakage in tests). finally-clearing
+  // means a failed notification stays retryable on the next trigger.
+  const delayedNotifInFlight = new Set<string>();
+
   // eslint-disable-next-line max-lines-per-function -- arrow body groups cohesive CRUD state
   return (set, get) => ({
     plans: [],
@@ -450,25 +539,8 @@ export function createPlanSlice(
       if (isNaN(dayCount) || dayCount <= 0) return; // Guard: invalid dates or no reset needed
 
       const s = get();
-      let prevDate = previousDate;
-      let result!: ReturnType<typeof performDailyResetBiz>;
-
       // Reset each missed day sequentially so history is saved for every skipped day.
-      for (let i = 0; i < dayCount; i++) {
-        const baseDate = new Date(previousDate);
-        baseDate.setDate(baseDate.getDate() + i + 1);
-        const dayStr = dateStr(baseDate);
-        result = performDailyResetBiz(
-          result?.plans ?? s.plans ?? [],
-          result?.planItems ?? s.planItems ?? [],
-          s.planItemCheckins ?? [],
-          result?.dailyCustomTodos ?? s.dailyCustomTodos ?? [],
-          result?.dailyTodoHistory ?? s.dailyTodoHistory ?? [],
-          prevDate,
-          dayStr,
-        );
-        prevDate = dayStr;
-      }
+      const result = runDailyResetChain(s, previousDate, dayCount);
 
       if (result.hasChanges) {
         set({
@@ -478,34 +550,17 @@ export function createPlanSlice(
           dailyCustomTodos: result.dailyCustomTodos,
         });
 
-        // 持久化变更 — pre-build maps for O(1) lookup
-        const origPlanMap = new Map<string, Plan>((s.plans ?? []).map((p: Plan) => [p.id, p]));
-        const origItemMap = new Map<string, PlanItem>((s.planItems ?? []).map((i: PlanItem) => [i.id, i]));
-        const origTodoMap = new Map<string, DailyCustomTodo>((s.dailyCustomTodos ?? []).map((t: DailyCustomTodo) => [t.id, t]));
-        const origHistMap = new Map<string, DailyTodoHistory>((s.dailyTodoHistory ?? []).map((h: DailyTodoHistory) => [h.id, h]));
-        for (const p of result.plans) {
-          const orig = origPlanMap.get(p.id);
-          if (orig && orig.updatedAt !== p.updatedAt) {
-            adapter.persistChange('plan', p.id, p).catch(e => log.error(e));
-          }
-        }
-        for (const item of result.planItems) {
-          const orig = origItemMap.get(item.id);
-          if (orig && orig.updatedAt !== item.updatedAt) {
-            adapter.persistChange('planItem', item.id, item).catch(e => log.error(e));
-          }
-        }
-        for (const t of result.dailyCustomTodos) {
-          if (!origTodoMap.has(t.id)) {
-            adapter.persistChange('dailyCustomTodo', t.id, t).catch(e => log.error(e));
-          }
-        }
-        for (const h of result.dailyTodoHistory) {
-          const orig = origHistMap.get(h.id);
-          if (!orig || orig.updatedAt !== h.updatedAt) {
-            adapter.persistChange('dailyTodoHistory', h.id, h).catch(e => log.error(e));
-          }
-        }
+        // 持久化变更 — diff against pre-reset state (module-level pure engine)
+        persistDailyResetChanges(
+          result,
+          {
+            plans: s.plans ?? [],
+            planItems: s.planItems ?? [],
+            dailyCustomTodos: s.dailyCustomTodos ?? [],
+            dailyTodoHistory: s.dailyTodoHistory ?? [],
+          },
+          adapter,
+        );
         // Trigger delayed plan notifications
         if (result.delayedPlans.length > 0) {
           get().notifyPlanDelayed(result.delayedPlans);
@@ -629,8 +684,13 @@ export function createPlanSlice(
       const now = Date.now();
 
       for (const plan of delayedPlans) {
-        // Skip if already notified
+        // Skip if already notified (persisted dedup — never retry after success)
         if (plan.lastDelayedNotifyAt) continue;
+        // Skip if a notification for this plan is already in flight —
+        // the persisted flag is only written after the await completes,
+        // so without this guard a concurrent burst fires N duplicate emails
+        if (delayedNotifInFlight.has(plan.id)) continue;
+        delayedNotifInFlight.add(plan.id);
 
         try {
           await notifyDelayedPlan({
@@ -653,6 +713,9 @@ export function createPlanSlice(
           adapter.persistChange('plan', plan.id, updatedPlan).catch(e => log.error(e));
         } catch (err) {
           log.error(err, { context: 'delayed plan notification' });
+        } finally {
+          // Clear the in-flight mark: a failed notification stays retryable
+          delayedNotifInFlight.delete(plan.id);
         }
       }
     },
