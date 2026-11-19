@@ -2,9 +2,10 @@ name: CI / CD
 
 on:
   push:
-    branches: [main, develop]
+    branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
+  workflow_dispatch:
 
 jobs:
   lint:
@@ -45,12 +46,6 @@ jobs:
         run: pnpm vitest run --reporter=verbose
       - name: Run mobile tests
         run: pnpm --filter mobile test
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: coverage/
 
   security:
     name: Security Audit
@@ -80,7 +75,7 @@ jobs:
     name: EAS Build (preview)
     needs: [lint, test, security]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
