@@ -1929,3 +1929,38 @@ WriteBatcher NOT NULL 重试的 _notNullAttempts 计数器只在 giveup 时删�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 110: 每日重置归一：触发归一 + 通知竞态修复 + persist 引擎抽出
+
+**Date**: 2026-11-19
+**Task**: 每日重置归一：触发归一 + 通知竞态修复 + persist 引擎抽出
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+Manager 触发归一（单次 onPlanDailyReset(lastReset) 替代逐天回调，5 天 gap business 15→5 次 O(N²) 消除；daysDiff=1 必触发修复职责分裂，UI detector 保留幂等兜底）+ notifyPlanDelayed 竞态 in-flight 去重（闭包 Set + finally）+ performDailyReset 拆出 runDailyResetChain/persistDailyResetChanges 模块级纯函数（30→≤15）。characterization 先行 8+5 测试锁语义；Planning '传参错误/D_0 丢失' 判断证伪并回 Plan 修正（真病灶 O(N²) 空转+触发分裂）；C1 首版 NaN 守卫顺序 bug 被自家 invalid 测试抓住后修复。AC 9/9：2083 全绿/type-check 0/lint ratchet 5/复杂度双函数退出超标列表。spec 沉淀 state-management.md 触发契约章节 + Object.assign 顺序坑 + vi.mocked 模式。测试三坑：Object.assign(state,slice) clobber fixture 假绿、模块 spy 裸 import no-unsafe、可选依赖漏 mock。openspec daily-reset-consolidation 已 archive。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `111ee1a3` | (see git log) |
+| `5563929c` | (see git log) |
+| `1939c6b1` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
