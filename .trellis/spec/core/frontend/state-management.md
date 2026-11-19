@@ -89,6 +89,35 @@ Slice action → adapter.persistChange(entity, id, data)
 
 ---
 
+## Daily Reset Trigger Architecture
+
+The daily reset (previous-day history archival + recurring todo copy) has exactly ONE primary trigger and one fallback:
+
+| Layer | Component | Role |
+|-------|-----------|------|
+| Trigger | `core/src/dailyReset.ts` `DailyResetManager` | on `needsReset`, fires `onPlanDailyReset(lastReset)` **once** |
+| Multi-day semantics | `store/createPlanSlice.ts` `performDailyReset` | dayCount loop covers every missed day from `previousDate` → today |
+| Fallback | `apps/mobile/src/features/plan/PlanDetailContent.tsx` date detector | covers single-day gaps when the Manager hasn't run (e.g. initApp failure) — idempotent, safe to double-fire |
+
+Rules (each violation caused a real bug — daily-reset-consolidation, 2026-11-19):
+
+- **Manager fires ONE callback carrying `lastReset` — never a per-day burst.** A burst is O(N²): every callback re-runs the store's full dayCount loop (5-day gap = 5+4+3+2+1 = 15 business calls; the single-callback design needs exactly 5).
+- **The store owns multi-day semantics.** `performDailyReset(previousDate)` chains business results day by day. Never move that loop back to the Manager.
+- **Invalid `lastReset` (corrupted storage) fires nothing** — the NaN/`daysDiff < 0` guard in `backfillFromLastReset` runs BEFORE the plan callback.
+- **`lastReset === null` (first run) fires nothing** — no history exists to save.
+- **Reviews backfill per-day** (`backfillReviews`) — reviews have NO store-side loop; do not merge them into the single plan callback.
+
+### Delayed-plan notification dedup (two layers)
+
+`notifyPlanDelayed` prevents duplicate email bursts with two mechanisms:
+
+1. `plan.lastDelayedNotifyAt` (persisted) — after a **successful** send, never retry
+2. `delayedNotifInFlight` (factory-closure `Set`) — while a send is in flight. The persisted flag is only written AFTER `await notifyDelayedPlan(...)` resolves, so a synchronous burst of fire-and-forget calls all pass check 1 without check 2. The Set is `finally`-cleared: a **failed** send stays retryable on the next trigger.
+
+`checkAutoStatus`'s delayed branch intentionally does NOT pre-write `lastDelayedNotifyAt` — pre-writing would make a failed send never retry.
+
+---
+
 ## Forbidden Patterns
 
 - ❌ Importing `expo-*` or `react-native` — slices must be platform-agnostic
@@ -120,6 +149,22 @@ The choice depends on **whether the tested code path reads cross-slice state**:
 - **`createTestStore<FullStore>` + factory direct call** (no `bindSlice`) — use when the tested methods read `get().<other-slice-field>` (e.g. `recycleBin`, `planItems`, `notifyPlanDelayed`). The factory already expects FullStore-typed `set/get/api`, so `createTestStore<FullStore>` matches with zero cast.
 
 > Boundary case: `createTrailNoteSlice.test.ts` tests `createThoughtTrailSlice` (which overall is cross-slice), but the 4 tested trail-note methods only touch `thoughtTrails`/`trailNotes`, so `bindSlice` is correct. Judge by the **tested path**, not the slice as a whole.
+
+### Object.assign order trap (FullStore-direct + cross-slice method calls)
+
+When the tested method calls another slice method via `get()` (e.g. `performDailyReset` → `get().notifyPlanDelayed`), slice methods must be attached to state — and `initial` must be re-applied LAST:
+
+```ts
+const slice = createPlanSlice(adapter)(store.set, store.get, store.api);
+Object.assign(store.api.getState(), slice, initial); // initial LAST — never just (state, slice)
+```
+
+The factory's returned object carries factory-initial data fields (`plans: []`, `planItems: []`, …). Assigning the whole slice clobbers the seeded fixture with empty arrays — the business function then receives empty state, returns `hasChanges: false`, the persist block never runs, and every persist assertion fails **green** (assertions on "0 calls" pass vacuously). Reference implementation: `store/createPlanSlice.dailyReset.test.ts` → `makeSlice`.
+
+### Mocking module-level dependencies in slice tests
+
+- Mock the notification API module (`vi.mock('../services/notification', …)`) — `notifyPlanDelayed` fire-and-forgets a real HTTP request otherwise.
+- For a business-function spy that keeps real behavior, wrap `vi.fn(actual.performDailyReset)` inside `vi.mock('<module>', async (importOriginal) => …)`, then re-type the import with `vi.mocked(performDailyReset)` at the call site — a raw import stays typed as the original function, so `.mock.calls` access trips every `no-unsafe-*` rule.
 
 ### Per-slice adapter pattern
 
