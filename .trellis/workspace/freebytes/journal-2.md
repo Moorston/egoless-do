@@ -1896,3 +1896,36 @@ WriteBatcher NOT NULL 重试的 _notNullAttempts 计数器只在 giveup 时删�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 109: 探索沉淀 3 proposal + 实施 ci-trigger-fix
+
+**Date**: 2026-11-19
+**Task**: 探索沉淀 3 proposal + 实施 ci-trigger-fix
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+探索：显式 complexity 检查实测 mobile 61 / core 34（8 屏拆分验收未跑过该检查），沉淀 3 个 proposal——complexity-ratchet（3 函数处置 + 双包 ratchet 制度化）、sync-engine-complexity（54/41/27 按安全语义边界拆分，判断修正：非零测试，896 行 40 用例护航）、daily-reset-consolidation（双重补账 O(N²) + 单日触发挂在 UI 挂载 + notifyPlanDelayed async 竞态重复邮件 + store 层零测试，三发现全在零测试层）。实施 ci-trigger-fix（用户选 1）：ci.yml 五项改动——触发分支 master 化、workflow_dispatch、删幽灵 artifact 步骤、build-mobile 手动化（用户拍板）；YAML 验证过，待 PR 首跑验证后 openspec archive（Notes 已记显式决策）。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4454d2b0` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
