@@ -79,15 +79,45 @@ export class DailyResetManager {
     }
   }
 
-  private backfillDay(backfillDate: Date): void {
-    const backfillDateStr = dateStr(backfillDate);
+  /**
+   * Catch up on missed days since lastReset (app was closed for N days):
+   * - Plan daily reset: ONE callback carrying lastReset. The store-side
+   *   dayCount loop covers every missed day from lastReset, so a per-day
+   *   callback burst here was O(N²) business calls (all idempotent no-ops).
+   *   This also closes the split-trigger hole: daysDiff=1 previously fired
+   *   nothing here (only the UI date detector covered single-day gaps).
+   * - Reviews: backfilled per-day — reviews have no store-side loop.
+   * Invalid lastReset (corrupted storage) skips both, silently: only
+   * lastReset advances to today.
+   */
+  private backfillFromLastReset(lastReset: string, today: string): void {
+    const parseLocal = (s: string) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+    const lastDate = parseLocal(lastReset);
+    const todayDate = parseLocal(today);
+    const daysDiff = Math.floor((todayDate.getTime() - lastDate.getTime()) / 86400000);
 
-    // Trigger plan daily reset for each missed day
-    if (this.deps.onPlanDailyReset) {
-      this.deps.onPlanDailyReset(backfillDateStr);
+    // Guard: invalid date string produces NaN, corrupted storage loses backfill silently
+    if (isNaN(daysDiff) || daysDiff < 0) {
+      log.warn('Invalid daysDiff, skipping backfill', { lastReset, today, daysDiff });
+      return;
     }
 
-    // Generate reviews for missed boundary days
+    if (this.deps.onPlanDailyReset) {
+      this.deps.onPlanDailyReset(lastReset);
+    }
+    if (daysDiff > 1) {
+      for (let i = 0; i < Math.min(daysDiff, 7); i++) {
+        const backfillDate = new Date(lastDate);
+        backfillDate.setDate(backfillDate.getDate() + i);
+        this.backfillReviews(backfillDate);
+      }
+    }
+  }
+
+  private backfillReviews(backfillDate: Date): void {
+    // Generate reviews for missed boundary days (plan reset is NOT backfilled
+    // per-day anymore — onPlanDailyReset fires once with lastReset and the
+    // store-side dayCount loop covers every missed day)
     if (this.deps.onReviewDailyReset) {
       const dow = backfillDate.getDay();
       if (dow === 0) this.deps.onReviewDailyReset('week');
@@ -113,25 +143,7 @@ export class DailyResetManager {
     }
 
     if (needsReset) {
-      // Check if we need to backfill missing days (e.g., app was closed for multiple days)
-      if (lastReset) {
-        const parseLocal = (s: string) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
-        const lastDate = parseLocal(lastReset);
-        const todayDate = parseLocal(today);
-        const daysDiff = Math.floor((todayDate.getTime() - lastDate.getTime()) / 86400000);
-
-        // Guard: invalid date string produces NaN, corrupted storage loses backfill silently
-        if (isNaN(daysDiff) || daysDiff < 0) {
-          log.warn('Invalid daysDiff, skipping backfill', { lastReset, today, daysDiff });
-          // Skip backfill — just update lastReset to today
-        } else if (daysDiff > 1) {
-          for (let i = 0; i < Math.min(daysDiff, 7); i++) {
-            const backfillDate = new Date(lastDate);
-            backfillDate.setDate(backfillDate.getDate() + i);
-            this.backfillDay(backfillDate);
-          }
-        }
-      }
+      if (lastReset) this.backfillFromLastReset(lastReset, today);
 
       // Full daily reset
       const patch = getDailyResetPatch(lastReset);

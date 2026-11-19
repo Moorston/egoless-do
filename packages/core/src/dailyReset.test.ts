@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { getDailyResetPatch, msUntilMidnight, getTodayFoodLog, getTodayMedMinutes, DailyResetManager } from './dailyReset';
 import type { DailyResetDeps } from './dailyReset';
 import type { CheckinEntry } from './types';
-import { dateStr } from './utils';
+import { dateStr, addDays } from './utils';
 
 describe('getDailyResetPatch', () => {
   it('returns null when already reset today', () => {
@@ -68,6 +68,7 @@ describe('DailyResetManager', () => {
     getWaterGoal: vi.fn<() => number>().mockReturnValue(2000),
     onPlanDailyReset: vi.fn<(previousDate: string) => void>(),
     onHabitDailyReset: vi.fn<() => void>(),
+    onReviewDailyReset: vi.fn<(period: 'week' | 'month') => void>(),
   } satisfies DailyResetDeps;
 
   beforeEach(() => {
@@ -96,6 +97,68 @@ describe('DailyResetManager', () => {
     const manager = new DailyResetManager(mockDeps);
     await manager.check();
     expect(mockDeps.onHabitDailyReset).toHaveBeenCalled();
+  });
+
+  // ─── Plan reset trigger — unified semantics (post Phase C) ───
+  // Phase C flipped these from the characterization baseline: the Manager now
+  // fires ONE onPlanDailyReset(lastReset) on any needsReset day (the store-side
+  // dayCount loop covers every missed day), instead of a per-day callback
+  // burst (O(N²) business calls) that skipped daysDiff=1 entirely.
+
+  it('daysDiff=1: triggers onPlanDailyReset exactly once with lastReset', async () => {
+    const yesterday = addDays(dateStr(), -1);
+    mockDeps.getLastReset.mockResolvedValue(yesterday);
+    const manager = new DailyResetManager(mockDeps);
+    await manager.check();
+    expect(mockDeps.onPlanDailyReset).toHaveBeenCalledTimes(1);
+    expect(mockDeps.onPlanDailyReset).toHaveBeenCalledWith(yesterday);
+  });
+
+  it('daysDiff=3: triggers onPlanDailyReset exactly ONCE with lastReset (not per-day)', async () => {
+    const today = dateStr();
+    const lastReset = addDays(today, -3);
+    mockDeps.getLastReset.mockResolvedValue(lastReset);
+    const manager = new DailyResetManager(mockDeps);
+    await manager.check();
+    // Single callback carries lastReset — the store-side dayCount loop
+    // covers (D0,D1)(D1,D2)(D2,D3), so per-day callbacks would be O(N²).
+    expect(mockDeps.onPlanDailyReset).toHaveBeenCalledTimes(1);
+    expect(mockDeps.onPlanDailyReset).toHaveBeenCalledWith(lastReset);
+  });
+
+  it('lastReset=null (first run): does NOT trigger onPlanDailyReset', async () => {
+    const manager = new DailyResetManager(mockDeps);
+    await manager.check();
+    expect(mockDeps.onPlanDailyReset).not.toHaveBeenCalled();
+  });
+
+  it('daysDiff=10: still exactly one onPlanDailyReset (uncapped — no per-day burst anymore)', async () => {
+    const today = dateStr();
+    mockDeps.getLastReset.mockResolvedValue(addDays(today, -10));
+    const manager = new DailyResetManager(mockDeps);
+    await manager.check();
+    expect(mockDeps.onPlanDailyReset).toHaveBeenCalledTimes(1);
+  });
+
+  it('review backfill stays per-day: a Sunday inside the backfill window triggers onReviewDailyReset(week)', async () => {
+    // Construct lastReset so the backfill range (lastReset..lastReset+6)
+    // contains the most recent Sunday
+    const now = new Date();
+    const lastSunday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
+    const lastReset = dateStr(new Date(lastSunday.getFullYear(), lastSunday.getMonth(), lastSunday.getDate() - 6));
+    mockDeps.getLastReset.mockResolvedValue(lastReset);
+    const manager = new DailyResetManager(mockDeps);
+    await manager.check();
+    expect(mockDeps.onPlanDailyReset).toHaveBeenCalledTimes(1);
+    expect(mockDeps.onReviewDailyReset).toHaveBeenCalledWith('week');
+  });
+
+  it('invalid lastReset (corrupted storage): no backfill, no throw, lastReset still advances', async () => {
+    mockDeps.getLastReset.mockResolvedValue('garbage');
+    const manager = new DailyResetManager(mockDeps);
+    await manager.check();
+    expect(mockDeps.onPlanDailyReset).not.toHaveBeenCalled();
+    expect(mockDeps.setLastReset).toHaveBeenCalledWith(dateStr());
   });
 
   it('destroys timer on destroy()', () => {
