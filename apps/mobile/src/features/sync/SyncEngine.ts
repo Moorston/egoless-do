@@ -15,6 +15,7 @@ import {
 } from '../../db/syncQueue';
 import { flushWrites } from '../../store/storageAdapter';
 
+import { PushConflictResolver } from './PushConflictResolver';
 import { SyncApplyService, ENTITY_CONFIG } from './SyncApplyService';
 import { SyncRealtimeController } from './SyncRealtimeController';
 import { SyncRehydrationManager } from './SyncRehydrationManager';
@@ -53,12 +54,16 @@ export interface SyncMetric {
   error?: string;
 }
 
+/** ensureSyncToken verdict — usable token, or give-up (see ensureSyncToken). */
+type SyncTokenState = { token: string } | { giveUp: true; clearTrigger: boolean };
+
 export interface SyncEngineDeps {
   applyService?: SyncApplyService;
   realtimeController?: SyncRealtimeController;
   rehydrationManager?: SyncRehydrationManager;
   resetService?: SyncResetService;
   timestampManager?: SyncTimestampManager;
+  conflictResolver?: PushConflictResolver;
   // Injectable db and queue dependencies (for testability)
   db?: {
     openDatabase: typeof openDatabase;
@@ -88,6 +93,7 @@ export class SyncEngine {
   private _rehydrationManager: SyncRehydrationManager;
   private _timestampManager: SyncTimestampManager;
   private _resetService: SyncResetService;
+  private _conflictResolver: PushConflictResolver;
   private _db: NonNullable<SyncEngineDeps['db']> | null = null;
   private _syncQueue: NonNullable<SyncEngineDeps['syncQueue']> | null = null;
   private _storageAdapter: NonNullable<SyncEngineDeps['storageAdapter']> | null = null;
@@ -98,6 +104,16 @@ export class SyncEngine {
     this._rehydrationManager = deps?.rehydrationManager ?? new SyncRehydrationManager();
     this._timestampManager = deps?.timestampManager ?? new SyncTimestampManager();
     this._resetService = deps?.resetService ?? new SyncResetService();
+    // The resolver routes through this engine's injectable-dependency helpers
+    // (_openDatabase/_withDbLock/_mark*), so engine-level dep injection (tests,
+    // alternate adapters) keeps working with the default resolver.
+    this._conflictResolver = deps?.conflictResolver ?? new PushConflictResolver({
+      applyService: this._applyService,
+      openDatabase: () => this._openDatabase(),
+      withDbLock: (fn) => this._withDbLock(fn),
+      markQueueItemConflict: (id, reason) => this._markQueueItemConflict(id, reason),
+      markQueueItemFailed: (id, reason) => this._markQueueItemFailed(id, reason),
+    });
     this._db = deps?.db ?? null;
     this._syncQueue = deps?.syncQueue ?? null;
     this._storageAdapter = deps?.storageAdapter ?? null;
@@ -374,96 +390,11 @@ export class SyncEngine {
       const acceptedItems = items.filter(i => !rejectedSet.has(`${i.entity}:${i.entity_id}`));
       const rejectedItems = items.filter(i => rejectedSet.has(`${i.entity}:${i.entity_id}`));
 
-      // Auto-resolve conflicts (server-wins)
-      const autoResolvedIds: number[] = [];
-      for (const item of rejectedItems) {
-        const rejection = pushResult.rejected?.find(
-          (r) => r?.entity === item.entity && r?.entityId === item.entity_id,
-        );
-        if (rejection?.serverData) {
-          try {
-            const config = ENTITY_CONFIG[item.entity];
-            let resolved = false;
-            if (config) {
-              if (!isValidSqlName(config.table)) throw new Error(`Invalid table name: ${config.table}`);
-              if (!isValidSqlName(config.pk)) throw new Error(`Invalid pk name: ${config.pk}`);
-              // Server says record is deleted — mark local as deleted too
-              if (rejection.error === 'deleted') {
-                await this._withDbLock(async () => {
-                  const db = await this._openDatabase();
-                  await db.runAsync(
-                    `UPDATE ${config.table} SET deleted=1, synced=1 WHERE ${config.pk}=?`,
-                    [item.entity_id],
-                  );
-                });
-                log.debug(`[SyncEngine] Marked ${item.entity}:${item.entity_id} as deleted (server rejected)`);
-                resolved = true;
-              } else {
-              const row = this._applyService.serverPayloadToRow(item.entity, rejection.serverData);
-              if (row) {
-                const cols = Object.keys(row);
-                const vals = Object.values(row) as (string | number | null)[];
-                for (const col of cols) {
-                  if (!isValidSqlName(col)) throw new Error(`Invalid column name: ${col}`);
-                }
-                if (cols.length) {
-                  const db = await this._openDatabase();
-                  const skipReason = await this._withDbLock<string | null>(async () => {
-                    // Don't resurrect locally-deleted records
-                    const local = await db.getFirstAsync<{ deleted: number }>(
-                      `SELECT deleted FROM ${config.table} WHERE ${config.pk}=?`, [item.entity_id],
-                    );
-                    if (local?.deleted === 1) {
-                      await this._markQueueItemConflict(item.id, 'Locally deleted');
-                      return 'deleted';
-                    }
-                    const setClause = cols.map(c => `${c}=?`).join(',');
-                    const r2 = await db.runAsync(`UPDATE ${config.table} SET ${setClause},deleted=0,synced=1 WHERE ${config.pk}=?`, [...vals, item.entity_id]);
-                    if (r2.changes === 0) {
-                      await db.runAsync(`INSERT INTO ${config.table} (${cols.join(',')},synced) VALUES (${cols.map(() => '?').join(',')},1)`, vals);
-                    }
-                    return null;
-                  });
-                  if (skipReason === 'deleted') {
-                    log.debug(`[SyncEngine] Skipping auto-resolve for deleted ${item.entity}:${item.entity_id}`);
-                    continue;
-                  }
-                  resolved = true;
-                }
-              }
-              } // end else (not 'deleted' error)
-            }
-            if (resolved) {
-              autoResolvedIds.push(item.id);
-            } else {
-              await this._markQueueItemConflict(item.id, 'Invalid serverData');
-              try {
-                const { useSyncStore } = await import('../../store/syncStore');
-                useSyncStore.getState().addConflict({
-                  id: item.id.toString(),
-                  entity: item.entity,
-                  entityId: item.entity_id,
-                  localData: item.payload,
-                  remoteData: rejection.serverData,
-                  timestamp: Date.now(),
-                });
-              } catch (e) { log.warn(e, { phase: 'addConflict' }); } // intentional: conflict UI is optional
-            }
-          } catch (resolveErr) {
-            log.error(resolveErr, { entity: item.entity, id: item.entity_id, phase: 'auto-resolve' });
-            await this._markQueueItemConflict(item.id, 'Auto-resolve failed');
-          }
-        } else {
-          // No serverData → cannot auto-resolve.
-          // If this item has been retried too many times, mark as permanently failed to avoid infinite loop.
-          if (item.retry_count + 1 >= MAX_RETRY_ATTEMPTS) {
-            await this._markQueueItemFailed(item.id, rejection?.error || 'Server rejected — max retries exceeded');
-            log.warn(`[SyncEngine] Permanently failed: ${item.entity}:${item.entity_id} (${rejection?.error})`);
-          } else {
-            await this._markQueueItemConflict(item.id, rejection?.error || 'Server rejected');
-          }
-        }
-      }
+      // Auto-resolve conflicts (server-wins) — delegated to PushConflictResolver
+      // (extraction is move-only; see PushConflictResolver.ts for the safety
+      // semantics: resurrection invariant, SQL name validation, server-wins
+      // UPDATE→INSERT fallback, max-retries conflict/failed split)
+      const autoResolvedIds = await this._conflictResolver.resolveRejected(rejectedItems, pushResult);
       if (autoResolvedIds.length) await this._withDbLock(async () => { await this._removeQueueItems(autoResolvedIds); });
 
       // Mark synced
@@ -507,6 +438,103 @@ export class SyncEngine {
   }
 
   // ── Pull phase ──────────────────────────────────────────────────
+
+  /**
+   * Shared check→pull→apply→generation-guard skeleton for both pull paths
+   * (main pull + large-push safeguard). Path differences are explicit options:
+   * - `entities`: conflicted-entity scope — skips the check (pull is forced) and
+   *   pulls via apiSyncPullPost instead of the full apiSyncPull
+   * - `onCheckError`: 'pull-anyway' (main block proceeds with the pull on a
+   *   failed check) vs 'skip' (safeguard block gives up quietly)
+   * - `updatePerEntityTimestamps`: the main block records per-entity
+   *   lastSyncTimestamps; the safeguard block does not
+   *
+   * Note (behavior record, 2026-11-20): safeguard-block errors previously all
+   * logged as a blanket warn('large-push check'); they now log per-phase like
+   * the main block — control flow and test assertions unchanged.
+   */
+  private async pullOnce(
+    opts: {
+      entities?: string[];
+      onCheckError: 'pull-anyway' | 'skip';
+      updatePerEntityTimestamps: boolean;
+    },
+    freshToken: () => string,
+    userId: string | undefined,
+    signal: AbortSignal,
+    myGeneration: number,
+  ): Promise<void> {
+    // Check phase — a conflicted-entity scope skips the check entirely
+    let hasChanges = true;
+    try {
+      const cr = opts.entities
+        ? { hasChanges: true, changed: Object.fromEntries(opts.entities.map(e => [e, 1])) }
+        : await apiSyncCheck(freshToken(), this.lastSyncAt, userId);
+      hasChanges = cr.hasChanges;
+    } catch (checkErr) {
+      if (this.isKickedOutError(checkErr)) { this.handleKickedOut(); return; }
+      if (opts.onCheckError === 'skip') {
+        log.warn(checkErr, { phase: 'large-push check' });
+        return;
+      }
+      hasChanges = true;
+    }
+    if (!hasChanges) return;
+
+    // Pull phase
+    let pullResult: SyncPullResult | null = null;
+    try {
+      if (opts.entities) {
+        pullResult = await apiSyncPullPost(freshToken(), { entities: opts.entities, since: this.lastSyncAt > 0 ? this.lastSyncAt : undefined });
+      } else {
+        pullResult = await apiSyncPull(freshToken(), userId, this.lastSyncAt > 0 ? this.lastSyncAt : undefined);
+      }
+    } catch (pullErr) {
+      if (this.isKickedOutError(pullErr)) { this.handleKickedOut(); return; }
+      log.error(pullErr, { phase: 'pull' });
+    }
+    if (!pullResult?.data) return;
+
+    // Apply phase (+ ghost-sync guard)
+    await this.applyPulledData(pullResult.data, signal, myGeneration);
+
+    // Per-entity timestamps
+    if (opts.updatePerEntityTimestamps) {
+      await this.setPerEntitySyncTimestamps(pullResult);
+    }
+  }
+
+  /** Apply pulled server data and notify listeners (ghost-sync guarded). */
+  private async applyPulledData(
+    data: Record<string, unknown[]>,
+    signal: AbortSignal,
+    myGeneration: number,
+  ): Promise<void> {
+    let patch: Record<string, unknown> = {};
+    try {
+      patch = await this._applyService.applyServerChanges(data, this._deletedIdsProvider?.() ?? new Set(), signal, this.clockOffset);
+    } catch (applyErr) {
+      log.error(applyErr, { phase: 'applyServerChanges' });
+    }
+    // Guard: skip _onChanges if this sync was superseded (ghost sync prevention)
+    if (patch && Object.keys(patch).length && this._syncGeneration === myGeneration) this._onChanges?.(patch);
+  }
+
+  /** Record per-entity lastSyncTimestamps for entities the pull returned data for. */
+  private async setPerEntitySyncTimestamps(pullResult: SyncPullResult): Promise<void> {
+    try {
+      const st = pullResult.serverTime;
+      const iso = st > 0 ? new Date(st).toISOString() : new Date().toISOString();
+      for (const entity of Object.keys(pullResult.data)) {
+        if (Array.isArray(pullResult.data[entity]) && pullResult.data[entity].length > 0) {
+          await this._setLastSyncTimestamp(entity, iso);
+        }
+      }
+    } catch (tsErr) {
+      log.warn(tsErr, { phase: 'updateSyncTimestamps' });
+    }
+  }
+
   private async executePull(
     pushedAnything: boolean,
     pushedItemCount: number,
@@ -521,10 +549,11 @@ export class SyncEngine {
     // If push applied everything cleanly + no rejections, skip full pull (unless forcePull)
     const pushAllClean = pushedAnything && lastPushResult?.rejected?.length === 0;
     const wasLargePush = pushAllClean && pushedItemCount > PUSH_PULL_SEPARATE_THRESHOLD;
+
     if (this._forcePull || (!pushAllClean && !pushApplySucceeded)) {
       this._forcePull = false;
+      // If there were rejections, pull only the conflicted entities
       let pullEntities: string[] | undefined;
-      // If there were rejections, check only conflicted entities
       const rejected = lastPushResult?.rejected;
       if (rejected && rejected.length > 0) {
         const conflicted = new Set<string>();
@@ -533,73 +562,18 @@ export class SyncEngine {
         }
         if (conflicted.size > 0) pullEntities = [...conflicted];
       }
-
-      let hasChanges = true;
-      try {
-        const cr = pullEntities
-          ? { hasChanges: true, changed: Object.fromEntries(pullEntities.map(e => [e, 1])) }
-          : await apiSyncCheck(freshToken(), this.lastSyncAt, userId);
-        hasChanges = cr.hasChanges;
-      } catch (checkErr) {
-        if (this.isKickedOutError(checkErr)) { this.handleKickedOut(); return; }
-        hasChanges = true;
-      }
-
-      if (hasChanges) {
-        let pullResult: SyncPullResult | null = null;
-        try {
-          if (pullEntities) {
-            pullResult = await apiSyncPullPost(freshToken(), { entities: pullEntities, since: this.lastSyncAt > 0 ? this.lastSyncAt : undefined });
-          } else {
-            pullResult = await apiSyncPull(freshToken(), userId, this.lastSyncAt > 0 ? this.lastSyncAt : undefined);
-          }
-        } catch (pullErr) {
-          if (this.isKickedOutError(pullErr)) { this.handleKickedOut(); return; }
-          log.error(pullErr, { phase: 'pull' });
-        }
-
-        if (pullResult?.data) {
-          let patch: Record<string, unknown> = {};
-          try {
-            patch = await this._applyService.applyServerChanges(pullResult.data, this._deletedIdsProvider?.() ?? new Set(), signal, this.clockOffset);
-          } catch (applyErr) {
-            log.error(applyErr, { phase: 'applyServerChanges' });
-          }
-          // Guard: skip _onChanges if this sync was superseded (ghost sync prevention)
-          if (patch && Object.keys(patch).length && this._syncGeneration === myGeneration) this._onChanges?.(patch);
-
-          // Per-entity timestamps
-          try {
-            const st = pullResult.serverTime;
-            const iso = st > 0 ? new Date(st).toISOString() : new Date().toISOString();
-            for (const entity of Object.keys(pullResult.data)) {
-              if (Array.isArray(pullResult.data[entity]) && pullResult.data[entity].length > 0) {
-                await this._setLastSyncTimestamp(entity, iso);
-              }
-            }
-          } catch (tsErr) {
-            log.warn(tsErr, { phase: 'updateSyncTimestamps' });
-          }
-        }
-      }
+      await this.pullOnce(
+        { entities: pullEntities, onCheckError: 'pull-anyway', updatePerEntityTimestamps: true },
+        freshToken, userId, signal, myGeneration,
+      );
     }
 
     // Large-push safeguard: even when push was clean, check if server has new changes
     if (wasLargePush) {
-      try {
-        const cr = await apiSyncCheck(freshToken(), this.lastSyncAt, userId);
-        if (cr.hasChanges) {
-          const pullResult = await apiSyncPull(freshToken(), userId, this.lastSyncAt > 0 ? this.lastSyncAt : undefined);
-          if (pullResult?.data) {
-            const patch = await this._applyService.applyServerChanges(pullResult.data, this._deletedIdsProvider?.() ?? new Set(), signal, this.clockOffset);
-            // Guard: skip _onChanges if this sync was superseded (ghost sync prevention)
-            if (patch && Object.keys(patch).length && this._syncGeneration === myGeneration) this._onChanges?.(patch);
-          }
-        }
-      } catch (checkErr) {
-        if (this.isKickedOutError(checkErr)) { this.handleKickedOut(); return; }
-        log.warn(checkErr, { phase: 'large-push check' });
-      }
+      await this.pullOnce(
+        { onCheckError: 'skip', updatePerEntityTimestamps: false },
+        freshToken, userId, signal, myGeneration,
+      );
     }
   }
 
@@ -613,6 +587,91 @@ export class SyncEngine {
   }
 
   // ── Main sync ────────────────────────────────────────────────────
+
+  /** Error tail of a failed sync run: classify, log, metric, notify. */
+  private handleSyncError(err: unknown): void {
+    const errMsg = err instanceof Error ? err.message : String(err);
+    if (err instanceof Error && err.name === 'AbortError') log.warn('Aborted');
+    else log.error(err);
+    this.recordMetric(Date.now() - this._syncingSince, 0, 0, false, errMsg);
+    this._onSyncError?.(errMsg);
+  }
+
+  /** Orphan recovery, throttled to one scan per 30s (orphan events are rare). */
+  private async recoverOrphansIfDue(): Promise<void> {
+    if (!shouldRunOrphanRecovery(this._lastOrphanScanAt)) return;
+    try {
+      const result = await recoverOrphans(
+        ENTITY_CONFIG as Record<string, EntityConfig>,
+        (entity: string) => this._applyService.getRowMapper(entity),
+      );
+      if (result.total > 0) {
+        log.info(`Orphan recovery: ${result.total} items`, { byEntity: result.byEntity });
+      }
+      this._orphanRecoveryDone = true;
+      this._lastOrphanScanAt = Date.now();
+    } catch (e) {
+      log.error(e, { phase: 'orphan-recovery' });
+    }
+  }
+
+  /** True when the expiry provider reports a token expiring within the refresh skew window. */
+  private isTokenNearExpiry(): boolean {
+    const expiresAt = this._tokenExpiryProvider?.();
+    return !!expiresAt && expiresAt < Date.now() + TOKEN_REFRESH_SKEW_MS;
+  }
+
+  /** One sync run's token verdict (SLOW path — the fast path, a present
+   *  far-from-expiry token, is handled inline in runSync without awaiting, so
+   *  sync-start stays synchronous and the `_syncing` dedup window stays closed
+   *  for concurrent callers). clearTrigger marks whether the debounce timer
+   *  must be dropped — recovery exhausted ≠ recovery threw. */
+  private async ensureSyncToken(initialToken: string | undefined): Promise<SyncTokenState> {
+    let token = initialToken;
+
+    // Proactive token refresh: if the token is present but near expiry, refresh
+    // BEFORE attempting push/pull. Centralizes the pre-sync refresh so all sync
+    // triggers (debounced writes, foreground, realtime) benefit — previously only
+    // the useSync foreground path refreshed, leaving write-triggered syncs to
+    // fail with 401 and stall until the next foreground.
+    if (token && this.isTokenNearExpiry()) {
+      try {
+        const refreshed = await this._tokenRecoveryFn?.() ?? null;
+        if (refreshed) {
+          token = refreshed;
+          log.info('runSync: token near expiry, refreshed proactively');
+        }
+      } catch (e) {
+        // Best-effort: proceed with the current token; if it's truly expired
+        // the server will return 401 and items will be retried next sync.
+        log.warn('runSync: proactive token refresh failed', e);
+      }
+    }
+
+    if (!token) {
+      log.warn('runSync: no token, attempting recovery...');
+      try {
+        if (this._tokenRecoveryFn) {
+          log.debug('Attempting token refresh via recovery function...');
+          token = await this._tokenRecoveryFn() ?? undefined;
+          if (token) log.info('Token refreshed, proceeding with sync');
+        }
+        if (!token) {
+          log.warn('No recovery possible');
+          // Don't trigger kicked-out here — the auth state is still valid,
+          // and the user may have a token that still works for read operations.
+          // If the server rejects the token during push/pull, the kicked-out
+          // handler will fire then. This prevents premature logout on startup.
+          return { giveUp: true, clearTrigger: true };
+        }
+      } catch (e) {
+        log.error(e, { msg: 'Token recovery failed' });
+        return { giveUp: true, clearTrigger: false };
+      }
+    }
+    return { token };
+  }
+
   async runSync(): Promise<void> {
     // ── Concurrency guard (generation-based, avoids TOCTOU) ──
     // Abort previous sync if timed out
@@ -632,53 +691,21 @@ export class SyncEngine {
     const myGeneration = ++this._syncGeneration;
 
     // ── Token check ────────────────────────────────────────────────────
-    let token = this._tokenProvider?.();
-
-    // Proactive token refresh: if the token is present but near expiry, refresh
-    // BEFORE attempting push/pull. Centralizes the pre-sync refresh so all sync
-    // triggers (debounced writes, foreground, realtime) benefit — previously only
-    // the useSync foreground path refreshed, leaving write-triggered syncs to
-    // fail with 401 and stall until the next foreground.
-    if (token) {
-      const expiresAt = this._tokenExpiryProvider?.();
-      if (expiresAt && expiresAt < Date.now() + TOKEN_REFRESH_SKEW_MS) {
-        try {
-          const refreshed = await this._tokenRecoveryFn?.() ?? null;
-          if (refreshed) {
-            token = refreshed;
-            log.info('runSync: token near expiry, refreshed proactively');
-          }
-        } catch (e) {
-          // Best-effort: proceed with the current token; if it's truly expired
-          // the server will return 401 and items will be retried next sync.
-          log.warn('runSync: proactive token refresh failed', e);
-        }
-      }
-    }
-
-    if (!token) {
-      log.warn('runSync: no token, attempting recovery...');
-      try {
-        if (this._tokenRecoveryFn) {
-          log.debug('Attempting token refresh via recovery function...');
-          token = await this._tokenRecoveryFn() ?? undefined;
-          if (token) log.info('Token refreshed, proceeding with sync');
-        }
-        if (!token) {
-          log.warn('No recovery possible');
-          this.clearSyncTrigger();
-          // Don't trigger kicked-out here — the auth state is still valid,
-          // and the user may have a token that still works for read operations.
-          // If the server rejects the token during push/pull, the kicked-out
-          // handler will fire then. This prevents premature logout on startup.
-          this._syncing = false;
-          return;
-        }
-      } catch (e) {
-        log.error(e, { msg: 'Token recovery failed' });
+    // Fast path first: a present, far-from-expiry token proceeds WITHOUT
+    // awaiting — runSync reaches `_syncing = true` synchronously, keeping the
+    // dedup window closed for concurrent callers ('skips when already syncing').
+    let token = this._tokenProvider?.() ?? undefined;
+    if (!token || this.isTokenNearExpiry()) {
+      const tokenState = await this.ensureSyncToken(token);
+      if ('giveUp' in tokenState) {
+        // Recovery exhausted: drop the pending debounce timer so an auth-less
+        // state doesn't keep re-triggering sync (a thrown recovery keeps it —
+        // transient failure, the next write/foreground re-triggers normally).
+        if (tokenState.clearTrigger) this.clearSyncTrigger();
         this._syncing = false;
         return;
       }
+      token = tokenState.token;
     }
 
     // Token confirmed available — safe to mark as syncing
@@ -700,21 +727,7 @@ export class SyncEngine {
     await this._pruneStaleQueueItems().catch(e => log.error(e, { phase: 'prune' }));
 
     // Orphan recovery — skip if last sync was <30s ago (orphan events are rare)
-    if (shouldRunOrphanRecovery(this._lastOrphanScanAt)) {
-      try {
-        const result = await recoverOrphans(
-          ENTITY_CONFIG as Record<string, EntityConfig>,
-          (entity: string) => this._applyService.getRowMapper(entity),
-        );
-        if (result.total > 0) {
-          log.info(`Orphan recovery: ${result.total} items`, { byEntity: result.byEntity });
-        }
-        this._orphanRecoveryDone = true;
-        this._lastOrphanScanAt = Date.now();
-      } catch (e) {
-        log.error(e, { phase: 'orphan-recovery' });
-      }
-    }
+    await this.recoverOrphansIfDue();
 
     // ── Execute phases ─────────────────────────────────────────────────
     try {
@@ -734,11 +747,7 @@ export class SyncEngine {
       await this.internalCleanup();
       this.recordMetric(Date.now() - this._syncingSince, ctx.pushedItemCount, 0, true);
     } catch (err: unknown) {
-      const errMsg = err instanceof Error ? err.message : String(err);
-      if (err instanceof Error && err.name === 'AbortError') log.warn('Aborted');
-      else log.error(err);
-      this.recordMetric(Date.now() - this._syncingSince, 0, 0, false, errMsg);
-      this._onSyncError?.(errMsg);
+      this.handleSyncError(err);
     } finally {
       if (this._syncGeneration === myGeneration) {
         this._syncing = false;
