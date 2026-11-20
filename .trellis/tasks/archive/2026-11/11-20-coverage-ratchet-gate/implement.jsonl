@@ -1,0 +1,3 @@
+{"file": "openspec/changes/coverage-ratchet-gate/proposal.md", "reason": "任务来源：实测基线（core 61.6% / mobile 4.4% / scripts 25,925 噪声）、5 Phase 原始定义、clover 口径坑、方向心智模型（coverage 只升 vs lint 只降）"}
+{"file": ".trellis/tasks/11-20-coverage-ratchet-gate/design.md", "reason": "独立 coverage config 方案（--root 否决实录 + root:__dirname 解法）、provider 依赖、CI step 边界、风险表——实施逐项按此"}
+{"file": ".trellis/spec/mobile/frontend/quality-guidelines.md", "reason": "Known Test Environment Limitations（mobile 结构性基线的依据：lucide transform 失败、@testing-library 不可用）+ 双 ratchet 现状（Phase E 的 GLOBAL-CODE-STANDARDS 联动参照）"}

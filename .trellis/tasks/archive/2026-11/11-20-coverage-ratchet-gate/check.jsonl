@@ -1,0 +1,2 @@
+{"file": ".trellis/tasks/11-20-coverage-ratchet-gate/design.md", "reason": "验收核对表：分母定义（scripts 噪声排除）、thresholds=实测四口径、--config 跑法解析正确性（local-engine placeholder 哨兵）、CI 静态验收边界"}
+{"file": "openspec/changes/coverage-ratchet-gate/proposal.md", "reason": "AC 语义来源：方向心智模型（只升不降）、mobile 结构性基线、clover 口径坑"}
