@@ -111,6 +111,33 @@ When extracting a synchronous code segment into an `async` method for complexity
 
 `--max-warnings` ratchet 当前为 **0**（2026-11-18 下调，实测值）。历史：13（11-17）→ 0。13 个 warning 的清除分两步：child 1（sync 测试 describe 平铺 + SleepHistoryPage mkStyles + import/order，13→8）、child 2（8 个无测试 screen 保守拆分 max-lines-per-function 8→0）。
 
+### Complexity Ratchet（`lint:complexity` 脚本，双包）
+
+主 lint 不启用 `complexity` 规则（团队约定 ≤15 默认不跑）——`lint:complexity` 脚本用**独立 config 文件**（`.eslintrc.complexity.js`，extends 主 config + `complexity: ['warn', 15]`）显式启用，避开 npm script 内联 `--rule` JSON 的 Windows 引号转义问题：
+
+| 包 | 脚本 | 阈值（2026-11-20 实测起步） | 构成 |
+|----|------|---------------------------|------|
+| mobile | `pnpm --filter mobile lint:complexity` | **56** | 纯 complexity（主 lint ratchet=0）；历史：59（11-20 起步前）→ 56（ReviewAIPanel 拆分 −1 + PlanCreateScreen 豁免注解 −2） |
+| core | `pnpm --filter @egoless-do/core lint:complexity` | **37** | 32 complexity 存量 + 5 既有 no-unsafe ratchet 残差（复杂度 config 继承全部规则，跑分含残差）；core 残差清零时同步下调 |
+
+**心智模型**：与 lint ratchet 完全对称——阈值=实测起步，**只降不升**（方向与 coverage ratchet 的只升不降相反）。存量不是清零承诺：core 32 个与其余 mobile 53 个继续存在，ratchet 只防新增；治理走显式 `--rule` 实测 + 逐波拆分任务（如 11-19 sync-engine-complexity）。
+
+### Presentational Complexity 豁免注解（complexity 维度）
+
+`Presentational sub-components` MAY exceed 15（上述 Complexity Thresholds 条款）的落地机制：函数声明前加注解 + 理由：
+
+```tsx
+// 表单固有分支：字段错误显隐 ×N + frequency 多 mode 切换；presentational 组件
+// 无进一步可拆语义单元（quality-guidelines presentational 豁免条款）
+// eslint-disable-next-line complexity
+function PlanBasicInfoCard(...) {
+```
+
+- 注解只在 `lint:complexity` 下生效（主 lint 未启用 complexity，ESLint 8.57 默认不报 unused disable）——机制成立依赖双脚本并存
+- 理由必须写明"固有分支"来源与"无进一步可拆语义单元"判断
+- **登记清单**（新增须同步）：`PlanCreateScreen.tsx` PlanBasicInfoCard（22）/ PlanItemEditor（30）
+- 与 Risk-Tiered Complexity Exemption 的区别：presentational 豁免 = 表单/渲染固有分支（注解消除 warning）；risk-tier 豁免 = 错误处理状态机固有密度（保留 warning，文档化 + 重验证）
+
 ### 无测试 Screen 保守拆分模式（策略 C，2026-11-18）
 
 8 个无 co-located 测试的 screen（324-673 行）按此模式收敛到 max-lines-per-function ≤300，零行为变更：
