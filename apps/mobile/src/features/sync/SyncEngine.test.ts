@@ -600,6 +600,67 @@ afterEach(() => {
 
       expect(mockMarkQueueItemConflict).toHaveBeenCalledWith(1, 'Server rejected');
     });
+
+    // ─── Characterization tests (sync-engine-complexity Phase A) ───
+    // Lock CURRENT behavior of the untested branches BEFORE extracting them
+    // (PushConflictResolver / pullOnce). These must stay green, unchanged,
+    // through every refactor phase — zero-behavior-change evidence.
+
+    it('markRetry failure falls back to markQueueItemFailed (atomicity guard)', async () => {
+      const items = [makeQueueItem(1, 'habit', 'h1')];
+      mockDrainQueue.mockResolvedValueOnce(items);
+      mockApiSyncPush.mockRejectedValueOnce(new Error('Network error'));
+      mockMarkQueueItemRetry.mockRejectedValueOnce(new Error('DB locked'));
+
+      await engine.runSync();
+
+      expect(mockMarkQueueItemRetry).toHaveBeenCalledWith(1, 1, expect.any(Number));
+      // Item must not be lost: marking retry failed → marked failed instead
+      expect(mockMarkQueueItemFailed).toHaveBeenCalledWith(1, 'Retry mark failed');
+    });
+
+    it('locally-deleted record is NOT resurrected: conflict marked, no UPDATE', async () => {
+      const items = [makeQueueItem(1, 'habit', 'h1')];
+      mockDrainQueue.mockResolvedValueOnce(items);
+      mockApplyService.serverPayloadToRow.mockReturnValueOnce({ name: 'Updated', id: 'h1' });
+      mockApiSyncPush.mockResolvedValueOnce({
+        serverTime: Date.now(),
+        rejected: [{ entity: 'habit', entityId: 'h1', serverData: { name: 'Updated' } }],
+      });
+      // Local row exists and is soft-deleted → resolver must skip (skipReason 'deleted')
+      mockDb.getFirstAsync.mockResolvedValueOnce({ deleted: 1 });
+
+      await engine.runSync();
+
+      expect(mockDb.getFirstAsync).toHaveBeenCalledWith(
+        expect.stringContaining('SELECT deleted FROM habits'),
+        ['h1'],
+      );
+      expect(mockMarkQueueItemConflict).toHaveBeenCalledWith(1, 'Locally deleted');
+      // Resurrection invariant: the server-wins UPDATE never executes
+      // (runAsync IS called later by internalCleanup's purge — scope the
+      // assertion to the UPDATE statement specifically)
+      expect(mockDb.runAsync).not.toHaveBeenCalledWith(
+        expect.stringContaining('UPDATE habits'),
+        expect.anything(),
+      );
+      expect(mockRemoveQueueItems).not.toHaveBeenCalledWith([1]);
+    });
+
+    it('no-serverData rejection at max retries marks failed, not conflict', async () => {
+      const items = [makeQueueItem(1, 'habit', 'h1')];
+      items[0].retry_count = 4; // next attempt = 5 = MAX_RETRY_ATTEMPTS
+      mockDrainQueue.mockResolvedValueOnce(items);
+      mockApiSyncPush.mockResolvedValueOnce({
+        serverTime: Date.now(),
+        rejected: [{ entity: 'habit', entityId: 'h1', error: 'version mismatch' }],
+      });
+
+      await engine.runSync();
+
+      expect(mockMarkQueueItemFailed).toHaveBeenCalledWith(1, 'version mismatch');
+      expect(mockMarkQueueItemConflict).not.toHaveBeenCalled();
+    });
   });
 
   // ================================================================
@@ -645,6 +706,34 @@ afterEach(() => {
 
       // The pull phase with rejections uses apiSyncPullPost, not apiSyncPull
       expect(mockApiSyncPullPost).toHaveBeenCalled();
+    });
+
+    it('clean large push (>20 items) triggers safeguard check + full pull', async () => {
+      // Characterization (sync-engine-complexity Phase A): the wasLargePush
+      // safeguard block — clean push of >PUSH_PULL_SEPARATE_THRESHOLD items
+      // skips the post-push mini-pull but runs check + full pull afterwards.
+      const items = Array.from({ length: 21 }, (_, i) => makeQueueItem(i + 1, 'habit', `h${i + 1}`));
+      mockDrainQueue.mockResolvedValueOnce(items);
+      mockApiSyncPush.mockResolvedValueOnce({ serverTime: Date.now(), rejected: [] });
+      mockApiSyncCheck.mockResolvedValueOnce({ hasChanges: true, changed: {} });
+      mockApiSyncPull.mockResolvedValueOnce({ data: { habit: [{ id: 'hx' }] }, serverTime: Date.now() });
+
+      await engine.runSync();
+
+      // Post-push small-batch pull is skipped (21 > threshold)…
+      expect(mockApiSyncPullPost).not.toHaveBeenCalled();
+      // …instead the large-push safeguard runs check + full pull
+      expect(mockApiSyncCheck).toHaveBeenCalled();
+      expect(mockApiSyncPull).toHaveBeenCalledWith('token', 'user-1', undefined);
+      expect(mockApplyService.applyServerChanges).toHaveBeenCalledWith(
+        { habit: [{ id: 'hx' }] },
+        expect.any(Set),
+        expect.anything(),
+        expect.any(Number),
+      );
+      // Safeguard-block semantics (differs from the main pull block): NO
+      // per-entity timestamp update in the wasLargePush path
+      expect(mockSetLastSyncTimestamp).not.toHaveBeenCalled();
     });
 
     it('abort signal interrupts pull phase', async () => {
