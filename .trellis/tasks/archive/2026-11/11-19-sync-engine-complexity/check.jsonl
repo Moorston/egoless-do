@@ -1,0 +1,2 @@
+{"file": ".trellis/spec/mobile/frontend/quality-guidelines.md", "reason": "验收基准：complexity 阈值、lint ratchet 0（AC7/AC8）"}
+{"file": ".trellis/tasks/11-19-sync-engine-complexity/design.md", "reason": "零行为变更约束与 4 项 executePull 差异参数化表——check 时逐项核对"}

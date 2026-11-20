@@ -1,0 +1,3 @@
+{"file": ".trellis/spec/mobile/frontend/quality-guidelines.md", "reason": "complexity <=15 约定、lint ratchet 0、无测试保守拆分模式——Phase E 要更新该文件，新增代码须零 warning"}
+{"file": "openspec/changes/sync-engine-complexity/proposal.md", "reason": "任务来源：4 个 Phase 的原始定义、已识别未测分支清单、out-of-scope 边界"}
+{"file": ".trellis/spec/core/frontend/state-management.md", "reason": "vi.mock/vi.mocked 模块 mock 模式参考（Slice Unit Testing 章节）——新 resolver 测试的 mock 搭法沿用"}
