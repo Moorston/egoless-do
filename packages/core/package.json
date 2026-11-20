@@ -9,6 +9,7 @@
     "dev": "tsc --watch",
     "lint": "eslint src --ext .ts,.tsx --max-warnings 5",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "lint:complexity": "eslint src --ext .ts,.tsx --config .eslintrc.complexity.js --max-warnings 37",
     "test": "vitest run",
     "test:watch": "vitest"
   },
