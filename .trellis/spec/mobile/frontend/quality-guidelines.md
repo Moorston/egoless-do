@@ -122,6 +122,15 @@ When extracting a synchronous code segment into an `async` method for complexity
 
 **心智模型**：与 lint ratchet 完全对称——阈值=实测起步，**只降不升**（方向与 coverage ratchet 的只升不降相反）。存量不是清零承诺：core 32 个与其余 mobile 53 个继续存在，ratchet 只防新增；治理走显式 `--rule` 实测 + 逐波拆分任务（如 11-19 sync-engine-complexity）。
 
+### Coverage Ratchet（`test:coverage` 脚本，双包）
+
+与主 vitest.config.ts 分离的独立 `vitest.coverage.config.ts`（`root: __dirname` + setupFiles 绝对路径 + 分母契约 `include: ['src/**/*.{ts,tsx}']` 排除测试/d.ts/dist/node_modules）。跑法 `pnpm --filter mobile test:coverage`（CI 走 `--config apps/mobile/vitest.coverage.config.ts`）。
+
+- 阈值（2026-11-20 实测起步）：**4.62**（statements/lines，826→445 测试的分包口径）——**结构性基线**：受 Known Test Environment Limitations（lucide transform 失败、@testing-library 不可用）压制，提升走测试基建任务非 ratchet
+- thresholds **只锁 statements/lines**：v8 provider all-mode 对未加载文件只有 statements 计数，branches/functions 分母随测试加载面漂移（新增测试 import 新文件 → 分母突增 → 误报降级）；两口径仍进报告只是不设门禁
+- **方向与 lint ratchet 相反**：覆盖率只能升（阈值上调=好），下调需理由（删死代码/重定义分母/结构性重构）
+- 制度级总纲见 `.trellis/spec/governance/GLOBAL-CODE-STANDARDS.md` §9 质量门禁联动
+
 ### Presentational Complexity 豁免注解（complexity 维度）
 
 `Presentational sub-components` MAY exceed 15（上述 Complexity Thresholds 条款）的落地机制：函数声明前加注解 + 理由：

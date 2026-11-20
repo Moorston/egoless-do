@@ -18,7 +18,7 @@
 - [6. 错误处理](#6-错误处理)
 - [7. 测试规范](#7-测试规范)
 - [8. 国际化规范](#8-国际化规范)
-- [9. ESLint 配置联动](#9-eslint-配置联动)
+- [9. 质量门禁联动](#9-质量门禁联动)
 
 ---
 
@@ -541,13 +541,21 @@ const { T } = useTheme();  // 或从 UI hook 解构
 
 ---
 
-## 9. ESLint 配置联动
+## 9. 质量门禁联动
 
 > 以下规则已配置在 `packages/config/eslint.base.js` 中，与本规范同步。
 >
 > **CI 覆盖**：`turbo run lint` 与 `turbo run type-check` 现已覆盖 `packages/core` 与 `apps/mobile`（core 通过 `tsconfig.lint.json` 纳入测试文件做 type-aware linting；mobile 通过本地 `react-native-amap3d` 类型 shim 规避第三方库 React 19 类型不兼容，两者均 0 error）。
 >
 > **Warning ratchet 门禁**：core/mobile 的 lint 脚本带 `--max-warnings`（core=5、mobile=0，阈值=当前存量），warning 超出即 CI 失败。新增 warning 必须同时下调预算或先消除等量旧 warning；消除 warning 后应下调阈值逐步收敛。core ratchet 历史：530→23（2026-11-16 typed harness）→5（2026-11-17 非 store 测试 any 清理）。mobile ratchet 历史：13（11-17）→8（child 1：sync 测试平铺 + mkStyles + import/order）→0（2026-11-18 child 2：8 个无测试 screen 保守拆分，策略 C）。
+>
+> **Complexity ratchet**（2026-11-20 建制）：双包 `lint:complexity` 脚本用独立 config（`.eslintrc.complexity.js` = 主 config + `complexity: ['warn', 15]`）显式启用复杂度检查——主 lint 不启用该规则（团队约定默认不跑）。阈值=实测起步：**mobile 56 / core 37**（core 37 = 32 complexity + 5 no-unsafe 残差）。**方向与 lint ratchet 相同**：warning 只能降，阈值下调=好，上调需豁免注解或 risk-tier 豁免（双轨制见 `mobile/frontend/quality-guidelines.md` Complexity Ratchet 章节）。
+>
+> **Coverage ratchet**（2026-11-20 建制）：双包独立 `vitest.coverage.config.ts`，跑法 `pnpm exec vitest run --coverage --config <pkg>/vitest.coverage.config.ts`（CI test job 已切此跑法）。**分母契约**：`include: ['src/**/*.{ts,tsx}']`，排除 `*.test.ts` / `*.d.ts` / `dist` / `node_modules`——scripts 噪声天然不进分母。**thresholds 只锁 statements/lines**：v8 provider all-mode 对未加载文件只有 statements 计数，branches/functions 分母随测试加载面漂移（新增测试 import 新文件 → 分母突增 → 误报降级），锁它们会惩罚良性测试覆盖扩张。**方向与 lint ratchet 相反**：覆盖率只能升（阈值上调=好，随覆盖扩张同步上调），下调需理由（删死代码/重定义分母/结构性重构）。阈值=实测起步：**core 63.69%（826 测试）/ mobile 4.62%（445 测试）**——mobile 为**结构性基线**（RN 测试基础设施限制，见 quality-guidelines Known Test Environment Limitations；提升走测试基建任务非 ratchet）。
+
+**规范条款 → ESLint 规则映射**：
+
+| 规范条款 | ESLint 规则 | 状态 |
 |---------|------------|------|
 | 1.1 any 禁止 | `@typescript-eslint/no-explicit-any: error` | ✅ 已配置 |
 | 1.3 @ts-* 管理 | `@typescript-eslint/ban-ts-comment` | ✅ 已配置（core 已清理 @ts-ignore → @ts-expect-error） |
