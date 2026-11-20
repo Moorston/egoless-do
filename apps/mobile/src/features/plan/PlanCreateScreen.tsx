@@ -53,6 +53,9 @@ function makeInputStyle(TH: ThemeTokens) {
 }
 
 // ── Plan basic info card (name / goal / vision / slogan / period / date range) ──
+// 表单固有分支：字段错误显隐 ×N + frequency 多 mode 切换；presentational 组件
+// 无进一步可拆语义单元（quality-guidelines presentational 豁免条款）
+// eslint-disable-next-line complexity
 function PlanBasicInfoCard({
   TH, T,
   name, setName, goal, setGoal, slogan, setSlogan,
@@ -174,6 +177,9 @@ function PlanBasicInfoCard({
 }
 
 // ── Expanded plan item editor fields (name / priority / target / desc / dates / link / frequency) ──
+// 表单固有分支：字段错误显隐 ×N + frequency 多 mode 切换；presentational 组件
+// 无进一步可拆语义单元（quality-guidelines presentational 豁免条款）
+// eslint-disable-next-line complexity
 function PlanItemEditor({
   TH, T, P,
   item, idx, errors, editable, habits,

@@ -3,6 +3,7 @@ import type { TrailInsightCache, TrailReviewCache } from '@egoless-do/core';
 import {Brain, ChevronDown, ChevronUp} from 'lucide-react-native';
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
+import type { DimensionValue } from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';
 import { SegmentBar } from '../shared/SegmentBar';
@@ -24,7 +25,7 @@ function EmptyState({
     <View style={[styles.container, { backgroundColor: TH.card, borderColor: TH.border }]}>
       <View style={styles.emptyHeader}>
         <Brain size={18} color={P} />
-        <Text style={[styles.title, { color: TH.text }]}>AI 分析</Text>
+        <Text style={[styles.title, { color: TH.text }]}>{T('trailAIAnalysis')}</Text>
       </View>
       <View style={styles.emptyButtons}>
         <TouchableOpacity
@@ -114,6 +115,189 @@ function PanelFooter({
   );
 }
 
+
+// ── 骨架屏（洞察/复盘两 tab 共用，widths + labelKey 参数化） ──
+function SkeletonBlock({
+  widths, labelKey, TH, T,
+}: {
+  widths: [DimensionValue, DimensionValue, DimensionValue];
+  labelKey: string;
+  TH: ThemeTokens; T: TranslateFn;
+}) {
+  return (
+    <View style={styles.skeletonContainer}>
+      <View style={[styles.skeletonLine, { width: widths[0], backgroundColor: TH.sub + '20' }]} />
+      <View style={[styles.skeletonLine, { width: widths[1], backgroundColor: TH.sub + '20' }]} />
+      <View style={[styles.skeletonLine, { width: widths[2], backgroundColor: TH.sub + '15' }]} />
+      <Text style={[styles.loadingText, { color: TH.sub }]}>
+        {T(labelKey)}
+      </Text>
+    </View>
+  );
+}
+
+
+// ── 单条 section 内容（itemStyle 4 态 → 渲染形态映射，样式差异逐字保留） ──
+function SectionItem({
+  text, itemStyle, TH,
+}: {
+  text: string; itemStyle: SectionItemStyle; TH: ThemeTokens;
+}) {
+  if (itemStyle === 'card') {
+    return (
+      <View style={[styles.perspectiveItem, { borderColor: TH.border }]}>
+        <Text style={[styles.perspectiveText, { color: TH.text }]}>
+          {text}
+        </Text>
+      </View>
+    );
+  }
+  if (itemStyle === 'bullet' || itemStyle === 'text') {
+    return (
+      <Text style={[itemStyle === 'bullet' ? styles.bulletText : styles.contentText, { color: TH.text }]}>
+        • {text}
+      </Text>
+    );
+  }
+  // 'prose'：无前缀
+  return (
+    <Text style={[styles.contentText, { color: TH.text }]}>
+      {text}
+    </Text>
+  );
+}
+
+
+type SectionItemStyle = 'prose' | 'bullet' | 'text' | 'card';
+
+interface TabSection {
+  label: string;            // 已翻译文本（T() 在构建时调用）
+  items: string[];
+  itemStyle: SectionItemStyle;
+}
+
+interface AiResultTabProps {
+  loading: boolean;
+  sections: TabSection[];   // 空数组 = 无 cache（触发生成按钮态）
+  stale: boolean;
+  staleLabel: string;
+  skeletonWidths: [DimensionValue, DimensionValue, DimensionValue];  // '80%' 等，两 tab 差异显式化
+  skeletonLabelKey: string;  // trailInsightGenerating / trailReviewGenerating
+  generateLabelKey: string;
+  regenerateLabelKey: string;  // stale 行重新生成文案，两 tab 各异
+  onGenerate: () => void;
+  onRegenerate: () => void;
+  TH: ThemeTokens; P: string; T: TranslateFn;
+}
+
+
+// ── sections 构建（模块级纯函数，构建时过滤空 section——等价原 length > 0 条件渲染） ──
+function buildInsightSections(cache: TrailInsightCache, T: TranslateFn): TabSection[] {
+  const sections: TabSection[] = [
+    // summary 段 [cache.summary] 恒非空，永不过滤（原代码无条件渲染 summary）
+    { label: T('trailInsightSummary'), items: [cache.summary], itemStyle: 'prose' },
+    { label: T('trailInsightKeyPoints'), items: cache.keyPoints ?? [], itemStyle: 'bullet' },
+    { label: T('trailInsightTurningPoints'), items: cache.turningPoints ?? [], itemStyle: 'bullet' },
+    { label: T('trailInsightSuggestions'), items: cache.suggestions ?? [], itemStyle: 'bullet' },
+  ];
+  return sections.filter(s => s.items.length > 0);
+}
+
+function buildReviewSections(cache: TrailReviewCache, T: TranslateFn): TabSection[] {
+  const sections: TabSection[] = [
+    // perspectives 类型上必填；?? questions 链是 SQLite 旧数据缺字段的运行时防御
+    { label: T('trailReviewQuestions'), items: cache.perspectives ?? cache.questions ?? [], itemStyle: 'card' },
+    { label: T('trailReviewObservations'), items: cache.observations ?? [], itemStyle: 'text' },
+    { label: T('trailReviewSuggestions'), items: cache.suggestions ?? [], itemStyle: 'text' },
+  ];
+  return sections.filter(s => s.items.length > 0);
+}
+
+
+// ── AI 结果子 tab 三态机（loading → 骨架 / sections 非空 → 内容+stale 行 / 否则 → 生成按钮） ──
+function AiResultTab({
+  loading, sections, stale, staleLabel,
+  skeletonWidths, skeletonLabelKey, generateLabelKey, regenerateLabelKey,
+  onGenerate, onRegenerate,
+  TH, P, T,
+}: AiResultTabProps) {
+  return (
+    <View style={styles.subContent}>
+      {loading ? (
+        <SkeletonBlock widths={skeletonWidths} labelKey={skeletonLabelKey} TH={TH} T={T} />
+      ) : sections.length > 0 ? (
+        <>
+          {sections.map(section => (
+            <React.Fragment key={section.label}>
+              <Text style={[styles.sectionLabel, { color: TH.sub }]}>
+                {section.label}
+              </Text>
+              {section.items.map((item, i) => (
+                <SectionItem key={i} text={item} itemStyle={section.itemStyle} TH={TH} />
+              ))}
+            </React.Fragment>
+          ))}
+          {stale && (
+            <View style={styles.staleRow}>
+              <Text style={[styles.staleText, { color: '#F59E0B' }]}>
+                {staleLabel}
+              </Text>
+              <TouchableOpacity onPress={onRegenerate} disabled={loading}>
+                <Text style={[styles.actionText, { color: P }]}>
+                  {T(regenerateLabelKey)}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </>
+      ) : (
+        <TouchableOpacity
+          style={[styles.generateButton, { backgroundColor: P }]}
+          onPress={onGenerate}
+          disabled={loading}
+        >
+          <Text style={styles.generateButtonText}>{T(generateLabelKey)}</Text>
+        </TouchableOpacity>
+      )}
+    </View>
+  );
+}
+
+
+// ── Header（折叠态预览三元链 + chevron 随迁） ──
+function PanelHeader({
+  expanded, subTab, insightCache, reviewCache,
+  TH, P, T, onToggle,
+}: {
+  expanded: boolean;
+  subTab: number;
+  insightCache?: TrailInsightCache;
+  reviewCache?: TrailReviewCache;
+  TH: ThemeTokens; P: string; T: TranslateFn;
+  onToggle: () => void;
+}) {
+  return (
+    <TouchableOpacity onPress={onToggle} activeOpacity={0.8}>
+      <View style={styles.header}>
+        <Brain size={18} color={P} />
+        <Text style={[styles.title, { color: TH.text }]}>{T('trailAIAnalysis')}</Text>
+        <View style={styles.headerRight}>
+          {!expanded && (
+            <Text style={[styles.preview, { color: TH.sub }]} numberOfLines={1}>
+              {subTab === 0 && insightCache ? insightCache.summary :
+               subTab === 1 && reviewCache ? (reviewCache.observations ?? [])[0] : ''}
+            </Text>
+          )}
+          {expanded
+            ? <ChevronUp size={16} color={TH.sub} />
+            : <ChevronDown size={16} color={TH.sub} />
+          }
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+}
+
 interface ReviewAIPanelProps {
   insightCache?: TrailInsightCache;
   reviewCache?: TrailReviewCache;
@@ -199,33 +383,27 @@ export function ReviewAIPanel({
     );
   }
 
+  // sections 构建（cache 不存在 → 空数组 = 生成按钮态）
+  const insightSections = insightCache ? buildInsightSections(insightCache, T) : [];
+  const reviewSections = reviewCache ? buildReviewSections(reviewCache, T) : [];
+
   return (
     <View style={[styles.container, { backgroundColor: TH.card, borderColor: TH.border }]}>
       {/* Header with collapse */}
-      <TouchableOpacity onPress={() => setExpanded(prev => !prev)} activeOpacity={0.8}>
-        <View style={styles.header}>
-          <Brain size={18} color={P} />
-          <Text style={[styles.title, { color: TH.text }]}>AI 分析</Text>
-          <View style={styles.headerRight}>
-            {!expanded && (
-              <Text style={[styles.preview, { color: TH.sub }]} numberOfLines={1}>
-                {subTab === 0 && insightCache ? insightCache.summary :
-                 subTab === 1 && reviewCache ? (reviewCache.observations ?? [])[0] : ''}
-              </Text>
-            )}
-            {expanded
-              ? <ChevronUp size={16} color={TH.sub} />
-              : <ChevronDown size={16} color={TH.sub} />
-            }
-          </View>
-        </View>
-      </TouchableOpacity>
+      <PanelHeader
+        expanded={expanded}
+        subTab={subTab}
+        insightCache={insightCache}
+        reviewCache={reviewCache}
+        TH={TH} P={P} T={T}
+        onToggle={() => setExpanded(prev => !prev)}
+      />
 
       {expanded && (
         <View style={styles.content}>
           {/* Sub tabs */}
           <SegmentBar
-            segments={['洞察', '复盘思路']}
+            segments={[T('trailInsightTab'), T('trailReviewQuestions')]}
             selectedIndex={subTab}
             onSelect={setSubTab}
           />
@@ -239,167 +417,36 @@ export function ReviewAIPanel({
 
           {/* 洞察子 tab */}
           {subTab === 0 && (
-            <View style={styles.subContent}>
-              {loadingInsight ? (
-                <View style={styles.skeletonContainer}>
-                  <View style={[styles.skeletonLine, { width: '80%', backgroundColor: TH.sub + '20' }]} />
-                  <View style={[styles.skeletonLine, { width: '60%', backgroundColor: TH.sub + '20' }]} />
-                  <View style={[styles.skeletonLine, { width: '90%', backgroundColor: TH.sub + '15' }]} />
-                  <Text style={[styles.loadingText, { color: TH.sub }]}>
-                    {T('trailInsightGenerating')}
-                  </Text>
-                </View>
-              ) : insightCache ? (
-                <>
-                  <Text style={[styles.sectionLabel, { color: TH.sub }]}>
-                    {T('trailInsightSummary')}
-                  </Text>
-                  <Text style={[styles.contentText, { color: TH.text }]}>
-                    {insightCache.summary}
-                  </Text>
-
-                  {(insightCache.keyPoints ?? []).length > 0 && (
-                    <>
-                      <Text style={[styles.sectionLabel, { color: TH.sub }]}>
-                        {T('trailInsightKeyPoints')}
-                      </Text>
-                      {(insightCache.keyPoints ?? []).map((point, i) => (
-                        <Text key={i} style={[styles.bulletText, { color: TH.text }]}>
-                          • {point}
-                        </Text>
-                      ))}
-                    </>
-                  )}
-
-                  {(insightCache.turningPoints ?? []).length > 0 && (
-                    <>
-                      <Text style={[styles.sectionLabel, { color: TH.sub }]}>
-                        {T('trailInsightTurningPoints')}
-                      </Text>
-                      {(insightCache.turningPoints ?? []).map((point, i) => (
-                        <Text key={i} style={[styles.bulletText, { color: TH.text }]}>
-                          • {point}
-                        </Text>
-                      ))}
-                    </>
-                  )}
-
-                  {(insightCache.suggestions ?? []).length > 0 && (
-                    <>
-                      <Text style={[styles.sectionLabel, { color: TH.sub }]}>
-                        {T('trailInsightSuggestions')}
-                      </Text>
-                      {(insightCache.suggestions ?? []).map((s, i) => (
-                        <Text key={i} style={[styles.bulletText, { color: TH.text }]}>
-                          • {s}
-                        </Text>
-                      ))}
-                    </>
-                  )}
-
-                  {insightStale && (
-                    <View style={styles.staleRow}>
-                      <Text style={[styles.staleText, { color: '#F59E0B' }]}>
-                        已有洞察（可能已过期）
-                      </Text>
-                      <TouchableOpacity onPress={handleGenerateInsight} disabled={loadingInsight}>
-                        <Text style={[styles.actionText, { color: P }]}>
-                          {T('trailInsightRegenerate')}
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  )}
-                </>
-              ) : (
-                <TouchableOpacity
-                  style={[styles.generateButton, { backgroundColor: P }]}
-                  onPress={handleGenerateInsight}
-                  disabled={loadingInsight}
-                >
-                  <Text style={styles.generateButtonText}>{T('trailInsightGenerate')}</Text>
-                </TouchableOpacity>
-              )}
-            </View>
+            <AiResultTab
+              loading={loadingInsight}
+              sections={insightSections}
+              stale={!!insightStale}
+              staleLabel={T('trailInsightStale')}
+              skeletonWidths={['80%', '60%', '90%']}
+              skeletonLabelKey="trailInsightGenerating"
+              generateLabelKey="trailInsightGenerate"
+              regenerateLabelKey="trailInsightRegenerate"
+              onGenerate={handleGenerateInsight}
+              onRegenerate={handleGenerateInsight}
+              TH={TH} P={P} T={T}
+            />
           )}
 
           {/* 引导子 tab */}
           {subTab === 1 && (
-            <View style={styles.subContent}>
-              {loadingReview ? (
-                <View style={styles.skeletonContainer}>
-                  <View style={[styles.skeletonLine, { width: '75%', backgroundColor: TH.sub + '20' }]} />
-                  <View style={[styles.skeletonLine, { width: '55%', backgroundColor: TH.sub + '20' }]} />
-                  <View style={[styles.skeletonLine, { width: '85%', backgroundColor: TH.sub + '15' }]} />
-                  <Text style={[styles.loadingText, { color: TH.sub }]}>
-                    {T('trailReviewGenerating')}
-                  </Text>
-                </View>
-              ) : reviewCache ? (
-                <>
-                  {((reviewCache as { perspectives?: string[]; questions?: string[] }).perspectives ?? (reviewCache as { perspectives?: string[]; questions?: string[] }).questions ?? []).length > 0 && (
-                    <>
-                      <Text style={[styles.sectionLabel, { color: TH.sub }]}>
-                        复盘思路
-                      </Text>
-                      {((reviewCache as { perspectives?: string[]; questions?: string[] }).perspectives ?? (reviewCache as { perspectives?: string[]; questions?: string[] }).questions ?? []).map((p: string, i: number) => (
-                        <View key={i} style={[styles.perspectiveItem, { borderColor: TH.border }]}>
-                          <Text style={[styles.perspectiveText, { color: TH.text }]}>
-                            {p}
-                          </Text>
-                        </View>
-                      ))}
-                    </>
-                  )}
-
-                  {(reviewCache.observations ?? []).length > 0 && (
-                    <>
-                      <Text style={[styles.sectionLabel, { color: TH.sub }]}>
-                        {T('trailReviewObservations')}
-                      </Text>
-                      {(reviewCache.observations ?? []).map((obs, i) => (
-                        <Text key={i} style={[styles.contentText, { color: TH.text }]}>
-                          • {obs}
-                        </Text>
-                      ))}
-                    </>
-                  )}
-
-                  {(reviewCache.suggestions ?? []).length > 0 && (
-                    <>
-                      <Text style={[styles.sectionLabel, { color: TH.sub }]}>
-                        建议
-                      </Text>
-                      {(reviewCache.suggestions ?? []).map((s, i) => (
-                        <Text key={i} style={[styles.contentText, { color: TH.text }]}>
-                          • {s}
-                        </Text>
-                      ))}
-                    </>
-                  )}
-
-                  {reviewStale && (
-                    <View style={styles.staleRow}>
-                      <Text style={[styles.staleText, { color: '#F59E0B' }]}>
-                        已有复盘（可能已过期）
-                      </Text>
-                      <TouchableOpacity onPress={handleGenerateReview} disabled={loadingReview}>
-                        <Text style={[styles.actionText, { color: P }]}>
-                          {T('trailReviewRegenerate')}
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  )}
-                </>
-              ) : (
-                <TouchableOpacity
-                  style={[styles.generateButton, { backgroundColor: P }]}
-                  onPress={handleGenerateReview}
-                  disabled={loadingReview}
-                >
-                  <Text style={styles.generateButtonText}>{T('trailReviewGenerate')}</Text>
-                </TouchableOpacity>
-              )}
-            </View>
+            <AiResultTab
+              loading={loadingReview}
+              sections={reviewSections}
+              stale={!!reviewStale}
+              staleLabel={T('trailReviewStale')}
+              skeletonWidths={['75%', '55%', '85%']}
+              skeletonLabelKey="trailReviewGenerating"
+              generateLabelKey="trailReviewGenerate"
+              regenerateLabelKey="trailReviewRegenerate"
+              onGenerate={handleGenerateReview}
+              onRegenerate={handleGenerateReview}
+              TH={TH} P={P} T={T}
+            />
           )}
           </ScrollView>
 

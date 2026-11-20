@@ -481,6 +481,11 @@ export interface I18nKeys {
   trailReviewQuestions: string;
   trailReviewStart: string;
   trailReviewGenerating: string;
+  trailAIAnalysis: string;
+  trailInsightTab: string;
+  trailInsightStale: string;
+  trailReviewStale: string;
+  trailReviewSuggestions: string;
   trailNotFound: string;
   trailOverviewReflections: string;
   trailOverviewNotes: string;
