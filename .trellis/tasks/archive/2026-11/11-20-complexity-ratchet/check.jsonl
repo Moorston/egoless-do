@@ -1,0 +1,2 @@
+{"file": ".trellis/spec/mobile/frontend/quality-guidelines.md", "reason": "验收基准：complexity ≤15、presentational 豁免条款、lint ratchet 0、策略 C 无测试保守拆分 5 条规则（禁止 eslint-disable 代替拆分）"}
+{"file": ".trellis/tasks/11-20-complexity-ratchet/design.md", "reason": "零行为变更核对表：itemStyle 4 态样式映射（bullet vs text 的 marginLeft:4 差异不可统一）、i18n key 表逐字、config 结构"}
