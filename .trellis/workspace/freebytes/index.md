@@ -7,9 +7,9 @@
 ## Current Status
 
 <!-- @@@auto:current-status -->
-- **Active File**: `journal-2.md`
-- **Total Sessions**: 110
-- **Last Active**: 2026-11-19
+- **Active File**: `journal-3.md`
+- **Total Sessions**: 111
+- **Last Active**: 2026-11-20
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,8 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~1966 | Active |
+| `journal-3.md` | ~42 | Active |
+| `journal-2.md` | ~1966 | Archived |
 | `journal-1.md` | ~1971 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +31,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 111 | 2026-11-20 | sync-engine-complexity 实施：测试护航拆分 + risk-tier 豁免制度化 | `0d538be9`, `6fa9cbfb`, `5a615f2d` | `refactor/split-body-dashboard` |
 | 110 | 2026-11-19 | 每日重置归一：触发归一 + 通知竞态修复 + persist 引擎抽出 | `111ee1a3`, `5563929c`, `1939c6b1` | `refactor/split-body-dashboard` |
 | 109 | 2026-11-19 | 探索沉淀 3 proposal + 实施 ci-trigger-fix | `4454d2b0` | `refactor/split-body-dashboard` |
 | 108 | 2026-11-18 | mobile 8 屏保守拆分 — max-lines warning 8→0 + ratchet 13→0 | `bf96a9d0`, `a798d1f4` | `refactor/split-body-dashboard` |
