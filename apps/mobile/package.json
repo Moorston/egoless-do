@@ -9,7 +9,7 @@
     "build": "eas build",
     "submit": "eas submit",
     "lint": "eslint src --ext .ts,.tsx --max-warnings 0",
-    "lint:complexity": "eslint src --ext .ts,.tsx --config .eslintrc.complexity.js --max-warnings 56",
+    "lint:complexity": "eslint src --ext .ts,.tsx --config .eslintrc.complexity.js --max-warnings 53",
     "type-check": "tsc --noEmit",
     "test:coverage": "vitest run --coverage --config vitest.coverage.config.ts",
     "test": "vitest run",
