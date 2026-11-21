@@ -410,6 +410,12 @@ export interface I18nKeys {
   quickTrailAssignedExplain: string;
   quickTrailPresetMoodChange: string;
   quickTrailPresetUnassigned: string;
+  quickTrailTagsLabel: string;
+  quickTrailMoodsLabel: string;
+  quickTrailFilterAll: string;
+  quickTrailConfirmCreate: string;
+  quickTrailSelectedPrefix: string;
+  quickTrailAddMore: string;
   quickTrailPresetNight: string;
   quickTrailTrendUp: string;
   quickTrailTrendDown: string;
