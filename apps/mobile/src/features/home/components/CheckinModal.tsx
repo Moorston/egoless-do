@@ -16,6 +16,7 @@ import { useShallowStore } from '../../../store/useAppStore';
 
 
 import CheckinReflection from './CheckinReflection';
+import { buildCheckinNoteData, buildHabitCheckins, buildPlanToggles } from './checkinModalHelpers';
 
 /** Parse weight string, return undefined if invalid or out of range (1-500 kg) */
 function parseWeight(raw: string | undefined): number | undefined {
@@ -78,18 +79,9 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
     if (!activePlan) return [];
     return getTodayCustomTodos(store.dailyCustomTodos ?? [], activePlan.id, targetDate);
   }, [store.dailyCustomTodos, activePlan, targetDate]);
-  const [planToggles, setPlanToggles] = useState<Record<string, boolean>>(() => {
-    const initial: Record<string, boolean> = {};
-    if (!activePlan) return initial;
-    const items = (store.planItems ?? []).filter(i => !i.deleted && i.planId === activePlan.id);
-    items.forEach(item => {
-      // manual 和 reflection 类型支持手动切换
-      if (item.link === 'manual' || item.link === 'reflection') {
-        initial[item.id] = planCheckins.some(c => c.planItemId === item.id && c.date === targetDate && c.done);
-      }
-    });
-    return initial;
-  });
+  const [planToggles, setPlanToggles] = useState<Record<string, boolean>>(() =>
+    buildPlanToggles({ activePlan, planItems: store.planItems ?? [], planCheckins, targetDate })
+  );
 
   // Pre-fill from existing checkin
   const [weight, setWeight] = useState(() => existing?.weight != null ? String(existing.weight) : String(store.userProfile?.weight ?? '65'));
@@ -104,13 +96,9 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
     chant: parsed.practices.includes('chant'),
   }));
   const [note, setNote] = useState(() => parsed.userNote);
-  const [habitCheckins, setHabitCheckins] = useState<Record<string, boolean>>(() => {
-    const initial: Record<string, boolean> = {};
-    (store.habits ?? []).filter(h => !h.deleted && h.status === 'inProgress').forEach(h => {
-      initial[h.id] = h.checkedDates?.includes(targetDate) ?? false;
-    });
-    return initial;
-  });
+  const [habitCheckins, setHabitCheckins] = useState<Record<string, boolean>>(() =>
+    buildHabitCheckins({ habits: store.habits ?? [], targetDate })
+  );
   const [localDone, setLocalDone] = useState<boolean | null>(() => existing?.done ?? null);
   const [showReasonModal, setShowReasonModal] = useState(false);
   const [graceSuccess, setGraceSuccess] = useState(false);
@@ -140,32 +128,12 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
       store.addWater(waterMl);
     }
     // Build structured JSON note (same format as web)
-    const noteData: Record<string, unknown> = {};
-    if (note) noteData.note = note;
-    if (!isGraceMode && waterMl > 0) noteData.water = waterMl;
-    const pr: string[] = [];
-    if (practices.sit) pr.push('sit');
-    if (practices.stand) pr.push('stand');
-    if (practices.chant) pr.push('chant');
-    if (pr.length) noteData.practices = pr;
-    const checkedHabits = Object.entries(habitCheckins)
-      .filter(([, checked]) => checked)
-      .map(([id]) => (store.habits ?? []).find(h => !h.deleted && h.id === id)?.name)
-      .filter(Boolean);
-    if (checkedHabits.length) noteData.habits = checkedHabits;
-    // 每日自定义待办
-    const doneCustomTodos = dailyCustomTodos
-      .filter(t => t.done)
-      .map(t => t.name);
-    if (doneCustomTodos.length) noteData.customs = doneCustomTodos;
-    // 计划事项
-    const donePlanItems = todayPlanItems
-      .filter(item => planToggles[item.id] ?? planCheckins.some(c => c.planItemId === item.id && c.date === targetDate && c.done))
-      .map(item => item.name);
-    if (donePlanItems.length) noteData.planItems = donePlanItems;
-    if (!isGraceMode && totalCal > 0) noteData.food = totalCal;
-    if (reasonOverride) noteData.incompleteReason = reasonOverride;
-    if (reasonNoteOverride?.trim()) noteData.incompleteNote = reasonNoteOverride.trim();
+    const noteData = buildCheckinNoteData({
+      note, waterMl, isGraceMode, practices, habitCheckins,
+      habits: store.habits ?? [], dailyCustomTodos, todayPlanItems,
+      planToggles, planCheckins, totalCal,
+      reasonOverride, reasonNoteOverride, targetDate,
+    });
     const weightNum = parseWeight(weight);
     store.submitCheckin(done, JSON.stringify(noteData), isGraceMode ? targetDate : undefined, weightNum, isGraceMode);
     // In grace mode, show success then close after a brief delay
@@ -310,65 +278,16 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
           </View>
 
           {/* Grace mode hint banner */}
-          {isGraceMode && !graceSuccess && (
-            <View style={{
-              flexDirection: 'row', alignItems: 'center', gap: 8,
-              padding: 12, borderRadius: 10, marginBottom: 12,
-              backgroundColor: `${COLORS.ORANGE}15`, borderWidth: 1, borderColor: `${COLORS.ORANGE}30`,
-            }}>
-              <Shield size={16} color={COLORS.ORANGE} />
-              <Text style={{ fontSize: FONT_SUB(), color: COLORS.ORANGE, flex: 1 }}>
-                {T('graceCheckinHint')} · {targetDate}
-              </Text>
-            </View>
-          )}
+          <GraceBanner graceMode={isGraceMode} graceSuccess={graceSuccess} date={targetDate} />
 
-          {/* Grace success overlay */}
-          {graceSuccess ? (
-            <View style={{
-              flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 60,
-            }}>
-              <View style={{
-                width: 80, height: 80, borderRadius: 40,
-                backgroundColor: '#10B98120', alignItems: 'center', justifyContent: 'center', marginBottom: 16,
-              }}>
-                <Text style={{ fontSize: 36 }}>✅</Text>
-              </View>
-              <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: '#10B981', marginBottom: 8 }}>
-                {T('graceSuccess')}
-              </Text>
-              <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{targetDate}</Text>
-            </View>
-          ) : (
+          {/* Grace success overlay (mutually exclusive with the form below) */}
+          <GraceSuccessOverlay visible={graceSuccess} date={targetDate} />
+          {!graceSuccess && (
           <ScrollView showsVerticalScrollIndicator={false}>
 
             {/* Status buttons - TOP (hidden in grace mode) */}
-            {!isGraceMode && (
-            <View style={styles.rowGap10}>
-              <TouchableOpacity onPress={() => setLocalDone(false)}
-                accessibilityLabel={T('checkinNotDone')}
-                style={[styles.statusBtnBase, {
-                  borderColor: localDone===false ? '#C53364' : TH.border,
-                  backgroundColor: localDone===false ? 'rgba(197,51,100,0.1)' : 'transparent',
-                }]}>
-                <View style={styles.rowCenterGap4}>
-                  <X size={18} color={localDone===false ? '#C53364' : TH.sub} />
-                  <Text style={[styles.buttonTextBold, { color: localDone===false ? '#C53364' : TH.sub }]}>{T('checkinNotDone')}</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleDone}
-                accessibilityLabel={T('checkinDone')}
-                style={[styles.statusBtnBase, {
-                  borderColor: localDone===true ? '#17EAD9' : TH.border,
-                  backgroundColor: localDone===true ? 'rgba(23,234,217,0.1)' : 'transparent',
-                }]}>
-                <View style={styles.rowCenterGap4}>
-                  <Check size={18} color={localDone===true ? '#17EAD9' : TH.sub} />
-                  <Text style={[styles.buttonTextBold, { color: localDone===true ? '#17EAD9' : TH.sub }]}>{T('checkinDone')}</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-            )}
+            <StatusButtons visible={!isGraceMode} localDone={localDone}
+              onNotDone={() => setLocalDone(false)} onDone={handleDone} />
 
             {/* Tasks section - merged card */}
             <View style={[styles.cardBase, { backgroundColor:TH.card }]}>
@@ -445,119 +364,22 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
               )}
 
               {/* Submit button - inside tasks card (hidden in grace mode, moved to bottom) */}
-              {!isGraceMode && (
-              <TouchableOpacity onPress={() => submit()} accessibilityLabel={T('checkinSubmit')} style={{
-                marginTop:12, paddingVertical:14, borderRadius:12, alignItems:'center',
-                backgroundColor: localDone === true
-                  ? '#17EAD9'
-                  : localDone === false
-                    ? '#C53364'
-                    : P,
-              }}>
-                <Text style={{ color:'#fff', fontWeight:'700', fontSize:FONT_BUTTON() }}>
-                  {localDone === true ? T('checkinSubmit') : localDone === false ? T('checkinSave') : T('checkinSelectStatus')}
-                </Text>
-              </TouchableOpacity>
-              )}
+              <SubmitButton visible={!isGraceMode} localDone={localDone} onSubmit={() => submit()} />
             </View>
 
             {/* Data section - merged card (hide water/food in grace mode) */}
-            <View style={{ backgroundColor:TH.card, borderRadius:16, padding:14, marginBottom:12 }}>
-              <View style={{ flexDirection:'row', alignItems:'center', gap:8, marginBottom:14 }}>
-                <Scale size={18} color={P} />
-                <Text style={{ fontWeight:'600', fontSize:FONT_BODY(), color:TH.text }}>
-                  {isGraceMode ? T('checkinWeight') : `${T('checkinWeight')} / ${T('checkinWater')} / ${T('checkinFood')}`}
-                </Text>
-              </View>
-
-              {/* Weight */}
-              <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingVertical:10, borderBottomWidth: isGraceMode ? 0 : 1, borderBottomColor:TH.border }}>
-                <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
-                  <Scale size={16} color={P} />
-                  <Text style={{ color:TH.text, fontSize:FONT_BODY() }}>{T('checkinWeight')}</Text>
-                </View>
-                <View style={{ flexDirection:'row', alignItems:'center', gap:6 }}>
-                  <TextInput
-                    value={weight}
-                    onChangeText={setWeight}
-                    placeholder="..."
-                    placeholderTextColor={TH.sub}
-                    keyboardType="numeric"
-                    accessibilityLabel={T('checkinWeight')}
-                    style={{ width:60, textAlign:'center', borderWidth:1, borderColor:TH.border, borderRadius:8, paddingVertical:6, color:TH.text, fontWeight:'600', fontSize:FONT_BODY(), backgroundColor:TH.cardSolid }}
-                  />
-                  <Text style={{ color:TH.sub, fontSize:FONT_SUB() }}>{store.weightUnit === 'kg' ? T('checkinKg') : T('checkinLb')}</Text>
-                </View>
-              </View>
-
-              {/* Water - hidden in grace mode */}
-              {!isGraceMode && (
-                <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingVertical:10, borderBottomWidth:1, borderBottomColor:TH.border }}>
-                  <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
-                    <Droplets size={16} color={P} />
-                    <Text style={{ color:TH.text, fontSize:FONT_BODY() }}>{T('checkinWater')}</Text>
-                  </View>
-                  <View style={{ flexDirection:'row', alignItems:'center', gap:6 }}>
-                    <TextInput
-                      value={waterMl ? String(waterMl) : ''}
-                      onChangeText={v => setWaterMl(Math.max(0, parseInt(v) || 0))}
-                      placeholder="0"
-                      placeholderTextColor={TH.sub}
-                      keyboardType="numeric"
-                      accessibilityLabel={T('checkinWater')}
-                      style={{ width:60, textAlign:'center', borderWidth:1, borderColor:TH.border, borderRadius:8, paddingVertical:6, color:TH.text, fontWeight:'600', fontSize:FONT_BODY(), backgroundColor:TH.cardSolid }}
-                    />
-                    <Text style={{ color:TH.sub, fontSize:FONT_SUB() }}>ml</Text>
-                    <TouchableOpacity onPress={() => setWaterMl(w => w + 250)}
-                      accessibilityLabel="增加250毫升水"
-                      style={{ paddingVertical:4, paddingHorizontal:8, borderRadius:6, backgroundColor:`${P}20` }}>
-                      <Text style={{ color:P, fontSize:FONT_SUB(), fontWeight:'600' }}>+250</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              )}
-
-              {/* Food - hidden in grace mode */}
-              {!isGraceMode && (
-              <View style={{ paddingVertical:10 }}>
-                <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between' }}>
-                  <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
-                    <Utensils size={16} color={P} />
-                    <Text style={{ color:TH.text, fontSize:FONT_BODY() }}>{T('checkinFood')}</Text>
-                  </View>
-                  <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
-                    <Text style={{ fontSize:FONT_TITLE(), fontWeight:'600', color:P }}>{String(totalCal)}</Text>
-                    <Text style={{ color:TH.sub, fontSize:FONT_SUB() }}>kcal</Text>
-                    <TouchableOpacity onPress={() => setShowFoodAdd(!showFoodAdd)}
-                      accessibilityLabel="添加食物"
-                      style={{ width:24, height:24, borderRadius:12, backgroundColor:P, alignItems:'center', justifyContent:'center' }}>
-                      <Text style={{ color:'#fff', fontSize:FONT_BUTTON() }}>+</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                {showFoodAdd && (
-                  <View style={{ marginTop:10, padding:10, backgroundColor:TH.cardSolid, borderRadius:10, borderWidth:1, borderColor:TH.border }}>
-                    <View style={{ flexDirection:'row', gap:8, marginBottom:8 }}>
-                      <ThemedInput value={foodName} onChangeText={setFoodName} placeholder={T('foodName')} accessibilityLabel={T('foodName')} style={{ flex:2, padding:7 }} />
-                      <ThemedInput value={foodCal} onChangeText={setFoodCal} placeholder={T('calories2')} keyboardType="numeric" accessibilityLabel={T('calories2')} style={{ flex:1, padding:7 }} />
-                    </View>
-                    <View style={{ flexDirection:'row', gap:8 }}>
-                      <TouchableOpacity onPress={() => { if (foodName.trim()) { store.addFood({ name: foodName, calories: +foodCal || 0, note: foodNote, timestamp: Date.now() }); setFoodName(''); setFoodCal(''); setFoodNote(''); setShowFoodAdd(false); } }}
-                        accessibilityLabel={T('confirm')}
-                        style={{ flex:1, padding:8, borderRadius:8, backgroundColor:P, alignItems:'center' }}>
-                        <Text style={{ color:'#fff', fontWeight:'600', fontSize:FONT_BUTTON() }}>{T('confirm')}</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={() => { setShowFoodAdd(false); setFoodName(''); setFoodCal(''); }}
-                        accessibilityLabel={T('commonCancel')}
-                        style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor:TH.border, alignItems:'center' }}>
-                        <Text style={{ color:TH.sub, fontSize:FONT_BUTTON() }}>{T('commonCancel')}</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                )}
-              </View>
-              )}
-            </View>
+            <DataSection
+              graceMode={isGraceMode}
+              weight={weight} onWeightChange={setWeight}
+              weightUnit={store.weightUnit}
+              waterMl={waterMl} onWaterChange={setWaterMl} onWaterPlus={() => setWaterMl(w => w + 250)}
+              totalCal={totalCal}
+              showFoodAdd={showFoodAdd} onToggleFoodAdd={() => setShowFoodAdd(!showFoodAdd)}
+              foodName={foodName} onFoodNameChange={setFoodName}
+              foodCal={foodCal} onFoodCalChange={setFoodCal}
+              onConfirmFood={() => { if (foodName.trim()) { store.addFood({ name: foodName, calories: +foodCal || 0, note: foodNote, timestamp: Date.now() }); setFoodName(''); setFoodCal(''); setFoodNote(''); setShowFoodAdd(false); } }}
+              onResetFoodForm={() => { setShowFoodAdd(false); setFoodName(''); setFoodCal(''); }}
+            />
 
             {/* Note section */}
             <View style={{ backgroundColor:TH.card, borderRadius:16, padding:14, marginBottom:12 }}>
@@ -597,11 +419,282 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
       </KeyboardAvoidingView>
 
       {/* Incomplete Reason Modal */}
-      <Modal visible={showReasonModal} transparent animationType="fade" onRequestClose={() => setShowReasonModal(false)}>
-        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.65)' }}>
-          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-            <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 24 }} keyboardShouldPersistTaps="handled">
-              <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24 }}>
+      <ReasonModal
+        visible={showReasonModal}
+        incompleteItems={incompleteItems}
+        selectedReason={selectedReason} onSelectReason={setSelectedReason}
+        reasonNote={reasonNote} onReasonNoteChange={setReasonNote}
+        onBack={() => { setShowReasonModal(false); setLocalDone(null); }}
+        onConfirm={confirmDoneWithReason}
+        onRequestClose={() => setShowReasonModal(false)}
+      />
+    </Modal>
+  );
+}
+
+// ─── Section sub-components ─────────────────────────────────────────────────
+// 从主函数提取的展示性 section（props 显式参数化，JSX 与原内联代码逐字等价）。
+
+/** Grace 模式顶部提示横幅（grace 且未成功时显示） */
+function GraceBanner({ graceMode, graceSuccess, date }: {
+  graceMode: boolean;
+  graceSuccess: boolean;
+  date: string;
+}) {
+  const T = useT();
+  if (!graceMode || graceSuccess) return null;
+  return (
+    <View style={{
+      flexDirection: 'row', alignItems: 'center', gap: 8,
+      padding: 12, borderRadius: 10, marginBottom: 12,
+      backgroundColor: `${COLORS.ORANGE}15`, borderWidth: 1, borderColor: `${COLORS.ORANGE}30`,
+    }}>
+      <Shield size={16} color={COLORS.ORANGE} />
+      <Text style={{ fontSize: FONT_SUB(), color: COLORS.ORANGE, flex: 1 }}>
+        {T('graceCheckinHint')} · {date}
+      </Text>
+    </View>
+  );
+}
+
+/** Grace 补卡成功覆盖层 */
+function GraceSuccessOverlay({ visible, date }: { visible: boolean; date: string }) {
+  const TH = useTheme();
+  const T = useT();
+  if (!visible) return null;
+  return (
+    <View style={{
+      flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 60,
+    }}>
+      <View style={{
+        width: 80, height: 80, borderRadius: 40,
+        backgroundColor: '#10B98120', alignItems: 'center', justifyContent: 'center', marginBottom: 16,
+      }}>
+        <Text style={{ fontSize: 36 }}>✅</Text>
+      </View>
+      <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: '#10B981', marginBottom: 8 }}>
+        {T('graceSuccess')}
+      </Text>
+      <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{date}</Text>
+    </View>
+  );
+}
+
+/** 顶部状态按钮（今天完成/未完成——非 grace 模式显示） */
+function StatusButtons({ visible, localDone, onNotDone, onDone }: {
+  visible: boolean;
+  localDone: boolean | null;
+  onNotDone: () => void;
+  onDone: () => void;
+}) {
+  const TH = useTheme();
+  const T = useT();
+  if (!visible) return null;
+  return (
+    <View style={styles.rowGap10}>
+      <TouchableOpacity onPress={onNotDone}
+        accessibilityLabel={T('checkinNotDone')}
+        style={[styles.statusBtnBase, {
+          borderColor: localDone===false ? '#C53364' : TH.border,
+          backgroundColor: localDone===false ? 'rgba(197,51,100,0.1)' : 'transparent',
+        }]}>
+        <View style={styles.rowCenterGap4}>
+          <X size={18} color={localDone===false ? '#C53364' : TH.sub} />
+          <Text style={[styles.buttonTextBold, { color: localDone===false ? '#C53364' : TH.sub }]}>{T('checkinNotDone')}</Text>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={onDone}
+        accessibilityLabel={T('checkinDone')}
+        style={[styles.statusBtnBase, {
+          borderColor: localDone===true ? '#17EAD9' : TH.border,
+          backgroundColor: localDone===true ? 'rgba(23,234,217,0.1)' : 'transparent',
+        }]}>
+        <View style={styles.rowCenterGap4}>
+          <Check size={18} color={localDone===true ? '#17EAD9' : TH.sub} />
+          <Text style={[styles.buttonTextBold, { color: localDone===true ? '#17EAD9' : TH.sub }]}>{T('checkinDone')}</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+/** 提交按钮（三态随 localDone——非 grace 模式显示） */
+function SubmitButton({ visible, localDone, onSubmit }: {
+  visible: boolean;
+  localDone: boolean | null;
+  onSubmit: () => void;
+}) {
+  const TH = useTheme();
+  const T = useT();
+  const P = TH.primary;
+  if (!visible) return null;
+  return (
+    <TouchableOpacity onPress={onSubmit} accessibilityLabel={T('checkinSubmit')} style={{
+      marginTop:12, paddingVertical:14, borderRadius:12, alignItems:'center',
+      backgroundColor: localDone === true
+        ? '#17EAD9'
+        : localDone === false
+          ? '#C53364'
+          : P,
+    }}>
+      <Text style={{ color:'#fff', fontWeight:'700', fontSize:FONT_BUTTON() }}>
+        {localDone === true ? T('checkinSubmit') : localDone === false ? T('checkinSave') : T('checkinSelectStatus')}
+      </Text>
+    </TouchableOpacity>
+  );
+}
+
+/** 数据区（体重/饮水/饮食——grace 模式只显示体重） */
+function DataSection({
+  graceMode, weight, onWeightChange, weightUnit,
+  waterMl, onWaterChange, onWaterPlus, totalCal,
+  showFoodAdd, onToggleFoodAdd, foodName, onFoodNameChange, foodCal, onFoodCalChange,
+  onConfirmFood, onResetFoodForm,
+}: {
+  graceMode: boolean;
+  weight: string;
+  onWeightChange: (w: string) => void;
+  weightUnit: string;
+  waterMl: number;
+  onWaterChange: (ml: number) => void;
+  onWaterPlus: () => void;
+  totalCal: number;
+  showFoodAdd: boolean;
+  onToggleFoodAdd: () => void;
+  foodName: string;
+  onFoodNameChange: (v: string) => void;
+  foodCal: string;
+  onFoodCalChange: (v: string) => void;
+  onConfirmFood: () => void;
+  onResetFoodForm: () => void;
+}) {
+  const TH = useTheme();
+  const T = useT();
+  const P = TH.primary;
+  return (
+    <View style={{ backgroundColor:TH.card, borderRadius:16, padding:14, marginBottom:12 }}>
+      <View style={{ flexDirection:'row', alignItems:'center', gap:8, marginBottom:14 }}>
+        <Scale size={18} color={P} />
+        <Text style={{ fontWeight:'600', fontSize:FONT_BODY(), color:TH.text }}>
+          {graceMode ? T('checkinWeight') : `${T('checkinWeight')} / ${T('checkinWater')} / ${T('checkinFood')}`}
+        </Text>
+      </View>
+
+      {/* Weight */}
+      <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingVertical:10, borderBottomWidth: graceMode ? 0 : 1, borderBottomColor:TH.border }}>
+        <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
+          <Scale size={16} color={P} />
+          <Text style={{ color:TH.text, fontSize:FONT_BODY() }}>{T('checkinWeight')}</Text>
+        </View>
+        <View style={{ flexDirection:'row', alignItems:'center', gap:6 }}>
+          <TextInput
+            value={weight}
+            onChangeText={onWeightChange}
+            placeholder="..."
+            placeholderTextColor={TH.sub}
+            keyboardType="numeric"
+            accessibilityLabel={T('checkinWeight')}
+            style={{ width:60, textAlign:'center', borderWidth:1, borderColor:TH.border, borderRadius:8, paddingVertical:6, color:TH.text, fontWeight:'600', fontSize:FONT_BODY(), backgroundColor:TH.cardSolid }}
+          />
+          <Text style={{ color:TH.sub, fontSize:FONT_SUB() }}>{weightUnit === 'kg' ? T('checkinKg') : T('checkinLb')}</Text>
+        </View>
+      </View>
+
+      {/* Water - hidden in grace mode */}
+      {!graceMode && (
+        <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingVertical:10, borderBottomWidth:1, borderBottomColor:TH.border }}>
+          <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
+            <Droplets size={16} color={P} />
+            <Text style={{ color:TH.text, fontSize:FONT_BODY() }}>{T('checkinWater')}</Text>
+          </View>
+          <View style={{ flexDirection:'row', alignItems:'center', gap:6 }}>
+            <TextInput
+              value={waterMl ? String(waterMl) : ''}
+              onChangeText={v => onWaterChange(Math.max(0, parseInt(v) || 0))}
+              placeholder="0"
+              placeholderTextColor={TH.sub}
+              keyboardType="numeric"
+              accessibilityLabel={T('checkinWater')}
+              style={{ width:60, textAlign:'center', borderWidth:1, borderColor:TH.border, borderRadius:8, paddingVertical:6, color:TH.text, fontWeight:'600', fontSize:FONT_BODY(), backgroundColor:TH.cardSolid }}
+            />
+            <Text style={{ color:TH.sub, fontSize:FONT_SUB() }}>ml</Text>
+            <TouchableOpacity onPress={onWaterPlus}
+              accessibilityLabel="增加250毫升水"
+              style={{ paddingVertical:4, paddingHorizontal:8, borderRadius:6, backgroundColor:`${P}20` }}>
+              <Text style={{ color:P, fontSize:FONT_SUB(), fontWeight:'600' }}>+250</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
+      {/* Food - hidden in grace mode */}
+      {!graceMode && (
+        <View style={{ paddingVertical:10 }}>
+          <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between' }}>
+            <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
+              <Utensils size={16} color={P} />
+              <Text style={{ color:TH.text, fontSize:FONT_BODY() }}>{T('checkinFood')}</Text>
+            </View>
+            <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
+              <Text style={{ fontSize:FONT_TITLE(), fontWeight:'600', color:P }}>{String(totalCal)}</Text>
+              <Text style={{ color:TH.sub, fontSize:FONT_SUB() }}>kcal</Text>
+              <TouchableOpacity onPress={onToggleFoodAdd}
+                accessibilityLabel="添加食物"
+                style={{ width:24, height:24, borderRadius:12, backgroundColor:P, alignItems:'center', justifyContent:'center' }}>
+                <Text style={{ color:'#fff', fontSize:FONT_BUTTON() }}>+</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          {showFoodAdd && (
+            <View style={{ marginTop:10, padding:10, backgroundColor:TH.cardSolid, borderRadius:10, borderWidth:1, borderColor:TH.border }}>
+              <View style={{ flexDirection:'row', gap:8, marginBottom:8 }}>
+                <ThemedInput value={foodName} onChangeText={onFoodNameChange} placeholder={T('foodName')} accessibilityLabel={T('foodName')} style={{ flex:2, padding:7 }} />
+                <ThemedInput value={foodCal} onChangeText={onFoodCalChange} placeholder={T('calories2')} keyboardType="numeric" accessibilityLabel={T('calories2')} style={{ flex:1, padding:7 }} />
+              </View>
+              <View style={{ flexDirection:'row', gap:8 }}>
+                <TouchableOpacity onPress={onConfirmFood}
+                  accessibilityLabel={T('confirm')}
+                  style={{ flex:1, padding:8, borderRadius:8, backgroundColor:P, alignItems:'center' }}>
+                  <Text style={{ color:'#fff', fontWeight:'600', fontSize:FONT_BUTTON() }}>{T('confirm')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={onResetFoodForm}
+                  accessibilityLabel={T('commonCancel')}
+                  style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor:TH.border, alignItems:'center' }}>
+                  <Text style={{ color:TH.sub, fontSize:FONT_BUTTON() }}>{T('commonCancel')}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+        </View>
+      )}
+    </View>
+  );
+}
+
+/** 未完成原因弹窗（缺项列表 + 原因选择 + 补充说明） */
+function ReasonModal({
+  visible, incompleteItems, selectedReason, onSelectReason, reasonNote, onReasonNoteChange,
+  onBack, onConfirm, onRequestClose,
+}: {
+  visible: boolean;
+  incompleteItems: ReturnType<typeof getIncompleteItems>;
+  selectedReason: string;
+  onSelectReason: (reason: string) => void;
+  reasonNote: string;
+  onReasonNoteChange: (note: string) => void;
+  onBack: () => void;
+  onConfirm: () => void;
+  onRequestClose: () => void;
+}) {
+  const TH = useTheme();
+  const T = useT();
+  const P = TH.primary;
+  return (
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onRequestClose}>
+      <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.65)' }}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+          <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 24 }} keyboardShouldPersistTaps="handled">
+            <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24 }}>
               <Text style={{ fontWeight: '700', fontSize: FONT_TITLE(), color: TH.text, marginBottom: 12 }}>{T('incompleteReasonTitle')}</Text>
 
               {/* Incomplete items list */}
@@ -620,7 +713,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                   const labelKey = `incompleteReason${r.code.charAt(0).toUpperCase() + r.code.slice(1)}` as string;
                   const selected = selectedReason === r.code;
                   return (
-                    <TouchableOpacity key={r.code} onPress={() => setSelectedReason(r.code)}
+                    <TouchableOpacity key={r.code} onPress={() => onSelectReason(r.code)}
                       accessibilityLabel={`${r.icon} ${T(labelKey)}`}
                       style={{
                         paddingHorizontal: 14, paddingVertical: 10, borderRadius: 12,
@@ -638,7 +731,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
               {/* Additional note */}
               <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}><Text style={{ color: '#EF4444' }}>*</Text> {T('incompleteReasonNote')}</Text>
               <TextInput
-                value={reasonNote} onChangeText={setReasonNote}
+                value={reasonNote} onChangeText={onReasonNoteChange}
                 placeholder={T('incompleteReasonNotePlaceholder')}
                 placeholderTextColor={TH.sub}
                 multiline
@@ -652,22 +745,21 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
 
               {/* Buttons */}
               <View style={{ flexDirection: 'row', gap: 10 }}>
-                <TouchableOpacity onPress={() => { setShowReasonModal(false); setLocalDone(null); }}
+                <TouchableOpacity onPress={onBack}
                   accessibilityLabel={T('incompleteReasonBack')}
                   style={{ flex: 1, padding: 14, borderRadius: 12, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
                   <Text style={{ color: TH.sub, fontSize: FONT_BUTTON() }}>{T('incompleteReasonBack')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={confirmDoneWithReason} disabled={!selectedReason || !reasonNote.trim()}
+                <TouchableOpacity onPress={onConfirm} disabled={!selectedReason || !reasonNote.trim()}
                   accessibilityLabel={T('incompleteReasonConfirm')}
                   style={{ flex: 1, padding: 14, borderRadius: 12, backgroundColor: selectedReason && reasonNote.trim() ? P : TH.border, alignItems: 'center' }}>
                   <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON() }}>{T('incompleteReasonConfirm')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
-            </ScrollView>
-          </KeyboardAvoidingView>
-        </View>
-      </Modal>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </View>
     </Modal>
   );
 }
