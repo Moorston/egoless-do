@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/mobile/frontend/quality-guidelines.md", "reason": "Complexity Ratchet 制度（阈值 56 只降不升）+ presentational 豁免注解机制 + Known Test Environment Limitations（为何无组件渲染测试）+ 无测试 screen 保守拆分模式（策略 C，本任务的 section 抽取参照）"}
+{"file": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md", "reason": "§8 国际化规范（8.4 运行时字符串国际化——5 处硬编码中文修复依据）+ §9 质量门禁联动（ratchet 方向与阈值随动规则）"}
+{"file": "openspec/changes/complexity-oversize-cleanup/design.md", "reason": "完整源码解剖（63/42 构成表）+ 5 个设计决策（D1 显式 props / D2 单枚举 / D3 输入 14 项 / D4 阈值实测 / D5 i18n 命名）——实施时逐字遵守"}
+{"file": "openspec/changes/complexity-oversize-cleanup/proposal.md", "reason": "非目标边界（不治理 54 个线内存量 / 不动 sync 长尾 / 不拆 CheckinModal 组件）+ 顺带修复清单"}
