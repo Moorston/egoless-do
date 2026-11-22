@@ -110,3 +110,44 @@ complexity ≤15 团队约定从纸面变可执行门禁：ReviewAIPanel 主函�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 114: complexity-oversize-cleanup 完成
+
+**Date**: 2026-11-22
+**Task**: 11-21-complexity-oversize-cleanup — 拆分两个超 risk-tier ≤40 豁免线的函数至 ≤15（QuickCreateTrailScreen 63 / CheckinModal 42 主函数 + 21 submit）
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+拆分两个超 risk-tier ≤40 线的函数至 ≤15 + ratchet 阈值 56→53。核心发现：ESLint complexity 按函数分账——lazy initializer/useCallback/内联箭头是独立函数，其内部分支不计入主函数 CC（CC 落点诊断先行，已沉淀 quality-guidelines 新小节）。CheckinModal 设计期误判"纯函数提取治主函数 42"，跑分实证主函数 CC 全在 render JSX 三元 → 改走 section 子组件。门禁全绿：2112/2112 / type-check 2 successful / lint 0 / lint:complexity 53 压线 exit 0。AC 8/8。
+
+### Main Changes
+
+- QuickCreateTrailScreen 63→≤15：三胞胎 dropdown 参数化收敛（FilterDropdown：itemStyle 三态 / scrollable 两容器 / onClear 可选 / activeColor 差异）+ section 子组件 + i18n 六 key
+- CheckinModal 42/21→≤15：checkinModalHelpers 三纯函数（buildCheckinNoteData / buildPlanToggles / buildHabitCheckins）+ characterization 测试 16 用例 + 六 section 子组件（GraceBanner / GraceSuccessOverlay / StatusButtons / SubmitButton / DataSection / ReasonModal）
+- mobile lint:complexity ratchet 56→53（56−3 纯减法：三项超标退出清单）
+- quality-guidelines 两新小节：CC 落点诊断先行 + 三胞胎参数化模式；ratchet 历史表更新
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4cccc3e7` | refactor(reflections) QuickCreateTrailScreen 复杂度 63→≤15 |
+| `cccbdb48` | refactor(home) CheckinModal 复杂度 42/21→≤15 |
+| `f14bfbb1` | build(lint) mobile lint:complexity 阈值 56→53 |
+| `b7389b6f` | docs(spec) quality-guidelines 增两小节 + ratchet 56→53 |
+
+### Testing
+
+- 全量 2112/2112 绿（含新增 checkinModalHelpers 16 用例）
+- type-check 2 successful（core+mobile）/ mobile lint 0 / lint:complexity 53 problems exit 0（阈值压线）
+- AC 1-8 全过（AC8 用 git show diff 前后 400 行逐项对照等价）
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

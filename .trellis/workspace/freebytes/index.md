@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-3.md`
-- **Total Sessions**: 113
-- **Last Active**: 2026-11-20
+- **Total Sessions**: 114
+- **Last Active**: 2026-11-22
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-3.md` | ~112 | Active |
+| `journal-3.md` | ~148 | Active |
 | `journal-2.md` | ~1966 | Archived |
 | `journal-1.md` | ~1971 | Archived |
 <!-- @@@/auto:active-documents -->
@@ -31,6 +31,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 114 | 2026-11-22 | task done | `4cccc3e7`, `cccbdb48`, `f14bfbb1`, `b7389b6f` | `refactor/split-body-dashboard` |
 | 113 | 2026-11-20 | coverage-ratchet-gate 实施：双包 coverage 门禁 + CI 分包化 + 三 ratchet 联动成文 | `e4160640`, `b1935268`, `d63dfb40` | `refactor/split-body-dashboard` |
 | 112 | 2026-11-20 | complexity-ratchet 实施：ReviewAIPanel 拆分 + 豁免注解 + 双包 ratchet 制度化 | `020ca795`, `1c0c7963`, `e9a139e9` | `refactor/split-body-dashboard` |
 | 111 | 2026-11-20 | sync-engine-complexity 实施：测试护航拆分 + risk-tier 豁免制度化 | `0d538be9`, `6fa9cbfb`, `5a615f2d` | `refactor/split-body-dashboard` |
