@@ -99,6 +99,16 @@ For **error-handling state machines** — functions whose branch density IS the 
 
 This is a **documented, re-verified exemption** — not an eslint-disable carve-out (see 无测试 Screen 保守拆分模式 rule 6: disabling is never the answer). Every exemption entry must cite the extraction already done and its guarding tests; a new entry requires the same evidence.
 
+### CC 落点诊断先行（选拆法前必跑分，2026-11-21）
+
+对超标函数选拆法之前，先用显式 `--rule` 跑分确认 **CC 落在哪个函数**——ESLint 报告是按函数分账的，`useState` lazy initializer、`useCallback`、内联 submit 箭头函数都是**独立函数**，其内部分支不计入主函数 CC。
+
+**The instance that bit**: CheckinModal 设计期判断"lazy initializer + submit 装配抽纯函数即可治主函数 42"——跑分实证主函数 42 全在 render JSX 的三元/&&/??（initializer 与 submit 在独立回调内，本就不贡献），纯函数提取治 submit 21 但主函数纹丝不动，被迫回 Plan 修正拆法（改走 section 子组件）。**教训：先跑分看 CC 分账，再决定拆法**——落点在 render JSX → section 子组件（component-guidelines "Splitting"）；落点在数据装配 → 纯函数提取；落点在同构拷贝 → 参数化收敛。
+
+### 三胞胎参数化模式（同构 JSX 收敛，2026-11-21）
+
+同一段 JSX 结构复制 N 份、仅少数字段/样式/行为差异（QuickCreateTrailScreen 的 3 个 dropdown ≈ 36 CC）时，拆分不减少 CC 总量——**参数化收敛才治本**：抽一个显式 props 的参数化组件（`FilterDropdown`：`itemStyle` 三态 / `scrollable` 两容器 / `onClear` 可选 / `activeColor` 差异），每个差异点成为显式 prop，N 份拷贝变 N 个调用点。样式 key 同名不同值（`checkbox` vs `checkboxMood`）**逐字保留不合并**——合并是行为变更。互斥开闭状态收敛单枚举（`'time'|'tags'|'moods'|null`）替代 N 个独立 boolean。
+
 ### Async-extraction fast-path trap（2026-11-20）
 
 When extracting a synchronous code segment into an `async` method for complexity relief, check whether the caller's correctness depends on the segment being **synchronous** — if so, the extraction introduces an await boundary that silently widens a race window.
@@ -117,7 +127,7 @@ When extracting a synchronous code segment into an `async` method for complexity
 
 | 包 | 脚本 | 阈值（2026-11-20 实测起步） | 构成 |
 |----|------|---------------------------|------|
-| mobile | `pnpm --filter mobile lint:complexity` | **56** | 纯 complexity（主 lint ratchet=0）；历史：59（11-20 起步前）→ 56（ReviewAIPanel 拆分 −1 + PlanCreateScreen 豁免注解 −2） |
+| mobile | `pnpm --filter mobile lint:complexity` | **53** | 纯 complexity（主 lint ratchet=0）；历史：59（11-20 起步前）→ 56（ReviewAIPanel 拆分 −1 + PlanCreateScreen 豁免注解 −2）→ 53（11-21 complexity-oversize-cleanup：QuickCreateTrailScreen 63 + CheckinModal 42/21 三项拆至 ≤15，56−3 纯减法） |
 | core | `pnpm --filter @egoless-do/core lint:complexity` | **37** | 32 complexity 存量 + 5 既有 no-unsafe ratchet 残差（复杂度 config 继承全部规则，跑分含残差）；core 残差清零时同步下调 |
 
 **心智模型**：与 lint ratchet 完全对称——阈值=实测起步，**只降不升**（方向与 coverage ratchet 的只升不降相反）。存量不是清零承诺：core 32 个与其余 mobile 53 个继续存在，ratchet 只防新增；治理走显式 `--rule` 实测 + 逐波拆分任务（如 11-19 sync-engine-complexity）。
