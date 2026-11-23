@@ -79,7 +79,7 @@ const {
     mockDb: createMockDb(),
     mockStateStore: createMockStateStore(),
     mockApplyService: {
-      applyServerChanges: vi.fn().mockResolvedValue({}),
+      applyServerChanges: vi.fn().mockResolvedValue({ patch: {}, failedEntities: [] }),
       markSyncedAndRemove: vi.fn().mockResolvedValue(undefined),
       serverPayloadToRow: vi.fn().mockReturnValue(null),
       getRowMapper: vi.fn().mockReturnValue(undefined),
@@ -250,7 +250,7 @@ beforeEach(() => {
   mockDb.runAsync.mockResolvedValue({ changes: 1 });
 
   // Default apply service mock
-  mockApplyService.applyServerChanges.mockResolvedValue({});
+  mockApplyService.applyServerChanges.mockResolvedValue({ patch: {}, failedEntities: [] });
   mockApplyService.serverPayloadToRow.mockReturnValue(null);
 
   // Default app store mock
@@ -282,7 +282,6 @@ afterEach(() => {
         undefined,
         expect.any(Function), // token getter
         expect.any(Function), // change handler
-        expect.any(Function), // kicked-out handler
         expect.any(Function), // lastSyncAt getter (was raw value, now a function)
         expect.any(Function), // deletedIds provider
         expect.any(Function), // onServerTime callback
@@ -293,6 +292,63 @@ afterEach(() => {
       const tokenGetter = mockRealtimeController.connectRealtime.mock.calls[0][1];
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       expect(tokenGetter()).toBe('my-token');
+    });
+
+    it('onServerTime wrapper (D1 guard): advances watermark on full success', async () => {
+      // sync-apply-failure-semantics D1：全部成功 → Math.max 推进（成功路径行为不变）
+      engine.setTokenProvider(() => 'tok');
+      mockRealtimeController.isRealtimeConnected.mockReturnValue(false);
+      engine.connectRealtime();
+
+      // Dynamic read/write semantics: setLastSyncAt must be observable via getLastSyncAt
+      // (the wrapper reads it back for saveLastSyncAt). Restore the default (0) after.
+      let lastSyncAt = 100;
+      mockTimestampManager.getLastSyncAt.mockImplementation(() => lastSyncAt);
+      mockTimestampManager.setLastSyncAt.mockImplementation((ts: number) => { lastSyncAt = ts; });
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const onServerTime = mockRealtimeController.connectRealtime.mock.calls[0][5];
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      onServerTime(500);
+
+      expect(mockTimestampManager.setLastSyncAt).toHaveBeenCalledWith(500);
+      expect(mockTimestampManager.saveLastSyncAt).toHaveBeenCalledWith(500);
+      expect(mockTimestampManager.updateClockOffset).toHaveBeenCalledWith(500);
+
+      // Restore mocks to hoisted defaults (sticky mockReturnValue would leak)
+      mockTimestampManager.getLastSyncAt.mockReturnValue(0);
+      mockTimestampManager.setLastSyncAt.mockImplementation(() => {});
+    });
+
+    it('onServerTime wrapper (D1 guard): does NOT advance watermark when entities failed', async () => {
+      // sync-apply-failure-semantics D1：任一实体失败 → 不推 lastSyncAt（失败实体
+      // 下次增量重拉，防永久数据洞）；钟差校准不受 apply 结果影响照常执行
+      engine.setTokenProvider(() => 'tok');
+      mockRealtimeController.isRealtimeConnected.mockReturnValue(false);
+      engine.connectRealtime();
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const onServerTime = mockRealtimeController.connectRealtime.mock.calls[0][5];
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      onServerTime(500, ['habit']);
+
+      expect(mockTimestampManager.setLastSyncAt).not.toHaveBeenCalled();
+      expect(mockTimestampManager.saveLastSyncAt).not.toHaveBeenCalled();
+      expect(mockTimestampManager.updateClockOffset).toHaveBeenCalledWith(500);
+    });
+
+    it('onServerTime wrapper (D1 guard): serverTime <= 0 is a no-op', async () => {
+      engine.setTokenProvider(() => 'tok');
+      mockRealtimeController.isRealtimeConnected.mockReturnValue(false);
+      engine.connectRealtime();
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const onServerTime = mockRealtimeController.connectRealtime.mock.calls[0][5];
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      onServerTime(0);
+
+      expect(mockTimestampManager.setLastSyncAt).not.toHaveBeenCalled();
+      expect(mockTimestampManager.updateClockOffset).not.toHaveBeenCalled();
     });
 
     it('triggerSyncDebounced fires callback after 2-second debounce', () => {
@@ -678,7 +734,7 @@ afterEach(() => {
       mockDrainQueue.mockResolvedValue([]);
       mockApiSyncCheck.mockResolvedValueOnce({ hasChanges: true, changed: { habit: 1 } });
       mockApiSyncPull.mockResolvedValueOnce({ data: serverData, serverTime: Date.now() });
-      mockApplyService.applyServerChanges.mockResolvedValueOnce({ habits: [{ id: 'h1' }] });
+      mockApplyService.applyServerChanges.mockResolvedValueOnce({ patch: { habits: [{ id: 'h1' }] }, failedEntities: [] });
 
       await engine.runSync();
 

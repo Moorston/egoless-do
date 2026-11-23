@@ -22,6 +22,8 @@ import {
   rowToBreath, rowToZhiguanSession, rowToFoodPreset,
 } from '../../store/rowMappers';
 
+import type { ApplyServerChangesResult } from './SyncApplyService';
+
 const log = createLogger('Rehydration');
 const DEVICE_SYNCED_KEY = 'device_initial_synced';
 
@@ -232,7 +234,7 @@ export class SyncRehydrationManager {
   async initialSync(
     token: string,
     userId: string | undefined,
-    applyServerChanges: (data: Record<string, unknown[]>, deletedIds?: Set<string>) => Promise<Record<string, unknown>>,
+    applyServerChanges: (data: Record<string, unknown[]>, deletedIds?: Set<string>) => Promise<ApplyServerChangesResult>,
     isKickedOut: (err: unknown) => boolean,
     onInitialSyncingChange?: (v: boolean) => void,
   ): Promise<'done' | 'partial'> {
@@ -281,7 +283,7 @@ export class SyncRehydrationManager {
   async resumeInitialSync(
     token: string,
     userId: string | undefined,
-    applyServerChanges: (data: Record<string, unknown[]>, deletedIds?: Set<string>) => Promise<Record<string, unknown>>,
+    applyServerChanges: (data: Record<string, unknown[]>, deletedIds?: Set<string>) => Promise<ApplyServerChangesResult>,
     isKickedOut: (err: unknown) => boolean,
   ): Promise<void> {
     const db = await openDatabase();
@@ -318,7 +320,7 @@ export class SyncRehydrationManager {
     phase: number,
     token: string,
     userId: string | undefined,
-    applyServerChanges: (data: Record<string, unknown[]>, deletedIds?: Set<string>) => Promise<Record<string, unknown>>,
+    applyServerChanges: (data: Record<string, unknown[]>, deletedIds?: Set<string>) => Promise<ApplyServerChangesResult>,
     isKickedOut: (err: unknown) => boolean,
   ): Promise<void> {
     const progress = await getSyncProgress(entity);
@@ -383,7 +385,7 @@ export class SyncRehydrationManager {
     phase: number,
     token: string,
     userId: string | undefined,
-    applyServerChanges: (data: Record<string, unknown[]>, deletedIds?: Set<string>) => Promise<Record<string, unknown>>,
+    applyServerChanges: (data: Record<string, unknown[]>, deletedIds?: Set<string>) => Promise<ApplyServerChangesResult>,
     isKickedOut: (err: unknown) => boolean,
   ): Promise<SyncEntity[]> {
     const queue = [...entities];

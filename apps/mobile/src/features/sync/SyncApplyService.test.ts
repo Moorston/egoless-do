@@ -276,12 +276,12 @@ beforeEach(() => {
   describe('applyServerChanges', () => {
     it('returns empty patch for null data', async () => {
       const result = await svc.applyServerChanges(null as unknown as Record<string, unknown[]>);
-      expect(result).toEqual({});
+      expect(result).toEqual({ patch: {}, failedEntities: [] });
     });
 
     it('returns empty patch for empty object', async () => {
       const result = await svc.applyServerChanges({});
-      expect(result).toEqual({});
+      expect(result).toEqual({ patch: {}, failedEntities: [] });
     });
 
     it('correctly splits alive and dead records', async () => {
@@ -297,8 +297,8 @@ beforeEach(() => {
       const result = await svc.applyServerChanges(data);
 
       // Only alive records are mapped to the store
-      expect(result.habits).toBeDefined();
-      expect((result.habits as unknown[]).length).toBe(1);
+      expect(result.patch.habits).toBeDefined();
+      expect((result.patch.habits as unknown[]).length).toBe(1);
     });
 
     it('skips server record when local has newer updated_at (conflict resolution)', async () => {
@@ -314,7 +314,7 @@ beforeEach(() => {
       const result = await svc.applyServerChanges(data);
 
       // Server record skipped — nothing added to store patch
-      expect(result.habits).toBeUndefined();
+      expect(result.patch.habits).toBeUndefined();
     });
 
     it('does NOT resurrect a locally soft-deleted record even when server is newer', async () => {
@@ -332,7 +332,7 @@ beforeEach(() => {
       const result = await svc.applyServerChanges(data);
 
       // Soft-deleted record stays deleted — server record NOT applied even though newer
-      expect(result.habits).toBeUndefined();
+      expect(result.patch.habits).toBeUndefined();
       expect(mockDb.runAsync).not.toHaveBeenCalled();
     });
 
@@ -350,7 +350,7 @@ beforeEach(() => {
       const result = await svc.applyServerChanges(data);
 
       // In-memory guard blocks the incoming record during the WriteBatcher window
-      expect(result.habits).toBeUndefined();
+      expect(result.patch.habits).toBeUndefined();
     });
 
     it('re-applies records after the _locallyDeleted 60s timer expires', async () => {
@@ -368,8 +368,8 @@ beforeEach(() => {
         const data = { habit: [{ id: 'h1', title: 'Incoming After Expiry' }] };
         const result = await svc.applyServerChanges(data);
 
-        expect(result.habits).toBeDefined();
-        expect((result.habits as unknown[]).length).toBe(1);
+        expect(result.patch.habits).toBeDefined();
+        expect((result.patch.habits as unknown[]).length).toBe(1);
       } finally {
         vi.useRealTimers();
       }
@@ -393,7 +393,7 @@ beforeEach(() => {
       const result = await svc.applyServerChanges(data, undefined, undefined, 100);
 
       // Local is newer in the server frame → server record skipped
-      expect(result.habits).toBeUndefined();
+      expect(result.patch.habits).toBeUndefined();
     });
 
     it('applies server record when local is genuinely older under clock skew', async () => {
@@ -410,8 +410,8 @@ beforeEach(() => {
 
       const result = await svc.applyServerChanges(data, undefined, undefined, 100);
 
-      expect(result.habits).toBeDefined();
-      expect((result.habits as unknown[]).length).toBe(1);
+      expect(result.patch.habits).toBeDefined();
+      expect((result.patch.habits as unknown[]).length).toBe(1);
     });
 
     it('applies server record when payload omits updated_at (server authoritative on missing timestamp)', async () => {
@@ -431,8 +431,8 @@ beforeEach(() => {
 
       const result = await svc.applyServerChanges(data);
 
-      expect(result.habits).toBeDefined();
-      expect((result.habits as unknown[]).length).toBe(1);
+      expect(result.patch.habits).toBeDefined();
+      expect((result.patch.habits as unknown[]).length).toBe(1);
     });
 
     it('skips records present in deletedIds (recycle bin, entity-qualified key)', async () => {
@@ -446,7 +446,7 @@ beforeEach(() => {
 
       const result = await svc.applyServerChanges(data, deletedIds);
 
-      expect(result.habits).toBeUndefined();
+      expect(result.patch.habits).toBeUndefined();
     });
 
     it('does NOT skip a different entity that shares the same id (date-pk collision guard)', async () => {
@@ -464,9 +464,9 @@ beforeEach(() => {
       const result = await svc.applyServerChanges(data, deletedIds);
 
       // checkin skipped (locally deleted)
-      expect(result.checkinHistory).toBeUndefined();
+      expect(result.patch.checkinHistory).toBeUndefined();
       // grace MUST be applied despite sharing id 'shared-1'
-      expect(result.graceHistory).toHaveLength(1);
+      expect(result.patch.graceHistory).toHaveLength(1);
     });
 
     it('falls back to INSERT when UPDATE returns 0 changes', async () => {
@@ -501,7 +501,7 @@ beforeEach(() => {
 
       const result = await svc.applyServerChanges(data);
 
-      expect(result.totalMedMinutes).toBe(60);
+      expect(result.patch.totalMedMinutes).toBe(60);
     });
 
     it('extracts aiMode and aiModels from the last aiConfig record', async () => {
@@ -516,8 +516,8 @@ beforeEach(() => {
 
       const result = await svc.applyServerChanges(data);
 
-      expect(result.aiMode).toBe('advanced');
-      expect(result.aiModels).toEqual({ chat: 'gpt-4o', vision: 'gpt-4v' });
+      expect(result.patch.aiMode).toBe('advanced');
+      expect(result.patch.aiModels).toEqual({ chat: 'gpt-4o', vision: 'gpt-4v' });
     });
 
     it('throws on aborted signal at entity loop checkpoint', async () => {
@@ -533,7 +533,7 @@ beforeEach(() => {
       ).rejects.toThrow();
     });
 
-    it('accumulates failed entities in _failedEntities and continues other entities', async () => {
+    it('accumulates failed entities in failedEntities and continues other entities', async () => {
       // The entity-level abort check (line 154) is OUTSIDE the try/catch block.
       // Only the per-record abort checks (lines 225, 272) are inside try/catch,
       // so they trigger _failedEntities accumulation instead of rejecting.
@@ -565,9 +565,9 @@ beforeEach(() => {
       // Both entities hit the per-record abort check (inside try/catch), which
       // throws DOMException inside applyEntityToTable. The throw propagates to
       // the entity-level catch in applyServerChanges, accumulating failures.
-      expect(result._failedEntities).toBeDefined();
-      expect(result._failedEntities).toContain('habit');
-      expect(result._failedEntities).toContain('plan');
+      expect(result.failedEntities).toBeDefined();
+      expect(result.failedEntities).toContain('habit');
+      expect(result.failedEntities).toContain('plan');
     });
 
     it('triggers 6 cascade UPDATE queries for plan entity delete', async () => {
@@ -590,6 +590,64 @@ beforeEach(() => {
         s.includes('thought_trails'),
       );
       expect(cascadeSqls.length).toBe(6);
+    });
+
+    // ── sync-apply-failure-semantics（修复后锁定行为）──
+    it('R2 fixed semantics: row failing both UPDATE and INSERT fallback stays out of patch, entity escalates', async () => {
+      // 修复后锁定（sync-apply-failure-semantics D3/D4）：h1 的 UPDATE 失败是错误
+      // 结果（不再误诊为 changes:0 走 INSERT fallback）→ 行不写库、不进
+      // applied/storeMapped（store 与 SQLite 不分叉）→ 实体计入 failedEntities
+      //（进 D1 守卫，下次增量重拉）。修复前快照：写失败行照样进 patch、实体不计失败。
+      mockDb.runAsync
+        .mockRejectedValueOnce(new Error('UPDATE failed'))        // h1 UPDATE 失败
+        .mockResolvedValueOnce({ changes: 1 })                    // h2 UPDATE 成功
+        .mockRejectedValueOnce(new Error('disk I/O error'));      // （若误走 INSERT fallback 会消耗此 mock）
+
+      const data = { habit: [{ id: 'h1', title: 'Bad Row' }, { id: 'h2', title: 'Good Row' }] };
+      const result = await svc.applyServerChanges(data);
+
+      // 只有写库成功的 h2 进 patch
+      expect(result.patch.habits).toHaveLength(1);
+      expect((result.patch.habits as Array<{ id: string }>)[0].id).toBe('h2');
+      // h1 的行级失败上升为实体失败（进 D1 水位线守卫）
+      expect(result.failedEntities).toEqual(['habit']);
+      // UPDATE 失败的行不走 INSERT fallback（D3：错误与行不存在区分）
+      const insertSqls = mockDb.runAsync.mock.calls
+        .map((c: unknown[]) => c[0] as string)
+        .filter((s: string) => s.startsWith('INSERT INTO'));
+      expect(insertSqls).toHaveLength(0);
+    });
+
+    it('R1/R3 fixed semantics: entity failure surfaces via failedEntities channel, patch stays clean', async () => {
+      // 修复后锁定（sync-apply-failure-semantics D2）：habit 的 applyEntityToTable throw
+      // （经 record-level abort，同上 accumulate 先例）→ 失败实体经独立字段 failedEntities
+      // 传递（供 SyncEngine.onServerTime 包装做 D1 守卫）→ patch 干净（无 _failedEntities
+      // 泄漏进 Zustand 顶层 state）。修复前快照：_failedEntities 混在 patch 顶层。
+      let checks = 0;
+      const fakeSignal = {
+        get aborted() { checks++; return checks === 2; }, // 只在 habit 的 record-level 返回 true
+        throwIfAborted(this: { aborted: boolean }) { if (this.aborted) throw new TestDOMException('Aborted', 'AbortError'); },
+        addEventListener() {},
+        removeEventListener() {},
+        dispatchEvent() { return true; },
+        onabort: null,
+        reason: undefined,
+      } as unknown as AbortSignal;
+
+      mockDb.runAsync.mockResolvedValue({ changes: 1 });
+
+      const data: Record<string, unknown[]> = {
+        habit: [{ id: 'h1', title: 'Habit' }],
+        plan: [{ id: 'p1', title: 'Plan' }],
+      };
+      const result = await svc.applyServerChanges(data, undefined, fakeSignal);
+
+      // plan 的成功数据正常进 patch（失败不阻塞兄弟实体）
+      expect(result.patch.plans).toHaveLength(1);
+      // 失败实体经独立通道传递（不再混进 patch）
+      expect(result.failedEntities).toEqual(['habit']);
+      // patch 不含失败元数据键（R3 修复）
+      expect(Object.keys(result.patch)).not.toContain('_failedEntities');
     });
   });
 

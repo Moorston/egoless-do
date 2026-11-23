@@ -16,7 +16,7 @@ import {
 import { flushWrites } from '../../store/storageAdapter';
 
 import { PushConflictResolver } from './PushConflictResolver';
-import { SyncApplyService, ENTITY_CONFIG } from './SyncApplyService';
+import { SyncApplyService, ENTITY_CONFIG, type ApplyServerChangesResult } from './SyncApplyService';
 import { SyncRealtimeController } from './SyncRealtimeController';
 import { SyncRehydrationManager } from './SyncRehydrationManager';
 import { SyncResetService } from './SyncResetService';
@@ -194,7 +194,7 @@ export class SyncEngine {
   setRealtimeLogoutHandler(fn: () => void) { this._realtimeController.setLogoutHandler(fn); }
   setRealtimeUserIdProvider(fn: () => string | undefined) { this._realtimeController.setUserIdProvider(fn); }
   setRealtimeRunSync(fn: () => void) { this._realtimeController.setRunSync(fn); }
-  setRealtimeApplyServerChanges(fn: (data: Record<string, unknown[]>, deletedIds: Set<string>) => Promise<Record<string, unknown>>) { this._realtimeController.setApplyServerChanges(fn); }
+  setRealtimeApplyServerChanges(fn: (data: Record<string, unknown[]>, deletedIds: Set<string>) => Promise<ApplyServerChangesResult>) { this._realtimeController.setApplyServerChanges(fn); }
   setMigrationDone(v: boolean) { this._migrationDone = v; }
   getMigrationDone(): boolean { return this._migrationDone; }
   setSyncErrorHandler(fn: (error: string) => void) { this._onSyncError = fn; }
@@ -251,15 +251,21 @@ export class SyncEngine {
       pbUrl,
       () => this._tokenProvider?.() ?? null,
       (patch) => this._onChanges?.(patch),
-      () => this.handleKickedOut(),
       () => this._timestampManager.getLastSyncAt(),
       () => this._deletedIdsProvider?.() ?? new Set(),
-      (serverTime) => {
-        if (serverTime > 0) {
-          this._timestampManager.setLastSyncAt(Math.max(this._timestampManager.getLastSyncAt(), serverTime));
-          void this._timestampManager.saveLastSyncAt(this._timestampManager.getLastSyncAt());
-          this._timestampManager.updateClockOffset(serverTime);
-        }
+      (serverTime, failedEntities) => {
+        // D1 all-or-nothing watermark guard: any failed entity in this response
+        // blocks the watermark advance, so the next incremental pull re-fetches
+        // the failed entity's changes (prevents a permanent data hole). The
+        // successful entities' data has already landed via the patch — they are
+        // simply re-pulled next round (apply is idempotent, server-wins).
+        if (serverTime <= 0) return;
+        // Clock-offset calibration measures client-vs-server skew from the
+        // response time itself — it stays valid regardless of apply outcome.
+        this._timestampManager.updateClockOffset(serverTime);
+        if (failedEntities && failedEntities.length > 0) return;
+        this._timestampManager.setLastSyncAt(Math.max(this._timestampManager.getLastSyncAt(), serverTime));
+        void this._timestampManager.saveLastSyncAt(this._timestampManager.getLastSyncAt());
       },
     );
   }
@@ -306,7 +312,7 @@ export class SyncEngine {
   }
 
   // ── Apply server changes (delegated to SyncApplyService) ─────────────
-  async applyServerChanges(data: Record<string, unknown[]>, deletedIds?: Set<string>, signal?: AbortSignal): Promise<Record<string, unknown>> {
+  async applyServerChanges(data: Record<string, unknown[]>, deletedIds?: Set<string>, signal?: AbortSignal): Promise<ApplyServerChangesResult> {
     return this._applyService.applyServerChanges(data, deletedIds, signal, this.clockOffset);
   }
 
@@ -416,7 +422,7 @@ export class SyncEngine {
           const affectedEntities = [...new Set(items.map(i => i.entity))];
           const pullResult = await apiSyncPullPost(freshToken(), { entities: affectedEntities, since: lastSyncAt > 0 ? lastSyncAt : undefined });
           if (pullResult?.data) {
-            const patch = await this._applyService.applyServerChanges(pullResult.data, this._deletedIdsProvider?.() ?? new Set(), signal, this.clockOffset);
+            const { patch } = await this._applyService.applyServerChanges(pullResult.data, this._deletedIdsProvider?.() ?? new Set(), signal, this.clockOffset);
             // Guard: skip _onChanges if this sync was superseded (ghost sync prevention)
             if (patch && Object.keys(patch).length && this._syncGeneration === generation) this._onChanges?.(patch);
             pushApplySucceeded = true;
@@ -512,7 +518,7 @@ export class SyncEngine {
   ): Promise<void> {
     let patch: Record<string, unknown> = {};
     try {
-      patch = await this._applyService.applyServerChanges(data, this._deletedIdsProvider?.() ?? new Set(), signal, this.clockOffset);
+      ({ patch } = await this._applyService.applyServerChanges(data, this._deletedIdsProvider?.() ?? new Set(), signal, this.clockOffset));
     } catch (applyErr) {
       log.error(applyErr, { phase: 'applyServerChanges' });
     }

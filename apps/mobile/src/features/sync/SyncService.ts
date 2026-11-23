@@ -8,6 +8,7 @@ import {
   getSyncProgress, updateSyncProgress, resetSyncProgress, getQueueCount,
 } from '../../db/syncQueue';
 
+import type { ApplyServerChangesResult } from './SyncApplyService';
 import { SyncEngine } from './SyncEngine';
 import type { SyncMetric } from './SyncEngine';
 
@@ -25,7 +26,7 @@ export function setTokenRecoveryFn(fn: () => Promise<string | null>) { _engine.s
 export function setRealtimeLogoutHandler(fn: () => void) { _engine.setRealtimeLogoutHandler(fn); }
 export function setRealtimeUserIdProvider(fn: () => string | undefined) { _engine.setRealtimeUserIdProvider(fn); }
 export function setRealtimeRunSync(fn: () => void) { _engine.setRealtimeRunSync(fn); }
-export function setRealtimeApplyServerChanges(fn: (data: Record<string, unknown[]>, deletedIds: Set<string>) => Promise<Record<string, unknown>>) { _engine.setRealtimeApplyServerChanges(fn); }
+export function setRealtimeApplyServerChanges(fn: (data: Record<string, unknown[]>, deletedIds: Set<string>) => Promise<ApplyServerChangesResult>) { _engine.setRealtimeApplyServerChanges(fn); }
 export function setSyncErrorHandler(fn: (error: string) => void) { _engine.setSyncErrorHandler(fn); }
 export function setLastSyncAt(ts: number) { _engine.setLastSyncAt(ts); }
 
@@ -68,7 +69,7 @@ export function setMigrationDone() { _engine.setMigrationDone(true); }
 export function isMigrationDone() { return _engine.getMigrationDone(); }
 
 // applyServerChanges (used by useAppStore)
-export function applyServerChanges(data: Record<string, unknown[]>, deletedIds?: Set<string>, signal?: AbortSignal): Promise<Record<string, unknown>> {
+export function applyServerChanges(data: Record<string, unknown[]>, deletedIds?: Set<string>, signal?: AbortSignal): Promise<ApplyServerChangesResult> {
   return _engine.applyServerChanges(data, deletedIds, signal);
 }
 

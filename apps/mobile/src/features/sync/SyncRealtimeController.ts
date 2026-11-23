@@ -8,6 +8,7 @@ import NetInfo from '@react-native-community/netinfo';
 import { getQueueCount, resetAllPendingForRetry } from '../../db/syncQueue';
 
 import { RealtimeAgent, type RealtimeChangeEvent } from './RealtimeAgent';
+import type { ApplyServerChangesResult } from './SyncApplyService';
 
 const log = createLogger('SyncRealtime');
 
@@ -22,16 +23,16 @@ export class SyncRealtimeController {
   private _userIdProvider: (() => string | undefined) | null = null;
   private _networkRecoveryTimer: ReturnType<typeof setTimeout> | null = null;
   private _runSync: (() => void) | null = null;
-  private _applyServerChanges: ((data: Record<string, unknown[]>, deletedIds: Set<string>) => Promise<Record<string, unknown>>) | null = null;
-  private _onServerTime: ((serverTime: number) => void) | null = null;
+  private _applyServerChanges: ((data: Record<string, unknown[]>, deletedIds: Set<string>) => Promise<ApplyServerChangesResult>) | null = null;
+  private _onServerTime: ((serverTime: number, failedEntities?: string[]) => void) | null = null;
 
   constructor() {}
 
   setLogoutHandler(fn: () => void) { this._logoutHandler = fn; }
   setUserIdProvider(fn: () => string | undefined) { this._userIdProvider = fn; }
   setRunSync(fn: () => void) { this._runSync = fn; }
-  setApplyServerChanges(fn: (data: Record<string, unknown[]>, deletedIds: Set<string>) => Promise<Record<string, unknown>>) { this._applyServerChanges = fn; }
-  setOnServerTime(fn: (serverTime: number) => void) { this._onServerTime = fn; }
+  setApplyServerChanges(fn: (data: Record<string, unknown[]>, deletedIds: Set<string>) => Promise<ApplyServerChangesResult>) { this._applyServerChanges = fn; }
+  setOnServerTime(fn: (serverTime: number, failedEntities?: string[]) => void) { this._onServerTime = fn; }
 
   // ── Connection Management ──────────────────────────────────────────────
 
@@ -39,10 +40,9 @@ export class SyncRealtimeController {
     pbUrl: string | undefined,
     getToken: () => string | null,
     onChange: (patch: Record<string, unknown>) => void,
-    onKickedOut: () => void,
     getLastSyncAt: () => number,
     deletedIdsProvider: () => Set<string>,
-    onServerTime?: (serverTime: number) => void,
+    onServerTime?: (serverTime: number, failedEntities?: string[]) => void,
   ): void {
     this._onServerTime = onServerTime ?? null;
     const token = getToken();
@@ -135,14 +135,15 @@ export class SyncRealtimeController {
           });
           if (result?.data) {
             const deletedIds = deletedIdsProvider();
-            const patch = await (this._applyServerChanges?.(result.data, deletedIds) ?? Promise.resolve({}));
+            const { patch, failedEntities } = await (this._applyServerChanges?.(result.data, deletedIds) ?? Promise.resolve({ patch: {}, failedEntities: [] }));
             // eslint-disable-next-line max-depth -- nested guard after server change application
             if (patch && Object.keys(patch).length) onChange(patch);
 
-            // Update lastSyncAt via callback
+            // Update lastSyncAt via callback — failedEntities is passed through so
+            // the SyncEngine wrapper can apply the D1 all-or-nothing watermark guard
             // eslint-disable-next-line max-depth -- nested guard for server time update
             if (result?.serverTime) {
-              this._onServerTime?.(result.serverTime);
+              this._onServerTime?.(result.serverTime, failedEntities);
             }
           }
           return;
@@ -252,7 +253,7 @@ export class SyncRealtimeController {
       if (payload) {
         // Direct payload processing - apply immediately
         const deletedIds = deletedIdsProvider();
-        const patch = await (this._applyServerChanges?.({ [entity]: [payload] }, deletedIds) ?? Promise.resolve({}));
+        const { patch } = await (this._applyServerChanges?.({ [entity]: [payload] }, deletedIds) ?? Promise.resolve({ patch: {}, failedEntities: [] }));
         if (patch && Object.keys(patch).length) onChange(patch);
         return;
       }
@@ -263,15 +264,19 @@ export class SyncRealtimeController {
         entities: [entity],
         since: currentLastSyncAt > 0 ? currentLastSyncAt : undefined,
       });
+      let applyFailedEntities: string[] = [];
       if (result?.data?.[entity]) {
         const deletedIds = deletedIdsProvider();
-        const patch = await (this._applyServerChanges?.({ [entity]: result.data[entity] }, deletedIds) ?? Promise.resolve({}));
+        const { patch, failedEntities } = await (this._applyServerChanges?.({ [entity]: result.data[entity] }, deletedIds) ?? Promise.resolve({ patch: {}, failedEntities: [] }));
         if (patch && Object.keys(patch).length) onChange(patch);
+        applyFailedEntities = failedEntities;
       }
 
-      // Update lastSyncAt via callback
+      // Update lastSyncAt via callback — failedEntities passed through for the
+      // D1 all-or-nothing watermark guard in SyncEngine (empty response keeps
+      // the legacy behavior of advancing: no entities touched, none failed)
       if (result?.serverTime) {
-        this._onServerTime?.(result.serverTime);
+        this._onServerTime?.(result.serverTime, applyFailedEntities);
       }
     } catch (err) {
       if (err instanceof KickedOutError) {

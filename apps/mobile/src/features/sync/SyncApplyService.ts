@@ -93,9 +93,33 @@ const DOMException = (globalThis as Record<string, unknown>).DOMException as typ
     }
   };
 
-/** Result from applyServerChanges, extends the store patch with metadata. */
-export interface ApplyResult extends Record<string, unknown> {
-  _failedEntities?: string[];
+/**
+ * Result from applyServerChanges: clean store patch + failure metadata.
+ *
+ * Failure semantics (sync-apply-failure-semantics):
+ * - `patch` is clean — it MUST NOT carry failure metadata keys (the legacy
+ *   `_failedEntities` leaked into Zustand top-level state via change handlers).
+ * - `failedEntities` is the explicit channel for watermark decisions: any
+ *   non-empty list means the caller (SyncEngine.onServerTime wrapper) must
+ *   NOT advance the global sync watermark, so failed entities get re-pulled.
+ */
+export interface ApplyServerChangesResult {
+  /** Store patch — clean, no failure-metadata keys */
+  patch: Record<string, unknown>;
+  /** Entities that failed to apply in this response (empty = all succeeded) */
+  failedEntities: string[];
+}
+
+/**
+ * D4 (sync-apply-failure-semantics): escalate row-level write failures to the
+ * entity-failure channel — the entity enters the same failedEntities list (and
+ * the D1 watermark guard) as thrown entities, so its changes get re-pulled.
+ */
+function escalateRowFailures(entity: string, failedRows: string[], failedEntities: string[]): void {
+  if (failedRows.length > 0) {
+    failedEntities.push(entity);
+    log.warn(`[applyServerChanges] ${failedRows.length} row(s) failed to write for entity "${entity}": ${failedRows.join(', ')}`);
+  }
 }
 
 export class SyncApplyService {
@@ -158,11 +182,11 @@ export class SyncApplyService {
     deletedIds?: Set<string>,
     signal?: AbortSignal,
     clockOffset = 0,
-  ): Promise<ApplyResult> {
+  ): Promise<ApplyServerChangesResult> {
     const db = await openDatabase();
-    const patch: ApplyResult = {};
+    const patch: Record<string, unknown> = {};
     const failedEntities: string[] = [];
-    if (!data || typeof data !== 'object') return patch;
+    if (!data || typeof data !== 'object') return { patch, failedEntities };
     const entries = Object.entries(data);
     log.debug(`[applyServerChanges] Processing ${entries.length} entities: ${entries.map(([k, v]) => `${k}(${v.length})`).join(', ')}`);
 
@@ -172,8 +196,9 @@ export class SyncApplyService {
         if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
         try {
           log.debug(`[applyServerChanges] Processing ${entity}: ${records.length} records`);
-          const { storeMapped } = await this.applyEntityToTable(db, entity, records as Record<string, unknown>[], deletedIds, signal, clockOffset);
+          const { storeMapped, failedRows } = await this.applyEntityToTable(db, entity, records as Record<string, unknown>[], deletedIds, signal, clockOffset);
           log.debug(`[applyServerChanges] ${entity}: applied ${storeMapped.length} records to store`);
+          escalateRowFailures(entity, failedRows, failedEntities);
 
           // Special handling for meditation (total minutes calculation)
           if (entity === 'meditation') {
@@ -197,11 +222,10 @@ export class SyncApplyService {
       }
 
       if (failedEntities.length > 0) {
-        patch._failedEntities = failedEntities;
         log.warn(`[applyServerChanges] ${failedEntities.length} entity/entities failed to apply: ${failedEntities.join(', ')}`);
       }
       log.debug(`[applyServerChanges] Final patch keys: ${Object.keys(patch).join(', ')}`);
-      return patch;
+      return { patch, failedEntities };
     });
   }
 
@@ -213,9 +237,9 @@ export class SyncApplyService {
     deletedIds?: Set<string>,
     signal?: AbortSignal,
     clockOffset = 0,
-  ): Promise<{ applied: unknown[]; storeMapped: unknown[] }> {
+  ): Promise<{ applied: unknown[]; storeMapped: unknown[]; failedRows: string[] }> {
     const config = ENTITY_CONFIG[entity];
-    if (!config) return { applied: [], storeMapped: [] };
+    if (!config) return { applied: [], storeMapped: [], failedRows: [] };
     const { table, pk } = config;
     if (!isValidSqlName(table)) throw new Error(`Invalid table name: ${table}`);
     if (!isValidSqlName(pk)) throw new Error(`Invalid pk name: ${pk}`);
@@ -281,27 +305,41 @@ export class SyncApplyService {
     }
 
     // ── Phase 2: Batch UPDATE (concurrent via Promise.all) ──
+    // D3 (sync-apply-failure-semantics): a failed UPDATE is an ERROR outcome, distinct
+    // from changes:0 (row genuinely missing). Error rows do NOT go through the INSERT
+    // fallback — the fallback only serves missing rows.
+    const failedRows: string[] = [];
     if (toUpsert.length > 0) {
       // Group by column structure (all rows of same entity share the same columns)
       const sampleCols = toUpsert[0].cols;
       const setClause = sampleCols.map(c => `${c}=?`).join(',');
-      const updateResults = await Promise.all(
+      type UpdateOutcome = { changes: number; failed?: false } | { changes: 0; failed: true };
+      const updateResults: UpdateOutcome[] = await Promise.all(
         toUpsert.map(({ id, vals }) =>
           db.runAsync(`UPDATE ${table} SET ${setClause},deleted=0,synced=1 WHERE ${pk}=?`, [...vals, id])
-            .catch((e) => { log.error(e, { entity, id, phase: 'batch-update' }); return { changes: 0 }; })
+            .then((r: { changes?: number }) => ({ changes: r?.changes ?? 0 }))
+            .catch((e) => { log.error(e, { entity, id, phase: 'batch-update' }); return { changes: 0, failed: true } as const; })
         )
       );
 
-      // ── Phase 3: INSERT fallback for rows that didn't exist ──
+      // ── Phase 3: INSERT fallback only for genuinely-missing rows (D3) ──
       const insertCols = sampleCols;
       const insertPh = insertCols.map(() => '?').join(',');
       for (let i = 0; i < toUpsert.length; i++) {
-        if (updateResults[i].changes === 0) {
+        const outcome = updateResults[i];
+        if (outcome.failed) {
+          // UPDATE errored (db failure) — row not written, not a missing-row case
+          failedRows.push(toUpsert[i].id);
+          continue;
+        }
+        let rowWritten = outcome.changes > 0;
+        if (outcome.changes === 0) {
           try {
             await db.runAsync(
               `INSERT INTO ${table} (${insertCols.join(',')},deleted,synced) VALUES (${insertPh},0,1)`,
               toUpsert[i].vals
             );
+            rowWritten = true;
           } catch (e) {
             const msg = e instanceof Error ? e.message : String(e);
             // eslint-disable-next-line max-depth -- warning-reduction: high-risk sync/store/migration data fn; depth refactor deferred to avoid data-corruption risk
@@ -309,20 +347,28 @@ export class SyncApplyService {
               // Race condition: row appeared between UPDATE and INSERT — retry UPDATE
               // eslint-disable-next-line max-depth -- warning-reduction: high-risk sync/store/migration data fn; depth refactor deferred to avoid data-corruption risk
               try {
-                await db.runAsync(
+                const retryResult = await db.runAsync(
                   `UPDATE ${table} SET ${setClause},deleted=0,synced=1 WHERE ${pk}=?`,
                   [...toUpsert[i].vals, toUpsert[i].id]
                 );
+                rowWritten = (retryResult?.changes ?? 0) > 0;
               } catch (retryErr) {
-                log.warn(`Retry UPDATE after UNIQUE failed for ${entity}:${toUpsert[i].id}`);
+                log.warn(`Retry UPDATE after UNIQUE failed for ${entity}:${toUpsert[i].id}`, retryErr);
               }
             } else {
               log.error(e, { entity, id: toUpsert[i].id, phase: 'batch-insert-fallback' });
             }
           }
         }
-        applied.push(toUpsert[i].original);
-        if (mapper) storeMapped.push(mapper(toUpsert[i].original));
+        // D3/D4: only successfully-written rows enter the store patch — a failed row
+        // must not fork store vs SQLite (store-has/SQLite-lacks = data vanishes on
+        // next rehydrate). Failed rows escalate to entity failure (D4) via failedRows.
+        if (rowWritten) {
+          applied.push(toUpsert[i].original);
+          if (mapper) storeMapped.push(mapper(toUpsert[i].original));
+        } else {
+          failedRows.push(toUpsert[i].id);
+        }
       }
     }
 
@@ -346,11 +392,14 @@ export class SyncApplyService {
           await db.runAsync('UPDATE thought_trails SET linked_plan_item_ids=NULL,updated_at=? WHERE linked_plan_item_ids LIKE ?', [Date.now(), `%"${id}"%`]);
         }
       } catch (e) {
+        // D4: dead-row write failure also escalates (row not applied to SQLite,
+        // must not be reported as applied nor silently swallowed)
+        failedRows.push(id);
         log.error(e, { entity, phase: 'applyEntity-dead' });
       }
     }
 
-    return { applied, storeMapped };
+    return { applied, storeMapped, failedRows };
   }
 
   /** Mark records as synced and remove from sync queue */
