@@ -151,3 +151,46 @@ complexity ≤15 团队约定从纸面变可执行门禁：ReviewAIPanel 主函�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 115: sync-apply-failure-semantics
+
+**Date**: 2026-11-24
+**Task**: sync-apply-failure-semantics（openspec change，非 Trellis 任务——深挖→propose→apply 全流程）
+**Branch**: `refactor/split-body-dashboard`
+
+### Summary
+
+增量 pull 路径（SSE realtime / fallback polling）两个实证数据完整性缺陷修复：R1 永久数据洞（apply 部分失败时 serverTime 照推 lastSyncAt → 失败实体变更被增量 pull 永久跳过）+ R2 store/SQLite 分叉（写库失败行照样进 store patch → rehydrate 后数据闪现后丢失）。D1-D5 五决策落地，SyncRealtimeController 零测试热区解冻（首测 10 用例）。
+
+### Main Changes
+
+- D1 全有或全无水位线：任一实体失败 → onServerTime 不推 lastSyncAt（失败实体重拉）；updateClockOffset 移出守卫（钟差校准与 apply 结果无关）
+- D2 返回类型 `{ patch, failedEntities }`：ApplyResult 删除 → ApplyServerChangesResult；6 处调用方类型收紧（SyncEngine ×3 + setRealtimeApplyServerChanges + SyncRealtimeController ×3 + SyncRehydrationManager ×4 + SyncService ×2），编译器护航全命中
+- D3 UpdateOutcome 判别联合：UPDATE 错误与 changes:0 区分（UPDATE 失败不走 INSERT fallback）；UNIQUE retry 后验证 changes>0 才算写成功
+- D4 行级失败上升实体失败：escalateRowFailures 纯函数 + failedRows 第三返回字段；写失败行不进 applied/storeMapped
+- D5 删除 connectRealtime 死参数 onKickedOut（外部链路无连锁）
+- 测试 +15：characterization 12（现状快照）先行 → 修复同 commit 翻转 fixed semantics + SyncEngine D1 守卫 3
+- durable 契约：quality-guidelines「Sync Apply Failure Semantics」小节
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `e306b1cc` | fix(sync): 增量 pull 失败语义修复——D1-D5 五决策 |
+| `4abf96f4` | docs(spec): quality-guidelines 增 Sync Apply Failure Semantics 小节 |
+
+### Testing
+
+- 全量 2127/2127 绿（基线 2112 + 15 新增；thought-trail daySpan 已知 flaky 单独跑绿）
+- type-check 0 error / mobile lint 0 warning / lint:complexity 53 压线 exit 0
+- 成功路径 byte-identical：diff 对照确认现有断言纯形式迁移（.patch. 插入 + 字段名），语义零改动
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- PR 创建被分类器故障阻塞（第三次故障，Edit 恢复但 gh 卡）——`!` 逃生命令已给用户，PR body 备好 Temp/claude/pr-body-final.md（已更新至 135 commits + sync 修复小节）
+- classifier-outage-playbook memory 已更新「通道模型非窗口模型 + 逐调用判定浮动」（本次新证据：Edit 简单内容可过与 gh 卡并存）
