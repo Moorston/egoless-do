@@ -99,6 +99,20 @@ For **error-handling state machines** — functions whose branch density IS the 
 
 This is a **documented, re-verified exemption** — not an eslint-disable carve-out (see 无测试 Screen 保守拆分模式 rule 6: disabling is never the answer). Every exemption entry must cite the extraction already done and its guarding tests; a new entry requires the same evidence.
 
+### Sync Apply Failure Semantics（增量 pull 失败语义契约，2026-11-24）
+
+增量 pull 路径（SSE realtime / fallback polling）的 apply 失败语义三契约（`sync-apply-failure-semantics`，修复前的两个数据完整性缺陷见 changelog 2026-11-24）：
+
+1. **失败实体不推进水位线（全有或全无）**：`applyServerChanges` 返回 `{ patch, failedEntities }`——`failedEntities` 非空时，消费方（`SyncEngine.connectRealtime` 的 onServerTime 包装）MUST NOT 调用 `setLastSyncAt`/`saveLastSyncAt`。失败实体保持旧水位线 → 下次增量 pull 重拉。成功实体的数据已生效（不回滚），只是被幂等地重复拉取。钟差校准（`updateClockOffset`）不受 apply 结果影响。
+2. **写库失败的行不进 store patch**：`applyEntityToTable` 只有写库成功（UPDATE changes>0 / INSERT / UNIQUE-retry UPDATE changes>0）的行才进 `applied`/`storeMapped`。UPDATE 失败是**错误结果**（`UpdateOutcome` 判别联合 `{ changes } | { changes: 0, failed: true }`），不得误诊为行不存在走 INSERT fallback。
+3. **失败信息走独立通道**：`failedEntities` 是返回值的显式字段，MUST NOT 作为 patch 字段（legacy `_failedEntities` 曾直漏 Zustand 顶层 state）泄漏给 change handler。
+
+行级失败上升为实体失败（`escalateRowFailures` 纯函数）：行写失败与实体 throw 在水位线语义上同级——同进 `failedEntities`、同受 D1 守卫。
+
+**护航测试**：`SyncApplyService.test.ts`（R1/R3 + R2 fixed semantics 用例）、`SyncEngine.test.ts`（onServerTime wrapper D1 guard ×3）、`SyncRealtimeController.test.ts`（failedEntities 透传 + patch 干净）。改动失败语义时这三组用例必须同步翻转。
+
+**The trap this prevents**: 修复前 `patch._failedEntities` 混进返回值 + `onServerTime` 无条件推 `Math.max(lastSyncAt, serverTime)` → 失败实体的变更 `updated_at < 新 lastSyncAt` 被增量 pull 永久跳过（永久数据洞）；写失败行照样进 `applied` → store 有、SQLite 无 → rehydrate 后数据"闪现后丢失"。同库的 initialSync 对同类洞早有显式防护（"NEVER mark initialSyncDone while any failed"）——增量路径必须有等价防护。
+
 ### CC 落点诊断先行（选拆法前必跑分，2026-11-21）
 
 对超标函数选拆法之前，先用显式 `--rule` 跑分确认 **CC 落在哪个函数**——ESLint 报告是按函数分账的，`useState` lazy initializer、`useCallback`、内联 submit 箭头函数都是**独立函数**，其内部分支不计入主函数 CC。
